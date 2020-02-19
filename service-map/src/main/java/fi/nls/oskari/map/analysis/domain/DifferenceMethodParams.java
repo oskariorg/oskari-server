@@ -7,6 +7,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
 
+import static fi.nls.oskari.analysis.AnalysisParser.DIFFERENCE;
+
 public class DifferenceMethodParams extends AnalysisMethodParams {
 
     private final String analysisMethodTemplate1 = "difference-wfs-join.xml";
@@ -36,6 +38,9 @@ public class DifferenceMethodParams extends AnalysisMethodParams {
     private Boolean isBbox = true;
     private String noDataValue = null;
 
+    public DifferenceMethodParams() {
+        setMethod(DIFFERENCE);
+    }
 
     public String getFieldA1() {
         return fieldA1;

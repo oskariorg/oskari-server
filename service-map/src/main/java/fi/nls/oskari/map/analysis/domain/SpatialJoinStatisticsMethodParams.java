@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static fi.nls.oskari.analysis.AnalysisParser.SPATIAL_JOIN_STATISTICS;
+
 public class SpatialJoinStatisticsMethodParams extends AnalysisMethodParams {
 
     private final String analysisMethodTemplate = "layer-wps-spatial-join-statistics.xml";
@@ -28,6 +30,9 @@ public class SpatialJoinStatisticsMethodParams extends AnalysisMethodParams {
     Map<String, String> localemap = new HashMap<String, String>();
     private String intersection_mode = "";  // SECOND intersect features (default) or SECOND_CONTAINS contains features
 
+    public SpatialJoinStatisticsMethodParams() {
+        setMethod(SPATIAL_JOIN_STATISTICS);
+    }
 
     public String getGeom2() {
         return geom2;

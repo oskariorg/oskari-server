@@ -7,6 +7,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
 
+import static fi.nls.oskari.analysis.AnalysisParser.UNION;
+
 public class UnionMethodParams extends AnalysisMethodParams {
 
     private final String analysisMethodTemplate = "analysis-layer-wps-geomunion.xml";
@@ -18,6 +20,9 @@ public class UnionMethodParams extends AnalysisMethodParams {
 
     private String mimeTypeFormat = null;
 
+    public UnionMethodParams() {
+        setMethod(UNION);
+    }
     public String getMimeTypeFormat() {
         return mimeTypeFormat;
     }

@@ -7,6 +7,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
 
+import static fi.nls.oskari.analysis.AnalysisParser.INTERSECT;
+
 public class IntersectMethodParams extends AnalysisMethodParams {
 
     private final String analysisMethodTemplate = "layer-wps-intersect2.xml";
@@ -30,6 +32,9 @@ public class IntersectMethodParams extends AnalysisMethodParams {
     private String wps_reference_type2 = "";
     private String intersection_mode = "";  // SECOND intersect features (default) or SECOND_CONTAINS contains features
 
+    public IntersectMethodParams() {
+        setMethod(INTERSECT);
+    }
     public String getFieldA1() {
         return fieldA1;
     }

@@ -91,7 +91,6 @@ public class AnalysisParser {
     private static final String JSON_KEY_METHODPARAMS = "methodParams";
     private static final String JSON_KEY_LAYERID = "layerId";
     private static final String JSON_KEY_FUNCTIONS = "functions";
-    private static final String JSON_KEY_AGGRE_ATTRIBUTE = "attribute";
     private static final String JSON_KEY_FILTERS = "filters";
     private static final String JSON_KEY_LAYERS = "layers";
     private static final String JSON_KEY_FIELDTYPES = "fieldTypes";
@@ -181,9 +180,8 @@ public class AnalysisParser {
             // when WPS method is vec:BufferFeatureCollection
 
             // Set params for WPS execute
-            BufferMethodParams method = createBufferParams(analyseMethodParams);
+            BufferMethodParams method = createBufferParams(analyseMethodParams, json.optJSONObject("bbox"));
 
-            setupBBox(method, json.optJSONObject("bbox"));
             parseCommonParams(wfsLayer, method, baseUrl);
             method.setGeojson(geojson);
             method.setWps_reference_type(analysisLayer.getInputType());
@@ -718,11 +716,10 @@ public class AnalysisParser {
         return fields;
     }
 
-    private void setupBBox(AnalysisMethodParams params, final JSONObject bbox) throws ServiceException {
-        if (bbox == null) {
+    private void setupBBox(AnalysisMethodParams params, final JSONObject bbox, boolean isRequired) throws ServiceException {
+        if (isRequired && bbox == null) {
             throw new ServiceException(getRequiredErrorMsgFor("bbox"));
         }
-
         params.setX_lower(bbox.optString("left"));
         params.setY_lower(bbox.optString("bottom"));
         params.setX_upper(bbox.optString("right"));
@@ -734,10 +731,11 @@ public class AnalysisParser {
      * @param methodParams to get distance from
      * @return BufferMethodParams parameters for WPS execution
      ************************************************************************/
-    private BufferMethodParams createBufferParams(JSONObject methodParams) throws ServiceException {
+    private BufferMethodParams createBufferParams(JSONObject methodParams, JSONObject bbox) throws ServiceException {
         final BufferMethodParams method = new BufferMethodParams();
         method.setDistance(methodParams.optString(JSON_KEY_DISTANCE));
 
+        setupBBox(method, bbox, true);
         if (method.getDistance() == null) {
             // it's possible to use negative buffer so just checking that you can copy a feature
             throw new ServiceException(getRequiredErrorMsgFor(JSON_KEY_DISTANCE));
@@ -760,17 +758,12 @@ public class AnalysisParser {
     private ZoneSectorMethodParams parseZoneSectorParams(OskariLayer lc,
                                                  JSONObject json, String geojson, String baseUrl) throws ServiceException {
         final ZoneSectorMethodParams method = new ZoneSectorMethodParams();
-        method.setMethod(ZONESECTOR);
         //
         try {
             parseCommonParams(lc, method, baseUrl);
 
             final JSONObject params = json.getJSONObject(JSON_KEY_METHODPARAMS);
-            final JSONObject bbox = json.getJSONObject("bbox");
-            method.setX_lower(bbox.optString("left"));
-            method.setY_lower(bbox.optString("bottom"));
-            method.setX_upper(bbox.optString("right"));
-            method.setY_upper(bbox.optString("top"));
+            setupBBox(method, json.optJSONObject("bbox"), true);
 
             method.setDistance(params.optString(JSON_KEY_AREADISTANCE));
             method.setZone_count(params.optString(JSON_KEY_AREACOUNT));
@@ -837,37 +830,15 @@ public class AnalysisParser {
             String aggre_field, List<String> aggre_funcs)
             throws ServiceException {
         AggregateMethodParams method = new AggregateMethodParams();
-        //
-        method.setMethod(AGGREGATE);
-        try {
-            parseCommonParams(lc, method, baseUrl);
-            method.setGeojson(geojson);
-            final JSONObject params = json.getJSONObject(JSON_KEY_METHODPARAMS);
+        parseCommonParams(lc, method, baseUrl);
+        method.setGeojson(geojson);
+        final JSONObject params = json.optJSONObject(JSON_KEY_METHODPARAMS);
+        method.setNoDataValue(params.optString(JSON_KEY_NO_DATA, null));
+        setupBBox(method, json.optJSONObject("bbox"), true);
 
-            Object no_data = params.opt(JSON_KEY_NO_DATA);
-            if(no_data != null){
-                try {
-                    method.setNoDataValue(no_data.toString());
-                }
-                catch (Exception e){
-                }
-            }
-
-            JSONObject bbox = null;
-
-            bbox = json.getJSONObject("bbox");
-            method.setX_lower(bbox.optString("left"));
-            method.setY_lower(bbox.optString("bottom"));
-            method.setX_upper(bbox.optString("right"));
-            method.setY_upper(bbox.optString("top"));
-
-            // TODO: loop fields - current solution only for 1st field
-            method.setAggreField1(aggre_field);
-            method.setAggreFunctions(aggre_funcs);
-
-        } catch (JSONException e) {
-            throw new ServiceException("Method parameters missing.");
-        }
+        // TODO: loop fields - current solution only for 1st field
+        method.setAggreField1(aggre_field);
+        method.setAggreFunctions(aggre_funcs);
 
         return method;
     }
@@ -889,24 +860,10 @@ public class AnalysisParser {
     private UnionMethodParams parseUnionParams(OskariLayer lc,
                                                JSONObject json, String geojson, String baseUrl) throws ServiceException {
         UnionMethodParams method = new UnionMethodParams();
-        //
-        method.setMethod(UNION);
         // General variable input and variable input of union input 1
         parseCommonParams(lc, method, baseUrl);
         method.setGeojson(geojson);
-
-        JSONObject bbox = null;
-
-        try {
-            bbox = json.getJSONObject("bbox");
-            method.setX_lower(bbox.optString("left"));
-            method.setY_lower(bbox.optString("bottom"));
-            method.setX_upper(bbox.optString("right"));
-            method.setY_upper(bbox.optString("top"));
-        } catch (JSONException e) {
-            throw new ServiceException("Bbox parameters missing.");
-        }
-
+        setupBBox(method, json.optJSONObject("bbox"), true);
         return method;
     }
 
@@ -926,8 +883,6 @@ public class AnalysisParser {
             OskariLayer lc, OskariLayer lc2,
             JSONObject json, String gjson, String gjson2, String baseUrl) throws ServiceException {
         IntersectMethodParams method = new IntersectMethodParams();
-        //
-        method.setMethod(INTERSECT);
 
         try {
 
@@ -939,15 +894,6 @@ public class AnalysisParser {
             method.setXmlns2("xmlns:" + getNamespacePrefix(lc2) + "=\"" + getNamespaceURL(lc2) + "\"");
             method.setGeom2(getGeometryField(lc2));
             method.setGeojson2(gjson2);
-
-
-
-            // TODO: Intersect retain columns
-            // A layer
-            // method.setFieldA1(fieldA1);
-            // B layer
-            // method.setFieldA1(fieldB1);
-
         } catch (Exception e) {
             throw new ServiceException("Intersect analysis parameters missing.");
         }
@@ -970,8 +916,6 @@ public class AnalysisParser {
             OskariLayer lc, OskariLayer lc2,
             JSONObject json, String gjson, String gjson2, String baseUrl) throws ServiceException {
         IntersectJoinMethodParams method = new IntersectJoinMethodParams();
-        //
-        method.setMethod(SPATIAL_JOIN);
 
         try {
 
@@ -1020,8 +964,6 @@ public class AnalysisParser {
             OskariLayer lc, OskariLayer lc2,
             JSONObject json, String gjson, String gjson2, String baseUrl) throws ServiceException {
         SpatialJoinStatisticsMethodParams method = new SpatialJoinStatisticsMethodParams();
-        //
-        method.setMethod(SPATIAL_JOIN_STATISTICS);
 
         try {
 
@@ -1074,54 +1016,34 @@ public class AnalysisParser {
             OskariLayer lc, OskariLayer lc2,
             JSONObject json, String gjson, String gjson2, String baseUrl) throws ServiceException {
         DifferenceMethodParams method = new DifferenceMethodParams();
-        //
-        method.setMethod(DIFFERENCE);
         // General variable input and variable input of union input 1
-        try {
-            parseCommonParams(lc, method, baseUrl);
-            method.setGeojson(gjson);
+        parseCommonParams(lc, method, baseUrl);
+        method.setGeojson(gjson);
 
-            // Variable values of Union input 2
-            baseUrl = baseUrl.replace("&", "&amp;");
-            method.setHref2(baseUrl + String.valueOf(lc2.getId()));
-            method.setTypeName2(lc2.getName());
-            method.setXmlns2("xmlns:" + getNamespacePrefix(lc2) + "=\"" + getNamespaceURL(lc2) + "\"");
+        // Variable values of Union input 2
+        baseUrl = baseUrl.replace("&", "&amp;");
+        method.setHref2(baseUrl + String.valueOf(lc2.getId()));
+        method.setTypeName2(lc2.getName());
+        method.setXmlns2("xmlns:" + getNamespacePrefix(lc2) + "=\"" + getNamespaceURL(lc2) + "\"");
 
-            method.setGeom2(getGeometryField(lc2));
-            final JSONObject params = json.getJSONObject(JSON_KEY_METHODPARAMS);
-            Object no_data = params.opt(JSON_KEY_NO_DATA);
-            if (no_data != null) {
-                try {
-                    method.setNoDataValue(no_data.toString());
-                } catch (Exception e) {
-                }
-            }
+        method.setGeom2(getGeometryField(lc2));
+        final JSONObject params = json.optJSONObject(JSON_KEY_METHODPARAMS);
+        method.setNoDataValue(params.optString(JSON_KEY_NO_DATA, null));
 
-            JSONObject bbox = null;
+        JSONObject bbox = json.optJSONObject("bbox");
+        setupBBox(method, bbox, false);
+        method.setBbox((bbox != null));
 
-
-            bbox = json.optJSONObject("bbox");
-            method.setX_lower(bbox.optString("left"));
-            method.setY_lower(bbox.optString("bottom"));
-            method.setX_upper(bbox.optString("right"));
-            method.setY_upper(bbox.optString("top"));
-
-            method.setBbox((bbox != null));
-
-            // A layer field to compare
-            method.setFieldA1(params.optString("fieldA1"));
-            // B layer field to compare to A layer filed
-            method.setFieldB1(params.optString("fieldB1"));
-            // A layer key field to join
-            method.setKeyA1(params.optString("keyA1"));
-            // B layer key field to join
-            method.setKeyB1(params.optString("keyB1"));
-            // GML encode namespace prefix in result featureCollection
-            method.setResponsePrefix("null");
-
-        } catch (Exception e) {
-            throw new ServiceException("Difference analysis parameters parse failed.");
-        }
+        // A layer field to compare
+        method.setFieldA1(params.optString("fieldA1"));
+        // B layer field to compare to A layer filed
+        method.setFieldB1(params.optString("fieldB1"));
+        // A layer key field to join
+        method.setKeyA1(params.optString("keyA1"));
+        // B layer key field to join
+        method.setKeyB1(params.optString("keyB1"));
+        // GML encode namespace prefix in result featureCollection
+        method.setResponsePrefix("null");
 
 
         return method;
@@ -1341,16 +1263,12 @@ public class AnalysisParser {
         return "geometry";
     }
 
-    private String parseProperties(List<String> props, String ns,
-                                   String geom_prop) throws ServiceException {
-
+    private String parseProperties(List<String> props, String ns, String geom_prop) {
         try {
             return WFSFilterBuilder.parseProperties(props, ns, geom_prop);
-
         } catch (Exception e) {
             LOG.warn(e, "Properties parse failed");
         }
-
         return null;
     }
 
@@ -1441,17 +1359,15 @@ public class AnalysisParser {
      * @param analysisLayer
      * @return
      */
-    public String harmonizeElementNames(String featureSet,
-                                         final AnalysisLayer analysisLayer) {
-
+    public String harmonizeElementNames(String featureSet, final AnalysisLayer analysisLayer) {
         try {
-
             final AnalysisMethodParams params = analysisLayer
                     .getAnalysisMethodParams();
             String[] enames = params.getTypeName().split(":");
             String ename = enames[0];
-            if (enames.length > 1)
+            if (enames.length > 1) {
                 ename = enames[1];
+            }
             String extraFrom = "gml:" + ename + "_";
 
             // Mixed perfixes to feature: prefix etc
@@ -1472,16 +1388,14 @@ public class AnalysisParser {
                     + ANALYSIS_WPS_ELEMENT_LOCALNAME, ANALYSIS_WFST_PREFIX
                     + ANALYSIS_WPS_ELEMENT_LOCALNAME);
             featureSet = featureSet.replace(" NaN", "");
-            featureSet = featureSet.replace("srsDimension=\"3\"",
-                    "srsDimension=\"2\"");
-
+            featureSet = featureSet.replace("srsDimension=\"3\"","srsDimension=\"2\"");
         } catch (Exception e) {
             LOG.debug("Harmonizing element names failed: ", e);
         }
         return featureSet;
     }
     public AnalysisLayer parseSwitch2UnionLayer(AnalysisLayer analysisLayer, String analyse, String filter1,
-                                               String filter2, String baseUrl, String outputFormat) throws ServiceException {
+                                               String filter2, String baseUrl, String outputFormat) {
         try {
             JSONObject json = JSONHelper.createJSONObject(analyse);
             // Switch to UNION method
@@ -1493,7 +1407,7 @@ public class AnalysisParser {
             al2.setFields(analysisLayer.getFields());
             // Aggregate results for to append to union result
             al2.setResult(analysisLayer.getResult());
-            if(outputFormat != null){
+            if(outputFormat != null) {
                 ( (UnionMethodParams) al2.getAnalysisMethodParams()).setMimeTypeFormat(outputFormat);
             }
             return al2;
@@ -1592,31 +1506,23 @@ public class AnalysisParser {
     }
 
     /**
-     * Remove prefix in xml element
-     * @param tag
-     * @return element name without prefix
-     */
-    private String stripNamespace(final String tag) {
-
-        String splitted[] = tag.split(":");
-        if (splitted.length > 1) {
-            return splitted[1];
-        }
-        return splitted[0];
-    }
-
-    /**
      * Get Count value
      * @param noDataCount  ({"AggregationResults":{"Count":10}})
      * @return  Count value
      */
     private int getNoDataCount(final String noDataCount) {
-
-        JSONObject countresu = JSONHelper.createJSONObject(noDataCount);
-        if(countresu == null) return 0;
-        JSONObject result = countresu.optJSONObject("AggregationResults");
-        if(result != null) return  result.optInt("Count",0);
-        return 0;
+        if (noDataCount == null) {
+            return 0;
+        }
+        JSONObject countResult = JSONHelper.createJSONObject(noDataCount);
+        if (countResult == null) {
+            return 0;
+        }
+        JSONObject result = countResult.optJSONObject("AggregationResults");
+        if (result == null) {
+            return 0;
+        }
+        return result.optInt("Count",0);
     }
 
     /**
@@ -1654,18 +1560,14 @@ public class AnalysisParser {
         // Get wfs layer configuration for union input 2
         return mapLayerService.find(id2);
     }
-    private void parseMethodParams( AnalysisMethodParams method,
-            OskariLayer lc,
-            JSONObject json, String gjson, String baseUrl) throws ServiceException {
-
+    private void parseMethodParams( AnalysisMethodParams method, OskariLayer lc, JSONObject json, String gjson, String baseUrl) {
         parseCommonParams(lc, method, baseUrl);
         method.setGeojson(gjson);
-
-        JSONObject bbox = JSONHelper.getJSONObject(json,"bbox");
-        method.setX_lower(bbox.optString("left"));
-        method.setY_lower(bbox.optString("bottom"));
-        method.setX_upper(bbox.optString("right"));
-        method.setY_upper(bbox.optString("top"));
+        try {
+            setupBBox(method, json.optJSONObject("bbox"), false);
+        } catch (ServiceException ignored) {
+            // bbox is optional so exception is never thrown
+        }
     }
 
     /**
