@@ -86,12 +86,8 @@ public class CreateAnalysisLayerHandler extends RestActionHandler {
     }
 
     private AnalysisLayer getAggregateLayer(String analyse, String filter1, String filter2,
-                                            String baseUrl, AnalysisLayer analysisLayer, String outputFormat) throws ActionParamsException {
-        try {
+                                            String baseUrl, AnalysisLayer analysisLayer, String outputFormat) {
             return analysisParser.parseSwitch2UnionLayer(analysisLayer, analyse, filter1, filter2, baseUrl, outputFormat);
-        } catch (ServiceException e) {
-            throw new ActionParamsException(ERROR_UNABLE_TO_PROCESS_AGGREGATE_UNION, e.getMessage());
-        }
     }
 
     /**
