@@ -732,7 +732,9 @@ public class IOHelper {
      * @param username
      * @param password
      * @return response body
+     * @deprecated
      */
+    @Deprecated
     public static String getRequest(String url, String contentType,
                                     String username, String password, String host, String authorization) {
         HttpRequest request = null;
@@ -850,7 +852,9 @@ public class IOHelper {
      * @param username
      * @param password
      * @return response body
+     * @deprecated
      */
+    @Deprecated
     public static String postRequest(String url, String contentType,
                                      String data, String username, String password, String host,
                                      String authorization) {
