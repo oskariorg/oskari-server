@@ -1,6 +1,5 @@
 package fi.nls.oskari.util;
 
-import com.github.kevinsawicki.http.HttpRequest;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import org.apache.commons.codec.binary.Base64;
@@ -694,84 +693,6 @@ public class IOHelper {
         return in;
     }
 
-    /**
-     * HTTP request method with optional basic authentication and contentType
-     * definition
-     *
-     * @param url
-     * @param data          data to post (if empty, GET method otherwise POST)
-     * @param username
-     * @param password
-     * @param host          host name for header params (optional)
-     * @param authorization (optional)
-     * @param contentType
-     * @return response body
-     */
-    public static String httpRequestAction(String url, String data, String username,
-                                           String password, String host, String authorization,
-                                           String contentType) {
-        String response = null;
-
-        if (!data.isEmpty()) {
-            response = postRequest(url, contentType, data, username, password,
-                    host, authorization);
-
-        } else
-            response = getRequest(url, contentType, username, password, host,
-                    authorization);
-
-        return response;
-    }
-
-    /**
-     * HTTP GET method with optional basic authentication and contentType
-     * definition
-     *
-     * @param url
-     * @param contentType
-     * @param username
-     * @param password
-     * @return response body
-     * @deprecated
-     */
-    @Deprecated
-    public static String getRequest(String url, String contentType,
-                                    String username, String password, String host, String authorization) {
-        HttpRequest request = null;
-        try {
-
-            HttpRequest.keepAlive(false);
-            if (username != null && !username.isEmpty()) {
-                request = HttpRequest.get(url).basic(username, password)
-                        .accept(contentType).connectTimeout(30)
-                        .acceptGzipEncoding().uncompress(true).trustAllCerts()
-                        .trustAllHosts();
-            } else {
-                request = HttpRequest.get(url).contentType(contentType)
-                        .connectTimeout(30).acceptGzipEncoding().uncompress(
-                                true).trustAllCerts().trustAllHosts();
-            }
-            if (host != null && !host.isEmpty()) {
-                request.header("Host", host);
-            }
-
-            if (authorization != null && !authorization.isEmpty()) {
-                request.authorization(authorization);
-            }
-            if (request.ok() || request.code() == 304)
-                return request.body();
-            else {
-                handleHTTPError("GET", url, request.code());
-            }
-
-        } catch (HttpRequest.HttpRequestException e) {
-            handleHTTPRequestFail(url, e);
-        } catch (Exception e) {
-            handleHTTPRequestFail(url, e);
-        }
-        return null;
-    }
-
     public static HttpURLConnection postForm(String url, Map<String, String> keyValuePairs)
             throws IOException {
         String requestBody = getParams(keyValuePairs);
@@ -837,71 +758,6 @@ public class IOHelper {
             baos.writeTo(out);
         }
         return conn;
-    }
-
-    public static String postRequest(String url) {
-        return postRequest(url, "", "", "", null, null, null);
-    }
-
-    /**
-     * HTTP POST method with optional basic authentication and contentType
-     * definition
-     *
-     * @param url
-     * @param contentType
-     * @param username
-     * @param password
-     * @return response body
-     * @deprecated
-     */
-    @Deprecated
-    public static String postRequest(String url, String contentType,
-                                     String data, String username, String password, String host,
-                                     String authorization) {
-        HttpRequest request = null;
-        String response = null;
-        try {
-
-            HttpRequest.keepAlive(false);
-            if (username != null && !username.isEmpty()) {
-                request = HttpRequest.post(url)
-                        .basic(username, password)
-                        .contentType(contentType)
-                        .connectTimeout(getConnectionTimeoutMs())
-                        .acceptGzipEncoding()
-                        .uncompress(true)
-                        .trustAllCerts()
-                        .trustAllHosts()
-                        .send(data);
-            } else {
-                request = HttpRequest.post(url)
-                        .contentType(contentType)
-                        .connectTimeout(getConnectionTimeoutMs())
-                        .acceptGzipEncoding()
-                        .uncompress(true)
-                        .trustAllCerts()
-                        .trustAllHosts()
-                        .send(data);
-            }
-            if (host != null && !host.isEmpty()) {
-                request.header("Host", host);
-            }
-
-            if (authorization != null && !authorization.isEmpty()) {
-                request.authorization(authorization);
-            }
-            if (request.ok() || request.code() == 304)
-                response = request.body();
-            else {
-                handleHTTPError("POST", url, request.code());
-            }
-
-        } catch (HttpRequest.HttpRequestException e) {
-            handleHTTPRequestFail(url, e);
-        } catch (Exception e) {
-            handleHTTPRequestFail(url, e);
-        }
-        return response;
     }
 
     /**
