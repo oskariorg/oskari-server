@@ -849,6 +849,67 @@ public class IOHelper {
     }
 
     /**
+     * Parses query string to map from URL
+     * @param url
+     * @return
+     */
+    public static Map<String, List<String>> parseQuerystring(String url) {
+        if (url == null) {
+            return Collections.emptyMap();
+        }
+        try {
+            return parseQuerystring(new URL(url));
+        } catch (MalformedURLException e) {
+            throw new ServiceRuntimeException("Malformed URL: " + url, e);
+        }
+    }
+
+    /**
+     * Parses query string to map from URL
+     * @param url
+     * @return
+     */
+    // Java 8 impl from from https://stackoverflow.com/questions/13592236/parse-a-uri-string-into-name-value-collection
+    public static Map<String, List<String>> parseQuerystring(URL url) {
+        if (url == null) {
+            return Collections.emptyMap();
+        }
+        String query = url.getQuery();
+        if (query == null || query.isEmpty()) {
+            return Collections.emptyMap();
+        }
+
+        return Arrays.stream(query.split("&"))
+                .map(IOHelper::splitQueryParameter)
+                .collect(Collectors.groupingBy(SimpleImmutableEntry::getKey, LinkedHashMap::new, Collectors.mapping(Map.Entry::getValue, Collectors.toList())));
+    }
+
+    private static SimpleImmutableEntry<String, String> splitQueryParameter(String it) {
+        final int idx = it.indexOf("=");
+        final String key = idx > 0 ? it.substring(0, idx) : it;
+        final String value = idx > 0 && it.length() > idx + 1 ? it.substring(idx + 1) : null;
+        return new SimpleImmutableEntry<>(key, value);
+    }
+
+    /**
+     * Returns the same url without querystring
+     * @param url
+     * @return
+     */
+    public static String removeQueryString(String url) {
+        try {
+            URI uri = new URI(url);
+            return new URI(uri.getScheme(),
+                    uri.getAuthority(),
+                    uri.getPath(),
+                    null, // Ignore the query part of the input url
+                    uri.getFragment()).toString();
+        } catch (URISyntaxException e) {
+            throw new ServiceRuntimeException("Malformed URI: " + url, e);
+        }
+    }
+
+    /**
      * Adds parameters to given base URL. URLEncodes parameter values.
      * Note that
      * @param url
@@ -890,50 +951,6 @@ public class IOHelper {
         return parts[0] + "://" + parts[1].replaceAll("//", "/");
     }
 
-    public static Map<String, List<String>> parseQuerystring(String url) {
-        if (url == null) {
-            return Collections.emptyMap();
-        }
-        try {
-            return parseQuerystring(new URL(url));
-        } catch (MalformedURLException e) {
-            throw new ServiceRuntimeException("Malformed URL: " + url, e);
-        }
-    }
-
-    // Java 8 impl from from https://stackoverflow.com/questions/13592236/parse-a-uri-string-into-name-value-collection
-    public static Map<String, List<String>> parseQuerystring(URL url) {
-        if (url == null) {
-            return Collections.emptyMap();
-        }
-        String query = url.getQuery();
-        if (query == null || query.isEmpty()) {
-            return Collections.emptyMap();
-        }
-        return Arrays.stream(query.split("&"))
-                .map(IOHelper::splitQueryParameter)
-                .collect(Collectors.groupingBy(SimpleImmutableEntry::getKey, LinkedHashMap::new, Collectors.mapping(Map.Entry::getValue, Collectors.toList())));
-    }
-
-    public static String removeQueryString(String url) {
-        try {
-            URI uri = new URI(url);
-            return new URI(uri.getScheme(),
-                    uri.getAuthority(),
-                    uri.getPath(),
-                    null, // Ignore the query part of the input url
-                    uri.getFragment()).toString();
-        } catch (URISyntaxException e) {
-            throw new ServiceRuntimeException("Malformed URI: " + url, e);
-        }
-    }
-
-    private static SimpleImmutableEntry<String, String> splitQueryParameter(String it) {
-        final int idx = it.indexOf("=");
-        final String key = idx > 0 ? it.substring(0, idx) : it;
-        final String value = idx > 0 && it.length() > idx + 1 ? it.substring(idx + 1) : null;
-        return new SimpleImmutableEntry<>(key, value);
-    }
 
     /**
      * Convenience method for just adding one param to an URL.
@@ -949,6 +966,21 @@ public class IOHelper {
         final String queryString = getParamsMultiValue(params);
         return addQueryString(url, queryString);
 
+    }
+
+    /**
+     * Making parseQuerystring() work with existing methods...
+     * @param kvps
+     * @return
+     */
+    public static String createQuerystring(Map<String, List<String>> kvps) {
+        if(kvps == null) {
+            return "";
+        }
+        String[] array = new String[0];
+        Map<String, String[]> params = new HashMap<>();
+        kvps.forEach( (key, value) -> params.put(key, value.toArray(array)));
+        return getParamsMultiValue(params);
     }
 
     public static String getParams(Map<String, String> kvps) {
