@@ -68,7 +68,6 @@
 
         <staxon.version>1.2</staxon.version>
         <lambdaj.version>2.3.3</lambdaj.version>
-        <kevinsawicki.http-request.version>4.0</kevinsawicki.http-request.version>
         <jsoup.version>1.12.1</jsoup.version>
         <ibatis.version>2.3.4.726</ibatis.version>
         <axiom.version>1.2.20</axiom.version>
@@ -716,11 +715,6 @@
                 <groupId>com.googlecode.lambdaj</groupId>
                 <artifactId>lambdaj</artifactId>
                 <version>${lambdaj.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.kevinsawicki</groupId>
-                <artifactId>http-request</artifactId>
-                <version>${kevinsawicki.http-request.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.jsoup</groupId>
