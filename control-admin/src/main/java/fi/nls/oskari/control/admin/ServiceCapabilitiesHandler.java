@@ -12,6 +12,7 @@ import fi.nls.oskari.service.ServiceUnauthorizedException;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
 import org.oskari.admin.LayerCapabilitiesHelper;
+import org.oskari.maplayer.admin.LayerValidator;
 import org.oskari.maplayer.model.ServiceCapabilitiesResult;
 
 import javax.servlet.http.HttpServletResponse;
@@ -70,26 +71,13 @@ public class ServiceCapabilitiesHandler extends AbstractLayerAdminHandler {
     }
 
     private ServiceCapabilitiesResult getLayersFromService(ActionParameters params) throws ServiceException, ActionException {
-        final String url = validateUrl(params.getRequiredParam(PARAM_CAPABILITIES_URL));
+        final String url = LayerValidator.validateUrl(params.getRequiredParam(PARAM_CAPABILITIES_URL));
         final String type = params.getRequiredParam(PARAM_TYPE);
         final String version = params.getRequiredParam(PARAM_VERSION);
         final String username = params.getHttpParam(PARAM_USERNAME, "");
         final String password = params.getHttpParam(PARAM_PASSWORD, "");
         final String currentSrs = params.getHttpParam(PARAM_CURRENT_SRS, PropertyUtil.get("oskari.native.srs", "EPSG:4326"));
         return LayerCapabilitiesHelper.getCapabilitiesResults(url, type, version, username, password, currentSrs);
-    }
-
-    private String validateUrl(final String url) throws ActionParamsException {
-        // TODO remove query part with ? check or with URL object
-        String baseUrl = url.contains("?") ? url.substring(0, url.indexOf("?")) : url;
-        baseUrl = baseUrl.endsWith("/") ? baseUrl.substring(0, baseUrl.length() - 1) : baseUrl;
-        try {
-            // check that it's a valid url by creating an URL object...
-            new URL(url);
-        } catch (MalformedURLException e) {
-            throw new ActionParamsException("Invalid url: " + url, ERROR_INVALID_FIELD_VALUE);
-        }
-        return baseUrl;
     }
 
     private boolean isServiceUnauthrorizedException(Throwable t) {

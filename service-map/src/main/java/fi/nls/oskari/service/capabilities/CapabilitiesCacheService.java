@@ -5,6 +5,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.OskariComponent;
 import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.service.ServiceUnauthorizedException;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.XmlHelper;
@@ -97,6 +98,9 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
             conn.setReadTimeout(TIMEOUT_MS);
 
             int sc = conn.getResponseCode();
+            if (sc == HttpURLConnection.HTTP_FORBIDDEN || sc == HttpURLConnection.HTTP_UNAUTHORIZED) {
+                throw new ServiceUnauthorizedException("Wrong credentials for service");
+            }
             if (sc != HttpURLConnection.HTTP_OK) {
                 throw new ServiceException("Unexpected Status code: " + sc);
             }
