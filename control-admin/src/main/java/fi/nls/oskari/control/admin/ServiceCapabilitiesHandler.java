@@ -72,7 +72,7 @@ public class ServiceCapabilitiesHandler extends AbstractLayerAdminHandler {
                 ResponseHelper.writeError(params, e.getMessage(), HttpServletResponse.SC_REQUEST_TIMEOUT);
             } else if (rootcause instanceof IOException) {
                 ResponseHelper.writeError(params, e.getMessage(), HttpServletResponse.SC_BAD_REQUEST);
-            } else if (rootcause instanceof XMLStreamException) {
+            } else if (rootcause instanceof XMLStreamException || rootcause instanceof ServiceException) {
                 ResponseHelper.writeError(params, e.getMessage(), HttpServletResponse.SC_EXPECTATION_FAILED);
             } else {
                 ResponseHelper.writeError(params, e.getMessage());
