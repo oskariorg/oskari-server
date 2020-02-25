@@ -14,6 +14,9 @@ import java.util.Map;
 public class LayerValidator {
 
     public static Map<String, Map<String, String>> validateLocale(Map<String, Map<String, String>> locale) throws ServiceRuntimeException {
+        if (locale == null) {
+            throw new ServiceRuntimeException("Localization for layer names missing");
+        }
         String lang = PropertyUtil.getDefaultLanguage();
         Map<String, String> langLocale = locale.getOrDefault(lang, Collections.emptyMap());
         if (langLocale.get("name") == null) {
