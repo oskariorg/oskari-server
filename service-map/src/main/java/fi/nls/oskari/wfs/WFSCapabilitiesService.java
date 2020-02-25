@@ -67,12 +67,12 @@ public class WFSCapabilitiesService {
         } catch (IOException e) {
 			if (isUnauthorizedException(e)) {
 				throw new ServiceUnauthorizedException("Unauthorized response received from url: " + url + " Message: " + e.getMessage());
-			}else {
-				throw new ServiceException("Couldn't read/get wfs capabilities response from url: " + url + " Message: " + e.getMessage());
+			} else {
+				throw new ServiceException("Couldn't read/get wfs capabilities response from url: " + url + " Message: " + e.getMessage(), e);
 			}
 		} 
         catch (Exception ex) {
-            throw new ServiceException("Couldn't read/get wfs capabilities response from url: " + url + " Message: " + ex.getMessage());
+            throw new ServiceException("Couldn't read/get wfs capabilities response from url: " + url + " Message: " + ex.getMessage(), ex);
         }
     }
     
