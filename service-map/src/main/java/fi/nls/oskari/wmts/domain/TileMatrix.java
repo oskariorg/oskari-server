@@ -1,7 +1,13 @@
 package fi.nls.oskari.wmts.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @see http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd
@@ -52,16 +58,27 @@ public class TileMatrix {
         }
     }
 
+    @JsonProperty("identifier")
     public String getId() {
         return id;
     }
 
+    @JsonProperty("scaleDenominator")
     public double getScaleDenominator() {
         return scaleDenominator;
     }
 
+    @JsonIgnore
     public double[] getTopLeftCorner() {
         return topLeftCorner;
+    }
+
+    @JsonProperty("topLeftCorner")
+    public Map<String, Double> getTopLeftCornerForJackson() {
+        Map<String, Double> res = new HashMap<>(2);
+        res.put("lon", getTopLeftCorner()[0]);
+        res.put("lat", getTopLeftCorner()[1]);
+        return res;
     }
 
     public int getTileWidth() {
@@ -80,6 +97,7 @@ public class TileMatrix {
         return matrixHeight;
     }
 
+    @JsonIgnore
     public JSONObject getAsJSON() {
         /*
         {

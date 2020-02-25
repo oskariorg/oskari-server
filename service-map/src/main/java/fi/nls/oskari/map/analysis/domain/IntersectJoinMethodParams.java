@@ -7,6 +7,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
 
+import static fi.nls.oskari.analysis.AnalysisParser.SPATIAL_JOIN;
+
 public class IntersectJoinMethodParams extends AnalysisMethodParams {
 
     private final String analysisMethodTemplate = "layer-wps-intersect-join.xml";
@@ -34,6 +36,10 @@ public class IntersectJoinMethodParams extends AnalysisMethodParams {
     private String geojson2 = "";
     private String wps_reference_type2 = "";
     private String intersection_mode = "";  // SECOND intersect features (default) or SECOND_CONTAINS contains features
+
+    public IntersectJoinMethodParams() {
+        setMethod(SPATIAL_JOIN);
+    }
 
     public String getRetainfieldsA() {
         return retainfieldsA;

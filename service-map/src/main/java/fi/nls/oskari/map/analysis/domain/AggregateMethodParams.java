@@ -8,6 +8,8 @@ import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
 import java.util.List;
 
+import static fi.nls.oskari.analysis.AnalysisParser.AGGREGATE;
+
 public class AggregateMethodParams extends AnalysisMethodParams {
 
     private final String analysisMethodTemplate = "analysis-layer-wps-aggregate.xml";
@@ -16,6 +18,9 @@ public class AggregateMethodParams extends AnalysisMethodParams {
     private final String bboxAggreFilterTemplate = "<ogc:Filter><ogc:And><ogc:BBOX><ogc:PropertyName>{geom}</ogc:PropertyName><gml:Envelope srsDimension=\"2\" srsName=\"{srsName}\"><gml:lowerCorner>{x_lower} {y_lower}</gml:lowerCorner><gml:upperCorner>{x_upper} {y_upper}</gml:upperCorner></gml:Envelope></ogc:BBOX></ogc:And></ogc:Filter>";
     private final String functionsTemplate = "<wps:Input><ows:Identifier>function</ows:Identifier><wps:Data><wps:LiteralData>{functions}</wps:LiteralData></wps:Data></wps:Input>";
 
+    public AggregateMethodParams() {
+        setMethod(AGGREGATE);
+    }
     // xml template paths {}
     private final String AGGREFIELD1 = "{aggreField1}";
 
@@ -76,6 +81,7 @@ public class AggregateMethodParams extends AnalysisMethodParams {
         doctemp = doctemp.replace(OUTPUTFORMAT, this.getOutputFormat());
         doctemp = doctemp.replace(VERSION, this.getVersion());
         doctemp = doctemp.replace(SRSNAME, this.getSrsName());
+        // FIXME: this is always "" as looks like this isn't needed and might actually break things if added
         doctemp = doctemp.replace(XMLNS, this.getXmlns());
         doctemp = doctemp.replace(TYPENAME, this.getTypeName());
         doctemp = doctemp.replace(AGGREFUNCTIONS, this.buildAggreFunctions());

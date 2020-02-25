@@ -1,7 +1,9 @@
 package flyway.myplaces;
 
 import fi.nls.oskari.db.DatasourceHelper;
+import fi.nls.oskari.geoserver.GeoserverPopulator;
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
+import org.json.JSONObject;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -17,24 +19,11 @@ public class V1_0_8__update_property_fields implements JdbcMigration {
             ds = DatasourceHelper.getInstance().createDataSource();
         }
         Connection conn = ds.getConnection();
-        final String sql = "update portti_wfs_layer\n" +
-                "set\n" +
-                "selected_feature_params =\n" +
-                "'{\n" +
-                "  \"default\": [\"name\", \"place_desc\",\"link\", \"image_url\", \"attention_text\"],\n" +
-                "  \"fi\": [\"name\", \"place_desc\", \"link\", \"image_url\", \"attention_text\"],\n" +
-                "  \"sv\": [\"name\", \"place_desc\", \"link\", \"image_url\", \"attention_text\"],\n" +
-                "  \"en\": [\"name\", \"place_desc\", \"link\", \"image_url\", \"attention_text\"]\n" +
-                "}',\n" +
-                "feature_params_locales =\n" +
-                "'{\n" +
-                "  \"fi\": [\"Nimi\", \"Kuvaus\", \"Linkki\", \"Kuvalinkki\", \"Teksti kartalla\"],\n" +
-                "  \"sv\": [\"Namn\", \"Beskrivelse\", \"Webbaddress\", \"URL-address\", \"Bild-URL\", \"Text på kartan\"],\n" +
-                "  \"en\": [\"Name\", \"Description\", \"URL\", \"Image URL\", \"Text on map\"]\n" +
-                "}'\n" +
-                "where layer_name = 'oskari:my_places';\n";
+        JSONObject attributes = GeoserverPopulator.addMyplacesAttributes(GeoserverPopulator.createUserContentAttributes());
+        final String sql = "update oskari_maplayer set attributes =? where name = 'oskari:my_places';";
 
         try (final PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setString(1, attributes.toString());
             statement.execute();
         }
     }

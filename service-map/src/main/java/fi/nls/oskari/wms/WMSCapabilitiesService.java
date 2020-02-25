@@ -7,6 +7,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
+import fi.nls.oskari.service.capabilities.CapabilitiesConstants;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilitiesHelper;
 
@@ -21,6 +22,9 @@ import org.geotools.xml.DocumentFactory;
 import org.geotools.xml.handlers.DocumentHandler;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.oskari.maplayer.admin.LayerAdminJSONHelper;
+import org.oskari.maplayer.model.MapLayerStructure;
+import org.oskari.maplayer.model.ServiceCapabilitiesResultWMS;
 import org.oskari.service.util.ServiceFactory;
 
 import java.io.ByteArrayInputStream;
@@ -49,10 +53,10 @@ public class WMSCapabilitiesService {
 
         return wms;
     }
-    public Map<String, Object> getCapabilitiesResults (final String url, final String version, final String user, final String pwd,
-                                                              final Set<String> systemCRSs) throws ServiceException {
+    public ServiceCapabilitiesResultWMS getCapabilitiesResults (final String url, final String version, final String user, final String pwd,
+                                                                final Set<String> systemCRSs) throws ServiceException {
         try {
-            final Map<String, Object> result = new HashMap<>();
+
             final OskariLayerCapabilities capabilities = capabilitiesService.getCapabilities(url, OskariLayer.TYPE_WMS, version, user, pwd);
             final String xml = capabilities.getData();
             WMSCapabilities caps = createCapabilities(xml);
@@ -64,15 +68,21 @@ public class WMSCapabilitiesService {
                     .map(layer -> layerToOskariLayer(layer, url, version, user, pwd, metadataUrl, xml, systemCRSs))
                     .collect(Collectors.toList());
             Layer capabilitiesLayer = caps.getLayer();
-            result.put(KEY_TITLE, capabilitiesLayer.getTitle());
-            result.put(KEY_VERSION, caps.getVersion());
-            result.put(KEY_LAYERS, layers);
-            result.put(KEY_WMS_STRUCTURE, parseStructureJson(capabilitiesLayer));
+
+            ServiceCapabilitiesResultWMS results = new ServiceCapabilitiesResultWMS();
+            results.setTitle(capabilitiesLayer.getTitle());
+            results.setVersion(caps.getVersion());
+            results.setLayers(layers.stream()
+                    .map(l -> LayerAdminJSONHelper.toJSON(l))
+                    .collect(Collectors.toList()));
+
+            // capabilitiesResult.setLayersWithErrors((List<String>) capabilities.get(CapabilitiesConstants.KEY_ERROR_LAYERS));
+            results.setStructure(parseStructureJson(capabilitiesLayer));
 
             if (capabilities.getId() == null) {
                 capabilitiesService.save(capabilities);
             }
-            return result;
+            return results;
         } catch (Exception ex) {
             throw new ServiceException("Couldn't read/get wms capabilities response from url: " + url, ex);
         }
@@ -83,28 +93,38 @@ public class WMSCapabilitiesService {
         return layerName != null && !layerName.isEmpty();
     }
 
-    private static JSONArray parseStructureJson (Layer layer) {
-        JSONArray layers = new JSONArray();
+    private static List<MapLayerStructure> parseStructureJson (Layer layer) {
+        List<MapLayerStructure> layers = new ArrayList<>();
         List<Layer> sublayers = layer.getLayerChildren();
         boolean isLayer = isActualLayer(layer);
-        if (sublayers != null && !sublayers.isEmpty()) {
-            if (isLayer) { // group layer
-                JSONObject groupLayer = new JSONObject();
-                JSONHelper.putValue(groupLayer, KEY_LAYER_NAME, layer.getName());
-                JSONArray childs = new JSONArray();
-                for (Layer sublayer : sublayers ) {
-                    JSONHelper.putAll(childs, parseStructureJson(sublayer));
-                }
-                JSONHelper.putValue(groupLayer, KEY_WMS_STRUCTURE, childs);
-                layers.put(groupLayer);
-            } else {
-                for (Layer sublayer : sublayers ) {
-                    JSONHelper.putAll(layers, parseStructureJson(sublayer));
-                }
+        if (sublayers == null || sublayers.isEmpty()) {
+            if (!isLayer) {
+                // no sublayers AND not an actual layer
+                return layers;
             }
-        } else if(isLayer) {
-            layers.put(layer.getName());
+            // no sublayers: just return this layer
+            MapLayerStructure cap = new MapLayerStructure();
+            cap.setName(layer.getName());
+            layers.add(cap);
+            return layers;
         }
+        // has sublayers
+        if (!isLayer) {
+            // just sublayers: skip the acu
+            for (Layer sublayer : sublayers ) {
+                layers.addAll(parseStructureJson(sublayer));
+            }
+            return layers;
+        }
+        // group layer
+        MapLayerStructure cap = new MapLayerStructure();
+        cap.setName(layer.getName());
+        List<MapLayerStructure> sublayerOutput = new ArrayList<>();
+        for (Layer sublayer : sublayers ) {
+            sublayerOutput.addAll(parseStructureJson(sublayer));
+        }
+        cap.setStructure(sublayerOutput);
+        layers.add(cap);
         return layers;
     }
     public static OskariLayer layerToOskariLayer(Layer capabilitiesLayer, String url, String version, String user, String pw,

@@ -15,6 +15,7 @@ import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -85,16 +86,21 @@ public class AnalysisDataService {
                     analysis.getId(), fields, analysislayer.getFieldtypeMap(), geometryProperty, params.getResponsePrefix());
             log.debug("Produced WFS-T:\n" + wfst);
 
-            final String response = IOHelper.httpRequestAction(wfsURL, wfst,
-                    wpsUser, wpsUserPass, null, null, "application/xml");
+            final HttpURLConnection conn = IOHelper.getConnection(wfsURL, wpsUser, wpsUserPass);
+            IOHelper.post(conn, "application/xml", wfst);
+            final String response = IOHelper.readString(conn.getInputStream());
             log.debug("Posted WFS-T, got", response);
 
             // If exceptions, return null
             // Check, if exception result set
-            if (response.indexOf("ows:Exception") > -1) return null;
+            if (response.indexOf("ows:Exception") > -1) {
+                return null;
+            }
 
             // Check, if any inserted data
-            if (response.indexOf("totalInserted>0") > -1) return null;
+            if (response.indexOf("totalInserted>0") > -1) {
+                return null;
+            }
 
             // Set fields and field order, if fields are known before analysis
 

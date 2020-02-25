@@ -12,7 +12,8 @@ import fi.nls.oskari.control.RestActionHandler;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.Feature;
 import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
+import fi.nls.oskari.domain.map.wfs.WFSLayerAttributes;
+import fi.nls.oskari.domain.map.wfs.WFSLayerCapabilities;
 
 import fi.nls.oskari.map.geometry.ProjectionHelper;
 
@@ -21,7 +22,7 @@ import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.wfs.WFSLayerConfigurationService;
+import fi.nls.oskari.util.PropertyUtil;
 import org.geotools.referencing.CRS;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,7 +48,7 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
 
     private OskariLayerService layerService;
     private PermissionService permissionsService;
-    private WFSLayerConfigurationService layerConfigurationService;
+
     private static final Set<String> ALLOWED_GEOM_TYPES = ConversionHelper.asSet("multipoint",
             "multilinestring", "multipolygon");
     private GeometryFactory gf = new GeometryFactory();
@@ -57,15 +58,10 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
         super.init();
         layerService = ServiceFactory.getMapLayerService();
         permissionsService = OskariComponentManager.getComponentOfType(PermissionService.class);
-        layerConfigurationService = ServiceFactory.getWfsLayerService();
     }
 
     protected OskariLayer getLayer(String id) throws ActionParamsException {
         return layerService.find(getLayerId(id));
-    }
-
-    protected WFSLayerConfiguration getWFSConfiguration(int id) throws ActionParamsException {
-        return layerConfigurationService.findConfiguration(id);
     }
 
     protected boolean canEdit(OskariLayer layer, User user) {
@@ -104,16 +100,18 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
     }
 
     protected Feature getFeature(JSONObject jsonObject) throws ActionParamsException, JSONException, FactoryException {
+        boolean flipFeature = PropertyUtil.getOptional("actionhandler.AbstractFeatureHandler.forceXY", false);
         Feature feature = new Feature();
         OskariLayer layer = getLayer(jsonObject.optString("layerId"));
         String srsName = JSONHelper.getStringFromJSON(jsonObject, "srsName", "EPSG:3067");
         CoordinateReferenceSystem crs = CRS.decode(srsName);
-        WFSLayerConfiguration lc = getWFSConfiguration(layer.getId());
+        WFSLayerAttributes attrs = new WFSLayerAttributes(layer.getAttributes());
+        WFSLayerCapabilities caps = new WFSLayerCapabilities(layer.getCapabilities());
 
         feature.setLayerName(layer.getName());
-        feature.setNamespace(lc.getFeatureNamespace());
-        feature.setNamespaceURI(lc.getFeatureNamespaceURI());
-        feature.setGMLGeometryProperty(lc.getGMLGeometryProperty());
+        feature.setNamespace("oskari");
+        feature.setNamespaceURI(attrs.getNamespaceURL());
+        feature.setGMLGeometryProperty(caps.getGeometryAttribute());
         feature.setId(jsonObject.getString("featureId"));
 
         if(jsonObject.has("featureFields")) {
@@ -132,7 +130,8 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
             }
             JSONArray data = geometries.getJSONArray("data");
             Geometry geometry = getGeometry(geometryType, data, getSrid(srsName, 3067));
-            if(ProjectionHelper.isFirstAxisNorth(crs)) {
+
+            if(ProjectionHelper.isFirstAxisNorth(crs) || flipFeature) {
                 // reverse xy
                 ProjectionHelper.flipFeatureYX(geometry);
             }

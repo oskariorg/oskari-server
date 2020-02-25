@@ -5,6 +5,7 @@ import fi.nls.oskari.log.Logger;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
+import org.oskari.util.HtmlHelper;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URL;
@@ -14,6 +15,8 @@ import java.util.Map;
 
 /**
  * Convenience methods for handling http requests.
+ *
+ * Passthrough calls to HtmlHelper for backwards compatibility.
  */
 public class RequestHelper {
 
@@ -25,63 +28,16 @@ public class RequestHelper {
      * @return cleaned up version or null if param was null
      */
     public static final String cleanString(final String str) {
-        if (str != null) {
-            String s = Jsoup.clean(str, Whitelist.none());
-            return StringEscapeUtils.unescapeHtml(s);
-        }
-        return str;
+        return HtmlHelper.cleanString(str);
     }
 
     public static final String cleanHTMLString(final String str, final String[] tags,
             HashMap<String, String[]> attributes, HashMap<String[],String[]> protocols) {
-
-        if (str != null) {
-            Whitelist whitelist = Whitelist.relaxed();
-
-            // Tags
-            whitelist.addTags(tags);
-
-            // Attributes
-            for (Map.Entry<String, String[]> attribute : attributes.entrySet()) {
-                whitelist.addAttributes(attribute.getKey(),attribute.getValue());
-            }
-
-            // Protocols
-            for (Map.Entry<String[], String[]> protocol : protocols.entrySet()) {
-                String[] key = protocol.getKey();
-                if ((key == null)||(key.length < 2)) {
-                    continue;
-                }
-                whitelist.addProtocols(key[0],key[1],protocol.getValue());
-            }
-            String s = Jsoup.clean(str, whitelist);
-            return StringEscapeUtils.unescapeHtml(s);
-        }
-        return str;
+        return HtmlHelper.cleanHTMLString(str, tags, attributes, protocols);
     }
 
     public static final String cleanHTMLString(final String str) {
-        if (str != null) {
-            Whitelist whitelist = Whitelist.relaxed();
-            whitelist.addTags(
-                    "button",
-                    "datalist",
-                    "fieldset",
-                    "form",
-                    "input",
-                    "keygen",
-                    "label",
-                    "legend",
-                    "option",
-                    "optgroup",
-                    "output",
-                    "select",
-                    "textarea"
-            );
-            String s = Jsoup.clean(str, whitelist);
-            return StringEscapeUtils.unescapeHtml(s);
-        }
-        return str;
+        return HtmlHelper.cleanHTMLString(str);
     }
 
     /**
@@ -92,11 +48,7 @@ public class RequestHelper {
      * @return
      */
     public static final String getString(final String str, final String defaultValue) {
-        final String value = cleanString(str);
-        if (value != null) {
-            return value;
-        }
-        return defaultValue;
+        return HtmlHelper.getString(str, defaultValue);
     }
 
     /**

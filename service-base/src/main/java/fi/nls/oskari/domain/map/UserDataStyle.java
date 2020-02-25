@@ -88,16 +88,15 @@ public class UserDataStyle {
 
             // stroke.area
             JSONObject strokeArea = stroke.getJSONObject("area");
-            setBorder_color(strokeArea.optString("color", null));
+            setBorder_color(JSONHelper.optString(strokeArea, "color", null));
             setBorder_width(strokeArea.optInt("width"));
             setBorder_linejoin(strokeArea.optString("lineJoin"));
             setBorder_dasharray(dashToUserDataStyle(json.getJSONObject("stroke").getJSONObject("area").optString("lineDash")));
 
             // fill
             JSONObject fill = json.getJSONObject("fill");
-            setFill_color(fill.optString("color", null));
+            setFill_color(JSONHelper.optString(fill, "color", null));
             setFill_pattern(fill.getJSONObject("area").optInt("pattern", -1));
-
             // text
             JSONObject text = json.getJSONObject("text");
             if (text != null) {

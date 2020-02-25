@@ -1,5 +1,7 @@
 package fi.nls.oskari.wmts.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import fi.nls.oskari.util.JSONHelper;
 import java.util.List;
 import java.util.Map;
@@ -39,18 +41,22 @@ public class TileMatrixSet {
         }
     }
 
+    @JsonProperty("identifier")
     public String getId() {
         return id;
     }
 
+    @JsonProperty("projection")
     public String getCrs() {
         return crs;
     }
 
+    @JsonProperty("matrixIds")
     public Map<String, TileMatrix> getTileMatrixMap() {
         return tileMatrixMap;
     }
 
+    @JsonIgnore
     public JSONObject getAsJSON() {
         final JSONObject obj = new JSONObject();
         JSONHelper.putValue(obj, "identifier", getId());

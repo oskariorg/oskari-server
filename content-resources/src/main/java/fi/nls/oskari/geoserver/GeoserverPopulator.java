@@ -9,17 +9,20 @@ import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
 import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.OskariRuntimeException;
 import fi.nls.oskari.util.PropertyUtil;
-import fi.nls.oskari.wfs.WFSLayerConfigurationService;
-import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
 import org.geotools.referencing.CRS;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.opengis.geometry.Envelope;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by SMAKINEN on 1.9.2015.
@@ -28,8 +31,6 @@ public class GeoserverPopulator {
 
     public static final String NAMESPACE = "oskari";
     private static final Logger LOG = LogFactory.getLogger(GeoserverPopulator.class);
-
-    private static final WFSLayerConfigurationService WFS_SERVICE = new WFSLayerConfigurationServiceIbatisImpl();
 
     public static final String KEY_URL = "url";
     public static final String KEY_USER = "user";
@@ -119,6 +120,7 @@ public class GeoserverPopulator {
             baseLayer.setInternal(true);
             baseLayer.setLocale(JSONHelper.createJSONObject("{ fi:{name:\"Omat paikat\"},sv:{name:\"My places\"},en:{name:\"My places\"}}"));
             baseLayer.setOpacity(50);
+            baseLayer.setAttributes(addMyplacesAttributes(createUserContentAttributes()));
         }
         // setup data producer/layergroup since original doesn't have one
         baseLayer.addDataprovider(LayerHelper.getDataprovider());
@@ -131,13 +133,43 @@ public class GeoserverPopulator {
         // insert
         LayerHelper.insert(baseLayer);
 
-        // setup WFS conf with defaults
-        WFSLayerConfiguration conf = LayerHelper.getConfig(baseLayer, NAMESPACE);
-        conf.setFeatureElement("my_places");
-        conf.setSelectedFeatureParams("{\"default\": [\"name\", \"place_desc\",\"link\", \"image_url\"],\"fi\": [\"name\", \"place_desc\",\"link\", \"image_url\"]}");
-        conf.setFeatureParamsLocales("{\"default\": [\"name\", \"description\",\"link\", \"image\"],\"fi\": [\"nimi\", \"kuvaus\",\"linkki\", \"kuva-linkki\"]}");
-        WFS_SERVICE.insert(conf);
         return baseLayer.getId();
+    }
+
+    public static JSONObject createUserContentAttributes() {
+        JSONObject attributes = new JSONObject();
+        JSONHelper.putValue(attributes, "maxFeatures", 2000);
+        JSONHelper.putValue(attributes, "namespaceURL", "http://www.oskari.org");
+        return attributes;
+    }
+
+    public static JSONObject addMyplacesAttributes(JSONObject attributes) {
+        JSONObject data = new JSONObject();
+        JSONHelper.putValue(attributes, "data", data);
+
+        JSONObject filter = new JSONObject();
+        JSONHelper.putValue(data, "filter", filter);
+        Set<String> fields = ConversionHelper.asSet("name", "place_desc", "link", "image_url");
+        JSONHelper.putValue(filter, "default", new JSONArray(fields));
+        JSONHelper.putValue(filter, "fi", new JSONArray(fields));
+
+        JSONObject locale = new JSONObject();
+        JSONHelper.putValue(data, "locale", locale);
+        JSONObject en = new JSONObject();
+        JSONHelper.putValue(locale, "en", en);
+        JSONHelper.putValue(en, "name", "name");
+        JSONHelper.putValue(en, "place_desc", "description");
+        JSONHelper.putValue(en, "link", "link");
+        JSONHelper.putValue(en, "image_url", "image");
+
+        JSONObject fi = new JSONObject();
+        JSONHelper.putValue(locale, "fi", fi);
+        JSONHelper.putValue(fi, "name", "nimi");
+        JSONHelper.putValue(fi, "place_desc", "kuvaus");
+        JSONHelper.putValue(fi, "link", "linkki");
+        JSONHelper.putValue(fi, "image_url", "kuva-linkki");
+
+        return attributes;
     }
 
     public static int setupAnalysisLayer(final String srs) {
@@ -152,6 +184,7 @@ public class GeoserverPopulator {
             baseLayer.setInternal(true);
             baseLayer.setLocale(JSONHelper.createJSONObject("{ fi:{name:\"Analyysitaso\"},sv:{name:\"Analys\"},en:{name:\"Analyse\"}}"));
             baseLayer.setOpacity(50);
+            baseLayer.setAttributes(createUserContentAttributes());
         }
         // setup data producer/layergroup since original doesn't have one
         baseLayer.addDataprovider(LayerHelper.getDataprovider());
@@ -164,11 +197,6 @@ public class GeoserverPopulator {
         // insert
         LayerHelper.insert(baseLayer);
 
-        // setup WFS conf with defaults
-        WFSLayerConfiguration conf = LayerHelper.getConfig(baseLayer, NAMESPACE);
-        conf.setFeatureParamsLocales("{}");
-        conf.setFeatureElement("analysis_data");
-        WFS_SERVICE.insert(conf);
         return baseLayer.getId();
     }
 
@@ -184,6 +212,7 @@ public class GeoserverPopulator {
             baseLayer.setInternal(true);
             baseLayer.setLocale(JSONHelper.createJSONObject("{ fi:{name:\"Omat aineistot\"},sv:{name:\"User layers\"},en:{name:\"User layers\"}}"));
             baseLayer.setOpacity(80);
+            baseLayer.setAttributes(createUserContentAttributes());
         }
         // setup data producer/layergroup since original doesn't have one
         baseLayer.addDataprovider(LayerHelper.getDataprovider());
@@ -196,11 +225,6 @@ public class GeoserverPopulator {
         // insert
         LayerHelper.insert(baseLayer);
 
-        // setup WFS conf with defaults
-        WFSLayerConfiguration conf = LayerHelper.getConfig(baseLayer, NAMESPACE);
-        conf.setFeatureParamsLocales("{}");
-        conf.setFeatureElement("vuser_layer_data");
-        WFS_SERVICE.insert(conf);
         return baseLayer.getId();
     }
 

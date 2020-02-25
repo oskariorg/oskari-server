@@ -68,7 +68,6 @@
 
         <staxon.version>1.2</staxon.version>
         <lambdaj.version>2.3.3</lambdaj.version>
-        <kevinsawicki.http-request.version>4.0</kevinsawicki.http-request.version>
         <jsoup.version>1.12.1</jsoup.version>
         <ibatis.version>2.3.4.726</ibatis.version>
         <axiom.version>1.2.20</axiom.version>
@@ -456,7 +455,13 @@
                 <artifactId>service-wfs3</artifactId>
                 <version>${fi.nls.oskari.version}</version>
             </dependency>
-            
+
+            <dependency>
+                <groupId>org.oskari</groupId>
+                <artifactId>service-admin</artifactId>
+                <version>${fi.nls.oskari.version}</version>
+            </dependency>
+
             <!-- Spring -->
             <dependency>
                 <groupId>org.springframework.security.extensions</groupId>
@@ -710,11 +715,6 @@
                 <groupId>com.googlecode.lambdaj</groupId>
                 <artifactId>lambdaj</artifactId>
                 <version>${lambdaj.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.kevinsawicki</groupId>
-                <artifactId>http-request</artifactId>
-                <version>${kevinsawicki.http-request.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.jsoup</groupId>
@@ -1270,6 +1270,7 @@
         <module>service-map</module>
         <module>service-myplaces</module>
         <module>service-rating</module>
+        <module>service-admin</module>
         <module>service-capabilities-update</module>
 
         <module>service-search</module>
@@ -1304,12 +1305,6 @@
 
         <!-- oskari map -->
         <module>servlet-map</module>
-
-        <!-- transport  -->
-        <module>service-datamodel</module>
-        <module>geoserver-ext/OskariMarkFactory</module>
-        <module>service-feature-engine</module>
-        <module>servlet-transport</module>
 
         <!-- setup -->
         <module>webapp-setup</module>

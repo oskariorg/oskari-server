@@ -71,6 +71,7 @@ public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTe
         try {
             properties.load(GetAppSetupHandlerRolesFromPropertiesTest.class.getResourceAsStream("test.properties"));
             PropertyUtil.addProperties(properties);
+            PropertyUtil.addProperty("oskari.user.service", "fi.nls.oskari.service.DummyUserService", true);
             PropertyUtil.getNecessary("oskari.locales");
         } catch (DuplicateException e) {
             fail("Should not throw exception" + e.getStackTrace());
@@ -85,8 +86,6 @@ public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTe
         mockViewService();
         mockBundleService();
         mockInternalServices();
-
-
 
         handler.setViewService(viewService);
         handler.setBundleService(bundleService);
@@ -119,7 +118,7 @@ public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTe
         params.getUser().addRole(r);
         handler.handleAction(params);
 
-        verifyResponseContent(ResourceHelper.readJSONResource("GetAppSetupHandlerTest-view-roles-from-properties.json", this))  ;
+        verifyResponseContent(ResourceHelper.readJSONResource("GetAppSetupHandlerTest-view-roles-from-properties.json", this));
     }
 
 
