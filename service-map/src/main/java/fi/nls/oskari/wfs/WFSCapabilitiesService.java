@@ -66,7 +66,11 @@ public class WFSCapabilitiesService {
             //IllegalStateException: Unable to parse GetCapabilities document
         } catch (IOException e) {
 			if (isUnauthorizedException(e)) {
-				throw new ServiceUnauthorizedException("Unauthorized response received from url: " + url + " Message: " + e.getMessage());
+                // Don't attach IOException as it is detected as root cause and wrong error is sent to user
+                throw new ServiceUnauthorizedException("Unauthorized response received from url: " + url + " Message: " + e.getMessage());
+            } else if (isParseException(e)) {
+			    // Don't attach IOException as it is detected as root cause and wrong error is sent to user
+                throw new ServiceException("Error parsing response from url: " + url + " Message: " + e.getMessage());
 			} else {
 				throw new ServiceException("Couldn't read/get wfs capabilities response from url: " + url + " Message: " + e.getMessage(), e);
 			}
@@ -80,6 +84,10 @@ public class WFSCapabilitiesService {
     	return e.getMessage() != null && (
     			e.getMessage().contains("Server returned HTTP response code: 401") ||
     				e.getMessage().contains("Server returned HTTP response code: 403"))	;
+    }
+
+    private static boolean isParseException(IOException e) {
+        return e.getMessage() != null && e.getMessage().contains("Error parsing capabilities document");
     }
 
     private static String getUrl(String url, String version) throws ServiceException {
