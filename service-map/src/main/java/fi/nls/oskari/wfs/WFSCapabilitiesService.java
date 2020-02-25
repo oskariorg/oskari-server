@@ -1,5 +1,6 @@
 package fi.nls.oskari.wfs;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -103,6 +104,9 @@ public class WFSCapabilitiesService {
                 return getCapabilitiesWFS3( url, user, pw, systemCRSs);
             }
             return getCapabilitiesWFS( url, version, user, pw, systemCRSs);
+        } catch (JsonParseException e) {
+            // Don't attach JsonParseException as its an IOException which is detected as root cause and wrong error is sent to user
+            throw new ServiceException("Error parsing response from url: " + url + " Message: " + e.getMessage());
         } catch (Exception e) {
             throw new ServiceException ("Failed to get capabilities version: " + version + " from url: " + url, e);
         }
@@ -160,6 +164,7 @@ public class WFSCapabilitiesService {
         // Do we need to parse title from WFS3Content.links
         return result;
     }
+
     private static OskariLayer toOskariLayer(String layerName, String title, String version,
                                              String url, String user, String pw) {
         final OskariLayer ml = new OskariLayer();
