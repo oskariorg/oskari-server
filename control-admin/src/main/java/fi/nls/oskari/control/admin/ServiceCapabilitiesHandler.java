@@ -16,7 +16,10 @@ import org.oskari.maplayer.admin.LayerValidator;
 import org.oskari.maplayer.model.ServiceCapabilitiesResult;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.stream.XMLStreamException;
+import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 
 @OskariActionRoute("ServiceCapabilities")
@@ -62,8 +65,15 @@ public class ServiceCapabilitiesHandler extends AbstractLayerAdminHandler {
             params.getResponse().setContentType("application/json;charset=UTF-8");
             ResponseHelper.writeResponse(params, output);
         } catch (Exception e) {
-            if (isServiceUnauthrorizedException(e)) {
+            Throwable rootcause = getRootCause(e);
+            if (rootcause instanceof ServiceUnauthorizedException) {
                 ResponseHelper.writeError(params, e.getMessage(), HttpServletResponse.SC_UNAUTHORIZED);
+            } else if (rootcause instanceof SocketTimeoutException) {
+                ResponseHelper.writeError(params, e.getMessage(), HttpServletResponse.SC_REQUEST_TIMEOUT);
+            } else if (rootcause instanceof IOException) {
+                ResponseHelper.writeError(params, e.getMessage(), HttpServletResponse.SC_BAD_REQUEST);
+            } else if (rootcause instanceof XMLStreamException || rootcause instanceof ServiceException) {
+                ResponseHelper.writeError(params, e.getMessage(), HttpServletResponse.SC_EXPECTATION_FAILED);
             } else {
                 ResponseHelper.writeError(params, e.getMessage());
             }
@@ -82,6 +92,7 @@ public class ServiceCapabilitiesHandler extends AbstractLayerAdminHandler {
 
     private boolean isServiceUnauthrorizedException(Throwable t) {
         return getRootCause(t) instanceof ServiceUnauthorizedException;
+
     }
 
     private Throwable getRootCause(Throwable e) {

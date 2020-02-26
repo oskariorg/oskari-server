@@ -1,5 +1,6 @@
 package fi.nls.oskari.wfs;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -66,13 +67,17 @@ public class WFSCapabilitiesService {
             //IllegalStateException: Unable to parse GetCapabilities document
         } catch (IOException e) {
 			if (isUnauthorizedException(e)) {
-				throw new ServiceUnauthorizedException("Unauthorized response received from url: " + url + " Message: " + e.getMessage());
-			}else {
-				throw new ServiceException("Couldn't read/get wfs capabilities response from url: " + url + " Message: " + e.getMessage());
+                // Don't attach IOException as it is detected as root cause and wrong error is sent to user
+                throw new ServiceUnauthorizedException("Unauthorized response received from url: " + url + " Message: " + e.getMessage());
+            } else if (isParseException(e)) {
+			    // Don't attach IOException as it is detected as root cause and wrong error is sent to user
+                throw new ServiceException("Error parsing response from url: " + url + " Message: " + e.getMessage());
+			} else {
+				throw new ServiceException("Couldn't read/get wfs capabilities response from url: " + url + " Message: " + e.getMessage(), e);
 			}
 		} 
         catch (Exception ex) {
-            throw new ServiceException("Couldn't read/get wfs capabilities response from url: " + url + " Message: " + ex.getMessage());
+            throw new ServiceException("Couldn't read/get wfs capabilities response from url: " + url + " Message: " + ex.getMessage(), ex);
         }
     }
     
@@ -80,6 +85,10 @@ public class WFSCapabilitiesService {
     	return e.getMessage() != null && (
     			e.getMessage().contains("Server returned HTTP response code: 401") ||
     				e.getMessage().contains("Server returned HTTP response code: 403"))	;
+    }
+
+    private static boolean isParseException(IOException e) {
+        return e.getMessage() != null && e.getMessage().contains("Error parsing capabilities document");
     }
 
     private static String getUrl(String url, String version) throws ServiceException {
@@ -95,6 +104,9 @@ public class WFSCapabilitiesService {
                 return getCapabilitiesWFS3( url, user, pw, systemCRSs);
             }
             return getCapabilitiesWFS( url, version, user, pw, systemCRSs);
+        } catch (JsonParseException e) {
+            // Don't attach JsonParseException as its an IOException which is detected as root cause and wrong error is sent to user
+            throw new ServiceException("Error parsing response from url: " + url + " Message: " + e.getMessage());
         } catch (Exception e) {
             throw new ServiceException ("Failed to get capabilities version: " + version + " from url: " + url, e);
         }
@@ -152,6 +164,7 @@ public class WFSCapabilitiesService {
         // Do we need to parse title from WFS3Content.links
         return result;
     }
+
     private static OskariLayer toOskariLayer(String layerName, String title, String version,
                                              String url, String user, String pw) {
         final OskariLayer ml = new OskariLayer();
