@@ -102,7 +102,8 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
                 throw new ServiceUnauthorizedException("Wrong credentials for service");
             }
             if (sc != HttpURLConnection.HTTP_OK) {
-                throw new ServiceException("Unexpected Status code: " + sc);
+                String msg = "Unexpected status code: " + sc  + " from: " + request;
+                throw new ServiceException(msg, new IOException(msg));
             }
 
             String contentType = conn.getContentType();
