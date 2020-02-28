@@ -52,9 +52,9 @@ public class GetWFSDescribeFeatureHandler extends ActionHandler {
         } else if (layer_id.indexOf(ANALYSIS_PREFIX) > -1) {
             // Set analysis layer field types
             ResponseHelper.writeResponse(params, WFSDescribeFeatureHelper.getAnalysisFeaturePropertyTypes(layer_id));
+        } else {
+            ResponseHelper.writeResponse(params, new JSONObject());
         }
-
-        ResponseHelper.writeResponse(params, new JSONObject());
     }
 
     private JSONObject getResponse(int id, boolean simpleType) throws ActionException {
