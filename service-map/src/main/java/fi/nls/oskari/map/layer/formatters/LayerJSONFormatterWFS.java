@@ -22,7 +22,6 @@ import org.opengis.feature.type.GeometryDescriptor;
 import org.oskari.service.wfs3.WFS3Service;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.*;
@@ -36,7 +35,6 @@ import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.*;
 public class LayerJSONFormatterWFS extends LayerJSONFormatter {
 
     private static final String KEY_WPS_PARAMS = "wps_params";
-    private static final String KEY_WMS_LAYER_ID = "WMSLayerId";
 
     private static Logger log = LogFactory.getLogger(LayerJSONFormatterWFS.class);
 
@@ -123,7 +121,7 @@ public class LayerJSONFormatterWFS extends LayerJSONFormatter {
                 bbox = bbox.transform(WKTHelper.CRS_EPSG_4326, true);
                 boolean coversWholeWorld = bbox.getMinX() <= -180 && bbox.getMinY() <= -90 && bbox.getMaxX() >= 180 && bbox.getMaxY() >= 90;
                 if (!coversWholeWorld) {
-                    // no need to attach coverage as it covers the whole world
+                    // no need to attach coverage if it covers the whole world as it's not useful info
                     String wkt = WKTHelper.getBBOX(bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY());
                     JSONHelper.putValue(json,KEY_LAYER_COVERAGE, wkt);
                 }
