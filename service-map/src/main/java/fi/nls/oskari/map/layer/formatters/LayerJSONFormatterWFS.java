@@ -22,7 +22,6 @@ import org.opengis.feature.type.GeometryDescriptor;
 import org.oskari.service.wfs3.WFS3Service;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.*;
@@ -36,7 +35,6 @@ import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.*;
 public class LayerJSONFormatterWFS extends LayerJSONFormatter {
 
     private static final String KEY_WPS_PARAMS = "wps_params";
-    private static final String KEY_WMS_LAYER_ID = "WMSLayerId";
 
     private static Logger log = LogFactory.getLogger(LayerJSONFormatterWFS.class);
 
@@ -64,7 +62,7 @@ public class LayerJSONFormatterWFS extends LayerJSONFormatter {
     /**
      * Constructs a style json
      *
-     * @param  wfsConf wfs layer configuration
+     * @param  options wfs layer configuration
      */
     private JSONArray getStyles(JSONObject options) {
 
@@ -76,7 +74,7 @@ public class LayerJSONFormatterWFS extends LayerJSONFormatter {
     /**
      * Constructs wps params json
      *
-     * @param  wfsConf wfs layer configuration
+     * @param  wpsParams wfs layer configuration
      */
     private JSONObject getWpsParams(String wpsParams) {
 
@@ -121,8 +119,12 @@ public class LayerJSONFormatterWFS extends LayerJSONFormatter {
             ReferencedEnvelope bbox = info.getBounds();
             if (bbox != null) {
                 bbox = bbox.transform(WKTHelper.CRS_EPSG_4326, true);
-                String wkt = WKTHelper.getBBOX(bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY());
-                JSONHelper.putValue(json,KEY_LAYER_COVERAGE, wkt);
+                boolean coversWholeWorld = bbox.getMinX() <= -180 && bbox.getMinY() <= -90 && bbox.getMaxX() >= 180 && bbox.getMaxY() >= 90;
+                if (!coversWholeWorld) {
+                    // no need to attach coverage if it covers the whole world as it's not useful info
+                    String wkt = WKTHelper.getBBOX(bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY());
+                    JSONHelper.putValue(json,KEY_LAYER_COVERAGE, wkt);
+                }
             }
             Set<String> keywords = info.getKeywords();
             JSONHelper.putValue(json, KEY_KEYWORDS, new JSONArray(keywords));
