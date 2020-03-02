@@ -11,6 +11,8 @@ import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
+import fi.nls.oskari.cache.Cache;
+import fi.nls.oskari.cache.CacheManager;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
@@ -39,6 +41,7 @@ public class OskariLayerServiceMybatisImpl extends OskariLayerService {
 
     private static DataProviderService dataProviderService = ServiceFactory.getDataProviderService();
     private static OskariLayerGroupLinkService linkService = ServiceFactory.getOskariLayerGroupLinkService();
+    private final Cache<OskariLayer> layerCache = CacheManager.getCache(OskariLayerService.class.getName());
 
     private SqlSessionFactory factory = null;
 
@@ -229,6 +232,24 @@ public class OskariLayerServiceMybatisImpl extends OskariLayerService {
     }
 
     public OskariLayer find(int id) {
+        String cacheKey = Integer.toString(id);
+        OskariLayer layer = layerCache.get(cacheKey);
+        if (layer != null) {
+            return layer;
+        }
+        layer = findFromDB(id);
+        if (layer != null) {
+            LOG.debug("Caching a layer with id ", id);
+            layerCache.put(cacheKey, layer);
+        }
+        return layer;
+    }
+
+    private void flushFromCache(int id) {
+        layerCache.remove(Integer.toString(id));
+    }
+
+    private OskariLayer findFromDB(int id) {
         LOG.debug("find by id: " + id);
         final SqlSession session = factory.openSession();
         try {
@@ -357,12 +378,14 @@ public class OskariLayerServiceMybatisImpl extends OskariLayerService {
         return Collections.emptyMap();
     }
 
+
     public void update(final OskariLayer layer) {
         LOG.debug("update layer");
         final SqlSession session = factory.openSession();
         try {
             final OskariLayerMapper mapper = session.getMapper(OskariLayerMapper.class);
             mapper.update(layer);
+            flushFromCache(layer.getId());
             session.commit();
         } catch (Exception e) {
             throw new RuntimeException("Failed to update", e);
@@ -392,15 +415,12 @@ public class OskariLayerServiceMybatisImpl extends OskariLayerService {
         try {
             final OskariLayerMapper mapper = session.getMapper(OskariLayerMapper.class);
             mapper.delete(id);
+            flushFromCache(id);
             session.commit();
         } catch (Exception e) {
             LOG.error(e, "Couldn't delete with id:", id);
         } finally {
             session.close();
         }
-    }
-
-    public void delete(Map<String, String> parameterMap) {
-        delete(ConversionHelper.getInt(parameterMap.get("id"), -1));
     }
 }
