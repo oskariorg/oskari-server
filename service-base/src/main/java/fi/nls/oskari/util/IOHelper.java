@@ -897,14 +897,17 @@ public class IOHelper {
      * @return
      */
     public static String removeQueryString(String url) {
+        if (url == null) {
+            return null;
+        }
         try {
-            URI uri = new URI(url);
-            return new URI(uri.getScheme(),
-                    uri.getAuthority(),
-                    uri.getPath(),
-                    null, // Ignore the query part of the input url
-                    uri.getFragment()).toString();
-        } catch (URISyntaxException e) {
+            URL justForTestingSyntaxNotThrowingException = new URL(url);
+            int startIndex = url.indexOf("?");
+            if (startIndex == -1) {
+                return url;
+            }
+            return url.substring(0, startIndex);
+        } catch (MalformedURLException e) {
             throw new ServiceRuntimeException("Malformed URI: " + url, e);
         }
     }
