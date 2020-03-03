@@ -12,6 +12,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.DataProviderService;
 import fi.nls.oskari.map.layer.OskariLayerService;
+import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.GetLayerKeywords;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
@@ -192,7 +193,14 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
         if (!userHasAddPermission(params.getUser())) {
             throw new ActionDeniedException("User doesn't have add layer permission");
         }
-        final OskariLayer ml = LayerAdminJSONHelper.fromJSON(layer);
+        OskariLayer ml;
+        try {
+            ml = LayerAdminJSONHelper.fromJSON(layer);
+        } catch (ServiceRuntimeException e) {
+            // validation failed -> params/payload was faulty. Thrown exception tells reason but wrapping it in
+            // ActionParamsException so its handled better with logging/user messaging etc
+            throw new ActionParamsException(e.getMessage(), e);
+        }
         updateCapabilities(ml);
 
         final int layerId = mapLayerService.insert(ml);
