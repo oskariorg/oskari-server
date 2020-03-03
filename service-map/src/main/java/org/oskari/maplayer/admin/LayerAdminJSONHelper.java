@@ -48,7 +48,12 @@ public class LayerAdminJSONHelper {
             layer.setId(model.getId());
         }
         layer.setType(model.getType());
-        layer.setUrl(LayerValidator.validateUrl(model.getUrl()));
+        // TODO: mark mandatory fields/layer type in a more generic fashion
+        // TODO: relay mandatory field info to frontend for UI so frontend can show what is mandatory
+        //  and validate before server is even called
+        if (!"tiles3dlayer".equals(layer.getType())) {
+            layer.setUrl(LayerValidator.validateUrl(model.getUrl()));
+        }
         layer.setUsername(model.getUsername());
         layer.setPassword(model.getPassword());
         if (model.getVersion() != null) {
