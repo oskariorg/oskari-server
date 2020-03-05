@@ -1,6 +1,8 @@
 package org.oskari.maplayer.admin;
 
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
@@ -14,14 +16,16 @@ import java.util.stream.Collectors;
 
 public class LayerValidator {
 
+    private static final Logger LOG = LogFactory.getLogger(LayerValidator.class);
     private static Map<String, Set<String>> MANDATORY_FIELDS = new HashMap<>();
     static {
         MANDATORY_FIELDS.put(OskariLayer.TYPE_WMS, ConversionHelper.asSet("name", "url", "version"));
         MANDATORY_FIELDS.put(OskariLayer.TYPE_WFS, ConversionHelper.asSet("name", "url", "version"));
-        MANDATORY_FIELDS.put(OskariLayer.TYPE_WMTS, ConversionHelper.asSet("name", "url", "version"));
+        MANDATORY_FIELDS.put(OskariLayer.TYPE_WMTS, ConversionHelper.asSet("name", "url"));
         MANDATORY_FIELDS.put(OskariLayer.TYPE_VECTOR_TILE, ConversionHelper.asSet("url"));
         MANDATORY_FIELDS.put(OskariLayer.TYPE_ARCGIS93, ConversionHelper.asSet("url"));
-        //MANDATORY_FIELDS.put(OskariLayer.TYPE_3DTILES, ConversionHelper.asSet("url"));
+        MANDATORY_FIELDS.put(OskariLayer.TYPE_ARCGIS_CACHE, ConversionHelper.asSet("url"));
+        MANDATORY_FIELDS.put(OskariLayer.TYPE_3DTILES, Collections.emptySet());
     }
 
     private static final Set<String> RESERVED_PARAMS = ConversionHelper.asSet("service", "request", "version");
@@ -39,6 +43,12 @@ public class LayerValidator {
         return locale;
     }
 
+    /**
+     * Removes reserved params from url (service/request/version) and returns a sanitized url
+     * @param url
+     * @return
+     * @throws IllegalArgumentException if parameter is not a proper url
+     */
     public static String sanitizeUrl(final String url) throws IllegalArgumentException {
         try {
             String baseURL = IOHelper.removeQueryString(url);
@@ -82,8 +92,12 @@ public class LayerValidator {
         return HtmlHelper.cleanHTMLString(gfiContent, tags, attributes, protocols);
     }
 
-    // TODO: relay mandatory field info to frontend for UI so frontend can show what is mandatory
-    //  and validate before server is even called
+    /**
+     * Returns a list of fields/type that layer type requires to work technically
+     * In addition there are things like layer "locale" == the name that is shown to user that is required.
+     * @param type
+     * @return
+     */
     public static Set<String> getMandatoryFields(String type) {
         if (type == null || !MANDATORY_FIELDS.containsKey(type)) {
             return Collections.emptySet();
@@ -91,16 +105,28 @@ public class LayerValidator {
         return MANDATORY_FIELDS.get(type);
     }
 
+    public static Set<String> getRecognizerLayerTypes() {
+        return MANDATORY_FIELDS.keySet();
+    }
+
     /**
      * Validates input to be saved as a maplayer to the databse
      * Note! Might modify values in input object like URL!!!!!
      * @param input
-     * @throws ServiceRuntimeException if input is not valid and can't be automatically fixed
+     * @throws IllegalArgumentException if input is not valid and can't be automatically fixed
      */
     public static void validateAndSanitizeLayerInput(MapLayer input) throws IllegalArgumentException {
+        if (input == null) {
+            throw new IllegalArgumentException("Layer data missing");
+        }
         // TODO: add more validation for values
         if (!hasValue(input.getType())) {
             throw new IllegalArgumentException("Required field missing 'type'");
+        }
+        Set<String> recognizedTypes = getRecognizerLayerTypes();
+        if (!recognizedTypes.contains(input.getType())) {
+            throw new IllegalArgumentException("Layer type is not recognized: " + input.getType() +
+                    ". Recognized types are: " + LOG.getAsString(recognizedTypes));
         }
 
         Set<String> mandatoryFields = getMandatoryFields(input.getType());
