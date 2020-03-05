@@ -90,11 +90,6 @@ public class ServiceCapabilitiesHandler extends AbstractLayerAdminHandler {
         return LayerCapabilitiesHelper.getCapabilitiesResults(url, type, version, username, password, currentSrs);
     }
 
-    private boolean isServiceUnauthrorizedException(Throwable t) {
-        return getRootCause(t) instanceof ServiceUnauthorizedException;
-
-    }
-
     private Throwable getRootCause(Throwable e) {
         if (e == null) {
             return null;
