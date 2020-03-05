@@ -81,7 +81,7 @@ public class ServiceCapabilitiesHandler extends AbstractLayerAdminHandler {
     }
 
     private ServiceCapabilitiesResult getLayersFromService(ActionParameters params) throws ServiceException, ActionException {
-        final String url = LayerValidator.validateUrl(params.getRequiredParam(PARAM_CAPABILITIES_URL));
+        final String url = LayerValidator.sanitizeUrl(params.getRequiredParam(PARAM_CAPABILITIES_URL));
         final String type = params.getRequiredParam(PARAM_TYPE);
         final String version = params.getRequiredParam(PARAM_VERSION);
         final String username = params.getHttpParam(PARAM_USERNAME, "");

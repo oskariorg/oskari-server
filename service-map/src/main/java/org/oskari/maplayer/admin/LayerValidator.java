@@ -26,20 +26,20 @@ public class LayerValidator {
 
     private static final Set<String> RESERVED_PARAMS = ConversionHelper.asSet("service", "request", "version");
 
-    public static Map<String, Map<String, String>> validateLocale(Map<String, Map<String, String>> locale) throws ServiceRuntimeException {
+    public static Map<String, Map<String, String>> validateLocale(Map<String, Map<String, String>> locale) throws IllegalArgumentException {
         if (locale == null) {
-            throw new ServiceRuntimeException("Localization for layer names missing");
+            throw new IllegalArgumentException("Localization for layer names missing");
         }
         String lang = PropertyUtil.getDefaultLanguage();
         Map<String, String> langLocale = locale.getOrDefault(lang, Collections.emptyMap());
         if (langLocale.get("name") == null) {
             // name for default language is required
-            throw new ServiceRuntimeException("Name missing for default language: " + lang);
+            throw new IllegalArgumentException("Name missing for default language: " + lang);
         }
         return locale;
     }
 
-    public static String validateUrl(final String url) throws ServiceRuntimeException {
+    public static String sanitizeUrl(final String url) throws IllegalArgumentException {
         try {
             String baseURL = IOHelper.removeQueryString(url);
             // remove problematic parameters from URL
@@ -54,11 +54,11 @@ public class LayerValidator {
             // return whitelisted params and base url
             return IOHelper.addQueryString(baseURL, querystring);
         } catch (Exception e) {
-            throw new ServiceRuntimeException("Invalid url: " + url, "invalid_field_value");
+            throw new IllegalArgumentException("Invalid url: " + url);
         }
     }
 
-    public static String cleanGFIContent(String gfiContent) {
+    public static String sanitizeGFIContent(String gfiContent) {
         if (gfiContent == null) {
             return null;
         }
@@ -97,26 +97,26 @@ public class LayerValidator {
      * @param input
      * @throws ServiceRuntimeException if input is not valid and can't be automatically fixed
      */
-    public static void validateLayerInput(MapLayer input) throws ServiceRuntimeException {
+    public static void validateAndSanitizeLayerInput(MapLayer input) throws IllegalArgumentException {
         // TODO: add more validation for values
         if (!hasValue(input.getType())) {
-            throw new ServiceRuntimeException("Required field missing 'type'");
+            throw new IllegalArgumentException("Required field missing 'type'");
         }
 
         Set<String> mandatoryFields = getMandatoryFields(input.getType());
         for (String field: mandatoryFields) {
             if (!hasValue(input, field)) {
-                throw new ServiceRuntimeException("Required field missing '" + field + "'");
+                throw new IllegalArgumentException("Required field missing '" + field + "'");
             }
         }
         if (mandatoryFields.contains("url")) {
             // if url is mandatory -> validate that it's usable
-            input.setUrl(LayerValidator.validateUrl(input.getUrl()));
+            input.setUrl(LayerValidator.sanitizeUrl(input.getUrl()));
         }
         // at least default language must have name for any layer type
         input.setLocale(LayerValidator.validateLocale(input.getLocale()));
         // Run HTML-content through JSOUP
-        input.setGfi_content(LayerValidator.cleanGFIContent(input.getGfi_content()));
+        input.setGfi_content(LayerValidator.sanitizeGFIContent(input.getGfi_content()));
     }
 
     /**

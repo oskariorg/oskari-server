@@ -40,7 +40,7 @@ public class LayerAdminJSONHelper {
     }
 
     public static OskariLayer fromJSON(MapLayer model) {
-        LayerValidator.validateLayerInput(model);
+        LayerValidator.validateAndSanitizeLayerInput(model);
         OskariLayer layer = new OskariLayer();
         Integer id = model.getId();
         if (id != null) {
