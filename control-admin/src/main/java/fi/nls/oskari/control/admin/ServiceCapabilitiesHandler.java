@@ -6,7 +6,6 @@ import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.ServiceUnauthorizedException;
 import fi.nls.oskari.util.PropertyUtil;
@@ -18,9 +17,7 @@ import org.oskari.maplayer.model.ServiceCapabilitiesResult;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
-import java.net.URL;
 
 @OskariActionRoute("ServiceCapabilities")
 public class ServiceCapabilitiesHandler extends AbstractLayerAdminHandler {
@@ -30,7 +27,6 @@ public class ServiceCapabilitiesHandler extends AbstractLayerAdminHandler {
     private static final String PARAM_USERNAME = "user";
     private static final String PARAM_PASSWORD = "pw";
     private static final String PARAM_TYPE = "type";
-    private static final String ERROR_INVALID_FIELD_VALUE = "invalid_field_value";
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     static {
@@ -81,18 +77,13 @@ public class ServiceCapabilitiesHandler extends AbstractLayerAdminHandler {
     }
 
     private ServiceCapabilitiesResult getLayersFromService(ActionParameters params) throws ServiceException, ActionException {
-        final String url = LayerValidator.validateUrl(params.getRequiredParam(PARAM_CAPABILITIES_URL));
+        final String url = LayerValidator.sanitizeUrl(params.getRequiredParam(PARAM_CAPABILITIES_URL));
         final String type = params.getRequiredParam(PARAM_TYPE);
         final String version = params.getRequiredParam(PARAM_VERSION);
         final String username = params.getHttpParam(PARAM_USERNAME, "");
         final String password = params.getHttpParam(PARAM_PASSWORD, "");
         final String currentSrs = params.getHttpParam(PARAM_CURRENT_SRS, PropertyUtil.get("oskari.native.srs", "EPSG:4326"));
         return LayerCapabilitiesHelper.getCapabilitiesResults(url, type, version, username, password, currentSrs);
-    }
-
-    private boolean isServiceUnauthrorizedException(Throwable t) {
-        return getRootCause(t) instanceof ServiceUnauthorizedException;
-
     }
 
     private Throwable getRootCause(Throwable e) {

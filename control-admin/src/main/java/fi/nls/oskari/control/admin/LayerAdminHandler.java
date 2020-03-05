@@ -196,7 +196,7 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
         OskariLayer ml;
         try {
             ml = LayerAdminJSONHelper.fromJSON(layer);
-        } catch (ServiceRuntimeException e) {
+        } catch (IllegalArgumentException e) {
             // validation failed -> params/payload was faulty. Thrown exception tells reason but wrapping it in
             // ActionParamsException so its handled better with logging/user messaging etc
             throw new ActionParamsException(e.getMessage(), e);
@@ -297,7 +297,7 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
             ml.setOptions(new JSONObject(layer.getOptions()));
         }
 
-        ml.setGfiContent(getOrDefaultStr(LayerValidator.cleanGFIContent(layer.getGfi_content()), ml.getGfiContent()));
+        ml.setGfiContent(getOrDefaultStr(LayerValidator.sanitizeGFIContent(layer.getGfi_content()), ml.getGfiContent()));
         ml.setGfiXslt(getOrDefaultStr(layer.getGfi_xslt(), ml.getGfiXslt()));
         ml.setGfiType(getOrDefaultStr(layer.getGfi_type(), ml.getGfiType()));
 

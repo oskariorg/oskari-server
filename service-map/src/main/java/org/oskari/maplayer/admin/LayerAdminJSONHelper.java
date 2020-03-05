@@ -40,7 +40,7 @@ public class LayerAdminJSONHelper {
     }
 
     public static OskariLayer fromJSON(MapLayer model) {
-        // TODO: add more validation for values
+        LayerValidator.validateAndSanitizeLayerInput(model);
         OskariLayer layer = new OskariLayer();
         Integer id = model.getId();
         if (id != null) {
@@ -48,20 +48,12 @@ public class LayerAdminJSONHelper {
             layer.setId(model.getId());
         }
         layer.setType(model.getType());
-        // TODO: mark mandatory fields/layer type in a more generic fashion
-        // TODO: relay mandatory field info to frontend for UI so frontend can show what is mandatory
-        //  and validate before server is even called
-        if (!"tiles3dlayer".equals(layer.getType())) {
-            layer.setUrl(LayerValidator.validateUrl(model.getUrl()));
-        }
+        layer.setUrl(model.getUrl());
         layer.setUsername(model.getUsername());
         layer.setPassword(model.getPassword());
-        if (model.getVersion() != null) {
-            // version has non-null requirement in db (empty string is ok)
-            layer.setVersion(model.getVersion());
-        }
+        layer.setVersion(model.getVersion());
         layer.setName(model.getName());
-        layer.setLocale(new JSONObject(LayerValidator.validateLocale(model.getLocale())));
+        layer.setLocale(new JSONObject(model.getLocale()));
 
         layer.setSrs_name(model.getSrs());
         layer.setOpacity(model.getOpacity());
@@ -83,7 +75,7 @@ public class LayerAdminJSONHelper {
 
         layer.setGfiType(model.getGfi_type());
         layer.setGfiXslt(model.getGfi_xslt());
-        layer.setGfiContent(LayerValidator.cleanGFIContent(model.getGfi_content()));
+        layer.setGfiContent(model.getGfi_content());
 
         layer.setBaseMap(model.isBase_map());
         layer.setRealtime(model.isRealtime());
