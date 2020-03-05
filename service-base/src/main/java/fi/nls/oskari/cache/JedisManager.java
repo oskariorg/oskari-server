@@ -93,15 +93,6 @@ public class JedisManager {
     }
 
     /**
-     * Returns (releases) Jedis connection back to the pool
-     *
-     * @param jedis
-     */
-    public void returnJedis(Jedis jedis) {
-        pool.returnResource(jedis);
-    }
-
-    /**
      * Thread-safe String GET for Redis
      *
      * @param key
@@ -128,15 +119,13 @@ public class JedisManager {
      * @return string
      */
     public static String get(String key, boolean throwException) {
-        Jedis jedis = instance.getJedis(throwException);
-        if (jedis == null) return null;
-
-        try {
+        try (Jedis jedis = instance.getJedis(throwException)){
+            if (jedis == null) {
+                return null;
+            }
             return jedis.get(key);
         } catch (JedisConnectionException e) {
-            log.error("Failed to get", key, "returning broken connection...");
-            pool.returnBrokenResource(jedis);
-            log.error("Broken connection closed");
+            log.error("Failed to get", key);
             if (throwException) {
                 throw new ServiceRuntimeException("Failed to get " + key + " returning broken connection...: " + e.getMessage(),
                         e.getCause(), ERROR_REDIS_COMMUNICATION_FAILURE);
@@ -149,8 +138,6 @@ public class JedisManager {
                         e.getCause(), ERROR_REDIS_COMMUNICATION_FAILURE);
             }
             return null;
-        } finally {
-            instance.returnJedis(jedis);
         }
     }
 
@@ -161,21 +148,18 @@ public class JedisManager {
      * @return bytes
      */
 	public static byte[] get(byte[] key) {
-		Jedis jedis = instance.getJedis();
-        if(jedis == null) return null;
-
-        try {
+        try (Jedis jedis = instance.getJedis()){
+            if (jedis == null) {
+                return null;
+            }
 			return jedis.get(key);
         } catch(JedisConnectionException e) {
-            log.error("Failed to get", key, "returning broken connection...");
-            pool.returnBrokenResource(jedis);
+            log.error("Failed to get", key);
             log.error("Broken connection closed");
             return null;
         } catch (Exception e) {
             log.error("Getting", key, "from Redis failed:", e.getMessage());
             return null;
-        } finally {
-            instance.returnJedis(jedis);
         }
 	}
 
@@ -188,21 +172,18 @@ public class JedisManager {
      * @return string
      */
     public static String setex(String key, int seconds, String value) {
-        Jedis jedis = instance.getJedis();
-        if(jedis == null) return null;
 
-        try {
+        try (Jedis jedis = instance.getJedis()){
+            if (jedis == null) {
+                return null;
+            }
             return jedis.setex(key, seconds, value);
         } catch(JedisConnectionException e) {
-            log.error("Failed to set", key, "returning broken connection...");
-            pool.returnBrokenResource(jedis);
-            log.error("Broken connection closed");
+            log.error("Failed to set", key);
             return null;
         } catch (Exception e) {
             log.error("Setting", key, "to Redis failed:", e.getMessage());
             return null;
-        } finally {
-            instance.returnJedis(jedis);
         }
     }
 
@@ -215,21 +196,17 @@ public class JedisManager {
      * @return string
      */
     public static String setex(byte[] key, int seconds, byte[] value) {
-        Jedis jedis = instance.getJedis();
-        if(jedis == null) return null;
-
-        try {
+        try (Jedis jedis = instance.getJedis()){
+            if (jedis == null) {
+                return null;
+            }
             return jedis.setex(key, seconds, value);
         } catch(JedisConnectionException e) {
-            log.error("Failed to set", key, "returning broken connection...");
-            pool.returnBrokenResource(jedis);
-            log.error("Broken connection closed");
+            log.error("Failed to set", key);
             return null;
         } catch (Exception e) {
             log.error("Setting", key, "to Redis failed:", e.getMessage());
             return null;
-        } finally {
-            instance.returnJedis(jedis);
         }
     }
 
@@ -240,21 +217,17 @@ public class JedisManager {
      * @return keys
      */
     public static Set<String> keys(String pattern) {
-        Jedis jedis = instance.getJedis();
-        if(jedis == null) return Collections.emptySet();
-
-        try {
+        try (Jedis jedis = instance.getJedis()){
+            if (jedis == null) {
+                return Collections.emptySet();
+            }
             return jedis.keys(pattern + "*");
         } catch(JedisConnectionException e) {
-            log.error("Failed to run KEYS", pattern + " returning broken connection...");
-            pool.returnBrokenResource(jedis);
-            log.error("Broken connection closed");
+            log.error("Failed to run KEYS", pattern);
             return null;
         } catch (Exception e) {
             log.error("Running KEYS", pattern + "on Redis failed:", e.getMessage());
             return null;
-        } finally {
-            instance.returnJedis(jedis);
         }
     }
 
@@ -265,21 +238,17 @@ public class JedisManager {
      * @return set of string
      */
 	public static Set<String> hkeys(String key) {
-		Jedis jedis = instance.getJedis();
-        if(jedis == null) return Collections.emptySet();
-
-        try {
+        try (Jedis jedis = instance.getJedis()){
+            if (jedis == null) {
+                return Collections.emptySet();
+            }
 			return jedis.hkeys(key);
         } catch(JedisConnectionException e) {
-            log.error("Failed to hkeys", key, "returning broken connection...");
-            pool.returnBrokenResource(jedis);
-            log.error("Broken connection closed");
+            log.error("Failed to hkeys", key);
             return null;
         } catch (Exception e) {
             log.error("Getting HKEYS", key + "on Redis failed:", e.getMessage());
             return null;
-        } finally {
-            instance.returnJedis(jedis);
         }
 	}
 
@@ -291,21 +260,17 @@ public class JedisManager {
      * @return string
      */
 	public static String hget(String key, String field) {
-		Jedis jedis = instance.getJedis();
-        if(jedis == null) return null;
-
-        try {
+        try (Jedis jedis = instance.getJedis()){
+            if (jedis == null) {
+                return null;
+            }
 			return jedis.hget(key, field);
         } catch(JedisConnectionException e) {
-            log.error("Failed to hget", key, "returning broken connection...");
-            pool.returnBrokenResource(jedis);
-            log.error("Broken connection closed");
+            log.error("Failed to hget", key);
             return null;
         } catch (Exception e) {
             log.error("Getting HGET", key + "on Redis failed:", e.getMessage());
             return null;
-        } finally {
-            instance.returnJedis(jedis);
         }
 	}
 
@@ -317,21 +282,17 @@ public class JedisManager {
      * @return string
      */
     public static Long hset(String key, String field, String value) {
-        Jedis jedis = instance.getJedis();
-        if(jedis == null) return null;
-
-        try {
+        try (Jedis jedis = instance.getJedis()){
+            if (jedis == null) {
+                return null;
+            }
             return jedis.hset(key, field, value);
         } catch(JedisConnectionException e) {
-            log.error("Failed to hget", key, "returning broken connection...");
-            pool.returnBrokenResource(jedis);
-            log.error("Broken connection closed");
+            log.error("Failed to hget", key);
             return null;
         } catch (Exception e) {
             log.error("Getting", key, "failed miserably");
             return null;
-        } finally {
-            instance.returnJedis(jedis);
         }
     }
 
@@ -342,21 +303,17 @@ public class JedisManager {
      * @return long
      */
     public static Long del(String... keys) {
-        Jedis jedis = instance.getJedis();
-        if(jedis == null) return null;
-
-        try {
+        try (Jedis jedis = instance.getJedis()){
+            if (jedis == null) {
+                return null;
+            }
             return jedis.del(keys);
         } catch(JedisConnectionException e) {
-            log.error("Failed to delete", keys, "returning broken connection...");
-            pool.returnBrokenResource(jedis);
-            log.error("Broken connection closed");
+            log.error("Failed to delete", keys);
             return null;
         } catch (Exception e) {
             log.error("Deleting", keys, "failed miserably");
             return null;
-        } finally {
-            instance.returnJedis(jedis);
         }
     }
 
@@ -367,25 +324,21 @@ public class JedisManager {
      * @return long
      */
     public static Long delAll(String key) {
-        Jedis jedis = instance.getJedis();
-        if(jedis == null) return null;
-
-        try {
+        try (Jedis jedis = instance.getJedis()){
+            if (jedis == null) {
+                return null;
+            }
             Set<String> keys = jedis.keys(key + "*");
             if(keys.size() > 0) {
                 return jedis.del(keys.toArray(new String[keys.size()]));
             }
             return 0L;
         } catch(JedisConnectionException e) {
-            log.error("Failed to del", key + "* returning broken connection...");
-            pool.returnBrokenResource(jedis);
-            log.error("Broken connection closed");
+            log.error("Failed to del", key + "*");
             return null;
         } catch (Exception e) {
             log.error("Deleting", key + "* failed miserably");
             return null;
-        } finally {
-            instance.returnJedis(jedis);
         }
     }
 
@@ -396,21 +349,15 @@ public class JedisManager {
      * @return
      */
     public static long getValueStringLength(String key) {
-        Jedis jedis = instance.getJedis();
-        if(jedis == null) {
-            return -1;
-        }
-
-        try {
+        try (Jedis jedis = instance.getJedis()){
+            if (jedis == null) {
+                return -1;
+            }
             return jedis.strlen(key);
         } catch(JedisConnectionException e) {
-            log.error("Failed to strlen", key + "* returning broken connection...");
-            pool.returnBrokenResource(jedis);
-            log.error("Broken connection closed");
+            log.error("Failed to strlen", key);
         } catch (Exception e) {
             log.error("Getting key length", key + " failed miserably");
-        } finally {
-            instance.returnJedis(jedis);
         }
         return -1;
     }
@@ -422,21 +369,15 @@ public class JedisManager {
      * @return
      */
     public static long pushToList(String key, String ...values) {
-        Jedis jedis = instance.getJedis();
-        if(jedis == null) {
-            return -1;
-        }
-
-        try {
+        try (Jedis jedis = instance.getJedis()){
+            if (jedis == null) {
+                return -1;
+            }
             return jedis.rpush(key, values);
         } catch(JedisConnectionException e) {
-            log.error("Failed to rpush", key + "* returning broken connection...");
-            pool.returnBrokenResource(jedis);
-            log.error("Broken connection closed");
+            log.error("Failed to rpush", key);
         } catch (Exception e) {
             log.error("Adding to list", key + " failed miserably");
-        } finally {
-            instance.returnJedis(jedis);
         }
         return -1;
     }
@@ -458,12 +399,11 @@ public class JedisManager {
      * @return
      */
     public static String popList(String key, boolean head) {
-        Jedis jedis = instance.getJedis();
-        if(jedis == null) {
-            return null;
-        }
 
-        try {
+        try (Jedis jedis = instance.getJedis()){
+            if (jedis == null) {
+                return null;
+            }
             String value;
             if(head) {
                 value =  jedis.lpop(key);
@@ -476,13 +416,9 @@ public class JedisManager {
             }
             return value;
         } catch(JedisConnectionException e) {
-            log.error("Failed to lpop", key + "* returning broken connection...");
-            pool.returnBrokenResource(jedis);
-            log.error("Broken connection closed");
+            log.error("Failed to lpop", key);
         } catch (Exception e) {
             log.error("Popping from list", key + " failed miserably");
-        } finally {
-            instance.returnJedis(jedis);
         }
         return null;
     }
@@ -495,21 +431,17 @@ public class JedisManager {
      * @return long
      */
     public static Long publish(final String channel, final String message) {
-        final Jedis jedis = instance.getJedis();
-        if(jedis == null) return null;
-
-        try {
+        try (Jedis jedis = instance.getJedis()){
+            if (jedis == null) {
+                return null;
+            }
             return jedis.publish(channel, message);
         } catch(JedisConnectionException e) {
-            log.error("Failed to publish on:", channel, "returning broken connection...");
-            pool.returnBrokenResource(jedis);
-            log.error("Broken connection closed");
+            log.error("Failed to publish on:", channel);
             return null;
         } catch (Exception e) {
             log.error("Publishing on:", channel, "failed miserably");
             return null;
-        } finally {
-            instance.returnJedis(jedis);
         }
     }
 
@@ -520,26 +452,22 @@ public class JedisManager {
      * @param channel
      */
     public static void subscribe(final JedisSubscriber subscriber, final String channel) {
-        final Jedis jedis = instance.getJedis();
-        if(jedis == null) return;
-
-        new Thread(new Runnable() {
-            public void run() {
-                try {
+        new Thread(() -> {
+                try (Jedis jedis = instance.getJedis()){
+                    if (jedis == null) {
+                        return;
+                    }
                     log.warn("Subscribing on", channel);
                     jedis.subscribe(subscriber, channel);
-                } catch(JedisConnectionException e) {
-                    log.error("Failed to subscribe on:", channel, "returning broken connection...");
-                    pool.returnBrokenResource(jedis);
-                    log.error("Broken connection closed");
                 } catch (Exception e) {
                     log.error("Subscribing on:", channel, "failed miserably");
-                } finally {
-                    log.warn("Unsubscribing on:", channel);
+                    // TODO: needs more testing...
+                    // unsubscribe() was called in finally before lib update.
+                    // I don't see how that^ makes sense so moved it to error handling
+                    // though if subscription fails do we need to unsubscribe?
                     subscriber.unsubscribe();
-                    instance.returnJedis(jedis);
                 }
             }
-        }).start();
+        ).start();
     }
 }
