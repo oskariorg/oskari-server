@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.oskari.maplayer.model.MapLayer;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -76,11 +77,50 @@ public class LayerValidatorTest {
             assertEquals("Name missing for default language: en", e.getMessage());
         }
 
+        input.setLocale(createValidLocaleForLayer());
+        LayerValidator.validateAndSanitizeLayerInput(input);
+    }
+    @Test
+    public void validateBingLayer() {
+        MapLayer input = new MapLayer();
+        input.setType(OskariLayer.TYPE_BINGLAYER);
+        try {
+            LayerValidator.validateAndSanitizeLayerInput(input);
+        } catch (IllegalArgumentException e) {
+            assertEquals("Required field missing 'options.apiKey'", e.getMessage());
+        }
+        input.setOptions(new HashMap<>());
+        try {
+            LayerValidator.validateAndSanitizeLayerInput(input);
+        } catch (IllegalArgumentException e) {
+            assertEquals("Required field missing 'options.apiKey'", e.getMessage());
+        }
+
+        input.setLocale(createValidLocaleForLayer());
+
+        HashMap jee = new HashMap<>();
+        jee.put("apiKey", "testing");
+        input.setOptions(jee);
+        LayerValidator.validateAndSanitizeLayerInput(input);
+    }
+
+    @Test
+    public void testShift() {
+        String path = "testing.like.there's.no.tomorrow";
+        String[] original = path.split("\\.");
+        String[] rest = LayerValidator.shiftArray(original);
+        for (int i = 1; i < original.length; i++) {
+            assertEquals(original[i], rest[0]);
+            rest = LayerValidator.shiftArray(rest);
+        }
+        assertEquals("Rest should be empty", rest.length, 0);
+    }
+
+    private Map<String, Map<String, String>> createValidLocaleForLayer() {
         HashMap locale = new HashMap<>();
         HashMap en = new HashMap<>();
         en.put("name", "testing");
         locale.put("en", en);
-        input.setLocale(locale);
-        LayerValidator.validateAndSanitizeLayerInput(input);
+        return locale;
     }
 }

@@ -26,6 +26,8 @@ public class LayerValidator {
         MANDATORY_FIELDS.put(OskariLayer.TYPE_ARCGIS93, ConversionHelper.asSet("url"));
         MANDATORY_FIELDS.put(OskariLayer.TYPE_ARCGIS_CACHE, ConversionHelper.asSet("url"));
         MANDATORY_FIELDS.put(OskariLayer.TYPE_3DTILES, Collections.emptySet());
+        MANDATORY_FIELDS.put(OskariLayer.TYPE_BINGLAYER, ConversionHelper.asSet("options.apiKey"));
+
     }
 
     private static final Set<String> RESERVED_PARAMS = ConversionHelper.asSet("service", "request", "version");
@@ -119,7 +121,6 @@ public class LayerValidator {
         if (input == null) {
             throw new IllegalArgumentException("Layer data missing");
         }
-        // TODO: add more validation for values
         if (!hasValue(input.getType())) {
             throw new IllegalArgumentException("Required field missing 'type'");
         }
@@ -140,6 +141,8 @@ public class LayerValidator {
             input.setUrl(LayerValidator.sanitizeUrl(input.getUrl()));
         }
         // at least default language must have name for any layer type
+        // validateLocale could be replaced with:
+        // hasValue(input, "locale." + PropertyUtil.getDefaultLanguage() + ".name")
         input.setLocale(LayerValidator.validateLocale(input.getLocale()));
         // Run HTML-content through JSOUP
         input.setGfi_content(LayerValidator.sanitizeGFIContent(input.getGfi_content()));
@@ -153,18 +156,50 @@ public class LayerValidator {
      * @return
      */
     private static boolean hasValue(MapLayer input, String field) {
+        String[] fieldPath = field.split("\\.");
         for (Method m : MapLayer.class.getDeclaredMethods()) {
-            if (!m.getName().toLowerCase().equals("get" + field.toLowerCase())) {
+            if (!m.getName().toLowerCase().equals("get" + fieldPath[0].toLowerCase())) {
                 continue;
             }
             try {
-                String value = (String) m.invoke(input);
-                return hasValue(value);
+                return hasValue(m.invoke(input), shiftArray(fieldPath));
             } catch (Exception e) {
-                throw new ServiceRuntimeException("Unable to call getter for " + field, e);
+                if (e instanceof IllegalArgumentException) {
+                    throw (IllegalArgumentException) e;
+                } else {
+                    throw new ServiceRuntimeException("Unable to call getter for " + field, e);
+                }
             }
         }
         return false;
+    }
+
+    /**
+     * Remove the first element and return rest
+     * @param original
+     * @return
+     */
+    protected static String[] shiftArray(String[] original) {
+        return Arrays.copyOfRange(original, 1, original.length);
+    }
+
+    private static boolean hasValue(Object value, String... path) {
+        if (value == null) {
+            return false;
+        }
+        if (path.length == 0) {
+            // end of the road
+            if(!(value instanceof String)) {
+                throw new IllegalArgumentException("Required field is not string " + value);
+            }
+            return hasValue((String) value);
+        }
+        if(!(value instanceof Map)) {
+            throw new IllegalArgumentException("There's required path to follow but didn't get a map: " + LOG.getAsString(value) +
+                    ". Remaining path is: " + LOG.getAsString(path));
+        }
+        Object nextStep = ((Map) value).get(path[0]);
+        return hasValue(nextStep, shiftArray(path));
     }
 
     private static boolean hasValue(String value) {
