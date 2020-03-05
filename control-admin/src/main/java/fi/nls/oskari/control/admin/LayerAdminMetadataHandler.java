@@ -24,8 +24,8 @@ import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 
-@OskariActionRoute("GetAllRolesAndPermissionTypes")
-public class GetAllRolesAndPermissionTypesHandler extends RestActionHandler {
+@OskariActionRoute("LayerAdminMetadata")
+public class LayerAdminMetadataHandler extends RestActionHandler {
     
     private UserService userService = null;
     private PermissionService permissionsService = null;
