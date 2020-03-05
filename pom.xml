@@ -68,7 +68,7 @@
 
         <staxon.version>1.2</staxon.version>
         <lambdaj.version>2.3.3</lambdaj.version>
-        <jsoup.version>1.12.1</jsoup.version>
+        <jsoup.version>1.13.1</jsoup.version>
         <ibatis.version>2.3.4.726</ibatis.version>
         <axiom.version>1.2.20</axiom.version>
         <commons-lang3.version>3.0</commons-lang3.version>
