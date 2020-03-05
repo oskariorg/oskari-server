@@ -26,9 +26,9 @@ import fi.nls.test.util.ResourceHelper;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({UserService.class, OskariComponentManager.class})
-public class GetAllRolesAndPermissionTypesHandlerTest extends JSONActionRouteTest {
+public class LayerAdminMetadataHandlerTest extends JSONActionRouteTest {
     
-    final private static GetAllRolesAndPermissionTypesHandler handler = new GetAllRolesAndPermissionTypesHandler();
+    final private static LayerAdminMetadataHandler handler = new LayerAdminMetadataHandler();
     
     @BeforeClass
     public static void setup() throws ServiceException {
