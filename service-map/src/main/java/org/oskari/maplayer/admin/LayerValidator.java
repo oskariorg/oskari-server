@@ -156,6 +156,9 @@ public class LayerValidator {
      * @return
      */
     private static boolean hasValue(MapLayer input, String field) {
+        if (input == null || field == null) {
+            return false;
+        }
         String[] fieldPath = field.split("\\.");
         for (Method m : MapLayer.class.getDeclaredMethods()) {
             if (!m.getName().toLowerCase().equals("get" + fieldPath[0].toLowerCase())) {
@@ -180,6 +183,9 @@ public class LayerValidator {
      * @return
      */
     protected static String[] shiftArray(String[] original) {
+        if (original == null || original.length == 0) {
+            return null;
+        }
         return Arrays.copyOfRange(original, 1, original.length);
     }
 
