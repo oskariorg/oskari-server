@@ -99,8 +99,10 @@ public class ManageRolesHandler extends RestActionHandler {
     private JSONObject roles2JsonArray(Role[] roles) throws JSONException {
 
         final JSONArray roleValues = new JSONArray();
-        for(Role role : roles){
-            roleValues.put(role2Json(role));
+        if (roles != null) {
+            for(Role role : roles){
+                roleValues.put(role2Json(role));
+            }
         }
 
         final JSONObject response = new JSONObject();
