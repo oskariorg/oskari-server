@@ -72,9 +72,9 @@ public class LayerAdminMetadataHandlerTest extends JSONActionRouteTest {
     public void testGetWithAdmin() throws Exception {
    
         final ActionParameters params = createActionParams(getAdminUser());
-        handler.preProcess(params);
-        handler.handleGet(params);
-        verifyResponseContent(ResourceHelper.readJSONResource("GetAllRolesAndPermissionTypesHandlerTests-expected.json", this));
+        handler.handleAction(params);
+
+        verifyResponseContent(ResourceHelper.readJSONResource("LayerAdminMetadataHandlerTests-expected.json", this));
     }
     
     
@@ -82,15 +82,13 @@ public class LayerAdminMetadataHandlerTest extends JSONActionRouteTest {
     public void testGetWithGuest() throws Exception {
 
         final ActionParameters params = createActionParams(getGuestUser());
-        handler.preProcess(params);
-        handler.handleGet(params);
+        handler.handleAction(params);
     }
     
     @Test(expected = ActionDeniedException.class)
     public void testGetWithLoggedInNonAdminUser() throws Exception {
 
         final ActionParameters params = createActionParams(getLoggedInUser());
-        handler.preProcess(params);
-        handler.handleGet(params);
+        handler.handleAction(params);
     }
 }
