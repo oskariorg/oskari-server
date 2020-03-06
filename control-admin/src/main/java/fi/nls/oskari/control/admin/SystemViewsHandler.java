@@ -72,16 +72,18 @@ public class SystemViewsHandler extends RestActionHandler {
         } catch (ServiceException e) {
             throw new ActionException("Couldn't get roles listing", e);
         }
-        for (Role role : roles) {
-            final JSONObject json = new JSONObject();
-            JSONHelper.putValue(json, PARAM_ID, role.getId());
-            JSONHelper.putValue(json, "name", role.getName());
+        if (roles != null) {
+            for (Role role : roles) {
+                final JSONObject json = new JSONObject();
+                JSONHelper.putValue(json, PARAM_ID, role.getId());
+                JSONHelper.putValue(json, "name", role.getName());
 
-            final long viewId = viewService.getDefaultViewIdForRole(role.getName());
-            if (viewId != globalDefaultViewId) {
-                JSONHelper.putValue(json, "viewId", viewId);
+                final long viewId = viewService.getDefaultViewIdForRole(role.getName());
+                if (viewId != globalDefaultViewId) {
+                    JSONHelper.putValue(json, "viewId", viewId);
+                }
+                list.put(json);
             }
-            list.put(json);
         }
 
         JSONHelper.putValue(response, "roles", list);

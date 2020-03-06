@@ -90,29 +90,9 @@ public class JSONActionRouteTest {
     public ActionParameters createActionParams(final Map<String, String> parameters, final User user, final InputStream payload) {
         final ActionParameters params = new ActionParameters();
         // request params
-        HttpServletRequest req = mock(HttpServletRequest.class);
-        for(String key : parameters.keySet()) {
-            when(req.getParameter(key)).thenReturn(parameters.get(key));
-        }
-
-        // mock the session
-        HttpSession session = mock(HttpSession.class);
-        doReturn("testkey").when(session).getId();
-        // Return mock session when calling getSession without or with boolean parameter.
-        doReturn(session).when(req).getSession();
-        doReturn(session).when(req).getSession(false);
-
-        doReturn(new Vector(parameters.keySet()).elements()).when(req).getParameterNames();
+        HttpServletRequest req = mockHttpServletRequest("GET", parameters);
         if(!response.toString().isEmpty()) {
             fail("Creating new ActionParams, but response already has content: " + response.toString());
-        }
-        // mock possible payload inputstream
-        if(payload != null) {
-            try {
-                ServletInputStream wrapper = new MockServletInputStream(payload);
-                doReturn(wrapper).when(req).getInputStream();
-            }
-            catch (IOException ignored ) {}
         }
         // response handler
         HttpServletResponse resp = mock(HttpServletResponse.class);
@@ -148,7 +128,7 @@ public class JSONActionRouteTest {
         HttpServletRequest req = mock(HttpServletRequest.class);
 
         if (parameters != null) {
-            doReturn(new Vector<String>(parameters.keySet()).elements()).when(req).getParameterNames();
+            doReturn(new Vector<>(parameters.keySet()).elements()).when(req).getParameterNames();
             for (String key : parameters.keySet()) {
                 when(req.getParameter(key)).thenReturn(parameters.get(key));
             }
