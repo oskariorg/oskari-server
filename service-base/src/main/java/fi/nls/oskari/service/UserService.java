@@ -195,7 +195,7 @@ public abstract class UserService {
      * @throws ServiceException
      */
     public List<User> getUsers() throws ServiceException {
-        throw new ServiceException("Not implemented");
+        return Collections.emptyList();
     }
 
     /**
@@ -205,7 +205,7 @@ public abstract class UserService {
      * @throws ServiceException
      */
     public List<User> getUsersWithRoles() throws ServiceException {
-        throw new ServiceException("Not implemented");
+        return Collections.emptyList();
     }
 
     /**
