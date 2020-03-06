@@ -52,15 +52,29 @@ public class LayerValidator {
      * @throws IllegalArgumentException if parameter is not a proper url
      */
     public static String sanitizeUrl(final String url) throws IllegalArgumentException {
+        // These are only problematic for OGC urls.
+        // Calling this with non-OGC layers this _might_ remove parameters that the service expects
+        return sanitizeUrl(url, RESERVED_PARAMS);
+    }
+
+    /**
+     * Checks url validity and removes any parameters in the url that is listed on the paramsToRemove parameter set
+     * @param url
+     * @param paramsToRemove
+     * @return
+     * @throws IllegalArgumentException
+     */
+    public static String sanitizeUrl(final String url, Set<String> paramsToRemove) throws IllegalArgumentException {
         try {
             String baseURL = IOHelper.removeQueryString(url);
             // remove problematic parameters from URL
             Map<String, List<String>> params = IOHelper.parseQuerystring(url);
-            List<String> problematicParams = params.keySet()
-                    .stream().filter(key -> RESERVED_PARAMS.contains(key.toLowerCase())).collect(Collectors.toList());
-            // TODO: these are only problematic for OGC urls. Maybe we should skip validation for non-OGC layers?
-            for (String param : problematicParams) {
-                params.remove(param);
+            if (paramsToRemove != null) {
+                List<String> problematicParams = params.keySet()
+                        .stream().filter(key -> paramsToRemove.contains(key.toLowerCase())).collect(Collectors.toList());
+                for (String param : problematicParams) {
+                    params.remove(param);
+                }
             }
             String querystring = IOHelper.createQuerystring(params);
             // return whitelisted params and base url
@@ -139,6 +153,10 @@ public class LayerValidator {
         if (mandatoryFields.contains("url")) {
             // if url is mandatory -> validate that it's usable
             input.setUrl(LayerValidator.sanitizeUrl(input.getUrl()));
+        }
+        if (input.getVersion() == null) {
+            // Database requires non-null value. Empty string is ok for layers that don't require version
+            input.setVersion("");
         }
         // at least default language must have name for any layer type
         // validateLocale could be replaced with:
