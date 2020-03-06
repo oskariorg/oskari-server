@@ -30,6 +30,7 @@ public class ResetRemainingSessionTimeHandlerTest extends JSONActionRouteTest {
         
         PowerMockito.mockStatic(System.class);
         when(System.currentTimeMillis()).thenReturn(NOW);
+        doReturn(params.getRequest().getSession()).when(params.getRequest()).getSession(false);
         when(params.getRequest().getSession().getMaxInactiveInterval()).thenReturn(MAX_INACTIVE_INTERVAL);
         when(params.getRequest().getSession().getLastAccessedTime()).thenReturn(FIVE_SECONDS_AGO);
         handler.handleAction(params);
