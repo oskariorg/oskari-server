@@ -45,10 +45,7 @@ public class UserCredentialsTest extends JSONActionRouteTest {
                 {CacheHandler.class},
                 {ManageRolesHandler.class},
                 {SystemViewsHandler.class},
-                {UsersHandler.class},
-                // LayerAdminHandler decides permission based on layer id
-                //{LayerAdminHandler.class},
-                {LayerAdminMetadataHandler.class}
+                {UsersHandler.class}
         });
     }
 
