@@ -121,7 +121,7 @@ public class LayerValidator {
         return MANDATORY_FIELDS.get(type);
     }
 
-    public static Set<String> getRecognizerLayerTypes() {
+    public static Set<String> getRecognizedLayerTypes() {
         return MANDATORY_FIELDS.keySet();
     }
 
@@ -138,7 +138,7 @@ public class LayerValidator {
         if (!hasValue(input.getType())) {
             throw new IllegalArgumentException("Required field missing 'type'");
         }
-        Set<String> recognizedTypes = getRecognizerLayerTypes();
+        Set<String> recognizedTypes = getRecognizedLayerTypes();
         if (!recognizedTypes.contains(input.getType())) {
             throw new IllegalArgumentException("Layer type is not recognized: " + input.getType() +
                     ". Recognized types are: " + LOG.getAsString(recognizedTypes));

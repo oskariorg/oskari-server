@@ -3,12 +3,15 @@ package fi.nls.oskari.control.admin;
 import static fi.nls.oskari.control.ActionConstants.KEY_ID;
 import static fi.nls.oskari.control.ActionConstants.KEY_NAME;
 
+import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.oskari.maplayer.admin.LayerValidator;
 import org.oskari.permissions.PermissionService;
 import org.oskari.permissions.model.PermissionType;
 
@@ -32,8 +35,6 @@ public class LayerAdminMetadataHandler extends RestActionHandler {
 
     private final static String JSKEY_ID = "id";
     private final static String JSKEY_NAME = "name";
-    private final static String JSKEY_ROLES = "roles";
-    private final static String JSKEY_PERMISSION_TYPES = "permissionTypes";
 
     @Override
     public void init() {
@@ -59,8 +60,9 @@ public class LayerAdminMetadataHandler extends RestActionHandler {
     public void handleGet(ActionParameters params) throws ActionException {
         try {
             final JSONObject root = new JSONObject();
-            JSONHelper.putValue(root, JSKEY_ROLES, getRoles());
-            JSONHelper.putValue(root, JSKEY_PERMISSION_TYPES, getPermissionTypes(params.getLocale().getLanguage()));
+            JSONHelper.putValue(root, "roles", getRoles());
+            JSONHelper.putValue(root, "permissionTypes", getPermissionTypes(params.getLocale().getLanguage()));
+            JSONHelper.putValue(root, "layerTypes", getMandatoryFields());
             ResponseHelper.writeResponse(params, root);
         } catch (Exception e) {
             throw new ActionException("Something went wrong getting roles and permission types from the platform", e);
@@ -70,12 +72,13 @@ public class LayerAdminMetadataHandler extends RestActionHandler {
     private JSONArray getRoles() throws ServiceException, JSONException  {
         final Role[] roles = userService.getRoles();
         final JSONArray rolesJSON = new JSONArray();
-
-        for (Role role : roles) {
-            JSONObject external = new JSONObject();
-            external.put(JSKEY_ID, role.getId());
-            external.put(JSKEY_NAME, role.getName());
-            rolesJSON.put(external);
+        if (roles != null) {
+            for (Role role : roles) {
+                JSONObject external = new JSONObject();
+                external.put(JSKEY_ID, role.getId());
+                external.put(JSKEY_NAME, role.getName());
+                rolesJSON.put(external);
+            }
         }
         return rolesJSON;
     }  
@@ -103,5 +106,13 @@ public class LayerAdminMetadataHandler extends RestActionHandler {
         // add any additional permissions
         availablePermissionTypes.addAll(permissionsService.getAdditionalPermissions());
         return availablePermissionTypes;
+    }
+
+    private Map<String, Set<String>> getMandatoryFields() {
+        Map<String, Set<String>> fields = new HashMap<>();
+        for (String layertype: LayerValidator.getRecognizedLayerTypes()) {
+            fields.put(layertype, LayerValidator.getMandatoryFields(layertype));
+        }
+        return fields;
     }
 }

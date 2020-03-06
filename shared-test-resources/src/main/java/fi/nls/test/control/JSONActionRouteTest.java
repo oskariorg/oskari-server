@@ -17,10 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.*;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -61,11 +58,11 @@ public class JSONActionRouteTest {
      * @return
      */
     public ActionParameters createActionParams(final User user) {
-        return createActionParams(new HashMap<String, String>(), user);
+        return createActionParams(Collections.emptyMap(), user);
     }
 
     public ActionParameters createActionParams(final User user, final InputStream payload) {
-        return createActionParams(new HashMap<String, String>(), user, payload);
+        return createActionParams(Collections.emptyMap(), user, payload);
     }
 
     /**
@@ -90,7 +87,7 @@ public class JSONActionRouteTest {
     public ActionParameters createActionParams(final Map<String, String> parameters, final User user, final InputStream payload) {
         final ActionParameters params = new ActionParameters();
         // request params
-        HttpServletRequest req = mockHttpServletRequest("GET", parameters);
+        HttpServletRequest req = mockHttpServletRequest("GET", parameters, null, -1, payload);
         if(!response.toString().isEmpty()) {
             fail("Creating new ActionParams, but response already has content: " + response.toString());
         }
