@@ -140,6 +140,10 @@ public class LayerValidator {
             // if url is mandatory -> validate that it's usable
             input.setUrl(LayerValidator.sanitizeUrl(input.getUrl()));
         }
+        if (input.getVersion() == null) {
+            // Database requires non-null value. Empty string is ok for layers that don't require version
+            input.setVersion("");
+        }
         // at least default language must have name for any layer type
         // validateLocale could be replaced with:
         // hasValue(input, "locale." + PropertyUtil.getDefaultLanguage() + ".name")
