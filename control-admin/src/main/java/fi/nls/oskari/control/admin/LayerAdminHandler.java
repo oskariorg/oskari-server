@@ -176,10 +176,6 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
 
         mapLayerService.update(ml);
 
-        // TODO: removes all permissions but non-admins don't send all permissions back
-        // Should we remove just the permissions that we get from frontend?
-        MapLayerPermissionsHelper.removePermissions(ml.getId());
-
         return result;
     }
 
