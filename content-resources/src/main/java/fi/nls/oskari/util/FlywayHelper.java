@@ -2,20 +2,23 @@ package fi.nls.oskari.util;
 
 import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.ViewTypes;
+import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.util.ConversionHelper;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Helpers for flyway scripts. Be very careful when making changes as previous versions of Oskari are using this
  * to migrate database.
  */
 public class FlywayHelper {
-
     public static List<Long> getViewIdsForTypes(Connection connection, String... types)
             throws SQLException {
         ArrayList<Long> ids = new ArrayList<>();
@@ -81,6 +84,34 @@ public class FlywayHelper {
             }
         }
         return ids;
+    }
+    public static String getDefaultViewUuid(Connection conn, String applicationName) throws SQLException {
+        Map<Long, String> uuids = new HashMap<>();
+        final String sql = "SELECT id, uuid FROM portti_view WHERE application=? and type=?";
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setString(1, applicationName);
+            statement.setString(2, ViewTypes.DEFAULT);
+            try (ResultSet rs = statement.executeQuery()) {
+                while (rs.next()) {
+                    uuids.put(rs.getLong("id"), rs.getString("uuid"));
+                }
+            }
+        }
+        if (uuids.size() == 1) {
+            return uuids.values().stream().findFirst().get();
+        }
+        if (uuids.size() > 1) {
+            long defaultId = ConversionHelper.getLong(PropertyUtil.get("view.default"), -1);
+            if (uuids.containsKey(defaultId)) {
+                return uuids.get(defaultId);
+            }
+            long appId = ConversionHelper.getLong(PropertyUtil.get("view.default." + applicationName), -1);
+            if (uuids.containsKey(appId)) {
+                return uuids.get(appId);
+            }
+            throw new SQLException ("Couldn't find unique default view. Define default view id in properties view.default or view.default.{application}");
+        }
+        throw new SQLException ("Couldn't find default view");
     }
 
     public static boolean viewContainsBundle(Connection connection, String bundle, Long viewId)
