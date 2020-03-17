@@ -49,7 +49,7 @@ public class ServiceCapabilitiesHandler extends AbstractLayerAdminHandler {
      * @throws ActionException
      */
     @Override
-    public void handleGet(ActionParameters params) throws ActionException {
+    public void handlePost(ActionParameters params) throws ActionException {
         if (!userHasAddPermission(params.getUser())) {
             throw new ActionDeniedException("User doesn't have add layer permission");
         }
