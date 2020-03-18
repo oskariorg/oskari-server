@@ -45,7 +45,7 @@ public class LayerHelper {
                 log.warn(e,"Error updating capabilities for service from", oskariLayer.getUrl());
                 if (OskariLayer.TYPE_WMTS.equals(oskariLayer.getType())) {
                     log.warn("The WMTS-layer", oskariLayer.getName(),
-                            "will worker slower than normal with capabilities/tilegrids not cached. Try caching the capabilities later using the admin UI.");
+                            "might work slower than normal with capabilities/tilegrids not cached. Try caching the capabilities later using the admin UI.");
                 }
             }
             // insert to db
