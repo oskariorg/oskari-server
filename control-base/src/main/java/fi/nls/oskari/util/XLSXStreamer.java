@@ -59,31 +59,23 @@ public class XLSXStreamer implements TabularFileStreamer {
 
     private void fillCell(Cell cell, Object value) {
         if (value == null) {
-            cell.setCellType(CellType.BLANK);
+            cell.setBlank();
         } else if (value instanceof String) {
-            cell.setCellType(CellType.STRING);
             cell.setCellValue((String)value);
         } else if (value instanceof Double) {
-            cell.setCellType(CellType.NUMERIC);
             cell.setCellValue((Double)value);
         } else if (value instanceof Float) {
-            cell.setCellType(CellType.NUMERIC);
             cell.setCellValue((Float)value);
         } else if (value instanceof Integer) {
-            cell.setCellType(CellType.NUMERIC);
             cell.setCellValue((Integer)value);
         } else if (value instanceof Long) {
-            cell.setCellType(CellType.NUMERIC);
             cell.setCellValue((Long)value);
         } else if (value instanceof Short) {
-            cell.setCellType(CellType.NUMERIC);
             cell.setCellValue((Short) value);
         } else if (value instanceof Boolean) {
-            cell.setCellType(CellType.BOOLEAN);
             cell.setCellValue((Boolean)value);
         } else {
             // Object or an Array...
-            cell.setCellType(CellType.STRING);
             cell.setCellValue(value.toString());
         }
     }
