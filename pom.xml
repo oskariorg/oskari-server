@@ -90,7 +90,7 @@
         <quartz-scheduler.version>2.3.2</quartz-scheduler.version>
 
         <xerces.version>2.12.0</xerces.version>
-        <xmlbeans.version>2.6.0</xmlbeans.version>
+        <xmlbeans.version>3.1.0</xmlbeans.version>
         <geotools.version>19.2</geotools.version>
         <geotools.major>19</geotools.major>
         <jts.version>1.14.0</jts.version>
