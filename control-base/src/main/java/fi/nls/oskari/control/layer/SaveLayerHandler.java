@@ -21,6 +21,7 @@ import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilitiesHelper;
 import fi.nls.oskari.util.*;
+import org.oskari.admin.LayerCapabilitiesHelper;
 import org.oskari.log.AuditLog;
 import fi.nls.oskari.wfs.GetGtWFSCapabilities;
 import fi.nls.oskari.wmts.WMTSCapabilitiesParser;
@@ -470,7 +471,7 @@ public class SaveLayerHandler extends AbstractLayerAdminHandler {
                 WFS3Service service = WFS3Service.fromURL(ml.getUrl(), ml.getUsername(), ml.getPassword());
                 OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWFS(service, ml, systemCRSs);
             } else {
-                ml.setCapabilities(GetGtWFSCapabilities.getLayerCapabilities(ml, systemCRSs));
+                LayerCapabilitiesHelper.updateCapabilities(ml);
             }
         } catch (Exception e) {
             LOG.warn("Couldn't update capabilities for WFS (" + ml.getVersion() + ") layer:", ml.getName(), e.getMessage());
