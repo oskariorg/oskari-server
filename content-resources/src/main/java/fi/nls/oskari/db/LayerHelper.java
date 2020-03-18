@@ -28,7 +28,6 @@ public class LayerHelper {
     public static int setupLayer(final String layerfile) throws IOException {
         final String jsonStr = IOHelper.readString(DBHandler.getInputStreamFromResource("/json/layers/" + layerfile));
         MapLayer layer = LayerAdminJSONHelper.readJSON(jsonStr);
-        // TODO: validate parsed layer?
         final List<OskariLayer> dbLayers = layerService.findByUrlAndName(layer.getUrl(), layer.getName());
         if(!dbLayers.isEmpty()) {
             if(dbLayers.size() > 1) {
@@ -37,6 +36,7 @@ public class LayerHelper {
             return dbLayers.get(0).getId();
         } else {
             // layer doesn't exist, insert it
+            // fromJSON validates parsed layer and throws IllegalArgumentException if layer is not valid
             final OskariLayer oskariLayer = LayerAdminJSONHelper.fromJSON(layer);
             // add info from capabilities
             try {
