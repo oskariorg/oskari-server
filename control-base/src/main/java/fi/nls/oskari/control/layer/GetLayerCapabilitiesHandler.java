@@ -6,9 +6,12 @@ import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
+import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
 import fi.nls.oskari.util.ResponseHelper;
 
 import javax.servlet.http.HttpServletResponse;
@@ -24,6 +27,7 @@ import java.nio.charset.StandardCharsets;
 @OskariActionRoute("GetLayerCapabilities")
 public class GetLayerCapabilitiesHandler extends ActionHandler {
 
+    private static final Logger LOG = LogFactory.getLogger(GetLayerCapabilitiesHandler.class);
     private CapabilitiesCacheService capabilitiesService;
     private PermissionHelper permissionHelper;
 
@@ -58,8 +62,12 @@ public class GetLayerCapabilitiesHandler extends ActionHandler {
 
     private String getCapabilities(OskariLayer layer) throws ActionException {
         try {
+            OskariLayerCapabilities caps = capabilitiesService.getCapabilities(layer);
             // Do not cache this. We don't check whether or not we can parse this response
-            return capabilitiesService.getCapabilities(layer).getData();
+            if (caps.getId() == null) {
+                LOG.info("Capabilities for layer", layer.getId(), "are not cached. Update them using the admin UI.");
+            }
+            return caps.getData();
         } catch (ServiceException ex) {
             throw new ActionException("Error reading capabilities", ex);
         }

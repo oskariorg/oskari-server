@@ -6,7 +6,9 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
+import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.IOHelper;
+import org.oskari.admin.LayerCapabilitiesHelper;
 import org.oskari.admin.MapLayerGroupsHelper;
 import org.oskari.admin.MapLayerPermissionsHelper;
 import org.oskari.maplayer.model.MapLayer;
@@ -26,7 +28,6 @@ public class LayerHelper {
     public static int setupLayer(final String layerfile) throws IOException {
         final String jsonStr = IOHelper.readString(DBHandler.getInputStreamFromResource("/json/layers/" + layerfile));
         MapLayer layer = LayerAdminJSONHelper.readJSON(jsonStr);
-        // TODO: validate parsed layer?
         final List<OskariLayer> dbLayers = layerService.findByUrlAndName(layer.getUrl(), layer.getName());
         if(!dbLayers.isEmpty()) {
             if(dbLayers.size() > 1) {
@@ -35,9 +36,20 @@ public class LayerHelper {
             return dbLayers.get(0).getId();
         } else {
             // layer doesn't exist, insert it
+            // fromJSON validates parsed layer and throws IllegalArgumentException if layer is not valid
             final OskariLayer oskariLayer = LayerAdminJSONHelper.fromJSON(layer);
+            // add info from capabilities
+            try {
+                LayerCapabilitiesHelper.updateCapabilities(oskariLayer);
+            } catch (ServiceException e) {
+                log.warn(e,"Error updating capabilities for service from", oskariLayer.getUrl());
+                if (OskariLayer.TYPE_WMTS.equals(oskariLayer.getType())) {
+                    log.warn("The WMTS-layer", oskariLayer.getName(),
+                            "might work slower than normal with capabilities/tilegrids not cached. Try caching the capabilities later using the admin UI.");
+                }
+            }
+            // insert to db
             int id = layerService.insert(oskariLayer);
-            // TODO: add info from capabilities?
             MapLayerPermissionsHelper.setLayerPermissions(id, layer.getRole_permissions());
 
             if (layer.getGroups() != null) {
