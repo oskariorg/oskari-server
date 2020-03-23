@@ -99,15 +99,20 @@ public class LayerJSONFormatterWFS extends LayerJSONFormatter {
             } else {
                 throw new ServiceException("Invalid WFSCapabilitiesType");
             }
+            // parse for version 1.x
+            // TODO: 2.0.0 or newer doesn't work with this so content-editor etc will not work with those
             // Schema is used only to parse geometry property name
             // skip if failed to get schema or can't find default geometry property
             try {
                 SimpleFeatureType sft = source.getSchema();
+                JSONHelper.putValue(json, CapabilitiesConstants.KEY_NAMESPACE_URL, sft.getName().getNamespaceURI());
                 GeometryDescriptor geom = sft.getGeometryDescriptor();
                 if (geom != null) {
                     JSONHelper.putValue(json, CapabilitiesConstants.KEY_GEOM_NAME, geom.getLocalName());
                 } // TODO: else sft.getTypes().filter(known geom types)
-            } catch (Exception e) {}
+            } catch (Exception e) {
+                log.info("Unable to parse namespace url or geometry field name from schema:", e.getMessage());
+            }
 
             ResourceInfo info = source.getInfo();
             // TODO is there more than default crs

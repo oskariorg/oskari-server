@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 public class WFSLayerCapabilities {
     public static final String KEY_GEOMETRYFIELD = "geomName";
+    public static final String KEY_NAMESPACE_URL = "namespaceURL";
 
     private JSONObject capabilities;
     // input is capabilities from oskari_maplayer
@@ -23,5 +24,9 @@ public class WFSLayerCapabilities {
     public void setGeometryAttribute(String attr) {
         // CapabilitiesConstants.KEY_GEOM_NAME
         JSONHelper.putValue(capabilities, KEY_GEOMETRYFIELD, attr);
+    }
+
+    public String getNamespaceUrl() {
+        return capabilities.optString(KEY_NAMESPACE_URL, null);
     }
 }
