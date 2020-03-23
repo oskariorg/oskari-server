@@ -53,6 +53,7 @@ public class InsertFeatureHandler extends AbstractFeatureHandler {
             for (int i = 0; i < paramFeatures.length(); i++) {
                 JSONObject featureJSON = paramFeatures.getJSONObject(i);
                 OskariLayer layer = getLayer(featureJSON.optString("layerId"));
+                movePrefixFromNameToURL(layer);
 
                 final String wfstMessage = createWFSTMessage(featureJSON);
                 LOG.debug("Inserting feature to service at", layer.getUrl(), "with payload", wfstMessage);
@@ -123,6 +124,22 @@ public class InsertFeatureHandler extends AbstractFeatureHandler {
         } catch (SAXException ex) {
             LOG.error(ex, "SAX processing error");
             throw new ActionException("SAX processing error", ex);
+        }
+    }
+
+    /**
+     * Takes workspace prefix from layer name (before ':') and puts it into the layer url after 'geoserver/'
+     * @param  layer  OskariLayer layer
+     */
+    private void movePrefixFromNameToURL(OskariLayer layer){
+        String layerName = layer.getName();
+        String url = layer.getUrl();
+        if(layerName.indexOf(":") != -1){
+            url = url.replace("geoserver/","geoserver/"+(layerName.split(":")[0])+"/");
+            layer.setUrl(url);
+            layerName = layerName.substring(layerName.indexOf(":")+1);
+            layerName.trim();
+            layer.setName(layerName);
         }
     }
 }
