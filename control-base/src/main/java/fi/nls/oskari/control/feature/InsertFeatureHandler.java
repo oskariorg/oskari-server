@@ -53,12 +53,9 @@ public class InsertFeatureHandler extends AbstractFeatureHandler {
             for (int i = 0; i < paramFeatures.length(); i++) {
                 JSONObject featureJSON = paramFeatures.getJSONObject(i);
                 OskariLayer layer = getLayer(featureJSON.optString("layerId"));
-                String layerName = layer.getName();
-                String url = layer.getUrl();
-                url = movePrefixFromNameToURL(layerName,url);
                 final String wfstMessage = createWFSTMessage(featureJSON);
                 LOG.debug("Inserting feature to service at", layer.getUrl(), "with payload", wfstMessage);
-                final String responseString = postPayload(layer, wfstMessage, url);
+                final String responseString = postPayload(layer.getUsername(), layer.getPassword(), wfstMessage, getURLForNamespace(layer.getName(),layer.getUrl()));
                 updatedFeatureIds.put(parseFeatureIdFromResponse(responseString));
             }
 

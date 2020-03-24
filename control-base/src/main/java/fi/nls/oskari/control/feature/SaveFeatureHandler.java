@@ -46,10 +46,7 @@ public class SaveFeatureHandler extends AbstractFeatureHandler {
 
                 final String wfstMessage = baos.toString();
                 LOG.debug("Updating feature to service at", layer.getUrl(), "with payload", wfstMessage);
-                String layerName = layer.getName();
-                String url = layer.getUrl();
-                url = movePrefixFromNameToURL(layerName, url);
-                String responseString = postPayload(layer, wfstMessage, url);
+                String responseString = postPayload(layer.getUsername(), layer.getPassword(), wfstMessage, getURLForNamespace(layer.getName(),layer.getUrl()));
 
                 if (responseString.indexOf("Exception") > -1) {
                     exceptions.add(responseString);

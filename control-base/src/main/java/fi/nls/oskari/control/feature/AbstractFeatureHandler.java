@@ -77,9 +77,9 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
         return id;
     }
 
-    protected String postPayload(OskariLayer layer, String payload, String url) throws ActionException {
+    protected String postPayload(String username, String password, String payload, String url) throws ActionException {
         try {
-            HttpURLConnection conn = IOHelper.getConnection(url, layer.getUsername(), layer.getPassword());
+            HttpURLConnection conn = IOHelper.getConnection(url, username, password);
             IOHelper.writeHeader(conn, IOHelper.HEADER_CONTENTTYPE, IOHelper.CONTENT_TYPE_XML);
             IOHelper.writeToConnection(conn, payload);
             String responseString = IOHelper.readString(conn);
@@ -110,8 +110,7 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
         String layerName = layer.getName();
         //remove prefix from layername
         if(layerName.indexOf(":") != -1){
-            layerName = layerName.substring(layerName.indexOf(":")+1);
-            layerName.trim();
+            layerName = (layerName.substring(layerName.indexOf(":")+1)).trim();
         }
 
         feature.setLayerName(layerName);
@@ -271,11 +270,11 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
     }
 
     /**
-     * Takes workspace prefix from layer name (before ':') and puts it into the layer url after 'geoserver/'
+     * Takes workspace prefix from layer name (before ':') and puts it into the layer url before '/wfs' or '/ows'
      * NOTE! May not work with other than geoserver
      * @param  layer  OskariLayer layer
      */
-    protected String movePrefixFromNameToURL(String layerName, String url){
+    protected String getURLForNamespace(String layerName, String url){
         
         if(layerName.indexOf(":") != -1){
             String prefix = layerName.split(":")[0];
