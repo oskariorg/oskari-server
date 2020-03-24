@@ -109,7 +109,6 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
         WFSLayerCapabilities caps = new WFSLayerCapabilities(layer.getCapabilities());
 
         feature.setLayerName(layer.getName());
-        feature.setNamespace("oskari");
         feature.setNamespaceURI(attrs.getNamespaceURL());
         feature.setGMLGeometryProperty(caps.getGeometryAttribute());
         feature.setId(jsonObject.getString("featureId"));
