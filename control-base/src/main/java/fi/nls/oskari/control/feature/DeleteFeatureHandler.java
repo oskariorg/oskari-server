@@ -36,7 +36,10 @@ public class DeleteFeatureHandler extends AbstractFeatureHandler {
 
         try {
             String payload = createPayload(jsonObject);
-            String responseString = postPayload(layer, payload);
+            String layerName = layer.getName();
+            String url = layer.getUrl();
+            url = movePrefixFromNameToURL(layerName,url);
+            String responseString = postPayload(layer, payload, url);
             flushLayerTilesCache(layer.getId());
 
             if (responseString.indexOf("Exception") > -1) {

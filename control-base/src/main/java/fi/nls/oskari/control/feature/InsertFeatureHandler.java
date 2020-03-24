@@ -53,11 +53,12 @@ public class InsertFeatureHandler extends AbstractFeatureHandler {
             for (int i = 0; i < paramFeatures.length(); i++) {
                 JSONObject featureJSON = paramFeatures.getJSONObject(i);
                 OskariLayer layer = getLayer(featureJSON.optString("layerId"));
-                movePrefixFromNameToURL(layer);
-
+                String layerName = layer.getName();
+                String url = layer.getUrl();
+                url = movePrefixFromNameToURL(layerName,url);
                 final String wfstMessage = createWFSTMessage(featureJSON);
                 LOG.debug("Inserting feature to service at", layer.getUrl(), "with payload", wfstMessage);
-                final String responseString = postPayload(layer, wfstMessage);
+                final String responseString = postPayload(layer, wfstMessage, url);
                 updatedFeatureIds.put(parseFeatureIdFromResponse(responseString));
             }
 
@@ -124,30 +125,6 @@ public class InsertFeatureHandler extends AbstractFeatureHandler {
         } catch (SAXException ex) {
             LOG.error(ex, "SAX processing error");
             throw new ActionException("SAX processing error", ex);
-        }
-    }
-
-    /**
-     * Takes workspace prefix from layer name (before ':') and puts it into the layer url after 'geoserver/'
-     * @param  layer  OskariLayer layer
-     */
-    private void movePrefixFromNameToURL(OskariLayer layer){
-        String layerName = layer.getName();
-        String url = layer.getUrl();
-        if(layerName.indexOf(":") != -1){
-            String prefix = layerName.split(":")[0];
-            if(!(url.contains(prefix))){
-                if(url.contains("/ows")){
-                    url = url.replace("/ows","/"+prefix+"/ows");
-                }
-                else if (url.contains("/wfs")){
-                    url = url.replace("/wfs","/"+prefix+"/wfs");
-                }
-                layer.setUrl(url);
-            }
-            layerName = layerName.substring(layerName.indexOf(":")+1);
-            layerName.trim();
-            layer.setName(layerName);
         }
     }
 }
