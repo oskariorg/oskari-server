@@ -101,6 +101,7 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
         dataProviders.clear();
         if (dataProvider != null) {
             dataProviders.add(dataProvider);
+            setDataproviderId(dataProvider.getId());
         }
     }
     public void removeDataprovider(final int id) {
