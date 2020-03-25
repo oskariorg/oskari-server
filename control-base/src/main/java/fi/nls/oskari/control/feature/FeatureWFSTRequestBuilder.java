@@ -53,7 +53,6 @@ public class FeatureWFSTRequestBuilder extends WFSTRequestBuilder {
 
         xsw.writeStartElement(WFS, "Insert");
         xsw.writeStartElement(feature.getLayerName());
-        xsw.writeAttribute("xmlns:" + feature.getNamespace(), feature.getNamespaceURI());
 
         for (Map.Entry<String, String> property : feature.getProperties().entrySet()) {
             xsw.writeStartElement(property.getKey());

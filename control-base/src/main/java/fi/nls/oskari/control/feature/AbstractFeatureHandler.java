@@ -77,9 +77,9 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
         return id;
     }
 
-    protected String postPayload(OskariLayer layer, String payload) throws ActionException {
+    protected String postPayload(String username, String password, String payload, String url) throws ActionException {
         try {
-            HttpURLConnection conn = IOHelper.getConnection(layer.getUrl(), layer.getUsername(), layer.getPassword());
+            HttpURLConnection conn = IOHelper.getConnection(url, username, password);
             IOHelper.writeHeader(conn, IOHelper.HEADER_CONTENTTYPE, IOHelper.CONTENT_TYPE_XML);
             IOHelper.writeToConnection(conn, payload);
             String responseString = IOHelper.readString(conn);
@@ -107,9 +107,13 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
         CoordinateReferenceSystem crs = CRS.decode(srsName);
         WFSLayerAttributes attrs = new WFSLayerAttributes(layer.getAttributes());
         WFSLayerCapabilities caps = new WFSLayerCapabilities(layer.getCapabilities());
+        String layerName = layer.getName();
+        //remove prefix from layername
+        if(layerName.indexOf(":") != -1){
+            layerName = (layerName.substring(layerName.indexOf(":")+1)).trim();
+        }
 
-        feature.setLayerName(layer.getName());
-        feature.setNamespace("oskari");
+        feature.setLayerName(layerName);
         feature.setNamespaceURI(attrs.getNamespaceURL());
         feature.setGMLGeometryProperty(caps.getGeometryAttribute());
         feature.setId(jsonObject.getString("featureId"));
@@ -263,5 +267,26 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
                 throw new ActionDeniedException("User doesn't have edit permission for layer: " + layerId);
             }
         }
+    }
+
+    /**
+     * Takes workspace prefix from layer name (before ':') and puts it into the layer url before '/wfs' or '/ows'
+     * NOTE! May not work with other than geoserver
+     * @param  layer  OskariLayer layer
+     */
+    protected String getURLForNamespace(String layerName, String url){
+        
+        if(layerName.indexOf(":") != -1){
+            String prefix = layerName.split(":")[0];
+            if(!(url.contains(prefix))){
+                if(url.contains("/ows")){
+                    url = url.replace("/ows","/"+prefix+"/ows");
+                }
+                else if (url.contains("/wfs")){
+                    url = url.replace("/wfs","/"+prefix+"/wfs");
+                }
+            }
+        }
+        return url;
     }
 }
