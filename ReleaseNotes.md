@@ -7,7 +7,7 @@ For a full list of changes see: https://github.com/oskariorg/oskari-server/miles
 WFS integrations:
 - Improvements for error handling on WFS integrations (missing schemas and handling unexpected output formats etc)
 - Transport related code has been mostly removed from the server code base and will continue to be removed
-- Database tables used by transport have been removed with content migrated: https://github.com/oskariorg/oskari-server/pull/509
+- Database tables used by transport have been removed with relevant content migrated: https://github.com/oskariorg/oskari-server/pull/509
 
 Layer admininistration:
 - new helpers and action route (LayerAdmin) added for the new map layer admin functionality UI (Old ones will be deprecated and removed in a future release)
