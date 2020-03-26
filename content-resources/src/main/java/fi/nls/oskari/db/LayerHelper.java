@@ -65,4 +65,19 @@ public class LayerHelper {
         }
     }
 
+    /**
+     * So we can get updated "supported SRS" for layers after inserting a new appsetup with possibly new projection
+     * @throws ServiceException
+     */
+    protected static void refreshLayerCapabilities() {
+        for (OskariLayer layer : layerService.findAll()) {
+            try {
+                LayerCapabilitiesHelper.updateCapabilities(layer);
+                layerService.update(layer);
+            } catch (Exception e) {
+                log.warn(e,"Couldn't update capabilities for layer:", layer.getUrl(), layer.getName());
+            }
+        }
+    }
+
 }

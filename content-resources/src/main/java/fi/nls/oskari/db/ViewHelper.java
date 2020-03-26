@@ -46,6 +46,8 @@ public class ViewHelper {
 
             final long viewId = viewService.addView(view);
             log.info("Added view from file:", viewfile, "/viewId is:", viewId, "/uuid is:", view.getUuid());
+            // update supported SRS for layers after possibly new projection on appsetup/view
+            LayerHelper.refreshLayerCapabilities();
             return viewId;
         } catch (Exception ex) {
             log.error(ex, "Unable to insert view! ");
