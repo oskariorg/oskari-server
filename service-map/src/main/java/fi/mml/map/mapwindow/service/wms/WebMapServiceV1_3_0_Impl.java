@@ -188,6 +188,13 @@ public class WebMapServiceV1_3_0_Impl extends AbstractWebMapService {
     }
 
     private String bboxToWGS84WKT (BoundingBox bbox) throws FactoryException, TransformException {
+        if ("true".equalsIgnoreCase(System.getProperty("org.geotools.referencing.forceXY"))) {
+            // With geoserver on the same Java sandbox hacking the coordinate order for things
+            // there is a good chance that the coordinate order will get mixed here
+            // since coverage data is more nice-to-have than essential we are better off skipping this metadata
+            // https://docs.geotools.org/latest/userguide/library/referencing/order.html
+            return null;
+        }
         CoordinateReferenceSystem sourceCRS = CRS.decode(bbox.getCRS());
         CoordinateReferenceSystem wgs84  = CRS.decode("EPSG:4326", true);
         ReferencedEnvelope env = new ReferencedEnvelope (bbox.getMinx(), bbox.getMaxx(),bbox.getMiny(), bbox.getMaxy(), sourceCRS);
