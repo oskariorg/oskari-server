@@ -1,5 +1,42 @@
 # Release Notes
 
+## 1.55.0
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/21?closed=1
+
+WFS integrations:
+- Improvements for error handling on WFS integrations (missing schemas and handling unexpected output formats etc)
+- Transport related code has been mostly removed from the server code base and will continue to be removed
+- Database tables used by transport have been removed with relevant content migrated: https://github.com/oskariorg/oskari-server/pull/509
+
+Layer admininistration:
+- new helpers and action route (LayerAdmin) added for the new map layer admin functionality UI (Old ones will be deprecated and removed in a future release)
+- Adding layers with LayerHelper from Flyway migrations now uses the same JSON-format, validations and functionality as the new admin UI
+- We will continue refining these so they are subject to change in the near future still (at least capabilities handling needs some cleanup)
+- GetHierarchicalMapLayerGroups action route can now be used to fetch layers based on id (instead of always returning whole set of layers)
+- GetAllRolesAndPermissionTypes action route has been renamed LayerAdminMetadata
+
+Imported datasets (userlayer):
+- GPX imports are now read using custom parser implemented in Java (working towards removing an extra step of installing GDAL for Oskari-server)
+- Error handling improved for invalid userlayer imports, inconsistent data and styling improvements
+- Feature attributes are now sorted based on the imported dataset
+
+Statistical data integrations:
+- Multiple improvements for parsing statistical data from PXWeb data sources
+- Improvements on handling cached data for indicator lists
+
+Technical changes for enabling server clustering:
+- Allow persistent user sessions with Redis. Configuration: https://github.com/oskariorg/oskari-server/pull/491
+- Add health and status urls with customizable health checks: https://github.com/oskariorg/oskari-server/pull/493
+
+Other:
+- Bundle registrations and link param handlers for 3D related bundles added (enabling apps to use these more easily)
+- Fix properties configuration and added some URL-parsing methods for IOHelper
+- Layer coverage information improvements. We identified some problem points and added error handling.
+- Unnecessary logging removed
+- Removed dependencies that were no longer used
+- Updated libraries
+
 ## 1.54.1
 
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/22?closed=1
