@@ -43,7 +43,7 @@ public class AnalysisParserTest {
         // getGeoJSONInput() removes crs key no matter the value
         testFeature2.remove("crs");
         features.put(secondFeature);
-        assertTrue("Feature in input should produce feature collection with overridden id",
+        assertTrue("Feature with CRS in input should produce feature collection with overridden ids and cleaned up features",
                 JSONHelper.isEqual(getFeatureCollection(testFeature1, testFeature2), new JSONObject(AnalysisParser.getGeoJSONInput(input, ID_PREFIX))));
     }
 
