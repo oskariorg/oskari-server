@@ -1486,7 +1486,7 @@ public class AnalysisParser {
         return jsona;
     }
 
-    private String getGeoJSONInput(JSONObject json, String id) {
+    protected static String getGeoJSONInput(JSONObject json, String id) {
         if (json == null || !json.has(JSON_KEY_FEATURES)) {
             return null;
         }
