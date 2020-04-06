@@ -1503,8 +1503,11 @@ public class AnalysisParser {
             feature.remove("crs");   // WPS töks, töks to crs
             response.put(feature);
         }
-
-        return JSONHelper.getStringFromJSON(response, null);
+        // GeoServer expects an object with "features" key containing an array of features.
+        JSONObject collection = new JSONObject();
+        JSONHelper.putValue(collection, "type", "FeatureCollection");
+        JSONHelper.putValue(collection, JSON_KEY_FEATURES, response);
+        return JSONHelper.getStringFromJSON(collection, null);
     }
 
     /**
