@@ -43,6 +43,8 @@ public class AnalysisParser {
     public static final String MYPLACES_LAYER_PREFIX = "myplaces_";
     public static final String USERLAYER_PREFIX = "userlayer_";
 
+    private static final Set<String> KNOWN_LAYER_PREFIXES = ConversionHelper.asSet(ANALYSIS_LAYER_PREFIX, MYPLACES_LAYER_PREFIX, USERLAYER_PREFIX);
+
     private static final String DEFAULT_OUTPUT_FORMAT = "text/xml; subtype=gml/3.1.1";
     private static final int DEFAULT_OPACITY = 80;
 
@@ -1331,13 +1333,12 @@ public class AnalysisParser {
      *            wps analysis parameters
      * @return analysis id
      */
-    private String getUserContentAnalysisInputId(String layerId) {
+    protected static String getUserContentAnalysisInputId(String layerId) {
         if (layerId == null) {
             return null;
         }
-        Set<String> knownPrefixes = ConversionHelper.asSet(ANALYSIS_LAYER_PREFIX, MYPLACES_LAYER_PREFIX, USERLAYER_PREFIX);
 
-        String prefixedId = knownPrefixes.stream()
+        String prefixedId = KNOWN_LAYER_PREFIXES.stream()
                 .filter(pre -> layerId.startsWith(pre))
                 .findFirst()
                 .orElse(null);
