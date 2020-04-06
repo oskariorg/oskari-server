@@ -1342,10 +1342,11 @@ public class AnalysisParser {
                 .findFirst()
                 .orElse(null);
         if (prefixedId == null) {
+            // layer id DIDN'T start with any of the known prefixes -> not a user content layer
             return null;
         }
         // split to get the actual id
-        String sids[] = prefixedId.split("_");
+        String sids[] = layerId.split("_");
         if (sids.length > 1) {
             // Old analysis is input for analysis or myplaces or user data layer
             // take the last part as there might be several ids referenced
