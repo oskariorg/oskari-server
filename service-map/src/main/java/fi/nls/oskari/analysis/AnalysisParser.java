@@ -43,6 +43,8 @@ public class AnalysisParser {
     public static final String MYPLACES_LAYER_PREFIX = "myplaces_";
     public static final String USERLAYER_PREFIX = "userlayer_";
 
+    private static final Set<String> KNOWN_LAYER_PREFIXES = ConversionHelper.asSet(ANALYSIS_LAYER_PREFIX, MYPLACES_LAYER_PREFIX, USERLAYER_PREFIX);
+
     private static final String DEFAULT_OUTPUT_FORMAT = "text/xml; subtype=gml/3.1.1";
     private static final int DEFAULT_OPACITY = 80;
 
@@ -1331,21 +1333,21 @@ public class AnalysisParser {
      *            wps analysis parameters
      * @return analysis id
      */
-    private String getUserContentAnalysisInputId(String layerId) {
+    protected static String getUserContentAnalysisInputId(String layerId) {
         if (layerId == null) {
             return null;
         }
-        Set<String> knownPrefixes = ConversionHelper.asSet(ANALYSIS_LAYER_PREFIX, MYPLACES_LAYER_PREFIX, USERLAYER_PREFIX);
 
-        String prefixedId = knownPrefixes.stream()
+        String prefixedId = KNOWN_LAYER_PREFIXES.stream()
                 .filter(pre -> layerId.startsWith(pre))
                 .findFirst()
                 .orElse(null);
         if (prefixedId == null) {
+            // layer id DIDN'T start with any of the known prefixes -> not a user content layer
             return null;
         }
         // split to get the actual id
-        String sids[] = prefixedId.split("_");
+        String sids[] = layerId.split("_");
         if (sids.length > 1) {
             // Old analysis is input for analysis or myplaces or user data layer
             // take the last part as there might be several ids referenced
@@ -1484,7 +1486,7 @@ public class AnalysisParser {
         return jsona;
     }
 
-    private String getGeoJSONInput(JSONObject json, String id) {
+    protected static String getGeoJSONInput(JSONObject json, String id) {
         if (json == null || !json.has(JSON_KEY_FEATURES)) {
             return null;
         }
@@ -1503,8 +1505,11 @@ public class AnalysisParser {
             feature.remove("crs");   // WPS töks, töks to crs
             response.put(feature);
         }
-
-        return JSONHelper.getStringFromJSON(response, null);
+        // GeoServer expects an object with "features" key containing an array of features.
+        JSONObject collection = new JSONObject();
+        JSONHelper.putValue(collection, "type", "FeatureCollection");
+        JSONHelper.putValue(collection, JSON_KEY_FEATURES, response);
+        return JSONHelper.getStringFromJSON(collection, null);
     }
 
     /**
