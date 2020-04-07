@@ -114,8 +114,8 @@ public class LayerAdminJSONHelper {
         out.setMinscale(layer.getMinScale());
         out.setMaxscale(layer.getMaxScale());
 
-        layer.setLegendImage(layer.getLegendImage());
-        layer.setMetadataId(layer.getMetadataId());
+        out.setLegend_image(layer.getLegendImage());
+        out.setMetadataid(layer.getMetadataId());
 
         out.setParams(JSONHelper.getObjectAsMap(layer.getParams()));
         out.setAttributes(JSONHelper.getObjectAsMap(layer.getAttributes()));
