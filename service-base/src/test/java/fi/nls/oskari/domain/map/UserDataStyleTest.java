@@ -39,7 +39,7 @@ public class UserDataStyleTest {
         style.setText_offset_x(100);
         style.setText_offset_y(-500);
         style.setText_label_property("yes");
-        style.setText_label_property(new String[]{ "no" });
+        style.setText_label_property(new String[]{ "attention_text", "name" });
         style.setText_stroke_color("strong");
         style.setText_stroke_width(9000);
 
@@ -55,5 +55,17 @@ public class UserDataStyleTest {
         assertEquals(original, another);
         JSONObject anotherAsOskariStyle = another.parseUserLayerStyleToOskariJSON();
         assertTrue(JSONHelper.isEqual(originalAsOskariStyle, anotherAsOskariStyle));
+    }
+    @Test
+    public void testStringLabelProperty() throws JSONException {
+        UserDataStyle style = new UserDataStyle();
+        style.initDefaultStyle();
+        style.setText_label("label"); // to init text style
+        JSONObject json = style.parseUserLayerStyleToOskariJSON();
+        JSONObject text = json.getJSONObject("text");
+        text.put("labelProperty", "string");
+        style.populateFromOskariJSON(json);
+        assertEquals(1, style.getText_label_property().length);
+        assertEquals("string", style.getText_label_property()[0]);
     }
 }

@@ -2,6 +2,7 @@ package fi.nls.oskari.domain.map;
 
 import java.util.Arrays;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -114,7 +115,12 @@ public class UserDataStyle {
                 setText_offset_x(text.optInt("offsetX"));
                 setText_offset_y(text.optInt("offsetY"));
                 setText_label(text.optString("labelText"));
-                setText_label_property(text.optString("labelProperty"));
+                JSONArray labelProps = text.optJSONArray("labelProperty");
+                if (labelProps != null) {
+                    setText_label_property(labelProps);
+                } else {
+                    setText_label_property(text.optString("labelProperty"));
+                }
             }
         } catch (Exception e) {
             throw new JSONException(e);
@@ -178,7 +184,7 @@ public class UserDataStyle {
             JSONHelper.putValue(text, "offsetY", text_offset_y);
 
             JSONHelper.putValue(text, "labelText", text_label);
-            JSONHelper.putValue(text, "labelProperty", text_label_property == null ? null : text_label_property[0]);
+            JSONHelper.put(text, "labelProperty", text_label_property == null ? null : new JSONArray(Arrays.asList(text_label_property)));
         }
 
         return json;
@@ -332,18 +338,18 @@ public class UserDataStyle {
         return text_label_property;
     }
 
-    public void setText_label_property(String text_label_property) {
-        this.text_label_property = new String[]{text_label_property};
-        if (text_label_property != null && this.font == null) {
-            this.populateDefaultTextStyle();
-        }
-    }
-
     public void setText_label_property(String[] text_label_property) {
         this.text_label_property = text_label_property;
         if (text_label_property != null && this.font == null) {
             this.populateDefaultTextStyle();
         }
+    }
+    public void setText_label_property(String property) {
+        if (property == null) return;
+        setText_label_property(new String[]{property});
+    }
+    public void setText_label_property (JSONArray array) {
+        setText_label_property(JSONHelper.getArrayAsList(array).toArray(new String [array.length()]));
     }
 
     public String getText_label() {
