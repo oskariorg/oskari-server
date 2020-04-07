@@ -1,5 +1,6 @@
 package fi.nls.oskari.analysis;
 
+import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.wfs.WFSLayerAttributes;
 import fi.nls.oskari.domain.map.wfs.WFSLayerCapabilities;
@@ -10,8 +11,10 @@ import fi.nls.oskari.map.analysis.service.AnalysisDataService;
 import fi.nls.oskari.map.analysis.service.TransformationService;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.ServiceRuntimeException;
+import fi.nls.oskari.service.ServiceUnauthorizedException;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
@@ -20,6 +23,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.XML;
+import org.oskari.permissions.PermissionService;
+import org.oskari.permissions.model.PermissionType;
+import org.oskari.permissions.model.ResourceType;
+import org.oskari.service.user.UserLayerService;
 
 import java.util.*;
 
@@ -113,6 +120,10 @@ public class AnalysisParser {
     final String analysisRenderingUrl = AnalysisHelper.getAnalysisRenderingUrl(); //PropertyUtil.get(ANALYSIS_RENDERING_URL);
     final String analysisRenderingElement = PropertyUtil.get(ANALYSIS_RENDERING_ELEMENT);
 
+    private PermissionService getPermissionService() {
+        return OskariComponentManager.getComponentOfType(PermissionService.class);
+    }
+
     /**
      * Parses method parameters to WPS execute xml syntax
      * definition
@@ -122,15 +133,15 @@ public class AnalysisParser {
      * @param baseUrl
      *            Url for Geoserver WPS reference input (input
      *            FeatureCollection)
-     * @param uuid
+     * @param user
      *            User identification
      * @return AnalysisLayer parameters for WPS execution
      ************************************************************************/
-    public AnalysisLayer parseAnalysisLayer(JSONObject json, String filter1, String filter2, String baseUrl, String uuid) throws ServiceException {
+    public AnalysisLayer parseAnalysisLayer(JSONObject json, String filter1, String filter2, String baseUrl, User user) throws ServiceException {
 
         // GeoJson input data
         final String geojson = getGeoJSONInput(json, json.optString(JSON_KEY_NAME,"feature"));
-        AnalysisLayer analysisLayer = getLayerBasedOnInput(json, geojson);
+        AnalysisLayer analysisLayer = getLayerBasedOnInput(json, geojson, user);
 
         String analysisMethod = getAnalysisMethod(json);
         analysisLayer.setMethod(analysisMethod);
@@ -585,7 +596,7 @@ public class AnalysisParser {
         return json.optString(JSON_KEY_LAYERID);
     }
 
-    private AnalysisLayer getLayerBasedOnInput(JSONObject json, String geojsonInput) throws ServiceException {
+    private AnalysisLayer getLayerBasedOnInput(JSONObject json, String geojsonInput, User user) throws ServiceException {
         AnalysisLayer layer = new AnalysisLayer();
 
         String name = json.optString("name");
@@ -630,9 +641,16 @@ public class AnalysisParser {
             // Normal WFS layer
             layer.setInputType(ANALYSIS_INPUT_TYPE_WFS);
             layer.setId(ConversionHelper.getInt(layerId, -1));
+            if (!userHasPermission(user, layerId)) {
+                throw new ServiceUnauthorizedException("User doesn't have permission to layer: " + layerId);
+            }
             return layer;
         }
         // user content -> input type and id
+        if(!userHasPermissionForUserContent(user, layerId)) {
+            throw new ServiceUnauthorizedException("User doesn't have permission to layer: " + layerId);
+        }
+
         layer.setInputType(ANALYSIS_INPUT_TYPE_GS_VECTOR);
 
         // check if we have analysis layer as input
@@ -657,6 +675,22 @@ public class AnalysisParser {
             return layer;
         }
         throw new ServiceException("Couldn't determine input for analysis");
+    }
+
+    protected boolean userHasPermission(User user, String layerId) {
+        return getPermissionService().findResource(ResourceType.maplayer, layerId)
+                .filter(r -> r.hasPermission(user, PermissionType.VIEW_LAYER)).isPresent();
+    }
+
+    protected boolean userHasPermissionForUserContent(User user, String layerId) {
+        Map<String, UserLayerService> wfsHelpers =  OskariComponentManager.getComponentsOfType(UserLayerService.class);
+        boolean hasPermissions = wfsHelpers.values()
+                .stream()
+                .filter(s -> s.isUserContentLayer(layerId))
+                .findFirst()
+                .map(s -> s.hasViewPermission(layerId, user))
+                .orElse(false);
+        return hasPermissions;
     }
 
     private List<String> getFields(JSONObject json, Map<String,String> fieldTypeMap) {

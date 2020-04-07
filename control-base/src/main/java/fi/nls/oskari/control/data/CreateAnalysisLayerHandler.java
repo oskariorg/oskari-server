@@ -20,6 +20,7 @@ import fi.nls.oskari.map.analysis.service.AnalysisWebProcessingService;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.service.ServiceUnauthorizedException;
 import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
@@ -113,10 +114,8 @@ public class CreateAnalysisLayerHandler extends RestActionHandler {
         // Get baseProxyUrl
         final String baseUrl = getBaseProxyUrl(params);
 
-        // User
-        String uuid = params.getUser().getUuid();
         // note! analysisLayer is replaced in aggregate handling!!
-        AnalysisLayer analysisLayer = getAnalysisLayer(analyseJson, filter1, filter2, baseUrl, uuid);
+        AnalysisLayer analysisLayer = getAnalysisLayer(analyseJson, filter1, filter2, baseUrl, params.getUser());
         Analysis analysis = null;
 
         if (analysisLayer.getMethod().equals(AnalysisParser.LAYER_UNION)) {
@@ -260,9 +259,11 @@ public class CreateAnalysisLayerHandler extends RestActionHandler {
     }
 
     private AnalysisLayer getAnalysisLayer(JSONObject analyseJson, String filter1, String filter2, String baseUrl,
-                                           String uuid) throws ActionParamsException {
+                                           User user) throws ActionException {
         try {
-            return analysisParser.parseAnalysisLayer(analyseJson, filter1, filter2, baseUrl, uuid);
+            return analysisParser.parseAnalysisLayer(analyseJson, filter1, filter2, baseUrl, user);
+        } catch (ServiceUnauthorizedException e) {
+            throw new ActionDeniedException(e.getMessage());
         } catch (ServiceException e) {
             throw new ActionParamsException(ERROR_UNABLE_TO_PARSE_ANALYSE, e.getMessage());
         }
