@@ -1,5 +1,14 @@
 # Release Notes
 
+## 1.55.1
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/24?closed=1
+
+- Added bundle registrations for new bundles: admin-layereditor and layerlist
+- Fixed metadata id and legend image handling on server-side for admin-layereditor
+- Fixed user content/temporary features input for analysis
+- Additional permissions checks added for analysis
+
 ## 1.55.0
 
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/21?closed=1
