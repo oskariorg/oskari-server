@@ -22,8 +22,26 @@ public class ViewHelper {
 
     private static final Logger log = LogFactory.getLogger(ViewHelper.class);
     private static String[] UNRESTRICTED_USAGE_DOMAINS = PropertyUtil.getCommaSeparatedList("view.published.usage.unrestrictedDomains");
+    private static String myDomain;
 
     private ViewHelper() {}
+
+    /**
+     * Returns the configured domain without the protocol
+     * @return
+     */
+    protected static String getMyDomain() {
+        if (myDomain != null) {
+            return myDomain;
+        }
+        String[] prop = PropertyUtil.get("oskari.domain").split("//");
+        if (prop.length == 2) {
+            myDomain = prop[1];
+        } else {
+            myDomain = "http://localhost:8080";
+        }
+        return myDomain;
+    }
 
     public static JSONArray getStartupSequence(final View view) throws ViewException {
         final JSONArray startupSequence = new JSONArray();
@@ -58,6 +76,9 @@ public class ViewHelper {
         boolean refererExists = referer != null && !referer.isEmpty();
         boolean domainRestrictionExists = pubdomain != null && !pubdomain.isEmpty();
         if (!refererExists || !domainRestrictionExists) {
+            return true;
+        }
+        if (referer.endsWith(getMyDomain())) {
             return true;
         }
         log.debug("Unrestricted domains:", UNRESTRICTED_USAGE_DOMAINS);

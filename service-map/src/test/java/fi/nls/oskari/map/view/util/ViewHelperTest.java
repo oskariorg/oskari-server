@@ -5,6 +5,7 @@ import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.map.view.BundleService;
 import fi.nls.oskari.map.view.BundleServiceMemory;
 import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
@@ -25,6 +26,19 @@ public class ViewHelperTest {
     @Before
     public void init() {
         bundleService = new BundleServiceMemory();
+    }
+
+    @Test
+    public void testReferer() throws Exception {
+        PropertyUtil.addProperty("oskari.domain", "https://testdomain.org");
+        PropertyUtil.addProperty("view.published.usage.unrestrictedDomains", "legit.com, dummy.org");
+        assertTrue("Null-referer should be ok", ViewHelper.isRefererDomain(null, "http://testing.net"));
+        assertTrue("Instance domain as referer should be ok", ViewHelper.isRefererDomain("https://testdomain.org", "http://testing.net"));
+        assertTrue("Unrestricted domain 1 as referer should be ok", ViewHelper.isRefererDomain("https://legit.com", "http://testing.net"));
+        assertTrue("Unrestricted domain 2 as referer should be ok", ViewHelper.isRefererDomain("https://dummy.org", "http://testing.net"));
+
+        assertFalse("Random referer should NOT be ok", ViewHelper.isRefererDomain("https://yay.com", "http://testing.net"));
+        PropertyUtil.clearProperties();
     }
 
     @Test
