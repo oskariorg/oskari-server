@@ -32,6 +32,9 @@ public class ViewHelperTest {
     public void testReferer() throws Exception {
         PropertyUtil.addProperty("oskari.domain", "https://testdomain.org");
         PropertyUtil.addProperty("view.published.usage.unrestrictedDomains", "legit.com, dummy.org");
+        // work around for static helper that uses property values that are set before this test and might result this test to fail
+        ViewHelper.setInstanceAddress(null);
+        ViewHelper.setUnrestrictedUsageDomains(PropertyUtil.getCommaSeparatedList("view.published.usage.unrestrictedDomains"));
         assertTrue("Null-referer should be ok", ViewHelper.isRefererDomain(null, "http://testing.net"));
         assertTrue("Instance domain as referer should be ok", ViewHelper.isRefererDomain("https://testdomain.org", "http://testing.net"));
         assertTrue("Unrestricted domain 1 as referer should be ok", ViewHelper.isRefererDomain("https://legit.com", "http://testing.net"));

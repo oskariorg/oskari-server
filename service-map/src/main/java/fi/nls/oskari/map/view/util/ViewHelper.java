@@ -26,6 +26,23 @@ public class ViewHelper {
 
     private ViewHelper() {}
 
+    protected static void setUnrestrictedUsageDomains(String[] domains) {
+        UNRESTRICTED_USAGE_DOMAINS = domains;
+    }
+
+    protected static void setInstanceAddress(String address) {
+        if (address == null) {
+            myDomain = null;
+            return;
+        }
+        String[] prop = address.split("//");
+        if (prop.length == 2) {
+            myDomain = prop[1];
+        } else {
+            myDomain = "http://localhost:8080";
+        }
+        myDomain = address;
+    }
     /**
      * Returns the configured domain without the protocol
      * @return
@@ -34,12 +51,7 @@ public class ViewHelper {
         if (myDomain != null) {
             return myDomain;
         }
-        String[] prop = PropertyUtil.get("oskari.domain").split("//");
-        if (prop.length == 2) {
-            myDomain = prop[1];
-        } else {
-            myDomain = "http://localhost:8080";
-        }
+        setInstanceAddress(PropertyUtil.get("oskari.domain"));
         return myDomain;
     }
 
