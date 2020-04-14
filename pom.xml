@@ -1157,33 +1157,9 @@
             <url>https://oskari.org/nexus/content/repositories/snapshots/</url>
         </repository>
         <repository>
-            <id>central</id>
-            <name>Central Repository</name>
-            <url>https://repo.maven.apache.org/maven2</url>
-            <layout>default</layout>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>thecentral</id>
-            <name>The Central repository</name>
-            <url>https://repo1.maven.org/maven2</url>
-        </repository>
-        <repository>
             <id>osgeo</id>
-            <name>Open Source Geospatial Foundation Repository</name>
-            <url>https://download.osgeo.org/webdav/geotools/</url>
-        </repository>
-        <repository>
-            <id>geosolutions</id>
-            <name>Geo-solutions Maven Repository</name>
-            <url>https://maven.geo-solutions.it</url>
-        </repository>
-        <repository>
-            <id>boundless</id>
-            <name>Boundless Maven Repository</name>
-            <url>https://repo.boundlessgeo.com/main/</url>
+            <name>OSGeo repository</name>
+            <url>https://repo.osgeo.org/repository/release/</url>
         </repository>
     </repositories>
 
