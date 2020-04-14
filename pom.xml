@@ -1157,29 +1157,9 @@
             <url>https://oskari.org/nexus/content/repositories/snapshots/</url>
         </repository>
         <repository>
-            <id>osgeo_geotools</id>
-            <name>OSGeo GeoTools repository</name>
-            <url>https://repo.osgeo.org/repository/geotools-releases/</url>
-        </repository>
-        <!-- Geosolutions is required for dependencies like:
-        - org.geotools:gt-wfs-ng:jar:19.2
-         -> org.geotools:gt-complex:jar:19.2
-          -> org.geotools:gt-xml:jar:19.2
-           -> org.geotools.xsd:gt-xsd-wfs:jar:19.2
-            -> org.geotools.xsd:gt-xsd-filter:jar:19.2
-             -> org.geotools.xsd:gt-xsd-gml3:jar:19.2
-              -> org.geotools:gt-coverage:jar:19.2
-               -> it.geosolutions.imageio-ext:imageio-ext-tiff:jar:1.1.24
-        -->
-        <repository>
-            <id>geosolutions</id>
-            <name>Geo-solutions Maven Repository</name>
-            <url>https://maven.geo-solutions.it</url>
-        </repository>
-        <repository>
-            <id>osgeo_geoserver</id>
-            <name>OSGeo GeoServer repository</name>
-            <url>https://repo.osgeo.org/repository/Geoserver-releases/</url>
+            <id>osgeo</id>
+            <name>OSGeo repository</name>
+            <url>https://repo.osgeo.org/repository/release/</url>
         </repository>
     </repositories>
 
