@@ -47,7 +47,7 @@
         <jdk.version>1.8</jdk.version>
         <fi.nls.oskari.version>${project.version}</fi.nls.oskari.version>
         <fi.nls.oskari.service.version>${project.version}</fi.nls.oskari.service.version>
-        <flyway.version>3.2.1</flyway.version>
+        <flyway.version>4.2.0</flyway.version>
 
         <spring.version>4.3.26.RELEASE</spring.version>
         <spring-security.version>4.2.14.RELEASE</spring-security.version>
