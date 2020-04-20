@@ -47,6 +47,7 @@
         <jdk.version>1.8</jdk.version>
         <fi.nls.oskari.version>${project.version}</fi.nls.oskari.version>
         <fi.nls.oskari.service.version>${project.version}</fi.nls.oskari.service.version>
+        <flyway.version>4.2.0</flyway.version>
 
         <spring.version>4.3.26.RELEASE</spring.version>
         <spring-security.version>4.2.14.RELEASE</spring-security.version>
@@ -63,7 +64,6 @@
         <commons-httpclient.version>3.1</commons-httpclient.version>
         <commons-codec.version>1.7</commons-codec.version>
         <commons-fileupload.version>1.4</commons-fileupload.version>
-        <commons-dbcp.version>1.4</commons-dbcp.version>
         <commons-dbcp2.version>2.0.1</commons-dbcp2.version>
 
         <staxon.version>1.2</staxon.version>
@@ -463,6 +463,33 @@
                 <version>${fi.nls.oskari.version}</version>
             </dependency>
 
+
+            <!-- Database -->
+            <dependency>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-core</artifactId>
+                <version>${flyway.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${postgresql.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-dbcp2</artifactId>
+                <version>${commons-dbcp2.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>${h2database.version}</version>
+            </dependency>
+
+
             <!-- Spring -->
             <dependency>
                 <groupId>org.springframework.security.extensions</groupId>
@@ -596,12 +623,6 @@
                 <version>${commons-codec.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-dbcp2</artifactId>
-                <version>${commons-dbcp2.version}</version>
-            </dependency>
-
             <!-- metrics -->
             <dependency>
                 <groupId>io.dropwizard.metrics</groupId>
@@ -667,18 +688,6 @@
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
                 <version>${jetty.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.postgresql</groupId>
-                <artifactId>postgresql</artifactId>
-                <version>${postgresql.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.h2database</groupId>
-                <artifactId>h2</artifactId>
-                <version>${h2database.version}</version>
             </dependency>
 
             <dependency>

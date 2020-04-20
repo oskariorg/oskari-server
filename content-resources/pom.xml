@@ -49,11 +49,6 @@
                         <version>${commons-dbcp2.version}</version>
                     </dependency>
                     <dependency>
-                        <groupId>hsqldb</groupId>
-                        <artifactId>hsqldb</artifactId>
-                        <version>1.8.0.7</version>
-                    </dependency>
-                    <dependency>
                         <groupId>org.postgresql</groupId>
                         <artifactId>postgresql</artifactId>
                         <version>${postgresql.version}</version>
@@ -119,7 +114,6 @@
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
-            <version>3.2.1</version>
         </dependency>
         <dependency>
             <groupId>fi.nls.oskari</groupId>
