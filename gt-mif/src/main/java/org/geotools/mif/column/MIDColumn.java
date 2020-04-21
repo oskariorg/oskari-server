@@ -17,6 +17,10 @@ public abstract class MIDColumn {
     public static MIDColumn create(String column) {
         column = column.trim();
         int i = column.indexOf(' ');
+        if (i < 0) {
+            i = column.indexOf('\t');
+            
+        }
         String name = column.substring(0, i);
         if (MIFFeatureReader.GEOM_COLUMN_NAME.equals(name)) {
             throw new IllegalArgumentException(

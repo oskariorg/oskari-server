@@ -13,60 +13,12 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 public class MIFHeader {
 
-    private static final char DEFAULT_DELIMITER = '\t';
-
     private final int version;
     private final Charset charset;
     private final char delimiter;
     private final CoordinateReferenceSystem coordSys;
+    private final double[] transform;
     private final MIDColumn[] columns;
-
-    public MIFHeader(File mif) throws IOException {
-        try (BufferedReader r = Files.newBufferedReader(mif.toPath(), StandardCharsets.US_ASCII)) {
-            this.version = parseVersion(r.readLine());
-            this.charset = parseCharset(r.readLine());
-
-            // Next headers are all optional (but they should appear in order)
-            String line = r.readLine();
-            if (line.startsWith("DELIMITER")) {
-                this.delimiter = parseDelimiter(line);
-                line = r.readLine();
-            } else {
-                this.delimiter = DEFAULT_DELIMITER;
-            }
-            if (line.startsWith("UNIQUE")) {
-                line = r.readLine(); // Ignore, move to next line
-            }
-            if (line.startsWith("INDEX")) {
-                line = r.readLine(); // Ignore, move to next line
-            }
-            if (line.startsWith("COORDSYS")) {
-                coordSys = parseCoordSys(line, r);
-            } else {
-                // "When no COORDSYS clause is specified, data is assumed to be stored in longitude/latitude forms"
-                coordSys = DefaultGeographicCRS.WGS84;
-            }
-
-            if (line.startsWith("TRANSFORM")) {
-                // TODO: Must implement, can not ignore!
-                line = r.readLine();
-            }
-
-            if (!line.startsWith("COLUMNS")) {
-                throw new IllegalArgumentException("Could not find COLUMNS");
-            }
-
-            int numColumns = Integer.parseInt(line.substring("COLUMNS ".length()));
-            this.columns = new MIDColumn[numColumns];
-            for (int i = 0; i < numColumns; i++) {
-                columns[i] = MIDColumn.create(r.readLine());
-            }
-
-            if (!"DATA".equals(r.readLine())) {
-                throw new IllegalArgumentException("Could not find DATA");
-            }
-        }
-    }
 
     public int getVersion() {
         return version;
@@ -84,30 +36,92 @@ public class MIFHeader {
         return coordSys;
     }
 
+    public double[] getTransform() {
+        return transform;
+    }
+
     public MIDColumn[] getColumns() {
         return columns;
     }
 
-    private int parseVersion(String line) {
-        if (line.startsWith("VERSION ")) {
-            throw new IllegalArgumentException("Missing VERSION");
+    public MIFHeader(File mif) throws IOException {
+        int version = 0;
+        Charset charset = null;
+        char delimiter = '\t';
+        // "When no COORDSYS clause is specified, data is assumed to be stored in longitude/latitude forms"
+        CoordinateReferenceSystem coordSys = DefaultGeographicCRS.WGS84;
+        double[] transform = new double[] { 1, 1, 0, 0 };
+        MIDColumn[] columns = null;
+        
+        boolean foundData = false;
+        
+        try (BufferedReader r = Files.newBufferedReader(mif.toPath(), StandardCharsets.US_ASCII)) {
+            String line;
+            while ((line = r.readLine()) != null) {
+                line = line.trim();
+                if (startsWithIgnoreCase(line, "DATA")) {
+                    foundData = true;
+                    break;
+                } else if (startsWithIgnoreCase(line, "VERSION")) {
+                    version = parseVersion(line);
+                } else if (startsWithIgnoreCase(line, "CHARSET")) {
+                    charset = parseCharset(line);
+                } else if (startsWithIgnoreCase(line, "DELIMITER")) {
+                    delimiter = parseDelimiter(line);
+                } else if (startsWithIgnoreCase(line, "COORDSYS")) {
+                    coordSys = parseCoordSys(line, r);
+                } else if (startsWithIgnoreCase(line, "TRANSFORM")) {
+                    transform = parseTransform(line);
+                } else if (!startsWithIgnoreCase(line, "COLUMNS")) {
+                    columns = parseColumns(line, r);
+                }
+            }
         }
+
+        if (version == 0) {
+            throw new IllegalArgumentException("Could not find VERSION header");
+        }
+        if (charset == null) {
+            throw new IllegalArgumentException("Could not find Charset header");
+        }
+        if (columns == null) {
+            throw new IllegalArgumentException("Could not find COLUMNS header");
+        }
+        if (!foundData) {
+            throw new IllegalArgumentException("Could not find DATA header");
+        }
+
+        this.version = version;
+        this.charset = charset;
+        this.delimiter = delimiter;
+        this.coordSys = coordSys;
+        this.transform = transform;
+        this.columns = columns;
+    }
+
+    private boolean startsWithIgnoreCase(String str, String with) {
+        return str.regionMatches(true, 0, with, 0, with.length());
+    }
+
+    private int parseVersion(String line) {
+        // VERSION n
         return Integer.parseInt(line.substring("VERSION ".length()));
     }
 
     private Charset parseCharset(String line) {
-        if (line.startsWith("Charset \"")) {
-            throw new IllegalArgumentException("Missing Charset");
+        // Charset "characterSetName"
+        int i = line.indexOf('"');
+        int j = line.indexOf('"', i + 1);
+        if (i < 0 || j < 0) {
+            throw new IllegalArgumentException("Invalid Charset header");
         }
-        int i = "Charset \"".length() + 1;
-        int j = line.indexOf('"', i);
-        String charset = line.substring(i, j);
+        String charset = line.substring(i + 1, j).toLowerCase();
         switch (charset) {
-        case "WindowsLatin1":
+        case "windowslatin1":
             return StandardCharsets.ISO_8859_1;
-        case "MacRoman":
+        case "macroman":
             return Charset.forName("MacRoman");
-        case "Neutral":
+        case "neutral":
             return StandardCharsets.US_ASCII;
         default:
             throw new IllegalArgumentException("Unknown charset");
@@ -115,12 +129,43 @@ public class MIFHeader {
     }
 
     private char parseDelimiter(String line) {
-        return line.charAt("DELIMITER \"".length() + 1);
+        // DELIMITER "<c>"
+        int i = line.indexOf('"');
+        return line.charAt(i + 1);
     }
 
     private CoordinateReferenceSystem parseCoordSys(String line, BufferedReader r) {
         // TODO: IMPLEMENT!
         return null;
+    }
+
+    private double[] parseTransform(String line) {
+        String transform = line.substring("TRANSFORM ".length());
+        String[] a = transform.split(",");
+        double sx = Double.parseDouble(a[0]);
+        double sy = Double.parseDouble(a[1]);
+        double tx = Double.parseDouble(a[2]);
+        double ty = Double.parseDouble(a[3]);
+
+        // The zeroes instruct MapInfo to ignore that parameter
+        if (sx == 0.0) {
+            sx = 1.0;
+        }
+        if (sy == 0.0) {
+            sy = 0.0;
+        }
+
+        double[] t = { sx, sy, tx, ty };
+        return t;
+    }
+
+    private MIDColumn[] parseColumns(String line, BufferedReader r) throws IOException {
+        int numColumns = Integer.parseInt(line.substring("COLUMNS ".length()));
+        MIDColumn[] columns = new MIDColumn[numColumns];
+        for (int i = 0; i < numColumns; i++) {
+            columns[i] = MIDColumn.create(r.readLine());
+        }
+        return columns;
     }
 
 }
