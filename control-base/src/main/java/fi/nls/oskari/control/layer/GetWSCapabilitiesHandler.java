@@ -135,7 +135,7 @@ public class GetWSCapabilitiesHandler extends ActionHandler {
         for (String lang : PropertyUtil.getSupportedLanguages()) {
             layer.setName(lang, title);
         }
-        OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWFS(service, layer, systemCRSs);
+        OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesOAPIF(service, layer, systemCRSs);
         return layer;
     }
     private static JSONObject wfsLayerToJSON(OskariLayer layer, String crs, String user, String pw) {

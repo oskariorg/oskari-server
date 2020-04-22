@@ -1,6 +1,8 @@
 package fi.nls.oskari.wfs;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -101,12 +103,11 @@ public class WFSCapabilitiesService {
                                                                 throws ServiceException {
         try {
             if (WFS3_VERSION.equals(version)) {
-                return getCapabilitiesWFS3( url, user, pw, systemCRSs);
+                return getCapabilitiesOAPIF( url, user, pw, systemCRSs);
             }
             return getCapabilitiesWFS( url, version, user, pw, systemCRSs);
-        } catch (JsonParseException e) {
-            // Don't attach JsonParseException as its an IOException which is detected as root cause and wrong error is sent to user
-            throw new ServiceException("Error parsing response from url: " + url + " Message: " + e.getMessage());
+        } catch (ServiceException e) {
+            throw e;
         } catch (Exception e) {
             throw new ServiceException ("Failed to get capabilities version: " + version + " from url: " + url, e);
         }
@@ -145,15 +146,15 @@ public class WFSCapabilitiesService {
         return result;
     }
 
-    private static ServiceCapabilitiesResult getCapabilitiesWFS3 (String url, String user, String pw, Set<String> systemCRSs) throws WFS3Exception, IOException {
-        WFS3Service service = WFS3Service.fromURL(url, user, pw);
+    private static ServiceCapabilitiesResult getCapabilitiesOAPIF(String url, String user, String pw, Set<String> systemCRSs) throws ServiceException {
+        WFS3Service service = getCapabilitiesOAPIF(url, user, pw);
         List<OskariLayer> layers = new ArrayList<>();
 
         for (WFS3CollectionInfo collection : service.getCollections()) {
             String name = collection.getId();
             String title = collection.getTitle();
             OskariLayer ml = toOskariLayer(name, title, WFS3_VERSION, url, user, pw);
-            OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWFS(service, ml, systemCRSs);
+            OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesOAPIF(service, ml, systemCRSs);
             layers.add(ml);
         }
         ServiceCapabilitiesResult result = new ServiceCapabilitiesResult();
@@ -163,6 +164,17 @@ public class WFSCapabilitiesService {
                 .collect(Collectors.toList()));
         // Do we need to parse title from WFS3Content.links
         return result;
+    }
+
+    public static WFS3Service getCapabilitiesOAPIF(String url, String user, String pw) throws ServiceException {
+        try {
+            return WFS3Service.fromURL(url, user, pw);
+        } catch (JsonParseException | JsonMappingException e) {
+            // Don't attach JsonParseException as its an IOException which is detected as root cause and wrong error is sent to user
+            throw new ServiceException("Error parsing response from url: " + url + " Message: " + e.getMessage());
+        } catch (Exception e) {
+            throw new ServiceException("Error occured getting OAPIF capabilities", e);
+        }
     }
 
     private static OskariLayer toOskariLayer(String layerName, String title, String version,

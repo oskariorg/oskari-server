@@ -467,12 +467,7 @@ public class SaveLayerHandler extends AbstractLayerAdminHandler {
         ml.setVersion(params.getHttpParam(PARAM_VERSION, params.getHttpParam(PARAM_WFS_VERSION, ml.getVersion())));
 
         try {
-            if (WFS3_0_0_VERSION.equals(ml.getVersion())) {
-                WFS3Service service = WFS3Service.fromURL(ml.getUrl(), ml.getUsername(), ml.getPassword());
-                OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWFS(service, ml, systemCRSs);
-            } else {
-                LayerCapabilitiesHelper.updateCapabilities(ml);
-            }
+            LayerCapabilitiesHelper.updateCapabilities(ml);
         } catch (Exception e) {
             LOG.warn("Couldn't update capabilities for WFS (" + ml.getVersion() + ") layer:", ml.getName(), e.getMessage());
         }
