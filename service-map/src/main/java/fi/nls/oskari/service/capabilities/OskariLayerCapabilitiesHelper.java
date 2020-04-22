@@ -76,6 +76,9 @@ public class OskariLayerCapabilitiesHelper {
         if (ml.getId() == -1 && ml.getLegendImage() == null && caps.has(KEY_STYLES)) {
             // Take 1st style name for default - geotools parsing is not always correct
             JSONArray styles = JSONHelper.getJSONArray(caps, KEY_STYLES);
+            if (styles.length() == 0) {
+                return null;
+            }
             JSONObject jstyle = JSONHelper.getJSONObject(styles, 0);
             if (jstyle != null) {
                 style = JSONHelper.getStringFromJSON(jstyle, KEY_NAME, null);
