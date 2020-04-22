@@ -127,26 +127,25 @@ public class OskariLayerCapabilitiesHelper {
 
     public static void setPropertiesFromCapabilitiesWFS(WFSDataStore data, OskariLayer ml,
                                                         Set<String> systemCRSs) throws ServiceException {
-
         try {
             SimpleFeatureSource source = data.getFeatureSource(ml.getName());
             WFSGetCapabilities capa = data.getWfsClient().getCapabilities();
             setPropertiesFromCapabilitiesWFS(capa, source, ml, systemCRSs);
-        }catch (IOException e) {
+        } catch (IOException e) {
             throw new IllegalArgumentException("Can't find layer: " + ml.getName());
         }
-
     }
+
     public static void setPropertiesFromCapabilitiesWFS(WFSGetCapabilities capa, SimpleFeatureSource source, OskariLayer ml,
                                                         Set<String> systemCRSs) throws ServiceException {
         ml.setCapabilities(LayerJSONFormatterWFS.createCapabilitiesJSON(capa, source, systemCRSs));
         ml.setCapabilitiesLastUpdated(new Date());
-
     }
-    public static void setPropertiesFromCapabilitiesWFS(WFS3Service service, OskariLayer ml,
-                                                        Set<String> systemCRSs) {
 
+    public static void setPropertiesFromCapabilitiesOAPIF(WFS3Service service, OskariLayer ml,
+                                                        Set<String> systemCRSs) {
         ml.setCapabilities(LayerJSONFormatterWFS.createCapabilitiesJSON(service, ml.getName(), systemCRSs));
         ml.setCapabilitiesLastUpdated(new Date());
     }
+
 }

@@ -18,6 +18,7 @@ import org.oskari.maplayer.admin.LayerAdminJSONHelper;
 import org.oskari.maplayer.model.ServiceCapabilitiesResult;
 import org.oskari.maplayer.model.ServiceCapabilitiesResultWMS;
 import org.oskari.maplayer.model.ServiceCapabilitiesResultWMTS;
+import org.oskari.service.wfs3.WFS3Service;
 
 import java.util.Arrays;
 import java.util.List;
@@ -65,12 +66,10 @@ public class LayerCapabilitiesHelper {
         return url;
     }
 
-    // not used currently but this seems The place for this
     public static void updateCapabilities(OskariLayer ml) throws ServiceException {
         switch (ml.getType()) {
             case OskariLayer.TYPE_WFS:
-                WFSDataStore wfs = WFSCapabilitiesService.getDataStore(ml);
-                OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWFS(wfs, ml, getSystemCRSs());
+                updateCapabilitiesWFS(ml);
                 break;
             case OskariLayer.TYPE_WMS:
                 WebMapService wms = wmsCapabilities.updateCapabilities(ml);
@@ -80,6 +79,16 @@ public class LayerCapabilitiesHelper {
                 WMTSCapabilities wmts = wmtsCapabilities.updateCapabilities(ml);
                 OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMTS(wmts, ml, getSystemCRSs());
                 break;
+        }
+    }
+
+    private static void updateCapabilitiesWFS(OskariLayer ml) throws ServiceException {
+        if (CapabilitiesConstants.WFS3_VERSION.equals(ml.getVersion())) {
+            WFS3Service service = WFSCapabilitiesService.getCapabilitiesOAPIF(ml.getUrl(), ml.getUsername(), ml.getPassword());
+            OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesOAPIF(service, ml, getSystemCRSs());
+        } else {
+            WFSDataStore wfs = WFSCapabilitiesService.getDataStore(ml);
+            OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWFS(wfs, ml, getSystemCRSs());
         }
     }
 
