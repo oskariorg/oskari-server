@@ -33,6 +33,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.*;
 
@@ -62,8 +63,8 @@ public class WMSCapabilitiesService {
             WMSCapabilities caps = createCapabilities(xml);
             final String metadataUrl = getMetaDataUrl(caps.getService());
 
-            List <OskariLayer> layers = caps.getLayerList()
-                    .stream()
+            List <OskariLayer> layers = caps.getLayerList().stream()
+                    .flatMap(WMSCapabilitiesService::streamLayerAndChildren)
                     .filter(WMSCapabilitiesService::isActualLayer)
                     .map(layer -> layerToOskariLayer(layer, url, version, user, pwd, metadataUrl, xml, systemCRSs))
                     .collect(Collectors.toList());
@@ -91,6 +92,13 @@ public class WMSCapabilitiesService {
     private static boolean isActualLayer (Layer layer) {
         String layerName = layer.getName();
         return layerName != null && !layerName.isEmpty();
+    }
+
+    private static Stream<Layer> streamLayerAndChildren(Layer layer) {
+        Stream<Layer> self = Stream.of(layer);
+        Stream<Layer> children = layer.getLayerChildren().stream()
+                .flatMap(WMSCapabilitiesService::streamLayerAndChildren);
+        return Stream.concat(self, children);
     }
 
     private static List<MapLayerStructure> parseStructureJson (Layer layer) {
