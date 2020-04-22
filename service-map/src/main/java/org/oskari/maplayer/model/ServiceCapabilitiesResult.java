@@ -1,10 +1,13 @@
 package org.oskari.maplayer.model;
 
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.PropertyUtil;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -12,6 +15,9 @@ import java.util.stream.Collectors;
  * Used to write JSON for admin functionality when adding layers
  */
 public class ServiceCapabilitiesResult {
+
+    private static final Logger log = LogFactory.getLogger(ServiceCapabilitiesResult.class);
+
     private String title;
     private List<MapLayerAdminOutput> layers;
     private List<String> layersWithErrors;
@@ -48,8 +54,15 @@ public class ServiceCapabilitiesResult {
      * @return
      */
     public Map<String, MapLayerAdminOutput> getLayers() {
+        BinaryOperator<MapLayerAdminOutput> merge = (a, b) -> {
+            String url = a.getUrl();
+            String name = a.getName();
+            log.warn("Duplicate layer name, service url:", url, "layer name:", name);
+            // Keep the one we already have
+            return a;
+        };
         return layers.stream().collect(
-                Collectors.toMap(MapLayerAdminOutput::getName, Function.identity()));
+                Collectors.toMap(MapLayerAdminOutput::getName, Function.identity(), merge));
     }
 
     public void setLayers(List<MapLayerAdminOutput> layers) {
