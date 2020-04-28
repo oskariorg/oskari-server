@@ -60,7 +60,7 @@ public class StyleUtil {
         JSONObject stroke = JSONHelper.getJSONObject(oskariStyle, "stroke");
         setStrokeStyle(style, stroke);
         // polygon doesn't have cap style
-        style.setLineCap(LINE_CAP_STYLE.get(JSONHelper.optString(stroke,"lineCap")));
+        style.setLineCap(LINE_CAP_STYLE.getOrDefault(JSONHelper.optString(stroke,"lineCap"), 0));
         style.setLabelProperty(getLabelStyle(oskariStyle));
         return style;
     }
@@ -96,7 +96,7 @@ public class StyleUtil {
         float width = (float) json.optDouble("width", 1);
         String lineDash = JSONHelper.optString(json,"lineDash");
         style.setLineWidth(width);
-        style.setLineJoin(LINE_JOIN_STYLE.get(JSONHelper.optString(json,"lineJoin")));
+        style.setLineJoin(LINE_JOIN_STYLE.getOrDefault(JSONHelper.optString(json,"lineJoin"), 0));
         style.setLinePattern(getStrokeDash(lineDash, width));
         style.setLineColor(ColorUtil.parseColor(JSONHelper.optString(json,"color")));
     }
