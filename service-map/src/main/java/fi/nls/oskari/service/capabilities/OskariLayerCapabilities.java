@@ -1,6 +1,7 @@
 package fi.nls.oskari.service.capabilities;
 
 import java.sql.Timestamp;
+import java.util.concurrent.TimeUnit;
 
 public class OskariLayerCapabilities {
 
@@ -63,6 +64,16 @@ public class OskariLayerCapabilities {
 
     public Timestamp getUpdated() {
         return updated;
+    }
+
+    public boolean isOlderThan(long updatedMoreRecentlyThanMs) {
+        if (created == null) {
+            return false;
+        }
+        if (updated == null) {
+            return created.getTime() + updatedMoreRecentlyThanMs < System.currentTimeMillis();
+        }
+        return updated.getTime() + updatedMoreRecentlyThanMs < System.currentTimeMillis();
     }
 
     @Override
