@@ -1,7 +1,6 @@
 package fi.nls.oskari.service.capabilities;
 
 import java.sql.Timestamp;
-import java.util.concurrent.TimeUnit;
 
 public class OskariLayerCapabilities {
 
