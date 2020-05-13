@@ -167,10 +167,10 @@ public class StyleUtil {
         PDFTranscoder transcoder = new PDFTranscoder();
         TranscoderInput in = new TranscoderInput(new ByteArrayInputStream(markerData.getBytes()));
 
-        try (ByteArrayOutputStream os = new ByteArrayOutputStream()){
-            TranscoderOutput out = new TranscoderOutput(os);
-            transcoder.transcode(in, out);
-            PDDocument tempDoc = PDDocument.load(os.toByteArray());
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        TranscoderOutput out = new TranscoderOutput(os);
+        transcoder.transcode(in, out);
+        try (PDDocument tempDoc = PDDocument.load(os.toByteArray())) {
             PDPage page = tempDoc.getPage(0);
 
             double d = page.getBBox().getHeight() / ICON_SIZE;
