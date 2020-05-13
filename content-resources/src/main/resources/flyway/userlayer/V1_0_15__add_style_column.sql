@@ -1,1 +1,0 @@
-ALTER TABLE user_layer ADD style json;

@@ -14,6 +14,6 @@ public class V1_0_8__migrate_style_to_json implements JdbcMigration {
 
     public void migrate(Connection connection) throws Exception {
         int count = UserDataStyleMigrator.migrateStyles(connection, LAYER_TABLE, STYLE_TABLE);
-        LOG.info("Migrated", count, "styles from table:", STYLE_TABLE, "to table", LAYER_TABLE);
+        LOG.info("Migrated", count, "styles from table:", STYLE_TABLE, "to options column in table:", LAYER_TABLE);
     }
 }

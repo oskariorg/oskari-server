@@ -10,28 +10,28 @@ import java.util.Map;
 
 public class UserDataStyleMigrator {
     public static int migrateStyles (Connection conn, final String layerTable, final String styleTable) throws SQLException {
-        Map<Long,String> styles = getStyles(conn, styleTable);
-        updateLayers(conn, layerTable, styles);
-        return styles.size();
+        Map<Long,String> options = getOptions(conn, styleTable);
+        updateLayers(conn, layerTable, options);
+        return options.size();
     }
-    public static Map<Long,String> getStyles(Connection conn, final String tableName) throws SQLException {
+    public static Map<Long,String> getOptions(Connection conn, final String tableName) throws SQLException {
 
         final String sql =  String.format("SELECT id, dot_shape, dot_color, dot_size, " +
                 "stroke_width, stroke_color, stroke_linejoin, stroke_linecap, stroke_dasharray, " +
                 "border_color, border_width, border_linejoin, border_dasharray, fill_color, fill_pattern " +
                 "FROM %s", tableName);
-        Map<Long, String> styleMap = new HashMap<>();
+        Map<Long, String> options = new HashMap<>();
         try(PreparedStatement statement = conn.prepareStatement(sql)) {
             try (ResultSet rs = statement.executeQuery()) {
                 while(rs.next()) {
-                    styleMap.put(rs.getLong("id"), parseStyle(rs));
+                    options.put(rs.getLong("id"), parseOptions(rs));
                 }
             }
         }
-        return styleMap;
+        return options;
     }
     public static void updateLayers(Connection conn, final String tableName, Map<Long, String> styleMap) throws SQLException {
-        final String sql = String.format("UPDATE %s SET style=?::json WHERE id=?", tableName);
+        final String sql = String.format("UPDATE %s SET options=?::json WHERE id=?", tableName);
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             for(long id : styleMap.keySet()) {
                 ps.setString(1, styleMap.get(id));
@@ -41,12 +41,18 @@ public class UserDataStyleMigrator {
             ps.executeBatch();
         }
     }
-    private static String parseStyle(ResultSet rs) throws SQLException  {
-        JSONObject json = new JSONObject();
-
+    private static String parseOptions(ResultSet rs) throws SQLException  {
+        JSONObject options = new JSONObject();
+        JSONObject styles = new JSONObject();
+        JSONHelper.putValue(options, "styles", styles);
+        JSONObject defaultStyle = new JSONObject();
+        JSONHelper.putValue(styles, "default", defaultStyle);
+        JSONObject featureStyle = new JSONObject();
+        JSONHelper.putValue(defaultStyle, "featureStyle", featureStyle);
+        // parse Oskari style for options
         // image
         JSONObject image = new JSONObject();
-        JSONHelper.putValue(json, "image", image);
+        JSONHelper.putValue(featureStyle, "image", image);
         JSONObject imageFill = new JSONObject();
         JSONHelper.putValue(imageFill, "color", rs.getString("dot_color"));
         JSONHelper.putValue(image, "fill", imageFill);
@@ -55,7 +61,7 @@ public class UserDataStyleMigrator {
 
         // stroke
         JSONObject stroke = new JSONObject();
-        JSONHelper.putValue(json, "stroke", stroke);
+        JSONHelper.putValue(featureStyle, "stroke", stroke);
         JSONHelper.putValue(stroke, "color", rs.getString("stroke_color"));
         JSONHelper.putValue(stroke, "width", rs.getInt("stroke_width"));
         JSONHelper.putValue(stroke, "lineDash", convertDash(rs.getString("stroke_dasharray")));
@@ -72,13 +78,13 @@ public class UserDataStyleMigrator {
 
         // fill
         JSONObject fill = new JSONObject();
-        JSONHelper.putValue(json, "fill", fill);
+        JSONHelper.putValue(featureStyle, "fill", fill);
         JSONHelper.putValue(fill, "color", rs.getString("fill_color"));
         JSONObject fillArea = new JSONObject();
         JSONHelper.putValue(fillArea, "pattern", rs.getInt("fill_pattern"));
         JSONHelper.putValue(fill, "area", fillArea);
 
-        return json.toString();
+        return options.toString();
     }
     
     private static String convertDash (String dashArray) {
