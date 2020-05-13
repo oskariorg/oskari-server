@@ -67,6 +67,10 @@ public abstract class CapabilitiesCacheService extends OskariComponent {
         if (caps != null) {
             return caps;
         }
+        return getCapabilitiesFromService(url, type, version, user, pass);
+    }
+    // Always skip cached for example when adding layers
+    public OskariLayerCapabilities getCapabilitiesFromService(String url, String type, String version, String user, String pass) throws ServiceException {
         String data = getFromService(url, type, version, user, pass);
         return getDraft(url, type, version, data);
     }

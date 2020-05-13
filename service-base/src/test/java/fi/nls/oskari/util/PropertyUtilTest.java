@@ -53,6 +53,28 @@ public class PropertyUtilTest {
         throw new IllegalStateException("Should not get this far");
     }
 
+
+    @Test
+    public void testIndonesianLanguage() throws Exception {
+        try {
+            PropertyUtil.addProperty("oskari.locales", "id_ID, en_US", true);
+            Locale loc_ID = new Locale("id");
+            // https://stackoverflow.com/questions/55955641/correct-locale-for-indonesia-id-id-vs-in-id/55965008
+            assertEquals("'id' as lang should translate to 'in' with Locale", loc_ID.getLanguage(), "in");
+            assertEquals("getDefaultLanguage() doesn't use Locale", PropertyUtil.getDefaultLanguage(), "id");
+            assertFalse("The problem is locale and Props.getDefaultLanguage() don't match", loc_ID.getLanguage().equals(PropertyUtil.getDefaultLanguage()));
+
+            PropertyUtil.addProperty("oskari.locales", "in_ID, en_US", true);
+            Locale loc_IN = new Locale("in");
+            assertEquals("'in' as lang should remain 'in' with Locale", loc_IN.getLanguage(), "in");
+            assertEquals("getDefaultLanguage() doesn't use Locale", PropertyUtil.getDefaultLanguage(), "in");
+            assertEquals("Using 'in_ID' for Indonesian works as expected", loc_IN.getLanguage(), PropertyUtil.getDefaultLanguage());
+        } finally {
+            PropertyUtil.clearProperties();
+        }
+    }
+
+
     @Test
     public void testDuplicateWithOverwrite() throws Exception {
         PropertyUtil.addProperty("workerCount", "30", true);

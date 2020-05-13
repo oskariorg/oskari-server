@@ -78,7 +78,7 @@
         <jsonld-java.version>0.3</jsonld-java.version>
         <xmlunit.version>1.6</xmlunit.version>
         <jedis.version>2.10.2</jedis.version>
-        <jackson.version>2.10.3</jackson.version>
+        <jackson.version>2.11.0</jackson.version>
 
         <fi.mml.capabilities.version>1.3.0</fi.mml.capabilities.version>
         <fi.mml.wms.version>1.1.1</fi.mml.wms.version>
@@ -106,7 +106,7 @@
         <powermock.version>2.0.0</powermock.version>
         <junit.version>4.11</junit.version>
 
-        <log4j.version>2.13.1</log4j.version>
+        <log4j.version>2.13.2</log4j.version>
         <slf4j.version>1.7.30</slf4j.version>
         <metrics.version>4.1.0</metrics.version>
         <h2database.version>1.4.199</h2database.version>
