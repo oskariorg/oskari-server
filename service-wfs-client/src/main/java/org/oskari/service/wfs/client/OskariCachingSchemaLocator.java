@@ -44,6 +44,10 @@ public class OskariCachingSchemaLocator implements XSDSchemaLocator {
         }
         try {
             HttpURLConnection conn = IOHelper.getConnection(rawSchemaLocationURI, username, password);
+            if (conn.getResponseCode() != 200) {
+                LOG.warn("Unable to load schema:", rawSchemaLocationURI);
+                return null;
+            }
             byte[] response = IOHelper.readBytes(conn);
             ResourceSet resourceSet = new ResourceSetImpl();
             resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xsd", new org.eclipse.xsd.util.XSDResourceFactoryImpl());

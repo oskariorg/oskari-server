@@ -13,7 +13,9 @@ import fi.nls.oskari.map.layer.DataProviderService;
 import static fi.nls.oskari.control.ActionConstants.PARAM_ID;
 
 /**
- * For deleting a dataprovider/organization
+ * For deleting a data provider/organization
+ *
+ * @deprecated As of release 1.55.0, use fi.nls.oskari.control.layer.DataProvider action route instead
  */
 @OskariActionRoute("DeleteOrganization")
 public class DeleteOrganizationHandler extends RestActionHandler {

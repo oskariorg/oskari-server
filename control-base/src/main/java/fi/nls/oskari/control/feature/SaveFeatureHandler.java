@@ -46,8 +46,7 @@ public class SaveFeatureHandler extends AbstractFeatureHandler {
 
                 final String wfstMessage = baos.toString();
                 LOG.debug("Updating feature to service at", layer.getUrl(), "with payload", wfstMessage);
-
-                String responseString = postPayload(layer, wfstMessage);
+                String responseString = postPayload(layer.getUsername(), layer.getPassword(), wfstMessage, getURLForNamespace(layer.getName(),layer.getUrl()));
 
                 if (responseString.indexOf("Exception") > -1) {
                     exceptions.add(responseString);
@@ -82,6 +81,5 @@ public class SaveFeatureHandler extends AbstractFeatureHandler {
             throw new ActionException("Failed to create WFS-T request (crs)", e);
         }
     }
-
 }
 

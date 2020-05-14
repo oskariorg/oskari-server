@@ -65,6 +65,16 @@ public class OskariLayerCapabilities {
         return updated;
     }
 
+    public boolean isOlderThan(long updatedMoreRecentlyThanMs) {
+        if (created == null) {
+            return false;
+        }
+        if (updated == null) {
+            return created.getTime() + updatedMoreRecentlyThanMs < System.currentTimeMillis();
+        }
+        return updated.getTime() + updatedMoreRecentlyThanMs < System.currentTimeMillis();
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

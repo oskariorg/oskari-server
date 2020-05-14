@@ -9,6 +9,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
 
+import static fi.nls.oskari.analysis.AnalysisParser.ZONESECTOR;
+
 public class ZoneSectorMethodParams extends AnalysisMethodParams {
 
     private final String analysisMethodTemplate = "layer-wps-zone.xml";
@@ -50,6 +52,9 @@ public class ZoneSectorMethodParams extends AnalysisMethodParams {
         this.sector_count = sector_count;
     }
 
+    public ZoneSectorMethodParams() {
+        setMethod(ZONESECTOR);
+    }
 
     public Document getWPSXML() throws XPathExpressionException, IOException,
             SAXException, ParserConfigurationException {

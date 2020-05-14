@@ -1,26 +1,24 @@
 package fi.nls.oskari.util;
 
-import com.github.kevinsawicki.http.HttpRequest;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.ServiceRuntimeException;
 import org.apache.commons.codec.binary.Base64;
 
 import javax.net.ssl.*;
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
+import java.net.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+import java.util.AbstractMap.SimpleImmutableEntry;
+
+import static java.util.stream.Collectors.toList;
 
 /*
 Methods using HttpRequest were moved from a class called wmshelper and are
@@ -76,7 +74,7 @@ public class IOHelper {
     }
 
     /**
-     * Reads the given input stream and converts its contents to a string using #DEFAULT_CHARSET
+     * Reads the InputStream of HttpURLConnection and converts its contents to a string using #DEFAULT_CHARSET
      * @param conn
      * @return
      * @throws IOException
@@ -93,19 +91,19 @@ public class IOHelper {
         return readString(conn, DEFAULT_CHARSET);
     }
     /**
-     * Reads the given input stream and converts its contents to a string using given charset
+     * Reads the InputStream of HttpURLConnection and converts its contents to a string using given charset
      * @param conn connection used to get inputstream and detect gzip encoding
      * @param charset
      * @return
      * @throws IOException
      */
     public static String readString(HttpURLConnection conn, final String charset) throws IOException {
-        if(ENCODING_GZIP.equals(conn.getContentEncoding())) {
-            return readString(new GZIPInputStream(conn.getInputStream()), charset);
+        try (InputStream in = conn.getInputStream()) {
+            try (InputStream inner = isResponseGZIPd(conn) ? new GZIPInputStream(in) : in) {
+                return readString(inner, charset);
+            }
         }
-        return readString(conn.getInputStream(), charset);
     }
-
 
     public static List<String> readLines(InputStream in) throws IOException {
         return readLines(in, StandardCharsets.UTF_8);
@@ -114,7 +112,7 @@ public class IOHelper {
     public static List<String> readLines(InputStream in, Charset cs) throws IOException {
         try (BufferedReader br = new BufferedReader(
                 new InputStreamReader(in, cs))) {
-            return br.lines().collect(Collectors.toList());
+            return br.lines().collect(toList());
         } finally {
             in.close();
         }
@@ -175,17 +173,36 @@ public class IOHelper {
     }
 
     /**
-     * Reads the given input stream and returns its contents as a byte array.
+     * Reads the InputStream of HttpURLConnection to a byte array and returns that
      * @param conn used to get inputstream and detect possible gzip encoding
      * @return
      * @throws IOException
      */
     public static byte[] readBytes(HttpURLConnection conn) throws IOException {
-        if(ENCODING_GZIP.equals(conn.getContentEncoding())) {
-            return readBytes(new GZIPInputStream(conn.getInputStream()));
+        try (InputStream in = conn.getInputStream()) {
+            try (InputStream inner = isResponseGZIPd(conn) ? new GZIPInputStream(in) : in) {
+                return readBytes(inner);
+            }
         }
-        return readBytes(conn.getInputStream());
     }
+
+    /**
+     * Reads the InputStream of HttpURLConnection to given OutputStream
+     * @param conn used to get inputstream and detect possible gzip encoding
+     * @throws IOException
+     */
+    public static void readBytesTo(HttpURLConnection conn, OutputStream out) throws IOException {
+        try (InputStream in = conn.getInputStream()) {
+            try (InputStream inner = isResponseGZIPd(conn) ? new GZIPInputStream(in) : in) {
+                copy(inner, out);
+            }
+        }
+    }
+
+    private static boolean isResponseGZIPd(HttpURLConnection conn) {
+        return ENCODING_GZIP.equals(conn.getContentEncoding());
+    }
+
     /**
      * Reads the given input stream and returns its contents as a byte array.
      * @param is
@@ -675,82 +692,6 @@ public class IOHelper {
         return in;
     }
 
-    /**
-     * HTTP request method with optional basic authentication and contentType
-     * definition
-     *
-     * @param url
-     * @param data          data to post (if empty, GET method otherwise POST)
-     * @param username
-     * @param password
-     * @param host          host name for header params (optional)
-     * @param authorization (optional)
-     * @param contentType
-     * @return response body
-     */
-    public static String httpRequestAction(String url, String data, String username,
-                                           String password, String host, String authorization,
-                                           String contentType) {
-        String response = null;
-
-        if (!data.isEmpty()) {
-            response = postRequest(url, contentType, data, username, password,
-                    host, authorization);
-
-        } else
-            response = getRequest(url, contentType, username, password, host,
-                    authorization);
-
-        return response;
-    }
-
-    /**
-     * HTTP GET method with optional basic authentication and contentType
-     * definition
-     *
-     * @param url
-     * @param contentType
-     * @param username
-     * @param password
-     * @return response body
-     */
-    public static String getRequest(String url, String contentType,
-                                    String username, String password, String host, String authorization) {
-        HttpRequest request = null;
-        try {
-
-            HttpRequest.keepAlive(false);
-            if (username != null && !username.isEmpty()) {
-                request = HttpRequest.get(url).basic(username, password)
-                        .accept(contentType).connectTimeout(30)
-                        .acceptGzipEncoding().uncompress(true).trustAllCerts()
-                        .trustAllHosts();
-            } else {
-                request = HttpRequest.get(url).contentType(contentType)
-                        .connectTimeout(30).acceptGzipEncoding().uncompress(
-                                true).trustAllCerts().trustAllHosts();
-            }
-            if (host != null && !host.isEmpty()) {
-                request.header("Host", host);
-            }
-
-            if (authorization != null && !authorization.isEmpty()) {
-                request.authorization(authorization);
-            }
-            if (request.ok() || request.code() == 304)
-                return request.body();
-            else {
-                handleHTTPError("GET", url, request.code());
-            }
-
-        } catch (HttpRequest.HttpRequestException e) {
-            handleHTTPRequestFail(url, e);
-        } catch (Exception e) {
-            handleHTTPRequestFail(url, e);
-        }
-        return null;
-    }
-
     public static HttpURLConnection postForm(String url, Map<String, String> keyValuePairs)
             throws IOException {
         String requestBody = getParams(keyValuePairs);
@@ -816,69 +757,6 @@ public class IOHelper {
             baos.writeTo(out);
         }
         return conn;
-    }
-
-    public static String postRequest(String url) {
-        return postRequest(url, "", "", "", null, null, null);
-    }
-
-    /**
-     * HTTP POST method with optional basic authentication and contentType
-     * definition
-     *
-     * @param url
-     * @param contentType
-     * @param username
-     * @param password
-     * @return response body
-     */
-    public static String postRequest(String url, String contentType,
-                                     String data, String username, String password, String host,
-                                     String authorization) {
-        HttpRequest request = null;
-        String response = null;
-        try {
-
-            HttpRequest.keepAlive(false);
-            if (username != null && !username.isEmpty()) {
-                request = HttpRequest.post(url)
-                        .basic(username, password)
-                        .contentType(contentType)
-                        .connectTimeout(getConnectionTimeoutMs())
-                        .acceptGzipEncoding()
-                        .uncompress(true)
-                        .trustAllCerts()
-                        .trustAllHosts()
-                        .send(data);
-            } else {
-                request = HttpRequest.post(url)
-                        .contentType(contentType)
-                        .connectTimeout(getConnectionTimeoutMs())
-                        .acceptGzipEncoding()
-                        .uncompress(true)
-                        .trustAllCerts()
-                        .trustAllHosts()
-                        .send(data);
-            }
-            if (host != null && !host.isEmpty()) {
-                request.header("Host", host);
-            }
-
-            if (authorization != null && !authorization.isEmpty()) {
-                request.authorization(authorization);
-            }
-            if (request.ok() || request.code() == 304)
-                response = request.body();
-            else {
-                handleHTTPError("POST", url, request.code());
-            }
-
-        } catch (HttpRequest.HttpRequestException e) {
-            handleHTTPRequestFail(url, e);
-        } catch (Exception e) {
-            handleHTTPRequestFail(url, e);
-        }
-        return response;
     }
 
     /**
@@ -971,6 +849,70 @@ public class IOHelper {
     }
 
     /**
+     * Parses query string to map from URL
+     * @param url
+     * @return
+     */
+    public static Map<String, List<String>> parseQuerystring(String url) {
+        if (url == null) {
+            return Collections.emptyMap();
+        }
+        try {
+            return parseQuerystring(new URL(url));
+        } catch (MalformedURLException e) {
+            throw new ServiceRuntimeException("Malformed URL: " + url, e);
+        }
+    }
+
+    /**
+     * Parses query string to map from URL
+     * @param url
+     * @return
+     */
+    // Java 8 impl from from https://stackoverflow.com/questions/13592236/parse-a-uri-string-into-name-value-collection
+    public static Map<String, List<String>> parseQuerystring(URL url) {
+        if (url == null) {
+            return Collections.emptyMap();
+        }
+        String query = url.getQuery();
+        if (query == null || query.isEmpty()) {
+            return Collections.emptyMap();
+        }
+
+        return Arrays.stream(query.split("&"))
+                .map(IOHelper::splitQueryParameter)
+                .collect(Collectors.groupingBy(SimpleImmutableEntry::getKey, LinkedHashMap::new, Collectors.mapping(Map.Entry::getValue, Collectors.toList())));
+    }
+
+    private static SimpleImmutableEntry<String, String> splitQueryParameter(String it) {
+        final int idx = it.indexOf("=");
+        final String key = idx > 0 ? it.substring(0, idx) : it;
+        final String value = idx > 0 && it.length() > idx + 1 ? it.substring(idx + 1) : null;
+        return new SimpleImmutableEntry<>(key, value);
+    }
+
+    /**
+     * Returns the same url without querystring
+     * @param url
+     * @return
+     */
+    public static String removeQueryString(String url) {
+        if (url == null) {
+            return null;
+        }
+        try {
+            URL justForTestingSyntaxNotThrowingException = new URL(url);
+            int startIndex = url.indexOf("?");
+            if (startIndex == -1) {
+                return url;
+            }
+            return url.substring(0, startIndex);
+        } catch (MalformedURLException e) {
+            throw new ServiceRuntimeException("Malformed URI: " + url, e);
+        }
+    }
+
+    /**
      * Adds parameters to given base URL. URLEncodes parameter values.
      * Note that
      * @param url
@@ -1012,6 +954,7 @@ public class IOHelper {
         return parts[0] + "://" + parts[1].replaceAll("//", "/");
     }
 
+
     /**
      * Convenience method for just adding one param to an URL.
      * Using constructUrl(String, Map<String, String>) is more efficent with multiple params.
@@ -1026,6 +969,21 @@ public class IOHelper {
         final String queryString = getParamsMultiValue(params);
         return addQueryString(url, queryString);
 
+    }
+
+    /**
+     * Making parseQuerystring() work with existing methods...
+     * @param kvps
+     * @return
+     */
+    public static String createQuerystring(Map<String, List<String>> kvps) {
+        if(kvps == null) {
+            return "";
+        }
+        String[] array = new String[0];
+        Map<String, String[]> params = new HashMap<>();
+        kvps.forEach( (key, value) -> params.put(key, value.toArray(array)));
+        return getParamsMultiValue(params);
     }
 
     public static String getParams(Map<String, String> kvps) {
@@ -1116,6 +1074,11 @@ public class IOHelper {
         return s;
     }
 
+    /**
+     * Deprecated, misleading name,
+     * use getInputOrErrorStream(HttpURLConnection) instead
+     */
+    @Deprecated
     public static InputStream getInputStream(HttpURLConnection conn) {
         try {
             return conn.getInputStream();
@@ -1131,10 +1094,18 @@ public class IOHelper {
      * pooling method to keep the underlying TCP connection alive 
      */
     public static void closeSilently(HttpURLConnection c) {
-        try (InputStream in = getInputStream(c)) {
+        try (InputStream in = getInputOrErrorStream(c)) {
             readFullyIgnoring(in);
         } catch (IOException ignore) {
             // Ignore
+        }
+    }
+
+    private static InputStream getInputOrErrorStream(HttpURLConnection conn) {
+        try {
+            return conn.getInputStream();
+        } catch (IOException e) {
+            return conn.getErrorStream();
         }
     }
 

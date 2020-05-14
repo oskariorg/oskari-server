@@ -2,6 +2,7 @@ package fi.nls.oskari.db;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.service.db.BaseIbatisService;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
@@ -290,6 +291,7 @@ public class DBHandler {
 
         } catch (Exception e) {
             getLog().error(e, "Error creating content");
+            throw new ServiceRuntimeException("Unable to process setup file", e);
         }
     }
 

@@ -1,14 +1,12 @@
 package org.oskari.control.userlayer;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.service.OskariComponentManager;
+import fi.nls.oskari.util.JSONHelper;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.factory.CommonFactoryFinder;
@@ -96,35 +94,32 @@ public class UserLayerWFSHelper extends UserLayerService {
         String geomAttrName = sfc.getSchema().getGeometryDescriptor().getLocalName();
 
         try (SimpleFeatureIterator it = sfc.features()) {
-            SimpleFeature f = it.next();
+            SimpleFeature firstFeatureForSchemaGeneration = it.next();
+            // parse the _first feature_ AND _generate schema_ based on it
+            String property_json_for_first = (String) firstFeatureForSchemaGeneration.getAttribute(USERLAYER_ATTR_PROPERTY_JSON);
+            JSONObject properties_for_first = new JSONObject(property_json_for_first);
+            Set<String> featureAttributeNames = JSONHelper.getObjectAsMap(properties_for_first).keySet();
 
-            String property_json = (String) f.getAttribute(USERLAYER_ATTR_PROPERTY_JSON);
-            JSONObject properties = new JSONObject(property_json);
-
-            schema = createType(sfc.getSchema(), properties);
+            schema = createType(sfc.getSchema(), properties_for_first);
             SimpleFeatureBuilder builder = new SimpleFeatureBuilder(schema);
 
-            builder.set(geomAttrName, f.getDefaultGeometry());
-            Iterator<String> keys = properties.keys();
-            while (keys.hasNext()) {
-                String key = keys.next();
-                Object obj = properties.get(key);
-                builder.set(key, obj);
+            // process and add the the first feature to the result collection
+            builder.set(geomAttrName, firstFeatureForSchemaGeneration.getDefaultGeometry());
+            for (String attrName : featureAttributeNames) {
+                builder.set(attrName, properties_for_first.get(attrName));
             }
-            fc.add(builder.buildFeature(f.getID()));
+            fc.add(builder.buildFeature(firstFeatureForSchemaGeneration.getID()));
 
+            // process and add the _remaining features_ to the result collection
             while (it.hasNext()) {
-                f = it.next();
-                builder.set(geomAttrName, f.getDefaultGeometry());
-                property_json = (String) f.getAttribute(USERLAYER_ATTR_PROPERTY_JSON);
-                properties = new JSONObject(property_json);
-                keys = properties.keys();
-                while (keys.hasNext()) {
-                    String key = keys.next();
-                    Object obj = properties.get(key);
-                    builder.set(key, obj);
+                SimpleFeature feature = it.next();
+                builder.set(geomAttrName, feature.getDefaultGeometry());
+                String property_json = (String) feature.getAttribute(USERLAYER_ATTR_PROPERTY_JSON);
+                JSONObject properties = new JSONObject(property_json);
+                for (String attrName : featureAttributeNames) {
+                    builder.set(attrName, properties.opt(attrName));
                 }
-                fc.add(builder.buildFeature(f.getID()));
+                fc.add(builder.buildFeature(feature.getID()));
             }
         }
 

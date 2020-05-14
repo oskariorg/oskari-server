@@ -12,10 +12,10 @@ public interface MapLayerMapper {
             + "ORDER BY id")
     List<MapLayer> selectWMSLayers();
 
-    @Select("SELECT m.id, w.feature_element as name, m.url "
-            + "FROM oskari_maplayer m "
-            + "JOIN portti_wfs_layer w ON w.maplayer_id = m.id "
-            + "ORDER BY m.id")
+    @Select("SELECT id, name, url "
+            + "FROM oskari_maplayer "
+            + "WHERE type = 'wfslayer' "
+            + "ORDER BY id")
     List<MapLayer> selectWFSLayers();
     
 }

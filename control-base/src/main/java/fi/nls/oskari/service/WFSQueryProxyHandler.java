@@ -1,12 +1,12 @@
 package fi.nls.oskari.service;
 
 import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.util.ConversionHelper;
-import fi.nls.oskari.wfs.WFSLayerConfigurationService;
-import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
+import org.oskari.service.util.ServiceFactory;
 
 /**
  * Custom modifier for wfsquery proxy service. Overrides getConfig and returns proxy config
@@ -15,7 +15,7 @@ import fi.nls.oskari.wfs.WFSLayerConfigurationServiceIbatisImpl;
 public class WFSQueryProxyHandler extends ProxyServiceConfig {
     private static final Logger log = LogFactory.getLogger(WFSQueryProxyHandler.class);
 
-    private static final WFSLayerConfigurationService layerConfigurationService = new WFSLayerConfigurationServiceIbatisImpl();
+    private static final OskariLayerService layerService = ServiceFactory.getMapLayerService();
     private static final String PARAM_WFS_LAYER_ID = "wfs_layer_id";
 
     public boolean isValid() {
@@ -42,14 +42,14 @@ public class WFSQueryProxyHandler extends ProxyServiceConfig {
             config.setUrl("--param missing--");
         }
 
-        final WFSLayerConfiguration lc = layerConfigurationService.findConfiguration(layer_id);
-        if(lc == null) {
+        final OskariLayer layer = layerService.find(layer_id);
+        if(layer == null) {
             config.setUrl("--layer configuration for id " + layer_id + " missing--");
         }
         else {
-            config.setUrl(lc.getURL());
-            config.setUsername(lc.getUsername());
-            config.setPassword(lc.getPassword());
+            config.setUrl(layer.getUrl());
+            config.setUsername(layer.getUsername());
+            config.setPassword(layer.getPassword());
         }
         return config;
     }

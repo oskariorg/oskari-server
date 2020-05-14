@@ -4,8 +4,6 @@ import org.oskari.permissions.PermissionService;
 import org.oskari.permissions.model.PermissionType;
 import org.oskari.permissions.model.Resource;
 
-import fi.nls.oskari.cache.Cache;
-import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParamsException;
@@ -24,8 +22,6 @@ import java.util.Optional;
 public class PermissionHelper {
 
     private static final Logger LOG = LogFactory.getLogger(PermissionHelper.class);
-    private static final String LAYER_CACHE_NAME = "layer_resources";
-    private final Cache<OskariLayer> layerCache = CacheManager.getCache(PermissionHelper.class.getName() + LAYER_CACHE_NAME);
     private OskariLayerService layerService;
     private PermissionService permissionsService;
 
@@ -70,17 +66,7 @@ public class PermissionHelper {
      * @return layer
      */
     private OskariLayer getLayer(final int id) {
-        String cacheKey = Integer.toString(id);
-        OskariLayer layer = layerCache.get(cacheKey);
-        if (layer != null) {
-            return layer;
-        }
-        layer = layerService.find(id);
-        if (layer != null) {
-            LOG.debug("Caching a layer with id ", id);
-            layerCache.put(cacheKey, layer);
-        }
-        return layer;
+        return layerService.find(id);
     }
 
     private Resource getResource(final OskariLayer layer) {

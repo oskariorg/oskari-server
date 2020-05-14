@@ -1,5 +1,7 @@
 package fi.nls.oskari.service.capabilities;
 
+import fi.nls.oskari.domain.map.wfs.WFSLayerCapabilities;
+
 public class CapabilitiesConstants {
     public static final String WFS3_VERSION = "3.0.0";
     public static final String WFS_DEFAULT_VERSION = "1.1.0";
@@ -12,7 +14,8 @@ public class CapabilitiesConstants {
     public static final String KEY_AVAILABLE = "available";
     public static final String KEY_FORMATS = "formats";
     public static final String KEY_FEATURE_OUTPUT_FORMATS = "featureFormats";
-    public static final String KEY_GEOM_NAME = "geomName";
+    public static final String KEY_GEOM_NAME = WFSLayerCapabilities.KEY_GEOMETRYFIELD;
+    public static final String KEY_NAMESPACE_URL = WFSLayerCapabilities.KEY_NAMESPACE_URL;
     public static final String KEY_LAYER_COVERAGE = "geom";
     public static final String KEY_ISQUERYABLE = "isQueryable";
     public static final String KEY_KEYWORDS = "keywords";
