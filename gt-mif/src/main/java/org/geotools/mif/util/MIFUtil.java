@@ -6,8 +6,4 @@ public class MIFUtil {
         return str.regionMatches(true, 0, with, 0, with.length());
     }
 
-    public static int parseInt(String str) {
-        return Integer.parseInt(str.trim());
-    }
-
 }

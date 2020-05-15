@@ -1,5 +1,7 @@
 package org.geotools.mif;
 
+import static org.geotools.mif.util.MIFUtil.*;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -8,7 +10,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
 import org.geotools.mif.column.MIDColumn;
-import org.geotools.mif.util.MIFUtil;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
@@ -60,20 +61,20 @@ public class MIFHeader {
             String line;
             while ((line = r.readLine()) != null) {
                 line = line.trim();
-                if (MIFUtil.startsWithIgnoreCase(line, "DATA")) {
+                if (startsWithIgnoreCase(line, "DATA")) {
                     foundData = true;
                     break;
-                } else if (MIFUtil.startsWithIgnoreCase(line, "VERSION")) {
+                } else if (startsWithIgnoreCase(line, "VERSION")) {
                     version = parseVersion(line);
-                } else if (MIFUtil.startsWithIgnoreCase(line, "CHARSET")) {
+                } else if (startsWithIgnoreCase(line, "CHARSET")) {
                     charset = parseCharset(line);
-                } else if (MIFUtil.startsWithIgnoreCase(line, "DELIMITER")) {
+                } else if (startsWithIgnoreCase(line, "DELIMITER")) {
                     delimiter = parseDelimiter(line);
-                } else if (MIFUtil.startsWithIgnoreCase(line, "COORDSYS")) {
+                } else if (startsWithIgnoreCase(line, "COORDSYS")) {
                     coordSys = parseCoordSys(line, r);
-                } else if (MIFUtil.startsWithIgnoreCase(line, "TRANSFORM")) {
+                } else if (startsWithIgnoreCase(line, "TRANSFORM")) {
                     transform = parseTransform(line);
-                } else if (MIFUtil.startsWithIgnoreCase(line, "COLUMNS")) {
+                } else if (startsWithIgnoreCase(line, "COLUMNS")) {
                     columns = parseColumns(line, r);
                 }
             }
@@ -102,7 +103,8 @@ public class MIFHeader {
 
     private int parseVersion(String line) {
         // VERSION n
-        return MIFUtil.parseInt(line.substring("VERSION ".length()));
+        String[] a = line.split("\\s+");
+        return Integer.parseInt(a[1]);
     }
 
     private Charset parseCharset(String line) {
@@ -133,17 +135,17 @@ public class MIFHeader {
     }
 
     private CoordinateReferenceSystem parseCoordSys(String line, BufferedReader r) {
-        // TODO: IMPLEMENT!
         return null;
     }
 
     private double[] parseTransform(String line) {
-        String transform = line.substring("TRANSFORM ".length()).trim();
-        String[] a = transform.split(",");
-        double sx = Double.parseDouble(a[0]);
-        double sy = Double.parseDouble(a[1]);
-        double tx = Double.parseDouble(a[2]);
-        double ty = Double.parseDouble(a[3]);
+        // TRANSFORM x1,y1,x2,y2
+        String[] a = line.split("\\s+");
+        a = a[1].split(",");
+        double sx = Double.parseDouble(a[0].trim());
+        double sy = Double.parseDouble(a[1].trim());
+        double tx = Double.parseDouble(a[2].trim());
+        double ty = Double.parseDouble(a[3].trim());
 
         // The zeroes instruct MapInfo to ignore that parameter
         if (sx == 0.0) {
@@ -158,7 +160,9 @@ public class MIFHeader {
     }
 
     private MIDColumn[] parseColumns(String line, BufferedReader r) throws IOException {
-        int numColumns = MIFUtil.parseInt(line.substring("COLUMNS ".length()));
+        // COLUMNS 3
+        String[] a = line.split("\\s+");
+        int numColumns = Integer.parseInt(a[1]);
         MIDColumn[] columns = new MIDColumn[numColumns];
         for (int i = 0; i < numColumns; i++) {
             columns[i] = MIDColumn.create(r.readLine());
