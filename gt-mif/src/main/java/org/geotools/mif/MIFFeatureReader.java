@@ -6,27 +6,27 @@ import org.geotools.data.FeatureReader;
 import org.geotools.data.Query;
 import org.geotools.data.store.ContentState;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.geotools.feature.type.BasicFeatureTypes;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
 public class MIFFeatureReader implements FeatureReader<SimpleFeatureType, SimpleFeature> {
 
-    public static final String GEOM_COLUMN_NAME = "_geom";
-
     private ContentState state;
-    private MIFHeader header;
     private MIFDataReader mif;
     private MIDReader mid;
     private SimpleFeatureBuilder builder;
     private SimpleFeature next;
+    private int row;
 
     public MIFFeatureReader(ContentState contentState, Query query) throws IOException {
         this.state = contentState;
         MIFDataStore ds = (MIFDataStore) contentState.getEntry().getDataStore();
-        this.header = ds.readHeader();
-        this.mif = ds.readData(header);
-        this.mid = ds.readMID(header);
+        MIFHeader header = ds.readHeader();
+        this.mif = ds.openData();
+        this.mid = ds.openMID(header);
         this.builder = new SimpleFeatureBuilder(getFeatureType());
+        this.row = 0;
     }
 
     @Override
@@ -59,14 +59,21 @@ public class MIFFeatureReader implements FeatureReader<SimpleFeatureType, Simple
             throw new IOException("FeatureReader is closed; no additional features can be read");
         }
         if (!mif.hasNext()) {
+            close();
             return null;
         }
+
         builder.reset();
-        builder.set(GEOM_COLUMN_NAME, mif.next());
+        builder.set(BasicFeatureTypes.GEOMETRY_ATTRIBUTE_NAME, mif.next());
         mid.next(builder);
-        return builder.buildFeature(null);
+
+        return buildFeature();
     }
 
+    protected SimpleFeature buildFeature() {
+        row += 1;
+        return builder.buildFeature(state.getEntry().getTypeName() + "." + row);
+    }
 
     @Override
     public void close() throws IOException {
@@ -78,6 +85,8 @@ public class MIFFeatureReader implements FeatureReader<SimpleFeatureType, Simple
             mid.close();
             mid = null;
         }
+        builder = null;
+        next = null;
     }
 
 }

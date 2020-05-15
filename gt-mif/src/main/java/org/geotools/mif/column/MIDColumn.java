@@ -1,6 +1,6 @@
 package org.geotools.mif.column;
 
-import org.geotools.mif.MIFFeatureReader;
+import org.geotools.feature.type.BasicFeatureTypes;
 
 public abstract class MIDColumn {
 
@@ -22,9 +22,9 @@ public abstract class MIDColumn {
             
         }
         String name = column.substring(0, i);
-        if (MIFFeatureReader.GEOM_COLUMN_NAME.equals(name)) {
+        if (BasicFeatureTypes.GEOMETRY_ATTRIBUTE_NAME.equals(name)) {
             throw new IllegalArgumentException(
-                    "Name of a data column can not be " + MIFFeatureReader.GEOM_COLUMN_NAME);
+                    "Name of a data column can not be " + BasicFeatureTypes.GEOMETRY_ATTRIBUTE_NAME);
         }
         String type = column.substring(i + 1).toLowerCase();
         return createByType(name, type);
@@ -44,7 +44,7 @@ public abstract class MIDColumn {
             int i = type.indexOf('(');
             int j = type.indexOf(',', i + 1);
             int k = type.indexOf(')', j + 1);
-            int numDecimals = Integer.parseInt(type.substring(j + 1, k));
+            int numDecimals = Integer.parseInt(type.substring(j + 1, k).trim());
             return numDecimals == 0
                     ? new LongMIDColumn(name)
                     : new DoubleMIDColumn(name);

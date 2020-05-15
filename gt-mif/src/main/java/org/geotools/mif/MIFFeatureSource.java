@@ -7,11 +7,11 @@ import org.geotools.data.Query;
 import org.geotools.data.store.ContentEntry;
 import org.geotools.data.store.ContentFeatureSource;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
+import org.geotools.feature.type.BasicFeatureTypes;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.mif.column.MIDColumn;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.feature.type.Name;
 
 import com.vividsolutions.jts.geom.Geometry;
 
@@ -27,6 +27,11 @@ public class MIFFeatureSource extends ContentFeatureSource {
     }
 
     @Override
+    protected FeatureReader<SimpleFeatureType, SimpleFeature> getReaderInternal(Query query) throws IOException {
+        return new MIFFeatureReader(getState(), query);
+    }
+
+    @Override
     protected ReferencedEnvelope getBoundsInternal(Query query) throws IOException {
         return null; // feature by feature scan required to establish bounds
     }
@@ -38,21 +43,19 @@ public class MIFFeatureSource extends ContentFeatureSource {
 
     @Override
     protected SimpleFeatureType buildFeatureType() throws IOException {
-        Name name = getDataStore().createTypeNames().get(0);
         MIFHeader header = getDataStore().readHeader();
-        SimpleFeatureTypeBuilder ftBuilder = new SimpleFeatureTypeBuilder();
-        ftBuilder.setDefaultGeometry(MIFFeatureReader.GEOM_COLUMN_NAME);
-        ftBuilder.add(MIFFeatureReader.GEOM_COLUMN_NAME, Geometry.class);
-        for (MIDColumn column : header.getColumns()) {
-            ftBuilder.add(column.getName(), column.getAttributeClass());
-        }
-        ftBuilder.setName(name);
-        return ftBuilder.buildFeatureType();
-    }
 
-    @Override
-    protected FeatureReader<SimpleFeatureType, SimpleFeature> getReaderInternal(Query query) throws IOException {
-        return new MIFFeatureReader(getState(), query);
+        SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
+        builder.setName(entry.getName());
+        builder.setDefaultGeometry(BasicFeatureTypes.GEOMETRY_ATTRIBUTE_NAME);
+        builder.setCRS(header.getCoordSys());
+        builder.add(BasicFeatureTypes.GEOMETRY_ATTRIBUTE_NAME, Geometry.class);
+
+        for (MIDColumn column : header.getColumns()) {
+            builder.add(column.getName(), column.getAttributeClass());
+        }
+
+        return builder.buildFeatureType();
     }
 
 }

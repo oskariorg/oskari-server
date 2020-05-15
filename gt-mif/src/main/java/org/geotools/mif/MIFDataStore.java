@@ -39,12 +39,19 @@ public class MIFDataStore extends ContentDataStore {
         return new MIFHeader(mif);
     }
 
-    MIFDataReader readData(MIFHeader header) throws IOException {
-        return new MIFDataReader(mif, header);
+    MIFDataReader openData() throws IOException {
+        return new MIFDataReader(mif);
     }
 
-    MIDReader readMID(MIFHeader header) throws IOException {
-        return new MIDReader(mid, header);
+    MIDReader openMID(MIFHeader header) throws IOException {
+        MIDReader reader;
+        if (mid.exists()) {
+            reader = new MIDReader();
+            reader.init(mid, header);
+        } else {
+            reader = new NoMIDReader();
+        }
+        return reader;
     }
 
 }

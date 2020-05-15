@@ -8,7 +8,7 @@ import java.nio.file.Files;
 
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.mif.column.MIDColumn;
-import org.geotools.mif.util.FieldSplitter;
+import org.geotools.mif.util.MIDFieldSplitter;
 
 /**
  * Read MapInfo MID File
@@ -24,19 +24,21 @@ import org.geotools.mif.util.FieldSplitter;
  */
 public class MIDReader implements Closeable {
 
-    private final BufferedReader r;
-    private final MIFHeader header;
+    private BufferedReader r;
+    private MIFHeader header;
 
-    public MIDReader(File mid, MIFHeader header) throws IOException {
+    protected void init(File mid, MIFHeader header) throws IOException {
         this.r = Files.newBufferedReader(mid.toPath(), header.getCharset());
         this.header = header;
     }
 
     public void next(SimpleFeatureBuilder builder) throws IOException {
         String line = r.readLine();
-        FieldSplitter split = new FieldSplitter(line, header.getDelimiter());
+        MIDFieldSplitter split = new MIDFieldSplitter(line, header.getDelimiter());
         for (MIDColumn col : header.getColumns()) {
-            builder.set(col.getName(), col.parse(split.next()));
+            String str = split.next();
+            Object value = col.parse(str);
+            builder.set(col.getName(), value);
         }
     }
 
@@ -47,6 +49,8 @@ public class MIDReader implements Closeable {
         } catch (IOException ignore) {
             // NOP
         }
+        r = null;
+        header = null;
     }
 
 }
