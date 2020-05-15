@@ -7,14 +7,14 @@ package org.geotools.mif.util;
 public class MIDFieldSplitter {
 
     private final String str;
-    private final char delimiter;
+    private final String delimiter;
     private int off;
     private boolean end;
 
-    public MIDFieldSplitter(String str, char delimiter) {
+    public MIDFieldSplitter(String str, String delimiter) {
         this.str = str;
         this.delimiter = delimiter;
-        this.off = -1;
+        this.off = -delimiter.length();
         this.end = false;
     }
 
@@ -22,7 +22,7 @@ public class MIDFieldSplitter {
         if (end) {
             return null;
         }
-        int i = off + 1;
+        int i = off + delimiter.length();
         if (i >= str.length()) {
             end = true;
             return "";

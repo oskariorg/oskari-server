@@ -16,7 +16,7 @@ public class MIFHeader {
 
     private final int version;
     private final Charset charset;
-    private final char delimiter;
+    private final String delimiter;
     private final CoordinateReferenceSystem coordSys;
     private final double[] transform;
     private final MIDColumn[] columns;
@@ -29,7 +29,7 @@ public class MIFHeader {
         return charset;
     }
 
-    public char getDelimiter() {
+    public String getDelimiter() {
         return delimiter;
     }
 
@@ -48,7 +48,7 @@ public class MIFHeader {
     public MIFHeader(File mif) throws IOException {
         int version = 0;
         Charset charset = null;
-        char delimiter = '\t';
+        String delimiter = "\t";
         // "When no COORDSYS clause is specified, data is assumed to be stored in longitude/latitude forms"
         CoordinateReferenceSystem coordSys = DefaultGeographicCRS.WGS84;
         double[] transform = new double[] { 1, 1, 0, 0 };
@@ -125,10 +125,11 @@ public class MIFHeader {
         }
     }
 
-    private char parseDelimiter(String line) {
+    private String parseDelimiter(String line) {
         // DELIMITER "<c>"
         int i = line.indexOf('"');
-        return line.charAt(i + 1);
+        int j = line.indexOf('"', i + 1);
+        return line.substring(i + 1, j);
     }
 
     private CoordinateReferenceSystem parseCoordSys(String line, BufferedReader r) {

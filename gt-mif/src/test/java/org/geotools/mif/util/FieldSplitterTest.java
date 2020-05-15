@@ -9,7 +9,7 @@ public class FieldSplitterTest {
     @Test
     public void bunchOfQuotes() {
         String str = "0,0,\"516\",\"Lappi\",\"Lappland\",\"http://www.kela.fi\",\"\",";
-        char delimiter = ',';
+        String delimiter = ",";
         MIDFieldSplitter splitter = new MIDFieldSplitter(str, delimiter);
         assertEquals("0", splitter.next());
         assertEquals("0", splitter.next());
@@ -25,7 +25,22 @@ public class FieldSplitterTest {
     @Test
     public void bunchOfEmptyValues() {
         String str = "foo,,bar,,,baz,qux";
-        char delimiter = ',';
+        String delimiter = ",";
+        MIDFieldSplitter splitter = new MIDFieldSplitter(str, delimiter);
+        assertEquals("foo", splitter.next());
+        assertEquals("", splitter.next());
+        assertEquals("bar", splitter.next());
+        assertEquals("", splitter.next());
+        assertEquals("", splitter.next());
+        assertEquals("baz", splitter.next());
+        assertEquals("qux", splitter.next());
+        assertEquals(null, splitter.next());
+    }
+
+    @Test
+    public void testMultiCharDelimiter() {
+        String str = "foo, , bar, , , baz, qux";
+        String delimiter = ", ";
         MIDFieldSplitter splitter = new MIDFieldSplitter(str, delimiter);
         assertEquals("foo", splitter.next());
         assertEquals("", splitter.next());
