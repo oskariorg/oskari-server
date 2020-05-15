@@ -152,7 +152,7 @@ public class MIFHeader {
             sx = 1.0;
         }
         if (sy == 0.0) {
-            sy = 0.0;
+            sy = 1.0;
         }
 
         double[] t = { sx, sy, tx, ty };
