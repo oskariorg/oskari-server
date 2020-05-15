@@ -16,6 +16,7 @@ import org.junit.Test;
 import org.opengis.feature.simple.SimpleFeature;
 
 import com.vividsolutions.jts.geom.CoordinateSequence;
+import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 
 public class MIFFeatureReaderTest {
@@ -72,9 +73,11 @@ public class MIFFeatureReaderTest {
             // 3383004.736 6672746.505
             // 3382883.26 6675036.999
             // 0,0,"980","Helsinki","Helsingfors","http://www.kela.fi","",
-            region = (Polygon) f.getDefaultGeometry();
-            assertEquals(54, region.getNumPoints());
-            assertEquals(1, region.getNumInteriorRing());
+            MultiPolygon helsinkiRegion = (MultiPolygon) f.getDefaultGeometry();
+            assertEquals(54, helsinkiRegion.getNumPoints());
+            assertEquals(2, helsinkiRegion.getNumGeometries());
+
+            region = (Polygon) helsinkiRegion.getGeometryN(0);
 
             csq = region.getExteriorRing().getCoordinateSequence();
             assertEquals(49, csq.size());
@@ -83,7 +86,9 @@ public class MIFFeatureReaderTest {
             assertEquals(3381892.004, csq.getOrdinate(1, 0), 1e-9);
             assertEquals(6677581.001, csq.getOrdinate(1, 1), 1e-9);
 
-            csq = region.getInteriorRingN(0).getCoordinateSequence();
+            region = (Polygon) helsinkiRegion.getGeometryN(1);
+
+            csq = region.getExteriorRing().getCoordinateSequence();
             assertEquals(5, csq.size());
             assertEquals(3383004.736, csq.getOrdinate(0, 0), 1e-9);
             assertEquals(6672746.505, csq.getOrdinate(0, 1), 1e-9);
