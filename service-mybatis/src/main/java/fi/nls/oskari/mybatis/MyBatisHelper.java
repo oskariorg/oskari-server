@@ -7,6 +7,9 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import javax.sql.DataSource;
+import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.List;
 
 public class MyBatisHelper {
 
@@ -16,6 +19,10 @@ public class MyBatisHelper {
 
     public static Configuration getConfig(DataSource ds, Class<?>... mappers) {
         if (ds == null) {
+            // TODO: anything better to detect that we are in test env?
+            ds = getTestDS();
+        }
+        if (ds == null) {
             throw new NullPointerException("Tried initializing MyBatis without a datasource");
         }
         final TransactionFactory transactionFactory = new JdbcTransactionFactory();
@@ -24,6 +31,18 @@ public class MyBatisHelper {
         configuration.setLazyLoadingEnabled(true);
         addMappers(configuration, mappers);
         return configuration;
+    }
+
+    private static DataSource getTestDS() {
+        try {
+            // try to dig up TestHelper that is only available while testing to get a mem-based datasource
+            Class helper = Class.forName("fi.nls.test.util.TestHelper");
+            Method m = helper.getMethod("createMemDBforUnitTest", List.class);
+            // TODO: call with DB initializing scripts to actually use this
+            return (DataSource) m.invoke(null, (Object) Collections.emptyList());
+        } catch (Exception e) {
+            throw new RuntimeException("Not testing");
+        }
     }
 
     public static void addAliases(Configuration config, Class<?>... aliases) {
