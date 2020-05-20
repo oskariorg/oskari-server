@@ -30,12 +30,12 @@ import org.json.JSONObject;
  * }
  */
 public class WFSLayerOptions {
-    public static final String KEY_RENDER_MODE = "renderMode";
-    public static final String KEY_CLUSTER = "clusteringDistance";
-    public static final String KEY_LABEL = "labelProperty";
-    public static final String KEY_STYLES = "styles";
-    public static final String KEY_DEFAULT_STYLE = "default";
-    public static final String KEY_FEATURE_STYLE = "featureStyle";
+    private static final String KEY_RENDER_MODE = "renderMode";
+    private static final String KEY_CLUSTER = "clusteringDistance";
+    private static final String KEY_LABEL = "labelProperty";
+    private static final String KEY_STYLES = "styles";
+    private static final String KEY_DEFAULT_STYLE = "default";
+    private static final String KEY_FEATURE_STYLE = "featureStyle";
     private static final String DEFAULT_RENDER_MODE = "vector";
 
     private JSONObject options;
