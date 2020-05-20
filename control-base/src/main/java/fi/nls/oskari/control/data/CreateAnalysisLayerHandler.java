@@ -226,9 +226,9 @@ public class CreateAnalysisLayerHandler extends RestActionHandler {
         else {
             log.warn("Couldn't get source permissions for analysis, result will have none");
         }
-
+        JSONObject baseOptions = AnalysisDataService.getBaseLayer().getOptions();
         // Get analysisLayer JSON for response to front
-        final JSONObject analysisLayerJSON = AnalysisHelper.getlayerJSON(analysis);
+        final JSONObject analysisLayerJSON = AnalysisHelper.getlayerJSON(analysis, baseOptions);
 
         // Additional param for new layer creation when merging layers:
         // - Notify client to remove merged layers since they are removed from backend

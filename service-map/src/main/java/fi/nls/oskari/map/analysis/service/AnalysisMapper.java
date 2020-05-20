@@ -16,7 +16,6 @@ public interface AnalysisMapper {
     List<HashMap<String,Object>> getAnalysisDataByIdUid(Map<String, Object> params);
     void deleteAnalysisById(final long id);
     void deleteAnalysisDataById(final long id);
-    void deleteAnalysisStyleById(final long id);
     void updatePublisherName(final Map<String, Object> params);
     void mergeAnalysisData(final Analysis analysis);
 }

@@ -11,24 +11,17 @@ import java.util.List;
 public interface UserLayerMapper {
 
     //UserLayer related
-    public void insertUserLayerRow(final UserLayer userlayer);
-    public int updateUserLayerCols(final UserLayer userlayer);
-    public UserLayer findUserLayer(long id);
-    public List<UserLayer> findUserLayerByUuid(String uuid);
-    public void deleteUserLayerRow(final long id) throws ServiceException;
-    public int updatePublisherName(@Param ("id") long id, @Param ("uuid") String uuid, @Param ("publisher_name") String name);
-    public String getUserLayerBbox (final long userLayerId);
-
-    //UserLayerStyle related
-    public void insertUserLayerStyleRow(final UserDataStyle userLayerStyle);
-    public void deleteUserLayerStyleRow(final long id);
-    public UserDataStyle findUserLayerStyle(final long id);
-    public int updateUserLayerStyleCols (final UserDataStyle userLayerStyle);
+    void insertUserLayer(final UserLayer userlayer);
+    int updateUserLayer(final UserLayer userlayer);
+    UserLayer findUserLayer(long id);
+    List<UserLayer> findUserLayerByUuid(String uuid);
+    void deleteUserLayer(final long id) throws ServiceException;
+    int updatePublisherName(@Param ("id") long id, @Param ("uuid") String uuid, @Param ("publisher_name") String name);
+    String getUserLayerBbox (final long userLayerId);
 
     //UserLayerData related
-    public void insertUserLayerDataRow(@Param ("user_layer_data") final UserLayerData userLayerData, @Param("user_layer_id") final long userLayerId);
-    public int updateUserLayerDataCols(final UserLayerData userLayerData);
-    public void deleteUserLayerDataByLayerId (final long userLayerId);
-    public void deleteUserLayerDataRow (final long id);
-
+    void insertUserLayerData(@Param ("user_layer_data") final UserLayerData userLayerData, @Param("user_layer_id") final long userLayerId);
+    int updateUserLayerData(final UserLayerData userLayerData);
+    void deleteUserLayerDataByLayerId (final long userLayerId);
+    void deleteUserLayerData (final long id);
 }

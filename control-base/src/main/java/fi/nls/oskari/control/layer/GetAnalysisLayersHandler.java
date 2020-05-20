@@ -9,8 +9,8 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.analysis.service.AnalysisDataService;
 import fi.nls.oskari.map.analysis.service.AnalysisDbService;
-import fi.nls.oskari.map.analysis.service.AnalysisDbServiceMybatisImpl;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
@@ -30,7 +30,7 @@ import java.util.Set;
 public class GetAnalysisLayersHandler extends ActionHandler {
 
     private static final Logger LOG = LogFactory.getLogger(GetAnalysisLayersHandler.class);
-    private static final AnalysisDbService analysisService = new AnalysisDbServiceMybatisImpl();
+    private AnalysisDbService analysisService;
     private PermissionService permissionsService;
 
     private static final String JSKEY_ANALYSISLAYERS = "analysislayers";
@@ -39,6 +39,7 @@ public class GetAnalysisLayersHandler extends ActionHandler {
     public void init() {
         super.init();
         permissionsService = OskariComponentManager.getComponentOfType(PermissionService.class);
+        analysisService = OskariComponentManager.getComponentOfType(AnalysisDbService.class);
     }
 
     @Override
@@ -53,9 +54,10 @@ public class GetAnalysisLayersHandler extends ActionHandler {
         final List<Analysis> list = analysisService.getAnalysisByUid(user.getUuid());
         Set<String> publishPermission = permissionsService.getResourcesWithGrantedPermissions(ResourceType.analysislayer, user, PermissionType.PUBLISH);
         Set<String> downloadPermission = permissionsService.getResourcesWithGrantedPermissions(ResourceType.analysislayer, user, PermissionType.DOWNLOAD);
+        JSONObject baseOptions = AnalysisDataService.getBaseLayer().getOptions();
         for(Analysis a: list) {
             // Parse analyse layer json out analysis
-            final JSONObject analysisLayer = AnalysisHelper.getlayerJSON(a);
+            final JSONObject analysisLayer = AnalysisHelper.getlayerJSON(a, baseOptions);
             final String permissionKey = "analysis+" + a.getId();
 
             JSONHelper.putValue(analysisLayer, "permissions",
