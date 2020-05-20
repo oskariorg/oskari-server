@@ -1,28 +1,16 @@
 package fi.nls.oskari.domain.map;
 
-import org.json.JSONException;
+import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
 import org.json.JSONObject;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-
-import java.io.IOException;
 
 /**
  * Common model for layers consisting of user created data.
  */
 public class UserDataLayer {
-    private static final ObjectMapper OM;
-    static {
-        OM = new ObjectMapper();
-        OM.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    }
     private String uuid;
     private String publisher_name;
     private UserDataStyle style;
-
-    public UserDataLayer () {
-        style = new UserDataStyle();
-    }
+    private WFSLayerOptions options;
 
     public String getUuid() {
         return uuid;
@@ -52,18 +40,24 @@ public class UserDataLayer {
     public void setStyle (UserDataStyle style) {
         this.style = style;
     }
-
     public UserDataStyle getStyle () {
         return style;
     }
-    public void mapPropertiesToStyle (String properties) throws JSONException {
-        try {
-            style = OM.readValue(properties, UserDataStyle.class);
-        } catch (IOException e) {
-            throw new JSONException(e.getMessage());
+
+    public void setOptions (JSONObject options) {
+        this.options = new WFSLayerOptions(options);
+    }
+    public JSONObject getOptions () {
+        return options.getOptions();
+    }
+    public WFSLayerOptions getWFSLayerOptions () {
+        if (options == null) {
+            options = new WFSLayerOptions();
         }
+        return options;
     }
-    public void mapPropertiesToStyle (JSONObject properties) throws JSONException {
-        mapPropertiesToStyle(properties.toString());
+    public void mapPropertiesToStyle(JSONObject properties) {
+        //TODO remove
     }
+
 }

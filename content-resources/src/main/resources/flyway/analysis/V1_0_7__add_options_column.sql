@@ -1,0 +1,1 @@
+ALTER TABLE analysis ADD options json;
