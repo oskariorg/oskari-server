@@ -1,6 +1,8 @@
 package org.oskari.print.request;
 
 import java.util.Optional;
+
+import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
 import org.json.JSONObject;
 import org.oskari.service.user.UserLayerService;
 import org.oskari.print.util.StyleUtil;
@@ -110,27 +112,16 @@ public class PrintLayer {
         if (customStyle != null) {
             return customStyle;
         }
-        if (getProcessor().isPresent()){
-            return processor.get().getOskariStyle(layerId);
+        // TODO: print should support optionalStyles and whole style should be returned
+        // return featureStyle for now
+        if (getProcessor().isPresent()) {
+            return getProcessor().get().getWFSLayerOptions(layerId).getDefaultFeatureStyle();
         }
-        JSONObject defaultStyle = StyleUtil.getDefaultOskariStyle();
-        if (StyleUtil.OSKARI_DEFAULT.equals(style)){
-            return defaultStyle;
+        JSONObject styleJson = new WFSLayerOptions(oskariLayer.getOptions()).getNamedStyle(style);
+        if (styleJson.has(WFSLayerOptions.KEY_FEATURE_STYLE)) {
+            return JSONHelper.getJSONObject(styleJson, WFSLayerOptions.KEY_FEATURE_STYLE);
         }
-        JSONObject options = oskariLayer.getOptions();
-        JSONObject styles = JSONHelper.getJSONObject(options, StyleUtil.STYLES_JSON_KEY);
-        if (styles == null) {
-            return defaultStyle;
-        }
-        if (styles.has(style)){
-            JSONObject namedStyle = JSONHelper.getJSONObject(
-                    JSONHelper.getJSONObject(
-                            JSONHelper.getJSONObject(styles, style),
-                            getOskariLayer().getName()),
-                    "featureStyle");
-            return JSONHelper.merge(defaultStyle, namedStyle);
-        }
-        return defaultStyle;
+        return WFSLayerOptions.getDefaultOskariStyle();
     }
 
 }
