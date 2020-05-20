@@ -12,8 +12,8 @@ import fi.nls.oskari.domain.map.view.ViewTypes;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
+import fi.nls.oskari.map.analysis.service.AnalysisDataService;
 import fi.nls.oskari.map.analysis.service.AnalysisDbService;
-import fi.nls.oskari.map.analysis.service.AnalysisDbServiceMybatisImpl;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.service.OskariComponentManager;
@@ -85,9 +85,8 @@ public class MapfullHandler extends BundleHandler {
     public static final String EPSG_PROJ4_FORMATS = "epsg_proj4_formats.json";
 
     private static MyPlacesService myPlaceService = null;
-    private static final AnalysisDbService analysisService = new AnalysisDbServiceMybatisImpl();
+    private static AnalysisDbService analysisService;
     private static UserLayerDbService userLayerService;
-    private static final UserLayerDataService userLayerDataService = new UserLayerDataService();
     private static OskariLayerService mapLayerService;
 
     private static JSONObject epsgMap = null;
@@ -98,6 +97,7 @@ public class MapfullHandler extends BundleHandler {
         myPlaceService = OskariComponentManager.getComponentOfType(MyPlacesService.class);
         userLayerService = OskariComponentManager.getComponentOfType(UserLayerDbService.class);
         mapLayerService = OskariComponentManager.getComponentOfType(OskariLayerService.class);
+        analysisService = OskariComponentManager.getComponentOfType(AnalysisDbService.class);
         // to prevent mocking issues in JUnit tests....
         permissionsService = ServiceFactory.getPermissionsService(); // OskariComponentManager.getComponentOfType(PermissionService.class);
         epsgInit();
@@ -374,7 +374,11 @@ public class MapfullHandler extends BundleHandler {
         final Set<String> permissions = permissionsService.getResourcesWithGrantedPermissions(
                 AnalysisLayer.TYPE, user, PermissionType.VIEW_PUBLISHED.name());
         LOGGER.debug("Analysis layer permissions for published view", permissions);
-
+        OskariLayer baseLayer = AnalysisDataService.getBaseLayer();
+        JSONObject baseOptions = new JSONObject();
+        if (baseLayer != null) {
+            baseOptions = baseLayer.getOptions();
+        }
         for (Long id : publishedAnalysis) {
             final Analysis analysis = analysisService.getAnalysisById(id);
             if(analysis == null){
@@ -391,7 +395,7 @@ public class MapfullHandler extends BundleHandler {
                         viewID, "Analysis id:", id);
                 continue;
             }
-            final JSONObject json = AnalysisHelper.getlayerJSON(analysis, lang,
+            final JSONObject json = AnalysisHelper.getlayerJSON(analysis,baseOptions, lang,
                     useDirectURL, user.getUuid(), modifyURLs);
             if (json != null) {
                 layerList.put(json);
@@ -459,7 +463,7 @@ public class MapfullHandler extends BundleHandler {
                                          final Set<String> bundleIds,
                                          final String mapSrs) {
         final boolean userLayersBundlePresent = bundleIds.contains(BUNDLE_MYPLACESIMPORT);
-        final OskariLayer baseLayer = userLayerDataService.getBaseLayer();
+        final OskariLayer baseLayer = UserLayerDataService.getBaseLayer();
         for (Long id : publishedUserLayers) {
             final UserLayer userLayer = userLayerService.getUserLayerById(id);
 
@@ -481,7 +485,7 @@ public class MapfullHandler extends BundleHandler {
                 continue;
             }
 
-            final JSONObject json = userLayerDataService.parseUserLayer2JSON(userLayer, baseLayer, mapSrs);
+            final JSONObject json = UserLayerDataService.parseUserLayer2JSON(userLayer, baseLayer, mapSrs);
             if (json != null) {
                 layerList.put(json);
             }
