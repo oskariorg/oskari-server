@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.UserDataStyle;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -60,17 +61,20 @@ public class MyPlaceCategoryHelper {
         // Everything is optional except category_name
         category.setCategory_name(JSONHelper.getString(properties, "category_name"));
         category.setDefault(properties.optBoolean("default"));
-        if (properties.has("style")) { // parse from oskari style
-            category.getStyle().populateFromOskariJSON(properties.getJSONObject("style"));
-        } else {
-            category.mapPropertiesToStyle(properties);
+        // GeoServer adds String options property
+        String options = JSONHelper.optString(properties,"options", "{}");
+        category.setOptions(JSONHelper.createJSONObject(options));
+        // Frontend adds JSONObject style property
+        JSONObject style = JSONHelper.getJSONObject(properties,"style");
+        if (style != null) {
+            category.getWFSLayerOptions().setDefaultFeatureStyle(style);
         }
-
         return category;
     }
 
-    public static ByteArrayOutputStream toGeoJSONFeatureCollection(List<MyPlaceCategory> categories)
+    public static ByteArrayOutputStream toGeoJSONFeatureCollection(List<MyPlaceCategory> categories, OskariLayer baselayer)
             throws IOException {
+        JSONObject baseOptions = baselayer.getOptions();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         JsonFactory factory = new JsonFactory();
         JsonGenerator json = factory.createGenerator(baos);
@@ -79,55 +83,29 @@ public class MyPlaceCategoryHelper {
         json.writeFieldName("features");
         json.writeStartArray();
         for (MyPlaceCategory category : categories) {
-            toGeoJSONFeature(json, category, true);
+            category.getWFSLayerOptions().injectBaseLayerOptions(baseOptions);
+            toGeoJSONFeature(json, category);
         }
         json.writeEndArray();
         json.writeEndObject();
         json.close();
         return baos;
     }
-    private static void toGeoJSONFeature(JsonGenerator json, MyPlaceCategory category) throws IOException {
-        toGeoJSONFeature(json, category, false);
-    }
-    private static void toGeoJSONFeature(JsonGenerator json, MyPlaceCategory category, boolean useOskariStyle)
+    private static void toGeoJSONFeature(JsonGenerator json, MyPlaceCategory category)
             throws IOException {
         json.writeStartObject();
         json.writeStringField("type", "Feature");
-
         json.writeNumberField("id", category.getId());
-
         json.writeNullField("geometry");
-
         json.writeFieldName("properties");
+
         json.writeStartObject();
         json.writeStringField("uuid", category.getUuid());
         json.writeStringField("category_name", category.getCategory_name());
         json.writeStringField("publisher_name", category.getPublisher_name());
         json.writeBooleanField("default", category.isDefault());
-        // Style
-        UserDataStyle style = category.getStyle();
-        if (useOskariStyle) {
-            json.writeFieldName("style");
-            json.writeRawValue(style.parseUserLayerStyleToOskariJSON().toString());
-        } else {
-            json.writeStringField("stroke_color", style.getStroke_color());
-            json.writeStringField("stroke_dasharray", style.getStroke_dasharray());
-            json.writeStringField("stroke_linecap", style.getStroke_linecap());
-            json.writeStringField("stroke_linejoin", style.getStroke_linejoin());
-            json.writeNumberField("stroke_width", style.getStroke_width());
-
-            json.writeStringField("fill_color", style.getFill_color());
-            json.writeNumberField("fill_pattern", style.getFill_pattern());
-
-            json.writeStringField("dot_color", style.getDot_color());
-            json.writeStringField("dot_shape", style.getDot_shape());
-            json.writeNumberField("dot_size", style.getDot_size());
-
-            json.writeStringField("border_color", style.getBorder_color());
-            json.writeStringField("border_dasharray", style.getBorder_dasharray());
-            json.writeStringField("border_linejoin", style.getBorder_linejoin());
-            json.writeNumberField("border_width", style.getBorder_width());
-        }
+        json.writeFieldName("options");
+        json.writeRawValue(category.getOptions().toString());
         json.writeEndObject();
 
         json.writeEndObject();

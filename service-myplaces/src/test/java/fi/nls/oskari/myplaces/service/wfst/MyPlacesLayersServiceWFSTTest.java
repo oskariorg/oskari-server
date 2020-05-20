@@ -76,14 +76,10 @@ public class MyPlacesLayersServiceWFSTTest {
         myCategories = service.getByUserId(uuid);
         MyPlaceCategory afterGet = myCategories.get(0);
         assertEquals("", afterGet.getPublisher_name());
-        assertEquals("", afterGet.getStyle().getBorder_dasharray());
-        assertEquals("", afterGet.getStyle().getStroke_dasharray());
 
         myCategories = service.getByUserId(uuid);
         MyPlaceCategory GETafterPUT = myCategories.get(0);
         assertEquals("", GETafterPUT.getPublisher_name());
-        assertEquals("", GETafterPUT.getStyle().getBorder_dasharray());
-        assertEquals("", GETafterPUT.getStyle().getStroke_dasharray());
     }
 
     private MyPlaceCategory createSomeCategory(String uuid) {
@@ -92,13 +88,6 @@ public class MyPlacesLayersServiceWFSTTest {
         myCategory.setDefault(true);
         myCategory.setCategory_name("foobar");
         myCategory.setPublisher_name("");
-        UserDataStyle style = myCategory.getStyle();
-        style.initDefaultStyle();
-        style.setStroke_width(10);
-        style.setDot_shape("3");
-        style.setFill_color("#0000FF");
-        style.setBorder_dasharray("");
-        style.setStroke_dasharray("");
         return myCategory;
     }
 
