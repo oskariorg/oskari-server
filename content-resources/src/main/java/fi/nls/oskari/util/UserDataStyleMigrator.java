@@ -1,6 +1,10 @@
 package fi.nls.oskari.util;
 
+import fi.nls.oskari.db.DatasourceHelper;
+import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
 import org.json.JSONObject;
+
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,11 +13,59 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UserDataStyleMigrator {
-    public static int migrateStyles (Connection conn, final String layerTable, final String styleTable) throws SQLException {
+    private static final String CLUSTERING_PROPERTY = ".clustering.distance";
+    private static final String LAYER_ID_PROPERTY = ".baselayer.id";
+    private static final String DEFAULT_RENDER_MODE = "vector";
+
+    public static int migrateStyles (Connection conn, final String layerTable, final String styleTable, final String styleIdColumn) throws SQLException {
         Map<Long,String> options = getOptions(conn, styleTable);
-        updateLayers(conn, layerTable, options);
+        updateLayers(conn, layerTable, styleIdColumn, options);
         return options.size();
     }
+
+    public static void updateBaseLayerOptions (final String layerName, final String propertyPrefix, final String labelProperty) throws SQLException {
+        // UserDataLayers _can_ use other db than the default one
+        // -> Use connection to default db for this migration
+        DataSource ds = DatasourceHelper.getInstance().getDataSource();
+        if (ds == null) {
+            ds = DatasourceHelper.getInstance().createDataSource();
+        }
+        Connection conn = ds.getConnection();
+        // Get existing options
+        int layerId = PropertyUtil.getOptional(propertyPrefix + LAYER_ID_PROPERTY, -1);
+        final String selectSQL = "select options from oskari_maplayer where id=? or name=?";
+        JSONObject current = null;
+        try (final PreparedStatement ps = conn.prepareStatement(selectSQL)) {
+            ps.setInt(1, layerId);
+            ps.setString(2, layerName);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                current = JSONHelper.createJSONObject(rs.getString("options"));
+                if (rs.next()) throw new SQLException("More than one result");
+            }
+        }
+        // Update values
+        WFSLayerOptions wfsOpts = new WFSLayerOptions(current);
+        wfsOpts.setRenderMode(DEFAULT_RENDER_MODE);
+        int cluster = PropertyUtil.getOptional(propertyPrefix + CLUSTERING_PROPERTY, -1);
+        if (cluster > 0) {
+            wfsOpts.setClusteringDistance(cluster);
+        }
+        JSONObject options = wfsOpts.getOptions();
+        if (labelProperty != null) {
+            JSONHelper.putValue(options, WFSLayerOptions.KEY_LABEL, labelProperty);
+        }
+        // Update options
+        final String updateSQL = "update oskari_maplayer set options=? where id=? or name=?";
+
+        try (final PreparedStatement statement = conn.prepareStatement(updateSQL)) {
+            statement.setString(1, options.toString());
+            statement.setInt(2, layerId);
+            statement.setString(3, layerName);
+            statement.execute();
+        }
+    }
+
     public static Map<Long,String> getOptions(Connection conn, final String tableName) throws SQLException {
 
         final String sql =  String.format("SELECT id, dot_shape, dot_color, dot_size, " +
@@ -30,8 +82,8 @@ public class UserDataStyleMigrator {
         }
         return options;
     }
-    public static void updateLayers(Connection conn, final String tableName, Map<Long, String> styleMap) throws SQLException {
-        final String sql = String.format("UPDATE %s SET options=?::json WHERE id=?", tableName);
+    public static void updateLayers(Connection conn, final String tableName, final String styleIdColumn, Map<Long, String> styleMap) throws SQLException {
+        final String sql = String.format("UPDATE %s SET options=?::json WHERE %s=?", tableName, styleIdColumn);
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             for(long id : styleMap.keySet()) {
                 ps.setString(1, styleMap.get(id));
@@ -71,7 +123,8 @@ public class UserDataStyleMigrator {
         // stroke.area
         JSONObject strokeArea = new JSONObject();
         JSONHelper.putValue(stroke, "area", strokeArea);
-        JSONHelper.putValue(strokeArea, "color", rs.getString("border_color"));
+        String borderColor = rs.getString("border_color");
+        JSONHelper.putValue(strokeArea, "color", borderColor == null ? JSONObject.NULL : borderColor );
         JSONHelper.putValue(strokeArea, "width", rs.getInt("border_width"));
         JSONHelper.putValue(strokeArea, "lineDash", convertDash(rs.getString("border_dasharray")));
         JSONHelper.putValue(strokeArea, "lineJoin", convertLineJoin(rs.getString("border_linejoin")));
@@ -79,11 +132,11 @@ public class UserDataStyleMigrator {
         // fill
         JSONObject fill = new JSONObject();
         JSONHelper.putValue(featureStyle, "fill", fill);
-        JSONHelper.putValue(fill, "color", rs.getString("fill_color"));
+        String fillColor = rs.getString("fill_color");
+        JSONHelper.putValue(fill, "color", fillColor == null ? JSONObject.NULL : fillColor );
         JSONObject fillArea = new JSONObject();
         JSONHelper.putValue(fillArea, "pattern", rs.getInt("fill_pattern"));
         JSONHelper.putValue(fill, "area", fillArea);
-
         return options.toString();
     }
     
