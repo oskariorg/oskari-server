@@ -1,7 +1,6 @@
 package fi.nls.oskari.util;
 
 import fi.nls.oskari.db.DatasourceHelper;
-import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
 import org.json.JSONObject;
 
 import javax.sql.DataSource;
@@ -16,6 +15,9 @@ public class UserDataStyleMigrator {
     private static final String CLUSTERING_PROPERTY = ".clustering.distance";
     private static final String LAYER_ID_PROPERTY = ".baselayer.id";
     private static final String DEFAULT_RENDER_MODE = "vector";
+    private static final String KEY_RENDER_MODE = "renderMode";
+    private static final String KEY_CLUSTER = "clusteringDistance";
+    private static final String KEY_LABEL = "labelProperty";
 
     public static int migrateStyles (Connection conn, final String layerTable, final String styleTable, final String styleIdColumn) throws SQLException {
         Map<Long,String> options = getOptions(conn, styleTable);
@@ -34,26 +36,24 @@ public class UserDataStyleMigrator {
         // Get existing options
         int layerId = PropertyUtil.getOptional(propertyPrefix + LAYER_ID_PROPERTY, -1);
         final String selectSQL = "select options from oskari_maplayer where id=? or name=?";
-        JSONObject current = null;
+        JSONObject options = null;
         try (final PreparedStatement ps = conn.prepareStatement(selectSQL)) {
             ps.setInt(1, layerId);
             ps.setString(2, layerName);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                current = JSONHelper.createJSONObject(rs.getString("options"));
+                options = JSONHelper.createJSONObject(rs.getString("options"));
                 if (rs.next()) throw new SQLException("More than one result");
             }
         }
         // Update values
-        WFSLayerOptions wfsOpts = new WFSLayerOptions(current);
-        wfsOpts.setRenderMode(DEFAULT_RENDER_MODE);
+        JSONHelper.putValue(options, KEY_RENDER_MODE, DEFAULT_RENDER_MODE);
         int cluster = PropertyUtil.getOptional(propertyPrefix + CLUSTERING_PROPERTY, -1);
         if (cluster > 0) {
-            wfsOpts.setClusteringDistance(cluster);
+            JSONHelper.putValue(options, KEY_CLUSTER, cluster);
         }
-        JSONObject options = wfsOpts.getOptions();
         if (labelProperty != null) {
-            JSONHelper.putValue(options, WFSLayerOptions.KEY_LABEL, labelProperty);
+            JSONHelper.putValue(options, KEY_LABEL, labelProperty);
         }
         // Update options
         final String updateSQL = "update oskari_maplayer set options=? where id=? or name=?";
