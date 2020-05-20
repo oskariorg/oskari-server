@@ -19,12 +19,6 @@ public class UserDataStyleMigrator {
     private static final String KEY_CLUSTER = "clusteringDistance";
     private static final String KEY_LABEL = "labelProperty";
 
-    public static int migrateStyles (Connection conn, final String layerTable, final String styleTable, final String styleIdColumn) throws SQLException {
-        Map<Long,String> options = getOptions(conn, styleTable);
-        updateLayers(conn, layerTable, styleIdColumn, options);
-        return options.size();
-    }
-
     public static void updateBaseLayerOptions (final String layerName, final String propertyPrefix, final String labelProperty) throws SQLException {
         // UserDataLayers _can_ use other db than the default one
         // -> Use connection to default db for this migration
@@ -66,7 +60,13 @@ public class UserDataStyleMigrator {
         }
     }
 
-    public static Map<Long,String> getOptions(Connection conn, final String tableName) throws SQLException {
+    public static int migrateStyles (Connection conn, final String layerTable, final String styleTable, final String styleIdColumn) throws SQLException {
+        Map<Long,String> options = getOptions(conn, styleTable);
+        updateLayers(conn, layerTable, styleIdColumn, options);
+        return options.size();
+    }
+
+    private static Map<Long,String> getOptions(Connection conn, final String tableName) throws SQLException {
 
         final String sql =  String.format("SELECT id, dot_shape, dot_color, dot_size, " +
                 "stroke_width, stroke_color, stroke_linejoin, stroke_linecap, stroke_dasharray, " +
@@ -81,17 +81,6 @@ public class UserDataStyleMigrator {
             }
         }
         return options;
-    }
-    public static void updateLayers(Connection conn, final String tableName, final String styleIdColumn, Map<Long, String> styleMap) throws SQLException {
-        final String sql = String.format("UPDATE %s SET options=?::json WHERE %s=?", tableName, styleIdColumn);
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            for(long id : styleMap.keySet()) {
-                ps.setString(1, styleMap.get(id));
-                ps.setLong(2, id);
-                ps.addBatch();
-            }
-            ps.executeBatch();
-        }
     }
     private static String parseOptions(ResultSet rs) throws SQLException  {
         JSONObject options = new JSONObject();
@@ -157,5 +146,17 @@ public class UserDataStyleMigrator {
             return "butt";
         }
         return lineCap;
+    }
+
+    private static void updateLayers(Connection conn, final String tableName, final String styleIdColumn, Map<Long, String> styleMap) throws SQLException {
+        final String sql = String.format("UPDATE %s SET options=?::json WHERE %s=?", tableName, styleIdColumn);
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            for(long id : styleMap.keySet()) {
+                ps.setString(1, styleMap.get(id));
+                ps.setLong(2, id);
+                ps.addBatch();
+            }
+            ps.executeBatch();
+        }
     }
 }
