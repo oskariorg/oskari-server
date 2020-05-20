@@ -39,8 +39,6 @@ public class StyleUtil {
     private static final String SVG_MARKERS_JSON = "svg-markers.json";
     private static final float ICON_SIZE = 32f;
     private static final double ICON_OFFSET = ICON_SIZE/2.0;
-    public static final String OSKARI_DEFAULT = "default";
-    public static final String STYLES_JSON_KEY = "styles";
     public static final float [] LINE_PATTERN_SOLID = new float[0];
 
     public static final Map<String, Integer> LINE_CAP_STYLE  = new HashMap<String, Integer>() {{
@@ -221,39 +219,5 @@ public class StyleUtil {
             }
         }
         return new PDColor(patternName, pattern);
-    }
-
-    public static JSONObject getDefaultOskariStyle () {
-        JSONObject json = new JSONObject();
-        // dot
-        JSONObject image = new JSONObject();
-        JSONObject imageFill = new JSONObject();
-        JSONHelper.putValue(imageFill, "color", "#FAEBD7");
-        JSONHelper.putValue(image, "fill", imageFill);
-        JSONHelper.putValue(image, "shape", 5);
-        JSONHelper.putValue(image, "size", 3);
-        JSONHelper.putValue(json, "image", image);
-        // line
-        JSONObject stroke = new JSONObject();
-        JSONHelper.putValue(stroke, "color", "#000000");
-        JSONHelper.putValue(stroke, "width",1);
-        JSONHelper.putValue(stroke, "lineDash", "solid");
-        JSONHelper.putValue(stroke, "lineCap", "butt" );
-        JSONHelper.putValue(stroke, "lineJoin", "mitre");
-        // area
-        JSONObject strokeArea = new JSONObject();
-        JSONHelper.putValue(strokeArea, "color", "#000000");
-        JSONHelper.putValue(strokeArea, "width", 1);
-        JSONHelper.putValue(strokeArea, "lineDash", "solid");
-        JSONHelper.putValue(strokeArea, "lineJoin", "mitre");
-        JSONHelper.putValue(stroke, "area", strokeArea);
-        JSONHelper.putValue(json, "stroke", stroke);
-        JSONObject fill = new JSONObject();
-        JSONHelper.putValue(fill, "color", "#FAEBD7");
-        JSONObject fillArea = new JSONObject();
-        JSONHelper.putValue(fillArea, "pattern", -1);
-        JSONHelper.putValue(fill, "area", fillArea);
-        JSONHelper.putValue(json, "fill", fill);
-        return json;
     }
 }
