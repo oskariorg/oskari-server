@@ -10,8 +10,10 @@ import java.util.Map;
 
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFactorySpi;
+import org.geotools.referencing.CRS;
 import org.geotools.util.KVP;
 import org.geotools.util.URLs;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 public class MIFDataStoreFactory implements DataStoreFactorySpi {
 
@@ -22,6 +24,13 @@ public class MIFDataStoreFactory implements DataStoreFactorySpi {
             true,
             null,
             new KVP(Param.EXT, "mif"));
+
+    public static final Param CRS_PARAM = new Param(
+            "crs",
+            String.class,
+            "EPSG string to use if unable to parse from MIF CoordSys header",
+            false,
+            null);
 
     private Boolean isAvailable = null;
 
@@ -78,9 +87,18 @@ public class MIFDataStoreFactory implements DataStoreFactorySpi {
     @Override
     public DataStore createDataStore(Map<String, Serializable> params) throws IOException {
         URL url = (URL) MIF_FILE_PARAM.lookUp(params);
+        String crs = (String) CRS_PARAM.lookUp(params);
         File mif = URLs.urlToFile(url);
         File mid = getAssistingMIDFile(mif);
-        return new MIFDataStore(mif, mid);
+        if (crs == null || crs.isEmpty()) {
+            return new MIFDataStore(mif, mid);
+        }
+        try {
+            CoordinateReferenceSystem c = CRS.decode(crs, true);
+            return new MIFDataStore(mif, mid, c);
+        } catch (Exception e) {
+            throw new IOException(e);
+        }
     }
 
     private File getAssistingMIDFile(File mif) {

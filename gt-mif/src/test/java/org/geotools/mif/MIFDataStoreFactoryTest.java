@@ -11,7 +11,11 @@ import java.util.Map;
 
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
+import org.geotools.referencing.CRS;
 import org.junit.Test;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 public class MIFDataStoreFactoryTest {
 
@@ -43,6 +47,29 @@ public class MIFDataStoreFactoryTest {
         MIFDataStore mifStore = (MIFDataStore) store;
 
         MIFHeader header = mifStore.readHeader();
+
+        try (MIDReader mid = mifStore.openMID(header)) {
+            assertTrue(mid.getClass().equals(NoMIDReader.class));
+        }
+    }
+
+    @Test
+    public void testSPIWorksWithCRS() throws URISyntaxException, IOException, NoSuchAuthorityCodeException, FactoryException {
+        String epsg = "EPSG:2393";
+
+        URL url = getClass().getResource("test_no_mid.MIF").toURI().toURL();
+        Map<String, Serializable> params = new HashMap<>();
+        params.put("url", url);
+        params.put("crs", epsg);
+
+        DataStore store = DataStoreFinder.getDataStore(params);
+        assertTrue(store instanceof MIFDataStore);
+        MIFDataStore mifStore = (MIFDataStore) store;
+
+        MIFHeader header = mifStore.readHeader();
+        CoordinateReferenceSystem actual = header.getCoordSys();
+        CoordinateReferenceSystem expected = CRS.decode("EPSG:2393", true);
+        assertTrue(CRS.equalsIgnoreMetadata(expected, actual));
 
         try (MIDReader mid = mifStore.openMID(header)) {
             assertTrue(mid.getClass().equals(NoMIDReader.class));

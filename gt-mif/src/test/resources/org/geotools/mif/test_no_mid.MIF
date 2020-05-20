@@ -2,7 +2,6 @@ Version   750
 Charset "WindowsLatin1"
 Delimiter ","
 Index 3
-CoordSys Earth Projection 24, 1016, "m", 27, 0, 1, 3500000, 0 Bounds (2900000, 6000000) (4000000, 8000000)
 Columns 8
   id Decimal(12, 0)
   aineisto_id Decimal(7, 0)

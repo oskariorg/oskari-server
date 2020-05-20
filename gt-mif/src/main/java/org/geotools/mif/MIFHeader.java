@@ -2,15 +2,17 @@ package org.geotools.mif;
 
 import static org.geotools.mif.util.MIFUtil.*;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.Arrays;
 
 import org.geotools.mif.column.MIDColumn;
+import org.geotools.mif.util.QueueBufferedReader;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
+import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 public class MIFHeader {
@@ -46,20 +48,20 @@ public class MIFHeader {
         return columns;
     }
 
-    public MIFHeader(File mif) throws IOException {
+    public MIFHeader(File mif, CoordinateReferenceSystem forceCRS) throws IOException {
         int version = 0;
         Charset charset = null;
         String delimiter = "\t";
         // "When no COORDSYS clause is specified, data is assumed to be stored in longitude/latitude forms"
-        CoordinateReferenceSystem coordSys = DefaultGeographicCRS.WGS84;
+        CoordinateReferenceSystem coordSys = forceCRS == null ? DefaultGeographicCRS.WGS84 : forceCRS;
         double[] transform = new double[] { 1, 1, 0, 0 };
         MIDColumn[] columns = null;
-        
+
         boolean foundData = false;
-        
-        try (BufferedReader r = Files.newBufferedReader(mif.toPath(), StandardCharsets.US_ASCII)) {
+
+        try (QueueBufferedReader q = new QueueBufferedReader(Files.newBufferedReader(mif.toPath(), StandardCharsets.US_ASCII))) {
             String line;
-            while ((line = r.readLine()) != null) {
+            while ((line = q.poll()) != null) {
                 line = line.trim();
                 if (startsWithIgnoreCase(line, "DATA")) {
                     foundData = true;
@@ -71,11 +73,11 @@ public class MIFHeader {
                 } else if (startsWithIgnoreCase(line, "DELIMITER")) {
                     delimiter = parseDelimiter(line);
                 } else if (startsWithIgnoreCase(line, "COORDSYS")) {
-                    coordSys = parseCoordSys(line, r);
+                    coordSys = parseCoordSys(line, q);
                 } else if (startsWithIgnoreCase(line, "TRANSFORM")) {
                     transform = parseTransform(line);
                 } else if (startsWithIgnoreCase(line, "COLUMNS")) {
-                    columns = parseColumns(line, r);
+                    columns = parseColumns(line, q);
                 }
             }
         }
@@ -88,6 +90,12 @@ public class MIFHeader {
         }
         if (columns == null) {
             throw new IllegalArgumentException("Could not find COLUMNS header");
+        }
+        if (coordSys == null) {
+            if (forceCRS == null) {
+                throw new IllegalArgumentException("Could not parse CoordSys header and no force CRS available");
+            }
+            coordSys = forceCRS;
         }
         if (!foundData) {
             throw new IllegalArgumentException("Could not find DATA header");
@@ -134,8 +142,65 @@ public class MIFHeader {
         return line.substring(i + 1, j);
     }
 
-    private CoordinateReferenceSystem parseCoordSys(String line, BufferedReader r) {
+    private CoordinateReferenceSystem parseCoordSys(String line, QueueBufferedReader q) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        sb.append(line);
+        while (true) {
+            line = q.peek().trim();
+            if (startsWithIgnoreCase(line, "TRANSFORM") || startsWithIgnoreCase(line, "COLUMNS")) {
+                break;
+            }
+            sb.append(' ');
+            sb.append(line);
+            q.poll();
+        }
+        String coordSys = sb.toString();
+        try {
+            return parseCoordSys(coordSys);
+        } catch (FactoryException e) {
+            throw new IOException(e);
+        }
+    }
+
+    private CoordinateReferenceSystem parseCoordSys(String coordSys) throws FactoryException {
+        if (startsWithIgnoreCase(coordSys, "COORDSYS")) {
+            coordSys = coordSys.substring("COORDSYS".length() + 1);
+        }
+        coordSys = coordSys.replace(',', ' ');
+        String[] parts = coordSys.split("\\s+");
+
+        int boundsIndex = indexOfIgnoreCase(parts, "Bounds");
+        if (boundsIndex > 0) {
+            parts = Arrays.copyOf(parts, boundsIndex);
+        }
+
+        if ("Earth".equalsIgnoreCase(parts[0])) {
+            if (parts.length >= 5 && "Projection".equalsIgnoreCase(parts[1])) {
+                // [ Projection type, datum, uniname [, origin latitude ], ... ]
+                int type = Integer.parseInt(parts[2]);
+                int datumId = Integer.parseInt(parts[3]);
+                // String unitname = parts[4];
+                int n = parts.length - 5;
+                double[] projectionParams = new double[n];
+                for (int i = 0; i < n; i++) {
+                    projectionParams[i] = Double.parseDouble(parts[5 + i]);
+                }
+                MIFProjection projection = MIFProjection.find(type);
+                MIFDatum datum = MIFDatum.find(datumId);
+                return projection.toCRS(datum, projectionParams);
+            }
+        }
+
         return null;
+    }
+
+    private int indexOfIgnoreCase(String[] arr, String key) {
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i].equalsIgnoreCase(key)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     private double[] parseTransform(String line) {
@@ -159,13 +224,13 @@ public class MIFHeader {
         return t;
     }
 
-    private MIDColumn[] parseColumns(String line, BufferedReader r) throws IOException {
+    private MIDColumn[] parseColumns(String line, QueueBufferedReader q) throws IOException {
         // COLUMNS 3
         String[] a = line.split("\\s+");
         int numColumns = Integer.parseInt(a[1]);
         MIDColumn[] columns = new MIDColumn[numColumns];
         for (int i = 0; i < numColumns; i++) {
-            columns[i] = MIDColumn.create(r.readLine());
+            columns[i] = MIDColumn.create(q.poll());
         }
         return columns;
     }

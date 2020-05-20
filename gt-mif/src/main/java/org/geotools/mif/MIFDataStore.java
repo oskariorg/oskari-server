@@ -11,15 +11,22 @@ import org.geotools.data.store.ContentEntry;
 import org.geotools.data.store.ContentFeatureSource;
 import org.geotools.feature.NameImpl;
 import org.opengis.feature.type.Name;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 public class MIFDataStore extends ContentDataStore {
 
     private final File mif;
     private final File mid;
+    private final CoordinateReferenceSystem forceCRS;
 
     public MIFDataStore(File mif, File mid) {
+        this(mif, mid, null);
+    }
+
+    public MIFDataStore(File mif, File mid, CoordinateReferenceSystem forceCRS) {
         this.mif = mif;
         this.mid = mid;
+        this.forceCRS = forceCRS;
     }
 
     @Override
@@ -36,7 +43,7 @@ public class MIFDataStore extends ContentDataStore {
     }
 
     MIFHeader readHeader() throws IOException {
-        return new MIFHeader(mif);
+        return new MIFHeader(mif, forceCRS);
     }
 
     MIFDataReader openData() throws IOException {
