@@ -13,7 +13,6 @@ public class Analysis extends UserDataLayer {
     private String name;
     private long layer_id;
     private String analyse_json;
-    private long style_id;
     private String col1;
     private String col2;
     private String col3;
@@ -66,14 +65,6 @@ public class Analysis extends UserDataLayer {
 
     public void setAnalyse_json(String analyseJson) {
         analyse_json = analyseJson;
-    }
-
-    public long getStyle_id() {
-        return style_id;
-    }
-
-    public void setStyle_id(long styleId) {
-        style_id = styleId;
     }
 
     public String getCol1() {

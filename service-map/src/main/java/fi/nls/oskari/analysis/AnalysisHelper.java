@@ -1,7 +1,9 @@
 package fi.nls.oskari.analysis;
 
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.analysis.Analysis;
+import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.service.AnalysisDataService;
@@ -88,11 +90,11 @@ public class AnalysisHelper {
      * @return analysis layer data for front mapservice
      * @throws org.json.JSONException
      */
-    public static JSONObject getlayerJSON(final Analysis al) {
-        return getlayerJSON(al, PropertyUtil.getDefaultLanguage(), false, null, false);
+    public static JSONObject getlayerJSON(final Analysis al, JSONObject baseOptions) {
+        return getlayerJSON(al, baseOptions, PropertyUtil.getDefaultLanguage(), false, null, false);
     }
 
-    public static JSONObject getlayerJSON(final Analysis al,
+    public static JSONObject getlayerJSON(final Analysis al, final JSONObject baseOptions,
                                           final String lang, final boolean useDirectURL,
                                           final String uuid, final boolean modifyURLs) {
         // TODO: make use of params, see MyPlacesServiceIbatisImpl.getCategoryAsWmsLayerJSON for example
@@ -145,7 +147,9 @@ public class AnalysisHelper {
             json.put(JSKEY_METHOD, JSONHelper.getStringFromJSON(analyse_js,
                     JSKEY_METHOD, "n/a"));
             json.put(JSKEY_RESULT, "");
-            json.put(JSKEY_OPTIONS, JSONHelper.createJSONObject(JSKEY_STYLES, al.getStyle().getStyleForLayerOptions()));
+            WFSLayerOptions wfsOpts = al.getWFSLayerOptions();
+            wfsOpts.injectBaseLayerOptions(baseOptions);
+            json.put(JSKEY_OPTIONS, wfsOpts.getOptions());
             if (analyse_js.has(JSKEY_METHODPARAMS)) {
                 // Put nodata value to analysis layer, if it was in analysis source layer
                 JSONObject params = JSONHelper.getJSONObject(analyse_js, JSKEY_METHODPARAMS);
