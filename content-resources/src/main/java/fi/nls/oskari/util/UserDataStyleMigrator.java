@@ -40,6 +40,9 @@ public class UserDataStyleMigrator {
                 if (rs.next()) throw new SQLException("More than one result");
             }
         }
+        if (options == null) {
+            options = new JSONObject();
+        }
         // Update values
         JSONHelper.putValue(options, KEY_RENDER_MODE, DEFAULT_RENDER_MODE);
         int cluster = PropertyUtil.getOptional(propertyPrefix + CLUSTERING_PROPERTY, -1);
