@@ -2,6 +2,7 @@ package fi.nls.oskari.domain.map.userlayer;
 
 
 import fi.nls.oskari.domain.map.UserDataLayer;
+import org.json.JSONArray;
 
 public class UserLayer extends UserDataLayer {
     public static final String TYPE = "userlayer";
@@ -9,8 +10,7 @@ public class UserLayer extends UserDataLayer {
     private String layer_name;
     private String layer_desc;
     private String layer_source;
-    private String fields;
-    private long style_id;
+    private JSONArray fields;
     private int features_count;
     private int features_skipped; //if geojson feature doesn't have geometry object or it's null, feature is skipped
     private String wkt;
@@ -47,20 +47,16 @@ public class UserLayer extends UserDataLayer {
         this.layer_source = layer_source;
     }
 
-    public String getFields() {
+    public JSONArray getFields() {
         return fields;
     }
 
-    public void setFields(String fields) {
+    public void setFields(JSONArray fields) {
+        if (fields == null) {
+            this.fields = new JSONArray();
+            return;
+        }
         this.fields = fields;
-    }
-
-    public long getStyle_id() {
-        return style_id;
-    }
-
-    public void setStyle_id(long style_id) {
-        this.style_id = style_id;
     }
 
     public int getFeatures_count (){
