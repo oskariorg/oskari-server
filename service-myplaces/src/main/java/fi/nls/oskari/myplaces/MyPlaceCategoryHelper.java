@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.domain.map.UserDataStyle;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

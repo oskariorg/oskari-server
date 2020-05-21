@@ -7,7 +7,6 @@ import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import fi.nls.oskari.domain.map.UserDataStyle;
 import org.oskari.wfst.WFSTRequestBuilder;
 
 import fi.nls.oskari.domain.map.MyPlaceCategory;

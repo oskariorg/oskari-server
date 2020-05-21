@@ -1,10 +1,8 @@
 package fi.nls.oskari.map.analysis.service;
 
 import fi.nls.oskari.db.DatasourceHelper;
-import fi.nls.oskari.domain.map.UserDataStyle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.mybatis.MyBatisHelper;
 import fi.nls.oskari.service.ServiceException;
 
 import org.apache.ibatis.mapping.Environment;

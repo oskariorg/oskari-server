@@ -1,6 +1,5 @@
 package fi.nls.oskari.map.analysis.service;
 
-import fi.nls.oskari.domain.map.UserDataStyle;
 import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
