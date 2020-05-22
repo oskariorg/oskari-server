@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.pdfbox.pdmodel.graphics.color.PDColor;
 import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
+import org.oskari.print.util.StyleUtil;
 
 public class PDPrintStyle {
     private Color lineColor;
@@ -16,6 +17,7 @@ public class PDPrintStyle {
     private PDColor fillPattern;
     private PDFormXObject icon;
     private List<String> labelProperty;
+    private LabelAlign labelAlign;
 
     public PDPrintStyle () {
         lineWidth = 1f;
@@ -92,6 +94,15 @@ public class PDPrintStyle {
     public void setLabelProperty(List<String> labelProperty) {
         this.labelProperty = labelProperty;
     }
+    public LabelAlign getLabelAlign () {
+        return labelAlign;
+    }
+    public void setLabelAlign (LabelAlign labelAlign) {
+        this.labelAlign = labelAlign;
+    }
+    public void setLabelAlign (String align, float x, float y) {
+        this.labelAlign = new LabelAlign(align, x, y);
+    }
 
     public boolean hasFillPattern () {
         return fillPattern != null;
@@ -108,4 +119,19 @@ public class PDPrintStyle {
     public boolean hasLabels () {
         return labelProperty != null && !labelProperty.isEmpty();
     }
+
+    public static class LabelAlign {
+        private float x;
+        private float y;
+        private String align;
+        public LabelAlign (String align, float x, float y) {
+            this.align = align;
+            this.x = x;
+            this.y = -y; // different direction than in frontend
+        }
+        public float getX() { return x; }
+        public float getY() { return y; }
+        public String getAlign() { return align; }
+    }
+
 }

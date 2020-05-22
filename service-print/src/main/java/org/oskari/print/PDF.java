@@ -574,7 +574,7 @@ public class PDF {
     }
     private static void drawMarkers(PDDocument doc, PDPageContentStream pageStream, String markers,
                                         AffineTransformation transform, float x, float y, float w, float h) throws IOException {
-        if (markers.isEmpty()) return;
+        if (markers == null || markers.isEmpty()) return;
         // Create a Form XObject
         PDFormXObject form = new PDFormXObject(doc);
         PDResources resources = new PDResources();
@@ -633,7 +633,7 @@ public class PDF {
             stream.drawForm(icon);
             stream.restoreGraphicsState();
             if (!label.isEmpty()) {
-                drawLabel(stream, c, label);
+                drawLabel(stream, c, StyleUtil.LABEL_ALIGN_MAP.get("markers"), label);
             }
         }
     }
@@ -711,7 +711,7 @@ public class PDF {
                 }
             }
             if (!label.isEmpty()){
-                drawLabel(stream, g, label);
+                drawLabel(stream, style.getLabelAlign(), g, label);
             }
 
         }
@@ -735,22 +735,22 @@ public class PDF {
         }
     }
 
-    private static void drawLabel(PDPageContentStream stream, Geometry g, String label) throws IOException {
-        Coordinate c;
+    private static void drawLabel(PDPageContentStream stream, PDPrintStyle.LabelAlign align, Geometry g, String label) throws IOException {
+        Coordinate c = null;
         if (g instanceof MultiPoint || g instanceof MultiPolygon ) {
             for (int i = 0 ; i < g.getNumGeometries(); i++){
                 c = g.getGeometryN(i).getCentroid().getCoordinate();
-                drawLabel(stream, c , label);
             }
         } else if (g instanceof LineString) {
             c = getLineCentroid ((LineString) g);
-            drawLabel(stream, c , label);
+
         } else if (g instanceof MultiLineString) {
             for (int i = 0; i < g.getNumGeometries(); i++) {
                 c = getLineCentroid ((LineString) g.getGeometryN(i));
-                drawLabel(stream, c, label);
             }
         }
+        if (c == null) return;
+        drawLabel(stream, c, align, label);
     }
     private static void setLabelStyle (PDPageContentStream stream) throws IOException  {
         stream.setLineDashPattern(StyleUtil.LINE_PATTERN_SOLID, 0);
@@ -763,7 +763,7 @@ public class PDF {
         int i = line.getNumPoints()/2;
         return line.getPointN(i).getCoordinate();
     }
-    private static void drawLabel (PDPageContentStream stream, Coordinate c, String label) throws IOException {
+    private static void drawLabel (PDPageContentStream stream, Coordinate c, PDPrintStyle.LabelAlign align, String label) throws IOException {
         stream.saveGraphicsState();
         //setLabelStyle(stream);
 
@@ -773,7 +773,7 @@ public class PDF {
 
         stream.beginText();
         stream.setFont(FONT_BOLD, FONT_SIZE);
-        stream.setTextMatrix(Matrix.getTranslateInstance((float) c.x + 8f, (float) c.y - 4f));
+        stream.setTextMatrix(StyleUtil.getMatrixForLabel(c, align, FONT_BOLD, FONT_SIZE, label));
         stream.showText(label);
         stream.endText();
         stream.restoreGraphicsState();
