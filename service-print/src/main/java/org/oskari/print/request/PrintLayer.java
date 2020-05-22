@@ -10,6 +10,7 @@ import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.domain.map.OskariLayer;
 
 public class PrintLayer {
+    private static final String KEY_FEATURE_STYLE = "featureStyle";
 
     private final int zIndex;
     private String layerId;
@@ -118,8 +119,8 @@ public class PrintLayer {
             return getProcessor().get().getWFSLayerOptions(layerId).getDefaultFeatureStyle();
         }
         JSONObject styleJson = new WFSLayerOptions(oskariLayer.getOptions()).getNamedStyle(style);
-        if (styleJson.has(WFSLayerOptions.KEY_FEATURE_STYLE)) {
-            return JSONHelper.getJSONObject(styleJson, WFSLayerOptions.KEY_FEATURE_STYLE);
+        if (styleJson.has(KEY_FEATURE_STYLE)) {
+            return JSONHelper.getJSONObject(styleJson, KEY_FEATURE_STYLE);
         }
         return WFSLayerOptions.getDefaultOskariStyle();
     }
