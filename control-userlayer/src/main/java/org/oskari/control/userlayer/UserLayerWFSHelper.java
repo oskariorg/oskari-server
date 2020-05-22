@@ -26,6 +26,7 @@ import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.util.PropertyUtil;
 
 import org.oskari.geojson.GeoJSONFeatureCollection;
+import org.oskari.map.userlayer.service.UserLayerDataService;
 import org.oskari.map.userlayer.service.UserLayerDbService;
 import org.oskari.service.user.UserLayerService;
 
@@ -141,6 +142,10 @@ public class UserLayerWFSHelper extends UserLayerService {
         }
         return service.getUserLayerById(id);
     }
+    protected OskariLayer getBaseLayer() {
+        return UserLayerDataService.getBaseLayer();
+    }
+
     public JSONObject getOskariStyle (String id) {
         UserLayer layer = getLayer(parseId(id));
         if (layer == null) {

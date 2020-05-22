@@ -4,7 +4,9 @@ import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.cache.ComputeOnceCache;
 import fi.nls.oskari.domain.User;
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.analysis.Analysis;
+import fi.nls.oskari.map.analysis.service.AnalysisDataService;
 import fi.nls.oskari.map.analysis.service.AnalysisDbService;
 import fi.nls.oskari.map.analysis.service.AnalysisDbServiceMybatisImpl;
 import fi.nls.oskari.service.OskariComponentManager;
@@ -125,6 +127,9 @@ public class AnalysisWFSHelper extends UserLayerService {
             service = new AnalysisDbServiceMybatisImpl();
         }
         return service.getAnalysisById(id);
+    }
+    protected OskariLayer getBaseLayer() {
+        return AnalysisDataService.getBaseLayer();
     }
 
     public SimpleFeatureCollection postProcess(SimpleFeatureCollection sfc) throws Exception {
