@@ -1,13 +1,23 @@
 package org.oskari.print.request;
 
 import java.awt.Color;
+import java.io.IOException;
 import java.util.List;
 
+import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.color.PDColor;
 import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
+import org.oskari.print.util.PDFBoxUtil;
 import org.oskari.print.util.StyleUtil;
 
 public class PDPrintStyle {
+    public static final PDFont FONT = PDType1Font.HELVETICA;
+    public static final PDFont FONT_BOLD = PDType1Font.HELVETICA_BOLD;
+    public static final float FONT_SIZE = 12f;
+    public static final float FONT_SIZE_SCALE = 10f;
+    public static final float FONT_SIZE_TIMESERIES = 10f;
+
     private Color lineColor;
     private float [] linePattern;
     private Color fillColor;
@@ -126,9 +136,19 @@ public class PDPrintStyle {
             this.offsetX = offsetX;
             this.offsetY = -offsetY; // different direction than in frontend
         }
-        public float getOffsetX() { return offsetX; }
-        public float getOffsetY() { return offsetY; }
-        public String getAlign() { return align; }
+        public float getLabelX (String label) {
+            try {
+                if ("center".equals(align)) {
+                    return offsetX - PDFBoxUtil.getTextWidth(label, FONT, FONT_SIZE) / 2;
+                } else if ("right".equals(align) || "start".equals(align)) {
+                    return offsetX - PDFBoxUtil.getTextWidth(label, FONT, FONT_SIZE);
+                }
+            } catch (IOException ignored) {}
+            return offsetX;
+        }
+        public float getLabelY () {
+            return offsetY;
+        }
     }
 
 }

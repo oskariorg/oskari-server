@@ -54,7 +54,7 @@ public class StyleUtil {
         put("bevel", 2);
     }};
     public static final Map<String, PDPrintStyle.LabelAlign> LABEL_ALIGN_MAP = new HashMap<String, PDPrintStyle.LabelAlign>() {{
-        put("markers", new PDPrintStyle.LabelAlign("left", ICON_SIZE/2, 8));
+        put("markers", new PDPrintStyle.LabelAlign("left", 12f, 8f));
     }};
 
     public static PDPrintStyle getLineStyle (JSONObject oskariStyle) {
@@ -227,19 +227,5 @@ public class StyleUtil {
             }
         }
         return new PDColor(patternName, pattern);
-    }
-    public static Matrix getMatrixForLabel(Coordinate c, PDPrintStyle.LabelAlign align, PDFont font, float size, String label) throws IOException {
-        float x = align.getOffsetX();
-        float y = align.getOffsetY();
-        switch(align.getAlign()) {
-            case "center":
-                x -=  PDFBoxUtil.getTextWidth(label, font, size) / 2;
-                break;
-            case "right":
-            case "start":
-                x -=  PDFBoxUtil.getTextWidth(label, font, size);
-                break;
-        }
-        return Matrix.getTranslateInstance((float) c.x + x, (float) c.y + y);
     }
 }

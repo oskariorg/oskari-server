@@ -30,8 +30,6 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.PDPageContentStream.AppendMode;
 import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.apache.pdfbox.pdmodel.graphics.image.LosslessFactory;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
@@ -121,12 +119,6 @@ public class PDF {
             mmToPx(A3W_MM - MAP_MARGIN_MIN_BOTTOM_TOP_MM), // A3_LS
             mmToPx(A2W_MM - MAP_MARGIN_MIN_BOTTOM_TOP_MM)  // A2_LS
     };
-
-    private static final PDFont FONT = PDType1Font.HELVETICA;
-    private static final PDFont FONT_BOLD = PDType1Font.HELVETICA_BOLD;
-    private static final float FONT_SIZE = 12f;
-    private static final float FONT_SIZE_SCALE = 10f;
-    private static final float FONT_SIZE_TIMESERIES = 10f;
 
     private static final float OFFSET_DATE_RIGHT = PDFBoxUtil.mmToPt(40);
     private static final float OFFSET_DATE_TOP = PDFBoxUtil.mmToPt(10);
@@ -274,7 +266,7 @@ public class PDF {
         float marginBottomPx = (pageSize.getHeight() - mapHeight) / 2;
         float y = marginBottomPx + mapHeight + 5;
 
-        PDFBoxUtil.drawTextCentered(stream, title, FONT, FONT_SIZE, x, y);
+        PDFBoxUtil.drawTextCentered(stream, title, PDPrintStyle.FONT, PDPrintStyle.FONT_SIZE, x, y);
     }
 
     private static void drawLogo(PDDocument doc, PDPageContentStream stream,
@@ -335,7 +327,7 @@ public class PDF {
         String date = SDF.format(new Date());
         float x = pageSize.getWidth() - OFFSET_DATE_RIGHT;
         float y = pageSize.getHeight() - OFFSET_DATE_TOP;
-        PDFBoxUtil.drawText(stream, date, FONT, FONT_SIZE, x, y);
+        PDFBoxUtil.drawText(stream, date, PDPrintStyle.FONT, PDPrintStyle.FONT_SIZE, x, y);
     }
 
     private static void drawTimeseriesTexts(PDPageContentStream stream,
@@ -348,9 +340,9 @@ public class PDF {
 
         float x = pageSize.getWidth() - OFFSET_TIMESERIES_RIGHT;
 
-        PDFBoxUtil.drawText(stream, request.getTimeseriesLabel(), FONT, FONT_SIZE_TIMESERIES,
+        PDFBoxUtil.drawText(stream, request.getTimeseriesLabel(), PDPrintStyle.FONT, PDPrintStyle.FONT_SIZE_TIMESERIES,
                 x, OFFSET_TIMESERIES_LABEL_BOTTOM);
-        PDFBoxUtil.drawText(stream, request.getFormattedTime(), FONT, FONT_SIZE_TIMESERIES,
+        PDFBoxUtil.drawText(stream, request.getFormattedTime(), PDPrintStyle.FONT, PDPrintStyle.FONT_SIZE_TIMESERIES,
                 x, OFFSET_TIME_IN_TIMESERIES_BOTTOM);
     }
 
@@ -404,7 +396,7 @@ public class PDF {
         if(request.isScaleText()) {
             float cx = x1 + ((x2 - x1) / 2);
             PDFBoxUtil.drawTextCentered(stream, request.getScaleText(),
-                    FONT, FONT_SIZE_SCALE, cx, y1 + 5);
+                    PDPrintStyle.FONT, PDPrintStyle.FONT_SIZE_SCALE, cx, y1 + 5);
         }
         // else force to draw scalebar
         else {
@@ -423,7 +415,7 @@ public class PDF {
 
             float cx = x1 + ((x2 - x1) / 2);
             PDFBoxUtil.drawTextCentered(stream, distanceStr,
-                    FONT, FONT_SIZE_SCALE, cx, y1 + 5);
+                    PDPrintStyle.FONT, PDPrintStyle.FONT_SIZE_SCALE, cx, y1 + 5);
         }
     }
 
@@ -773,8 +765,8 @@ public class PDF {
         stream.setNonStrokingColor(Color.BLACK);
 
         stream.beginText();
-        stream.setFont(FONT_BOLD, FONT_SIZE);
-        stream.setTextMatrix(StyleUtil.getMatrixForLabel(c, align, FONT_BOLD, FONT_SIZE, label));
+        stream.setFont(PDPrintStyle.FONT_BOLD, PDPrintStyle.FONT_SIZE);
+        stream.setTextMatrix(Matrix.getTranslateInstance((float) c.x + align.getLabelX(label), (float) c.y + align.getLabelY()));
         stream.showText(label);
         stream.endText();
         stream.restoreGraphicsState();
