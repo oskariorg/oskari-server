@@ -135,23 +135,16 @@ public class UserLayerWFSHelper extends UserLayerService {
         return layer.isOwnedBy(user.getUuid()) || layer.isPublished();
     }
 
-    private UserLayer getLayer(int id) {
+    protected UserLayer getLayer(int id) {
         if (service == null) {
             // might cause problems with timing of components being initialized if done in init/constructor
             service = OskariComponentManager.getComponentOfType(UserLayerDbService.class);
         }
         return service.getUserLayerById(id);
     }
+
     protected OskariLayer getBaseLayer() {
         return UserLayerDataService.getBaseLayer();
-    }
-
-    public JSONObject getOskariStyle (String id) {
-        UserLayer layer = getLayer(parseId(id));
-        if (layer == null) {
-            return new JSONObject();
-        }
-        return layer.getStyle().parseUserLayerStyleToOskariJSON();
     }
 
     private SimpleFeatureType createType(SimpleFeatureType schema, JSONObject properties) throws JSONException {

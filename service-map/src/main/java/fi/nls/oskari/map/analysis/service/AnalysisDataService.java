@@ -1,18 +1,19 @@
 package fi.nls.oskari.map.analysis.service;
 
-import fi.nls.oskari.analysis.AnalysisHelper;
 import fi.nls.oskari.domain.User;
-import fi.nls.oskari.domain.map.UserDataStyle;
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.analysis.Analysis;
+import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.domain.*;
+import fi.nls.oskari.map.layer.OskariLayerService;
+import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
@@ -22,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 public class AnalysisDataService {
+    private static final String ANALYSIS_BASELAYER_PROPERTY = "analysis.baselayer.id";
+    private static final int ANALYSIS_BASELAYER_ID = PropertyUtil.getOptional(ANALYSIS_BASELAYER_PROPERTY, -1);
     private static final String ANALYSIS_INPUT_TYPE_GS_VECTOR = "gs_vector";
 
     public static final String ANALYSIS_GEOMETRY_FIELD = "geometry";
@@ -32,9 +35,21 @@ public class AnalysisDataService {
     private static final Logger log = LogFactory
             .getLogger(AnalysisDataService.class);
 
-    private static final AnalysisStyleDbService styleService = new AnalysisStyleDbServiceMybatisImpl();
     private static final AnalysisDbService analysisService = new AnalysisDbServiceMybatisImpl();
     private static final TransformationService transformationService = new TransformationService();
+    private static final OskariLayerService mapLayerService = new OskariLayerServiceMybatisImpl();
+
+    /**
+     * Returns the base WFS-layer for analysis
+     */
+    public static OskariLayer getBaseLayer() {
+        if (ANALYSIS_BASELAYER_ID == -1) {
+            log.error("Analysis baseId not defined. Please define", ANALYSIS_BASELAYER_PROPERTY,
+                    "property with value pointing to the baselayer in database.");
+            return null;
+        }
+        return mapLayerService.find(ANALYSIS_BASELAYER_ID);
+    }
 
     public Analysis storeAnalysisData(final String featureset,
             AnalysisLayer analysislayer, String json, User user) throws ServiceException {
@@ -44,25 +59,15 @@ public class AnalysisDataService {
         final String wpsUserPass = PropertyUtil.get("geoserver.wms.pass");
 
         final Analysis analysis = new Analysis();
-        final UserDataStyle style = analysis.getStyle();
-        try {
-            // Insert style row
-            final JSONObject stylejs = JSONHelper
-                    .createJSONObject(analysislayer.getStyle());
-            style.populateFromOskariJSON(stylejs);
-        } catch (JSONException e) {
-            log.debug("Unable to get AnalysisLayer style JSON", e);
-        }
-        // FIXME: do we really want to insert possibly empty style??
-        styleService.insertAnalysisStyleRow(style);
-
+        WFSLayerOptions wfsOpts = analysis.getWFSLayerOptions();
+        wfsOpts.setDefaultFeatureStyle(JSONHelper
+                .createJSONObject(analysislayer.getStyle()));
         try {
             // Insert analysis row
             // --------------------
-            analysis.setAnalyse_json(json.toString());
+            analysis.setAnalyse_json(json);
             analysis.setLayer_id(analysislayer.getId());
             analysis.setName(analysislayer.getName());
-            analysis.setStyle_id(style.getId());
             analysis.setUuid(user.getUuid());
             if (analysislayer.getOverride_sld() != null && !analysislayer.getOverride_sld().isEmpty())
                 analysis.setOverride_SLD(analysislayer.getOverride_sld());
@@ -154,21 +159,6 @@ public class AnalysisDataService {
      * @return Analysis (stored analysis)
      */
     public Analysis mergeAnalysisData(AnalysisLayer analysislayer, String json, User user) throws ServiceException {
-
-        final UserDataStyle style = new UserDataStyle();
-        Analysis analysis = null;
-
-        try {
-            // Insert style row
-            final JSONObject stylejs = JSONHelper
-                    .createJSONObject(analysislayer.getStyle());
-            style.populateFromOskariJSON(stylejs);
-        } catch (JSONException e) {
-            log.debug("Unable to get AnalysisLayer style JSON", e);
-        }
-        // FIXME: do we really want to insert possibly empty style??
-        log.debug("Adding style", style);
-        styleService.insertAnalysisStyleRow(style);
         // Get analysis Ids for to merge
         List<Long> ids = analysislayer.getMergeAnalysisIds();
         // at least two layers must be  for merge
@@ -176,15 +166,16 @@ public class AnalysisDataService {
 
         try {
             // Insert analysis row - use old for seed
-            analysis = getAnalysisById(ids.get(0));
+            Analysis analysis = getAnalysisById(ids.get(0));
             // --------------------
-            analysis.setAnalyse_json(json.toString());
+            analysis.setAnalyse_json(json);
             analysis.setLayer_id(analysislayer.getId());
             analysis.setName(analysislayer.getName());
-            analysis.setStyle_id(style.getId());
             analysis.setUuid(user.getUuid());
             analysis.setOld_id(ids.get(0));
-            analysis.setStyle(style);
+            // update style
+            analysis.getWFSLayerOptions().setDefaultFeatureStyle(
+                    JSONHelper.createJSONObject(analysislayer.getStyle()));
             log.debug("Adding analysis row", analysis);
             analysisService.insertAnalysisRow(analysis);
 
@@ -192,14 +183,12 @@ public class AnalysisDataService {
             // ----------------------------------
             log.debug("Merge analysis_data rows", analysis);
             analysisService.mergeAnalysis(analysis, ids);
-
+            return analysis;
 
         } catch (Exception e) {
             log.debug("Unable to join and merge analysis data", e);
             return null;
         }
-
-        return analysis;
     }
 
     /**
@@ -531,11 +520,5 @@ public class AnalysisDataService {
 
     // Analyse json sample
     // {"name":"Analyysi_Tampereen ","method":"buffer","fields":["__fid","metaDataProperty","description","name","boundedBy","location","NIMI","GEOLOC","__centerX","__centerY"],"layerId":264,"layerType":"wfs","methodParams":{"distance":"22"},"opacity":100,"style":{"dot":{"size":"4","color":"CC9900"},"line":{"size":"2","color":"CC9900"},"area":{"size":"2","lineColor":"CC9900","fillColor":"FFDC00"}},"bbox":{"left":325158,"bottom":6819828,"right":326868,"top":6820378}}
-
-    public JSONObject getlayerJSON(long id) {
-        Analysis analysis = analysisService.getAnalysisById(id);
-        return AnalysisHelper.getlayerJSON(analysis);
-    }
-
 
 }

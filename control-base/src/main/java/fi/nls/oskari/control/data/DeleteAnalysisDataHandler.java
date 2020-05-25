@@ -4,7 +4,7 @@ import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.map.analysis.service.AnalysisDbService;
-import fi.nls.oskari.map.analysis.service.AnalysisDbServiceMybatisImpl;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
@@ -21,7 +21,7 @@ public class DeleteAnalysisDataHandler extends RestActionHandler {
     private final static String PARAM_ID = "id";
     //private final static Logger log = LogFactory.getLogger(DeleteAnalysisDataHandler.class);
 
-    private AnalysisDbService analysisDataService = null;
+    private AnalysisDbService analysisDataService;
 
     public void setAnalysisDataService(final AnalysisDbService service) {
         analysisDataService = service;
@@ -31,7 +31,7 @@ public class DeleteAnalysisDataHandler extends RestActionHandler {
     public void init() {
         super.init();
         if(analysisDataService == null) {
-            setAnalysisDataService(new AnalysisDbServiceMybatisImpl());
+            analysisDataService = OskariComponentManager.getComponentOfType(AnalysisDbService.class);
         }
     }
 

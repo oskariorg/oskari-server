@@ -3,7 +3,7 @@ package org.oskari.map.userlayer.service;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.domain.map.userlayer.UserLayerData;
-import fi.nls.oskari.domain.map.UserDataStyle;
+import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.WKTHelper;
@@ -53,13 +53,15 @@ public class UserLayerDataService {
     private static final int USERLAYER_BASE_LAYER_ID = PropertyUtil.getOptional(USERLAYER_BASELAYER_ID, -1);
 
     public static UserLayer createUserLayer(SimpleFeatureCollection fc,
-            String uuid, String name, String desc, String source) {
+            String uuid, String name, String desc, String source, String style) {
         final SimpleFeatureType ft = fc.getSchema();
         final UserLayer userLayer = new UserLayer();
         userLayer.setUuid(uuid);
         userLayer.setLayer_name(ConversionHelper.getString(name, ft.getTypeName()));
         userLayer.setLayer_desc(ConversionHelper.getString(desc, ""));
         userLayer.setLayer_source(ConversionHelper.getString(source, ""));
+        WFSLayerOptions wfsOptions = userLayer.getWFSLayerOptions();
+        wfsOptions.setDefaultFeatureStyle(JSONHelper.createJSONObject(style));
         userLayer.setFields(parseFields(ft));
         userLayer.setWkt(getWGS84ExtentAsWKT(fc));
         return userLayer;
@@ -81,7 +83,7 @@ public class UserLayerDataService {
         }
     }
 
-    private static String parseFields(SimpleFeatureType schema) {
+    private static JSONArray parseFields(SimpleFeatureType schema) {
         // parse FeatureType schema to JSONArray to keep same order in fields as in the imported file
         JSONArray jsfields = new JSONArray();
         try {
@@ -110,21 +112,7 @@ public class UserLayerDataService {
         } catch (Exception ex) {
             log.error(ex, "Couldn't parse field schema");
         }
-        return JSONHelper.getStringFromJSON(jsfields, "[]");
-    }
-
-    public static UserDataStyle createUserLayerStyle(JSONObject styleObject)
-            throws UserLayerException {
-        final UserDataStyle style = new UserDataStyle();
-        try{
-            style.setId(1);  // for default, even if style should be always valued
-            if (styleObject != null) {
-                style.populateFromOskariJSON(styleObject);
-            }
-            return style;
-        } catch (JSONException e) {
-            throw new UserLayerException("Invalid style json: " + styleObject);
-        }
+        return jsfields;
     }
 
     public static List<UserLayerData> createUserLayerData(SimpleFeatureCollection fc, String uuid)
@@ -152,13 +140,11 @@ public class UserLayerDataService {
             JSONObject geometry = geoJSON.getJSONObject(GeoJSON.GEOMETRY);
             String geometryJson = geometry.toString();
             JSONObject properties = geoJSON.optJSONObject(GeoJSON.PROPERTIES);
-            String propertiesJson = properties != null ? properties.toString() : null;
-
             UserLayerData userLayerData = new UserLayerData();
             userLayerData.setUuid(uuid);
             userLayerData.setFeature_id(id);
             userLayerData.setGeometry(geometryJson);
-            userLayerData.setProperty_json(propertiesJson);
+            userLayerData.setProperty_json(properties);
             return userLayerData;
         } catch (JSONException e) {
             throw new UserLayerException("Failed to encode feature as GeoJSON", UserLayerException.ErrorType.INVALID_FEATURE); //no geometry

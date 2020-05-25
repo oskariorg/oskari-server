@@ -32,6 +32,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -59,7 +60,11 @@ public class WMSCapabilitiesService {
     public ServiceCapabilitiesResultWMS getCapabilitiesResults (final String url, final String version, final String user, final String pwd,
                                                                 final Set<String> systemCRSs) throws ServiceException {
         try {
-            final OskariLayerCapabilities capabilities = capabilitiesService.getCapabilities(url, OskariLayer.TYPE_WMS, version, user, pwd);
+            OskariLayerCapabilities capabilities = capabilitiesService.getCapabilities(url, OskariLayer.TYPE_WMS, version, user, pwd);
+            // if capabilities is more than 5 minutes old, get it from the service directly
+            if (capabilities.isOlderThan(TimeUnit.MINUTES.toMillis(5))) {
+                capabilities = capabilitiesService.getCapabilitiesFromService(url, OskariLayer.TYPE_WMS, version, user, pwd);
+            }
             final String xml = capabilities.getData();
             ServiceCapabilitiesResultWMS results = parseCapabilitiesResults(xml, url, version, user, pwd, systemCRSs);
             if (capabilities.getId() == null) {

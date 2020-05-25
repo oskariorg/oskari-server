@@ -2,8 +2,9 @@ package org.oskari.service.user;
 
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.domain.map.UserDataLayer;
+import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
 import fi.nls.oskari.service.OskariComponent;
-import fi.nls.oskari.service.ServiceException;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.json.JSONObject;
@@ -15,8 +16,9 @@ public abstract class UserLayerService extends OskariComponent {
     public abstract boolean isUserContentLayer(String layerId);
     public abstract int getBaselayerId();
     public abstract int parseId(String layerId);
-    public abstract JSONObject getOskariStyle(String layerId);
     protected abstract OskariLayer getBaseLayer();
+    protected abstract UserDataLayer getLayer(int id);
+
     /**
      * Assumes that layer permissions are checked elsewhere in the code with hasViewPermission() for example
      * @param layerId
