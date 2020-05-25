@@ -147,7 +147,7 @@ public class LayerJSONFormatter {
         JSONHelper.putValue(layerJson, "created", layer.getCreated());
         JSONHelper.putValue(layerJson, "updated", layer.getUpdated());
 
-        JSONHelper.putValue(layerJson, "dataUrl_uuid", getFixedDataUrl(layer.getMetadataId()));
+        JSONHelper.putValue(layerJson, "dataUrl_uuid", LayerJSONFormatter.getFixedDataUrl(layer.getMetadataId()));
         JSONHelper.putValue(layerJson, "style", layer.getStyle());
 
         // setup supported projections
@@ -219,7 +219,7 @@ public class LayerJSONFormatter {
     }
 
     // This is solution of transition for dataUrl and for dataUrl_uuid
-    private String getFixedDataUrl(String metadataId) {
+    protected static String getFixedDataUrl(String metadataId) {
         if(metadataId == null || metadataId.isEmpty()) {
             return null;
         }
