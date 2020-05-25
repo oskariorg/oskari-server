@@ -40,7 +40,7 @@ public class StyleUtil {
     private static final float ICON_SIZE = 32f;
     private static final double ICON_OFFSET = ICON_SIZE/2.0;
     public static final float [] LINE_PATTERN_SOLID = new float[0];
-    public static final Set<String> SUPPORTED_ALIGNS = new HashSet<>(Arrays.asList("center", "left"));
+    public static final Set<String> SUPPORTED_ALIGNS = new HashSet<>(Arrays.asList("center", "left", "end", "right", "start"));
 
     public static final Map<String, Integer> LINE_CAP_STYLE  = new HashMap<String, Integer>() {{
         put("butt",0);
@@ -118,7 +118,7 @@ public class StyleUtil {
         int offsetY = text.optInt("offsetY", 0);
         String textAlign = text.optString("textAlign");
         textAlign = SUPPORTED_ALIGNS.contains(textAlign) ? textAlign : "left";
-        style.setLabelAlign(textAlign, offsetX, offsetY);
+        style.setLabelAlign(new PDPrintStyle.LabelAlign(textAlign, offsetX, offsetY));
     }
     public static PDFormXObject getIcon (PDDocument doc, int shape, String fillColor, int size) throws IOException {
         try {
@@ -229,11 +229,15 @@ public class StyleUtil {
         return new PDColor(patternName, pattern);
     }
     public static Matrix getMatrixForLabel(Coordinate c, PDPrintStyle.LabelAlign align, PDFont font, float size, String label) throws IOException {
-        float x = align.getX();
-        float y = align.getY();
+        float x = align.getOffsetX();
+        float y = align.getOffsetY();
         switch(align.getAlign()) {
             case "center":
                 x -=  PDFBoxUtil.getTextWidth(label, font, size) / 2;
+                break;
+            case "right":
+            case "start":
+                x -=  PDFBoxUtil.getTextWidth(label, font, size);
                 break;
         }
         return Matrix.getTranslateInstance((float) c.x + x, (float) c.y + y);

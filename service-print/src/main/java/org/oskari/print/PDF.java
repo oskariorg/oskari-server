@@ -633,7 +633,7 @@ public class PDF {
             stream.drawForm(icon);
             stream.restoreGraphicsState();
             if (!label.isEmpty()) {
-                drawLabel(stream, c, StyleUtil.LABEL_ALIGN_MAP.get("markers"), label);
+                drawLabelAt(stream, c, StyleUtil.LABEL_ALIGN_MAP.get("markers"), label);
             }
         }
     }
@@ -711,7 +711,7 @@ public class PDF {
                 }
             }
             if (!label.isEmpty()){
-                drawLabel(stream, style.getLabelAlign(), g, label);
+                drawLabel(stream, g, style.getLabelAlign(), label);
             }
 
         }
@@ -735,7 +735,7 @@ public class PDF {
         }
     }
 
-    private static void drawLabel(PDPageContentStream stream, PDPrintStyle.LabelAlign align, Geometry g, String label) throws IOException {
+    private static void drawLabel(PDPageContentStream stream, Geometry g,  PDPrintStyle.LabelAlign align, String label) throws IOException {
         Coordinate c = null;
         if (g instanceof MultiPoint || g instanceof MultiPolygon ) {
             for (int i = 0 ; i < g.getNumGeometries(); i++){
@@ -749,8 +749,9 @@ public class PDF {
                 c = getLineCentroid ((LineString) g.getGeometryN(i));
             }
         }
-        if (c == null) return;
-        drawLabel(stream, c, align, label);
+        if (c != null){
+            drawLabelAt(stream, c, align, label);
+        }
     }
     private static void setLabelStyle (PDPageContentStream stream) throws IOException  {
         stream.setLineDashPattern(StyleUtil.LINE_PATTERN_SOLID, 0);
@@ -763,7 +764,7 @@ public class PDF {
         int i = line.getNumPoints()/2;
         return line.getPointN(i).getCoordinate();
     }
-    private static void drawLabel (PDPageContentStream stream, Coordinate c, PDPrintStyle.LabelAlign align, String label) throws IOException {
+    private static void drawLabelAt (PDPageContentStream stream, Coordinate c, PDPrintStyle.LabelAlign align, String label) throws IOException {
         stream.saveGraphicsState();
         //setLabelStyle(stream);
 

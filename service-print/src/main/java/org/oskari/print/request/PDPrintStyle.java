@@ -100,9 +100,6 @@ public class PDPrintStyle {
     public void setLabelAlign (LabelAlign labelAlign) {
         this.labelAlign = labelAlign;
     }
-    public void setLabelAlign (String align, float x, float y) {
-        this.labelAlign = new LabelAlign(align, x, y);
-    }
 
     public boolean hasFillPattern () {
         return fillPattern != null;
@@ -121,16 +118,16 @@ public class PDPrintStyle {
     }
 
     public static class LabelAlign {
-        private float x;
-        private float y;
+        private float offsetX;
+        private float offsetY;
         private String align;
-        public LabelAlign (String align, float x, float y) {
+        public LabelAlign (String align, float offsetX, float offsetY) {
             this.align = align;
-            this.x = x;
-            this.y = -y; // different direction than in frontend
+            this.offsetX = offsetX;
+            this.offsetY = -offsetY; // different direction than in frontend
         }
-        public float getX() { return x; }
-        public float getY() { return y; }
+        public float getOffsetX() { return offsetX; }
+        public float getOffsetY() { return offsetY; }
         public String getAlign() { return align; }
     }
 
