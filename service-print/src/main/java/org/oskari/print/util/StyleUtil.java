@@ -54,7 +54,7 @@ public class StyleUtil {
         put("bevel", 2);
     }};
     public static final Map<String, PDPrintStyle.LabelAlign> LABEL_ALIGN_MAP = new HashMap<String, PDPrintStyle.LabelAlign>() {{
-        put("markers", new PDPrintStyle.LabelAlign("left", 0, 8));
+        put("markers", new PDPrintStyle.LabelAlign("left", ICON_SIZE/2, 8));
     }};
 
     public static PDPrintStyle getLineStyle (JSONObject oskariStyle) {
@@ -234,9 +234,6 @@ public class StyleUtil {
         switch(align.getAlign()) {
             case "center":
                 x -=  PDFBoxUtil.getTextWidth(label, font, size) / 2;
-                break;
-            case "left":
-                x += ICON_SIZE/2;
                 break;
         }
         return Matrix.getTranslateInstance((float) c.x + x, (float) c.y + y);
