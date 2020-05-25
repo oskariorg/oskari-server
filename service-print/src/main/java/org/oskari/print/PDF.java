@@ -736,21 +736,21 @@ public class PDF {
     }
 
     private static void drawLabel(PDPageContentStream stream, Geometry g,  PDPrintStyle.LabelAlign align, String label) throws IOException {
-        Coordinate c = null;
+        Coordinate c;
         if (g instanceof MultiPoint || g instanceof MultiPolygon ) {
             for (int i = 0 ; i < g.getNumGeometries(); i++){
                 c = g.getGeometryN(i).getCentroid().getCoordinate();
+                drawLabelAt(stream, c, align, label);
             }
         } else if (g instanceof LineString) {
             c = getLineCentroid ((LineString) g);
+            drawLabelAt(stream, c, align, label);
 
         } else if (g instanceof MultiLineString) {
             for (int i = 0; i < g.getNumGeometries(); i++) {
                 c = getLineCentroid ((LineString) g.getGeometryN(i));
+                drawLabelAt(stream, c, align, label);
             }
-        }
-        if (c != null){
-            drawLabelAt(stream, c, align, label);
         }
     }
     private static void setLabelStyle (PDPageContentStream stream) throws IOException  {
