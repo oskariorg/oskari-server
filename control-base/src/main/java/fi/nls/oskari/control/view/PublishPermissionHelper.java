@@ -1,7 +1,6 @@
 package fi.nls.oskari.control.view;
 
 import fi.nls.oskari.analysis.AnalysisHelper;
-import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParamsException;
@@ -14,7 +13,6 @@ import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.service.AnalysisDbService;
-import fi.nls.oskari.map.analysis.service.AnalysisDbServiceMybatisImpl;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.service.OskariComponentManager;
@@ -55,7 +53,7 @@ public class PublishPermissionHelper {
         }
 
         if (analysisService == null) {
-            setAnalysisService(new AnalysisDbServiceMybatisImpl());
+            setAnalysisService(OskariComponentManager.getComponentOfType(AnalysisDbService.class));
         }
 
         if (userLayerService == null) {

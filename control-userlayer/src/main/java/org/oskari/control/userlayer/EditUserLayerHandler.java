@@ -1,6 +1,7 @@
 package org.oskari.control.userlayer;
 
 import fi.nls.oskari.control.*;
+import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
 import org.oskari.log.AuditLog;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,6 +14,7 @@ import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import org.oskari.map.userlayer.service.UserLayerDataService;
 import org.oskari.map.userlayer.service.UserLayerDbService;
+import org.oskari.map.userlayer.service.UserLayerException;
 
 /**
  * Expects to get layer id as http parameter "id".
@@ -39,11 +41,13 @@ public class EditUserLayerHandler extends RestActionHandler {
         userLayer.setLayer_name(params.getRequiredParam(PARAM_NAME));
         userLayer.setLayer_desc(params.getHttpParam(PARAM_DESC, userLayer.getLayer_desc()));
         userLayer.setLayer_source(params.getHttpParam(PARAM_SOURCE, userLayer.getLayer_source()));
-        final UserDataStyle style = userLayer.getStyle();
-        updateStyleProperties(style, params.getHttpParam(PARAM_STYLE));
-
-        userLayerDbService.updateUserLayerCols(userLayer);
-        userLayerDbService.updateUserLayerStyleCols(style);
+        WFSLayerOptions wfsOptions = userLayer.getWFSLayerOptions();
+        wfsOptions.setDefaultFeatureStyle(JSONHelper.createJSONObject(params.getHttpParam(PARAM_STYLE)));
+        try {
+            userLayerDbService.updateUserLayer(userLayer);
+        } catch (UserLayerException e) {
+            throw new ActionException("Failed to update", e);
+        }
 
         AuditLog.user(params.getClientIp(), params.getUser())
                 .withParam("id", userLayer.getId())

@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
+import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
 import org.oskari.log.AuditLog;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -62,17 +64,17 @@ public class MyPlacesLayersHandler extends RestActionHandler {
             categories = layerService.getByUserId(uuid);
         } catch (ServiceException e) {
             LOG.warn(e);
-            throw new ActionException("Failed to get users layers");
+            throw new ActionException("Failed to get myplaces layers");
         }
 
         if (categories.size() == 0) {
             // If user has no categories insert a new default category
             categories.add(insertDefaultCategory(uuid));
         }
-
+        OskariLayer baselayer = service.getBaseLayer();
         ByteArrayOutputStream baos;
         try {
-            baos = MyPlaceCategoryHelper.toGeoJSONFeatureCollection(categories);
+            baos = MyPlaceCategoryHelper.toGeoJSONFeatureCollection(categories, baselayer);
         } catch (IOException e) {
             LOG.warn(e);
             throw new ActionException("Failed to create response");
@@ -106,7 +108,7 @@ public class MyPlacesLayersHandler extends RestActionHandler {
         }
         ByteArrayOutputStream baos;
         try {
-            baos = MyPlaceCategoryHelper.toGeoJSONFeatureCollection(categories);
+            baos = MyPlaceCategoryHelper.toGeoJSONFeatureCollection(categories, service.getBaseLayer());
         } catch (IOException e) {
             LOG.warn(e);
             throw new ActionException("Failed to create response");
@@ -143,7 +145,7 @@ public class MyPlacesLayersHandler extends RestActionHandler {
 
         ByteArrayOutputStream baos;
         try {
-            baos = MyPlaceCategoryHelper.toGeoJSONFeatureCollection(categories);
+            baos = MyPlaceCategoryHelper.toGeoJSONFeatureCollection(categories, service.getBaseLayer());
         } catch (IOException e) {
             LOG.warn(e);
             throw new ActionException("Failed to create response");
@@ -200,10 +202,7 @@ public class MyPlacesLayersHandler extends RestActionHandler {
         MyPlaceCategory category = new MyPlaceCategory();
         category.setCategory_name("");
         category.setDefault(true);
-        UserDataStyle style = category.getStyle();
-        style.initDefaultStyle();
-        category.setStyle(style);
-
+        category.getWFSLayerOptions().setDefaultFeatureStyle(WFSLayerOptions.getDefaultOskariStyle());
         return category;
     }
 
