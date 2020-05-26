@@ -128,23 +128,45 @@ public class PDPrintStyle {
     }
 
     public static class LabelAlign {
+        @FunctionalInterface
+        public interface AlignStrategy {
+            public float alignX(float width);
+        }
+        public enum Align {
+            left(width -> 0),
+            center(width -> width / 2),
+            right(width -> width),
+            end(width -> 0),
+            start(width -> width);
+
+            final AlignStrategy strategy;
+
+            private Align(AlignStrategy strategy) {
+                this.strategy = strategy;
+            }
+        }
+
         private float offsetX;
         private float offsetY;
-        private String align;
+        private Align align;
         public LabelAlign (String align, float offsetX, float offsetY) {
-            this.align = align;
+            try {
+                this.align = Align.valueOf(align.toLowerCase());
+            }catch (Exception ignored) {
+                this.align = Align.left;
+            }
             this.offsetX = offsetX;
             this.offsetY = -offsetY; // different direction than in frontend
         }
-        public float getLabelX (String label) {
+        private float getWidth(String label) {
             try {
-                if ("center".equals(align)) {
-                    return offsetX - PDFBoxUtil.getTextWidth(label, FONT, FONT_SIZE) / 2;
-                } else if ("right".equals(align) || "start".equals(align)) {
-                    return offsetX - PDFBoxUtil.getTextWidth(label, FONT, FONT_SIZE);
-                }
+                return PDFBoxUtil.getTextWidth(label, FONT, FONT_SIZE);
             } catch (IOException ignored) {}
-            return offsetX;
+            return 0;
+        }
+        public float getLabelX (String label) {
+            float width = getWidth(label);
+            return offsetX - align.strategy.alignX(width);
         }
         public float getLabelY () {
             return offsetY;

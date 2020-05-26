@@ -40,7 +40,6 @@ public class StyleUtil {
     private static final float ICON_SIZE = 32f;
     private static final double ICON_OFFSET = ICON_SIZE/2.0;
     public static final float [] LINE_PATTERN_SOLID = new float[0];
-    public static final Set<String> SUPPORTED_ALIGNS = new HashSet<>(Arrays.asList("center", "left", "end", "right", "start"));
 
     public static final Map<String, Integer> LINE_CAP_STYLE  = new HashMap<String, Integer>() {{
         put("butt",0);
@@ -116,9 +115,8 @@ public class StyleUtil {
         }
         int offsetX = text.optInt("offsetX", 0);
         int offsetY = text.optInt("offsetY", 0);
-        String textAlign = text.optString("textAlign");
-        textAlign = SUPPORTED_ALIGNS.contains(textAlign) ? textAlign : "left";
-        style.setLabelAlign(new PDPrintStyle.LabelAlign(textAlign, offsetX, offsetY));
+        String align = text.optString("textAlign");
+        style.setLabelAlign(new PDPrintStyle.LabelAlign(align, offsetX, offsetY));
     }
     public static PDFormXObject getIcon (PDDocument doc, int shape, String fillColor, int size) throws IOException {
         try {
