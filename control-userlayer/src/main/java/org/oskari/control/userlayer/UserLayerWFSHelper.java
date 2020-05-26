@@ -5,7 +5,6 @@ import java.util.*;
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
-import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.JSONHelper;
 import org.geotools.data.simple.SimpleFeatureCollection;
@@ -27,6 +26,7 @@ import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.util.PropertyUtil;
 
 import org.oskari.geojson.GeoJSONFeatureCollection;
+import org.oskari.map.userlayer.service.UserLayerDataService;
 import org.oskari.map.userlayer.service.UserLayerDbService;
 import org.oskari.service.user.UserLayerService;
 
@@ -141,6 +141,10 @@ public class UserLayerWFSHelper extends UserLayerService {
             service = OskariComponentManager.getComponentOfType(UserLayerDbService.class);
         }
         return service.getUserLayerById(id);
+    }
+
+    protected OskariLayer getBaseLayer() {
+        return UserLayerDataService.getBaseLayer();
     }
 
     private SimpleFeatureType createType(SimpleFeatureType schema, JSONObject properties) throws JSONException {

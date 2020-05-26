@@ -382,13 +382,14 @@ public class MapfullHandler extends BundleHandler {
             if(analysis == null){
                 continue;
             }
-            if (analyseBundlePresent && analysis.isOwnedBy(user.getUuid())) {
+            boolean ownLayer = analysis.isOwnedBy(user.getUuid());
+            if (analyseBundlePresent && ownLayer) {
                 // skip it's an own bundle and analysis bundle is present -> will be loaded via analysisbundle
                 continue;
             }
             final String permissionKey = "analysis+" + id;
             boolean containsKey = permissions.contains(permissionKey);
-            if (!containsKey) {
+            if (!ownLayer && !containsKey) {
                 LOGGER.info("Found analysis layer in selected that is no longer published. ViewID:",
                         viewID, "Analysis id:", id);
                 continue;

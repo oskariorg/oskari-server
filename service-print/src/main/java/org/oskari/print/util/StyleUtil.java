@@ -6,11 +6,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import fi.nls.oskari.util.IOHelper;
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;
@@ -20,6 +18,7 @@ import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.multipdf.LayerUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.apache.pdfbox.pdmodel.PDPatternContentStream;
 import org.apache.pdfbox.pdmodel.PDResources;
@@ -28,6 +27,7 @@ import org.apache.pdfbox.pdmodel.graphics.color.PDColor;
 import org.apache.pdfbox.pdmodel.graphics.color.PDDeviceRGB;
 import org.apache.pdfbox.pdmodel.graphics.color.PDPattern;
 import org.apache.pdfbox.pdmodel.graphics.pattern.PDTilingPattern;
+import org.apache.pdfbox.util.Matrix;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,14 +52,18 @@ public class StyleUtil {
         put("round", 1);
         put("bevel", 2);
     }};
+    public static final Map<String, PDPrintStyle.LabelAlign> LABEL_ALIGN_MAP = new HashMap<String, PDPrintStyle.LabelAlign>() {{
+        put("markers", new PDPrintStyle.LabelAlign("left", 12f, 8f));
+    }};
 
     public static PDPrintStyle getLineStyle (JSONObject oskariStyle) {
         PDPrintStyle style = new PDPrintStyle();
         JSONObject stroke = JSONHelper.getJSONObject(oskariStyle, "stroke");
         setStrokeStyle(style, stroke);
         // polygon doesn't have cap style
+        setLabelStyle(style, oskariStyle);
         style.setLineCap(LINE_CAP_STYLE.getOrDefault(JSONHelper.optString(stroke,"lineCap"), 0));
-        style.setLabelProperty(getLabelStyle(oskariStyle));
+
         return style;
     }
     public static PDPrintStyle getPolygonStyle (JSONObject oskariStyle, PDResources resources) throws IOException {
@@ -75,7 +79,7 @@ public class StyleUtil {
         if (pattern >= 0 && pattern <= 3 && color != null) {
             style.setFillPattern(createFillPattern(resources, pattern, color));
         }
-        style.setLabelProperty(getLabelStyle(oskariStyle));
+        setLabelStyle(style, oskariStyle);
         return style;
     }
 
@@ -87,7 +91,7 @@ public class StyleUtil {
         style.setFillColor(ColorUtil.parseColor(fillColor));
         int size = image.optInt("size", 3);
         style.setIcon(getIcon(doc, shape, fillColor, size));
-        style.setLabelProperty(getLabelStyle(oskariStyle));
+        setLabelStyle(style, oskariStyle);
         return style;
     }
     private static void setStrokeStyle (PDPrintStyle style, JSONObject json) {
@@ -98,19 +102,21 @@ public class StyleUtil {
         style.setLinePattern(getStrokeDash(lineDash, width));
         style.setLineColor(ColorUtil.parseColor(JSONHelper.optString(json,"color")));
     }
-    private static List<String> getLabelStyle (JSONObject oskariStyle) {
+    private static void setLabelStyle (PDPrintStyle style, JSONObject oskariStyle) {
         JSONObject text = JSONHelper.getJSONObject(oskariStyle, "text");
-        if (text == null) return null;
+        if (text == null) return;
         Object labelProperty = text.opt("labelProperty");
         if (labelProperty instanceof  JSONArray) {
-            return JSONHelper.getArrayAsList((JSONArray) labelProperty);
-        }
-        if (labelProperty instanceof  String){
+            style.setLabelProperty(JSONHelper.getArrayAsList((JSONArray) labelProperty));
+        } else if (labelProperty instanceof  String){
             List <String> propList = new ArrayList();
             propList.add((String) labelProperty);
-            return propList;
+            style.setLabelProperty(propList);
         }
-        return null;
+        int offsetX = text.optInt("offsetX", 0);
+        int offsetY = text.optInt("offsetY", 0);
+        String align = text.optString("textAlign");
+        style.setLabelAlign(new PDPrintStyle.LabelAlign(align, offsetX, offsetY));
     }
     public static PDFormXObject getIcon (PDDocument doc, int shape, String fillColor, int size) throws IOException {
         try {
