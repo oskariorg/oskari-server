@@ -66,6 +66,9 @@ public class MyPlacesWFSHelper extends UserLayerService {
     public int getBaselayerId() {
         return myPlacesLayerId;
     }
+    protected OskariLayer getBaseLayer() {
+        return MyPlacesService.getBaseLayer();
+    }
 
     public boolean isMyPlacesLayer(OskariLayer layer) {
         return layer.getId() == myPlacesLayerId;
