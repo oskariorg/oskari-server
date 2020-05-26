@@ -887,6 +887,11 @@
                 <artifactId>gt-xsd-gpx</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.oskari</groupId>
+                <artifactId>gt-mif</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>javax.xml</groupId>
@@ -1320,7 +1325,7 @@
         <module>service-wfs-client</module>
         <module>service-wfs3</module>
         <module>geotools-ext/gt-xsd-gpx</module>
-        <module>gt-mif</module>
+        <module>geotools-ext/gt-mif</module>
     </modules>
 
 </project>
