@@ -219,7 +219,7 @@ public class LayerJSONFormatter {
     }
 
     // This is solution of transition for dataUrl and for dataUrl_uuid
-    protected static String getFixedDataUrl(String metadataId) {
+    public static String getFixedDataUrl(String metadataId) {
         if(metadataId == null || metadataId.isEmpty()) {
             return null;
         }
