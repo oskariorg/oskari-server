@@ -37,6 +37,7 @@ import fi.nls.oskari.util.JSONHelper;
 
 public class StyleUtil {
     private static final String SVG_MARKERS_JSON = "svg-markers.json";
+    private static final String ICON_STROKE_COLOR = "#b4b4b4";
     private static final float ICON_SIZE = 32f;
     private static final double ICON_OFFSET = ICON_SIZE/2.0;
     public static final float [] LINE_PATTERN_SOLID = new float[0];
@@ -163,7 +164,7 @@ public class StyleUtil {
         return pattern;
     }
     private static PDFormXObject createIcon (PDDocument doc, JSONObject marker, String fillColor, int size) throws JSONException, IOException, TranscoderException {
-        String markerData = JSONHelper.getString(marker, "data").replace("$fill", fillColor);
+        String markerData = JSONHelper.getString(marker, "data").replace("$fill", fillColor).replace("$stroke", ICON_STROKE_COLOR);
         double scale = size < 1 || size > 5 ? 1 : 0.6 +  size /10.0;
         double x =  marker.optDouble("offsetX", ICON_OFFSET) * scale;
         double y = marker.optDouble("offsetY", ICON_OFFSET) * scale;
