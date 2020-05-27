@@ -6,6 +6,8 @@ import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.ServiceUnauthorizedException;
 import fi.nls.oskari.util.PropertyUtil;
@@ -28,6 +30,7 @@ public class ServiceCapabilitiesHandler extends AbstractLayerAdminHandler {
     private static final String PARAM_PASSWORD = "pw";
     private static final String PARAM_TYPE = "type";
 
+    private static final Logger LOG = LogFactory.getLogger(ServiceCapabilitiesHandler.class);
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     static {
         OBJECT_MAPPER.setSerializationInclusion(JsonInclude.Include.NON_NULL);
@@ -71,6 +74,7 @@ public class ServiceCapabilitiesHandler extends AbstractLayerAdminHandler {
             } else if (rootcause instanceof XMLStreamException || rootcause instanceof ServiceException) {
                 ResponseHelper.writeError(params, e.getMessage(), HttpServletResponse.SC_EXPECTATION_FAILED);
             } else {
+                LOG.error(e, "Couldn't determine fail reason");
                 ResponseHelper.writeError(params, e.getMessage());
             }
         }
