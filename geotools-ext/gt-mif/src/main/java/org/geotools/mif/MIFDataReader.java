@@ -1,15 +1,18 @@
 package org.geotools.mif;
 
+import static org.geotools.mif.util.MIFUtil.startsWithIgnoreCase;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.JTSFactoryFinder;
-import static org.geotools.mif.util.MIFUtil.*;
 import org.geotools.mif.util.QueueBufferedReader;
 
 import com.vividsolutions.jts.geom.CoordinateSequence;
@@ -18,6 +21,7 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.util.GeometricShapeFactory;
@@ -183,15 +187,35 @@ public class MIFDataReader implements Iterator<Geometry>, AutoCloseable {
     private Geometry parseRegion(String line) throws NumberFormatException, IOException {
         String[] a = line.split("\\s+");
 
-        int numPolygons = Integer.parseInt(a[1]);
-        Polygon[] polygons = new Polygon[numPolygons];
-        for (int i = 0; i < numPolygons; i++) {
+        int numRings = Integer.parseInt(a[1]);
+        LinearRing[] rings = new LinearRing[numRings];
+        for (int i = 0; i < numRings; i++) {
             int numpts = Integer.parseInt(mif.poll().trim());
-            polygons[i] = gf.createPolygon(readCoordinatesN(numpts));
+            rings[i] = gf.createLinearRing(readCoordinatesN(numpts));
         }
 
         skipOptional(OPTIONAL_REGION);
-        return numPolygons == 1 ? polygons[0] : gf.createMultiPolygon(polygons);
+
+        if (numRings == 1) {
+            return gf.createPolygon(rings[0]);
+        }
+
+        List<Polygon> polygons = new ArrayList<>();
+
+        LinearRing exterior = rings[0];
+        List<LinearRing> interiorRings = new ArrayList<>();
+        for (int i = 1; i < rings.length; i++) {
+            if (exterior.contains(rings[i])) {
+                interiorRings.add(rings[i]);
+            } else {
+                polygons.add(gf.createPolygon(exterior, interiorRings.toArray(new LinearRing[0])));
+                interiorRings.clear();
+                exterior = rings[i];
+            }
+        }
+        polygons.add(gf.createPolygon(exterior, interiorRings.toArray(new LinearRing[0])));
+
+        return polygons.size() == 1 ? polygons.get(0) : gf.createMultiPolygon(polygons.toArray(new Polygon[0]));
     }
 
     private LineString parseArc(String line) throws IOException {
