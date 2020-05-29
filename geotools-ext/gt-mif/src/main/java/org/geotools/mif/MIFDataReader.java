@@ -191,7 +191,11 @@ public class MIFDataReader implements Iterator<Geometry>, AutoCloseable {
         LinearRing[] rings = new LinearRing[numRings];
         for (int i = 0; i < numRings; i++) {
             int numpts = Integer.parseInt(mif.poll().trim());
-            rings[i] = gf.createLinearRing(readCoordinatesN(numpts));
+            CoordinateSequence csq = readCoordinatesN(numpts);
+            if (!isClosed(csq)) {
+                csq = close(csq);
+            }
+            rings[i] = gf.createLinearRing(csq);
         }
 
         skipOptional(OPTIONAL_REGION);
@@ -342,6 +346,26 @@ public class MIFDataReader implements Iterator<Geometry>, AutoCloseable {
         csq.setOrdinate(1, 0, x2);
         csq.setOrdinate(1, 1, y2);
         return csq;
+    }
+
+    private boolean isClosed(CoordinateSequence csq) {
+        double x1 = csq.getX(0);
+        double y1 = csq.getY(0);
+        double xN = csq.getX(csq.size() - 1);
+        double yN = csq.getY(csq.size() - 1);
+        return x1 == xN && y1 == yN;
+    }
+
+    private CoordinateSequence close(CoordinateSequence csq) {
+        int n = csq.size();
+        CoordinateSequence closed = gf.getCoordinateSequenceFactory().create(n + 1, 2);
+        for (int i = 0; i < n; i++) {
+            closed.setOrdinate(i, CoordinateSequence.X, csq.getX(i));
+            closed.setOrdinate(i, CoordinateSequence.Y, csq.getY(i));
+        }
+        closed.setOrdinate(n, CoordinateSequence.X, csq.getX(0));
+        closed.setOrdinate(n, CoordinateSequence.Y, csq.getY(0));
+        return closed;
     }
 
 }
