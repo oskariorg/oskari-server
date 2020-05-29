@@ -28,9 +28,9 @@ public class LayerJSONFormatter {
     public static final String PROPERTY_AJAXURL = "oskari.ajax.url.prefix";
     public static final String KEY_ATTRIBUTE_FORCED_SRS = "forcedSRS";
     public static final String KEY_ATTRIBUTE_IGNORE_COVERAGE = "ignoreCoverage";
-    private static final String KEY_ID = "id";
-    private static final String KEY_TYPE = "type";
-    private static final String KEY_ADMIN = "admin";
+    protected static final String KEY_ID = "id";
+    protected static final String KEY_TYPE = "type";
+    protected static final String KEY_ADMIN = "admin";
     protected static final String[] STYLE_KEYS ={"name", "title", "legend"};
 
     // There working only plain text and html so ranked up
