@@ -1,17 +1,20 @@
 package fi.nls.oskari.control.myplaces.handler;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
 import org.oskari.log.AuditLog;
+import org.oskari.permissions.model.PermissionType;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionException;
@@ -20,9 +23,9 @@ import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.control.RestActionHandler;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.MyPlaceCategory;
-import fi.nls.oskari.domain.map.UserDataStyle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterMYPLACES;
 import fi.nls.oskari.myplaces.MyPlaceCategoryHelper;
 import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.myplaces.service.MyPlacesLayersService;
@@ -31,6 +34,7 @@ import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
 
 @OskariActionRoute("MyPlacesLayers")
@@ -39,7 +43,10 @@ public class MyPlacesLayersHandler extends RestActionHandler {
     private final static Logger LOG = LogFactory.getLogger(MyPlacesLayersHandler.class);
 
     private static final String PARAM_LAYERS = "layers";
-    private static final String JSKEY_DELETED = "deleted";
+
+    private static final String KEY_MYPLACES = "layers";
+    private static final String KEY_PERMISSIONS = "permissions";
+    private static final String KEY_DELETED = "deleted";
 
     private MyPlacesService service;
     private MyPlacesLayersService layerService;
@@ -57,37 +64,28 @@ public class MyPlacesLayersHandler extends RestActionHandler {
 
     @Override
     public void handleGet(ActionParameters params) throws ActionException {
-        final String uuid = params.getUser().getUuid();
-
-        final List<MyPlaceCategory> categories;
+        List<MyPlaceCategory> categories;
         try {
+            String uuid = params.getUser().getUuid();
             categories = layerService.getByUserId(uuid);
+            if (categories.isEmpty()) {
+                // If user has no categories insert a new default category
+                MyPlaceCategory category = insertDefaultCategory(uuid);
+                categories = Collections.singletonList(category);
+            }
         } catch (ServiceException e) {
             LOG.warn(e);
             throw new ActionException("Failed to get myplaces layers");
         }
 
-        if (categories.size() == 0) {
-            // If user has no categories insert a new default category
-            categories.add(insertDefaultCategory(uuid));
-        }
-        OskariLayer baselayer = service.getBaseLayer();
-        ByteArrayOutputStream baos;
-        try {
-            baos = MyPlaceCategoryHelper.toGeoJSONFeatureCollection(categories, baselayer);
-        } catch (IOException e) {
-            LOG.warn(e);
-            throw new ActionException("Failed to create response");
-        }
-
-        ResponseHelper.writeResponse(params, 200,
-                ResponseHelper.CONTENT_TYPE_JSON_UTF8, baos);
+        JSONObject response = toLayerJSON(categories);
+        ResponseHelper.writeResponse(params, 200, response);
     }
 
     @Override
     public void handlePost(ActionParameters params) throws ActionException {
-        final String uuid = params.getUser().getUuid();
-        final List<MyPlaceCategory> categories = readCategories(params, false);
+        String uuid = params.getUser().getUuid();
+        List<MyPlaceCategory> categories = readCategories(params, false);
         for (MyPlaceCategory category : categories) {
             category.setUuid(uuid);
         }
@@ -106,16 +104,9 @@ public class MyPlacesLayersHandler extends RestActionHandler {
                     .withParam("name", layer.getCategory_name())
                     .added(AuditLog.ResourceType.MYPLACES_LAYER);
         }
-        ByteArrayOutputStream baos;
-        try {
-            baos = MyPlaceCategoryHelper.toGeoJSONFeatureCollection(categories, service.getBaseLayer());
-        } catch (IOException e) {
-            LOG.warn(e);
-            throw new ActionException("Failed to create response");
-        }
 
-        ResponseHelper.writeResponse(params, 200,
-                ResponseHelper.CONTENT_TYPE_JSON_UTF8, baos);
+        JSONObject response = toLayerJSON(categories);
+        ResponseHelper.writeResponse(params, 200, response);
     }
 
     @Override
@@ -143,16 +134,8 @@ public class MyPlacesLayersHandler extends RestActionHandler {
                     .updated(AuditLog.ResourceType.MYPLACES_LAYER);
         }
 
-        ByteArrayOutputStream baos;
-        try {
-            baos = MyPlaceCategoryHelper.toGeoJSONFeatureCollection(categories, service.getBaseLayer());
-        } catch (IOException e) {
-            LOG.warn(e);
-            throw new ActionException("Failed to create response");
-        }
-
-        ResponseHelper.writeResponse(params, 200,
-                ResponseHelper.CONTENT_TYPE_JSON_UTF8, baos);
+        JSONObject response = toLayerJSON(categories);
+        ResponseHelper.writeResponse(params, 200, response);
     }
 
     @Override
@@ -180,8 +163,7 @@ public class MyPlacesLayersHandler extends RestActionHandler {
                 .withParam("id", layerIds)
                 .deleted(AuditLog.ResourceType.MYPLACES_LAYER);
 
-        JSONObject response = new JSONObject();
-        JSONHelper.putValue(response, JSKEY_DELETED, deleted);
+        JSONObject response = JSONHelper.createJSONObject(KEY_DELETED, deleted);
         ResponseHelper.writeResponse(params, response);
     }
 
@@ -232,4 +214,35 @@ public class MyPlacesLayersHandler extends RestActionHandler {
             }
         }
     }
+
+    private JSONObject toLayerJSON(List<MyPlaceCategory> categories) {
+        JSONArray layers = new JSONArray();
+        for (MyPlaceCategory category : categories) {
+            JSONObject layerJSON = toLayerJSON(category);
+            layers.put(layerJSON);
+        }
+
+        return JSONHelper.createJSONObject(KEY_MYPLACES, layers);
+    }
+
+    private JSONObject toLayerJSON(MyPlaceCategory category) {
+        OskariLayer layer = MyPlacesService.getBaseLayer();
+        String lang = PropertyUtil.getDefaultLanguage();
+        boolean isSecure = false;
+        String crs = null;
+
+        JSONObject layerJSON = new LayerJSONFormatterMYPLACES().getJSON(layer, lang, isSecure, crs, category);
+
+        JSONHelper.putValue(layerJSON, KEY_PERMISSIONS, getPermissions());
+
+        return layerJSON;
+    }
+
+    private JSONObject getPermissions() {
+        JSONObject permissions = new JSONObject();
+        JSONHelper.putValue(permissions, PermissionType.PUBLISH.getJsonKey(), OskariLayerWorker.PUBLICATION_PERMISSION_OK);
+        JSONHelper.putValue(permissions, PermissionType.DOWNLOAD.getJsonKey(), OskariLayerWorker.DOWNLOAD_PERMISSION_OK);
+        return permissions;
+    }
+
 }
