@@ -59,7 +59,7 @@ public class MyPlaceCategoryHelper {
         category.setPublisher_name(JSONHelper.optString(properties, "publisher_name"));
 
         // Everything is optional except category_name
-        category.setName(JSONHelper.getString(properties, "name"));
+        category.setName(JSONHelper.getString(properties, "category_name"));
         category.setDefault(properties.optBoolean("default"));
         // GeoServer adds String options property
         String options = JSONHelper.optString(properties,"options", "{}");
