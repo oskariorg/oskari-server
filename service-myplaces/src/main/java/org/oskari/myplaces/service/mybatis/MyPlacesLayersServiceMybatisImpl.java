@@ -25,6 +25,11 @@ import fi.nls.oskari.mybatis.MyBatisHelper;
 import fi.nls.oskari.myplaces.service.MyPlacesLayersService;
 import fi.nls.oskari.service.ServiceException;
 
+/**
+ * MyBatis implementation of MyPlacesLayersService
+ * For non-direct database use
+ * @see fi.nls.oskari.myplaces.service.wfst.MyPlacesLayersServiceWFST
+ */
 public class MyPlacesLayersServiceMybatisImpl implements MyPlacesLayersService {
 
     private static final Logger LOG = LogFactory.getLogger(MyPlacesLayersServiceMybatisImpl.class);
