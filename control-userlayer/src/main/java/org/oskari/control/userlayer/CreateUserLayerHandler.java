@@ -16,6 +16,7 @@ import java.util.zip.ZipInputStream;
 import javax.servlet.http.HttpServletRequest;
 
 import fi.nls.oskari.control.*;
+import fi.nls.oskari.domain.map.OskariLayer;
 import org.oskari.log.AuditLog;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
@@ -417,7 +418,7 @@ public class CreateUserLayerHandler extends RestActionHandler {
 
     private void writeResponse(ActionParameters params, UserLayer ulayer) {
         String mapSrs = params.getHttpParam(ActionConstants.PARAM_SRS);
-        JSONObject userLayer = UserLayerDataService.parseUserLayer2JSON(ulayer, mapSrs);
+        JSONObject userLayer = UserLayerDataService.parseLayerToJSON(ulayer, mapSrs);
 
         JSONHelper.putValue(userLayer, "featuresCount", ulayer.getFeatures_count());
         JSONObject permissions = UserLayerHandlerHelper.getPermissions();
