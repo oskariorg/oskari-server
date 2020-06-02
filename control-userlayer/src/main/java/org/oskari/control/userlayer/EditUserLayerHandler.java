@@ -38,7 +38,7 @@ public class EditUserLayerHandler extends RestActionHandler {
     public void handlePost(ActionParameters params) throws ActionException {
         String mapSrs = params.getHttpParam(ActionConstants.PARAM_SRS);
         final UserLayer userLayer = UserLayerHandlerHelper.getUserLayer(userLayerDbService, params);
-        userLayer.setLayer_name(params.getRequiredParam(PARAM_NAME));
+        userLayer.setName(params.getRequiredParam(PARAM_NAME));
         userLayer.setLayer_desc(params.getHttpParam(PARAM_DESC, userLayer.getLayer_desc()));
         userLayer.setLayer_source(params.getHttpParam(PARAM_SOURCE, userLayer.getLayer_source()));
         WFSLayerOptions wfsOptions = userLayer.getWFSLayerOptions();
@@ -53,7 +53,7 @@ public class EditUserLayerHandler extends RestActionHandler {
                 .withParam("id", userLayer.getId())
                 .updated(AuditLog.ResourceType.USERLAYER);
 
-        JSONObject ulayer = UserLayerDataService.parseUserLayer2JSON(userLayer, mapSrs);
+        JSONObject ulayer = UserLayerDataService.parseLayerToJSON(userLayer, mapSrs);
         JSONObject permissions = UserLayerHandlerHelper.getPermissions();
         JSONHelper.putValue(ulayer, "permissions", permissions);
 

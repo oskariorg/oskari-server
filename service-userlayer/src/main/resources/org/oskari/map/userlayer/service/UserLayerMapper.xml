@@ -9,7 +9,7 @@
     <resultMap id="UserLayerResult" type="UserLayer">
         <result property="id" column="id" />
         <result property="uuid" column="uuid" />
-        <result property="layer_name" column="layer_name" />
+        <result property="name" column="layer_name" />
         <result property="layer_desc" column="layer_desc" />
         <result property="layer_source" column="layer_source" />
         <result property="fields" column="fields" />
@@ -43,7 +43,7 @@
 	<update id="updateUserLayer">
         update
         user_layer set
-        layer_name = #{layer_name},
+        layer_name = #{name},
         layer_desc = #{layer_desc},
         layer_source = #{layer_source},
         fields = CAST (#{fields} as json),

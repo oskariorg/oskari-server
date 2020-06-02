@@ -9,6 +9,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
+import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterMYPLACES;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWFS;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWMS;
 import fi.nls.oskari.service.OskariComponent;
@@ -34,6 +35,7 @@ public abstract class MyPlacesService extends OskariComponent {
     private static String MYPLACES_ACTUAL_WMS_URL = PropertyUtil.get("myplaces.wms.url");
     private static final LayerJSONFormatterWMS JSON_FORMATTER_WMS = new LayerJSONFormatterWMS();
     private static final LayerJSONFormatterWFS JSON_FORMATTER_WFS = new LayerJSONFormatterWFS();
+    private static final LayerJSONFormatterMYPLACES FORMATTER = new LayerJSONFormatterMYPLACES();
     private static final Logger LOGGER = LogFactory.getLogger(MyPlacesService.class);
 
     public abstract List<MyPlaceCategory> getCategories();
@@ -81,7 +83,6 @@ public abstract class MyPlacesService extends OskariComponent {
     public String getClientWMSUrl() {
         return MYPLACES_CLIENT_WMS_URL;
     }
-
     // FIXME: remove hard-coded name from server side
     // This is a quick fix for common supported languages
     // frontend does this, but embedded maps don't have the same code as layers are shown with WMS
@@ -93,6 +94,9 @@ public abstract class MyPlacesService extends OskariComponent {
         }
         return "My map layer";
     }
+    public static JSONObject parseLayerToJSON (final MyPlaceCategory mpLayer, final String srs) {
+        return FORMATTER.getJSON(getBaseLayer(), mpLayer, srs);
+    }
 
     public JSONObject getCategoryAsWmsLayerJSON(final MyPlaceCategory mpLayer,
                                                 final String lang, final boolean useDirectURL,
@@ -101,7 +105,7 @@ public abstract class MyPlacesService extends OskariComponent {
         final OskariLayer layer = new OskariLayer();
         layer.setName(MYPLACES_WMS_NAME);
         layer.setType(OskariLayer.TYPE_WMS);
-        String name = mpLayer.getCategory_name();
+        String name = mpLayer.getName();
         if (name == null || name.isEmpty())  {
             name = getLayerUIName(lang);
         }
@@ -140,13 +144,12 @@ java.lang.RuntimeException: Unable to encode filter [[ geometry bbox POLYGON ((4
         JSONHelper.putValue(myPlaceLayer, "id", MYPLACES_LAYERID_PREFIX + mpLayer.getId());
         return myPlaceLayer;
     }
-
     public JSONObject getCategoryAsWfsLayerJSON(final MyPlaceCategory mpLayer, final String lang) {
 
         final OskariLayer layer = new OskariLayer();
         layer.setName(MYPLACES_WMS_NAME);
         layer.setType(OskariLayer.TYPE_WFS);
-        String name = mpLayer.getCategory_name();
+        String name = mpLayer.getName();
         if (name == null || name.isEmpty())  {
             name = getLayerUIName(lang);
         }
