@@ -30,7 +30,7 @@
         options
         ) VALUES (
         #{uuid},
-        #{layer_name},
+        #{name},
         #{layer_desc},
         #{layer_source},
         CAST (#{fields} as json),
