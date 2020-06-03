@@ -42,7 +42,7 @@ public class MyPlacesLayersServiceMybatisImpl implements MyPlacesLayersService {
 
     public MyPlacesLayersServiceMybatisImpl(DataSource dataSource) {
         if (dataSource == null) {
-            LOG.error("Couldn't get datasource for userlayer");
+            LOG.error("Couldn't get datasource for myplaces");
         } else {
             this.factory = initializeMyBatis(dataSource);
         }
