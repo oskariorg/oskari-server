@@ -59,7 +59,7 @@ public class MyPlaceCategoryHelper {
         category.setPublisher_name(JSONHelper.optString(properties, "publisher_name"));
 
         // Everything is optional except category_name
-        category.setCategory_name(JSONHelper.getString(properties, "category_name"));
+        category.setName(JSONHelper.getString(properties, "category_name"));
         category.setDefault(properties.optBoolean("default"));
         // GeoServer adds String options property
         String options = JSONHelper.optString(properties,"options", "{}");
@@ -101,7 +101,7 @@ public class MyPlaceCategoryHelper {
 
         json.writeStartObject();
         json.writeStringField("uuid", category.getUuid());
-        json.writeStringField("category_name", category.getCategory_name());
+        json.writeStringField("name", category.getName());
         json.writeStringField("publisher_name", category.getPublisher_name());
         json.writeBooleanField("default", category.isDefault());
         json.writeFieldName("options");

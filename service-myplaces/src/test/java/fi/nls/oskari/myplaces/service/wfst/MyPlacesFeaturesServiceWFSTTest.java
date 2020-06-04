@@ -39,7 +39,7 @@ public class MyPlacesFeaturesServiceWFSTTest {
         MyPlacesFeaturesService featureService = new MyPlacesFeaturesServiceWFST();
 
         MyPlaceCategory myCategory = new MyPlaceCategory();
-        myCategory.setCategory_name("testCategory");
+        myCategory.setName("testCategory");
         assertEquals(0L, myCategory.getId());
 
         layerService.insert(Arrays.asList(myCategory));

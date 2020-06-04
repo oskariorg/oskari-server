@@ -101,7 +101,7 @@ public class MyPlacesLayersHandler extends RestActionHandler {
         for (MyPlaceCategory layer : categories) {
             AuditLog.user(params.getClientIp(), params.getUser())
                     .withParam("id", layer.getId())
-                    .withParam("name", layer.getCategory_name())
+                    .withParam("name", layer.getName())
                     .added(AuditLog.ResourceType.MYPLACES_LAYER);
         }
 
@@ -130,7 +130,7 @@ public class MyPlacesLayersHandler extends RestActionHandler {
         for (MyPlaceCategory layer : categories) {
             AuditLog.user(params.getClientIp(), params.getUser())
                     .withParam("id", layer.getId())
-                    .withParam("name", layer.getCategory_name())
+                    .withParam("name", layer.getName())
                     .updated(AuditLog.ResourceType.MYPLACES_LAYER);
         }
 
@@ -182,7 +182,7 @@ public class MyPlacesLayersHandler extends RestActionHandler {
 
     private MyPlaceCategory createDefaultCategory() {
         MyPlaceCategory category = new MyPlaceCategory();
-        category.setCategory_name("");
+        category.setName("");
         category.setDefault(true);
         category.getWFSLayerOptions().setDefaultFeatureStyle(WFSLayerOptions.getDefaultOskariStyle());
         return category;
@@ -218,24 +218,12 @@ public class MyPlacesLayersHandler extends RestActionHandler {
     private JSONObject toLayerJSON(List<MyPlaceCategory> categories) {
         JSONArray layers = new JSONArray();
         for (MyPlaceCategory category : categories) {
-            JSONObject layerJSON = toLayerJSON(category);
+            JSONObject layerJSON = MyPlacesService.parseLayerToJSON(category, null);
+            JSONHelper.putValue(layerJSON, KEY_PERMISSIONS, getPermissions());
             layers.put(layerJSON);
         }
 
         return JSONHelper.createJSONObject(KEY_MYPLACES, layers);
-    }
-
-    private JSONObject toLayerJSON(MyPlaceCategory category) {
-        OskariLayer layer = MyPlacesService.getBaseLayer();
-        String lang = PropertyUtil.getDefaultLanguage();
-        boolean isSecure = false;
-        String crs = null;
-
-        JSONObject layerJSON = new LayerJSONFormatterMYPLACES().getJSON(layer, lang, isSecure, crs, category);
-
-        JSONHelper.putValue(layerJSON, KEY_PERMISSIONS, getPermissions());
-
-        return layerJSON;
     }
 
     private JSONObject getPermissions() {

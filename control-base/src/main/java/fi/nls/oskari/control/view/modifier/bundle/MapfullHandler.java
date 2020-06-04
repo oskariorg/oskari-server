@@ -15,6 +15,7 @@ import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
 import fi.nls.oskari.map.analysis.service.AnalysisDataService;
 import fi.nls.oskari.map.analysis.service.AnalysisDbService;
 import fi.nls.oskari.map.layer.OskariLayerService;
+import fi.nls.oskari.map.layer.formatters.LayerJSONFormatter;
 import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.ConversionHelper;
@@ -355,9 +356,9 @@ public class MapfullHandler extends BundleHandler {
 
         // construct layers JSON
         final JSONArray prefetch = getLayersArray(struct);
-        appendMyPlacesLayers(prefetch, publishedMyPlaces, user, viewID, lang, bundleIds, useDirectURLForMyplaces, modifyURLs, plugins);
+        appendMyPlacesLayers(prefetch, publishedMyPlaces, user, viewID, bundleIds, mapSRS, useDirectURLForMyplaces, modifyURLs, plugins);
         appendAnalysisLayers(prefetch, publishedAnalysis, user, viewID, lang, bundleIds, useDirectURLForMyplaces, modifyURLs);
-        appendUserLayers(prefetch, publishedUserLayers, user, viewID, bundleIds, mapSRS);
+        appendUserLayers(prefetch, publishedUserLayers, user, viewID, lang, bundleIds, mapSRS);
         return prefetch;
     }
 
@@ -417,8 +418,8 @@ public class MapfullHandler extends BundleHandler {
                                              final List<Long> publishedMyPlaces,
                                              final User user,
                                              final long viewID,
-                                             final String lang,
                                              final Set<String> bundleIds,
+                                             final String mapSrs,
                                              final boolean useDirectURL,
                                              final boolean modifyURLs,
                                              final JSONArray plugins) {
@@ -446,10 +447,9 @@ public class MapfullHandler extends BundleHandler {
 
             JSONObject myPlaceLayer = null;
             if (plugins != null && plugins.toString().indexOf(PLUGIN_WFSVECTORLAYER) != -1) {
-                myPlaceLayer = myPlaceService.getCategoryAsWfsLayerJSON(mpLayer, lang);
-            } else {
-                myPlaceLayer = myPlaceService.getCategoryAsWmsLayerJSON(
-                        mpLayer, lang, useDirectURL, user.getUuid(), modifyURLs);
+                myPlaceLayer = MyPlacesService.parseLayerToJSON(mpLayer, mapSrs);
+                // Get as WFS layer
+                JSONHelper.putValue(myPlaceLayer, LayerJSONFormatter.KEY_TYPE, OskariLayer.TYPE_WFS);
             }
             if (myPlaceLayer != null) {
                 layerList.put(myPlaceLayer);
@@ -461,10 +461,10 @@ public class MapfullHandler extends BundleHandler {
                                          final List<Long> publishedUserLayers,
                                          final User user,
                                          final long viewID,
+                                         final String lang,
                                          final Set<String> bundleIds,
                                          final String mapSrs) {
         final boolean userLayersBundlePresent = bundleIds.contains(BUNDLE_MYPLACESIMPORT);
-        final OskariLayer baseLayer = UserLayerDataService.getBaseLayer();
         for (Long id : publishedUserLayers) {
             final UserLayer userLayer = userLayerService.getUserLayerById(id);
 
@@ -485,8 +485,7 @@ public class MapfullHandler extends BundleHandler {
                 // no longer published -> skip if isn't current users layer
                 continue;
             }
-
-            final JSONObject json = UserLayerDataService.parseUserLayer2JSON(userLayer, baseLayer, mapSrs);
+            final JSONObject json = UserLayerDataService.parseLayerToJSON(userLayer, mapSrs, lang);
             if (json != null) {
                 layerList.put(json);
             }

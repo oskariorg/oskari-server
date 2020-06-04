@@ -38,14 +38,14 @@ public class MyPlacesLayersServiceWFSTTest {
         assertEquals("Expect 1 inserted features", 1, service.insert(myCategories));
         assertNotEquals("id should have been set to something other than 0", 0, myCategory.getId());
 
-        myCategory.setCategory_name("barbaz");
+        myCategory.setName("barbaz");
         assertEquals("Expected 1 updated feature", 1, service.update(myCategories));
         myCategories = service.getByUserId(uuid);
         assertEquals(1, myCategories.size());
         MyPlaceCategory myUpdatedCategory = myCategories.get(0);
         assertTrue("Objects are different", myCategory != myUpdatedCategory);
         assertEquals("Yet they have the same id", myCategory.getId(), myUpdatedCategory.getId());
-        assertEquals("category_name was updated in the service", "barbaz", myUpdatedCategory.getCategory_name());
+        assertEquals("category_name was updated in the service", "barbaz", myUpdatedCategory.getName());
 
         assertEquals(1, service.delete(new long[] { myCategory.getId() }));
         myCategories = service.getByUserId(uuid);
@@ -86,7 +86,7 @@ public class MyPlacesLayersServiceWFSTTest {
         MyPlaceCategory myCategory = new MyPlaceCategory();
         myCategory.setUuid(uuid);
         myCategory.setDefault(true);
-        myCategory.setCategory_name("foobar");
+        myCategory.setName("foobar");
         myCategory.setPublisher_name("");
         return myCategory;
     }

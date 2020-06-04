@@ -129,7 +129,7 @@ public class CategoriesWFSTRequestBuilder extends WFSTRequestBuilder {
 
         xsw.writeStartElement(OSKARI, "categories");
         writeTextElement(xsw, OSKARI, "default", Boolean.toString(category.isDefault()));
-        writeTextElement(xsw, OSKARI, "category_name", category.getCategory_name());
+        writeTextElement(xsw, OSKARI, "category_name", category.getName());
         writeTextElement(xsw, OSKARI, "uuid", category.getUuid());
         writeTextElement(xsw, OSKARI, "publisher_name", category.getPublisher_name());
         writeTextElement(xsw, OSKARI, "options", category.getOptions().toString());
@@ -144,7 +144,7 @@ public class CategoriesWFSTRequestBuilder extends WFSTRequestBuilder {
         xsw.writeAttribute("typeName", TYPENAME_CATEGORIES);
 
         writeProperty(xsw, "default", Boolean.toString(category.isDefault()));
-        writeProperty(xsw, "category_name", category.getCategory_name());
+        writeProperty(xsw, "category_name", category.getName());
         writeProperty(xsw, "publisher_name", category.getPublisher_name());
         writeProperty(xsw, "uuid", category.getUuid());
         writeProperty(xsw, "options", category.getOptions().toString());
