@@ -16,7 +16,6 @@ import java.util.zip.ZipInputStream;
 import javax.servlet.http.HttpServletRequest;
 
 import fi.nls.oskari.control.*;
-import fi.nls.oskari.domain.map.OskariLayer;
 import org.oskari.log.AuditLog;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;

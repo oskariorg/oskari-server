@@ -30,9 +30,9 @@ public class Analysis extends UserDataLayer {
     }
 
     @Override
-    public String getPrefixedId () {
-        // TYPE_ANALYSIS is analysislayer, override to get correct prefix
-        return "analysis_"+ getId();
+    public String getPrefixedId() {
+        // OskariLayer.TYPE_ANALYSIS is 'analysislayer', Override getPrefixedId() to get correct prefix
+        return "analysis_" + getId();
     }
 
     public long getOld_id() {

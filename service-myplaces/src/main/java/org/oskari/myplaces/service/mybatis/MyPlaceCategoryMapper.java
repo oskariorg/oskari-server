@@ -20,7 +20,7 @@ public interface MyPlaceCategoryMapper {
             @Result(property="uuid", column="uuid"),
             @Result(property="isDefault", column="default"),
             @Result(property="publisher_name", column="publisher_name"),
-            @Result(property="name", column="category_name"),
+            @Result(property="category_name", column="category_name"),
             @Result(property="options", column="options")
     })
     @Select("SELECT id, uuid, \"default\", publisher_name, category_name, options FROM categories WHERE id = #{id}")
@@ -31,7 +31,7 @@ public interface MyPlaceCategoryMapper {
     public List<MyPlaceCategory> getByUserId(String uuid);
 
     @Insert("INSERT INTO categories (uuid, \"default\", publisher_name, category_name, options)"
-            + " VALUES (#{uuid}, #{isDefault}, #{publisher_name}, #{name}, #{options})")
+            + " VALUES (#{uuid}, #{isDefault}, #{publisher_name}, #{category_name}, #{options})")
     @Options(useGeneratedKeys=true, keyColumn="id", keyProperty="id")
     public void insert(MyPlaceCategory category);
 
@@ -39,7 +39,7 @@ public interface MyPlaceCategoryMapper {
             + " SET uuid = #{uuid}"
             + ",\"default\" = #{isDefault}"
             + ",publisher_name = #{publisher_name}"
-            + ",category_name = #{name}"
+            + ",category_name = #{category_name}"
             + ",options = #{options}"
             + " WHERE id = #{id}")
     public void update(MyPlaceCategory category);

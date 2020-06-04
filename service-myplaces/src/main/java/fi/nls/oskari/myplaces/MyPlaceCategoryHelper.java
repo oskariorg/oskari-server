@@ -101,7 +101,7 @@ public class MyPlaceCategoryHelper {
 
         json.writeStartObject();
         json.writeStringField("uuid", category.getUuid());
-        json.writeStringField("name", category.getCategory_name());
+        json.writeStringField("category_name", category.getCategory_name());
         json.writeStringField("publisher_name", category.getPublisher_name());
         json.writeBooleanField("default", category.isDefault());
         json.writeFieldName("options");
