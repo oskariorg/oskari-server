@@ -485,7 +485,7 @@ public class MapfullHandler extends BundleHandler {
                 // no longer published -> skip if isn't current users layer
                 continue;
             }
-            final JSONObject json = UserLayerDataService.parseLayer2JSON(userLayer, mapSrs, lang);
+            final JSONObject json = UserLayerDataService.parseUserLayer2JSON(userLayer, mapSrs, lang);
             if (json != null) {
                 layerList.put(json);
             }

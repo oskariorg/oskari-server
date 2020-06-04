@@ -111,6 +111,7 @@ public class WFSLayerOptions {
     public void setProperty (String key, Object value) {
         JSONHelper.putValue(options, key, value);
     }
+
     public JSONObject getStyles() {
         JSONObject styles = JSONHelper.getJSONObject(options, KEY_STYLES);
         if (styles == null) {

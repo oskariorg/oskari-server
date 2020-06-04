@@ -83,6 +83,7 @@ public abstract class MyPlacesService extends OskariComponent {
     public String getClientWMSUrl() {
         return MYPLACES_CLIENT_WMS_URL;
     }
+    
     // FIXME: remove hard-coded name from server side
     // This is a quick fix for common supported languages
     // frontend does this, but embedded maps don't have the same code as layers are shown with WMS
@@ -105,7 +106,7 @@ public abstract class MyPlacesService extends OskariComponent {
         final OskariLayer layer = new OskariLayer();
         layer.setName(MYPLACES_WMS_NAME);
         layer.setType(OskariLayer.TYPE_WMS);
-        String name = mpLayer.getName();
+        String name = mpLayer.getCategory_name();
         if (name == null || name.isEmpty())  {
             name = getLayerUIName(lang);
         }
@@ -149,7 +150,7 @@ java.lang.RuntimeException: Unable to encode filter [[ geometry bbox POLYGON ((4
         final OskariLayer layer = new OskariLayer();
         layer.setName(MYPLACES_WMS_NAME);
         layer.setType(OskariLayer.TYPE_WFS);
-        String name = mpLayer.getName();
+        String name = mpLayer.getCategory_name();
         if (name == null || name.isEmpty())  {
             name = getLayerUIName(lang);
         }

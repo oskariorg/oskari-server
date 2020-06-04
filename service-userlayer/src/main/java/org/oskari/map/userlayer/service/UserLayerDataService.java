@@ -56,7 +56,7 @@ public class UserLayerDataService {
         final SimpleFeatureType ft = fc.getSchema();
         final UserLayer userLayer = new UserLayer();
         userLayer.setUuid(uuid);
-        userLayer.setName(ConversionHelper.getString(name, ft.getTypeName()));
+        userLayer.setLayer_name(ConversionHelper.getString(name, ft.getTypeName()));
         userLayer.setLayer_desc(ConversionHelper.getString(desc, ""));
         userLayer.setLayer_source(ConversionHelper.getString(source, ""));
         WFSLayerOptions wfsOptions = userLayer.getWFSLayerOptions();
@@ -161,11 +161,11 @@ public class UserLayerDataService {
         return mapLayerService.find(USERLAYER_BASE_LAYER_ID);
     }
 
-    public static JSONObject parseLayer2JSON(UserLayer ulayer, String srs) {
-        return parseLayer2JSON(ulayer, srs, PropertyUtil.getDefaultLanguage());
+    public static JSONObject parseUserLayer2JSON(UserLayer ulayer, String srs) {
+        return parseUserLayer2JSON(ulayer, srs, PropertyUtil.getDefaultLanguage());
     }
 
-    public static JSONObject parseLayer2JSON(final UserLayer layer, final String srs, final String lang) {
+    public static JSONObject parseUserLayer2JSON(final UserLayer layer, final String srs, final String lang) {
         OskariLayer baseLayer = getBaseLayer();
         return FORMATTER.getJSON(baseLayer,layer, srs, lang);
     }

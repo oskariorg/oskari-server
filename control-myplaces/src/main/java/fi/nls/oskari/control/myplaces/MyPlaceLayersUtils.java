@@ -47,7 +47,7 @@ public class MyPlaceLayersUtils {
                 
                 final JSONObject layer = new JSONObject();
                 layer.put(ID, mp.getId());
-                layer.put(NAME, mp.getName());
+                layer.put(NAME, mp.getCategory_name());
                 
                 layersArray.put(layer);
                     

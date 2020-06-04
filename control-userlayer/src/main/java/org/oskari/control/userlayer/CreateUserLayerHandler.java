@@ -418,7 +418,7 @@ public class CreateUserLayerHandler extends RestActionHandler {
 
     private void writeResponse(ActionParameters params, UserLayer ulayer) {
         String mapSrs = params.getHttpParam(ActionConstants.PARAM_SRS);
-        JSONObject userLayer = UserLayerDataService.parseLayer2JSON(ulayer, mapSrs);
+        JSONObject userLayer = UserLayerDataService.parseUserLayer2JSON(ulayer, mapSrs);
 
         JSONHelper.putValue(userLayer, "featuresCount", ulayer.getFeatures_count());
         JSONObject permissions = UserLayerHandlerHelper.getPermissions();

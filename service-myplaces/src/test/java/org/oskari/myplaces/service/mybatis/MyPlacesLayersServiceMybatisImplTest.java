@@ -45,7 +45,7 @@ public class MyPlacesLayersServiceMybatisImplTest {
 
         MyPlaceCategory expected = new MyPlaceCategory();
         expected.setUuid(uuid);
-        expected.setName("foobar");
+        expected.setCategory_name("foobar");
         expected.setPublisher_name("bazqux");
         expected.setDefault(true);
         expected.setOptions(options);
@@ -73,7 +73,7 @@ public class MyPlacesLayersServiceMybatisImplTest {
         assertEq(expected, actual);
 
         // Test update
-        expected.setName("laalaa");
+        expected.setCategory_name("laalaa");
         expected.setPublisher_name("faxnax");
         expected.setDefault(false);
         assertEquals(1, service.update(Arrays.asList(expected)));
@@ -81,7 +81,7 @@ public class MyPlacesLayersServiceMybatisImplTest {
         assertEq(expected, actual);
         // Sanity test to check assertEq(MyPlaceCategory, MyPlaceCategory) works
         assertEquals(1, actual.getId());
-        assertEquals("laalaa", actual.getName());
+        assertEquals("laalaa", actual.getCategory_name());
         assertEquals("faxnax", actual.getPublisher_name());
         assertEquals(false, actual.isDefault());
         JSONTestHelper.shouldEqual(actual.getOptions(), new JSONObject("{'foo': 'bar', 'qux': 112}".replace('\'', '"')));
@@ -95,7 +95,7 @@ public class MyPlacesLayersServiceMybatisImplTest {
     private void assertEq(MyPlaceCategory expected, MyPlaceCategory actual) {
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getUuid(), actual.getUuid());
-        assertEquals(expected.getName(), actual.getName());
+        assertEquals(expected.getCategory_name(), actual.getCategory_name());
         assertEquals(expected.getPublisher_name(), actual.getPublisher_name());
         JSONTestHelper.shouldEqual(actual.getOptions(), expected.getOptions());
     }

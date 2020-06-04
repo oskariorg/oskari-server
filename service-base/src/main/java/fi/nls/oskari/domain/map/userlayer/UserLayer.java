@@ -1,20 +1,33 @@
 package fi.nls.oskari.domain.map.userlayer;
 
-
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.UserDataLayer;
 import org.json.JSONArray;
 
 public class UserLayer extends UserDataLayer {
+
     private String layer_desc;
     private String layer_source;
     private JSONArray fields;
     private int features_count;
     private int features_skipped; //if geojson feature doesn't have geometry object or it's null, feature is skipped
     private String wkt;
-    public String getType() {
+
+    @Override
+    public final String getType() {
         return OskariLayer.TYPE_USERLAYER;
     }
+
+    @Deprecated
+    public String getLayer_name() {
+        return getName();
+    }
+
+    @Deprecated
+    public void setLayer_name(String layer_name) {
+        setName(layer_name);
+    }
+
     public String getLayer_desc() {
         return layer_desc;
     }

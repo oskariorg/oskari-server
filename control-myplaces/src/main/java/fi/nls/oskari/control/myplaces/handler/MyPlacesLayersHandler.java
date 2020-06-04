@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
 import org.oskari.log.AuditLog;
 import org.oskari.permissions.model.PermissionType;
@@ -25,7 +24,6 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterMYPLACES;
 import fi.nls.oskari.myplaces.MyPlaceCategoryHelper;
 import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.myplaces.service.MyPlacesLayersService;
@@ -34,7 +32,6 @@ import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
 
 @OskariActionRoute("MyPlacesLayers")
@@ -101,7 +98,7 @@ public class MyPlacesLayersHandler extends RestActionHandler {
         for (MyPlaceCategory layer : categories) {
             AuditLog.user(params.getClientIp(), params.getUser())
                     .withParam("id", layer.getId())
-                    .withParam("name", layer.getName())
+                    .withParam("name", layer.getCategory_name())
                     .added(AuditLog.ResourceType.MYPLACES_LAYER);
         }
 
@@ -130,7 +127,7 @@ public class MyPlacesLayersHandler extends RestActionHandler {
         for (MyPlaceCategory layer : categories) {
             AuditLog.user(params.getClientIp(), params.getUser())
                     .withParam("id", layer.getId())
-                    .withParam("name", layer.getName())
+                    .withParam("name", layer.getCategory_name())
                     .updated(AuditLog.ResourceType.MYPLACES_LAYER);
         }
 
@@ -163,7 +160,8 @@ public class MyPlacesLayersHandler extends RestActionHandler {
                 .withParam("id", layerIds)
                 .deleted(AuditLog.ResourceType.MYPLACES_LAYER);
 
-        JSONObject response = JSONHelper.createJSONObject(KEY_DELETED, deleted);
+        JSONObject response = new JSONObject();
+        JSONHelper.putValue(response, KEY_DELETED, deleted);
         ResponseHelper.writeResponse(params, response);
     }
 
@@ -182,7 +180,7 @@ public class MyPlacesLayersHandler extends RestActionHandler {
 
     private MyPlaceCategory createDefaultCategory() {
         MyPlaceCategory category = new MyPlaceCategory();
-        category.setName("");
+        category.setCategory_name("");
         category.setDefault(true);
         category.getWFSLayerOptions().setDefaultFeatureStyle(WFSLayerOptions.getDefaultOskariStyle());
         return category;
