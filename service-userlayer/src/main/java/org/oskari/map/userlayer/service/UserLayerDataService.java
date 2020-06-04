@@ -113,13 +113,6 @@ public class UserLayerDataService {
         }
         return jsfields;
     }
-    public static JSONObject parseLayerToJSON (UserLayer ulayer, String srs) {
-        return parseLayerToJSON(ulayer, srs, PropertyUtil.getDefaultLanguage());
-    }
-    public static JSONObject parseLayerToJSON (final UserLayer layer, final String srs, final String lang) {
-        OskariLayer baseLayer = getBaseLayer();
-        return FORMATTER.getJSON(baseLayer,layer, srs, lang);
-    }
     public static List<UserLayerData> createUserLayerData(SimpleFeatureCollection fc, String uuid)
             throws UserLayerException {
         List<UserLayerData> userLayerDataList = new ArrayList<>();
@@ -167,4 +160,14 @@ public class UserLayerDataService {
         }
         return mapLayerService.find(USERLAYER_BASE_LAYER_ID);
     }
+
+    public static JSONObject parseLayer2JSON(UserLayer ulayer, String srs) {
+        return parseLayer2JSON(ulayer, srs, PropertyUtil.getDefaultLanguage());
+    }
+
+    public static JSONObject parseLayer2JSON(final UserLayer layer, final String srs, final String lang) {
+        OskariLayer baseLayer = getBaseLayer();
+        return FORMATTER.getJSON(baseLayer,layer, srs, lang);
+    }
+
 }

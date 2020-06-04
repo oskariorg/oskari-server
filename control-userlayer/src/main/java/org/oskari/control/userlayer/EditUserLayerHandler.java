@@ -53,7 +53,7 @@ public class EditUserLayerHandler extends RestActionHandler {
                 .withParam("id", userLayer.getId())
                 .updated(AuditLog.ResourceType.USERLAYER);
 
-        JSONObject ulayer = UserLayerDataService.parseLayerToJSON(userLayer, mapSrs);
+        JSONObject ulayer = UserLayerDataService.parseLayer2JSON(userLayer, mapSrs);
         JSONObject permissions = UserLayerHandlerHelper.getPermissions();
         JSONHelper.putValue(ulayer, "permissions", permissions);
 
