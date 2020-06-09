@@ -7,8 +7,7 @@ import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.layer.formatters.LayerJSONFormatter;
-import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWMS;
+import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterVectorTile;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
@@ -134,12 +133,12 @@ public class GetLayerTileHandler extends ActionHandler {
         }
     }
 
-    private String getURL(final ActionParameters params, final OskariLayer layer) {
+    private String getURL(final ActionParameters params, final OskariLayer layer) throws ActionParamsException {
         if (params.getHttpParam(LEGEND, false)) {
             return this.getLegendURL(layer, params.getHttpParam(CapabilitiesConstants.KEY_STYLE, null));
         }
         final HttpServletRequest httpRequest = params.getRequest();
-        if(OskariLayer.TYPE_WMTS.equalsIgnoreCase(layer.getType())) {
+        if (OskariLayer.TYPE_WMTS.equalsIgnoreCase(layer.getType())) {
             // check for rest url
             final String urlTemplate = JSONHelper.getStringFromJSON(layer.getOptions(), "urlTemplate", null);
             if(urlTemplate != null) {
@@ -158,6 +157,15 @@ public class GetLayerTileHandler extends ActionHandler {
                         .replaceFirst("\\{TileRow\\}", capsParams.get(KEY_TILEROW) != null ? capsParams.get(KEY_TILEROW) : KEY_TILEROW)
                         .replaceFirst("\\{TileCol\\}", capsParams.get(KEY_TILECOL) != null ? capsParams.get(KEY_TILECOL) : KEY_TILECOL);
             }
+        } else if (OskariLayer.TYPE_VECTOR_TILE.equalsIgnoreCase(layer.getType())) {
+            // TODO: Figure out CRS
+            int x = params.getRequiredParamInt(LayerJSONFormatterVectorTile.URL_PARAM_X);
+            int y = params.getRequiredParamInt(LayerJSONFormatterVectorTile.URL_PARAM_Y);
+            int z = params.getRequiredParamInt(LayerJSONFormatterVectorTile.URL_PARAM_Z);
+            return layer.getUrl()
+                    .replaceFirst("\\{x\\}", String.valueOf(x))
+                    .replaceFirst("\\{y\\}", String.valueOf(y))
+                    .replaceFirst("\\{z\\}", String.valueOf(z));
         }
 
         Map<String, String> urlParams = getUrlParams(httpRequest);
