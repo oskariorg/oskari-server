@@ -103,7 +103,7 @@ public class GetLayerTileHandler extends ActionHandler {
 
             final int responseCode = con.getResponseCode();
             final String contentType = con.getContentType().toLowerCase();
-            if(responseCode != HttpURLConnection.HTTP_OK || !contentType.startsWith("image/")) {
+            if(responseCode != HttpURLConnection.HTTP_OK || !isContentTypeOK(contentType)) {
                 LOG.warn("URL", url, "returned HTTP response code", responseCode,
                         "with message", con.getResponseMessage(), "and content-type:", contentType);
                 String msg = IOHelper.readString(con);
@@ -131,6 +131,12 @@ public class GetLayerTileHandler extends ActionHandler {
                 con.disconnect();
             }
         }
+    }
+
+    private boolean isContentTypeOK(String contentType) {
+        return contentType.startsWith("image/")
+                || contentType.startsWith("application/octet-stream")
+                || contentType.startsWith("application/vnd.mapbox-vector-tile");
     }
 
     private String getURL(final ActionParameters params, final OskariLayer layer) throws ActionParamsException {
