@@ -27,9 +27,6 @@ public class FlywaydbMigrator {
         flyway.setDataSource(datasource);
         flyway.setTable(getStatusTableName(moduleName));
         flyway.setLocations(getScriptLocations(moduleName));
-        // runs all pending migrations in single transaction so users don't get in to a situation where the database
-        // is half but not fully migrated to the new version
-        flyway.setGroup(true);
         if (flyway.info().current() == null) {
             flyway.setBaselineVersionAsString("0.1");
             flyway.baseline();
