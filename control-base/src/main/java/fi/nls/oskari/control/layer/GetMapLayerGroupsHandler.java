@@ -44,7 +44,8 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
     private static final List<String> PROXY_LYR_TYPES = Arrays.asList(
             OskariLayer.TYPE_WMS,
             OskariLayer.TYPE_WMTS,
-            OskariLayer.TYPE_ARCGIS93);
+            OskariLayer.TYPE_ARCGIS93,
+            OskariLayer.TYPE_VECTOR_TILE);
 
     private OskariLayerService layerService;
     private OskariMapLayerGroupService groupService;

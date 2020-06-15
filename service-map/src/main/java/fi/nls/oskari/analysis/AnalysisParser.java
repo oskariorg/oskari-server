@@ -195,11 +195,11 @@ public class AnalysisParser {
 
             // Set params for WPS execute
             BufferMethodParams method = createBufferParams(analyseMethodParams, json.optJSONObject("bbox"));
+            analysisLayer.setAnalysisMethodParams(method);
 
             parseCommonParams(wfsLayer, method, baseUrl);
             method.setGeojson(geojson);
             method.setWps_reference_type(analysisLayer.getInputType());
-            analysisLayer.setAnalysisMethodParams(method);
 
             // WFS filter
             method.setFilter(createWFSQueryFilter(wfsLayer, filter1, analysisLayer
@@ -216,19 +216,19 @@ public class AnalysisParser {
 
             ZoneSectorMethodParams method = this.parseZoneSectorParams(wfsLayer, json, geojson,
                     baseUrl);
+            analysisLayer.setAnalysisMethodParams(method);
 
             method.setWps_reference_type(analysisLayer.getInputType());
-            analysisLayer.setAnalysisMethodParams(method);
 
             // Set override style
             analysisLayer.setOverride_sld(json.optString(JSONKEY_OVERRIDE_SLD));
 
             // WFS filter
-            analysisLayer.getAnalysisMethodParams().setFilter(
+            method.setFilter(
                     this.createWFSQueryFilter(wfsLayer, filter1, analysisLayer
                             .getInputAnalysisId(), analysisLayer.getInputCategoryId(), analysisLayer.getInputUserdataId()));
             // WFS Query properties
-            analysisLayer.getAnalysisMethodParams().setProperties(
+            method.setProperties(
                     this.createPartialWFSQueryForAttributes(analysisLayer.getFields(), "oskari", getGeometryField(wfsLayer)));
         }
         //------------------ INTERSECT -----------------------
@@ -243,6 +243,8 @@ public class AnalysisParser {
             // Set params for WPS execute
             IntersectMethodParams method = this.parseIntersectParams(wfsLayer, lc2,
                     json, geojson, geojson2, baseUrl);
+            analysisLayer.setAnalysisMethodParams(method);
+
             //TODO: better input type mapping
             method.setWps_reference_type(analysisLayer.getInputType());
             if (sid.indexOf(ANALYSIS_LAYER_PREFIX) == 0 || sid.indexOf(MYPLACES_LAYER_PREFIX) == 0 || sid.indexOf(USERLAYER_PREFIX) == 0) {
@@ -277,10 +279,9 @@ public class AnalysisParser {
                         .getAnalysisInputId(analyseMethodParams), null, null));
             }
             // WFS Query properties
-            analysisLayer.getAnalysisMethodParams().setProperties(
+            method.setProperties(
                     this.createPartialWFSQueryForAttributes(analysisLayer.getFields(), "oskari", getGeometryField(wfsLayer)));
 
-            analysisLayer.setAnalysisMethodParams(method);
         }
         //------------------ SPATIAL_JOIN -----------------------
         else if (SPATIAL_JOIN.equals(analysisMethod)) {
@@ -295,6 +296,8 @@ public class AnalysisParser {
 
             IntersectJoinMethodParams method = this.parseIntersectJoinParams(wfsLayer, lc2,
                     json, geojson, geojson2, baseUrl);
+            analysisLayer.setAnalysisMethodParams(method);
+
             //TODO: better input type mapping
             method.setWps_reference_type(analysisLayer.getInputType());
             if (sid.indexOf(ANALYSIS_LAYER_PREFIX) == 0 || sid.indexOf(MYPLACES_LAYER_PREFIX) == 0 || sid.indexOf(USERLAYER_PREFIX) == 0) {
@@ -332,7 +335,6 @@ public class AnalysisParser {
             method.setProperties(this.createPartialWFSQueryForAttributes(
                     analysisLayer.getFields(), "oskari", getGeometryField(wfsLayer)));
 
-            analysisLayer.setAnalysisMethodParams(method);
         }
         //------------------ SPATIAL_JOIN_STATISTICS (WPS method gs:VectorZonalStatistics) -----------------------
         else if (SPATIAL_JOIN_STATISTICS.equals(analysisMethod)) {
@@ -347,6 +349,8 @@ public class AnalysisParser {
 
             SpatialJoinStatisticsMethodParams method = this.parseSpatialJoinStatisticsParams(wfsLayer, lc2,
                     json, geojson, geojson2, baseUrl);
+            analysisLayer.setAnalysisMethodParams(method);
+
             //TODO: better input type mapping
             method.setWps_reference_type(analysisLayer.getInputType());
             if (sid.indexOf(ANALYSIS_LAYER_PREFIX) == 0 || sid.indexOf(MYPLACES_LAYER_PREFIX) == 0 || sid.indexOf(USERLAYER_PREFIX) == 0) {
@@ -381,8 +385,6 @@ public class AnalysisParser {
             // WFS Query properties
             method.setProperties(
                     this.createPartialWFSQueryForAttributes(analysisLayer.getFields(), "oskari", getGeometryField(wfsLayer)));
-
-            analysisLayer.setAnalysisMethodParams(method);
         }
         //------------------ DIFFERENCE (WPS not used - result made by WFS 2.0 GetFeature) -----------------------
         else if (DIFFERENCE.equals(analysisMethod)) {
@@ -425,6 +427,7 @@ public class AnalysisParser {
 
             DifferenceMethodParams method = this.parseDifferenceParams(wfsLayer, lc2,
                     json, geojson, geojson2, baseUrl);
+            analysisLayer.setAnalysisMethodParams(method);
 
             // Layers must be under same wfs service
             method.setWps_reference_type(analysisLayer.getInputType());
@@ -440,10 +443,6 @@ public class AnalysisParser {
 
             // WFS is BBOX filter in use
             method.setBbox(true);
-
-
-
-            analysisLayer.setAnalysisMethodParams(method);
         }
         //------------------ AGGREGATE -----------------------
         else if (AGGREGATE.equals(analysisMethod)) {
@@ -504,10 +503,9 @@ public class AnalysisParser {
 
             AggregateMethodParams method = this.parseAggregateParams(wfsLayer, json, geojson,
                         baseUrl, aggre_field, analysisLayer.getAggreFunctions());
-
+            analysisLayer.setAnalysisMethodParams(method);
 
             method.setWps_reference_type(analysisLayer.getInputType());
-            analysisLayer.setAnalysisMethodParams(method);
 
             // Filter out text type fields, if there is no count-function computation requested
             if(!isCountFunc){
@@ -515,7 +513,7 @@ public class AnalysisParser {
             }
             // WFS filter
 
-            analysisLayer.getAnalysisMethodParams().setFilter(
+            method.setFilter(
                     this.createWFSQueryFilter(wfsLayer, filter1, analysisLayer
                             .getInputAnalysisId(), analysisLayer.getInputCategoryId(), analysisLayer.getInputUserdataId()));
             //------------------ UNION -----------------------
@@ -524,14 +522,14 @@ public class AnalysisParser {
             // Set params for WPS execute
 
             UnionMethodParams method = this.parseUnionParams(wfsLayer, json, geojson, baseUrl);
+            analysisLayer.setAnalysisMethodParams(method);
+
             method.setWps_reference_type(analysisLayer.getInputType());
 
             // WFS filter
 
             method.setFilter(this.createWFSQueryFilter(wfsLayer, filter1, analysisLayer
                     .getInputAnalysisId(), analysisLayer.getInputCategoryId(), analysisLayer.getInputUserdataId()));
-
-            analysisLayer.setAnalysisMethodParams(method);
 
         } else {
             throw new ServiceException("Method parameters missing.");
