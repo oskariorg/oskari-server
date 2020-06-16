@@ -1,18 +1,14 @@
 package fi.nls.oskari.control.myplaces.handler;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
-import fi.nls.oskari.util.ConversionHelper;
 import org.oskari.log.AuditLog;
 import org.oskari.myplaces.service.mybatis.MyPlacesLayersServiceMybatisImpl;
 import org.oskari.permissions.model.PermissionType;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
@@ -21,12 +17,10 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.myplaces.MyPlaceCategoryHelper;
 import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.myplaces.service.MyPlacesLayersService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
-import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 
