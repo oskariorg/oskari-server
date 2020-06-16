@@ -80,7 +80,6 @@ public class MyPlacesLayersHandler extends RestActionHandler {
 
     @Override
     public void handlePost(ActionParameters params) throws ActionException {
-        params.requireLoggedInUser();
         MyPlaceCategory category = new MyPlaceCategory();
         category.setUuid(params.getUser().getUuid());
         category.setName(params.getRequiredParam(PARAM_NAME));
@@ -106,7 +105,7 @@ public class MyPlacesLayersHandler extends RestActionHandler {
     @Override
     public void handlePut(ActionParameters params) throws ActionException {
         final User user = params.getUser();
-        final long id = ConversionHelper.getLong(params.getRequiredParam(PARAM_ID), -1);
+        final long id = params.getRequiredParamLong(PARAM_ID);
         if (!service.canModifyCategory(user, id)) {
             throw new ActionDeniedException(
                     "Tried to modify category: " + id);
@@ -134,7 +133,7 @@ public class MyPlacesLayersHandler extends RestActionHandler {
     @Override
     public void handleDelete(ActionParameters params) throws ActionException {
         final User user = params.getUser();
-        final long id = ConversionHelper.getLong(params.getRequiredParam(PARAM_ID), -1);
+        final long id =  params.getRequiredParamLong(PARAM_ID);
         if (!service.canModifyCategory(user, id)) {
             throw new ActionDeniedException("Tried to delete category: " + id);
         }
