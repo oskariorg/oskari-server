@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
-import com.vividsolutions.jts.geom.Coordinate;
 import fi.nls.oskari.util.IOHelper;
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;
@@ -18,7 +17,6 @@ import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.multipdf.LayerUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.apache.pdfbox.pdmodel.PDPatternContentStream;
 import org.apache.pdfbox.pdmodel.PDResources;
@@ -27,7 +25,6 @@ import org.apache.pdfbox.pdmodel.graphics.color.PDColor;
 import org.apache.pdfbox.pdmodel.graphics.color.PDDeviceRGB;
 import org.apache.pdfbox.pdmodel.graphics.color.PDPattern;
 import org.apache.pdfbox.pdmodel.graphics.pattern.PDTilingPattern;
-import org.apache.pdfbox.util.Matrix;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -59,7 +56,7 @@ public class StyleUtil {
 
     public static PDPrintStyle getLineStyle (JSONObject oskariStyle) {
         PDPrintStyle style = new PDPrintStyle();
-        JSONObject stroke = JSONHelper.getJSONObject(oskariStyle, "stroke");
+        JSONObject stroke = JSONHelper.optJSONObject(oskariStyle, "stroke", () -> new JSONObject());
         setStrokeStyle(style, stroke);
         // polygon doesn't have cap style
         setLabelStyle(style, oskariStyle);
@@ -69,11 +66,13 @@ public class StyleUtil {
     }
     public static PDPrintStyle getPolygonStyle (JSONObject oskariStyle, PDResources resources) throws IOException {
         PDPrintStyle style = new PDPrintStyle();
-        JSONObject area = JSONHelper.getJSONObject(JSONHelper.getJSONObject(oskariStyle, "stroke"), "area");
-        setStrokeStyle(style, area);
+        JSONObject stroke = JSONHelper.optJSONObject(oskariStyle, "stroke", () -> new JSONObject());
+        JSONObject strokeArea = JSONHelper.optJSONObject(stroke, "area", () -> new JSONObject());
+        setStrokeStyle(style, strokeArea);
 
-        JSONObject fill = JSONHelper.getJSONObject(oskariStyle, "fill");
-        int pattern = JSONHelper.getJSONObject(fill, "area").optInt("pattern");
+        JSONObject fill = JSONHelper.optJSONObject(oskariStyle, "fill", () -> new JSONObject());
+        JSONObject fillArea = JSONHelper.optJSONObject(fill, "area", () -> new JSONObject());
+        int pattern = fillArea.optInt("pattern");
         Color color = ColorUtil.parseColor(JSONHelper.optString(fill,"color"));
         style.setFillColor(color);
 
@@ -86,9 +85,10 @@ public class StyleUtil {
 
     public static PDPrintStyle getPointStyle (JSONObject oskariStyle, PDDocument doc) throws IOException {
         PDPrintStyle style = new PDPrintStyle();
-        JSONObject image = JSONHelper.getJSONObject(oskariStyle, "image");
+        JSONObject image = JSONHelper.optJSONObject(oskariStyle, "image", () -> new JSONObject());
         int shape = image.optInt("shape", 5); // External icons not supported
-        String fillColor = JSONHelper.optString(JSONHelper.getJSONObject(image, "fill"), "color");
+        JSONObject imageFill = JSONHelper.optJSONObject(image, "fill", () -> new JSONObject());
+        String fillColor = JSONHelper.optString(imageFill, "color");
         style.setFillColor(ColorUtil.parseColor(fillColor));
         int size = image.optInt("size", 3);
         style.setIcon(getIcon(doc, shape, fillColor, size));

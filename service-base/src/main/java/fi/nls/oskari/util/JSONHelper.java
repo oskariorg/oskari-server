@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.util.*;
+import java.util.function.Supplier;
 
 
 public class JSONHelper {
@@ -71,6 +72,10 @@ public class JSONHelper {
             log.info("Couldn't get JSONObject from ", content, " with key =", key);
             return null;
         }
+    }
+    public static final JSONObject optJSONObject(final JSONObject content, String key, Supplier<JSONObject> fallback) {
+        JSONObject ret = content != null ? content.optJSONObject(key) : null;
+        return ret != null ? ret : fallback.get();
     }
     public static final Object get(final JSONObject content, String key) {
         if(content == null) {
