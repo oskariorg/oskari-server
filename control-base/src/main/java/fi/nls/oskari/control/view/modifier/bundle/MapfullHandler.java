@@ -445,15 +445,10 @@ public class MapfullHandler extends BundleHandler {
                 continue;
             }
 
-            JSONObject myPlaceLayer = null;
-            if (plugins != null && plugins.toString().indexOf(PLUGIN_WFSVECTORLAYER) != -1) {
-                myPlaceLayer = MyPlacesService.parseLayerToJSON(mpLayer, mapSrs);
-                // Get as WFS layer
-                JSONHelper.putValue(myPlaceLayer, LayerJSONFormatter.KEY_TYPE, OskariLayer.TYPE_WFS);
-            }
-            if (myPlaceLayer != null) {
-                layerList.put(myPlaceLayer);
-            }
+            JSONObject myPlaceLayer = MyPlacesService.parseLayerToJSON(mpLayer, mapSrs);
+            // Get as WFS layer
+            JSONHelper.putValue(myPlaceLayer, LayerJSONFormatter.KEY_TYPE, OskariLayer.TYPE_WFS);
+            layerList.put(myPlaceLayer);
         }
     }
 
