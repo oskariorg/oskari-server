@@ -31,7 +31,7 @@ public interface MyPlaceCategoryMapper {
     public List<MyPlaceCategory> getByUserId(String uuid);
 
     @Insert("INSERT INTO categories (uuid, \"default\", publisher_name, category_name, options)"
-            + " VALUES (#{uuid}, #{isDefault}, #{publisher_name}, #{category_name}, #{options})")
+            + " VALUES (#{uuid}, #{isDefault}, #{publisher_name}, #{category_name}, CAST(#{options} as json))")
     @Options(useGeneratedKeys=true, keyColumn="id", keyProperty="id")
     public void insert(MyPlaceCategory category);
 
@@ -40,7 +40,7 @@ public interface MyPlaceCategoryMapper {
             + ",\"default\" = #{isDefault}"
             + ",publisher_name = #{publisher_name}"
             + ",category_name = #{category_name}"
-            + ",options = #{options}"
+            + ",options = CAST(#{options} as json)"
             + " WHERE id = #{id}")
     public void update(MyPlaceCategory category);
 

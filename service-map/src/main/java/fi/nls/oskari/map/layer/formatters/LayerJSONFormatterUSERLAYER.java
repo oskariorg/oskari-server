@@ -2,7 +2,6 @@ package fi.nls.oskari.map.layer.formatters;
 
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
-import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
@@ -13,7 +12,7 @@ import org.json.JSONObject;
 /**
  * User layer to oskari layer json
  */
-public class LayerJSONFormatterUSERLAYER extends LayerJSONFormatter {
+public class LayerJSONFormatterUSERLAYER extends LayerJSONFormatterUSERDATA {
 
     private static final String USERLAYER_RENDERING_URL = "userlayer.rendering.url";
     private static final String USERLAYER_RENDERING_ELEMENT = "userlayer.rendering.element";
@@ -29,48 +28,20 @@ public class LayerJSONFormatterUSERLAYER extends LayerJSONFormatter {
 
     private static Logger log = LogFactory.getLogger(LayerJSONFormatterUSERLAYER.class);
 
-    /**
-     * @param layer
-     * @param lang
-     * @param isSecure
-     * @param ulayer   data in user_layer table
-     * @return
-     */
-    public JSONObject getJSON(OskariLayer layer,
-                              final String lang,
-                              final boolean isSecure,
-                              final String crs,
-                              UserLayer ulayer) {
-        // set geometry before parsing layerJson
-        layer.setGeometry(ulayer.getWkt());
-        final JSONObject layerJson = getBaseJSON(layer, lang, isSecure, crs);
-        JSONHelper.putValue(layerJson, "isQueryable", true);
-        JSONHelper.putValue(layerJson, "name", ulayer.getLayer_name());
+
+    public JSONObject getJSON(final OskariLayer baseLayer, UserLayer ulayer, String srs, String lang) {
+        final JSONObject layerJson = super.getJSON(baseLayer, ulayer, srs, lang);
+        addLayerCoverageWKT(layerJson, ulayer.getWkt(), srs);
         JSONHelper.putValue(layerJson, "description", ulayer.getLayer_desc());
         JSONHelper.putValue(layerJson, "source", ulayer.getLayer_source());
-        WFSLayerOptions wfsOptions = ulayer.getWFSLayerOptions();
-        wfsOptions.injectBaseLayerOptions(layer.getOptions());
-        JSONHelper.putValue(layerJson, "options", wfsOptions.getOptions());
         try {
             JSONHelper.putValue(layerJson, "propertyNames", getLocalizedPropertyNames(lang, ulayer.getFields()));
         } catch (IllegalArgumentException e) {
             log.warn("Couldn't put fields array to layerJson", e);
         }
-        // user layer rendering url - override DB url if property is defined
-        JSONHelper.putValue(layerJson, "url", getUserLayerTileUrl());
-        JSONHelper.putValue(layerJson, "renderingElement", userlayerRenderingElement);
 
         return layerJson;
     }
-
-    private static String getUserLayerTileUrl() {
-        if (PROPERTY_RENDERING_URL == null) {
-            // action_route name points to fi.nls.oskari.control.layer.UserLayerTileHandler
-            return PropertyUtil.get("oskari.ajax.url.prefix") + "action_route=UserLayerTile&id=";
-        }
-        return PROPERTY_RENDERING_URL + "&id=";
-    }
-
     private static JSONArray getLocalizedPropertyNames(final String lang, final JSONArray fields) {
         try {
 

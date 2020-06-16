@@ -9,6 +9,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
+import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterMYPLACES;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWFS;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWMS;
 import fi.nls.oskari.service.OskariComponent;
@@ -34,6 +35,7 @@ public abstract class MyPlacesService extends OskariComponent {
     private static String MYPLACES_ACTUAL_WMS_URL = PropertyUtil.get("myplaces.wms.url");
     private static final LayerJSONFormatterWMS JSON_FORMATTER_WMS = new LayerJSONFormatterWMS();
     private static final LayerJSONFormatterWFS JSON_FORMATTER_WFS = new LayerJSONFormatterWFS();
+    private static final LayerJSONFormatterMYPLACES FORMATTER = new LayerJSONFormatterMYPLACES();
     private static final Logger LOGGER = LogFactory.getLogger(MyPlacesService.class);
 
     public abstract List<MyPlaceCategory> getCategories();
@@ -92,6 +94,10 @@ public abstract class MyPlacesService extends OskariComponent {
             return "Mitt kartlager";
         }
         return "My map layer";
+    }
+
+    public static JSONObject parseLayerToJSON (final MyPlaceCategory mpLayer, final String srs) {
+        return FORMATTER.getJSON(getBaseLayer(), mpLayer, srs);
     }
 
     public JSONObject getCategoryAsWmsLayerJSON(final MyPlaceCategory mpLayer,

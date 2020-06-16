@@ -28,9 +28,13 @@ public class LayerJSONFormatter {
     public static final String PROPERTY_AJAXURL = "oskari.ajax.url.prefix";
     public static final String KEY_ATTRIBUTE_FORCED_SRS = "forcedSRS";
     public static final String KEY_ATTRIBUTE_IGNORE_COVERAGE = "ignoreCoverage";
-    private static final String KEY_ID = "id";
-    private static final String KEY_TYPE = "type";
-    private static final String KEY_ADMIN = "admin";
+    public static final String KEY_TYPE = "type";
+    protected static final String KEY_ID = "id";
+    protected static final String KEY_NAME = "layerName"; // FIXME: name
+    protected static final String KEY_LOCALIZED_NAME = "name"; // FIXME: title
+    protected static final String KEY_SUBTITLE = "subtitle";
+    protected static final String KEY_OPTIONS = "options";
+    protected static final String KEY_ADMIN = "admin";
     protected static final String[] STYLE_KEYS ={"name", "title", "legend"};
 
     // There working only plain text and html so ranked up
@@ -106,14 +110,14 @@ public class LayerJSONFormatter {
             // so tiles can be fetched from same host from browsers p.o.v. and the actual url
             // is proxied with a proxy for example: /proxythis/<actual wmsurl>
             JSONHelper.putValue(layerJson, "url", layer.getUrl(isSecure));
-            JSONHelper.putValue(layerJson, "layerName", layer.getName());
+            JSONHelper.putValue(layerJson, KEY_NAME, layer.getName());
             if (useProxy(layer)) {
                 JSONHelper.putValue(layerJson, "url", getProxyUrl(layer));
             }
         }
 
-        JSONHelper.putValue(layerJson, "name", layer.getName(lang));
-        JSONHelper.putValue(layerJson, "subtitle", layer.getTitle(lang));
+        JSONHelper.putValue(layerJson, KEY_LOCALIZED_NAME, layer.getName(lang));
+        JSONHelper.putValue(layerJson, KEY_SUBTITLE, layer.getTitle(lang));
         if(layer.getGroup() != null) {
             JSONHelper.putValue(layerJson, "orgName", layer.getGroup().getName(lang));
         }
@@ -133,7 +137,7 @@ public class LayerJSONFormatter {
         }
 
         JSONHelper.putValue(layerJson, "params", layer.getParams());
-        JSONHelper.putValue(layerJson, "options", layer.getOptions());
+        JSONHelper.putValue(layerJson, KEY_OPTIONS, layer.getOptions());
         JSONHelper.putValue(layerJson, "attributes", attributes);
 
         JSONHelper.putValue(layerJson, "realtime", layer.getRealtime());
