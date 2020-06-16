@@ -173,33 +173,7 @@ public class MyPlacesLayersHandler extends RestActionHandler {
         category.getWFSLayerOptions().setDefaultFeatureStyle(WFSLayerOptions.getDefaultOskariStyle());
         return category;
     }
-    @Deprecated
-    private List<MyPlaceCategory> readCategories(ActionParameters params,
-            boolean checkId) throws ActionException {
-        try {
-            final String payload;
-            try (InputStream in = params.getRequest().getInputStream()) {
-                payload = IOHelper.readString(in);
-            } catch (IOException e) {
-                throw new ActionException("IOException occured");
-            }
-            return MyPlaceCategoryHelper.parseFromGeoJSON(payload, checkId);
-        } catch (JSONException e) {
-            throw new ActionParamsException("Invalid input", e);
-        } catch (IOException e) {
-            throw new ActionParamsException("IOException occured", e);
-        }
-    }
-    @Deprecated
-    private void checkUserCanModifyCategories(User user,
-            List<MyPlaceCategory> categories) throws ActionDeniedException {
-        for (MyPlaceCategory category : categories) {
-            if (!service.canModifyCategory(user, category.getId())) {
-                throw new ActionDeniedException(
-                        "Tried to modify category: " + category.getId());
-            }
-        }
-    }
+
     private JSONObject toLayerJSON (MyPlaceCategory category) {
         JSONObject layerJSON = MyPlacesService.parseLayerToJSON(category, null);
         JSONHelper.putValue(layerJSON, KEY_PERMISSIONS, getPermissions());
