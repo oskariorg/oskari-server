@@ -46,6 +46,7 @@ import org.geotools.referencing.CRS;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.filter.FilterFactory2;
+import org.opengis.filter.expression.Expression;
 import org.opengis.filter.expression.Function;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -553,7 +554,7 @@ public class PDF {
                 SimpleFeatureCollection subFc = fc.subCollection(rule.getFilter());
                 if (subFc.isEmpty()) continue;
                 PDPrintStyle style = rule.getStyle();
-                setDrawingStyle(stream, style);
+                style.apply(stream);
                 try (SimpleFeatureIterator it = subFc.features()) {
                     while (it.hasNext()) {
                         drawFeature(stream, transform, it.next(), style);
@@ -631,24 +632,22 @@ public class PDF {
     }
 
     private static  List <PrintVectorRule> getRules (PDDocument doc, PDResources resources, PrintLayer layer, String geomName) throws IOException {
-        List <PrintVectorRule> rules = new ArrayList<>();
         Function pointFunc = ff.function("in2", ff.function("geometryType", ff.property(geomName)), ff.literal("Point"), ff.literal("MultiPoint"));
         Function lineFunc = ff.function("in2", ff.function("geometryType", ff.property(geomName)), ff.literal("LineString"), ff.literal("MultiLineString"));
         Function polygonFunc = ff.function("in2", ff.function("geometryType", ff.property(geomName)), ff.literal("Polygon"), ff.literal("MultiPolygon"));
+        Expression _true = ff.literal(true);
 
         JSONObject oskariStyle = layer.getOskariStyle();
 
+        List <PrintVectorRule> rules = new ArrayList<>();
         rules.add(new PrintVectorRule(
-                PrintVectorRule.RuleType.POLYGON,
-                ff.equals(polygonFunc, ff.literal(true)),
+                ff.equals(polygonFunc, _true),
                 StyleUtil.getPolygonStyle(oskariStyle, resources)));
         rules.add(new PrintVectorRule(
-                PrintVectorRule.RuleType.LINE,
-                ff.equals(lineFunc, ff.literal(true)),
+                ff.equals(lineFunc, _true),
                 StyleUtil.getLineStyle(oskariStyle)));
         rules.add(new PrintVectorRule(
-                PrintVectorRule.RuleType.POINT,
-                ff.equals(pointFunc, ff.literal(true)),
+                ff.equals(pointFunc, _true),
                 StyleUtil.getPointStyle(oskariStyle, doc)));
 
         return rules;
@@ -661,22 +660,6 @@ public class PDF {
             gs.setStrokingAlphaConstant(alpha);
             gs.setNonStrokingAlphaConstant(alpha);
             stream.setGraphicsStateParameters(gs);
-        }
-    }
-    private static void setDrawingStyle(PDPageContentStream stream, PDPrintStyle style) throws IOException {
-        stream.setLineWidth(style.getLineWidth());
-        stream.setLineJoinStyle(style.getLineJoin());
-        stream.setLineCapStyle(style.getLineCap());
-        if (style.hasLineColor()) {
-            stream.setStrokingColor(style.getLineColor());
-        }
-        if (style.hasLinePattern()) {
-            stream.setLineDashPattern(style.getLinePattern(), 0);
-        }
-        if (style.hasFillPattern()) {
-            stream.setNonStrokingColor(style.getFillPattern());
-        } else if (style.hasFillColor()) {
-            stream.setNonStrokingColor(style.getFillColor());
         }
     }
 
@@ -693,16 +676,15 @@ public class PDF {
         g = transform.transform(g);
         draw(stream, g, style);
         if (style.hasLabels()){
-            String label = "";
             // take first property with content
-            for (String p : style.getLabelProperty()){
-                String atr = (String) f.getAttribute(p);
-                if (atr != null && !atr.isEmpty()) {
-                    label = atr;
-                    break;
-                }
-            }
-            if (!label.isEmpty()){
+            String label = style.getLabelProperty().stream()
+                    .map(it -> f.getAttribute(it))
+                    .filter(it -> it != null)
+                    .map(it -> it.toString())
+                    .filter(it -> !it.isEmpty())
+                    .findFirst()
+                    .orElse("");
+            if (!label.isEmpty()) {
                 drawLabel(stream, g, style.getLabelAlign(), label);
             }
 
@@ -746,7 +728,7 @@ public class PDF {
         }
     }
     private static void setLabelStyle (PDPageContentStream stream) throws IOException  {
-        stream.setLineDashPattern(StyleUtil.LINE_PATTERN_SOLID, 0);
+        stream.setLineDashPattern(PDPrintStyle.LinePattern.solid.f.apply(0f), 0);
         stream.setRenderingMode(RenderingMode.FILL_STROKE);
         stream.setNonStrokingColor(Color.BLACK);
         stream.setStrokingColor(Color.WHITE);
