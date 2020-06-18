@@ -6,10 +6,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import fi.nls.oskari.util.IOHelper;
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
@@ -18,101 +18,140 @@ import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.multipdf.LayerUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.apache.pdfbox.pdmodel.PDPatternContentStream;
 import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.graphics.color.PDColor;
 import org.apache.pdfbox.pdmodel.graphics.color.PDDeviceRGB;
 import org.apache.pdfbox.pdmodel.graphics.color.PDPattern;
+import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.apache.pdfbox.pdmodel.graphics.pattern.PDTilingPattern;
-import org.apache.pdfbox.util.Matrix;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.oskari.print.PDF;
 import org.oskari.print.request.PDPrintStyle;
+import org.oskari.print.request.PDPrintStyle.LineCap;
+import org.oskari.print.request.PDPrintStyle.LineJoin;
+import org.oskari.print.request.PDPrintStyle.LinePattern;
+
+import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 
 public class StyleUtil {
+
     private static final String SVG_MARKERS_JSON = "svg-markers.json";
     private static final String ICON_STROKE_COLOR = "#b4b4b4";
     private static final float ICON_SIZE = 32f;
     private static final double ICON_OFFSET = ICON_SIZE/2.0;
-    public static final float [] LINE_PATTERN_SOLID = new float[0];
 
-    public static final Map<String, Integer> LINE_CAP_STYLE  = new HashMap<String, Integer>() {{
-        put("butt",0);
-        put("round", 1);
-        put("square", 2);
-    }};
-    public static final Map<String, Integer> LINE_JOIN_STYLE  = new HashMap<String, Integer>() {{
-        put("mitre",0);
-        put("miter",0);
-        put("round", 1);
-        put("bevel", 2);
-    }};
     public static final Map<String, PDPrintStyle.LabelAlign> LABEL_ALIGN_MAP = new HashMap<String, PDPrintStyle.LabelAlign>() {{
         put("markers", new PDPrintStyle.LabelAlign("left", 12f, 8f));
     }};
 
     public static PDPrintStyle getLineStyle (JSONObject oskariStyle) {
-        PDPrintStyle style = new PDPrintStyle();
-        JSONObject stroke = JSONHelper.getJSONObject(oskariStyle, "stroke");
-        setStrokeStyle(style, stroke);
-        // polygon doesn't have cap style
-        setLabelStyle(style, oskariStyle);
-        style.setLineCap(LINE_CAP_STYLE.getOrDefault(JSONHelper.optString(stroke,"lineCap"), 0));
+        JSONObject stroke = oskariStyle.optJSONObject("stroke");
 
+        PDPrintStyle style = new PDPrintStyle();
+        setStrokeStyle(style, stroke);
+        setLabelStyle(style, oskariStyle);
         return style;
     }
+
     public static PDPrintStyle getPolygonStyle (JSONObject oskariStyle, PDResources resources) throws IOException {
-        PDPrintStyle style = new PDPrintStyle();
-        JSONObject area = JSONHelper.getJSONObject(JSONHelper.getJSONObject(oskariStyle, "stroke"), "area");
-        setStrokeStyle(style, area);
-
-        JSONObject fill = JSONHelper.getJSONObject(oskariStyle, "fill");
-        int pattern = JSONHelper.getJSONObject(fill, "area").optInt("pattern");
-        Color color = ColorUtil.parseColor(JSONHelper.optString(fill,"color"));
-        style.setFillColor(color);
-
-        if (pattern >= 0 && pattern <= 3 && color != null) {
-            style.setFillPattern(createFillPattern(resources, pattern, color));
+        JSONObject stroke = oskariStyle.optJSONObject("stroke");
+        if (stroke != null) {
+            stroke = stroke.optJSONObject("area");
         }
+
+        PDPrintStyle style = new PDPrintStyle();
+        setStrokeStyle(style, stroke);
+        setFillStyle(style, oskariStyle, resources);
         setLabelStyle(style, oskariStyle);
         return style;
     }
 
     public static PDPrintStyle getPointStyle (JSONObject oskariStyle, PDDocument doc) throws IOException {
         PDPrintStyle style = new PDPrintStyle();
-        JSONObject image = JSONHelper.getJSONObject(oskariStyle, "image");
-        int shape = image.optInt("shape", 5); // External icons not supported
-        String fillColor = JSONHelper.optString(JSONHelper.getJSONObject(image, "fill"), "color");
-        style.setFillColor(ColorUtil.parseColor(fillColor));
-        int size = image.optInt("size", 3);
-        style.setIcon(getIcon(doc, shape, fillColor, size));
+        setImageStyle(style, oskariStyle, doc);
         setLabelStyle(style, oskariStyle);
         return style;
     }
-    private static void setStrokeStyle (PDPrintStyle style, JSONObject json) {
-        float width = (float) json.optDouble("width", 1);
-        String lineDash = JSONHelper.optString(json,"lineDash");
-        style.setLineWidth(width);
-        style.setLineJoin(LINE_JOIN_STYLE.getOrDefault(JSONHelper.optString(json,"lineJoin"), 0));
-        style.setLinePattern(getStrokeDash(lineDash, width));
-        style.setLineColor(ColorUtil.parseColor(JSONHelper.optString(json,"color")));
+
+    private static void setStrokeStyle(PDPrintStyle style, JSONObject stroke) {
+        if (stroke == null) {
+            return;
+        }
+
+        float lineWidth = (float) stroke.optDouble("width", -1);
+        if (lineWidth > 0) {
+            style.setLineWidth(lineWidth);
+        }
+        LineJoin lineJoin = LineJoin.get(JSONHelper.optString(stroke, "lineJoin"));
+        if (lineJoin != null) {
+            style.setLineJoin(lineJoin);
+        }
+        LineCap lineCap = LineCap.get(JSONHelper.optString(stroke, "lineCap"));
+        if (lineCap != null) {
+            style.setLineCap(lineCap);
+        }
+        LinePattern linePattern = LinePattern.get(JSONHelper.optString(stroke, "lineDash"));
+        if (linePattern != null) {
+            style.setLinePattern(linePattern);
+        }
+        Color color = ColorUtil.parseColor(JSONHelper.optString(stroke, "color"));
+        if (color != null) {
+            style.setFillColor(color);
+        }
     }
+
+    private static void setFillStyle(PDPrintStyle style, JSONObject oskariStyle, PDResources resources) throws IOException {
+        JSONObject fill = oskariStyle.optJSONObject("fill");
+        if (fill == null) {
+            return;
+        }
+
+        Color color = ColorUtil.parseColor(JSONHelper.optString(fill, "color"));
+        if (color == null) {
+            return;
+        }
+        JSONObject fillArea = fill.optJSONObject("area");
+        int pattern = fillArea != null ? fillArea.optInt("pattern", -1) : -1;
+        if (pattern >= 0 && pattern <= 3) {
+            style.setFillColor(createFillPattern(resources, pattern, color));
+        } else {
+            style.setFillColor(color);
+        }
+    }
+
+    private static void setImageStyle(PDPrintStyle style, JSONObject oskariStyle, PDDocument doc) throws IOException {
+        JSONObject image = oskariStyle.optJSONObject("image");
+        if (image == null) {
+            return;
+        }
+
+        JSONObject fill = image.optJSONObject("fill");
+        String color = fill != null ? JSONHelper.optString(fill, "color") : null;
+        if (color == null) {
+            return;
+        }
+        style.setFillColor(ColorUtil.parseColor(color));
+
+        int shape = image.optInt("shape", 5); // External icons not supported
+        int size = image.optInt("size", 3);
+        style.setIcon(getIcon(doc, shape, color, size));
+    }
+
     private static void setLabelStyle (PDPrintStyle style, JSONObject oskariStyle) {
         JSONObject text = JSONHelper.getJSONObject(oskariStyle, "text");
-        if (text == null) return;
+        if (text == null) {
+            return;
+        }
         Object labelProperty = text.opt("labelProperty");
-        if (labelProperty instanceof  JSONArray) {
+        if (labelProperty instanceof JSONArray) {
             style.setLabelProperty(JSONHelper.getArrayAsList((JSONArray) labelProperty));
-        } else if (labelProperty instanceof  String){
-            List <String> propList = new ArrayList();
-            propList.add((String) labelProperty);
-            style.setLabelProperty(propList);
+        } else if (labelProperty instanceof String){
+            style.setLabelProperty(Collections.singletonList((String) labelProperty));
         }
         int offsetX = text.optInt("offsetX", 0);
         int offsetY = text.optInt("offsetY", 0);
@@ -142,27 +181,6 @@ public class StyleUtil {
         }
     }
 
-    private static  float[] getStrokeDash (String dash, float strokeWidth) {
-        float [] pattern;
-        switch (dash) {
-            case "dash":
-                pattern = new float[]{5, 4 + strokeWidth};
-                break;
-            case "dashdot":
-            case "dot":
-                pattern = new float[]{1, 1 + strokeWidth};
-                break;
-            case "longdash":
-                pattern = new float[]{10, 4 + strokeWidth};
-                break;
-            case "longdashdot":
-                pattern = new float[]{5, 1 + strokeWidth,  1, 1 + strokeWidth};
-                break;
-            default:
-                pattern = LINE_PATTERN_SOLID;
-        }
-        return pattern;
-    }
     private static PDFormXObject createIcon (PDDocument doc, JSONObject marker, String fillColor, int size) throws JSONException, IOException, TranscoderException {
         String markerData = JSONHelper.getString(marker, "data").replace("$fill", fillColor).replace("$stroke", ICON_STROKE_COLOR);
         double scale = size < 1 || size > 5 ? 1 : 0.6 +  size /10.0;
@@ -211,7 +229,7 @@ public class StyleUtil {
             // Set color, draw diagonal line + 2 more diagonals so that corners look good
             pcs.setStrokingColor(fillColor);
             pcs.setLineWidth(lineWidth);
-            pcs.setLineCapStyle(LINE_CAP_STYLE.get("square"));
+            pcs.setLineCapStyle(LineCap.square.code);
             float limit = isHorizontal ? numberOfStripes : numberOfStripes * 2;
             for (int i = 0 ; i < limit; i ++) {
                 float transition = i * bandWidth+ bandWidth/2;
