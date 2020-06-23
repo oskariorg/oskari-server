@@ -157,20 +157,30 @@ public class GeoserverPopulator {
         JSONHelper.putValue(data, "locale", locale);
         JSONObject en = new JSONObject();
         JSONHelper.putValue(locale, "en", en);
-        JSONHelper.putValue(en, "name", "name");
-        JSONHelper.putValue(en, "place_desc", "description");
-        JSONHelper.putValue(en, "link", "link");
-        JSONHelper.putValue(en, "image_url", "image");
+        JSONHelper.putValue(en, "name", "Name");
+        JSONHelper.putValue(en, "place_desc", "Description");
+        JSONHelper.putValue(en, "link", "URL");
+        JSONHelper.putValue(en, "image_url", "Image URL");
+        JSONHelper.putValue(en, "attention_text", "Text on map");
 
         JSONObject fi = new JSONObject();
         JSONHelper.putValue(locale, "fi", fi);
-        JSONHelper.putValue(fi, "name", "nimi");
-        JSONHelper.putValue(fi, "place_desc", "kuvaus");
-        JSONHelper.putValue(fi, "link", "linkki");
-        JSONHelper.putValue(fi, "image_url", "kuva-linkki");
+        JSONHelper.putValue(fi, "name", "Nimi");
+        JSONHelper.putValue(fi, "place_desc", "Kuvaus");
+        JSONHelper.putValue(fi, "link", "Linkki");
+        JSONHelper.putValue(fi, "image_url", "Kuvalinkki");
+        JSONHelper.putValue(fi, "attention_text", "Teksti kartalla");
+
+        JSONObject sv = new JSONObject();
+        JSONHelper.putValue(locale, "sv", sv);
+        JSONHelper.putValue(sv, "name", "Namn");
+        JSONHelper.putValue(sv, "place_desc", "Beskrivelse");
+        JSONHelper.putValue(sv, "link", "Webbaddress");
+        JSONHelper.putValue(sv, "image_url", "Bild-URL");
+        JSONHelper.putValue(sv, "attention_text", "Placera text på kartan");
 
         /*
-
+        Format is:
         "name": {
             "type": "h3",
             "noLabel": true
