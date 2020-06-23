@@ -149,7 +149,7 @@ public class GeoserverPopulator {
 
         JSONObject filter = new JSONObject();
         JSONHelper.putValue(data, "filter", filter);
-        Set<String> fields = ConversionHelper.asSet("name", "place_desc", "link", "image_url");
+        Set<String> fields = ConversionHelper.asSet("name", "place_desc", "image_url", "link");
         JSONHelper.putValue(filter, "default", new JSONArray(fields));
         JSONHelper.putValue(filter, "fi", new JSONArray(fields));
 
@@ -157,17 +157,86 @@ public class GeoserverPopulator {
         JSONHelper.putValue(data, "locale", locale);
         JSONObject en = new JSONObject();
         JSONHelper.putValue(locale, "en", en);
-        JSONHelper.putValue(en, "name", "name");
-        JSONHelper.putValue(en, "place_desc", "description");
-        JSONHelper.putValue(en, "link", "link");
-        JSONHelper.putValue(en, "image_url", "image");
+        JSONHelper.putValue(en, "name", "Name");
+        JSONHelper.putValue(en, "place_desc", "Description");
+        JSONHelper.putValue(en, "link", "URL");
+        JSONHelper.putValue(en, "image_url", "Image URL");
+        JSONHelper.putValue(en, "attention_text", "Text on map");
 
         JSONObject fi = new JSONObject();
         JSONHelper.putValue(locale, "fi", fi);
-        JSONHelper.putValue(fi, "name", "nimi");
-        JSONHelper.putValue(fi, "place_desc", "kuvaus");
-        JSONHelper.putValue(fi, "link", "linkki");
-        JSONHelper.putValue(fi, "image_url", "kuva-linkki");
+        JSONHelper.putValue(fi, "name", "Nimi");
+        JSONHelper.putValue(fi, "place_desc", "Kuvaus");
+        JSONHelper.putValue(fi, "link", "Linkki");
+        JSONHelper.putValue(fi, "image_url", "Kuvalinkki");
+        JSONHelper.putValue(fi, "attention_text", "Teksti kartalla");
+
+        JSONObject sv = new JSONObject();
+        JSONHelper.putValue(locale, "sv", sv);
+        JSONHelper.putValue(sv, "name", "Namn");
+        JSONHelper.putValue(sv, "place_desc", "Beskrivelse");
+        JSONHelper.putValue(sv, "link", "Webbaddress");
+        JSONHelper.putValue(sv, "image_url", "Bild-URL");
+        JSONHelper.putValue(sv, "attention_text", "Placera text på kartan");
+
+        /*
+        Format is:
+        "name": {
+            "type": "h3",
+            "noLabel": true
+        },
+        "place_desc": {
+            "type": "p",
+            "noLabel": true,
+            "skipEmpty": true
+        },
+        "attention_text": {
+            "type": "hidden"
+        },
+        "image_url": {
+            "type": "image",
+            "noLabel": true,
+            "params": {
+                "link": true
+            },
+            "skipEmpty": true
+        },
+        "link": {
+            "type": "link",
+            "skipEmpty": true
+        }
+         */
+        JSONObject format = new JSONObject();
+        JSONHelper.putValue(data, "format", format);
+
+        JSONObject name = new JSONObject();
+        JSONHelper.putValue(format, "name", name);
+        JSONHelper.putValue(name, "type", "h3");
+        JSONHelper.putValue(name, "noLabel", true);
+
+        JSONObject place_desc = new JSONObject();
+        JSONHelper.putValue(format, "place_desc", place_desc);
+        JSONHelper.putValue(place_desc, "type", "p");
+        JSONHelper.putValue(place_desc, "noLabel", true);
+        JSONHelper.putValue(place_desc, "skipEmpty", true);
+
+        JSONObject attention_text = new JSONObject();
+        JSONHelper.putValue(format, "attention_text", attention_text);
+        JSONHelper.putValue(attention_text, "type", "hidden");
+
+        JSONObject image_url = new JSONObject();
+        JSONHelper.putValue(format, "image_url", image_url);
+        JSONHelper.putValue(image_url, "type", "image");
+        JSONHelper.putValue(image_url, "noLabel", true);
+        JSONHelper.putValue(image_url, "skipEmpty", true);
+        JSONObject image_params = new JSONObject();
+        JSONHelper.putValue(image_params, "link", true);
+        JSONHelper.putValue(image_url, "params", image_params);
+
+        JSONObject link = new JSONObject();
+        JSONHelper.putValue(format, "link", link);
+        JSONHelper.putValue(link, "type", "link");
+        JSONHelper.putValue(link, "skipEmpty", true);
 
         return attributes;
     }
