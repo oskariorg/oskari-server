@@ -149,7 +149,7 @@ public class GeoserverPopulator {
 
         JSONObject filter = new JSONObject();
         JSONHelper.putValue(data, "filter", filter);
-        Set<String> fields = ConversionHelper.asSet("name", "place_desc", "link", "image_url");
+        Set<String> fields = ConversionHelper.asSet("name", "place_desc", "image_url", "link");
         JSONHelper.putValue(filter, "default", new JSONArray(fields));
         JSONHelper.putValue(filter, "fi", new JSONArray(fields));
 
@@ -168,6 +168,65 @@ public class GeoserverPopulator {
         JSONHelper.putValue(fi, "place_desc", "kuvaus");
         JSONHelper.putValue(fi, "link", "linkki");
         JSONHelper.putValue(fi, "image_url", "kuva-linkki");
+
+        /*
+
+        "name": {
+            "type": "h3",
+            "noLabel": true
+        },
+        "place_desc": {
+            "type": "p",
+            "noLabel": true,
+            "skipEmpty": true
+        },
+        "attention_text": {
+            "type": "hidden"
+        },
+        "image_url": {
+            "type": "image",
+            "noLabel": true,
+            "params": {
+                "link": true
+            },
+            "skipEmpty": true
+        },
+        "link": {
+            "type": "link",
+            "skipEmpty": true
+        }
+         */
+        JSONObject format = new JSONObject();
+        JSONHelper.putValue(data, "format", format);
+
+        JSONObject name = new JSONObject();
+        JSONHelper.putValue(format, "name", name);
+        JSONHelper.putValue(name, "type", "h3");
+        JSONHelper.putValue(name, "noLabel", true);
+
+        JSONObject place_desc = new JSONObject();
+        JSONHelper.putValue(format, "place_desc", place_desc);
+        JSONHelper.putValue(place_desc, "type", "p");
+        JSONHelper.putValue(place_desc, "noLabel", true);
+        JSONHelper.putValue(place_desc, "skipEmpty", true);
+
+        JSONObject attention_text = new JSONObject();
+        JSONHelper.putValue(format, "attention_text", attention_text);
+        JSONHelper.putValue(attention_text, "type", "hidden");
+
+        JSONObject image_url = new JSONObject();
+        JSONHelper.putValue(format, "image_url", image_url);
+        JSONHelper.putValue(image_url, "type", "image");
+        JSONHelper.putValue(image_url, "noLabel", true);
+        JSONHelper.putValue(image_url, "skipEmpty", true);
+        JSONObject image_params = new JSONObject();
+        JSONHelper.putValue(image_params, "link", true);
+        JSONHelper.putValue(image_url, "params", image_params);
+
+        JSONObject link = new JSONObject();
+        JSONHelper.putValue(format, "link", link);
+        JSONHelper.putValue(link, "type", "link");
+        JSONHelper.putValue(link, "skipEmpty", true);
 
         return attributes;
     }
