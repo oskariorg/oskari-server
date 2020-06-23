@@ -2,7 +2,6 @@ package org.oskari.map.userlayer.service;
 
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.domain.map.userlayer.UserLayerData;
-import fi.nls.oskari.domain.map.UserDataStyle;
 import fi.nls.oskari.service.ServiceException;
 import org.apache.ibatis.annotations.Param;
 

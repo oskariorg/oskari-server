@@ -12,7 +12,6 @@ public abstract class UserDataLayer {
     private String name;
     private String uuid;
     private String publisher_name;
-    private UserDataStyle style;
     private WFSLayerOptions options;
 
     public abstract String getType();
@@ -63,15 +62,6 @@ public abstract class UserDataLayer {
         }
         return getUuid().equals(uuid);
     }
-
-    public void setStyle(UserDataStyle style) {
-        this.style = style;
-    }
-
-    public UserDataStyle getStyle() {
-        return style;
-    }
-
     public void setOptions(JSONObject options) {
         this.options = new WFSLayerOptions(options);
     }
@@ -86,9 +76,4 @@ public abstract class UserDataLayer {
         }
         return options;
     }
-
-    public void mapPropertiesToStyle(JSONObject properties) {
-        //TODO remove
-    }
-
 }

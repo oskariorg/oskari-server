@@ -3,12 +3,10 @@ package org.oskari.control.userlayer;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
 import org.oskari.log.AuditLog;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
-import fi.nls.oskari.domain.map.UserDataStyle;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
@@ -59,14 +57,4 @@ public class EditUserLayerHandler extends RestActionHandler {
 
         ResponseHelper.writeResponse(params, ulayer);
     }
-
-    private void updateStyleProperties(UserDataStyle style, String styleJSON) throws ActionParamsException {
-        try {
-            JSONObject stylejs = JSONHelper.createJSONObject(styleJSON);
-            style.populateFromOskariJSON(stylejs);
-        } catch (JSONException e) {
-            throw new ActionParamsException("Unable to populate style from JSON", e);
-        }
-    }
-
 }

@@ -3,7 +3,6 @@ package fi.nls.oskari.myplaces;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.domain.map.UserDataStyle;
 import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;

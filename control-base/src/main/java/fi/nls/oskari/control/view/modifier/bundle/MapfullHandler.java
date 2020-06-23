@@ -106,8 +106,6 @@ public class MapfullHandler extends BundleHandler {
         pluginHandlers = new HashMap<>();
         registerPluginHandler(LogoPluginHandler.PLUGIN_NAME, new LogoPluginHandler());
         registerPluginHandler(WfsLayerPluginHandler.PLUGIN_NAME, new WfsLayerPluginHandler());
-        registerPluginHandler(MyPlacesLayerPluginHandler.PLUGIN_NAME, new MyPlacesLayerPluginHandler());
-        registerPluginHandler(UserLayerPluginHandler.PLUGIN_NAME, new UserLayerPluginHandler());
     }
 
     public void registerPluginHandler (String pluginId, PluginHandler handler) {

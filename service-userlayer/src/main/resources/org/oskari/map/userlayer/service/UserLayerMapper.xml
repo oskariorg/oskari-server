@@ -62,7 +62,6 @@
         layer_source,
         fields,
         publisher_name,
-        style_id,
         wkt,
         options
         from
@@ -79,7 +78,6 @@
         layer_source,
         fields,
         publisher_name,
-        style_id,
         wkt,
         options
         from

@@ -7,7 +7,6 @@ import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.MyPlace;
 import fi.nls.oskari.domain.map.MyPlaceCategory;
-import fi.nls.oskari.domain.map.UserDataStyle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.mybatis.JSONObjectMybatisTypeHandler;

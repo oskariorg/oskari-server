@@ -1,6 +1,5 @@
 package org.oskari.control.userlayer;
 
-import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionConstants;
 import fi.nls.oskari.control.ActionException;

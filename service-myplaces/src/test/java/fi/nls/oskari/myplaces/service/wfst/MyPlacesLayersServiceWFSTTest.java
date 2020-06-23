@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.List;
 
-import fi.nls.oskari.domain.map.UserDataStyle;
 import org.junit.Ignore;
 import org.junit.Test;
 
