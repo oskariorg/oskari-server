@@ -23,7 +23,6 @@ public class LayersParamHandler extends ParamHandler {
     private static final String KEY_LAYERS = "layers";
     private static final String KEY_SEL_LAYERS = "selectedLayers";
 
-    private static final String PREFIX_MYPLACES = "myplaces_";
     private static final OskariLayerExternalIdService EXTERNAL_ID_SERVICE = new OskariLayerExternalIdServiceMybatisImpl();
     
     public boolean handleParam(final ModifierParams params) throws ModifierException {
@@ -36,7 +35,7 @@ public class LayersParamHandler extends ParamHandler {
         
         for (String layerString : layers) {
             final String[] layerProps = layerString.split(" ");
-            final JSONObject layer =  getLayerJson(layerProps, params.getReferer());
+            final JSONObject layer =  getLayerJson(layerProps);
             if(layer != null) {
                 layersJson.put(layer);
             }
@@ -54,7 +53,7 @@ public class LayersParamHandler extends ParamHandler {
         return false;
     }
     
-    public static JSONObject getLayerJson(final String[] layerParam, final String referer) throws ModifierException {
+    private static JSONObject getLayerJson(final String[] layerParam) throws ModifierException {
         String layerId = layerParam[0];
 
         // Check if the layerId is the externalId of a maplayer
@@ -63,18 +62,6 @@ public class LayersParamHandler extends ParamHandler {
             if (layerIdExt != null) {
                 // If it is, use the maplayer id instead
                 layerId = layerIdExt.toString();
-            }
-        }
-
-        // Skipping myplaces_.* as they get created in JS
-        if (layerId.startsWith(PREFIX_MYPLACES)) {
-            // FIXME: handle same way as UNRESTRICTED_USAGE_DOMAINS in GetAppSetupHandler?
-            if (!(referer.endsWith("paikkatietoikkuna.fi")
-                    || referer.endsWith("nls.fi"))) {
-                // not paikkatietoikkuna or nls -> skip myplaces layer
-                // otherwise continue so links to published layers work
-                // etc
-                return null;
             }
         }
         final String layerOpacity = layerParam.length > 1 ? layerParam[1]
