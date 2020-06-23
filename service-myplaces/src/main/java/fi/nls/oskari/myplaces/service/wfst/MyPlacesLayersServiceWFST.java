@@ -24,6 +24,11 @@ import fi.nls.oskari.myplaces.service.MyPlacesLayersService;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.IOHelper;
 
+/**
+ * WFS-T implementation of MyPlacesLayersService
+ * For direct database access use
+ * @see org.oskari.myplaces.service.mybatis.MyPlacesLayersServiceMybatisImpl
+ */
 public class MyPlacesLayersServiceWFST extends BaseServiceWFST implements MyPlacesLayersService {
 
     @Override

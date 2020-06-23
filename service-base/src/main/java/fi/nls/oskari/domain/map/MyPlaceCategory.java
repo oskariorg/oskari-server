@@ -2,23 +2,21 @@ package fi.nls.oskari.domain.map;
 
 public class MyPlaceCategory extends UserDataLayer {
 
-    private long id;
-    private String category_name;
     private boolean isDefault;
-    public long getId() {
-        return id;
+
+    @Override
+    public final String getType() {
+        return OskariLayer.TYPE_MYPLACES;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
+    @Deprecated
     public String getCategory_name() {
-        return category_name;
+        return getName();
     }
 
+    @Deprecated
     public void setCategory_name(String category_name) {
-        this.category_name = category_name;
+        setName(category_name);
     }
 
     public boolean isDefault() {

@@ -43,7 +43,6 @@ public class UserLayerDataService {
     private static final OskariLayerService mapLayerService = new OskariLayerServiceMybatisImpl();
     private static final LayerJSONFormatterUSERLAYER FORMATTER = new LayerJSONFormatterUSERLAYER();
 
-    private static final String USERLAYER_LAYER_PREFIX = "userlayer_";
     private static final String USERLAYER_BASELAYER_ID = "userlayer.baselayer.id";
 
     private static final String USERLAYER_MAXFEATURES_COUNT = "userlayer.maxfeatures.count";
@@ -114,7 +113,6 @@ public class UserLayerDataService {
         }
         return jsfields;
     }
-
     public static List<UserLayerData> createUserLayerData(SimpleFeatureCollection fc, String uuid)
             throws UserLayerException {
         List<UserLayerData> userLayerDataList = new ArrayList<>();
@@ -163,43 +161,13 @@ public class UserLayerDataService {
         return mapLayerService.find(USERLAYER_BASE_LAYER_ID);
     }
 
-    /**
-     * Creates the layer JSON for userlayer. When creating a bunch of layer JSONs prefer the overloaded version
-     * with baselayer as parameter.
-     * @param ulayer
-     * @return
-     */
-    public static JSONObject parseUserLayer2JSON(UserLayer ulayer, String mapSrs) {
-        return parseUserLayer2JSON(ulayer, getBaseLayer(), mapSrs);
+    public static JSONObject parseUserLayer2JSON(UserLayer ulayer, String srs) {
+        return parseUserLayer2JSON(ulayer, srs, PropertyUtil.getDefaultLanguage());
     }
-    /**
-     * @param ulayer data in user_layer table
-     * @param baseLayer base WFS-layer for userlayers
-     * @return
-     * @throws ServiceException
-     */
-    public static JSONObject parseUserLayer2JSON(final UserLayer ulayer, final OskariLayer baseLayer, final String mapSrs) {
 
-        try {
-            final String name = baseLayer.getName();
-            final String type = baseLayer.getType();
-
-            // Merge userlayer values
-            baseLayer.setName(ulayer.getLayer_name());
-            baseLayer.setType(OskariLayer.TYPE_USERLAYER);
-            // create the JSON
-            final JSONObject json = FORMATTER.getJSON(baseLayer, PropertyUtil.getDefaultLanguage(), false, mapSrs, ulayer);
-            JSONHelper.putValue(json, "id", USERLAYER_LAYER_PREFIX + ulayer.getId());
-
-            // restore the previous values for baseLayer
-            baseLayer.setName(name);
-            baseLayer.setType(type);
-
-            return json;
-        } catch (Exception ex) {
-            log.error(ex, "Couldn't parse userlayer to json");
-            return null;
-        }
+    public static JSONObject parseUserLayer2JSON(final UserLayer layer, final String srs, final String lang) {
+        OskariLayer baseLayer = getBaseLayer();
+        return FORMATTER.getJSON(baseLayer,layer, srs, lang);
     }
 
 }

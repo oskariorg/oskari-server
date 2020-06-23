@@ -6,6 +6,7 @@ import fi.mml.map.mapwindow.service.wms.WebMapServiceFactoryHelper;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.layer.formatters.LayerJSONFormatter;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.service.capabilities.CapabilitiesConstants;
@@ -178,6 +179,7 @@ public class WMSCapabilitiesService {
                 oskariLayer.setMetadataId(meta.get(0).getUrl().toString());
             }
         }
+        oskariLayer.setMetadataId(LayerJSONFormatter.getFixedDataUrl(oskariLayer.getMetadataId()));
 
         try {
             // TODO: could we use (to get rid of capabilitiesXML):

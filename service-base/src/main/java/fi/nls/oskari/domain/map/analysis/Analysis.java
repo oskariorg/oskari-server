@@ -1,16 +1,13 @@
 package fi.nls.oskari.domain.map.analysis;
 
-
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.UserDataLayer;
 
 import java.lang.reflect.Method;
 import java.util.List;
 
-
 public class Analysis extends UserDataLayer {
 
-    private long id;
-    private String name;
     private long layer_id;
     private String analyse_json;
     private String col1;
@@ -27,12 +24,15 @@ public class Analysis extends UserDataLayer {
     private String override_sld;
     private long old_id;
 
-    public long getId() {
-        return id;
+    @Override
+    public final String getType() {
+        return OskariLayer.TYPE_ANALYSIS;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    @Override
+    public String getPrefixedId() {
+        // OskariLayer.TYPE_ANALYSIS is 'analysislayer', Override getPrefixedId() to get correct prefix
+        return "analysis_" + getId();
     }
 
     public long getOld_id() {
@@ -41,14 +41,6 @@ public class Analysis extends UserDataLayer {
 
     public void setOld_id(long old_id) {
         this.old_id = old_id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public long getLayer_id() {

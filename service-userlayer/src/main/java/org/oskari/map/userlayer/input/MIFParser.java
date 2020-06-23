@@ -1,12 +1,14 @@
 package org.oskari.map.userlayer.input;
 
 import java.io.File;
+import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.geotools.data.DataStore;
-import org.geotools.data.ogr.OGRDataStoreFactory;
-import org.geotools.data.ogr.bridj.BridjOGRDataStoreFactory;
+import org.geotools.data.DataStoreFinder;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -24,15 +26,20 @@ public class MIFParser implements FeatureCollectionParser {
     @Override
     public SimpleFeatureCollection parse(File file, CoordinateReferenceSystem sourceCRS,
             CoordinateReferenceSystem targetCRS) throws ServiceException {
-        OGRDataStoreFactory factory = new BridjOGRDataStoreFactory();
+        URL url;
+        try {
+            url = file.toURI().toURL();
+        } catch (MalformedURLException e) {
+            throw new UserLayerException("Failed to parse MIF: " + e.getMessage(),
+                    UserLayerException.ErrorType.PARSER);
+        }
 
-        Map<String, String> connectionParams = new HashMap<String, String>();
-        connectionParams.put("DriverName", "MapInfo File");
-        connectionParams.put("DatasourceName", file.getAbsolutePath());
+        Map<String, Serializable> params = new HashMap<>();
+        params.put("url", url);
 
         DataStore store = null;
         try {
-            store = factory.createDataStore(connectionParams);
+            store = DataStoreFinder.getDataStore(params);
             String typeName = store.getTypeNames()[0];
             SimpleFeatureSource source = store.getFeatureSource(typeName);
             CoordinateReferenceSystem crs = source.getSchema()

@@ -41,10 +41,9 @@ public class GetUserLayersHandler extends ActionHandler {
         final User user = params.getUser();
         if (!user.isGuest()) {
             final List<UserLayer> list = userLayerService.getUserLayerByUuid(user.getUuid());
-            final OskariLayer baseLayer = UserLayerDataService.getBaseLayer();
             for (UserLayer ul : list) {
                 // Parse userlayer data to userlayer
-                final JSONObject userLayer = UserLayerDataService.parseUserLayer2JSON(ul, baseLayer, mapSrs);
+                final JSONObject userLayer = UserLayerDataService.parseUserLayer2JSON(ul, mapSrs);
                 JSONObject permissions = UserLayerHandlerHelper.getPermissions();
                 JSONHelper.putValue(userLayer, "permissions", permissions);
                 layers.put(userLayer);

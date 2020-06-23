@@ -6,14 +6,40 @@ import org.json.JSONObject;
 /**
  * Common model for layers consisting of user created data.
  */
-public class UserDataLayer {
+public abstract class UserDataLayer {
+
+    private long id;
+    private String name;
     private String uuid;
     private String publisher_name;
     private WFSLayerOptions options;
 
+    public abstract String getType();
+    
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getPrefixedId() {
+        return getType() + "_" + getId();
+    }
+
+    public String getName() {
+        return name;
+    }
+    
+    public void setName(String name) {
+        this.name = name;
+    }
+    
     public String getUuid() {
         return uuid;
     }
+    
     public void setUuid(String uuid) {
         this.uuid = uuid;
     }
@@ -36,14 +62,15 @@ public class UserDataLayer {
         }
         return getUuid().equals(uuid);
     }
-
-    public void setOptions (JSONObject options) {
+    public void setOptions(JSONObject options) {
         this.options = new WFSLayerOptions(options);
     }
-    public JSONObject getOptions () {
-        return options.getOptions();
+
+    public JSONObject getOptions() {
+        return getWFSLayerOptions().getOptions();
     }
-    public WFSLayerOptions getWFSLayerOptions () {
+
+    public WFSLayerOptions getWFSLayerOptions() {
         if (options == null) {
             options = new WFSLayerOptions();
         }
