@@ -35,6 +35,7 @@ public class LayerJSONFormatter {
     protected static final String KEY_SUBTITLE = "subtitle";
     protected static final String KEY_OPTIONS = "options";
     protected static final String KEY_ADMIN = "admin";
+    protected static final String KEY_DATA_PROVIDER = "orgName";
     protected static final String[] STYLE_KEYS ={"name", "title", "legend"};
 
     // There working only plain text and html so ranked up
@@ -119,7 +120,7 @@ public class LayerJSONFormatter {
         JSONHelper.putValue(layerJson, KEY_LOCALIZED_NAME, layer.getName(lang));
         JSONHelper.putValue(layerJson, KEY_SUBTITLE, layer.getTitle(lang));
         if(layer.getGroup() != null) {
-            JSONHelper.putValue(layerJson, "orgName", layer.getGroup().getName(lang));
+            JSONHelper.putValue(layerJson, KEY_DATA_PROVIDER, layer.getGroup().getName(lang));
         }
 
         if(layer.getOpacity() != null && layer.getOpacity() > -1 && layer.getOpacity() <= 100) {

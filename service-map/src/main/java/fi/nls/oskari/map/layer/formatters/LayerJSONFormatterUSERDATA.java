@@ -21,7 +21,14 @@ public abstract class LayerJSONFormatterUSERDATA extends LayerJSONFormatterWFS {
         // Override base layer values
         JSONHelper.putValue(layerJson, KEY_TYPE, layer.getType());
         JSONHelper.putValue(layerJson, KEY_ID, layer.getPrefixedId());
-        JSONHelper.putValue(layerJson, KEY_LOCALIZED_NAME, layer.getName());
+        String name = layer.getName();
+        // override default name only if userdatalayer has name
+        if (name != null && !name.isEmpty()) {
+            JSONHelper.putValue(layerJson, KEY_LOCALIZED_NAME, name);
+        }
+        // FIXME: base layer should have correct data provider and title.
+        layerJson.remove(KEY_SUBTITLE);
+        layerJson.remove(KEY_DATA_PROVIDER);
 
         WFSLayerOptions wfsOpts = layer.getWFSLayerOptions();
         wfsOpts.injectBaseLayerOptions(baseLayer.getOptions());
