@@ -30,7 +30,6 @@ public class GetLocalizedPropertyNamesHandler extends AbstractWFSFeaturesHandler
         final String layerId = params.getRequiredParam(ActionConstants.PARAM_ID);
         Optional<UserLayerService> contentProcessor = getUserContentProsessor(layerId);
         OskariLayer layer = findLayer(layerId, params.getUser(), contentProcessor);
-        requireWFSLayer(layer);
 
         String language = params.getHttpParam(ActionConstants.PARAM_LANGUAGE, PropertyUtil.getDefaultLanguage());
         WFSLayerAttributes attributes = new WFSLayerAttributes(layer.getAttributes());
