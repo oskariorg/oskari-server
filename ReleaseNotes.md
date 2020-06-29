@@ -1,5 +1,42 @@
 # Release Notes
 
+## 1.56.0
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/23?closed=1
+
+### Important note for the release!
+
+This release migrates the database migration status tables in preparation for updating to latest version of the Flyway library. This will bring Postgres 12 support for Oskari in the next release. This is also a required version step between versions so you will need to upgrade to this version before upgraging to the next one. We are currently planning on labeling the next version 2.0 as it will have some manual steps that are required when upgrading to it. We are also planning on keeping functional changes low or none for 2.0 to minimize the chance of something breaking as the main focus for the next release is massive library updates.
+
+### User generated content styling, imports (userlayer) and server installation change
+
+User generated content styling has been harmonized at DB level. The styles are now stored similar to styles for WFS-layers enabling more flexible styling in the future. This also adds clustering support for my places etc.
+
+The my places API has been partially changed (=layer metadata) from WFS-T to direct DB access. This gives us more flexibility and works towards removing the "internal" GeoServer we currently use with Oskari. The user content is/has been loaded through db -> GeoServer -> Oskari-server -> browser which adds more serialization/deserialization steps than it needs and creates unnecessary overhead for the functionality. Also we don't really need an internal GeoServer on Oskari for making this work as we are doing very simple things with it and it's one component more that is harder to update automatically with releases/bundled setup. Unfortunately we can't remove it for the 2.0 release but it's something we are working towards when we can for some future Oskari version.
+
+While we are working on removing the internal GeoServer there will be some layers configured automatically for the internal GeoServer that might not work properly. They don't hurt but it might look a bit messy. We will try removing the deprecated configuration for 2.0 version as well. These deprecated layers were used by Oskari when user generated content was loaded as WMS-layers to the browser. Now that they are used as WFS-layers we have cleaned up some views on the database but not the configuration on the GeoServer that tries using them. Again, not a problem but it might look a bit messy if you take a look inside the "internal" GeoServer.
+
+#### GDAL dependency removed
+
+Added MIF/MID-parser implementation! GDAL no longer needs to be installed and configured for Oskari to support this import file type and it was the last one to use it so it doesn't need to be installed at all anymore.
+
+Added GPX 1.0 support for userlayer import (previously only 1.1)
+
+### Other changes
+
+- GeoTools/GeoServer Maven repository has been updated. Builds should now work properly out of the box again (without configuring mirrors for geotools repositories yourself).
+- Improved styling support for printout
+- Added support for vector tile layers requiring credentials (proxy support)
+- Improved support for "capabilities"/describe feature type update for OGC API Features
+- OGC API Features conformance URL updated for the WFS-client
+- Fixed an issue with WMS-layers capabilities parsing where style was missing.
+- Capabilities caching improvements
+- Fix for analysis publish permission
+- Fix for "Clipping" analysis
+- Added configuration for my places GFI-formatting for making it work with WFS-formatters
+- Instance domain is now always included in embedded maps permitted domains
+- Library updates: Jackson, Log4j2, Flyway
+
 ## 1.55.1
 
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/24?closed=1
