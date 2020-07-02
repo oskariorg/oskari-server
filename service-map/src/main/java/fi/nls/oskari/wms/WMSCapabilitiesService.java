@@ -15,11 +15,11 @@ import fi.nls.oskari.service.capabilities.OskariLayerCapabilitiesHelper;
 
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import org.geotools.data.ows.Layer;
+import org.geotools.ows.wms.Layer;
 import org.geotools.data.ows.Service;
-import org.geotools.data.ows.WMSCapabilities;
-import org.geotools.data.wms.xml.MetadataURL;
-import org.geotools.data.wms.xml.WMSSchema;
+import org.geotools.ows.wms.WMSCapabilities;
+import org.geotools.ows.wms.xml.MetadataURL;
+import org.geotools.ows.wms.xml.WMSSchema;
 import org.geotools.xml.DocumentFactory;
 import org.geotools.xml.handlers.DocumentHandler;
 import org.json.JSONArray;

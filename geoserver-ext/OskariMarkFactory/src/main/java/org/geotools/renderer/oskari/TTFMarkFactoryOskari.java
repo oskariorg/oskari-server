@@ -17,7 +17,7 @@
 package org.geotools.renderer.oskari;
 
 import org.geotools.renderer.style.MarkFactory;
-import org.geotools.renderer.style.shape.ExplicitBoundsShape;
+import org.geotools.renderer.util.ExplicitBoundsShape;
 import org.opengis.feature.Feature;
 import org.opengis.filter.expression.Expression;
 

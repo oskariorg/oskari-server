@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.geotools.GML;
+import org.geotools.wfs.GML;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.feature.DefaultFeatureCollection;
@@ -26,7 +26,7 @@ import org.opengis.referencing.operation.TransformException;
 import org.oskari.geojson.GeoJSON;
 import org.oskari.geojson.GeoJSONWriter;
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 
 import fi.nls.oskari.control.statistics.db.RegionSet;
 import fi.nls.oskari.domain.geo.Point;
@@ -205,7 +205,7 @@ public class RegionSetHelper {
         Geometry geometry = (Geometry)feature.getDefaultGeometry();
         // " An interior point is guaranteed to lie in the interior of the Geometry, if it possible to
         // calculate such a point exactly. Otherwise, the point may lie on the boundary of the geometry."
-        com.vividsolutions.jts.geom.Point pos = geometry.getInteriorPoint();
+        org.locationtech.jts.geom.Point pos = geometry.getInteriorPoint();
         return new Point(pos.getX(), pos.getY());
     }
 

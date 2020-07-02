@@ -71,7 +71,7 @@
         <jsoup.version>1.13.1</jsoup.version>
         <ibatis.version>2.3.4.726</ibatis.version>
         <axiom.version>1.2.20</axiom.version>
-        <commons-lang3.version>3.0</commons-lang3.version>
+        <commons-lang3.version>3.8.1</commons-lang3.version>
         <stax-api.version>1.0-2</stax-api.version>
         <stax2-api.version>3.1.4</stax2-api.version>
         <woodstox.version>5.1.0</woodstox.version>
@@ -90,11 +90,10 @@
         <quartz-scheduler.version>2.3.2</quartz-scheduler.version>
 
         <xerces.version>2.12.0</xerces.version>
-        <xmlbeans.version>3.1.0</xmlbeans.version>
-        <geotools.version>19.2</geotools.version>
-        <jts.version>1.14.0</jts.version>
-        <!-- Can be updated to 3.1.1 after https://github.com/oskariorg/oskari-server/pull/492 (uses JTS to 1.15 under locationtech) -->
-        <mvt.version>2.0.0</mvt.version>
+        <xmlbeans.version>2.6.0</xmlbeans.version>
+        <geotools.version>22.1</geotools.version>
+        <jts.version>1.16.1</jts.version>
+        <mvt.version>3.1.1</mvt.version>
         <!-- gt-xsd-kml.version>9.3</gt-xsd-kml.version -->
         <flexjson.version>2.0</flexjson.version>
 
@@ -809,13 +808,13 @@
             </dependency>
 
             <dependency>
-                <groupId>com.vividsolutions</groupId>
+                <groupId>org.locationtech.jts</groupId>
                 <artifactId>jts-core</artifactId>
                 <version>${jts.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.vividsolutions</groupId>
-                <artifactId>jts-io</artifactId>
+                <groupId>org.locationtech.jts.io</groupId>
+                <artifactId>jts-io-common</artifactId>
                 <version>${jts.version}</version>
             </dependency>
 
@@ -880,6 +879,16 @@
                 <artifactId>gt-xsd-kml</artifactId>
                 <version>${geotools.version}</version>
                 <!-- version>${gt-xsd-kml.version}</version -->
+            </dependency>
+            <dependency>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-ogr-core</artifactId>
+                <version>${geotools.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-ogr-bridj</artifactId>
+                <version>${geotools.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.oskari</groupId>
@@ -1214,7 +1223,7 @@
                     <plugin>
                         <groupId>org.owasp</groupId>
                         <artifactId>dependency-check-maven</artifactId>
-                        <version>5.0.0</version>
+                        <version>5.3.2</version>
                         <configuration>
                             <format>ALL</format>
                             <failOnError>false</failOnError>
@@ -1235,7 +1244,7 @@
                     <plugin>
                         <groupId>org.owasp</groupId>
                         <artifactId>dependency-check-maven</artifactId>
-                        <version>5.0.0</version>
+                        <version>5.3.2</version>
                         <configuration>
                             <format>ALL</format>
                             <failOnError>false</failOnError>
