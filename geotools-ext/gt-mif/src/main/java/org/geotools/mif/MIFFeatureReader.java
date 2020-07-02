@@ -12,8 +12,8 @@ import org.geotools.mif.util.TransformFilter;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
-import com.vividsolutions.jts.geom.CoordinateSequenceFilter;
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.CoordinateSequenceFilter;
+import org.locationtech.jts.geom.Geometry;
 
 public class MIFFeatureReader implements FeatureReader<SimpleFeatureType, SimpleFeature> {
 
