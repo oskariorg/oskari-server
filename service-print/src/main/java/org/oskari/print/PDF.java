@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -279,10 +280,12 @@ public class PDF {
         BufferedImage logo = null;
 
         // Try file
-        try (InputStream in = Files.newInputStream(Paths.get(LOGO_PATH))) {
+        Path pathToLogo = Paths.get(LOGO_PATH);
+        try (InputStream in = Files.newInputStream(pathToLogo)) {
             logo = ImageIO.read(new BufferedInputStream(in));
         } catch (NoSuchFileException e) {
-            LOG.debug("Logo file " + LOGO_PATH + " does not exist");
+            // print out absolute path so it's easier to debug proper value in config
+            LOG.debug("Logo file " + pathToLogo.toAbsolutePath() + " does not exist. Trying from classpath.");
         } catch (IOException e) {
             LOG.warn(e, "Failed to read logo from file");
         }
@@ -311,6 +314,7 @@ public class PDF {
             float y = OFFSET_LOGO_BOTTOM;
             // Maintain the aspect ratio of the image
             float f = LOGO_HEIGHT / img.getHeight();
+            // TODO: return w and calculate OFFSET_SCALE_LEFT based on it
             float w = img.getWidth() * f;
             float h = LOGO_HEIGHT;
             stream.drawImage(img, x, y, w, h);
