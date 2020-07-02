@@ -1,6 +1,6 @@
 package org.geotools.gpx.gpx10;
 
-import org.geotools.xml.Configuration;
+import org.geotools.xsd.Configuration;
 import org.picocontainer.MutablePicoContainer;
 
 import org.locationtech.jts.geom.GeometryFactory;
