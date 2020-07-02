@@ -1,7 +1,6 @@
 package fi.nls.oskari.wms;
 
 import fi.mml.map.mapwindow.service.wms.WebMapService;
-import fi.mml.map.mapwindow.service.wms.WebMapServiceFactory;
 import fi.mml.map.mapwindow.service.wms.WebMapServiceFactoryHelper;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
@@ -9,11 +8,9 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatter;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
-import fi.nls.oskari.service.capabilities.CapabilitiesConstants;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilitiesHelper;
 
-import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.geotools.ows.wms.Layer;
 import org.geotools.data.ows.Service;
@@ -22,8 +19,6 @@ import org.geotools.ows.wms.xml.MetadataURL;
 import org.geotools.ows.wms.xml.WMSSchema;
 import org.geotools.xml.DocumentFactory;
 import org.geotools.xml.handlers.DocumentHandler;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.oskari.maplayer.admin.LayerAdminJSONHelper;
 import org.oskari.maplayer.model.MapLayerStructure;
 import org.oskari.maplayer.model.ServiceCapabilitiesResultWMS;
@@ -37,8 +32,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.*;
 
 public class WMSCapabilitiesService {
     private static final Logger log = LogFactory.getLogger(WMSCapabilitiesService.class);
