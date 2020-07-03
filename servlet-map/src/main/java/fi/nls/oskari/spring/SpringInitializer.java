@@ -24,7 +24,7 @@ public class SpringInitializer extends AbstractHttpSessionApplicationInitializer
     private Logger log = LogFactory.getLogger(SpringInitializer.class);
 
     @Override
-    public void onStartup(ServletContext servletContext) throws ServletException {
+    public void onStartup(ServletContext servletContext) {
         // IMPORTANT! read properties at startup - needed for profile selection
         WebappHelper.loadProperties();
         // re-init logger so we get the one configured in properties
