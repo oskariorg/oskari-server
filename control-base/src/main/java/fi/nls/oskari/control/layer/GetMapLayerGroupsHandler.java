@@ -16,7 +16,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import org.oskari.service.maplayer.OskariMapLayerGroupService;
-import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupServiceIbatisImpl;
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
@@ -30,6 +29,8 @@ import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkService;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkServiceMybatisImpl;
 import fi.nls.oskari.util.EnvHelper;
 import fi.nls.oskari.util.ResponseHelper;
+import org.oskari.service.util.ServiceFactory;
+
 /**
  * Get all map layer groups registered in Oskari database
  */
@@ -69,7 +70,7 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
             setLayerService(OskariComponentManager.getComponentOfType(OskariLayerService.class));
         }
         if (groupService == null) {
-            setGroupService(new OskariMapLayerGroupServiceIbatisImpl());
+            setGroupService(ServiceFactory.getOskariMapLayerGroupService());
         }
         if (linkService == null) {
             setLinkService(new OskariLayerGroupLinkServiceMybatisImpl());

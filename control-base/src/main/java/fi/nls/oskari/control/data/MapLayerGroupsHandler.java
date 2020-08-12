@@ -14,7 +14,6 @@ import org.oskari.log.AuditLog;
 import org.oskari.service.util.ServiceFactory;
 
 import org.oskari.service.maplayer.OskariMapLayerGroupService;
-import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupServiceIbatisImpl;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
@@ -57,7 +56,7 @@ public class MapLayerGroupsHandler extends RestActionHandler {
 	public void init() {
 		// setup service if it hasn't been initialized
 		if (oskariMapLayerGroupService == null) {
-			setOskariMapLayerGroupService(new OskariMapLayerGroupServiceIbatisImpl());
+			setOskariMapLayerGroupService(ServiceFactory.getOskariMapLayerGroupService());
 		}
 		if (linkService == null) {
 			setLinkService(new OskariLayerGroupLinkServiceMybatisImpl());
@@ -189,7 +188,7 @@ public class MapLayerGroupsHandler extends RestActionHandler {
 			layerNamesToBeDeleted = new ArrayList<String>();
 		}
 
-		oskariMapLayerGroupService.delete(maplayerGroup.getId());
+		oskariMapLayerGroupService.delete(maplayerGroup);
 		AuditLog.user(params.getClientIp(), params.getUser()).withParam("id", maplayerGroup.getId())
 				.withParam("name", maplayerGroup.getName(PropertyUtil.getDefaultLanguage()))
 				.withMsg("map layers " + layerNamesToBeDeleted + " deleted with map layer group")
@@ -204,7 +203,6 @@ public class MapLayerGroupsHandler extends RestActionHandler {
 	 * 
 	 * @param params
 	 * @param maplayerGroup
-	 * @param groupId
 	 * @throws ActionParamsException
 	 */
 	private void handleDeleteLegacy(ActionParameters params, MaplayerGroup maplayerGroup) throws ActionParamsException {
@@ -213,7 +211,7 @@ public class MapLayerGroupsHandler extends RestActionHandler {
 			throw new ActionParamsException("Maplayers linked to maplayer group",
 					JSONHelper.createJSONObject("code", "not_empty"));
 		}
-		oskariMapLayerGroupService.delete(maplayerGroup.getId());
+		oskariMapLayerGroupService.delete(maplayerGroup);
 
 		AuditLog.user(params.getClientIp(), params.getUser()).withParam("id", maplayerGroup.getId())
 				.withParam("name", maplayerGroup.getName(PropertyUtil.getDefaultLanguage()))
