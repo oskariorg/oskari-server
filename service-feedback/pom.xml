@@ -12,10 +12,6 @@
     <packaging>jar</packaging>
     <name>Feedback Service</name>
     <dependencies>
-    <dependency>
-        <groupId>org.geotools</groupId>
-        <artifactId>gt-main</artifactId>
-    </dependency>
         <dependency>
             <groupId>fi.nls.oskari.service</groupId>
             <artifactId>oskari-base</artifactId>
