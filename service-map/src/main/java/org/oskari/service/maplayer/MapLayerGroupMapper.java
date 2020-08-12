@@ -8,14 +8,14 @@ import java.util.List;
 public interface MapLayerGroupMapper {
 
     @Insert("INSERT INTO oskari_maplayer_group (parentid, locale, order_number, selectable) "
-            + "VALUES (#{group.parentId},#{group.locale},#{group.orderNumber},#{group.selectable})")
+            + "VALUES (#{group.parentId}, #{group.locale}, #{group.orderNumber}, #{group.selectable})")
     @Options(useGeneratedKeys=true, keyColumn="id", keyProperty="id")
     void insert(@Param("group") MaplayerGroup group);
 
     @Update("UPDATE oskari_maplayer_group SET " +
             "parentid = #{group.parentId}, " +
             "locale = #{group.locale}, " +
-            "order_number = #{group.order_number}, " +
+            "order_number = #{group.orderNumber}, " +
             "selectable = #{group.selectable} " +
             "WHERE id = #{group.id}")
     void update(@Param("group") MaplayerGroup group);
