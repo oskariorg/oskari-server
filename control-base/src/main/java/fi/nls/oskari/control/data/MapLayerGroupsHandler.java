@@ -39,6 +39,7 @@ public class MapLayerGroupsHandler extends RestActionHandler {
 	private static final String KEY_LOCALES = "locales";
 	private static final String KEY_PARENT_ID = "parentId";
 	private static final String KEY_SELECTABLE = "selectable";
+	private static final String KEY_ORDER = "orderNumber";
 	private static final String PARAM_DELETE_LAYERS = "deleteLayers";
 
 	private OskariMapLayerGroupService oskariMapLayerGroupService;
@@ -126,6 +127,9 @@ public class MapLayerGroupsHandler extends RestActionHandler {
 			// hierarchical admin apparently sends id as separate param
 			maplayerGroup.setId(params.getRequiredParamInt(PARAM_ID));
 		}
+		// bit hacky but the frontend doesn't send order number as param so it is lost if it doesn't get copied...
+		maplayerGroup.setOrderNumber(getEnsuredOrderNumber(maplayerGroup));
+
 		oskariMapLayerGroupService.update(maplayerGroup);
 
 		AuditLog.user(params.getClientIp(), params.getUser()).withParam("id", maplayerGroup.getId())
@@ -133,6 +137,17 @@ public class MapLayerGroupsHandler extends RestActionHandler {
 				.updated(AuditLog.ResourceType.MAPLAYER_GROUP);
 
 		ResponseHelper.writeResponse(params, maplayerGroup.getAsJSON());
+	}
+
+	private int getEnsuredOrderNumber(MaplayerGroup maplayerGroup) {
+		if (maplayerGroup.getOrderNumber() == -1) {
+			// bit hacky but the frontend doesn't send order number as param so it is lost if it doesn't get copied...
+			final MaplayerGroup savedMapLayerGroup = oskariMapLayerGroupService.find(maplayerGroup.getId());
+			if (savedMapLayerGroup.getOrderNumber() != -1) {
+				return savedMapLayerGroup.getOrderNumber();
+			}
+		}
+		return -1;
 	}
 
 	/**
@@ -258,6 +273,7 @@ public class MapLayerGroupsHandler extends RestActionHandler {
 			maplayerGroup.setId(ConversionHelper.getInt(mapLayerGroupJSON.optString("id"), -1));
 			maplayerGroup.setParentId(mapLayerGroupJSON.optInt(KEY_PARENT_ID, -1));
 			maplayerGroup.setSelectable(mapLayerGroupJSON.optBoolean(KEY_SELECTABLE, true));
+			maplayerGroup.setOrderNumber(mapLayerGroupJSON.optInt(KEY_ORDER, -1));
 			Iterator<?> keys = locales.keys();
 
 			while (keys.hasNext()) {
