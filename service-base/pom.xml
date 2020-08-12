@@ -46,14 +46,14 @@
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
         </dependency>
-        <dependency>
+        <!-- dependency>
             <groupId>de.odysseus.staxon</groupId>
             <artifactId>staxon</artifactId>
         </dependency>
         <dependency>
             <groupId>com.googlecode.lambdaj</groupId>
             <artifactId>lambdaj</artifactId>
-        </dependency>
+        </dependency -->
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
