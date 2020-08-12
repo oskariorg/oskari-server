@@ -3,7 +3,6 @@ package fi.nls.oskari.db;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceRuntimeException;
-import fi.nls.oskari.service.db.BaseIbatisService;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
@@ -30,8 +29,6 @@ public class DBHandler {
     private static DataSource datasource;
 
     public static void main(String[] args) throws Exception {
-        // set alternate sqlMapLocation when running on commandline
-        BaseIbatisService.setSqlMapLocation("META-INF/SqlMapConfig-content-resources.xml");
 
         // populate standalone properties
         PropertyUtil.loadProperties("/db.properties");
