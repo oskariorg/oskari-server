@@ -23,11 +23,11 @@
             <groupId>org.geotools</groupId>
             <artifactId>gt-main</artifactId>
         </dependency>
-        <dependency>
+        <!-- dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-data</artifactId>
             <version>${geotools.version}</version>
-        </dependency>
+        </dependency -->
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-epsg-hsql</artifactId>

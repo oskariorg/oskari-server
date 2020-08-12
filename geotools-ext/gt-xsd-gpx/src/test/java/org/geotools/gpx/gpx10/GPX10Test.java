@@ -4,14 +4,13 @@ package org.geotools.gpx.gpx10;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.gpx.gpx10.GPX10;
-import org.geotools.xml.Binding;
+import org.geotools.xsd.Binding;
 import org.junit.Test;
 import org.opengis.feature.simple.SimpleFeature;
 
-import com.vividsolutions.jts.geom.CoordinateSequence;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.MultiLineString;
+import org.locationtech.jts.geom.CoordinateSequence;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.MultiLineString;
 
 public class GPX10Test extends GPX10TestSupport {
 

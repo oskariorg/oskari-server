@@ -1,10 +1,12 @@
 package fi.nls.oskari.wfs;
 
 import fi.nls.oskari.util.JSONHelper;
+import net.opengis.ows10.DomainType;
+import net.opengis.ows10.OperationType;
+import net.opengis.ows10.OperationsMetadataType;
+import net.opengis.wfs.WFSCapabilitiesType;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import net.opengis.wfs.WFSCapabilitiesType;
-import net.opengis.ows10.*;
 
 import java.util.*;
 
@@ -39,9 +41,9 @@ public class WFSCapabilitiesParser110 extends WFSCapabilitiesService {
                 .filter(dt ->  dt.getName().toLowerCase().equals(MAX_FEATURES))
                 .findFirst();
         if (maxFeatures.isPresent()){
-            List<Object> values = maxFeatures.get().getValue();
+            List<String> values = maxFeatures.get().getValue();
             if (!values.isEmpty()) {
-                int max = Integer.parseInt(values.get(0).toString());
+                int max = Integer.parseInt(values.get(0));
                 JSONHelper.putValue(json, KEY_MAX_FEATURES, max);
             }
         }

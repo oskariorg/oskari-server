@@ -240,8 +240,8 @@ public class AnalysisWebProcessingService {
             fc = fjs.readFeatureCollection(new ByteArrayInputStream(
                     tempjs.getBytes("utf-8")));
 
-            org.geotools.xml.Configuration configuration = new org.geotools.gml3.GMLConfiguration();
-            org.geotools.xml.Encoder encoder = new org.geotools.xml.Encoder(configuration);
+            org.geotools.xsd.Configuration configuration = new org.geotools.gml3.GMLConfiguration();
+            org.geotools.xsd.Encoder encoder = new org.geotools.xsd.Encoder(configuration);
 
             //output stream to serialize to
             OutputStream xml = new ByteArrayOutputStream();

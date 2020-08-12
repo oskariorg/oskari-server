@@ -7,7 +7,7 @@ import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.geotools.gml3.GMLConfiguration;
-import org.geotools.xml.Parser;
+import org.geotools.xsd.Parser;
 
 import java.net.HttpURLConnection;
 import java.util.ArrayList;

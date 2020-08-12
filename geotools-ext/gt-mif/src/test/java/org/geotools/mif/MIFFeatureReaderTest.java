@@ -15,9 +15,9 @@ import org.geotools.data.simple.SimpleFeatureSource;
 import org.junit.Test;
 import org.opengis.feature.simple.SimpleFeature;
 
-import com.vividsolutions.jts.geom.CoordinateSequence;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Polygon;
+import org.locationtech.jts.geom.CoordinateSequence;
+import org.locationtech.jts.geom.MultiPolygon;
+import org.locationtech.jts.geom.Polygon;
 
 public class MIFFeatureReaderTest {
 
