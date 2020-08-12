@@ -97,7 +97,7 @@
         <flexjson.version>2.0</flexjson.version>
 
         <pdfbox.version>2.0.16</pdfbox.version>
-        <mybatis.version>3.5.4</mybatis.version>
+        <mybatis.version>3.5.5</mybatis.version>
         <hystrix.version>1.5.18</hystrix.version>
         <!-- Test deps versions -->
         <powermock.version>2.0.0</powermock.version>
