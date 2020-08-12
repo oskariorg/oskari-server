@@ -44,11 +44,6 @@
             <artifactId>axiom-impl</artifactId>
         </dependency>
         <dependency>
-            <groupId>xerces</groupId>
-            <artifactId>xercesImpl</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>fi.mml</groupId>
             <artifactId>capabilities</artifactId>
         </dependency>

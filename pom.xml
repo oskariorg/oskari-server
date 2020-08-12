@@ -89,7 +89,6 @@
         <postgresql.version>42.2.5</postgresql.version>
         <quartz-scheduler.version>2.3.2</quartz-scheduler.version>
 
-        <xerces.version>2.12.0</xerces.version>
         <xmlbeans.version>2.6.0</xmlbeans.version>
         <geotools.version>23.1</geotools.version>
         <jts.version>1.16.1</jts.version>
@@ -550,11 +549,6 @@
                 <groupId>org.springframework.session</groupId>
                 <artifactId>spring-session-data-redis</artifactId>
                 <version>${spring.session.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>xerces</groupId>
-                <artifactId>xercesImpl</artifactId>
-                <version>${xerces.version}</version>
             </dependency>
 
             <dependency>
