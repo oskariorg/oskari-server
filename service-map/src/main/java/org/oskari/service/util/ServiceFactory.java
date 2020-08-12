@@ -1,6 +1,6 @@
 package org.oskari.service.util;
 
-import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupService;
+import org.oskari.service.maplayer.OskariMapLayerGroupService;
 import fi.mml.portti.service.search.SearchService;
 import fi.mml.portti.service.search.SearchServiceImpl;
 import fi.nls.oskari.map.layer.DataProviderService;

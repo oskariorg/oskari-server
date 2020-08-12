@@ -1,4 +1,4 @@
-package fi.mml.map.mapwindow.service.db;
+package org.oskari.service.maplayer;
 
 import fi.nls.oskari.domain.map.MaplayerGroup;
 import fi.nls.oskari.service.db.OskariComponentIbatisService;

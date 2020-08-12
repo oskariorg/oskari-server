@@ -6,6 +6,7 @@ import fi.nls.oskari.cache.Cache;
 import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.domain.map.MaplayerGroup;
 import fi.nls.oskari.service.ServiceRuntimeException;
+import org.oskari.service.maplayer.OskariMapLayerGroupService;
 
 import java.sql.SQLException;
 import java.util.*;

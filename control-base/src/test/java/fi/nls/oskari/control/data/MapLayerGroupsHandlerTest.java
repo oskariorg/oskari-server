@@ -1,6 +1,6 @@
 package fi.nls.oskari.control.data;
 
-import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupService;
+import org.oskari.service.maplayer.OskariMapLayerGroupService;
 import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupServiceIbatisImpl;
 import fi.nls.oskari.control.ActionConstants;
 import fi.nls.oskari.control.ActionDeniedException;

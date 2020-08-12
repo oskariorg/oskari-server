@@ -7,7 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupService;
+import org.oskari.service.maplayer.OskariMapLayerGroupService;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.domain.map.MaplayerGroup;
 import fi.nls.oskari.log.LogFactory;
