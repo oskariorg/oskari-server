@@ -1,0 +1,2 @@
+DROP TABLE IF EXISTS user_layer_style CASCADE;
+ALTER TABLE user_layer DROP COLUMN IF EXISTS style_id;

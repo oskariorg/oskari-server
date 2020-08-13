@@ -120,7 +120,7 @@
 
 <script type="text/javascript">
     function isEmailValid(email) {
-        var pattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+        var pattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w+)+$/;
         return pattern.test(email);  // returns a boolean
     }
 

@@ -6,11 +6,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import fi.nls.oskari.db.DBHandler;
+import fi.nls.oskari.db.DatasourceHelper;
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.PropertyUtil;
+
+import javax.sql.DataSource;
 
 public class V1_0_11__populate_userlayer_wkt implements JdbcMigration {
 
@@ -18,7 +21,13 @@ public class V1_0_11__populate_userlayer_wkt implements JdbcMigration {
     private static final int WGS84_SRID = 4326;
 
     public void migrate(Connection connection) throws Exception {
-        String srsName = getSrsName(DBHandler.getConnection());
+        // userlayers _can_ use other db than the default one
+        // -> Use connection to default db for this migration
+        DataSource ds = DatasourceHelper.getInstance().getDataSource();
+        if (ds == null) {
+            ds = DatasourceHelper.getInstance().createDataSource();
+        }
+        String srsName = getSrsName(ds.getConnection());
         if (srsName == null){
             LOG.error("Cannot get srs name for userlayer data");
             throw new IllegalArgumentException("Cannot get srs name for userlayer data");

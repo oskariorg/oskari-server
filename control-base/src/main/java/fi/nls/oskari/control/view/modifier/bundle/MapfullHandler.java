@@ -12,13 +12,15 @@ import fi.nls.oskari.domain.map.view.ViewTypes;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
+import fi.nls.oskari.map.analysis.service.AnalysisDataService;
 import fi.nls.oskari.map.analysis.service.AnalysisDbService;
-import fi.nls.oskari.map.analysis.service.AnalysisDbServiceMybatisImpl;
 import fi.nls.oskari.map.layer.OskariLayerService;
+import fi.nls.oskari.map.layer.formatters.LayerJSONFormatter;
 import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.view.modifier.ModifierException;
 import fi.nls.oskari.view.modifier.ModifierParams;
 import fi.nls.oskari.view.modifier.ViewModifier;
@@ -63,6 +65,14 @@ public class MapfullHandler extends BundleHandler {
     private static final String KEY_BASELAYERS = "baseLayers";
     private static final String KEY_CENTER_MAP_AUTOMATICALLY = "centerMapAutomatically";
 
+    private static final String KEY_TERRAIN = "terrain";
+    private static final String KEY_TERRAIN_TOKEN = "ionAccessToken";
+    private static final String KEY_TERRAIN_ASSET = "ionAssetId";
+    private static final String KEY_TERRAIN_URL = "providerUrl";
+    private static final int TERRAIN_ASSET = PropertyUtil.getOptional("oskari.map.terrain.asset", -1);
+    private static final String TERRAIN_TOKEN = PropertyUtil.getOptional("oskari.map.terrain.token");
+    private static final String TERRAIN_URL = PropertyUtil.getOptional("oskari.map.terrain.url");
+
     private static final String PREFIX_MYPLACES = "myplaces_";
     private static final String PREFIX_ANALYSIS = "analysis_";
     private static final String PREFIX_USERLAYERS = "userlayer_";
@@ -76,9 +86,8 @@ public class MapfullHandler extends BundleHandler {
     public static final String EPSG_PROJ4_FORMATS = "epsg_proj4_formats.json";
 
     private static MyPlacesService myPlaceService = null;
-    private static final AnalysisDbService analysisService = new AnalysisDbServiceMybatisImpl();
+    private static AnalysisDbService analysisService;
     private static UserLayerDbService userLayerService;
-    private static final UserLayerDataService userLayerDataService = new UserLayerDataService();
     private static OskariLayerService mapLayerService;
 
     private static JSONObject epsgMap = null;
@@ -89,6 +98,7 @@ public class MapfullHandler extends BundleHandler {
         myPlaceService = OskariComponentManager.getComponentOfType(MyPlacesService.class);
         userLayerService = OskariComponentManager.getComponentOfType(UserLayerDbService.class);
         mapLayerService = OskariComponentManager.getComponentOfType(OskariLayerService.class);
+        analysisService = OskariComponentManager.getComponentOfType(AnalysisDbService.class);
         // to prevent mocking issues in JUnit tests....
         permissionsService = ServiceFactory.getPermissionsService(); // OskariComponentManager.getComponentOfType(PermissionService.class);
         epsgInit();
@@ -96,8 +106,6 @@ public class MapfullHandler extends BundleHandler {
         pluginHandlers = new HashMap<>();
         registerPluginHandler(LogoPluginHandler.PLUGIN_NAME, new LogoPluginHandler());
         registerPluginHandler(WfsLayerPluginHandler.PLUGIN_NAME, new WfsLayerPluginHandler());
-        registerPluginHandler(MyPlacesLayerPluginHandler.PLUGIN_NAME, new MyPlacesLayerPluginHandler());
-        registerPluginHandler(UserLayerPluginHandler.PLUGIN_NAME, new UserLayerPluginHandler());
     }
 
     public void registerPluginHandler (String pluginId, PluginHandler handler) {
@@ -140,6 +148,8 @@ public class MapfullHandler extends BundleHandler {
         } catch (Exception e) {
             LOGGER.error(e, "Unable to overwrite layers");
         }
+        // init terrain profile from properties if given
+        setTerrainFromProperties (mapfullConfig);
 
         // dummyfix: because migration tool added layer selection to all migrated maps
         // remove it from old published maps if only one layer is selected
@@ -344,9 +354,9 @@ public class MapfullHandler extends BundleHandler {
 
         // construct layers JSON
         final JSONArray prefetch = getLayersArray(struct);
-        appendMyPlacesLayers(prefetch, publishedMyPlaces, user, viewID, lang, bundleIds, useDirectURLForMyplaces, modifyURLs, plugins);
+        appendMyPlacesLayers(prefetch, publishedMyPlaces, user, viewID, bundleIds, mapSRS, useDirectURLForMyplaces, modifyURLs, plugins);
         appendAnalysisLayers(prefetch, publishedAnalysis, user, viewID, lang, bundleIds, useDirectURLForMyplaces, modifyURLs);
-        appendUserLayers(prefetch, publishedUserLayers, user, viewID, bundleIds, mapSRS);
+        appendUserLayers(prefetch, publishedUserLayers, user, viewID, lang, bundleIds, mapSRS);
         return prefetch;
     }
 
@@ -363,24 +373,29 @@ public class MapfullHandler extends BundleHandler {
         final Set<String> permissions = permissionsService.getResourcesWithGrantedPermissions(
                 AnalysisLayer.TYPE, user, PermissionType.VIEW_PUBLISHED.name());
         LOGGER.debug("Analysis layer permissions for published view", permissions);
-
+        OskariLayer baseLayer = AnalysisDataService.getBaseLayer();
+        JSONObject baseOptions = new JSONObject();
+        if (baseLayer != null) {
+            baseOptions = baseLayer.getOptions();
+        }
         for (Long id : publishedAnalysis) {
             final Analysis analysis = analysisService.getAnalysisById(id);
             if(analysis == null){
                 continue;
             }
-            if (analyseBundlePresent && analysis.isOwnedBy(user.getUuid())) {
+            boolean ownLayer = analysis.isOwnedBy(user.getUuid());
+            if (analyseBundlePresent && ownLayer) {
                 // skip it's an own bundle and analysis bundle is present -> will be loaded via analysisbundle
                 continue;
             }
             final String permissionKey = "analysis+" + id;
             boolean containsKey = permissions.contains(permissionKey);
-            if (!containsKey) {
+            if (!ownLayer && !containsKey) {
                 LOGGER.info("Found analysis layer in selected that is no longer published. ViewID:",
                         viewID, "Analysis id:", id);
                 continue;
             }
-            final JSONObject json = AnalysisHelper.getlayerJSON(analysis, lang,
+            final JSONObject json = AnalysisHelper.getlayerJSON(analysis,baseOptions, lang,
                     useDirectURL, user.getUuid(), modifyURLs);
             if (json != null) {
                 layerList.put(json);
@@ -401,8 +416,8 @@ public class MapfullHandler extends BundleHandler {
                                              final List<Long> publishedMyPlaces,
                                              final User user,
                                              final long viewID,
-                                             final String lang,
                                              final Set<String> bundleIds,
+                                             final String mapSrs,
                                              final boolean useDirectURL,
                                              final boolean modifyURLs,
                                              final JSONArray plugins) {
@@ -428,16 +443,10 @@ public class MapfullHandler extends BundleHandler {
                 continue;
             }
 
-            JSONObject myPlaceLayer = null;
-            if (plugins != null && plugins.toString().indexOf(PLUGIN_WFSVECTORLAYER) != -1) {
-                myPlaceLayer = myPlaceService.getCategoryAsWfsLayerJSON(mpLayer, lang);
-            } else {
-                myPlaceLayer = myPlaceService.getCategoryAsWmsLayerJSON(
-                        mpLayer, lang, useDirectURL, user.getUuid(), modifyURLs);
-            }
-            if (myPlaceLayer != null) {
-                layerList.put(myPlaceLayer);
-            }
+            JSONObject myPlaceLayer = MyPlacesService.parseLayerToJSON(mpLayer, mapSrs);
+            // Get as WFS layer
+            JSONHelper.putValue(myPlaceLayer, LayerJSONFormatter.KEY_TYPE, OskariLayer.TYPE_WFS);
+            layerList.put(myPlaceLayer);
         }
     }
 
@@ -445,10 +454,10 @@ public class MapfullHandler extends BundleHandler {
                                          final List<Long> publishedUserLayers,
                                          final User user,
                                          final long viewID,
+                                         final String lang,
                                          final Set<String> bundleIds,
                                          final String mapSrs) {
         final boolean userLayersBundlePresent = bundleIds.contains(BUNDLE_MYPLACESIMPORT);
-        final OskariLayer baseLayer = userLayerDataService.getBaseLayer();
         for (Long id : publishedUserLayers) {
             final UserLayer userLayer = userLayerService.getUserLayerById(id);
 
@@ -469,8 +478,7 @@ public class MapfullHandler extends BundleHandler {
                 // no longer published -> skip if isn't current users layer
                 continue;
             }
-
-            final JSONObject json = userLayerDataService.parseUserLayer2JSON(userLayer, baseLayer, mapSrs);
+            final JSONObject json = UserLayerDataService.parseUserLayer2JSON(userLayer, mapSrs, lang);
             if (json != null) {
                 layerList.put(json);
             }
@@ -609,6 +617,27 @@ public class MapfullHandler extends BundleHandler {
             LOGGER.error("Problem trying to figure out whether "
                     + PLUGIN_LAYERSELECTION + " should be removed.", jsonex);
         }
+    }
+    private void setTerrainFromProperties (final JSONObject mapfullConfig) {
+        if (TERRAIN_URL == null && TERRAIN_TOKEN == null) {
+            return;
+        }
+        JSONObject options = mapfullConfig.optJSONObject(KEY_MAP_OPTIONS);
+        if (options == null) {
+            options = new JSONObject();
+            JSONHelper.putValue(mapfullConfig, KEY_MAP_OPTIONS, options);
+        }
+        JSONObject terrain = new JSONObject();
+        if (TERRAIN_URL != null) {
+            JSONHelper.putValue(terrain, KEY_TERRAIN_URL, TERRAIN_URL);
+        }
+        if (TERRAIN_TOKEN != null) {
+            JSONHelper.putValue(terrain, KEY_TERRAIN_TOKEN, TERRAIN_TOKEN);
+            if (TERRAIN_ASSET != -1) {
+                JSONHelper.putValue(terrain, KEY_TERRAIN_ASSET, TERRAIN_ASSET);
+            }
+        }
+        JSONHelper.putValue(options, KEY_TERRAIN, terrain);
     }
 
     void epsgInit() {

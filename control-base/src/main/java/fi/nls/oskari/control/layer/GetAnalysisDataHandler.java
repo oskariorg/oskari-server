@@ -8,7 +8,7 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.map.analysis.service.AnalysisDbService;
-import fi.nls.oskari.map.analysis.service.AnalysisDbServiceMybatisImpl;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
@@ -26,10 +26,16 @@ import java.util.Map;
 @OskariActionRoute("GetAnalysisData")
 public class GetAnalysisDataHandler extends ActionHandler {
 
-    private static final AnalysisDbService analysisService = new AnalysisDbServiceMybatisImpl();
+    private static AnalysisDbService analysisService;
 
     private static final String ANALYSE_ID = "analyse_id";
     private static final String JSKEY_ANALYSISDATA = "analysisdata";
+
+    @Override
+    public void init() {
+        super.init();
+        analysisService = OskariComponentManager.getComponentOfType(AnalysisDbService.class);
+    }
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {

@@ -1,0 +1,1 @@
+ALTER TABLE user_layer ADD options json;

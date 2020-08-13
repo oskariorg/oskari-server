@@ -1,13 +1,15 @@
 package fi.nls.oskari.domain.map.userlayer;
 
 
+import org.json.JSONObject;
+
 public class UserLayerData {
 
     private long id;
     private long user_layer_id;
     private String uuid;
     private String feature_id ;
-    private String property_json;
+    private JSONObject property_json;
     private String  geometry;
 
     public long getId() {
@@ -42,12 +44,15 @@ public class UserLayerData {
         this.feature_id = feature_id;
     }
 
-    public String getProperty_json() {
+    public JSONObject getProperty_json() {
         return property_json;
     }
 
-    public void setProperty_json(String property_json) {
-        if(property_json == null) property_json="{}";
+    public void setProperty_json(JSONObject property_json) {
+        if(property_json == null) {
+            this.property_json = new JSONObject();
+            return;
+        }
         this.property_json = property_json;
     }
 

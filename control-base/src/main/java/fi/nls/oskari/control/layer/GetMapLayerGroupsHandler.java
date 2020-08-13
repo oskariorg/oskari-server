@@ -3,18 +3,19 @@ package fi.nls.oskari.control.layer;
 import static fi.nls.oskari.control.ActionConstants.PARAM_FORCE_PROXY;
 import static fi.nls.oskari.control.ActionConstants.PARAM_LANGUAGE;
 import static fi.nls.oskari.control.ActionConstants.PARAM_SRS;
+import static fi.nls.oskari.control.ActionConstants.PARAM_ID;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.service.OskariComponentManager;
+import fi.nls.oskari.util.ConversionHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupService;
-import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupServiceIbatisImpl;
+import org.oskari.service.maplayer.OskariMapLayerGroupService;
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
@@ -28,6 +29,8 @@ import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkService;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkServiceMybatisImpl;
 import fi.nls.oskari.util.EnvHelper;
 import fi.nls.oskari.util.ResponseHelper;
+import org.oskari.service.util.ServiceFactory;
+
 /**
  * Get all map layer groups registered in Oskari database
  */
@@ -42,7 +45,8 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
     private static final List<String> PROXY_LYR_TYPES = Arrays.asList(
             OskariLayer.TYPE_WMS,
             OskariLayer.TYPE_WMTS,
-            OskariLayer.TYPE_ARCGIS93);
+            OskariLayer.TYPE_ARCGIS93,
+            OskariLayer.TYPE_VECTOR_TILE);
 
     private OskariLayerService layerService;
     private OskariMapLayerGroupService groupService;
@@ -66,7 +70,7 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
             setLayerService(OskariComponentManager.getComponentOfType(OskariLayerService.class));
         }
         if (groupService == null) {
-            setGroupService(new OskariMapLayerGroupServiceIbatisImpl());
+            setGroupService(ServiceFactory.getOskariMapLayerGroupService());
         }
         if (linkService == null) {
             setLinkService(new OskariLayerGroupLinkServiceMybatisImpl());
@@ -87,9 +91,8 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
         Map<Integer, List<OskariLayerGroupLink>> linksByGroupId = linkService.findAll().stream()
                 .collect(Collectors.groupingBy(OskariLayerGroupLink::getGroupId));
 
-
         // Get all layers instead of using OskariLayerWorker.getLayersForUser() so we don't check permissions twice
-        List<OskariLayer> layers = layerService.findAll();
+        List<OskariLayer> layers = getLayers(params.getHttpParam(PARAM_ID));
         if (params.getHttpParam(PARAM_FORCE_PROXY, false)) {
             layers.stream()
                     .filter(layer -> PROXY_LYR_TYPES.contains(layer.getType()))
@@ -106,6 +109,22 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
         } catch (JSONException e) {
             throw new ActionException("Failed to add groups", e);
         }
+    }
+
+    private List<OskariLayer> getLayers(String requestedLayers) {
+        if (requestedLayers == null || requestedLayers.isEmpty()) {
+            // nothing requested/default -> return all
+            return layerService.findAll();
+        }
+        // partial list requested
+        List<Integer> idList = new ArrayList<>();
+        for (String str: requestedLayers.split(",")) {
+            int id = ConversionHelper.getInt(str, -1);
+            if (id != -1) {
+                idList.add(id);
+            }
+        }
+        return layerService.findByIdList(idList);
     }
 
     /**

@@ -49,7 +49,7 @@ public class JSONHelper {
         try {
             return new JSONObject(content);
         } catch (Exception e) {
-            log.info("Error generating JSONObject from ", content);
+            log.debug("Error generating JSONObject from ", content);
         }
         return null;
     }
@@ -57,7 +57,7 @@ public class JSONHelper {
         try {
             return new JSONObject(content);
         } catch (Exception e) {
-            log.info("Error generating JSONObject from JSONTokener ", content);
+            log.debug("Error generating JSONObject from JSONTokener ", content);
         }
         return null;
     }
@@ -68,7 +68,7 @@ public class JSONHelper {
         try {
             return content.getJSONObject(key);
         } catch (Exception e) {
-            log.info("Couldn't get JSONObject from ", content, " with key =", key);
+            log.debug("Couldn't get JSONObject from ", content, " with key =", key);
             return null;
         }
     }
@@ -79,7 +79,7 @@ public class JSONHelper {
         try {
             return content.get(key);
         } catch (Exception e) {
-            log.info("Couldn't get Object from ", content, " with key =", key);
+            log.debug("Couldn't get Object from ", content, " with key =", key);
             return null;
         }
     }
@@ -90,7 +90,7 @@ public class JSONHelper {
         try {
             return content.getJSONObject(key);
         } catch (Exception e) {
-            log.warn("Couldn't get JSONObject from ", content, " with key =", key, " - error: ", e);
+            log.debug("Couldn't get JSONObject from ", content, " with key =", key, " - error: ", e);
             return null;
         }
     }
@@ -101,7 +101,7 @@ public class JSONHelper {
         try {
             return content.getJSONArray(key);
         } catch (JSONException e) {
-            log.info("Couldn't get JSONArray from " + content + " with key = " + key);
+            log.debug("Couldn't get JSONArray from " + content + " with key = " + key);
             return null;
         }
     }

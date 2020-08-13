@@ -14,12 +14,11 @@
         <result property="layer_source" column="layer_source" />
         <result property="fields" column="fields" />
         <result property="publisher_name" column="publisher_name" />
-        <result property="style_id" column="style_id" />
         <result property="wkt" column = "wkt" />
-        <association property="style" column = "style_id" select = "findUserLayerStyle" fetchType="eager"/>
+        <result property="options" column = "options" />
     </resultMap>
 	<!-- UserLayer related -->
-	<insert id="insertUserLayerRow" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+	<insert id="insertUserLayer" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
 		INSERT INTO user_layer (
         uuid,
         layer_name,
@@ -27,29 +26,30 @@
         layer_source,
         fields,
         publisher_name,
-        style_id,
-        wkt)
-        VALUES (
+        wkt,
+        options
+        ) VALUES (
         #{uuid},
         #{layer_name},
         #{layer_desc},
         #{layer_source},
         CAST (#{fields} as json),
         #{publisher_name},
-        #{style_id},
-        #{wkt})
+        #{wkt},
+        CAST (#{options} as json)
+        )
     </insert>
 	
-	<update id="updateUserLayerCols">
+	<update id="updateUserLayer">
         update
         user_layer set
         layer_name = #{layer_name},
         layer_desc = #{layer_desc},
         layer_source = #{layer_source},
-        fields =  CAST (#{fields} as json),
+        fields = CAST (#{fields} as json),
         publisher_name = #{publisher_name},
-        style_id = #{style_id},
-        wkt = #{wkt}
+        wkt = #{wkt},
+        options = CAST (#{options} as json)
         where id = #{id} and uuid = #{uuid}
     </update>
 
@@ -60,10 +60,10 @@
         layer_name,
         layer_desc,
         layer_source,
-        CAST (fields as text),
+        fields,
         publisher_name,
-        style_id,
-        wkt
+        wkt,
+        options
         from
         user_layer
         where id = #{id}  
@@ -76,16 +76,16 @@
         layer_name,
         layer_desc,
         layer_source,
-        CAST (fields as text),
+        fields,
         publisher_name,
-        style_id,
-        wkt
+        wkt,
+        options
         from
          user_layer
         where uuid = #{uuid} 
     </select>
 
-    <delete id="deleteUserLayerRow">
+    <delete id="deleteUserLayer">
         DELETE FROM user_layer WHERE id = #{id}
     </delete>
 
@@ -104,89 +104,8 @@
 		user_layer_id = #{userLayerId}
 	</select>
 
-	<!-- UserLayerStyle related -->
-	<insert id="insertUserLayerStyleRow" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
-        INSERT INTO user_layer_style (
-        stroke_width,
-        stroke_color,
-        fill_color,
-        dot_color,
-        dot_size,
-        border_width,
-        border_color,
-        dot_shape,
-        stroke_linejoin,
-        fill_pattern,
-        stroke_linecap,
-        stroke_dasharray,
-        border_linejoin,
-        border_dasharray)        
-        VALUES (
-		#{stroke_width},
-        #{stroke_color},
-        #{fill_color},
-        #{dot_color},
-        #{dot_size},
-        #{border_width},
-        #{border_color},
-        #{dot_shape},
-        #{stroke_linejoin},
-        #{fill_pattern},
-        #{stroke_linecap},
-        #{stroke_dasharray},
-        #{border_linejoin},
-        #{border_dasharray})
-    </insert>
-
-    <delete id="deleteUserLayerStyleRow">
-		<!-- Note! #{id} is id from user_layer_style table or id or style_id from user_layer table -->
-        <!-- Note! user_layer.id == user_layer.style_id == user_layer_style.id -->
-        DELETE FROM user_layer_style WHERE id = #{id}
-    </delete>
-
-	<update id="updateUserLayerStyleCols">
-        UPDATE
-        user_layer_style SET
-        stroke_width = #{stroke_width},
-        stroke_color = #{stroke_color},
-        fill_color = #{fill_color},
-        dot_color =  #{dot_color},
-        dot_size = #{dot_size},
-        border_width = #{border_width},
-		border_color = #{border_color},
-		dot_shape = #{dot_shape},
-        stroke_linejoin = #{stroke_linejoin},
-        fill_pattern = #{fill_pattern},
-        stroke_linecap = #{stroke_linecap},
-        stroke_dasharray = #{stroke_dasharray},
-        border_linejoin = #{border_linejoin},
-        border_dasharray = #{border_dasharray}
-        WHERE id = #{id}
-    </update>
-
-	<select id="findUserLayerStyle" resultType="UserDataStyle" useCache="false">
-        SELECT
-        id,
-        stroke_width,
-        stroke_color,
-        fill_color,
-        dot_color,
-        dot_size,
-        border_width,
-        border_color,
-        dot_shape,
-        stroke_linejoin,
-        fill_pattern,
-        stroke_linecap,
-        stroke_dasharray,
-        border_linejoin,
-        border_dasharray
-		FROM user_layer_style
-        WHERE id = #{id}
-    </select>
-
 	<!-- UserLayerData related-->
-	<insert id="insertUserLayerDataRow" useGeneratedKeys="true" keyProperty="user_layer_data.id" keyColumn="id">
+	<insert id="insertUserLayerData" useGeneratedKeys="true" keyProperty="user_layer_data.id" keyColumn="id">
         INSERT INTO user_layer_data
         (
             user_layer_id,
@@ -203,7 +122,7 @@
         )
     </insert>
 
-    <update id="updateUserLayerDataCols">
+    <update id="updateUserLayerData">
         UPDATE user_layer_data
         SET property_json = #{property_json},
             geometry = ST_GeomFromGeoJSON(#{geometry})
@@ -215,7 +134,7 @@
         DELETE FROM user_layer_data WHERE user_layer_id = #{userLayerId}
     </delete>	
 
-	<delete id="deleteUserLayerDataRow">
+	<delete id="deleteUserLayerData">
         DELETE FROM user_layer_data WHERE id = #{id}
     </delete>
 

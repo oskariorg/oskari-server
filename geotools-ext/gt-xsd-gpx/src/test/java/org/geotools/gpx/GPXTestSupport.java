@@ -1,7 +1,5 @@
 package org.geotools.gpx;
 
-
-import org.geotools.gpx.GPXConfiguration;
 import org.geotools.xsd.Configuration;
 import org.geotools.xsd.test.XMLTestSupport;
 

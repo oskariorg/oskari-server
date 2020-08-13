@@ -10,6 +10,7 @@ import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.junit.Test;
+import org.locationtech.jts.geom.CoordinateSequence;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
@@ -113,6 +114,35 @@ public class GPXParserTest {
                 assertEquals("linktext" + i, f.getAttribute("linkText"));
                 assertEquals("WayPoint", f.getAttribute("type"));
                 i++;
+            }
+        } finally {
+            it.close();
+        }
+    }
+
+    @Test
+    public void testTrack10() throws ServiceException, URISyntaxException {
+        File file = new File(getClass().getResource("track_10.gpx").toURI());
+        GPXParser parser = new GPXParser();
+        SimpleFeatureCollection fc = parser.parse(file, null, DefaultGeographicCRS.WGS84);
+        assertEquals(1, fc.size());
+        SimpleFeatureIterator it = fc.features();
+        try {
+            while (it.hasNext()) {
+                SimpleFeature f = it.next();
+                MultiLineString track = (MultiLineString) f.getDefaultGeometry();
+                assertEquals(1, track.getNumGeometries());
+                LineString tracksegment = (LineString) track.getGeometryN(0);
+                CoordinateSequence csq = tracksegment.getCoordinateSequence();
+                assertEquals(2, csq.size());
+
+                assertEquals(25.704601407051086, csq.getX(0), 1e-8);
+                assertEquals(62.494332790374756, csq.getY(0), 1e-8);
+                assertEquals(152.50732421875, csq.getOrdinate(0, 2), 1e-8);
+
+                assertEquals(25.704869627952576, csq.getX(1), 1e-8);
+                assertEquals(62.49429523944855, csq.getY(1), 1e-8);
+                assertEquals(149.7603759765625, csq.getOrdinate(1, 2), 1e-8);
             }
         } finally {
             it.close();

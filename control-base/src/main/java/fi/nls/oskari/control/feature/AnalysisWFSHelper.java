@@ -4,9 +4,10 @@ import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.cache.ComputeOnceCache;
 import fi.nls.oskari.domain.User;
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.analysis.Analysis;
+import fi.nls.oskari.map.analysis.service.AnalysisDataService;
 import fi.nls.oskari.map.analysis.service.AnalysisDbService;
-import fi.nls.oskari.map.analysis.service.AnalysisDbServiceMybatisImpl;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.PropertyUtil;
 import org.geotools.data.simple.SimpleFeatureCollection;
@@ -16,7 +17,6 @@ import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
-import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
@@ -104,13 +104,6 @@ public class AnalysisWFSHelper extends UserLayerService {
         final Set<String> permissions = getPermissionsForUser(user);
         return permissions.contains("analysis+" + layerId);
     }
-    public JSONObject getOskariStyle (String id) {
-        Analysis layer = getLayer(parseId(id));
-        if (layer == null) {
-            return new JSONObject();
-        }
-        return layer.getStyle().parseUserLayerStyleToOskariJSON();
-    }
 
     private Set<String> getPermissionsForUser(User user) {
         return permissionsCache.get(Long.toString(user.getId()),
@@ -119,12 +112,15 @@ public class AnalysisWFSHelper extends UserLayerService {
                                 ResourceType.analysislayer, user, PermissionType.VIEW_PUBLISHED));
     }
 
-    private Analysis getLayer(int id) {
+    protected Analysis getLayer(int id) {
         if (service == null) {
             // might cause problems with timing of components being initialized if done in init/constructor
-            service = new AnalysisDbServiceMybatisImpl();
+            service = OskariComponentManager.getComponentOfType(AnalysisDbService.class);
         }
         return service.getAnalysisById(id);
+    }
+    protected OskariLayer getBaseLayer() {
+        return AnalysisDataService.getBaseLayer();
     }
 
     public SimpleFeatureCollection postProcess(SimpleFeatureCollection sfc) throws Exception {

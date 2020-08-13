@@ -53,7 +53,7 @@ public class WebMapServiceFactory {
 	    String data = cc.getData();
 
 	    try {
-	        wms = createFromXML(layer.getName(), data);
+	        wms = WebMapServiceFactory.createFromXML(layer.getName(), data);
 	    } catch (WebMapServiceParseException | LayerNotFoundInCapabilitiesException ex) {
 	        // setup empty capabilities so we don't try to parse again before cache flush
 	        wmsCache.put(cacheKey, new WMSCapabilities());
@@ -71,15 +71,9 @@ public class WebMapServiceFactory {
 	    return wms;
 	}
 
-    public static WebMapService createFromXML(final String layerName, final String xml)
-            throws WebMapServiceParseException, LayerNotFoundInCapabilitiesException {
-        if (isVersion1_3_0(xml)) {
-            return new WebMapServiceV1_3_0_Impl("from DataBase", xml, layerName);
-        } else if (isVersion1_1_1(xml)) {
-            return new WebMapServiceV1_1_1_Impl("from DataBase", xml, layerName);
-        } else {
-            throw new WebMapServiceParseException("Could not detect version to be 1.3.0 or 1.1.1");
-        }
+    @Deprecated
+    public static WebMapService createFromXML(final String layerName, final String xml) throws WebMapServiceParseException, LayerNotFoundInCapabilitiesException {
+        return WebMapServiceFactoryHelper.createFromXML(layerName, xml);
     }
 
     public static void flushCache(final int layerId) {
@@ -90,28 +84,21 @@ public class WebMapServiceFactory {
         wmsCache.flush(true);
     }
 
-	/**
-	 * Returns true is data represents a WMS 1.1.1 version
-	 * 
-	 * @param data
-	 * @return
-	 */
-	public static boolean isVersion1_1_1(String data) {
-        return data != null &&
-                data.contains("WMT_MS_Capabilities") &&
-                data.contains("version=\"1.1.1\"");
-	}
+    /**
+     * Returns true if data represents a WMS 1.1.1 version
+     * @deprecated use WebMapServiceFactoryHelper.isVersion1_1_1(String)
+     */
+    @Deprecated
+    public static boolean isVersion1_1_1(String data) {
+        return WebMapServiceFactoryHelper.isVersion1_1_1(data);
+    }
 
-	/**
-	 * Returns true is data represents a WMS 1.3.0 version
-	 * 
-	 * @param data
-	 * @return
-	 */
-	public static boolean isVersion1_3_0(String data) {
-        return data != null &&
-                data.contains("WMS_Capabilities") &&
-                data.contains("version=\"1.3.0\"");
-	}
-
+    /**
+     * Returns true if data represents a WMS 1.3.0 version
+     * @deprecated use WebMapServiceFactoryHelper.isVersion1_3_0(String)
+     */
+    @Deprecated
+    public static boolean isVersion1_3_0(String data) {
+        return WebMapServiceFactoryHelper.isVersion1_3_0(data);
+    }
 }

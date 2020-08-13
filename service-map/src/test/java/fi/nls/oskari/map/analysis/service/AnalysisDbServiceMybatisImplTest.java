@@ -1,8 +1,7 @@
 package fi.nls.oskari.map.analysis.service;
 
-import fi.nls.oskari.domain.map.UserDataStyle;
 import fi.nls.oskari.domain.map.analysis.Analysis;
-import fi.nls.oskari.domain.map.analysis.AnalysisStyle;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.util.TestHelper;
@@ -15,8 +14,7 @@ import static org.junit.Assume.assumeTrue;
 
 public class AnalysisDbServiceMybatisImplTest {
 
-    private static AnalysisDbServiceMybatisImpl analysisDbServiceMybatis = null;
-    private static AnalysisStyleDbServiceMybatisImpl analysisStyleDbServiceMybatis = null;
+    private static AnalysisDbService analysisDbService;
 
     private static Analysis testAnalysis = null;
     private static String testAnalysisName = "testAnalysis";
@@ -29,29 +27,24 @@ public class AnalysisDbServiceMybatisImplTest {
 
     @Before
     public void setUp() throws ServiceException {
-        analysisDbServiceMybatis = new AnalysisDbServiceMybatisImpl();
-        analysisStyleDbServiceMybatis = new AnalysisStyleDbServiceMybatisImpl();
+        analysisDbService = OskariComponentManager.getComponentOfType(AnalysisDbService.class);
         testAnalysis = new Analysis();
-        UserDataStyle analysisStyle = testAnalysis.getStyle();
-        analysisStyle.initDefaultStyle();
-        analysisStyleDbServiceMybatis.insertAnalysisStyleRow(analysisStyle);
         testAnalysis.setName(testAnalysisName);
         testAnalysis.setUuid(testUid);
-        testAnalysis.setStyle_id(analysisStyle.getId());
     }
 
     @Test
     public void testAddAndGetAnalysis() {
-        analysisDbServiceMybatis.insertAnalysisRow(testAnalysis);
-        Analysis analysis = analysisDbServiceMybatis.getAnalysisById(testAnalysis.getId());
+        analysisDbService.insertAnalysisRow(testAnalysis);
+        Analysis analysis = analysisDbService.getAnalysisById(testAnalysis.getId());
 
         assertTrue("Analysis added and found", testAnalysis.getName().equals(analysis.getName()));
     }
 
     @Test
     public void testGetAnalysisListByUid() {
-        analysisDbServiceMybatis.insertAnalysisRow(testAnalysis);
-        List<Analysis> analysisList = analysisDbServiceMybatis.getAnalysisByUid(testAnalysis.getUuid());
+        analysisDbService.insertAnalysisRow(testAnalysis);
+        List<Analysis> analysisList = analysisDbService.getAnalysisByUid(testAnalysis.getUuid());
 
         assertTrue("Analysis added and found", testAnalysis.getUuid().equals(analysisList.get(0).getUuid()));
     }
@@ -59,7 +52,7 @@ public class AnalysisDbServiceMybatisImplTest {
     @After
     public void tearDown() {
         try {
-            analysisDbServiceMybatis.deleteAnalysis(testAnalysis);
+            analysisDbService.deleteAnalysis(testAnalysis);
         }
         catch (Exception e) {
         }

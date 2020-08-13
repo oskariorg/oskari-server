@@ -1,0 +1,1 @@
+update oskari_maplayer set style = '' where style = 'null';

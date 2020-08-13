@@ -12,7 +12,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.oskari.utils.common.Sets;
 
-import java.net.URL;
 import java.util.*;
 
 import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.*;
@@ -29,9 +28,14 @@ public class LayerJSONFormatter {
     public static final String PROPERTY_AJAXURL = "oskari.ajax.url.prefix";
     public static final String KEY_ATTRIBUTE_FORCED_SRS = "forcedSRS";
     public static final String KEY_ATTRIBUTE_IGNORE_COVERAGE = "ignoreCoverage";
-    private static final String KEY_ID = "id";
-    private static final String KEY_TYPE = "type";
-    private static final String KEY_ADMIN = "admin";
+    public static final String KEY_TYPE = "type";
+    protected static final String KEY_ID = "id";
+    protected static final String KEY_NAME = "layerName"; // FIXME: name
+    protected static final String KEY_LOCALIZED_NAME = "name"; // FIXME: title
+    protected static final String KEY_SUBTITLE = "subtitle";
+    protected static final String KEY_OPTIONS = "options";
+    protected static final String KEY_ADMIN = "admin";
+    protected static final String KEY_DATA_PROVIDER = "orgName";
     protected static final String[] STYLE_KEYS ={"name", "title", "legend"};
 
     // There working only plain text and html so ranked up
@@ -40,13 +44,14 @@ public class LayerJSONFormatter {
             "application/vnd.ogc.gml", "application/vnd.ogc.wms_xml",
             "text/xml" };
 
-    private static Logger log = LogFactory.getLogger(LayerJSONFormatter.class);
+    private static final Logger LOG = LogFactory.getLogger(LayerJSONFormatter.class);
     // map different layer types for JSON formatting
     private static Map<String, LayerJSONFormatter> typeMapping = new HashMap<String, LayerJSONFormatter>();
     static {
         typeMapping.put(OskariLayer.TYPE_WMS, new LayerJSONFormatterWMS());
         typeMapping.put(OskariLayer.TYPE_WFS, new LayerJSONFormatterWFS());
         typeMapping.put(OskariLayer.TYPE_WMTS, new LayerJSONFormatterWMTS());
+        typeMapping.put(OskariLayer.TYPE_VECTOR_TILE, new LayerJSONFormatterVectorTile());
     }
 
     private static LayerJSONFormatter getFormatter(final String type) {
@@ -89,7 +94,7 @@ public class LayerJSONFormatter {
 
         JSONHelper.putValue(layerJson, KEY_ID, layer.getId());
 
-        //log.debug("Type", layer.getType());
+        //LOG.debug("Type", layer.getType());
         if(layer.isCollection()) {
             // fixing frontend type for collection layers
             if(layer.isBaseMap()) {
@@ -101,21 +106,21 @@ public class LayerJSONFormatter {
         }
         else {
             JSONHelper.putValue(layerJson, KEY_TYPE, layer.getType());
-            //log.debug("wmsName", layer.getName());
+            //LOG.debug("wmsName", layer.getName());
             // for easier proxy routing on ssl hosts, maps all urls with prefix and a simplified url
             // so tiles can be fetched from same host from browsers p.o.v. and the actual url
             // is proxied with a proxy for example: /proxythis/<actual wmsurl>
             JSONHelper.putValue(layerJson, "url", layer.getUrl(isSecure));
-            JSONHelper.putValue(layerJson, "layerName", layer.getName());
+            JSONHelper.putValue(layerJson, KEY_NAME, layer.getName());
             if (useProxy(layer)) {
                 JSONHelper.putValue(layerJson, "url", getProxyUrl(layer));
             }
         }
 
-        JSONHelper.putValue(layerJson, "name", layer.getName(lang));
-        JSONHelper.putValue(layerJson, "subtitle", layer.getTitle(lang));
+        JSONHelper.putValue(layerJson, KEY_LOCALIZED_NAME, layer.getName(lang));
+        JSONHelper.putValue(layerJson, KEY_SUBTITLE, layer.getTitle(lang));
         if(layer.getGroup() != null) {
-            JSONHelper.putValue(layerJson, "orgName", layer.getGroup().getName(lang));
+            JSONHelper.putValue(layerJson, KEY_DATA_PROVIDER, layer.getGroup().getName(lang));
         }
 
         if(layer.getOpacity() != null && layer.getOpacity() > -1 && layer.getOpacity() <= 100) {
@@ -133,7 +138,7 @@ public class LayerJSONFormatter {
         }
 
         JSONHelper.putValue(layerJson, "params", layer.getParams());
-        JSONHelper.putValue(layerJson, "options", layer.getOptions());
+        JSONHelper.putValue(layerJson, KEY_OPTIONS, layer.getOptions());
         JSONHelper.putValue(layerJson, "attributes", attributes);
 
         JSONHelper.putValue(layerJson, "realtime", layer.getRealtime());
@@ -148,7 +153,7 @@ public class LayerJSONFormatter {
         JSONHelper.putValue(layerJson, "created", layer.getCreated());
         JSONHelper.putValue(layerJson, "updated", layer.getUpdated());
 
-        JSONHelper.putValue(layerJson, "dataUrl_uuid", getFixedDataUrl(layer));
+        JSONHelper.putValue(layerJson, "dataUrl_uuid", LayerJSONFormatter.getFixedDataUrl(layer.getMetadataId()));
         JSONHelper.putValue(layerJson, "style", layer.getStyle());
 
         // setup supported projections
@@ -220,29 +225,36 @@ public class LayerJSONFormatter {
     }
 
     // This is solution of transition for dataUrl and for dataUrl_uuid
-    private String getFixedDataUrl(final OskariLayer layer) {
-        final String metadataId = layer.getMetadataId();
+    public static String getFixedDataUrl(String metadataId) {
         if(metadataId == null || metadataId.isEmpty()) {
             return null;
         }
-        if(metadataId.toLowerCase().startsWith("http")) {
-            try {
-                URL url = new URL(metadataId);
-
-                String[] parameters = url.getQuery().split("&");
-                for (String param : parameters) {
-                    String[] keyvalue = param.split("=");
-                    if("uuid".equalsIgnoreCase(keyvalue[0]) || KEY_ID.equalsIgnoreCase(keyvalue[0])) {
-                        return keyvalue[1];
-                    }
-                }
-            } catch (Exception ignored) {
-                // propably just not valid URL
-            }
-            log.debug("Couldn't parse uuid from metadata url:", metadataId);
-            return null;
+        if(!metadataId.toLowerCase().startsWith("http")) {
+            // not a url -> return as is
+            return metadataId;
         }
-        return metadataId;
+        try {
+            Map<String, List<String>> params = IOHelper.parseQuerystring(metadataId);
+            String idParam = params.keySet().stream()
+                    .filter(key -> "uuid".equalsIgnoreCase(key) || KEY_ID.equalsIgnoreCase(key))
+                    .findFirst()
+                    .orElse(null);
+            if (idParam == null) {
+                // param not in url
+                return null;
+            }
+            List<String> values = params.getOrDefault(idParam, Collections.emptyList());
+            if (values.isEmpty()) {
+                // param was present but has no value
+                return null;
+            }
+            return values.get(0);
+        } catch (Exception ignored) {
+            // propably just not valid URL
+            LOG.ignore("Unexpected error parsing metadataid", ignored);
+        }
+        LOG.debug("Couldn't parse uuid from metadata url:", metadataId);
+        return null;
     }
 
     /**
@@ -257,13 +269,13 @@ public class LayerJSONFormatter {
         JSONArray jsonForcedSRS = attributes != null ? attributes.optJSONArray(KEY_ATTRIBUTE_FORCED_SRS): null;
         JSONArray jsonCapabilitiesSRS = capabilities != null ? capabilities.optJSONArray(KEY_SRS): null;
         if (jsonForcedSRS == null && jsonCapabilitiesSRS == null) {
-            log.debug("No SRS information found from either attributes or capabilities");
+            LOG.debug("No SRS information found from either attributes or capabilities");
             return null;
         }
         Set<String> srs = new HashSet<>();
         srs.addAll(JSONHelper.getArrayAsList(jsonForcedSRS));
         srs.addAll(JSONHelper.getArrayAsList(jsonCapabilitiesSRS));
-        log.debug("SRSs from attributes and capabilities:", StringUtils.join(srs, ','));
+        LOG.debug("SRSs from attributes and capabilities:", StringUtils.join(srs, ','));
         return srs;
     }
     public static JSONObject getFormatsJSON(final Collection<String> formats) {
@@ -290,7 +302,7 @@ public class LayerJSONFormatter {
             return formatJSON;
 
         } catch (Exception e) {
-            log.warn(e, "Couldn't parse formats for layer");
+            LOG.warn(e, "Couldn't parse formats for layer");
         }
         return formatJSON;
     }
@@ -311,12 +323,12 @@ public class LayerJSONFormatter {
             // WTK is saved as EPSG:4326 in database
             final String transformed = WKTHelper.transformLayerCoverage(wktWGS84, mapSRS);
             if(transformed == null) {
-                log.debug("Transform failed for layer id:", layerJSON.opt("id"), "WKT was:", wktWGS84);
+                LOG.debug("Transform failed for layer id:", layerJSON.opt("id"), "WKT was:", wktWGS84);
                 return;
             }
             JSONHelper.putValue(layerJSON, KEY_LAYER_COVERAGE, transformed);
         } catch (Exception ex) {
-            log.debug("Error transforming coverage to", mapSRS, "from", wktWGS84);
+            LOG.debug("Error transforming coverage to", mapSRS, "from", wktWGS84);
         }
     }
 }

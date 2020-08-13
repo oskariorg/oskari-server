@@ -12,7 +12,8 @@ import fi.nls.oskari.control.RestActionHandler;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.Feature;
 import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
+import fi.nls.oskari.domain.map.wfs.WFSLayerAttributes;
+import fi.nls.oskari.domain.map.wfs.WFSLayerCapabilities;
 
 import fi.nls.oskari.map.geometry.ProjectionHelper;
 
@@ -21,7 +22,7 @@ import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.wfs.WFSLayerConfigurationService;
+import fi.nls.oskari.util.PropertyUtil;
 import org.geotools.referencing.CRS;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,7 +48,7 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
 
     private OskariLayerService layerService;
     private PermissionService permissionsService;
-    private WFSLayerConfigurationService layerConfigurationService;
+
     private static final Set<String> ALLOWED_GEOM_TYPES = ConversionHelper.asSet("multipoint",
             "multilinestring", "multipolygon");
     private GeometryFactory gf = new GeometryFactory();
@@ -57,15 +58,10 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
         super.init();
         layerService = ServiceFactory.getMapLayerService();
         permissionsService = OskariComponentManager.getComponentOfType(PermissionService.class);
-        layerConfigurationService = ServiceFactory.getWfsLayerService();
     }
 
     protected OskariLayer getLayer(String id) throws ActionParamsException {
         return layerService.find(getLayerId(id));
-    }
-
-    protected WFSLayerConfiguration getWFSConfiguration(int id) throws ActionParamsException {
-        return layerConfigurationService.findConfiguration(id);
     }
 
     protected boolean canEdit(OskariLayer layer, User user) {
@@ -81,9 +77,9 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
         return id;
     }
 
-    protected String postPayload(OskariLayer layer, String payload) throws ActionException {
+    protected String postPayload(String username, String password, String payload, String url) throws ActionException {
         try {
-            HttpURLConnection conn = IOHelper.getConnection(layer.getUrl(), layer.getUsername(), layer.getPassword());
+            HttpURLConnection conn = IOHelper.getConnection(url, username, password);
             IOHelper.writeHeader(conn, IOHelper.HEADER_CONTENTTYPE, IOHelper.CONTENT_TYPE_XML);
             IOHelper.writeToConnection(conn, payload);
             String responseString = IOHelper.readString(conn);
@@ -104,16 +100,22 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
     }
 
     protected Feature getFeature(JSONObject jsonObject) throws ActionParamsException, JSONException, FactoryException {
+        boolean flipFeature = PropertyUtil.getOptional("actionhandler.AbstractFeatureHandler.forceXY", false);
         Feature feature = new Feature();
         OskariLayer layer = getLayer(jsonObject.optString("layerId"));
         String srsName = JSONHelper.getStringFromJSON(jsonObject, "srsName", "EPSG:3067");
         CoordinateReferenceSystem crs = CRS.decode(srsName);
-        WFSLayerConfiguration lc = getWFSConfiguration(layer.getId());
+        WFSLayerAttributes attrs = new WFSLayerAttributes(layer.getAttributes());
+        WFSLayerCapabilities caps = new WFSLayerCapabilities(layer.getCapabilities());
+        String layerName = layer.getName();
+        //remove prefix from layername
+        if(layerName.indexOf(":") != -1){
+            layerName = (layerName.substring(layerName.indexOf(":")+1)).trim();
+        }
 
-        feature.setLayerName(layer.getName());
-        feature.setNamespace(lc.getFeatureNamespace());
-        feature.setNamespaceURI(lc.getFeatureNamespaceURI());
-        feature.setGMLGeometryProperty(lc.getGMLGeometryProperty());
+        feature.setLayerName(layerName);
+        feature.setNamespaceURI(attrs.getNamespaceURL());
+        feature.setGMLGeometryProperty(caps.getGeometryAttribute());
         feature.setId(jsonObject.getString("featureId"));
 
         if(jsonObject.has("featureFields")) {
@@ -132,7 +134,8 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
             }
             JSONArray data = geometries.getJSONArray("data");
             Geometry geometry = getGeometry(geometryType, data, getSrid(srsName, 3067));
-            if(ProjectionHelper.isFirstAxisNorth(crs)) {
+
+            if(ProjectionHelper.isFirstAxisNorth(crs) || flipFeature) {
                 // reverse xy
                 ProjectionHelper.flipFeatureYX(geometry);
             }
@@ -264,5 +267,26 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
                 throw new ActionDeniedException("User doesn't have edit permission for layer: " + layerId);
             }
         }
+    }
+
+    /**
+     * Takes workspace prefix from layer name (before ':') and puts it into the layer url before '/wfs' or '/ows'
+     * NOTE! May not work with other than geoserver
+     * @param  layer  OskariLayer layer
+     */
+    protected String getURLForNamespace(String layerName, String url){
+        
+        if(layerName.indexOf(":") != -1){
+            String prefix = layerName.split(":")[0];
+            if(!(url.contains(prefix))){
+                if(url.contains("/ows")){
+                    url = url.replace("/ows","/"+prefix+"/ows");
+                }
+                else if (url.contains("/wfs")){
+                    url = url.replace("/wfs","/"+prefix+"/wfs");
+                }
+            }
+        }
+        return url;
     }
 }

@@ -5,14 +5,15 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.kevinsawicki.http.HttpRequest;
 
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.statistics.plugins.APIException;
 import fi.nls.oskari.control.statistics.plugins.sotka.SotkaConfig;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.IOHelper;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -125,7 +126,11 @@ public class SotkaRegionParser {
         String json = JedisManager.get(cacheKey);
 
         if (json == null) {
-            json = HttpRequest.get(url).body();
+            try {
+                json = IOHelper.getURL(url);
+            } catch (IOException e) {
+                throw new APIException("Couldn't read response from SotkaNET: " + url, e);
+            }
             JedisManager.setex(cacheKey, JedisManager.EXPIRY_TIME_DAY, json);
         }
         try {

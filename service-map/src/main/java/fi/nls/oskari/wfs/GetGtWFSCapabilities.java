@@ -3,7 +3,8 @@ package fi.nls.oskari.wfs;
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.wfs.WFS2FeatureType;
-import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
+import fi.nls.oskari.domain.map.wfs.WFSLayerAttributes;
+import fi.nls.oskari.domain.map.wfs.WFSLayerCapabilities;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
@@ -13,7 +14,6 @@ import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.XmlHelper;
-import fi.nls.oskari.wfs.util.WFSParserConfigs;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.wfs.WFSDataStore;
@@ -186,7 +186,6 @@ public class GetGtWFSCapabilities {
     public static Map<String, Object> getGtDataStoreCapabilities_2_x(final String rurl, final String version,
                                                                      String user, String pw, String currentCrs)
                                                                         throws ServiceException {
-        WFSParserConfigs parseConfigs = new WFSParserConfigs();
         Map<String, Object> capabilities = new HashMap<String, Object>();
         try {
             // GetCapabilities request
@@ -223,36 +222,23 @@ public class GetGtWFSCapabilities {
                     if (titleval == null) {
                         titleval = nameval;
                     }
-                    // Loop configs
-                    JSONArray feaconffa = parseConfigs.getFeatureTypeConfig(nameval);
-                    int count = 1;
-                    if (feaconffa != null) {
-                        count = feaconffa.length();
-                    }
                     ArrayList<WFS2FeatureType> lft = new ArrayList<WFS2FeatureType>();
-                    for (int k = 0; k < count; k++) {
-                        JSONObject feaconf = JSONHelper.getJSONObject(feaconffa, k);
-
-                        WFS2FeatureType tmpft = new WFS2FeatureType();
-                        tmpft.setName(nameval);
-                        tmpft.setTitle(titleval);
-                        tmpft.setDefaultSrs(srsval);
-                        if (otherSrsval.length > 0) {
-                            tmpft.setOtherSrs(otherSrsval);
-                        }
-                        final String extraAppend = isCurrentCRSinCapabilities(tmpft, currentCrs);
-                        // Try to parse describe feature type response of wfs 2.0.0 service at least namespaceUri and geometry property
-                        try {
-                            parseWfs2xDescribeFeatureType(tmpft, IOHelper.getURL(getDescribeFeatureTypeUrl(rurl, version, nameval), user, pw));
-                        } catch (Exception e) {
-                            addLayerWithError(errorTypes, nameval, titleval, e.getMessage());
-                            continue;
-                        }
-                        // Append parser type to title
-                        parserConfigType2Title(feaconf, tmpft, parseConfigs, extraAppend);
-                        lft.add(tmpft);
-                        featuretypes.put(nameval, lft);
+                    WFS2FeatureType tmpft = new WFS2FeatureType();
+                    tmpft.setName(nameval);
+                    tmpft.setTitle(titleval);
+                    tmpft.setDefaultSrs(srsval);
+                    if (otherSrsval.length > 0) {
+                        tmpft.setOtherSrs(otherSrsval);
                     }
+                    // Try to parse describe feature type response of wfs 2.0.0 service at least namespaceUri and geometry property
+                    try {
+                        parseWfs2xDescribeFeatureType(tmpft, IOHelper.getURL(getDescribeFeatureTypeUrl(rurl, version, nameval), user, pw));
+                    } catch (Exception e) {
+                        addLayerWithError(errorTypes, nameval, titleval, e.getMessage());
+                        continue;
+                    }
+                    lft.add(tmpft);
+                    featuretypes.put(nameval, lft);
                 }
             }
             List<String> formats = parseGetFeatureFormats(doc);
@@ -584,6 +570,8 @@ public class GetGtWFSCapabilities {
         final OskariLayer oskariLayer = new OskariLayer();
         oskariLayer.setType(OskariLayer.TYPE_WFS);
         oskariLayer.setUrl(rurl);
+        oskariLayer.setUsername(user);
+        oskariLayer.setPassword(pw);
         // THIS IS ON PURPOSE: min -> max, max -> min
         oskariLayer.setMaxScale(1d);
         oskariLayer.setMinScale(1500000d);
@@ -602,30 +590,29 @@ public class GetGtWFSCapabilities {
 
         try {
 
+            //FIXME  merge oskarilayer and wfsLayer
+            WFSCapabilities lc = null;
+            if (WFS2_0_0_VERSION.equals(version)) {
+                lc = GetGtWFSCapabilities.layerToWfs20LayerConfiguration(fea2type);
+            } else if (fea2type != null) {
+                // WFS 1.x  Geotools parse FAILED
+                lc = GetGtWFSCapabilities.layerToWfs1xLayerConfiguration(fea2type);
+            } else if (sft != null) {
+                // WFS 1.x  Geotools parse OK
+                lc = GetGtWFSCapabilities.layerToWfsLayerConfiguration(sft, typeName);
+            }
+            if (lc == null) {
+                throw new RuntimeException("Couldn't parse wfs capabilities");
+            }
+            capa.putOpt(WFSLayerCapabilities.KEY_GEOMETRYFIELD, lc.geometryfield);
+            oskariLayer.addAttribute(WFSLayerAttributes.KEY_NAMESPACEURL, lc.namespaceURL);
+
+            // NOTE! Important to remove id since this is at template
             JSONObject json = FORMATTER.getJSON(oskariLayer, PropertyUtil.getDefaultLanguage(), false, null);
             // add/modify admin specific fields
             OskariLayerWorker.modifyCommonFieldsForEditing(json, oskariLayer);
             // for admin ui only
             JSONHelper.putValue(json, "title", title);
-            //FIXME  merge oskarilayer and wfsLayer
-            WFSLayerConfiguration lc = null;
-            if (WFS2_0_0_VERSION.equals(version)) {
-                if (fea2type != null) {
-                    lc = GetGtWFSCapabilities.layerToWfs20LayerConfiguration(fea2type, rurl, user, pw);
-                }
-            } else if (fea2type != null) {
-                // WFS 1.x  Geotools parse FAILED
-                lc = GetGtWFSCapabilities.layerToWfs1xLayerConfiguration(fea2type, rurl, user, pw);
-            } else if (sft != null) {
-                // WFS 1.x  Geotools parse OK
-                lc = GetGtWFSCapabilities.layerToWfsLayerConfiguration(sft, typeName, rurl, user, pw);
-            }
-            if(lc == null) {
-                throw new RuntimeException("Couldn't parse wfs capabilities");
-            }
-            JSONHelper.putValue(json.getJSONObject("admin"), "passthrough", JSONHelper.createJSONObject(lc.getAsJSON()));
-
-            // NOTE! Important to remove id since this is at template
             json.remove("id");
             // ---------------
             return json;
@@ -674,56 +661,24 @@ public class GetGtWFSCapabilities {
      * @return WFSLayerConfiguration  wfs feature type properties for wfs service and oskari rendering
      * @throws fi.nls.oskari.service.ServiceException
      */
-    public static WFSLayerConfiguration layerToWfsLayerConfiguration(SimpleFeatureType schema, String typeName, String rurl,
-                                                                     String user, String pw)
+    public static WFSCapabilities layerToWfsLayerConfiguration(SimpleFeatureType schema, String typeName)
             throws ServiceException {
 
-        final WFSLayerConfiguration lc = new WFSLayerConfiguration();
-        lc.setDefaults();
-
-
-        lc.setURL(rurl);
-        lc.setUsername(user);
-        lc.setPassword(pw);
-
-        lc.setLayerName(typeName);
-
-
-        try {
-
-            String[] nameParts = schema.getName().getLocalPart().split(schema.getName().getSeparator());
-            String xmlns = "";
-            String name = nameParts[0];
-            if (nameParts.length > 1) {
-                xmlns = nameParts[0];
-                name = nameParts[1];
-            }
-
-            lc.setLayerId("layer_" + name);
-
-            // fails if doesn't have a geometry column
-            lc.setGMLGeometryProperty(getFeaturetypeGeometryName(schema));
-
-            //TODO add srs check support later
-            // seems this is not needed here since it isn't used,
-            // but could be used for checking for valid crs so leaving it in code
-            // if (schema.getCoordinateReferenceSystem() != null)
-            // lc.setSRSName("EPSG:"+Integer.toString(CRS.lookupEpsgCode(schema.getCoordinateReferenceSystem(), true)));
-
-            //lc.setGMLVersion();
-            lc.setWFSVersion(DEFAULT_VERSION);
-            //lc.setMaxFeatures(data.getMaxFeatures());
-            lc.setFeatureNamespace(xmlns);
-            lc.setFeatureNamespaceURI(schema.getName().getNamespaceURI());
-
-            lc.setFeatureElement(name);
-
-            return lc;
-        } catch (Exception ex) {
-            log.warn(ex, "Couldn't get wfs feature source data");
-            throw new ServiceException(ex.getMessage());
+        if (schema == null) {
+            return null;
         }
 
+        //TODO add srs check support later
+        // seems this is not needed here since it isn't used,
+        // but could be used for checking for valid crs so leaving it in code
+        // if (schema.getCoordinateReferenceSystem() != null)
+        // lc.setSRSName("EPSG:"+Integer.toString(CRS.lookupEpsgCode(schema.getCoordinateReferenceSystem(), true)));
+
+        final WFSCapabilities props = new WFSCapabilities();
+        props.featureType = typeName;
+        props.namespaceURL = schema.getName().getNamespaceURI();
+        props.geometryfield = getFeaturetypeGeometryName(schema);
+        return props;
     }
 
     /**
@@ -733,53 +688,17 @@ public class GetGtWFSCapabilities {
      * @return WFSLayerConfiguration  wfs feature type properties for wfs service and oskari rendering
      * @throws fi.nls.oskari.service.ServiceException
      */
-    public static WFSLayerConfiguration layerToWfs20LayerConfiguration(WFS2FeatureType featype, String rurl, String user,
-                                                                       String pw)
+    public static WFSCapabilities layerToWfs20LayerConfiguration(WFS2FeatureType featype)
             throws ServiceException {
-
-        final WFSLayerConfiguration lc = new WFSLayerConfiguration();
-        lc.setWFS20Defaults();
-        lc.setURL(rurl);
-        lc.setUsername(user);
-        lc.setPassword(pw);
-        lc.setLayerName(featype.getTitle());
-
-        try {
-
-            String[] nameParts = featype.getName().split(":");
-            String xmlns = "";
-            String name = nameParts[0];
-            if (nameParts.length > 1) {
-                xmlns = nameParts[0];
-                name = nameParts[1];
-            }
-
-            lc.setLayerId("layer_" + name);
-            lc.setWFSVersion(WFS2_0_0_VERSION);
-            lc.setFeatureNamespace(xmlns);
-            if (featype.getNsUri() != null) {
-                lc.setFeatureNamespaceURI(featype.getNsUri());
-            }
-            String geomName = featype.getGeomPropertyName();
-            if (geomName != null) {
-                lc.setGMLGeometryProperty(featype.getGeomPropertyName());
-            }
-
-            lc.setFeatureElement(name);
-            // WFS 2.0 parser items
-            lc.setTemplateName(featype.getName());
-            lc.setTemplateType(featype.getTemplateType());
-            lc.setResponseTemplate(featype.getResponseTemplate());
-            lc.setParseConfig(featype.getParseConfig());
-            lc.setRequestTemplate(featype.getRequestTemplate());
-
-
-            return lc;
-        } catch (Exception ex) {
-            log.warn(ex, "Couldn't get wfs feature source data");
-            throw new ServiceException(ex.getMessage());
+        if (featype == null) {
+            return null;
         }
 
+        final WFSCapabilities props = new WFSCapabilities();
+        props.featureType = featype.getName();
+        props.namespaceURL = featype.getNsUri();
+        props.geometryfield = featype.getGeomPropertyName();
+        return props;
     }
 
     /**
@@ -789,58 +708,18 @@ public class GetGtWFSCapabilities {
      * @return WFSLayerConfiguration  wfs feature type properties for wfs service and oskari rendering
      * @throws fi.nls.oskari.service.ServiceException
      */
-    public static WFSLayerConfiguration layerToWfs1xLayerConfiguration(WFS2FeatureType featype, String rurl, String user,
-                                                                       String pw)
+    public static WFSCapabilities layerToWfs1xLayerConfiguration(WFS2FeatureType featype)
             throws ServiceException {
 
-        final WFSLayerConfiguration lc = new WFSLayerConfiguration();
-        lc.setDefaults();
-
-
-        lc.setURL(rurl);
-        lc.setUsername(user);
-        lc.setPassword(pw);
-
-        lc.setLayerName(featype.getTitle());
-
-
-        try {
-
-            String[] nameParts = featype.getName().split(":");
-            String xmlns = "";
-            String name = nameParts[0];
-            if (nameParts.length > 1) {
-                xmlns = nameParts[0];
-                name = nameParts[1];
-            }
-
-            lc.setLayerId("layer_" + name);
-            String geomName = featype.getGeomPropertyName();
-            if (geomName != null) {
-                lc.setGMLGeometryProperty(geomName);
-            }
-
-            // Use oskari front srs
-            //  lc.setSRSName(featype.getDefaultSrs());
-
-
-            //lc.setGMLVersion();
-            lc.setWFSVersion(DEFAULT_VERSION);
-            //lc.setMaxFeatures(data.getMaxFeatures());
-            lc.setFeatureNamespace(xmlns);
-            if (featype.getNsUri() != null) {
-                lc.setFeatureNamespaceURI(featype.getNsUri());
-            }
-
-            lc.setFeatureElement(name);
-
-            return lc;
-        } catch (Exception ex) {
-            log.warn(ex, "Couldn't get wfs 1.x.0 feature source data");
-            //return null;
-            throw new ServiceException(ex.getMessage());
+        if (featype == null) {
+            return null;
         }
 
+        final WFSCapabilities props = new WFSCapabilities();
+        props.featureType = featype.getName();
+        props.namespaceURL = featype.getNsUri();
+        props.geometryfield = featype.getGeomPropertyName();
+        return props;
     }
 
 
@@ -1048,38 +927,6 @@ public class GetGtWFSCapabilities {
             log.debug(ex, "WFS 1.1.0 DescribeFeaturetype parse failed ");
         }
         return ft;
-    }
-
-    /**
-     * Set parser config items to featuretype and parser type information to layer title
-     *
-     * @param ft            featuretype items
-     * @param parserConfigs parser configurations in oskari_wfs_parse_config table
-     */
-    public static void parserConfigType2Title(JSONObject feaconf, WFS2FeatureType ft, WFSParserConfigs parserConfigs,
-                                              final String extraApped) {
-
-        String type = "Unknown";
-        String title = "Unknown";
-        if (feaconf == null) {
-            // Get default parser config
-            JSONArray feaconffa = parserConfigs.getDefaultFeatureTypeConfig(ft.getNsUri(), ft.getName());
-            feaconf = JSONHelper.getJSONObject(feaconffa, 0);
-        }
-
-        if (feaconf != null) {
-            type = JSONHelper.getStringFromJSON(feaconf, "type", "Default Path");
-            title = JSONHelper.getStringFromJSON(feaconf, "title", "Parser");
-            ft.setTemplateType(type);
-            ft.setResponseTemplate(JSONHelper.getStringFromJSON(feaconf, "response_template", null));
-            ft.setRequestTemplate(JSONHelper.getStringFromJSON(feaconf, "request_template", null));
-            JSONObject pconf = JSONHelper.getJSONObject(feaconf, "parse_config");
-            if (pconf != null) {
-                ft.setParseConfig(pconf.toString());
-            }
-        }
-        ft.setTitle(ft.getTitle() + " (" + type + " " + title + " )" + extraApped);
-
     }
 
     /**

@@ -1,8 +1,8 @@
 package fi.nls.oskari.map.layer.formatters;
 
 import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
-import fi.nls.oskari.domain.map.wfs.WFSSLDStyle;
+import fi.nls.oskari.domain.map.wfs.WFSLayerAttributes;
+import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.WKTHelper;
@@ -23,7 +23,6 @@ import org.opengis.feature.type.GeometryDescriptor;
 import org.oskari.service.wfs3.WFS3Service;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.*;
@@ -37,11 +36,8 @@ import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.*;
 public class LayerJSONFormatterWFS extends LayerJSONFormatter {
 
     private static final String KEY_WPS_PARAMS = "wps_params";
-    private static final String KEY_WMS_LAYER_ID = "WMSLayerId";
 
     private static Logger log = LogFactory.getLogger(LayerJSONFormatterWFS.class);
-    private static WFSLayerConfigurationService wfsService = new WFSLayerConfigurationServiceIbatisImpl();
-
 
     public JSONObject getJSON(OskariLayer layer,
                                      final String lang,
@@ -49,8 +45,7 @@ public class LayerJSONFormatterWFS extends LayerJSONFormatter {
                                      final String crs) {
 
         final JSONObject layerJson = getBaseJSON(layer, lang, isSecure, crs);
-        final WFSLayerConfiguration wfsConf = wfsService.findConfiguration(layer.getId());
-        JSONHelper.putValue(layerJson, KEY_STYLES, getStyles(wfsConf));
+        setStyles(layerJson, new WFSLayerOptions(layer.getOptions()));
         // Use maplayer setup
         if(layer.getStyle() == null || layer.getStyle().isEmpty() ){
             JSONHelper.putValue(layerJson, KEY_STYLE, "default");
@@ -59,10 +54,8 @@ public class LayerJSONFormatterWFS extends LayerJSONFormatter {
             JSONHelper.putValue(layerJson, KEY_STYLE, layer.getStyle());
         }
         JSONHelper.putValue(layerJson, KEY_ISQUERYABLE, true);
-        JSONHelper.putValue(layerJson, KEY_WPS_PARAMS, getWpsParams(wfsConf) );
-        if(wfsConf != null){
-            JSONHelper.putValue(layerJson, KEY_WMS_LAYER_ID, wfsConf.getWMSLayerId() );
-        }
+        WFSLayerAttributes attr = new WFSLayerAttributes(layer.getAttributes());
+        JSONHelper.putValue(layerJson, KEY_WPS_PARAMS, getWpsParams(attr.getWpsParams()) );
 
         return layerJson;
     }
@@ -70,40 +63,22 @@ public class LayerJSONFormatterWFS extends LayerJSONFormatter {
     /**
      * Constructs a style json
      *
-     * @param  wfsConf wfs layer configuration
      */
-    private JSONArray getStyles(WFSLayerConfiguration wfsConf) {
-
-        JSONArray arr = new JSONArray();
-        if (wfsConf == null) return arr;
-
-        final List<WFSSLDStyle> styleList = wfsConf.getSLDStyles();
-        if (styleList == null) return arr;
-
-        try {
-            for (WFSSLDStyle style : styleList) {
-                JSONObject obj = createStylesJSON(style.getName(), style.getName(), style.getName());
-                if (obj.length() > 0) {
-                    arr.put(obj);
-                }
-            }
-        } catch (Exception e) {
-          log.warn("Failed to query wfs styles via SQL client");
-        }
-        return arr;
+    protected void setStyles(JSONObject layerJson, WFSLayerOptions wfsOpts) {
+        JSONHelper.putValue(layerJson, KEY_STYLES, wfsOpts.getStyles().names());
     }
 
     /**
      * Constructs wps params json
      *
-     * @param  wfsConf wfs layer configuration
+     * @param  wpsParams wfs layer configuration
      */
-    private JSONObject getWpsParams(WFSLayerConfiguration wfsConf) {
+    private JSONObject getWpsParams(String wpsParams) {
 
         JSONObject json = new JSONObject();
-        if (wfsConf == null) return json;
+        if (wpsParams == null) return json;
 
-        return JSONHelper.createJSONObject(wfsConf.getWps_params());
+        return JSONHelper.createJSONObject(wpsParams);
 
     }
 
@@ -121,15 +96,20 @@ public class LayerJSONFormatterWFS extends LayerJSONFormatter {
             } else {
                 throw new ServiceException("Invalid WFSCapabilitiesType");
             }
+            // parse for version 1.x
+            // TODO: 2.0.0 or newer doesn't work with this so content-editor etc will not work with those
             // Schema is used only to parse geometry property name
             // skip if failed to get schema or can't find default geometry property
             try {
                 SimpleFeatureType sft = source.getSchema();
+                JSONHelper.putValue(json, CapabilitiesConstants.KEY_NAMESPACE_URL, sft.getName().getNamespaceURI());
                 GeometryDescriptor geom = sft.getGeometryDescriptor();
                 if (geom != null) {
                     JSONHelper.putValue(json, CapabilitiesConstants.KEY_GEOM_NAME, geom.getLocalName());
                 } // TODO: else sft.getTypes().filter(known geom types)
-            } catch (Exception e) {}
+            } catch (Exception e) {
+                log.info("Unable to parse namespace url or geometry field name from schema:", e.getMessage());
+            }
 
             ResourceInfo info = source.getInfo();
             // TODO is there more than default crs
@@ -141,8 +121,12 @@ public class LayerJSONFormatterWFS extends LayerJSONFormatter {
             ReferencedEnvelope bbox = info.getBounds();
             if (bbox != null) {
                 bbox = bbox.transform(WKTHelper.CRS_EPSG_4326, true);
-                String wkt = WKTHelper.getBBOX(bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY());
-                JSONHelper.putValue(json,KEY_LAYER_COVERAGE, wkt);
+                boolean coversWholeWorld = bbox.getMinX() <= -180 && bbox.getMinY() <= -90 && bbox.getMaxX() >= 180 && bbox.getMaxY() >= 90;
+                if (!coversWholeWorld) {
+                    // no need to attach coverage if it covers the whole world as it's not useful info
+                    String wkt = WKTHelper.getBBOX(bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY());
+                    JSONHelper.putValue(json,KEY_LAYER_COVERAGE, wkt);
+                }
             }
             Set<String> keywords = info.getKeywords();
             JSONHelper.putValue(json, KEY_KEYWORDS, new JSONArray(keywords));

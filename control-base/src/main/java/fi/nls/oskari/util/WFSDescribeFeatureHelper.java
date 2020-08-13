@@ -1,6 +1,6 @@
 package fi.nls.oskari.util;
 
-import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.service.AnalysisDataService;
@@ -68,59 +68,23 @@ public class WFSDescribeFeatureHelper {
      * @return Wfs request url
      * e.g. http://tampere.navici.com/tampere_wfs_geoserver/ows?SERVICE=WFS&VERSION=1.1.0&REQUEST=DescribeFeatureType&TYPENAME=tampere_ora:KIINTEISTOT_ALUE
      */
-    public static String parseDescribeFeatureUrl(String url, String version, String xmlns, String featureTypeName) {
+    public static String parseDescribeFeatureUrl(String url, String version, String typename) {
 
-        // check params
-        if (url.indexOf("?") == -1) {
-            url = url + "?";
-            if (url.toLowerCase().indexOf("service=") == -1)
-                url = url + "service=WFS";
-            if (url.toLowerCase().indexOf("version=") == -1)
-                url = url + "&version=" + version;
-            if (url.toLowerCase().indexOf("describefeaturetype") == -1)
-                url = url + "&request=DescribeFeatureType";
-            if (url.toLowerCase().indexOf("typename") == -1)
-                url = url + "&TYPENAME=" + xmlns + ":"
-                        + featureTypeName;
-        } else {
-            if (url.toLowerCase().indexOf("service=") == -1)
-                url = url + "&service=WFS";
-            if (url.toLowerCase().indexOf("version=") == -1)
-                url = url + "&version=" + version;
-            if (url.toLowerCase().indexOf("describefeaturetype") == -1)
-                url = url + "&request=DescribeFeatureType";
-            if (url.toLowerCase().indexOf("typename") == -1)
-                url = url + "&TYPENAME=" + xmlns + ":"
-                        + featureTypeName;
-
+        if (url.toLowerCase().indexOf("service=") == -1) {
+            url = IOHelper.addQueryString(url, "service=WFS");
         }
-
+        if (url.toLowerCase().indexOf("version=") == -1) {
+            url = IOHelper.addUrlParam(url, "version", version);
+        }
+        if (url.toLowerCase().indexOf("describefeaturetype") == -1) {
+            url = IOHelper.addQueryString(url, "request=DescribeFeatureType");
+        }
+        if (url.toLowerCase().indexOf("typename") == -1) {
+            url = IOHelper.addUrlParam(url, "TYPENAME", typename);
+        }
         return url;
     }
 
-    public static String getGetFeatureUrl(String url, String version, String xmlns, String featureTypeName, String maxfea) {
-
-        // check params
-        if (url.indexOf("?") == -1) {
-            url = url + "?";
-            if (url.toLowerCase().indexOf("service=") == -1)
-                url = url + "service=WFS";
-        } else {
-            if (url.toLowerCase().indexOf("service=") == -1)
-                url = url + "&service=WFS";
-        }
-        if (url.toLowerCase().indexOf("version=") == -1)
-            url = url + "&version=" + version;
-        if (url.toLowerCase().indexOf("getfeature") == -1)
-            url = url + "&request=GetFeature";
-        if (url.toLowerCase().indexOf("typename") == -1)
-            url = url + "&TYPENAME=" + xmlns + ":"
-                    + featureTypeName;
-        if (url.toLowerCase().indexOf("maxfeatures") == -1)
-            url = url + "&maxFeatures=" + maxfea;
-
-        return url;
-    }
     public static String getResponse(final String url, final String userName,
                                      final String password) throws ServiceException {
         try {
@@ -312,9 +276,9 @@ public class WFSDescribeFeatureHelper {
      * @return
      * @throws ServiceException
      */
-    public static JSONObject getWFSFeaturePropertyTypes(WFSLayerConfiguration lc, String layer_id) throws ServiceException {
-        final String wfsurl = parseDescribeFeatureUrl(lc.getURL(), lc.getWFSVersion(), lc.getFeatureNamespace(), lc.getFeatureElement());
-        final String response = getResponse(wfsurl, lc.getUsername(), lc.getPassword());
+    public static JSONObject getWFSFeaturePropertyTypes(OskariLayer layer, String layer_id) throws ServiceException {
+        final String wfsurl = parseDescribeFeatureUrl(layer.getUrl(), layer.getVersion(),  layer.getName());
+        final String response = getResponse(wfsurl, layer.getUsername(), layer.getPassword());
         JSONObject props = WFSDescribeFeatureHelper.xml2JSON(response);
         return getWFSFeaturePropertyTypes(layer_id, props);
     }
@@ -378,9 +342,9 @@ public class WFSDescribeFeatureHelper {
      * @return
      * @throws ServiceException
      */
-    public static JSONObject getFeatureTypesTextOrNumeric(WFSLayerConfiguration lc, String layer_id) throws ServiceException {
-        final String wfsurl = parseDescribeFeatureUrl(lc.getURL(), lc.getWFSVersion(), lc.getFeatureNamespace(), lc.getFeatureElement());
-        final String response = getResponse(wfsurl, lc.getUsername(), lc.getPassword());
+    public static JSONObject getFeatureTypesTextOrNumeric(OskariLayer layer, String layer_id) throws ServiceException {
+        final String wfsurl = parseDescribeFeatureUrl(layer.getUrl(), layer.getVersion(),  layer.getName());
+        final String response = getResponse(wfsurl, layer.getUsername(), layer.getPassword());
         JSONObject props = WFSDescribeFeatureHelper.xml2JSON(response);
         return getFeatureTypesTextOrNumeric(layer_id, props);
     }

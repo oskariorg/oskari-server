@@ -7,6 +7,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
 
+import static fi.nls.oskari.analysis.AnalysisParser.UNION;
+
 public class UnionMethodParams extends AnalysisMethodParams {
 
     private final String analysisMethodTemplate = "analysis-layer-wps-geomunion.xml";
@@ -18,6 +20,9 @@ public class UnionMethodParams extends AnalysisMethodParams {
 
     private String mimeTypeFormat = null;
 
+    public UnionMethodParams() {
+        setMethod(UNION);
+    }
     public String getMimeTypeFormat() {
         return mimeTypeFormat;
     }
@@ -50,6 +55,8 @@ public class UnionMethodParams extends AnalysisMethodParams {
         doctemp = doctemp.replace(OUTPUTFORMAT, this.getOutputFormat());
         doctemp = doctemp.replace(VERSION, this.getVersion());
         doctemp = doctemp.replace(SRSNAME, this.getSrsName());
+
+        // FIXME: this is always "" as looks like this isn't needed and might actually break things if added
         doctemp = doctemp.replace(XMLNS, this.getXmlns());
         doctemp = doctemp.replace(TYPENAME, this.getTypeName());
         doctemp = doctemp.replace(LOCALTYPENAME, this.getLocalTypeName());

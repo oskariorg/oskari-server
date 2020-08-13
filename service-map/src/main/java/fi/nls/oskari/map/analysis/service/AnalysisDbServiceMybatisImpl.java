@@ -1,12 +1,13 @@
 package fi.nls.oskari.map.analysis.service;
 
+import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.cache.Cache;
 import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.db.DatasourceHelper;
-import fi.nls.oskari.domain.map.UserDataStyle;
 import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.mybatis.JSONObjectMybatisTypeHandler;
 import fi.nls.oskari.service.ServiceException;
 
 import org.apache.ibatis.mapping.Environment;
@@ -23,7 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AnalysisDbServiceMybatisImpl implements AnalysisDbService {
+@Oskari
+public class AnalysisDbServiceMybatisImpl extends AnalysisDbService {
 
     protected static final String DATASOURCE_ANALYSIS = "analysis";
 
@@ -54,7 +56,7 @@ public class AnalysisDbServiceMybatisImpl implements AnalysisDbService {
 
         final Configuration configuration = new Configuration(environment);
         configuration.getTypeAliasRegistry().registerAlias(Analysis.class);
-        configuration.getTypeAliasRegistry().registerAlias(UserDataStyle.class);
+        configuration.getTypeHandlerRegistry().register(JSONObjectMybatisTypeHandler.class);
         configuration.setLazyLoadingEnabled(true);
         configuration.addMapper(AnalysisMapper.class);
 
@@ -240,7 +242,6 @@ public class AnalysisDbServiceMybatisImpl implements AnalysisDbService {
             final AnalysisMapper mapper = session.getMapper(AnalysisMapper.class);
             mapper.deleteAnalysisById(analysis.getId());
             mapper.deleteAnalysisDataById(analysis.getId());
-            mapper.deleteAnalysisStyleById(analysis.getStyle_id());
             session.commit();
             cache.remove(Long.toString(analysis.getId()));
         } catch (Exception e) {
@@ -269,7 +270,6 @@ public class AnalysisDbServiceMybatisImpl implements AnalysisDbService {
                 for (long id : ids) {
                     Analysis analysis_old = mapper.getAnalysisById(id);
                     mapper.deleteAnalysisById(id);
-                    mapper.deleteAnalysisStyleById(analysis_old.getStyle_id());
                     cache.remove(Long.toString(analysis_old.getId()));
                 }
                 session.commit();

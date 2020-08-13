@@ -1,50 +1,34 @@
 package fi.nls.oskari.db;
 
-import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupService;
-import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupServiceIbatisImpl;
-import fi.nls.oskari.domain.Role;
-import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.domain.map.MaplayerGroup;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.layer.DataProviderService;
-import fi.nls.oskari.map.layer.DataProviderServiceMybatisImpl;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
-import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLink;
-import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkService;
-import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkServiceMybatisImpl;
-import fi.nls.oskari.user.MybatisRoleService;
+import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.IOHelper;
-import fi.nls.oskari.util.JSONHelper;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.oskari.permissions.PermissionService;
-import org.oskari.permissions.PermissionServiceMybatisImpl;
-import org.oskari.permissions.model.*;
+import org.oskari.admin.LayerCapabilitiesHelper;
+import org.oskari.admin.MapLayerGroupsHelper;
+import org.oskari.admin.MapLayerPermissionsHelper;
+import org.oskari.maplayer.model.MapLayer;
+import org.oskari.maplayer.admin.LayerAdminJSONHelper;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
+// Service-admin provides helpers for inserting layers BUT this helper has been used in multiple migrations for setting
+// up initial content so keeping it as compatibility solution
 public class LayerHelper {
 
     private static final Logger log = LogFactory.getLogger(LayerHelper.class);
-    private static final OskariMapLayerGroupService groupService = new OskariMapLayerGroupServiceIbatisImpl();
-    private static final OskariLayerGroupLinkService linkService = new OskariLayerGroupLinkServiceMybatisImpl();
-    private static final DataProviderService dataProviderService = new DataProviderServiceMybatisImpl();
-    private static final PermissionService permissionsService = new PermissionServiceMybatisImpl();
-    private static final MybatisRoleService roleService = new MybatisRoleService();
+    private static final OskariLayerService layerService = new OskariLayerServiceMybatisImpl();
 
-    public static int setupLayer(final String layerfile) throws IOException, JSONException {
+    public static int setupLayer(final String layerfile) throws IOException {
         final String jsonStr = IOHelper.readString(DBHandler.getInputStreamFromResource("/json/layers/" + layerfile));
-        final JSONObject json = JSONHelper.createJSONObject(jsonStr);
-        final OskariLayer layer = parseLayer(json);
-
-        final OskariLayerService service = new OskariLayerServiceMybatisImpl();
-        final List<OskariLayer> dbLayers = service.findByUrlAndName(layer.getUrl(), layer.getName());
+        MapLayer layer = LayerAdminJSONHelper.readJSON(jsonStr);
+        final List<OskariLayer> dbLayers = layerService.findByUrlAndName(layer.getUrl(), layer.getName());
         if(!dbLayers.isEmpty()) {
             if(dbLayers.size() > 1) {
                 log.warn("Found multiple layers with same url and name. Using first one. Url:", layer.getUrl(), "- name:", layer.getName());
@@ -52,125 +36,48 @@ public class LayerHelper {
             return dbLayers.get(0).getId();
         } else {
             // layer doesn't exist, insert it
-            int id = service.insert(layer);
-            layer.setId(id);
-            setupLayerPermissions(json.getJSONObject("role_permissions"), id);
+            // fromJSON validates parsed layer and throws IllegalArgumentException if layer is not valid
+            final OskariLayer oskariLayer = LayerAdminJSONHelper.fromJSON(layer);
+            // add info from capabilities
+            try {
+                LayerCapabilitiesHelper.updateCapabilities(oskariLayer);
+            } catch (ServiceException e) {
+                log.warn(e,"Error updating capabilities for service from", oskariLayer.getUrl());
+                if (OskariLayer.TYPE_WMTS.equals(oskariLayer.getType())) {
+                    log.warn("The WMTS-layer", oskariLayer.getName(),
+                            "might work slower than normal with capabilities/tilegrids not cached. Try caching the capabilities later using the admin UI.");
+                }
+            }
+            // insert to db
+            int id = layerService.insert(oskariLayer);
+            MapLayerPermissionsHelper.setLayerPermissions(id, layer.getRole_permissions());
 
-            final String groupName = json.getString("inspiretheme");
-            // handle inspiretheme
-            final MaplayerGroup group = groupService.findByName(groupName);
-            if (group == null) {
-                log.warn("Didn't find match for theme:", groupName);
-            } else {
-                linkService.insert(new OskariLayerGroupLink(id, group.getId()));
+            if (layer.getGroups() != null) {
+                List<MaplayerGroup> groups = MapLayerGroupsHelper.findGroupsForNames_dangerzone_(layer.getGroups());
+                if (layer.getGroups().size() != groups.size()) {
+                    log.warn("Couldn't find all the layer groups for layer.");
+                }
+                MapLayerGroupsHelper.setGroupsForLayer(id, groups.stream()
+                        .map(g -> g.getId())
+                        .collect(Collectors.toList()));
             }
             return id;
         }
     }
 
-
     /**
-     * Minimal implementation for parsing layer in json format.
-     * @param json
-     * @return
+     * So we can get updated "supported SRS" for layers after inserting a new appsetup with possibly new projection
+     * @throws ServiceException
      */
-    private static OskariLayer parseLayer(final JSONObject json) throws JSONException {
-        OskariLayer layer = new OskariLayer();
-
-        // read mandatory values, an JSONException is thrown if these are missing
-        layer.setType(json.getString("type"));
-        layer.setUrl(json.getString("url"));
-        layer.setName(json.getString("name"));
-        final String orgName = json.getString("organization");
-
-        layer.setLocale(json.getJSONObject("locale"));
-
-        // read optional values
-        layer.setBaseMap(json.optBoolean("base_map", layer.isBaseMap()));
-        layer.setOpacity(json.optInt("opacity", layer.getOpacity()));
-        layer.setStyle(json.optString("style", layer.getStyle()));
-        layer.setMinScale(json.optDouble("minscale", layer.getMinScale()));
-        layer.setMaxScale(json.optDouble("maxscale", layer.getMaxScale()));
-        layer.setLegendImage(json.optString("legend_image", layer.getLegendImage()));
-        layer.setMetadataId(json.optString("metadataid", layer.getMetadataId()));
-        layer.setGfiType(json.optString("gfi_type", layer.getGfiType()));
-        layer.setGfiXslt(json.optString("gfi_xslt", layer.getGfiXslt()));
-        layer.setGfiContent(json.optString("gfi_content", layer.getGfiContent()));
-        layer.setGeometry(json.optString("geometry", layer.getGeometry()));
-        layer.setRealtime(json.optBoolean("realtime", layer.getRealtime()));
-        layer.setRefreshRate(json.optInt("refresh_rate", layer.getRefreshRate()));
-        layer.setSrs_name(json.optString("srs_name", layer.getSrs_name()));
-        layer.setVersion(json.optString("version", layer.getVersion()));
-        layer.setUsername(json.optString("username", layer.getUsername()));
-        layer.setPassword(json.optString("password", layer.getPassword()));
-        // omit permissions, these are handled by LayerHelper
-
-        // handle params, check for null to avoid overwriting empty JS Object Literal
-        final JSONObject params = json.optJSONObject("params");
-        if (params != null) {
-            layer.setParams(params);
-        }
-
-        // handle options, check for null to avoid overwriting empty JS Object Literal
-        final JSONObject options = json.optJSONObject("options");
-        if (options != null) {
-            layer.setOptions(options);
-        }
-        // handle attributes, check for null to avoid overwriting empty JS Object Literal
-        final JSONObject attributes = json.optJSONObject("attributes");
-        if (attributes != null) {
-            layer.setAttributes(attributes);
-        }
-
-        // setup data producer/layergroup
-        final DataProvider dataProvider = dataProviderService.findByName(orgName);
-        if(dataProvider == null) {
-            log.warn("Didn't find match for layergroup:", orgName);
-        } else {
-            layer.addDataprovider(dataProvider);
-        }
-
-        return layer;
-    }
-
-    /*
-    "role_permissions": {
-        "Guest" : ["VIEW_LAYER"],
-        "User" : ["VIEW_LAYER"],
-        "Administrator" : ["VIEW_LAYER"]
-    }
-    */
-    private static void setupLayerPermissions(JSONObject permissions, int layerId) {
-
-        // setup rights
-        if(permissions == null) {
-            return;
-        }
-        final Resource res = new Resource();
-        res.setType(ResourceType.maplayer);
-        res.setMapping(Integer.toString(layerId));
-
-        final Iterator<String> roleNames = permissions.keys();
-        while(roleNames.hasNext()) {
-            final String roleName = roleNames.next();
-            final Role role = roleService.findRoleByName(roleName);
-            if(role == null) {
-                log.warn("Couldn't find matching role in DB:", roleName, "- Skipping!");
-                continue;
-            }
-            final JSONArray permissionTypes = permissions.optJSONArray(roleName);
-            if(permissionTypes == null) {
-                continue;
-            }
-            for (int i = 0; i < permissionTypes.length(); ++i) {
-                final Permission permission = new Permission();
-                permission.setExternalType(PermissionExternalType.ROLE);
-                permission.setExternalId((int) role.getId());
-                final String type = permissionTypes.optString(i);
-                permission.setType(type);
-                res.addPermission(permission);
+    protected static void refreshLayerCapabilities() {
+        for (OskariLayer layer : layerService.findAll()) {
+            try {
+                LayerCapabilitiesHelper.updateCapabilities(layer);
+                layerService.update(layer);
+            } catch (Exception e) {
+                log.warn(e,"Couldn't update capabilities for layer:", layer.getUrl(), layer.getName());
             }
         }
-        permissionsService.saveResource(res);
     }
+
 }

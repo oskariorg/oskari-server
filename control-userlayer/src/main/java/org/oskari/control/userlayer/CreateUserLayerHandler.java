@@ -35,7 +35,6 @@ import org.oskari.map.userlayer.service.UserLayerException;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.domain.map.userlayer.UserLayerData;
-import fi.nls.oskari.domain.map.UserDataStyle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
@@ -400,11 +399,10 @@ public class CreateUserLayerHandler extends RestActionHandler {
     private UserLayer store(SimpleFeatureCollection fc, String uuid, Map<String, String> formParams)
             throws UserLayerException {
             UserLayer userLayer = createUserLayer(fc, uuid, formParams);
-            userLayer.setStyle(createUserLayerStyle(formParams));
             List<UserLayerData> userLayerDataList = UserLayerDataService.createUserLayerData(fc, uuid);
             userLayer.setFeatures_count(userLayerDataList.size());
             userLayer.setFeatures_skipped(fc.size() - userLayerDataList.size());
-            userLayerService.insertUserLayer(userLayer, userLayerDataList);
+            userLayerService.insertUserLayerAndData(userLayer, userLayerDataList);
             return userLayer;
     }
 
@@ -412,16 +410,8 @@ public class CreateUserLayerHandler extends RestActionHandler {
         String name = formParams.get(KEY_NAME);
         String desc = formParams.get(KEY_DESC);
         String source = formParams.get(KEY_SOURCE);
-        return UserLayerDataService.createUserLayer(fc, uuid, name, desc, source);
-    }
-
-    private UserDataStyle createUserLayerStyle(Map<String, String> formParams)
-            throws UserLayerException {
-        JSONObject styleObject = null;
-        if (formParams.containsKey(KEY_STYLE)) {
-            styleObject = JSONHelper.createJSONObject(formParams.get(KEY_STYLE));
-        }
-        return UserLayerDataService.createUserLayerStyle(styleObject);
+        String style = formParams.get(KEY_STYLE);
+        return UserLayerDataService.createUserLayer(fc, uuid, name, desc, source, style);
     }
 
     private void writeResponse(ActionParameters params, UserLayer ulayer) {

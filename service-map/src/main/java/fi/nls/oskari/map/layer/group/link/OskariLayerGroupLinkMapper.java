@@ -40,6 +40,10 @@ public interface OskariLayerGroupLinkMapper {
             + " WHERE maplayerid = #{layerId}")
     void deleteByLayerId(@Param("layerId") int layerId);
 
+    @Delete("DELETE FROM oskari_maplayer_group_link"
+            + " WHERE groupid = #{groupid}")
+    void deleteByGroupId(@Param("groupid") int groupId);
+
     @Update("UPDATE oskari_maplayer_group_link"
             + " SET order_number = #{orderNumber}"
             + " WHERE maplayerid = #{layerId} AND groupid = #{groupId}")

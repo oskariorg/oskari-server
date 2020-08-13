@@ -17,10 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.*;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -61,11 +58,11 @@ public class JSONActionRouteTest {
      * @return
      */
     public ActionParameters createActionParams(final User user) {
-        return createActionParams(new HashMap<String, String>(), user);
+        return createActionParams(Collections.emptyMap(), user);
     }
 
     public ActionParameters createActionParams(final User user, final InputStream payload) {
-        return createActionParams(new HashMap<String, String>(), user, payload);
+        return createActionParams(Collections.emptyMap(), user, payload);
     }
 
     /**
@@ -90,29 +87,9 @@ public class JSONActionRouteTest {
     public ActionParameters createActionParams(final Map<String, String> parameters, final User user, final InputStream payload) {
         final ActionParameters params = new ActionParameters();
         // request params
-        HttpServletRequest req = mock(HttpServletRequest.class);
-        for(String key : parameters.keySet()) {
-            when(req.getParameter(key)).thenReturn(parameters.get(key));
-        }
-
-        // mock the session
-        HttpSession session = mock(HttpSession.class);
-        doReturn("testkey").when(session).getId();
-        // Return mock session when calling getSession without or with boolean parameter.
-        doReturn(session).when(req).getSession();
-        doReturn(session).when(req).getSession(false);
-
-        doReturn(new Vector(parameters.keySet()).elements()).when(req).getParameterNames();
+        HttpServletRequest req = mockHttpServletRequest("GET", parameters, null, -1, payload);
         if(!response.toString().isEmpty()) {
             fail("Creating new ActionParams, but response already has content: " + response.toString());
-        }
-        // mock possible payload inputstream
-        if(payload != null) {
-            try {
-                ServletInputStream wrapper = new MockServletInputStream(payload);
-                doReturn(wrapper).when(req).getInputStream();
-            }
-            catch (IOException ignored ) {}
         }
         // response handler
         HttpServletResponse resp = mock(HttpServletResponse.class);
@@ -148,7 +125,7 @@ public class JSONActionRouteTest {
         HttpServletRequest req = mock(HttpServletRequest.class);
 
         if (parameters != null) {
-            doReturn(new Vector<String>(parameters.keySet()).elements()).when(req).getParameterNames();
+            doReturn(new Vector<>(parameters.keySet()).elements()).when(req).getParameterNames();
             for (String key : parameters.keySet()) {
                 when(req.getParameter(key)).thenReturn(parameters.get(key));
             }

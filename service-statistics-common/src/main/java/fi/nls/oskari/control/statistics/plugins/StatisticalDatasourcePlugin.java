@@ -156,14 +156,11 @@ public abstract class StatisticalDatasourcePlugin {
                 startUpdater(cacheEmpty);
             }
         }
-
-        boolean complete;
-        if (updater == null) {
-            // We aren't running an update - don't poll back for more complete list
-            complete = true;
-        } else {
-            // Only poll back for more complete list if we are running a full update (cache was empty)
-            complete = updater.isFullUpdate();
+        // If we aren't running an update - don't poll back for more complete list
+        boolean complete = true;
+        // Only poll back for more complete list if we are running a full update (cache was empty)
+        if (cacheEmpty && updater != null && updater.isFullUpdate()) {
+            complete = false;
         }
 
         // filter by user

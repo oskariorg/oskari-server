@@ -18,7 +18,7 @@ public class DataStatus {
     private Instant updateStarted;
 
     public DataStatus(String status) {
-        this(JSONHelper.createJSONObject(status));
+        this(status == null ? null : JSONHelper.createJSONObject(status));
     }
 
     private DataStatus(JSONObject status) {

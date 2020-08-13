@@ -5,6 +5,7 @@ import java.util.*;
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.MyPlaceCategory;
+import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
 import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
@@ -65,6 +66,9 @@ public class MyPlacesWFSHelper extends UserLayerService {
     public int getBaselayerId() {
         return myPlacesLayerId;
     }
+    protected OskariLayer getBaseLayer() {
+        return MyPlacesService.getBaseLayer();
+    }
 
     public boolean isMyPlacesLayer(OskariLayer layer) {
         return layer.getId() == myPlacesLayerId;
@@ -99,27 +103,14 @@ public class MyPlacesWFSHelper extends UserLayerService {
         return layer.isOwnedBy(user.getUuid()) || layer.isPublished();
     }
 
-    private MyPlaceCategory getLayer(int id) {
+    protected MyPlaceCategory getLayer(int id) {
         if (service == null) {
             // might cause problems with timing of components being initialized if done in init/constructor
             service = OskariComponentManager.getComponentOfType(MyPlacesService.class);
         }
         return service.findCategory(id);
     }
-    public JSONObject getOskariStyle (String id) {
-        MyPlaceCategory layer = getLayer(parseId(id));
-        if (layer == null) {
-            return new JSONObject();
-        }
-        JSONObject style = layer.getStyle().parseUserLayerStyleToOskariJSON();
-        JSONObject text = new JSONObject();
-        JSONArray props = new JSONArray();
-        props.put("attention_text");
-        props.put("name");
-        JSONHelper.put(text, "labelProperty", props);
-        JSONHelper.putValue(style, "text", text);
-        return style;
-    }
+
     public SimpleFeatureCollection postProcess(SimpleFeatureCollection sfc) throws Exception {
         List<SimpleFeature> fc = new ArrayList<>();
         SimpleFeatureType schema;

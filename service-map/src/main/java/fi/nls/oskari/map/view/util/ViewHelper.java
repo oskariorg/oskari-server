@@ -22,8 +22,38 @@ public class ViewHelper {
 
     private static final Logger log = LogFactory.getLogger(ViewHelper.class);
     private static String[] UNRESTRICTED_USAGE_DOMAINS = PropertyUtil.getCommaSeparatedList("view.published.usage.unrestrictedDomains");
+    private static String myDomain;
 
     private ViewHelper() {}
+
+    protected static void setUnrestrictedUsageDomains(String[] domains) {
+        UNRESTRICTED_USAGE_DOMAINS = domains;
+    }
+
+    protected static void setInstanceAddress(String address) {
+        if (address == null) {
+            myDomain = null;
+            return;
+        }
+        String[] prop = address.split("//");
+        if (prop.length == 2) {
+            myDomain = prop[1];
+        } else {
+            myDomain = "http://localhost:8080";
+        }
+        myDomain = address;
+    }
+    /**
+     * Returns the configured domain without the protocol
+     * @return
+     */
+    protected static String getMyDomain() {
+        if (myDomain != null) {
+            return myDomain;
+        }
+        setInstanceAddress(PropertyUtil.get("oskari.domain"));
+        return myDomain;
+    }
 
     public static JSONArray getStartupSequence(final View view) throws ViewException {
         final JSONArray startupSequence = new JSONArray();
@@ -60,6 +90,9 @@ public class ViewHelper {
         if (!refererExists || !domainRestrictionExists) {
             return true;
         }
+        if (referer.endsWith(getMyDomain())) {
+            return true;
+        }
         log.debug("Unrestricted domains:", UNRESTRICTED_USAGE_DOMAINS);
         for (String domain : UNRESTRICTED_USAGE_DOMAINS) {
             if(domain.equals("*") || referer.endsWith(domain.toLowerCase())) {
@@ -86,14 +119,14 @@ public class ViewHelper {
                     bundle.put("conf", new JSONObject(conf));
                 }
                 else {
-                    log.info("Could not get configuration fragment for bundle '", name, "'");
+                    log.debug("Could not get configuration fragment for bundle '", name, "'");
                 }
                 // setup state for bundle
                 if (state != null) {
                     bundle.put("state", new JSONObject(state));
                 }
                 else {
-                    log.info("Could not get state fragment for bundle '", name, "'");
+                    log.debug("Could not get state fragment for bundle '", name, "'");
                 }
             } catch (Exception ex) {
                 log.error("Malformed JSON in configuration fragment for bundle", name, conf);
