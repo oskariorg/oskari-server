@@ -18,10 +18,7 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
@@ -43,7 +40,7 @@ import java.util.Locale;
 @ComponentScan(
         excludeFilters = @ComponentScan.Filter(type= FilterType.ASSIGNABLE_TYPE, value={SpringConfig.class}),
         basePackages="fi.nls.oskari, org.oskari")
-public class SpringConfig extends WebMvcConfigurerAdapter implements ApplicationListener<ContextRefreshedEvent> {
+public class SpringConfig implements WebMvcConfigurer, ApplicationListener<ContextRefreshedEvent> {
 
     private static final Logger LOG = LogFactory.getLogger(SpringConfig.class);
 
