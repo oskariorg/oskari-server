@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.util.ReflectionUtils;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ViewResolver;
@@ -31,7 +30,6 @@ import org.springframework.web.servlet.view.JstlView;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -128,7 +126,6 @@ public class SpringConfig extends WebMvcConfigurerAdapter implements Application
         LOG.info("Teardown");
         ActionControl.teardown();
         WebappHelper.teardown();
-        cleanupIbatis();
     }
 
     @Override
@@ -157,21 +154,6 @@ public class SpringConfig extends WebMvcConfigurerAdapter implements Application
         }
 
         return messageSource;
-    }
-    /**
-     * Workaround for https://issues.apache.org/jira/browse/IBATIS-540
-     */
-    private static void cleanupIbatis() {
-        try {
-            final Class resultObjectFactoryUtilClazz = Class.forName("com.ibatis.sqlmap.engine.mapping.result.ResultObjectFactoryUtil");
-            final Field factorySettings = ReflectionUtils.findField(resultObjectFactoryUtilClazz, "factorySettings");
-            ReflectionUtils.makeAccessible(factorySettings);
-            factorySettings.set(null, null);
-        } catch (final IllegalAccessException e) {
-            LOG.error(e, "Could not clean up the iBatis ResultObjectFactoryUtil ThreadLocal memory leak");
-        } catch (final ClassNotFoundException e) {
-            LOG.error(e, "Did not need to clean up the IBATIS-540 memory leak, the relevant class wasn't around");
-        }
     }
 
 }
