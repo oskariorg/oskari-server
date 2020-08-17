@@ -25,7 +25,9 @@ import static org.mockito.Matchers.anyString;
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(GetGeoPointDataService.class)
-@PowerMockIgnore({"com.sun.org.apache.xalan.*", "javax.xml.*", "org.w3c.dom.*", "org.xml.*", "com.sun.org.apache.xml.*"})
+// these are needed with PowerMock and Java 11. Haven't tried if Java 13+ still needs these:
+// https://github.com/powermock/powermock/issues/864
+@PowerMockIgnore({"com.sun.org.apache.xalan.*", "com.sun.org.apache.xerces.*", "javax.xml.*", "org.w3c.dom.*", "org.xml.*", "com.sun.org.apache.xml.*"})
 public class GetGeoPointDataServiceTest {
 
     @Test
