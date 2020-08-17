@@ -61,7 +61,6 @@
 
         <commons-lang.version>2.6</commons-lang.version>
         <commons-collections.version>3.2.2</commons-collections.version>
-        <commons-httpclient.version>3.1</commons-httpclient.version>
         <commons-codec.version>1.7</commons-codec.version>
         <commons-fileupload.version>1.4</commons-fileupload.version>
         <commons-dbcp2.version>2.0.1</commons-dbcp2.version>
@@ -593,20 +592,6 @@
                 <groupId>commons-collections</groupId>
                 <artifactId>commons-collections</artifactId>
                 <version>${commons-collections.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-httpclient</groupId>
-                <artifactId>commons-httpclient</artifactId>
-                <version>${commons-httpclient.version}</version>
-                <exclusions>
-                    <!-- exclude commons-logging
-                    Reason: axiom brings a more recent version (causing conflict if we have both)
-                    -->
-                    <exclusion>
-                        <groupId>commons-logging</groupId>
-                        <artifactId>commons-logging</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>commons-codec</groupId>
