@@ -17,6 +17,7 @@
  */
 package org.geoserver.wps.oskari.oskari;
 
+import org.geoserver.wps.gs.GeoServerProcess;
 import org.locationtech.jts.geom.*;
 import org.geotools.data.collection.ListFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureCollection;
@@ -30,7 +31,6 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.process.factory.DescribeParameter;
 import org.geotools.process.factory.DescribeProcess;
 import org.geotools.process.factory.DescribeResult;
-import org.geotools.process.gs.GSProcess;
 import org.geotools.referencing.operation.transform.AffineTransform2D;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -52,7 +52,7 @@ import java.util.NoSuchElementException;
  * @source $URL$
  */
 @DescribeProcess(title = "zonesector", description = "Creates zones and sectors each feature in a collection by a fixed distance and zone count. Works in pure cartesian mode.")
-public class ZoneSectorFeatureCollection implements GSProcess {
+public class ZoneSectorFeatureCollection implements GeoServerProcess {
     @DescribeResult(description = "The zonesectored feature collection")
     public SimpleFeatureCollection execute(
             @DescribeParameter(name = "feature collection", description = "Feature collection") SimpleFeatureCollection features,
