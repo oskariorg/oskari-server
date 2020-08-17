@@ -89,7 +89,7 @@
         <quartz-scheduler.version>2.3.2</quartz-scheduler.version>
 
         <xmlbeans.version>2.6.0</xmlbeans.version>
-        <geotools.version>23.1</geotools.version>
+        <geotools.version>23.2</geotools.version>
         <jts.version>1.16.1</jts.version>
         <mvt.version>3.1.0</mvt.version>
         <!-- gt-xsd-kml.version>9.3</gt-xsd-kml.version -->
