@@ -65,10 +65,9 @@
         <commons-fileupload.version>1.4</commons-fileupload.version>
         <commons-dbcp2.version>2.0.1</commons-dbcp2.version>
 
-        <staxon.version>1.2</staxon.version>
         <lambdaj.version>2.3.3</lambdaj.version>
         <jsoup.version>1.13.1</jsoup.version>
-        <axiom.version>1.2.20</axiom.version>
+        <axiom.version>1.2.22</axiom.version>
         <commons-lang3.version>3.8.1</commons-lang3.version>
         <stax-api.version>1.0-2</stax-api.version>
         <stax2-api.version>3.1.4</stax2-api.version>
@@ -109,12 +108,6 @@
     </properties>
 
     <dependencies>
-        <!-- overrides vulnerable version included by axiom -->
-        <dependency>
-            <groupId>org.apache.james</groupId>
-            <artifactId>apache-mime4j-core</artifactId>
-            <version>0.8.1</version>
-        </dependency>
 	<!-- Replacements for deprecated/removed modules in JDK9/JDK11 -->
         <dependency>
             <groupId>javax.xml.bind</groupId>
@@ -667,11 +660,6 @@
             </dependency>
 
             <dependency>
-                <groupId>de.odysseus.staxon</groupId>
-                <artifactId>staxon</artifactId>
-                <version>${staxon.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>${commons-lang3.version}</version>
@@ -720,10 +708,6 @@
                     <exclusion>
                         <groupId>maven-plugins</groupId>
                         <artifactId>maven-findbugs-plugin</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.james</groupId>
-                        <artifactId>apache-mime4j-core</artifactId>
                     </exclusion>
                     <!-- exclude stax-api
                     	Reason: xml-apis lib provide newer version of classes which are used (causing conflict if we have both)

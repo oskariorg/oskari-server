@@ -47,7 +47,7 @@
             <groupId>fi.mml</groupId>
             <artifactId>capabilities</artifactId>
         </dependency>
-
+        <!-- Required by fi.mml.capabilities -->
         <dependency>
             <groupId>org.apache.xmlbeans</groupId>
             <artifactId>xmlbeans</artifactId>
