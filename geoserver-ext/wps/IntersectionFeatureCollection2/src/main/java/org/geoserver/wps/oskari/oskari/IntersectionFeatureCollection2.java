@@ -17,6 +17,7 @@
  */
 package org.geoserver.wps.oskari.oskari;
 
+import org.geoserver.wps.gs.GeoServerProcess;
 import org.locationtech.jts.densify.Densifier;
 import org.locationtech.jts.geom.*;
 import org.geotools.data.simple.SimpleFeatureCollection;
@@ -30,7 +31,6 @@ import org.geotools.geometry.jts.JTS;
 import org.geotools.process.factory.DescribeParameter;
 import org.geotools.process.factory.DescribeProcess;
 import org.geotools.process.factory.DescribeResult;
-import org.geotools.process.gs.GSProcess;
 import org.geotools.referencing.CRS;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -55,7 +55,7 @@ import java.util.logging.Logger;
  */
 @DescribeProcess(title = "intersection2", description = "test -- Returns the intersections between two feature "
         + "collections adding the attributes from both of them")
-public class IntersectionFeatureCollection2 implements GSProcess {
+public class IntersectionFeatureCollection2 implements GeoServerProcess {
     private static final Logger logger = Logger
             .getLogger("org.geoserver.wps.oskari.oskari.IntersectionFeatureCollection2");
 
