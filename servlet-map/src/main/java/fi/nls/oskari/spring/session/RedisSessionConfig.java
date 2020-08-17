@@ -4,6 +4,7 @@ import fi.nls.oskari.util.PropertyUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -18,10 +19,10 @@ public class RedisSessionConfig extends WebMvcConfigurerAdapter {
 
     @Bean
     public JedisConnectionFactory connectionFactory() {
-        JedisConnectionFactory jedis = new JedisConnectionFactory();
-        jedis.setHostName(PropertyUtil.get("redis.hostname", "127.0.0.1"));
-        jedis.setPort(PropertyUtil.getOptional("redis.port", 6379));
-        jedis.setUsePool(true);
+        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(
+                PropertyUtil.get("redis.hostname", "127.0.0.1"),
+                PropertyUtil.getOptional("redis.port", 6379));
+        JedisConnectionFactory jedis = new JedisConnectionFactory(config);
         return jedis;
     }
 }
