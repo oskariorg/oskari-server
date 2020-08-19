@@ -73,7 +73,7 @@ public abstract class AbstractWFSFeaturesHandler extends ActionHandler {
         return layer;
     }
 
-    private OskariLayer findMapLayer(String id, User user) throws ActionException {
+    protected OskariLayer findMapLayer(String id, User user) throws ActionException {
         int layerId;
         try {
             layerId = Integer.parseInt(id);
