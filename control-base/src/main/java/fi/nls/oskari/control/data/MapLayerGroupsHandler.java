@@ -13,8 +13,7 @@ import org.json.JSONObject;
 import org.oskari.log.AuditLog;
 import org.oskari.service.util.ServiceFactory;
 
-import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupService;
-import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupServiceIbatisImpl;
+import org.oskari.service.maplayer.OskariMapLayerGroupService;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
@@ -40,6 +39,7 @@ public class MapLayerGroupsHandler extends RestActionHandler {
 	private static final String KEY_LOCALES = "locales";
 	private static final String KEY_PARENT_ID = "parentId";
 	private static final String KEY_SELECTABLE = "selectable";
+	private static final String KEY_ORDER = "orderNumber";
 	private static final String PARAM_DELETE_LAYERS = "deleteLayers";
 
 	private OskariMapLayerGroupService oskariMapLayerGroupService;
@@ -57,7 +57,7 @@ public class MapLayerGroupsHandler extends RestActionHandler {
 	public void init() {
 		// setup service if it hasn't been initialized
 		if (oskariMapLayerGroupService == null) {
-			setOskariMapLayerGroupService(new OskariMapLayerGroupServiceIbatisImpl());
+			setOskariMapLayerGroupService(ServiceFactory.getOskariMapLayerGroupService());
 		}
 		if (linkService == null) {
 			setLinkService(new OskariLayerGroupLinkServiceMybatisImpl());
@@ -127,6 +127,9 @@ public class MapLayerGroupsHandler extends RestActionHandler {
 			// hierarchical admin apparently sends id as separate param
 			maplayerGroup.setId(params.getRequiredParamInt(PARAM_ID));
 		}
+		// bit hacky but the frontend doesn't send order number as param so it is lost if it doesn't get copied...
+		maplayerGroup.setOrderNumber(getEnsuredOrderNumber(maplayerGroup));
+
 		oskariMapLayerGroupService.update(maplayerGroup);
 
 		AuditLog.user(params.getClientIp(), params.getUser()).withParam("id", maplayerGroup.getId())
@@ -134,6 +137,17 @@ public class MapLayerGroupsHandler extends RestActionHandler {
 				.updated(AuditLog.ResourceType.MAPLAYER_GROUP);
 
 		ResponseHelper.writeResponse(params, maplayerGroup.getAsJSON());
+	}
+
+	private int getEnsuredOrderNumber(MaplayerGroup maplayerGroup) {
+		if (maplayerGroup.getOrderNumber() == -1) {
+			// bit hacky but the frontend doesn't send order number as param so it is lost if it doesn't get copied...
+			final MaplayerGroup savedMapLayerGroup = oskariMapLayerGroupService.find(maplayerGroup.getId());
+			if (savedMapLayerGroup.getOrderNumber() != -1) {
+				return savedMapLayerGroup.getOrderNumber();
+			}
+		}
+		return -1;
 	}
 
 	/**
@@ -189,7 +203,7 @@ public class MapLayerGroupsHandler extends RestActionHandler {
 			layerNamesToBeDeleted = new ArrayList<String>();
 		}
 
-		oskariMapLayerGroupService.delete(maplayerGroup.getId());
+		oskariMapLayerGroupService.delete(maplayerGroup);
 		AuditLog.user(params.getClientIp(), params.getUser()).withParam("id", maplayerGroup.getId())
 				.withParam("name", maplayerGroup.getName(PropertyUtil.getDefaultLanguage()))
 				.withMsg("map layers " + layerNamesToBeDeleted + " deleted with map layer group")
@@ -204,7 +218,6 @@ public class MapLayerGroupsHandler extends RestActionHandler {
 	 * 
 	 * @param params
 	 * @param maplayerGroup
-	 * @param groupId
 	 * @throws ActionParamsException
 	 */
 	private void handleDeleteLegacy(ActionParameters params, MaplayerGroup maplayerGroup) throws ActionParamsException {
@@ -213,7 +226,7 @@ public class MapLayerGroupsHandler extends RestActionHandler {
 			throw new ActionParamsException("Maplayers linked to maplayer group",
 					JSONHelper.createJSONObject("code", "not_empty"));
 		}
-		oskariMapLayerGroupService.delete(maplayerGroup.getId());
+		oskariMapLayerGroupService.delete(maplayerGroup);
 
 		AuditLog.user(params.getClientIp(), params.getUser()).withParam("id", maplayerGroup.getId())
 				.withParam("name", maplayerGroup.getName(PropertyUtil.getDefaultLanguage()))
@@ -260,6 +273,7 @@ public class MapLayerGroupsHandler extends RestActionHandler {
 			maplayerGroup.setId(ConversionHelper.getInt(mapLayerGroupJSON.optString("id"), -1));
 			maplayerGroup.setParentId(mapLayerGroupJSON.optInt(KEY_PARENT_ID, -1));
 			maplayerGroup.setSelectable(mapLayerGroupJSON.optBoolean(KEY_SELECTABLE, true));
+			maplayerGroup.setOrderNumber(mapLayerGroupJSON.optInt(KEY_ORDER, -1));
 			Iterator<?> keys = locales.keys();
 
 			while (keys.hasNext()) {

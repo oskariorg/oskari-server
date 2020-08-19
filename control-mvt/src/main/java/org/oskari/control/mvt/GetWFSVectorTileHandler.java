@@ -22,10 +22,10 @@ import org.oskari.service.mvt.TileCoord;
 import org.oskari.service.mvt.WFSTileGrid;
 import org.oskari.service.user.UserLayerService;
 
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.MultiPoint;
-import com.vividsolutions.jts.geom.Point;
+import org.locationtech.jts.geom.Envelope;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.MultiPoint;
+import org.locationtech.jts.geom.Point;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.cache.CacheManager;
@@ -103,7 +103,6 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
 
         final Optional<UserLayerService> contentProcessor = getUserContentProsessor(id);
         final OskariLayer layer = findLayer(id, params.getUser(), contentProcessor);
-        requireWFSLayer(layer);
 
         final WFSTileGrid gridFromProps = tileGridProperties.getTileGrid(srs.toUpperCase());
         final WFSTileGrid grid = gridFromProps != null ? gridFromProps : KNOWN_TILE_GRIDS.get(srs.toUpperCase());

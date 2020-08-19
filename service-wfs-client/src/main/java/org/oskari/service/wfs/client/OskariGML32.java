@@ -11,7 +11,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.DefaultFeatureCollection;
 
-import org.geotools.xml.DOMParser;
+import org.geotools.xsd.DOMParser;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 

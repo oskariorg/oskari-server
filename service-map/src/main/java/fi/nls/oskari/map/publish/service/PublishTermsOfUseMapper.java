@@ -2,8 +2,6 @@ package fi.nls.oskari.map.publish.service;
 
 import fi.nls.oskari.map.publish.domain.TermsOfUse;
 import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 
 public interface PublishTermsOfUseMapper {

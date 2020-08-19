@@ -1,9 +1,7 @@
 package org.geotools.gpx;
 
-
-import org.geotools.gpx.GPXConfiguration;
-import org.geotools.xml.Configuration;
-import org.geotools.xml.test.XMLTestSupport;
+import org.geotools.xsd.Configuration;
+import org.geotools.xsd.test.XMLTestSupport;
 
 /**
  * Base test class for the http://www.topografix.com/GPX/1/1 schema.

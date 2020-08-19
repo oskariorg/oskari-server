@@ -1,7 +1,7 @@
 package fi.nls.oskari.csw.service;
 
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.PrecisionModel;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.PrecisionModel;
 import fi.nls.oskari.csw.domain.CSWIsoRecord;
 import fi.nls.oskari.csw.helper.CSWISORecordNamespaceContext;
 import fi.nls.oskari.csw.helper.CSWISORecordParser;

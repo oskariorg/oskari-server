@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.geotools.data.ows.Layer;
-import org.geotools.data.ows.WMSCapabilities;
+import org.geotools.ows.wms.Layer;
+import org.geotools.ows.wms.WMSCapabilities;
 import org.junit.Test;
 import org.oskari.maplayer.model.ServiceCapabilitiesResultWMS;
 
