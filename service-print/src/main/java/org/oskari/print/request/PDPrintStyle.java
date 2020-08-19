@@ -71,6 +71,10 @@ public class PDPrintStyle {
         this.strokeColor = strokeColor;
     }
 
+    public void setStrokeColor(Color strokeColor) {
+        setStrokeColor(toRGBColor(strokeColor));
+    }
+
     public void setFillColor(PDColor fillColor) {
         this.fillColor = fillColor;
     }
