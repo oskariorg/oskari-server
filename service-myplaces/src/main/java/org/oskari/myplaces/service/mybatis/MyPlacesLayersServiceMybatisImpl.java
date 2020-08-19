@@ -8,6 +8,9 @@ import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
+import fi.nls.oskari.cache.Cache;
+import fi.nls.oskari.cache.CacheManager;
+import fi.nls.oskari.myplaces.MyPlacesServiceMybatisImpl;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ExecutorType;
@@ -33,6 +36,7 @@ import fi.nls.oskari.service.ServiceException;
 public class MyPlacesLayersServiceMybatisImpl implements MyPlacesLayersService {
 
     private static final Logger LOG = LogFactory.getLogger(MyPlacesLayersServiceMybatisImpl.class);
+    private final Cache<MyPlaceCategory> cache;
 
     private SqlSessionFactory factory;
 
@@ -46,6 +50,7 @@ public class MyPlacesLayersServiceMybatisImpl implements MyPlacesLayersService {
         } else {
             this.factory = initializeMyBatis(dataSource);
         }
+        cache = CacheManager.getCache(MyPlacesServiceMybatisImpl.class.getName());
     }
 
     private SqlSessionFactory initializeMyBatis(DataSource ds) {
@@ -109,6 +114,7 @@ public class MyPlacesLayersServiceMybatisImpl implements MyPlacesLayersService {
             for (MyPlaceCategory category : categories) {
                 mapper.update(category);
                 n++;
+                cache.remove(MyPlacesServiceMybatisImpl.getCacheKey(category.getId()));
             }
             session.commit();
             return n;
@@ -122,6 +128,7 @@ public class MyPlacesLayersServiceMybatisImpl implements MyPlacesLayersService {
             int n = 0;
             for (long id : ids) {
                 n += mapper.delete(id);
+                cache.remove(MyPlacesServiceMybatisImpl.getCacheKey(id));
             }
             session.commit();
             return n;
