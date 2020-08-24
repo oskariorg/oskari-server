@@ -7,6 +7,9 @@ import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.configuration.FluentConfiguration;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 /**
  * Created by SMAKINEN on 11.6.2015.
@@ -38,6 +41,8 @@ public class FlywaydbMigrator {
      * @return
      */
     private static Flyway getCoreMigration(DataSource datasource) {
+        // This will throw expections for "referenced migrations that are unavailable" for any
+        // pre-1.56 versions so we don't need to handle it.
         FluentConfiguration config = Flyway.configure()
                 .dataSource(datasource)
                 .table(getStatusTableName(null))
@@ -47,24 +52,35 @@ public class FlywaydbMigrator {
         if (flyway.info().current() == null) {
             // empty database/fresh start
             flyway.baseline();
-        } else {
-            // check if we are updating an existing 1.x database
-            String currentVersion = flyway.info().current().getVersion().getVersion();
-            if ("1.55.7".equals(currentVersion)) {
-                // 1.55.7 is the last migration for core module before 2.0 -> bump baseline to skip table creation
-                // skip creating initial tables (migration 2.0.1)
-                // skip registering initial bundleso (migration 2.0.2)
-                // skip other internal data (migration 2.0.3)
-                config.baselineVersion("2.0.4");
-                flyway = config.load();
-                flyway.baseline();
-            } else if (currentVersion.startsWith("1.x")) {
-                // handle Flyway deprecated version of status table?
-                // version 1.56.0 is required as base for existing db as it updated Flyway/status table to modern format
-                throw new RuntimeException("Migrate to Oskari version 1.56 before 2+");
-            }
+        } else if ("1.55.7".equals(flyway.info().current().getVersion().getVersion())) {
+            // 1.55.7 is the last migration for core module before 2.0 -> we are updating an existing 1.x database
+            // Flyway doesn't allow re-baselining so we need to modify the DB manually before re-baselining...
+            dropLegacyMigrations(datasource);
+            // skip 2.0 empty db setup that are already present when migrating from 1.x:
+            // - skip creating initial tables (migration 2.0.1)
+            // - skip registering initial bundles (migration 2.0.2)
+            // - skip other internal data (migration 2.0.3)
+            config.baselineVersion("2.0.4");
+            flyway = config.load();
+            flyway.baseline();
         }
         return flyway;
+    }
+
+    // Flyway doesn't allow re-baselining so we need to modify the DB manually before calling baseline() again.
+    // This drops the core status table to allow Flyway to proceed with creating 2.x baseline and
+    // run future migrations based on that
+    private static void dropLegacyMigrations(DataSource datasource) {
+        String sql = "DROP TABLE " + getStatusTableName(null);
+        try (Connection conn = datasource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.execute();
+            if (!conn.getAutoCommit()) {
+                conn.commit();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Unable to clear legacy migrations", e);
+        }
     }
 
     private static Flyway getModuleMigration(DataSource datasource, final String moduleName) {
