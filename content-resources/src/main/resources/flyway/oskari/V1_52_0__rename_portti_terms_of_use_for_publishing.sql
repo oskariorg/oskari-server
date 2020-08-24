@@ -1,1 +1,0 @@
-ALTER TABLE portti_terms_of_use_for_publishing RENAME TO oskari_terms_of_use_for_publishing;

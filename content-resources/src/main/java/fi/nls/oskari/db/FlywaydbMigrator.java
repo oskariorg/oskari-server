@@ -23,13 +23,30 @@ public class FlywaydbMigrator {
         migrate(datasource, null);
     }
     public static void migrate(DataSource datasource, final String moduleName) {
-        Flyway flyway = new Flyway();
-        flyway.setDataSource(datasource);
-        flyway.setTable(getStatusTableName(moduleName));
-        flyway.setLocations(getScriptLocations(moduleName));
+        Flyway flyway = Flyway.configure()
+                .dataSource(datasource)
+                .table(getStatusTableName(moduleName))
+                .locations(getScriptLocations(moduleName))
+                .baselineVersion("2.0.0")
+                .load();
         if (flyway.info().current() == null) {
-            flyway.setBaselineVersionAsString("0.1");
+            // empty db -> 2.0.0
+            // existing db -> pre-flyway migration and baseline to 2.0.1?
+            /*
+- kantadumppi kentistä alustaa taulut
+- ainakin portti_bundleen pitäisi saada myös dataa (tarviiko muihin?)
+- osan tauluista voisi uudelleennimetä, mutta miten sen tekisi olemassa olevalle kannalle?
+- samoin esim portti_bundlessa on startup-kenttä mutta constraintilla että arvo on oltava null
+- oskari_jaas_users -> oskari_users_credentials
+
+- flywayn ohi "2.0 migration" joka tekee vanhasta kannasta samanlaisen joka muokatulla dumpilla alustettaisiin?
+             */
+            //flyway.getConfiguration().basesetsetBaselineVersionAsString("0.1");
             flyway.baseline();
+        } else {
+            // 2020-08-21 15:29:16,057 WARN  fi.nls.oskari.db.FlywaydbMigrator - Current schema version = 1.55.7
+            // 2020-08-21 15:29:17,110 WARN  fi.nls.oskari.db.FlywaydbMigrator - Current schema version = 1.0.13
+            LOG.warn("Current schema version =", flyway.info().current().getVersion().getVersion());
         }
         if(PropertyUtil.getOptional("db.flyway.autorepair", false)) {
             // https://github.com/flyway/flyway/issues/253
