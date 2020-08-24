@@ -34,7 +34,7 @@
     </licenses>
 
     <issueManagement>
-        <url>https://github.com/oskariorg/oskari-server/issues</url>
+        <url>https://github.com/oskariorg/oskari-docs/issues</url>
         <system>GitHub Issues</system>
     </issueManagement>
 
@@ -47,7 +47,7 @@
         <jdk.version>1.8</jdk.version>
         <fi.nls.oskari.version>${project.version}</fi.nls.oskari.version>
         <fi.nls.oskari.service.version>${project.version}</fi.nls.oskari.service.version>
-        <flyway.version>4.2.0</flyway.version>
+        <flyway.version>6.5.5</flyway.version>
 
         <spring.version>5.2.7.RELEASE</spring.version>
         <spring-security.version>5.3.2.RELEASE</spring-security.version>
@@ -81,7 +81,7 @@
         <fi.mml.wms.version>1.1.1</fi.mml.wms.version>
         <fi.mml.nameregister.version>1.0</fi.mml.nameregister.version>
 
-        <jetty.version>9.4.12.v20180830</jetty.version>
+        <jetty.version>9.4.31.v20200723</jetty.version>
 
         <postgresql.version>42.2.5</postgresql.version>
         <quartz-scheduler.version>2.3.2</quartz-scheduler.version>
