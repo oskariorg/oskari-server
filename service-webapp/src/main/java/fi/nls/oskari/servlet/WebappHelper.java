@@ -55,11 +55,13 @@ public class WebappHelper {
             initializeOskariContext();
 
             // create initial content if properties tells us to
+            /*
+            // As of 2.0 the initial db is created with Flyway
             if("true".equals(PropertyUtil.getOptional("oskari.init.db"))) {
                 log.info("- checking for initial db content");
                 DBHandler.createContentIfNotCreated(DS_HELPER.getDataSource());
             }
-
+*/
             // init jedis
             log.info("Initializing Redis connections");
             JedisManager.connect(
