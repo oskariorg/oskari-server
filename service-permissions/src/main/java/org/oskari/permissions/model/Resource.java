@@ -108,6 +108,9 @@ public class Resource {
         return hasPermission(role, permissionType.name());
     }
     public boolean hasPermission(Role role, String permissionType) {
+        if (role == null) {
+            return false;
+        }
         return hasRolePermission(role.getId(), permissionType);
     }
 
