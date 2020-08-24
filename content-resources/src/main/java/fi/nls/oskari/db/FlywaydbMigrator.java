@@ -4,6 +4,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.PropertyUtil;
 import org.flywaydb.core.Flyway;
+import org.flywaydb.core.api.configuration.FluentConfiguration;
 
 import javax.sql.DataSource;
 
@@ -23,36 +24,65 @@ public class FlywaydbMigrator {
         migrate(datasource, null);
     }
     public static void migrate(DataSource datasource, final String moduleName) {
-        Flyway flyway = Flyway.configure()
-                .dataSource(datasource)
-                .table(getStatusTableName(moduleName))
-                .locations(getScriptLocations(moduleName))
-                .baselineVersion("2.0.0")
-                .load();
-        if (flyway.info().current() == null) {
-            // empty db -> 2.0.0
-            // existing db -> pre-flyway migration and baseline to 2.0.1?
-            /*
-- kantadumppi kentistä alustaa taulut
-- ainakin portti_bundleen pitäisi saada myös dataa (tarviiko muihin?)
-- osan tauluista voisi uudelleennimetä, mutta miten sen tekisi olemassa olevalle kannalle?
-- samoin esim portti_bundlessa on startup-kenttä mutta constraintilla että arvo on oltava null
-- oskari_jaas_users -> oskari_users_credentials
-
-- flywayn ohi "2.0 migration" joka tekee vanhasta kannasta samanlaisen joka muokatulla dumpilla alustettaisiin?
-             */
-            //flyway.getConfiguration().basesetsetBaselineVersionAsString("0.1");
-            flyway.baseline();
-        } else {
-            // 2020-08-21 15:29:16,057 WARN  fi.nls.oskari.db.FlywaydbMigrator - Current schema version = 1.55.7
-            // 2020-08-21 15:29:17,110 WARN  fi.nls.oskari.db.FlywaydbMigrator - Current schema version = 1.0.13
-            LOG.warn("Current schema version =", flyway.info().current().getVersion().getVersion());
-        }
-        if(PropertyUtil.getOptional("db.flyway.autorepair", false)) {
+        Flyway flyway = getModuleMigration(datasource, moduleName);
+        if (PropertyUtil.getOptional("db.flyway.autorepair", false)) {
             // https://github.com/flyway/flyway/issues/253
             flyway.repair();
         }
         flyway.migrate();
+    }
+
+    /**
+     * Handles baselining for 1.x and 2.0 versions
+     * @param datasource
+     * @return
+     */
+    private static Flyway getCoreMigration(DataSource datasource) {
+        FluentConfiguration config = Flyway.configure()
+                .dataSource(datasource)
+                .table(getStatusTableName(null))
+                .locations(getScriptLocations(null))
+                .baselineVersion("2.0.0");
+        Flyway flyway = config.load();
+        if (flyway.info().current() == null) {
+            // empty database/fresh start
+            flyway.baseline();
+        } else {
+            // check if we are updating an existing 1.x database
+            String currentVersion = flyway.info().current().getVersion().getVersion();
+            if ("1.55.7".equals(currentVersion)) {
+                // 1.55.7 is the last migration for core module before 2.0 -> bump baseline to skip table creation
+                // skip creating initial tables (migration 2.0.1)
+                // skip registering initial bundleso (migration 2.0.2)
+                // skip other internal data (migration 2.0.3)
+                config.baselineVersion("2.0.4");
+                flyway = config.load();
+                flyway.baseline();
+            } else if (currentVersion.startsWith("1.x")) {
+                // handle Flyway deprecated version of status table?
+                // version 1.56.0 is required as base for existing db as it updated Flyway/status table to modern format
+                throw new RuntimeException("Migrate to Oskari version 1.56 before 2+");
+            }
+        }
+        return flyway;
+    }
+
+    private static Flyway getModuleMigration(DataSource datasource, final String moduleName) {
+        if (moduleName == null) {
+            return getCoreMigration(datasource);
+        }
+        // myplaces/userlayer or application module (use the same baseline as with 1.x Oskari)
+        Flyway flyway = Flyway.configure()
+                .dataSource(datasource)
+                .table(getStatusTableName(moduleName))
+                .locations(getScriptLocations(moduleName))
+                .baselineVersion("0.1")
+                .load();
+
+        if (flyway.info().current() == null) {
+            flyway.baseline();
+        }
+        return flyway;
     }
 
     private static String[] getScriptLocations(final String prefix) {
