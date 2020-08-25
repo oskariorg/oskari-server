@@ -2,7 +2,7 @@ package fi.nls.oskari.servlet;
 
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.db.DatasourceHelper;
-import fi.nls.oskari.db.FlywaydbMigrator;
+import org.oskari.helpers.FlywaydbMigrator;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.scheduler.SchedulerService;

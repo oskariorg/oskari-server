@@ -1,7 +1,7 @@
 package flyway.myplaces;
 
 import fi.nls.oskari.db.DatasourceHelper;
-import fi.nls.oskari.geoserver.GeoserverPopulator;
+import org.oskari.usercontent.GeoserverPopulator;
 import org.flywaydb.core.api.migration.BaseJavaMigration;
 import org.flywaydb.core.api.migration.Context;
 import org.json.JSONObject;

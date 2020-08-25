@@ -9,7 +9,6 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import java.io.*;
-import java.nio.charset.Charset;
 
 public class GetRecords {
 

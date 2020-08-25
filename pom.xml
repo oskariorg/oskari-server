@@ -125,7 +125,7 @@
         <dependencies>
             <!-- Oskari -->
             <dependency>
-                <groupId>fi.nls.oskari</groupId>
+                <groupId>org.oskari</groupId>
                 <artifactId>content-resources</artifactId>
                 <version>${fi.nls.oskari.version}</version>
             </dependency>

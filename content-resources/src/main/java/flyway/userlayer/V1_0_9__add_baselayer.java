@@ -1,14 +1,12 @@
 package flyway.userlayer;
 
-import fi.nls.oskari.geoserver.GeoserverPopulator;
-import fi.nls.oskari.geoserver.LayerHelper;
+import org.oskari.usercontent.GeoserverPopulator;
+import org.oskari.usercontent.LayerHelper;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.PropertyUtil;
 import org.flywaydb.core.api.migration.BaseJavaMigration;
 import org.flywaydb.core.api.migration.Context;
-
-import java.sql.Connection;
 
 public class V1_0_9__add_baselayer extends BaseJavaMigration {
     private static final Logger LOG = LogFactory.getLogger(V1_0_9__add_baselayer.class);

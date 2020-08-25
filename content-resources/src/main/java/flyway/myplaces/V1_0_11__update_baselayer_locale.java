@@ -2,7 +2,7 @@ package flyway.myplaces;
 
 import fi.nls.oskari.domain.map.OskariLayer;
 
-import fi.nls.oskari.geoserver.LayerHelper;
+import org.oskari.usercontent.LayerHelper;
 import fi.nls.oskari.util.JSONHelper;
 import org.flywaydb.core.api.migration.BaseJavaMigration;
 import org.flywaydb.core.api.migration.Context;
