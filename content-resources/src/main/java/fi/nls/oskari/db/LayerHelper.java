@@ -26,7 +26,7 @@ public class LayerHelper {
     private static final OskariLayerService layerService = new OskariLayerServiceMybatisImpl();
 
     public static int setupLayer(final String layerfile) throws IOException {
-        final String jsonStr = IOHelper.readString(DBHandler.getInputStreamFromResource("/json/layers/" + layerfile));
+        final String jsonStr = IOHelper.readString(LayerHelper.class.getResourceAsStream("/json/layers/" + layerfile));
         MapLayer layer = LayerAdminJSONHelper.readJSON(jsonStr);
         final List<OskariLayer> dbLayers = layerService.findByUrlAndName(layer.getUrl(), layer.getName());
         if(!dbLayers.isEmpty()) {
@@ -38,15 +38,18 @@ public class LayerHelper {
             // layer doesn't exist, insert it
             // fromJSON validates parsed layer and throws IllegalArgumentException if layer is not valid
             final OskariLayer oskariLayer = LayerAdminJSONHelper.fromJSON(layer);
-            // add info from capabilities
-            try {
-                LayerCapabilitiesHelper.updateCapabilities(oskariLayer);
-            } catch (ServiceException e) {
-                log.warn(e,"Error updating capabilities for service from", oskariLayer.getUrl());
-                if (OskariLayer.TYPE_WMTS.equals(oskariLayer.getType())) {
-                    log.warn("The WMTS-layer", oskariLayer.getName(),
-                            "might work slower than normal with capabilities/tilegrids not cached. Try caching the capabilities later using the admin UI.");
+            if (!oskariLayer.getUrl().startsWith("http://localhost:")) {
+                // add info from capabilities if not from localhost (this is usually called when server starting == localhost doesn't work properly)
+                try {
+                    LayerCapabilitiesHelper.updateCapabilities(oskariLayer);
+                } catch (ServiceException e) {
+                    log.warn(e,"Error updating capabilities for service from", oskariLayer.getUrl());
+                    if (OskariLayer.TYPE_WMTS.equals(oskariLayer.getType())) {
+                        log.warn("The WMTS-layer", oskariLayer.getName(),
+                                "might work slower than normal with capabilities/tilegrids not cached. Try caching the capabilities later using the admin UI.");
+                    }
                 }
+
             }
             // insert to db
             int id = layerService.insert(oskariLayer);

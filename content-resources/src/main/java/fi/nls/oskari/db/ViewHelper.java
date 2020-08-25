@@ -77,7 +77,7 @@ public class ViewHelper {
     public static JSONObject readViewFile(final String viewfile)
             throws Exception {
         log.info("/ - /json/views/" + viewfile);
-        String json = IOHelper.readString(DBHandler.getInputStreamFromResource("/json/views/" + viewfile));
+        String json = IOHelper.readString(ViewHelper.class.getResourceAsStream("/json/views/" + viewfile));
         JSONObject viewJSON = JSONHelper.createJSONObject(json);
         log.debug(viewJSON);
         return viewJSON;
