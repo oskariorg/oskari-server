@@ -218,7 +218,7 @@ public class PDPrintStyle {
 
     public enum LinePattern {
 
-        solid(width -> new float[] { 0 }),
+        solid(width -> new float[0]),
         dash(width -> new float[] { 5, 4 + width }),
         dashdot(width -> new float[] { 1, 1 + width }),
         dot(width -> new float[] { 1, 1 + width }),
