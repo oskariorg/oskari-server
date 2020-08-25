@@ -3,7 +3,8 @@ package flyway.userlayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
-import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
+import org.flywaydb.core.api.migration.BaseJavaMigration;
+import org.flywaydb.core.api.migration.Context;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -18,10 +19,11 @@ import java.util.Map;
 /**
  * Migrate fields JSONObject to JSONArray from user_layer table
  */
-public class V1_0_6__migrate_fields_to_jsonarray implements JdbcMigration {
+public class V1_0_6__migrate_fields_to_jsonarray extends BaseJavaMigration {
     private static final Logger LOG = LogFactory.getLogger(V1_0_6__migrate_fields_to_jsonarray.class);
 
-    public void migrate(Connection connection) throws Exception {
+    public void migrate(Context context) throws Exception {
+        Connection connection = context.getConnection();
         Map<Long, String> resultMap = getFields (connection);
         for (Map.Entry<Long, String> entry: resultMap.entrySet()){
             Long id = entry.getKey();
