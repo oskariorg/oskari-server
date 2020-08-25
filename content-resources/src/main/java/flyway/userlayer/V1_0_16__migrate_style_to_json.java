@@ -2,7 +2,7 @@ package flyway.userlayer;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.util.UserDataStyleMigrator;
+import org.oskari.usercontent.UserDataStyleMigrator;
 import org.flywaydb.core.api.migration.BaseJavaMigration;
 import org.flywaydb.core.api.migration.Context;
 

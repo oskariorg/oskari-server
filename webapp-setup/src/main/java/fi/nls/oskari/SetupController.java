@@ -1,10 +1,10 @@
 package fi.nls.oskari;
 
 import fi.nls.oskari.db.DatasourceHelper;
-import fi.nls.oskari.geoserver.AnalysisHelper;
-import fi.nls.oskari.geoserver.GeoserverPopulator;
-import fi.nls.oskari.geoserver.MyplacesHelper;
-import fi.nls.oskari.geoserver.UserlayerHelper;
+import org.oskari.usercontent.AnalysisHelper;
+import org.oskari.usercontent.GeoserverPopulator;
+import org.oskari.usercontent.MyplacesHelper;
+import org.oskari.usercontent.UserlayerHelper;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.PropertyUtil;
