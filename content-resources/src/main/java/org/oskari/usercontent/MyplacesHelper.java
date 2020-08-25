@@ -5,7 +5,6 @@ import fi.nls.oskari.db.ConnectionInfo;
 import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.util.IOHelper;
 
 
 /**
@@ -95,22 +94,5 @@ public class MyplacesHelper {
         } catch (FeignException ex) {
             LOG.error(ex, "Error adding featuretype my_places_categories");
         }
-
-        final String sld = IOHelper.readString(GeoserverPopulator.class.getResourceAsStream("/sld/myplaces/MyPlacesDefaultStyle.sld"));
-        final String sldName = "MyPlacesDefaultStyle";
-        try {
-            geoserver.createSLD(sldName, sld);
-            LOG.info("Added SLD:", sldName);
-        } catch (FeignException ex) {
-            LOG.error(ex, "Error adding SLD");
-        }
-        try {
-            geoserver.linkStyleToLayer(sldName, featurePlacesCategories.name, GeoserverPopulator.NAMESPACE);
-            LOG.info("Linked SLD", sldName, " to layer", featurePlacesCategories.name, "in namespace", GeoserverPopulator.NAMESPACE);
-        } catch (FeignException ex) {
-            LOG.error(ex, "Error linking SLD");
-        }
-        geoserver.setDefaultStyleForLayer(sldName, featurePlacesCategories.name, GeoserverPopulator.NAMESPACE);
-        LOG.info("Set default SLD", sldName, " for layer", featurePlacesCategories.name, "in namespace", GeoserverPopulator.NAMESPACE);
     }
 }
