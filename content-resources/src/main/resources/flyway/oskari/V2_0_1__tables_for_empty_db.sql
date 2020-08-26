@@ -133,7 +133,6 @@ COMMENT ON TABLE public.oskari_jaas_users IS 'Credentials for users when using b
 --
 
 CREATE SEQUENCE public.oskari_jaas_users_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -156,7 +155,6 @@ ALTER SEQUENCE public.oskari_jaas_users_id_seq OWNED BY public.oskari_jaas_users
 --
 
 CREATE SEQUENCE public.oskari_layergroup_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -293,7 +291,6 @@ COMMENT ON TABLE public.oskari_maplayer_group_link IS 'Bridge table between map 
 --
 
 CREATE SEQUENCE public.oskari_maplayer_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -339,7 +336,6 @@ COMMENT ON TABLE public.oskari_maplayer_metadata IS 'Metadata about map layers';
 --
 
 CREATE SEQUENCE public.oskari_maplayer_metadata_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -428,7 +424,6 @@ COMMENT ON TABLE public.oskari_permission IS 'Permissions for resources';
 --
 
 CREATE SEQUENCE public.oskari_permission_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -472,7 +467,6 @@ COMMENT ON TABLE public.oskari_resource IS 'Declares resources representing a ma
 --
 
 CREATE SEQUENCE public.oskari_resource_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -537,7 +531,6 @@ COMMENT ON TABLE public.oskari_role_oskari_user IS 'Bridge table connecting role
 --
 
 CREATE SEQUENCE public.oskari_role_oskari_user_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -581,7 +574,6 @@ COMMENT ON TABLE public.oskari_roles IS 'Roles that have associated permissions'
 --
 
 CREATE SEQUENCE public.oskari_roles_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -737,7 +729,6 @@ COMMENT ON TABLE public.oskari_user_indicator_data IS 'Data for statistical indi
 --
 
 CREATE SEQUENCE public.oskari_user_indicator_data_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -760,7 +751,6 @@ ALTER SEQUENCE public.oskari_user_indicator_data_id_seq OWNED BY public.oskari_u
 --
 
 CREATE SEQUENCE public.oskari_user_indicator_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -808,7 +798,6 @@ COMMENT ON TABLE public.oskari_users IS 'Oskari instance user accounts';
 --
 
 CREATE SEQUENCE public.oskari_users_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -977,7 +966,6 @@ ALTER SEQUENCE public.portti_bundle_id_seq OWNED BY public.portti_bundle.id;
 --
 
 CREATE SEQUENCE public.portti_inspiretheme_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1044,7 +1032,6 @@ COMMENT ON TABLE public.portti_keywords IS 'Keywords that can be associated with
 --
 
 CREATE SEQUENCE public.portti_keywords_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
