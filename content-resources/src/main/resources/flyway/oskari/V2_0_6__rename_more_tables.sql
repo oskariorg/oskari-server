@@ -23,3 +23,5 @@ ALTER TABLE oskari_permission RENAME TO oskari_resource_permission;
 
 ALTER TABLE oskari_resource_permission
     RENAME COLUMN oskari_resource_id TO resource_id;
+
+ALTER TABLE oskari_role_external_mapping RENAME TO oskari_roles_external_mapping;

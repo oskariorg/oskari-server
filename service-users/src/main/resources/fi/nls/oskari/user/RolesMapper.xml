@@ -36,7 +36,7 @@
 
     <select id="getExternalRolesMapping" parameterType="String" resultType="java.util.HashMap">
         select r.id as id, r.name as name, m.name as ext
-        from oskari_roles r, oskari_role_external_mapping m
+        from oskari_roles r, oskari_roles_external_mapping m
         where m.roleid = r.id AND m.external_type=#{type}
     </select>
 </mapper>
