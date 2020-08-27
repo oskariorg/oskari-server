@@ -1,7 +1,7 @@
 package org.oskari.permissions.model;
 
 /**
- * A permission mapped to a resource. Reflects DB table oskari_permission.
+ * A permission mapped to a resource. Reflects DB table oskari_resource_permission.
  */
 public class Permission {
 

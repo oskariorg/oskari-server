@@ -18,3 +18,8 @@ ALTER TABLE oskari_ratings
     ALTER COLUMN category TYPE TEXT,
     ALTER COLUMN categoryitem TYPE TEXT,
     ALTER COLUMN comment TYPE TEXT;
+
+ALTER TABLE oskari_permission RENAME TO oskari_resource_permission;
+
+ALTER TABLE oskari_resource_permission
+    RENAME COLUMN oskari_resource_id TO resource_id;

@@ -79,7 +79,7 @@ public class PermissionServiceMybatisImplTest {
         permissionService.deleteResource(myResource);
         resource = permissionService.findResource(myResource.getId());
         assertFalse(resource.isPresent());
-        // TODO: Verify that the oskari_permission rows are also deleted
+        // TODO: Verify that the oskari_resource_permission rows are also deleted
     }
 
     private Permission findPermissionWithId(List<Permission> permissions, int id) {
