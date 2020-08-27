@@ -105,7 +105,7 @@ public interface ResourceMapper {
     @Options(useGeneratedKeys=true, keyColumn="id", keyProperty="permission.id")
     void insertPermission(@Param("permission") Permission permission, @Param("resourceId") int resourceId);
 
-    @Delete("DELETE FROM oskari_resource_permission WHERE oskari_resource_id=#{id}")
+    @Delete("DELETE FROM oskari_resource_permission WHERE resource_id=#{id}")
     void deletePermissions(int resourceId);
 
 }
