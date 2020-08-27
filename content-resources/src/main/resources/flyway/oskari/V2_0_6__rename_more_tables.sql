@@ -11,3 +11,10 @@ ALTER TABLE oskari_statistical_indicator
     ALTER COLUMN description TYPE TEXT;
 
 ALTER TABLE oskari_user_indicator_data RENAME TO oskari_statistical_indicator_data;
+
+ALTER TABLE ratings RENAME TO oskari_ratings;
+
+ALTER TABLE oskari_ratings
+    ALTER COLUMN category TYPE TEXT,
+    ALTER COLUMN categoryitem TYPE TEXT,
+    ALTER COLUMN comment TYPE TEXT;
