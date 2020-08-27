@@ -14,15 +14,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Helpers for flyway scripts. Be very careful when making changes as previous versions of Oskari are using this
- * to migrate database.
- */
 public class FlywayHelper {
     public static List<Long> getViewIdsForTypes(Connection connection, String... types)
             throws SQLException {
         ArrayList<Long> ids = new ArrayList<>();
-        StringBuilder sql = new StringBuilder("SELECT id FROM portti_view");
+        StringBuilder sql = new StringBuilder("SELECT id FROM oskari_appsetup");
         if (types != null && types.length > 0) {
             sql.append(" WHERE type IN (?");
             for (int i = 1; i < types.length; ++i) {
@@ -60,7 +56,7 @@ public class FlywayHelper {
     public static List<Long> getViewIdsForApplication(Connection conn, String applicationName, String... types)
             throws SQLException {
         ArrayList<Long> ids = new ArrayList<>();
-        StringBuilder sql = new StringBuilder("SELECT id FROM portti_view WHERE application=?");
+        StringBuilder sql = new StringBuilder("SELECT id FROM oskari_appsetup WHERE application=?");
         if (types != null && types.length > 0) {
             sql.append(" AND type IN (?");
             for (int i = 1; i < types.length; ++i) {
@@ -87,7 +83,7 @@ public class FlywayHelper {
     }
     public static String getDefaultViewUuid(Connection conn, String applicationName) throws SQLException {
         Map<Long, String> uuids = new HashMap<>();
-        final String sql = "SELECT id, uuid FROM portti_view WHERE application=? and type=?";
+        final String sql = "SELECT id, uuid FROM oskari_appsetup WHERE application=? and type=?";
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setString(1, applicationName);
             statement.setString(2, ViewTypes.DEFAULT);
@@ -116,9 +112,9 @@ public class FlywayHelper {
 
     public static boolean viewContainsBundle(Connection connection, String bundle, Long viewId)
             throws SQLException {
-        final String sql ="SELECT * FROM portti_view_bundle_seq " +
-                "WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name=?) " +
-                "AND view_id=?";
+        final String sql ="SELECT * FROM oskari_appsetup_bundles " +
+                "WHERE bundle_id = (SELECT id FROM oskari_bundle WHERE name=?) " +
+                "AND appsetup_id=?";
 
         try (final PreparedStatement statement =
                      connection.prepareStatement(sql)) {
@@ -132,9 +128,9 @@ public class FlywayHelper {
 
     public static Bundle getBundleFromView(Connection connection, String bundle, Long viewId)
             throws SQLException {
-        final String sql ="SELECT * FROM portti_view_bundle_seq " +
-                "WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name=?) " +
-                "AND view_id=?";
+        final String sql ="SELECT * FROM oskari_appsetup_bundles " +
+                "WHERE bundle_id = (SELECT id FROM oskari_bundle WHERE name=?) " +
+                "AND appsetup_id=?";
 
         try (final PreparedStatement statement =
                      connection.prepareStatement(sql)){
@@ -159,13 +155,13 @@ public class FlywayHelper {
 
     public static Bundle updateBundleInView(Connection connection, Bundle bundle, Long viewId)
             throws SQLException {
-        final String sql = "UPDATE portti_view_bundle_seq SET " +
+        final String sql = "UPDATE oskari_appsetup_bundles SET " +
                 "config=?, " +
                 "state=?, " +
                 "seqno=?, " +
                 "bundleinstance=? " +
                 " WHERE bundle_id=? " +
-                " AND view_id=?";
+                " AND appsetup_id=?";
 
         try (final PreparedStatement statement =
                      connection.prepareStatement(sql)) {
@@ -182,14 +178,14 @@ public class FlywayHelper {
 
     public static void addBundleWithDefaults(Connection connection, Long viewId, String bundleid)
             throws SQLException {
-        final String sql ="INSERT INTO portti_view_bundle_seq" +
-                "(view_id, bundle_id, seqno, config, state, bundleinstance) " +
+        final String sql ="INSERT INTO oskari_appsetup_bundles" +
+                "(appsetup_id, bundle_id, seqno, config, state, bundleinstance) " +
                 "VALUES (" +
                 "?, " +
-                "(SELECT id FROM portti_bundle WHERE name=?), " +
-                "(SELECT max(seqno)+1 FROM portti_view_bundle_seq WHERE view_id=?), " +
-                "(SELECT config FROM portti_bundle WHERE name=?), " +
-                "(SELECT state FROM portti_bundle WHERE name=?),  " +
+                "(SELECT id FROM oskari_bundle WHERE name=?), " +
+                "(SELECT max(seqno)+1 FROM oskari_appsetup_bundles WHERE appsetup_id=?), " +
+                "(SELECT config FROM oskari_bundle WHERE name=?), " +
+                "(SELECT state FROM oskari_bundle WHERE name=?),  " +
                 "?)";
         try(final PreparedStatement statement =
                     connection.prepareStatement(sql)) {
@@ -205,8 +201,8 @@ public class FlywayHelper {
     
     public static void removeBundleFromView(Connection connection, String bundleName, Long viewId)
             throws SQLException {
-        final String sql ="DELETE FROM portti_view_bundle_seq " +
-                "WHERE bundle_id = (SELECT id FROM portti_bundle WHERE name=?) AND view_id=?";
+        final String sql ="DELETE FROM oskari_appsetup_bundles " +
+                "WHERE bundle_id = (SELECT id FROM oskari_bundle WHERE name=?) AND appsetup_id=?";
         try(final PreparedStatement statement =
                     connection.prepareStatement(sql)) {
             statement.setString(1, bundleName);

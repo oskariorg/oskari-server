@@ -20,11 +20,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Created with IntelliJ IDEA.
- * User: SMAKINEN
- * Date: 27.6.2014
- * Time: 15:22
- * To change this template use File | Settings | File Templates.
+ * Helpers for flyway scripts. Be very careful when making changes as previous versions of Oskari are using this
+ * to migrate database.
  */
 public class AppsetupHelper {
 
@@ -47,7 +44,7 @@ public class AppsetupHelper {
             LayerHelper.refreshLayerCapabilities();
             return viewId;
         } catch (Exception ex) {
-            log.error(ex, "Unable to insert view! ");
+            log.error(ex, "Unable to insert appsetup! ");
             throw new ServiceRuntimeException("Unable to insert appsetup", ex);
         }
     }
