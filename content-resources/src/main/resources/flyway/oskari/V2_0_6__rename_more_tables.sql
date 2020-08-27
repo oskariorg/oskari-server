@@ -25,3 +25,5 @@ ALTER TABLE oskari_resource_permission
     RENAME COLUMN oskari_resource_id TO resource_id;
 
 ALTER TABLE oskari_role_external_mapping RENAME TO oskari_roles_external_mapping;
+
+ALTER TABLE oskari_statistical_layer RENAME TO oskari_statistical_datasource_regionsets;
