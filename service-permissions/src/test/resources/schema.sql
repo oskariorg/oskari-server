@@ -32,4 +32,4 @@ CREATE SEQUENCE public.oskari_resource_permission_id_seq
 
 ALTER TABLE public.oskari_resource_permission ALTER COLUMN id SET DEFAULT public.oskari_resource_permission_id_seq.nextval;
 ALTER TABLE public.oskari_resource_permission ADD CONSTRAINT oskari_resource_permission_pkey PRIMARY KEY (id);
-CREATE INDEX oskari_resource_permission_resid_idx ON public.oskari_resource_permission (oskari_resource_id);
+CREATE INDEX oskari_resource_permission_resid_idx ON public.oskari_resource_permission (resource_id);
