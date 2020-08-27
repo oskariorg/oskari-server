@@ -16,7 +16,7 @@
         from
             oskari_roles r,
             oskari_users u,
-            oskari_role_oskari_user m
+            oskari_users_roles m
         where
             r.id = m.role_id
             and u.id = m.user_id
@@ -28,7 +28,7 @@
             r.id, r.name
         from
             oskari_roles r,
-            oskari_role_oskari_user m
+            oskari_users_roles m
         where
             r.id = m.role_id
             and m.user_id = #{userId}
@@ -36,7 +36,7 @@
 
     <select id="getExternalRolesMapping" parameterType="String" resultType="java.util.HashMap">
         select r.id as id, r.name as name, m.name as ext
-        from oskari_roles r, oskari_role_external_mapping m
+        from oskari_roles r, oskari_roles_external_mapping m
         where m.roleid = r.id AND m.external_type=#{type}
     </select>
 </mapper>

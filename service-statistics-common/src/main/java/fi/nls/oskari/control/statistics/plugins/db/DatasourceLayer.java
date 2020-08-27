@@ -12,7 +12,7 @@ import java.util.Set;
 /**
  * This is the value object for the statistical datasource layer
  * for example SotkaNET plugin layer mapping rows in the database.
- * MyBatis Type for the SQL table oskari_statistical_layers
+ * MyBatis Type for the SQL table oskari_statistical_datasource_regionsets
  */
 public class DatasourceLayer {
 
