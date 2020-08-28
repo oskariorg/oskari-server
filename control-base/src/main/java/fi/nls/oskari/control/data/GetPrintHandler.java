@@ -239,7 +239,6 @@ public class GetPrintHandler extends AbstractWFSFeaturesHandler {
         String mapLayers = params.getRequiredParam(PARM_MAPLAYERS);
         User user = params.getUser();
         LayerProperties[] requestedLayers = parseLayersProperties(mapLayers);
-        JSONObject customStyles = params.getHttpParamAsJSON(PARM_CUSTOM_STYLES);
         List<PrintLayer> printLayers = new ArrayList<>();
         int zIndex = 0;
         for (LayerProperties requestedLayer : requestedLayers) {
@@ -251,14 +250,18 @@ public class GetPrintHandler extends AbstractWFSFeaturesHandler {
             }
         }
         printLayers.removeIf(layer -> layer.getOpacity() <= 0);
-        // set custom styles
-        if (customStyles != null){
-            printLayers.forEach(l -> {
-                String id = l.getLayerId();
-                if (customStyles.has(id)) {
-                    l.setCustomStyle(JSONHelper.getJSONObject(customStyles, id));
-                }
-            });
+        // set custom stylea
+        if (params.getRequest().getMethod().equals("POST")) {
+            JSONObject payload = params.getPayLoadJSON();
+            JSONObject customStyles = payload.optJSONObject(PARM_CUSTOM_STYLES);
+            if (customStyles != null) {
+                printLayers.forEach(l -> {
+                    String id = l.getLayerId();
+                    if (customStyles.has(id)) {
+                        l.setCustomStyle(JSONHelper.getJSONObject(customStyles, id));
+                    }
+                });
+            }
         }
         return printLayers;
     }
