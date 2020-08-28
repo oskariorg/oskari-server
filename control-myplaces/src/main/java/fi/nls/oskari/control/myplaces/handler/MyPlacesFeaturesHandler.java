@@ -37,7 +37,8 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
     private static final String PARAM_FEATURES = "features";
     private static final String PARAM_CRS = "crs";
     private static final String PARAM_LAYER_ID = "layerId";
-    private static final String JSKEY_DELETED = "deleted";
+    private static final String KEY_COUNT = "count";
+    private static final String KEY_SUCCESS = "success";
 
     private MyPlacesService service;
     private MyPlacesFeaturesService featureService;
@@ -108,13 +109,10 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
                     .withParam("name", place.getName())
                     .added(AuditLog.ResourceType.MYPLACES);
         }
-
-        try {
-            ResponseHelper.writeResponse(params, featureService.getFeaturesByMyPlaceId(ids, crs));
-        } catch (ServiceException e) {
-            LOG.warn(e);
-            throw new ActionException("Failed to get features after insert");
-        }
+        JSONObject response = new JSONObject();
+        JSONHelper.putValue(response, KEY_COUNT, ids.length);
+        JSONHelper.putValue(response, KEY_SUCCESS, true);
+        ResponseHelper.writeResponse(params, response);
     }
 
     @Override
@@ -128,10 +126,10 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
         }
 
         long[] ids = places.stream().mapToLong(MyPlace::getId).toArray();
-
+        int updated;
         try {
             LOG.debug("Updating MyPlaces:", ids);
-            int updated = featureService.update(places);
+            updated = featureService.update(places);
             LOG.info("Updated", updated, "/", places.size());
         } catch (ServiceException e) {
             LOG.warn(e);
@@ -144,13 +142,10 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
                     .withParam("name", place.getName())
                     .updated(AuditLog.ResourceType.MYPLACES);
         }
-
-        try {
-            ResponseHelper.writeResponse(params, featureService.getFeaturesByMyPlaceId(ids, crs));
-        } catch (ServiceException e) {
-            LOG.warn(e);
-            throw new ActionException("Failed to get features after update");
-        }
+        JSONObject response = new JSONObject();
+        JSONHelper.putValue(response, KEY_COUNT, updated);
+        JSONHelper.putValue(response, KEY_SUCCESS, true);
+        ResponseHelper.writeResponse(params, response);
     }
 
     @Override
@@ -181,7 +176,8 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
                 .deleted(AuditLog.ResourceType.MYPLACES);
 
         JSONObject response = new JSONObject();
-        JSONHelper.putValue(response, JSKEY_DELETED, deleted);
+        JSONHelper.putValue(response, KEY_COUNT, deleted);
+        JSONHelper.putValue(response, KEY_SUCCESS, true);
         ResponseHelper.writeResponse(params, response);
     }
 
