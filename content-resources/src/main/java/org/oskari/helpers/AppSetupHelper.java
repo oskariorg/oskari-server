@@ -26,10 +26,10 @@ import java.util.*;
  * Helpers for flyway scripts. Be very careful when making changes as previous versions of Oskari are using this
  * to migrate database.
  */
-public class AppsetupHelper {
+public class AppSetupHelper {
 
     private static final ViewService viewService = new AppSetupServiceMybatisImpl();
-    private static Logger log = LogFactory.getLogger(AppsetupHelper.class);
+    private static Logger log = LogFactory.getLogger(AppSetupHelper.class);
 
     public static long create(Connection conn, final String viewfile)
             throws IOException, SQLException {
@@ -339,7 +339,7 @@ public class AppsetupHelper {
     private static JSONObject readViewFile(final String viewfile)
             throws Exception {
         log.info("/ - /json/views/" + viewfile);
-        String json = IOHelper.readString(AppsetupHelper.class.getResourceAsStream("/json/views/" + viewfile));
+        String json = IOHelper.readString(AppSetupHelper.class.getResourceAsStream("/json/views/" + viewfile));
         JSONObject viewJSON = JSONHelper.createJSONObject(json);
         log.debug(viewJSON);
         return viewJSON;
