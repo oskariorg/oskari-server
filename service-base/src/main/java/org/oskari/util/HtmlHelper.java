@@ -1,6 +1,6 @@
 package org.oskari.util;
 
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 
@@ -17,7 +17,7 @@ public class HtmlHelper {
     public static final String cleanString(final String str) {
         if (str != null) {
             String s = Jsoup.clean(str, Whitelist.none());
-            return StringEscapeUtils.unescapeHtml(s);
+            return StringEscapeUtils.unescapeHtml4(s);
         }
         return str;
     }
@@ -45,7 +45,7 @@ public class HtmlHelper {
                 whitelist.addProtocols(key[0],key[1],protocol.getValue());
             }
             String s = Jsoup.clean(str, whitelist);
-            return StringEscapeUtils.unescapeHtml(s);
+            return StringEscapeUtils.unescapeHtml4(s);
         }
         return str;
     }
@@ -69,7 +69,7 @@ public class HtmlHelper {
                     "textarea"
             );
             String s = Jsoup.clean(str, whitelist);
-            return StringEscapeUtils.unescapeHtml(s);
+            return StringEscapeUtils.unescapeHtml4(s);
         }
         return str;
     }

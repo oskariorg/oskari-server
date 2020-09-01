@@ -1,7 +1,7 @@
 package fi.nls.oskari.log;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.io.StringWriter;
 import java.util.*;
@@ -119,6 +119,6 @@ public abstract class Logger {
         else if(arg instanceof Map) {
             return mapToString((Map)arg);
         }
-        return ToStringBuilder.reflectionToString(arg,ToStringStyle.MULTI_LINE_STYLE);
+        return ToStringBuilder.reflectionToString(arg, ToStringStyle.MULTI_LINE_STYLE);
     }
 }

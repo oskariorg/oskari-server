@@ -2,7 +2,7 @@ package fi.nls.oskari.domain.map.view;
 
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import org.apache.commons.lang.text.StrSubstitutor;
+import org.apache.commons.lang3.text.StrSubstitutor;
 import org.json.JSONObject;
 
 import java.io.Serializable;

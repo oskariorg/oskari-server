@@ -2,9 +2,6 @@ package fi.nls.oskari.util;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import org.apache.commons.lang.StringEscapeUtils;
-import org.jsoup.Jsoup;
-import org.jsoup.safety.Whitelist;
 import org.oskari.util.HtmlHelper;
 
 import javax.servlet.http.HttpServletRequest;

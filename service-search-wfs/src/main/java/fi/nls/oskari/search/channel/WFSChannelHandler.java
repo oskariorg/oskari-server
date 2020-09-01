@@ -4,10 +4,14 @@ import fi.mml.portti.service.search.SearchCriteria;
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.domain.SelectItem;
 import fi.nls.oskari.service.OskariComponent;
+import fi.nls.oskari.util.OskariRuntimeException;
 import fi.nls.oskari.wfs.WFSSearchChannelsConfiguration;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.json.JSONArray;
 
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 /**
@@ -16,33 +20,57 @@ import java.util.List;
 @Oskari(WFSChannelHandler.ID)
 public class WFSChannelHandler extends OskariComponent {
     public static final String ID = "DEFAULT";
+    protected static final XMLOutputFactory XOF = XMLOutputFactory.newInstance();
+
+    protected void writePropertyIsLike(XMLStreamWriter xsw, String name, String value) throws XMLStreamException {
+        xsw.writeStartElement("PropertyIsLike");
+        xsw.writeAttribute("wildCard", "*");
+        xsw.writeAttribute("singleChar", ".");
+        xsw.writeAttribute("escape", "!");
+        xsw.writeAttribute("matchCase", "false");
+        xsw.writeStartElement("PropertyName");
+        xsw.writeCharacters(name + "*");
+        xsw.writeEndElement();
+        xsw.writeStartElement("Literal");
+        xsw.writeCharacters("*" + value + "*");
+        xsw.writeEndElement();
+        xsw.writeEndElement();
+    }
 
     public String createFilter(SearchCriteria sc, WFSSearchChannelsConfiguration config) {
         // override to implement custom filter handling
         String searchStr = sc.getSearchString();
-
-        StringBuffer filter = new StringBuffer("<Filter>");
         JSONArray params = config.getParamsForSearch();
-        boolean hasMultipleParams = params.length()>1;
+        boolean hasMultipleParams = params.length() > 1;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            XMLStreamWriter xsw = XOF.createXMLStreamWriter(baos);
+            xsw.writeStartDocument();
+            xsw.writeStartElement("Filter");
 
-        if(hasMultipleParams){
-            filter.append("<Or>");
+            if (hasMultipleParams){
+                xsw.writeStartElement("Or");
+            }
+
+            for(int j = 0; j < params.length(); j++) {
+                String param = params.optString(j);
+                writePropertyIsLike(xsw, param, searchStr);
+            }
+
+            if (hasMultipleParams){
+                xsw.writeEndElement();
+            }
+
+            xsw.writeEndElement();
+
+            xsw.writeEndDocument();
+            xsw.close();
+
+        } catch (XMLStreamException e) {
+            throw new OskariRuntimeException("Unable to write filter", e);
         }
 
-        for(int j=0;j<params.length();j++){
-            String param = params.optString(j);
-            filter.append("<PropertyIsLike wildCard='*' singleChar='.' escape='!' matchCase='false'>" +
-                    "<PropertyName>" + StringEscapeUtils.escapeXml(param) + "</PropertyName><Literal>*" +
-                    StringEscapeUtils.escapeXml(searchStr) + "*</Literal></PropertyIsLike>"
-            );
-        }
-
-        if(hasMultipleParams){
-            filter.append("</Or>");
-        }
-
-        filter.append("</Filter>");
-        return filter.toString().trim();
+        return baos.toString();
     }
 
     public String getTitle(List<SelectItem> list) {

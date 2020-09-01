@@ -5,10 +5,13 @@ import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.domain.SelectItem;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.OskariRuntimeException;
 import fi.nls.oskari.wfs.WFSSearchChannelsConfiguration;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.json.JSONArray;
 
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 /**
@@ -28,7 +31,6 @@ public class SimpleAddressWFSSearchHandler extends WFSChannelHandler {
             log.warn("Tried to use address handler, but it needs 2 parameters. Using default handler instead.");
             return super.createFilter(sc, config);
         }
-        StringBuffer filter = new StringBuffer("<Filter><And>");
 
         String streetName = searchStr;
         String streetNumber = "";
@@ -41,18 +43,27 @@ public class SimpleAddressWFSSearchHandler extends WFSChannelHandler {
             streetNumber = lastWord;
         }
 
-        filter.append("<PropertyIsLike wildCard='*' singleChar='>' escape='!' matchCase='false'>" +
-                "<PropertyName>" +  StringEscapeUtils.escapeXml(params.optString(0))+"</PropertyName><Literal>" +
-                StringEscapeUtils.escapeXml(streetName) + "*</Literal></PropertyIsLike>"
-        );
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            XMLStreamWriter xsw = XOF.createXMLStreamWriter(baos);
+            xsw.writeStartDocument();
+            xsw.writeStartElement("Filter");
+            xsw.writeStartElement("And");
 
-        filter.append("<PropertyIsLike wildCard='*' singleChar='>' escape='!' matchCase='false'>" +
-                "<PropertyName>" + StringEscapeUtils.escapeXml(params.optString(1)) + "</PropertyName><Literal>" +
-                StringEscapeUtils.escapeXml(streetNumber) + "*</Literal></PropertyIsLike>"
-        );
+            writePropertyIsLike(xsw, params.optString(0), streetName);
+            writePropertyIsLike(xsw, params.optString(1), streetNumber);
 
-        filter.append("</And></Filter>");
-        return filter.toString().trim();
+            // /And
+            xsw.writeEndElement();
+            // /Filter
+            xsw.writeEndElement();
+            xsw.writeEndDocument();
+            xsw.close();
+
+        } catch (XMLStreamException e) {
+            throw new OskariRuntimeException("Unable to write filter", e);
+        }
+        return baos.toString();
     }
 
     /**
