@@ -4,24 +4,23 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>fi.nls.oskari</groupId>
-		<artifactId>oskari-parent</artifactId>
+        <groupId>org.oskari</groupId>
+        <artifactId>oskari-server</artifactId>
         <version>2.0.0-SNAPSHOT</version>
 	</parent>
 
-    <groupId>fi.nls.oskari.service</groupId>
-    <artifactId>oskari-control-base</artifactId>
+    <artifactId>control-base</artifactId>
     <packaging>jar</packaging>
     <name>Control Service - Base Actions</name>
 
     <dependencies>
         <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-control</artifactId>
+            <groupId>org.oskari</groupId>
+            <artifactId>service-control</artifactId>
         </dependency>
         <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-search-wfs</artifactId>
+            <groupId>org.oskari</groupId>
+            <artifactId>service-search-wfs</artifactId>
         </dependency>
 
         <dependency>
@@ -29,28 +28,28 @@
             <artifactId>service-admin</artifactId>
         </dependency>
         <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-myplaces</artifactId>
+            <groupId>org.oskari</groupId>
+            <artifactId>service-myplaces</artifactId>
         </dependency>
         <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-map</artifactId>
+            <groupId>org.oskari</groupId>
+            <artifactId>service-map</artifactId>
         </dependency>
         <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-feedback</artifactId>
+            <groupId>org.oskari</groupId>
+            <artifactId>service-feedback</artifactId>
         </dependency>
         <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-feedback-open311</artifactId>
+            <groupId>org.oskari</groupId>
+            <artifactId>service-feedback-open311</artifactId>
         </dependency>
         <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
+            <groupId>org.oskari</groupId>
             <artifactId>service-csw</artifactId>
         </dependency>
         <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-rating</artifactId>
+            <groupId>org.oskari</groupId>
+            <artifactId>service-rating</artifactId>
         </dependency>
         <dependency>
             <groupId>org.oskari</groupId>
@@ -61,7 +60,7 @@
             <artifactId>service-userlayer</artifactId>
         </dependency>
         <dependency>
-            <groupId>fi.nls.oskari</groupId>
+            <groupId>org.oskari</groupId>
             <artifactId>shared-test-resources</artifactId>
             <scope>test</scope>
         </dependency>

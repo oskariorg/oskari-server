@@ -4,12 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>fi.nls.oskari</groupId>
-    <artifactId>oskari-parent</artifactId>
+    <groupId>org.oskari</groupId>
+    <artifactId>oskari-server</artifactId>
     <version>2.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>Oskari parent POM</name>
+    <name>Oskari server</name>
     <description>Contains common properties and managed dependencies for the Oskari modules.</description>
     <url>https://github.com/oskariorg/oskari-server</url>
 
@@ -45,9 +45,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.version>1.8</jdk.version>
-        <fi.nls.oskari.version>${project.version}</fi.nls.oskari.version>
-        <fi.nls.oskari.service.version>${project.version}</fi.nls.oskari.service.version>
-        <flyway.version>6.5.5</flyway.version>
+        <oskari.version>${project.version}</oskari.version>
 
         <spring.version>5.2.7.RELEASE</spring.version>
         <spring-security.version>5.3.2.RELEASE</spring-security.version>
@@ -67,43 +65,44 @@
 
         <lambdaj.version>2.3.3</lambdaj.version>
         <jsoup.version>1.13.1</jsoup.version>
-        <axiom.version>1.2.22</axiom.version>
         <commons-lang3.version>3.8.1</commons-lang3.version>
+
+        <axiom.version>1.2.22</axiom.version>
         <stax-api.version>1.0-2</stax-api.version>
         <stax2-api.version>3.1.4</stax2-api.version>
         <woodstox.version>5.1.0</woodstox.version>
-        <jsonld-java.version>0.3</jsonld-java.version>
-        <xmlunit.version>1.6</xmlunit.version>
-        <jedis.version>3.3.0</jedis.version>
+        <xmlbeans.version>2.6.0</xmlbeans.version>
+
         <jackson.version>2.11.0</jackson.version>
+        <jsonld-java.version>0.3</jsonld-java.version>
 
         <fi.mml.capabilities.version>1.3.0</fi.mml.capabilities.version>
         <fi.mml.wms.version>1.1.1</fi.mml.wms.version>
         <fi.mml.nameregister.version>1.0</fi.mml.nameregister.version>
 
         <jetty.version>9.4.31.v20200723</jetty.version>
-
-        <postgresql.version>42.2.5</postgresql.version>
+        <mybatis.version>3.5.5</mybatis.version>
+        <flyway.version>6.5.5</flyway.version>
+        <postgresql.version>42.2.14</postgresql.version>
+        <jedis.version>3.3.0</jedis.version>
         <quartz-scheduler.version>2.3.2</quartz-scheduler.version>
 
-        <xmlbeans.version>2.6.0</xmlbeans.version>
         <geotools.version>23.2</geotools.version>
         <jts.version>1.16.1</jts.version>
         <mvt.version>3.1.0</mvt.version>
-        <!-- gt-xsd-kml.version>9.3</gt-xsd-kml.version -->
         <flexjson.version>2.0</flexjson.version>
 
         <pdfbox.version>2.0.16</pdfbox.version>
-        <mybatis.version>3.5.5</mybatis.version>
         <hystrix.version>1.5.18</hystrix.version>
         <!-- Test deps versions -->
         <powermock.version>2.0.0</powermock.version>
         <junit.version>4.11</junit.version>
+        <xmlunit.version>1.6</xmlunit.version>
+        <h2database.version>1.4.199</h2database.version>
 
         <log4j.version>2.13.2</log4j.version>
         <slf4j.version>1.7.30</slf4j.version>
         <metrics.version>4.1.0</metrics.version>
-        <h2database.version>1.4.199</h2database.version>
         <xom.version>1.2.5</xom.version>
     </properties>
 
@@ -127,244 +126,215 @@
             <dependency>
                 <groupId>org.oskari</groupId>
                 <artifactId>content-resources</artifactId>
-                <version>${fi.nls.oskari.version}</version>
+                <version>${oskari.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>fi.nls.oskari.service</groupId>
-                <artifactId>oskari-base</artifactId>
-                <version>${fi.nls.oskari.service.version}</version>
+                <groupId>org.oskari</groupId>
+                <artifactId>service-base</artifactId>
+                <version>${oskari.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>fi.nls.oskari</groupId>
+                <groupId>org.oskari</groupId>
                 <artifactId>service-logging</artifactId>
-                <version>${fi.nls.oskari.service.version}</version>
+                <version>${oskari.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>fi.nls.oskari.service</groupId>
-                <artifactId>oskari-control-base</artifactId>
-                <version>${fi.nls.oskari.version}</version>
+                <groupId>org.oskari</groupId>
+                <artifactId>service-control</artifactId>
+                <version>${oskari.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>fi.nls.oskari.service</groupId>
-                <artifactId>oskari-control</artifactId>
-                <version>${fi.nls.oskari.service.version}</version>
+                <groupId>org.oskari</groupId>
+                <artifactId>control-base</artifactId>
+                <version>${oskari.version}</version>
             </dependency>
             <dependency>
-                <groupId>fi.nls.oskari</groupId>
+                <groupId>org.oskari</groupId>
                 <artifactId>download-basket</artifactId>
-                <version>${fi.nls.oskari.service.version}</version>
+                <version>${oskari.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>fi.nls.oskari.service</groupId>
-                <artifactId>oskari-control-example</artifactId>
-                <version>${fi.nls.oskari.service.version}</version>
+                <groupId>org.oskari</groupId>
+                <artifactId>control-example</artifactId>
+                <version>${oskari.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>fi.nls.oskari.service</groupId>
-                <artifactId>oskari-control-myplaces</artifactId>
-                <version>${fi.nls.oskari.service.version}</version>
+                <groupId>org.oskari</groupId>
+                <artifactId>control-myplaces</artifactId>
+                <version>${oskari.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>fi.nls.oskari.service</groupId>
-                <artifactId>oskari-control-rating</artifactId>
-                <version>${fi.nls.oskari.service.version}</version>
+                <groupId>org.oskari</groupId>
+                <artifactId>control-rating</artifactId>
+                <version>${oskari.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>fi.nls.oskari.service</groupId>
-                <artifactId>oskari-control-statistics</artifactId>
-                <version>${fi.nls.oskari.service.version}</version>
+                <groupId>org.oskari</groupId>
+                <artifactId>control-statistics</artifactId>
+                <version>${oskari.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>fi.nls.oskari.service</groupId>
-                <artifactId>oskari-control-admin</artifactId>
-                <version>${fi.nls.oskari.service.version}</version>
+                <groupId>org.oskari</groupId>
+                <artifactId>control-admin</artifactId>
+                <version>${oskari.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>fi.nls.oskari.service</groupId>
-                <artifactId>oskari-control-users</artifactId>
-                <version>${fi.nls.oskari.service.version}</version>
+                <groupId>org.oskari</groupId>
+                <artifactId>control-users</artifactId>
+                <version>${oskari.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>fi.nls.oskari.service</groupId>
-                <artifactId>oskari-map</artifactId>
-                <version>${fi.nls.oskari.service.version}</version>
+                <groupId>org.oskari</groupId>
+                <artifactId>service-map</artifactId>
+                <version>${oskari.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>fi.nls.oskari.service</groupId>
-                <artifactId>oskari-users</artifactId>
-                <version>${fi.nls.oskari.service.version}</version>
+                <groupId>org.oskari</groupId>
+                <artifactId>service-users</artifactId>
+                <version>${oskari.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>fi.nls.oskari.service</groupId>
-                <artifactId>oskari-permissions</artifactId>
-                <version>${fi.nls.oskari.service.version}</version>
+                <groupId>org.oskari</groupId>
+                <artifactId>service-permissions</artifactId>
+                <version>${oskari.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>fi.nls.oskari.service</groupId>
+                <groupId>org.oskari</groupId>
                 <artifactId>service-scheduler</artifactId>
-                <version>${fi.nls.oskari.service.version}</version>
+                <version>${oskari.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>fi.nls.oskari.service</groupId>
+                <groupId>org.oskari</groupId>
                 <artifactId>service-spatineo-monitor</artifactId>
-                <version>${fi.nls.oskari.service.version}</version>
+                <version>${oskari.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>fi.nls.oskari.service</groupId>
-                <artifactId>oskari-statistics</artifactId>
-                <version>${fi.nls.oskari.service.version}</version>
+                <groupId>org.oskari</groupId>
+                <artifactId>service-statistics</artifactId>
+                <version>${oskari.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>fi.nls.oskari.service</groupId>
-                <artifactId>oskari-statistics-common</artifactId>
-                <version>${fi.nls.oskari.service.version}</version>
+                <groupId>org.oskari</groupId>
+                <artifactId>service-statistics-common</artifactId>
+                <version>${oskari.version}</version>
             </dependency>
             <dependency>
-                <groupId>fi.nls.oskari.service</groupId>
-                <artifactId>oskari-statistics-sotka</artifactId>
-                <version>${fi.nls.oskari.service.version}</version>
+                <groupId>org.oskari</groupId>
+                <artifactId>service-statistics-sotka</artifactId>
+                <version>${oskari.version}</version>
             </dependency>
             <dependency>
-                <groupId>fi.nls.oskari.service</groupId>
-                <artifactId>oskari-statistics-kapa</artifactId>
-                <version>${fi.nls.oskari.service.version}</version>
+                <groupId>org.oskari</groupId>
+                <artifactId>service-statistics-kapa</artifactId>
+                <version>${oskari.version}</version>
             </dependency>
             <dependency>
-                <groupId>fi.nls.oskari.service</groupId>
+                <groupId>org.oskari</groupId>
                 <artifactId>service-statistics-pxweb</artifactId>
-                <version>${fi.nls.oskari.service.version}</version>
+                <version>${oskari.version}</version>
             </dependency>
             <dependency>
-                <groupId>fi.nls.oskari.service</groupId>
-                <artifactId>oskari-statistics-eurostat</artifactId>
-                <version>${fi.nls.oskari.service.version}</version>
+                <groupId>org.oskari</groupId>
+                <artifactId>service-statistics-eurostat</artifactId>
+                <version>${oskari.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.oskari.service</groupId>
                 <artifactId>service-statistics-unsd</artifactId>
-                <version>${fi.nls.oskari.service.version}</version>
+                <version>${oskari.version}</version>
             </dependency>
             <dependency>
-                <groupId>fi.nls.oskari.service</groupId>
+                <groupId>org.oskari</groupId>
                 <artifactId>service-csw</artifactId>
-                <version>${fi.nls.oskari.service.version}</version>
+                <version>${oskari.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>fi.nls.oskari.service</groupId>
-                <artifactId>service-datamodel</artifactId>
-                <version>${fi.nls.oskari.service.version}</version>
+                <groupId>org.oskari</groupId>
+                <artifactId>service-feedback</artifactId>
+                <version>${oskari.version}</version>
             </dependency>
             <dependency>
-                <groupId>fi.nls.oskari.service</groupId>
-                <artifactId>oskari-feedback</artifactId>
-                <version>${fi.nls.oskari.service.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>fi.nls.oskari.service</groupId>
-                <artifactId>oskari-feedback-open311</artifactId>
-                <version>${fi.nls.oskari.service.version}</version>
+                <groupId>org.oskari</groupId>
+                <artifactId>service-feedback-open311</artifactId>
+                <version>${oskari.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>fi.nls.oskari.service</groupId>
-                <artifactId>oskari-search</artifactId>
-                <version>${fi.nls.oskari.service.version}</version>
+                <groupId>org.oskari</groupId>
+                <artifactId>service-search</artifactId>
+                <version>${oskari.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>fi.nls.oskari.service</groupId>
-                <artifactId>oskari-search-wfs</artifactId>
-                <version>${fi.nls.oskari.service.version}</version>
+                <groupId>org.oskari</groupId>
+                <artifactId>service-search-wfs</artifactId>
+                <version>${oskari.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>fi.nls.oskari.service</groupId>
-                <artifactId>oskari-mybatis</artifactId>
-                <version>${fi.nls.oskari.service.version}</version>
+                <groupId>org.oskari</groupId>
+                <artifactId>service-mybatis</artifactId>
+                <version>${oskari.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>fi.nls.oskari.service</groupId>
-                <artifactId>oskari-search-opendata</artifactId>
-                <version>${fi.nls.oskari.service.version}</version>
+                <groupId>org.oskari</groupId>
+                <artifactId>service-search-opendata</artifactId>
+                <version>${oskari.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>fi.nls.oskari.service</groupId>
-                <artifactId>oskari-feature-engine</artifactId>
-                <version>${fi.nls.oskari.service.version}</version>
+                <groupId>org.oskari</groupId>
+                <artifactId>service-routing</artifactId>
+                <version>${oskari.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>fi.nls.oskari</groupId>
-                <artifactId>map-servlet</artifactId>
-                <version>${fi.nls.oskari.version}</version>
+                <groupId>org.oskari</groupId>
+                <artifactId>control-routing</artifactId>
+                <version>${oskari.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>fi.nls.oskari</groupId>
-                <artifactId>transport-servlet</artifactId>
-                <version>${fi.nls.oskari.version}</version>
+                <groupId>org.oskari</groupId>
+                <artifactId>service-myplaces</artifactId>
+                <version>${oskari.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>fi.nls.oskari.service</groupId>
-                <artifactId>oskari-routing</artifactId>
-                <version>${fi.nls.oskari.service.version}</version>
+                <groupId>org.oskari</groupId>
+                <artifactId>service-rating</artifactId>
+                <version>${oskari.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>fi.nls.oskari.service</groupId>
-                <artifactId>oskari-control-routing</artifactId>
-                <version>${fi.nls.oskari.service.version}</version>
+                <groupId>org.oskari</groupId>
+                <artifactId>service-webapp</artifactId>
+                <version>${oskari.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>fi.nls.oskari.service</groupId>
-                <artifactId>oskari-myplaces</artifactId>
-                <version>${fi.nls.oskari.service.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>fi.nls.oskari.service</groupId>
-                <artifactId>oskari-rating</artifactId>
-                <version>${fi.nls.oskari.service.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>fi.nls.oskari</groupId>
-                <artifactId>servlet-saml-config</artifactId>
-                <version>${fi.nls.oskari.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>fi.nls.oskari.service</groupId>
-                <artifactId>oskari-webapp-helpers</artifactId>
-                <version>${fi.nls.oskari.service.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>fi.nls.oskari</groupId>
+                <groupId>org.oskari</groupId>
                 <artifactId>servlet-map</artifactId>
-                <version>${fi.nls.oskari.version}</version>
+                <version>${oskari.version}</version>
             </dependency>
 
             <dependency>
@@ -382,73 +352,73 @@
             <dependency>
                 <groupId>org.oskari</groupId>
                 <artifactId>service-print</artifactId>
-                <version>${fi.nls.oskari.version}</version>
+                <version>${oskari.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.oskari</groupId>
                 <artifactId>service-wcs</artifactId>
-                <version>${fi.nls.oskari.version}</version>
+                <version>${oskari.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.oskari</groupId>
                 <artifactId>oskari-utils</artifactId>
-                <version>${fi.nls.oskari.version}</version>
+                <version>${oskari.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.oskari</groupId>
                 <artifactId>service-capabilities-update</artifactId>
-                <version>${fi.nls.oskari.version}</version>
+                <version>${oskari.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.oskari</groupId>
-                <artifactId>oskari-geojson</artifactId>
-                <version>${fi.nls.oskari.version}</version>
+                <artifactId>gt-geojson</artifactId>
+                <version>${oskari.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.oskari</groupId>
                 <artifactId>control-userlayer</artifactId>
-                <version>${fi.nls.oskari.version}</version>
+                <version>${oskari.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.oskari</groupId>
                 <artifactId>service-userlayer</artifactId>
-                <version>${fi.nls.oskari.version}</version>
+                <version>${oskari.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.oskari</groupId>
                 <artifactId>control-mvt</artifactId>
-                <version>${fi.nls.oskari.version}</version>
+                <version>${oskari.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.oskari</groupId>
                 <artifactId>service-mvt</artifactId>
-                <version>${fi.nls.oskari.version}</version>
+                <version>${oskari.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.oskari</groupId>
                 <artifactId>service-wfs-client</artifactId>
-                <version>${fi.nls.oskari.version}</version>
+                <version>${oskari.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.oskari</groupId>
                 <artifactId>service-wfs3</artifactId>
-                <version>${fi.nls.oskari.version}</version>
+                <version>${oskari.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.oskari</groupId>
                 <artifactId>service-admin</artifactId>
-                <version>${fi.nls.oskari.version}</version>
+                <version>${oskari.version}</version>
             </dependency>
 
 
@@ -920,9 +890,9 @@
 
             <!-- Managed test dependencies -->
             <dependency>
-                <groupId>fi.nls.oskari</groupId>
+                <groupId>org.oskari</groupId>
                 <artifactId>shared-test-resources</artifactId>
-                <version>${fi.nls.oskari.service.version}</version>
+                <version>${oskari.version}</version>
                 <scope>test</scope>
             </dependency>
 
@@ -1285,7 +1255,6 @@
 
         <module>service-wcs</module>
         <module>oskari-utils</module>
-        <module>oskari-geojson</module>
 
         <module>control-userlayer</module>
         <module>service-userlayer</module>
@@ -1295,6 +1264,7 @@
 
         <module>service-wfs-client</module>
         <module>service-wfs3</module>
+        <module>geotools-ext/gt-geojson</module>
         <module>geotools-ext/gt-xsd-gpx</module>
         <module>geotools-ext/gt-mif</module>
     </modules>

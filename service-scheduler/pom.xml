@@ -5,12 +5,11 @@
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>fi.nls.oskari</groupId>
-        <artifactId>oskari-parent</artifactId>
+        <groupId>org.oskari</groupId>
+        <artifactId>oskari-server</artifactId>
         <version>2.0.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>fi.nls.oskari.service</groupId>
     <artifactId>service-scheduler</artifactId>
     <packaging>jar</packaging>
     <name>Scheduler Service</name>
@@ -21,8 +20,8 @@
             <artifactId>quartz</artifactId>
         </dependency>
         <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-base</artifactId>
+            <groupId>org.oskari</groupId>
+            <artifactId>service-base</artifactId>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
