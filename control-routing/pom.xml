@@ -4,24 +4,23 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>fi.nls.oskari</groupId>
-		<artifactId>oskari-parent</artifactId>
+        <groupId>org.oskari</groupId>
+        <artifactId>oskari-server</artifactId>
         <version>2.0.0-SNAPSHOT</version>
 	</parent>
 
-    <groupId>fi.nls.oskari.service</groupId>
-    <artifactId>oskari-control-routing</artifactId>
+    <artifactId>control-routing</artifactId>
     <packaging>jar</packaging>
     <name>Control Service - Action routes for routing</name>
 
     <dependencies>
         <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-routing</artifactId>
+            <groupId>org.oskari</groupId>
+            <artifactId>service-routing</artifactId>
         </dependency>
         <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-control</artifactId>
+            <groupId>org.oskari</groupId>
+            <artifactId>service-control</artifactId>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -29,7 +28,7 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>fi.nls.oskari</groupId>
+            <groupId>org.oskari</groupId>
             <artifactId>shared-test-resources</artifactId>
             <scope>test</scope>
         </dependency>

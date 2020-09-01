@@ -3,12 +3,11 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>fi.nls.oskari</groupId>
-        <artifactId>oskari-parent</artifactId>
+        <groupId>org.oskari</groupId>
+        <artifactId>oskari-server</artifactId>
         <version>2.0.0-SNAPSHOT</version>
     </parent>
-    
-    <groupId>org.oskari</groupId>
+
     <artifactId>oskari-utils</artifactId>
     <description>
         Lightweight module for commonly used utility functions with no dependencies (test scoped dependencies allowed).
