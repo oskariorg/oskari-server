@@ -107,7 +107,7 @@
     </properties>
 
     <dependencies>
-	<!-- Replacements for deprecated/removed modules in JDK9/JDK11 -->
+        <!-- Replacements for deprecated/removed modules in JDK9/JDK11 -->
         <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
@@ -851,21 +851,18 @@
                 <groupId>org.oskari</groupId>
                 <artifactId>shared-test-resources</artifactId>
                 <version>${oskari.version}</version>
-                <scope>test</scope>
             </dependency>
 
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>${junit.version}</version>
-                <scope>test</scope>
             </dependency>
 
             <dependency>
                 <groupId>org.powermock</groupId>
                 <artifactId>powermock-module-junit4</artifactId>
                 <version>${powermock.version}</version>
-                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.powermock</groupId>
@@ -895,10 +892,10 @@
                 <version>${log4j.version}</version>
             </dependency>
             <dependency>
-		<groupId>xom</groupId>
-		<artifactId>xom</artifactId>
-		<version>${xom.version}</version>
-		<scope>provided</scope>
+                <groupId>xom</groupId>
+                <artifactId>xom</artifactId>
+                <version>${xom.version}</version>
+                <scope>provided</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
