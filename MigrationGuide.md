@@ -1,5 +1,47 @@
 # Migration guide
 
+## 2.0.0
+
+### Maven
+
+- groupId on all Oskari artifacts is now `org.oskari` (previously a mixture of `org.oskari`, `fi.nls.oskari` and `fi.nls.oskari.service`)
+- artifactId on most Oskari artifacts changed as follows:
+
+    - `oskari-parent` (parent pom) is now `oskari-server`
+    - if it started `oskari-control-*` it is now `control-*`
+    - if it started with `oskari-*` (where * is not control*) it is now `service-*`
+
+Spring framework dependencies are now handled with "Bill of materials" import to managed dependencies so it's easier to use the same version of Spring artifacts that are used in Oskari.
+
+### Database / Core migrations
+
+All the database services now use MyBatis and Ibatis has been dropped from the dependencies.
+
+In the core Flyway module we have dropped all of the 1.x Flyway migrations from oskari-server which lets us clean up some of the code.
+
+For new installs the Flyway baseline version is set at 2.0.0. 
+For existing installs the status table is dropped (to drop references to previous migrations that we have removed from oskari-server) as re-baselining is not allowed and the baseline is set at 2.0.4 which lets us skip new migrations that will initialize the database tables for empty database.
+There are new shared migrations for both new and old installs that will rename some of the tables in the database so naming is more consistent:
+
+- https://github.com/oskariorg/oskari-server/pull/618
+- https://github.com/oskariorg/oskari-server/pull/619
+
+### Flyway migrations
+
+Setup-files are no longer supported (as it added unnecessary complexity). 
+Instead you can use AppSetupHelper to insert any appsetups to the database directly without having a setup-file that just references the appsetup/view files.
+
+- https://github.com/oskariorg/oskari-server/pull/615
+
+The Flyway library has been updated to its latest version that includes an API change for all Java-based migrations.
+This requires additional manual work...
+
+### GeoTools/JTS upgraded
+
+JTS Java-packages have changed. If you have used the classes in your application specific code you will need to update to the new packages:
+- https://github.com/locationtech/jts/blob/master/MIGRATION.md
+ 
+
 ## 1.54.0
 
 ### Bundle path changes related to OpenLayers map engine upgrade
