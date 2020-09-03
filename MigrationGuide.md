@@ -36,11 +36,34 @@ Instead you can use AppSetupHelper to insert any appsetups to the database direc
 The Flyway library has been updated to its latest version that includes an API change for all Java-based migrations.
 This requires additional manual work...
 
+#### Flyway Helpers
+
+1.56.0
+```
+fi.nls.oskari.db.DBHandler.setupAppContent(conn, [ref to a file under "setup"]);
+```
+2.0.0
+```
+org.oskari.helpers.AppSetupHelper.create(conn, [ref to a file under "json/views"])
+```
+
+1.56.0: `fi.nls.oskari.util.FlywayHelper` -> 2.0.0 `org.oskari.helpers.AppSetupHelper`
+
+FlywayHelper.getUserAndDefaultViewIds() -> AppSetupHelper.getSetupsForUserAndDefaultType() 
+FlywayHelper.viewContainsBundle() -> AppSetupHelper.appContainsBundle()
+FlywayHelper.addBundleWithDefaults() -> AppSetupHelper.addBundleToApp()
+
 ### GeoTools/JTS upgraded
 
 JTS Java-packages have changed. If you have used the classes in your application specific code you will need to update to the new packages:
 - https://github.com/locationtech/jts/blob/master/MIGRATION.md
- 
+
+### Updated Jetty
+
+The download package from Oskari.org has an updated Jetty version. If you are using nginx and the 
+configurations provided in sample-configs repository note that we have removed
+the X-Forwarded-Port header from the config as it messed with for example the logout functionality with the new Jetty:
+https://github.com/oskariorg/sample-configs/commit/d3f36a33dd8dbaac475573a301b5d71af365b47d
 
 ## 1.54.0
 
