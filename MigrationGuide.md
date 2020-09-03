@@ -2,6 +2,9 @@
 
 ## 2.0.0
 
+The required changes have been made as pull requests for our demo app `sample-server-extension` version 1.4.0:
+- https://github.com/oskariorg/sample-server-extension/milestone/5?closed=1
+
 ### Maven
 
 GroupId on all Oskari artifacts is now `org.oskari` (previously a mixture of `org.oskari`, `org.oskari.service`, `fi.nls.oskari` and `fi.nls.oskari.service`).
@@ -86,13 +89,22 @@ If you have used JTS classes in your application specific code you will need to 
 
 - https://github.com/locationtech/jts/blob/master/MIGRATION.md
 
-### Updated Jetty
+### Updated Jetty and GeoServer
 
 The download package from Oskari.org has an updated Jetty version. If you are using nginx and the 
 configurations provided in sample-configs repository note that we have removed
 the X-Forwarded-Port header from the config as it messed with for example the logout functionality with the new Jetty:
 
 - https://github.com/oskariorg/sample-configs/commit/d3f36a33dd8dbaac475573a301b5d71af365b47d
+
+Updating services based on the zip-download on https://oskari.org/download you can:
+
+1) Replace the jetty-distribution folder with the new one (from for example the updated zip file): https://github.com/oskariorg/sample-configs/pull/8
+2) Replace oskari-server/webapps/geoserver directory with the new one (from for example the updated zip file): https://github.com/oskariorg/sample-configs/pull/7
+3) Update any systemctl or similar scripts to point to the new Jetty folder:
+
+- Replacing `java -jar ../jetty-distribution-9.4.12.v20180830/start.jar`
+- With:     `java -jar ../jetty-distribution-9.4.31.v20200723/start.jar`
 
 ## 1.54.0
 
