@@ -74,6 +74,10 @@ public class LayerHelper {
      */
     protected static void refreshLayerCapabilities() {
         for (OskariLayer layer : layerService.findAll()) {
+            if (layer.getUrl().startsWith("http://localhost:")) {
+                // skip localhost servers as the service is starting when this is called and geoserver will not answer
+                continue;
+            }
             try {
                 LayerCapabilitiesHelper.updateCapabilities(layer);
                 layerService.update(layer);
