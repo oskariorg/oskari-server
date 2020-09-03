@@ -256,7 +256,7 @@
                 <version>${oskari.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.oskari.service</groupId>
+                <groupId>org.oskari</groupId>
                 <artifactId>service-statistics-unsd</artifactId>
                 <version>${oskari.version}</version>
             </dependency>
