@@ -4,58 +4,86 @@
 
 ### Maven
 
-- groupId on all Oskari artifacts is now `org.oskari` (previously a mixture of `org.oskari`, `fi.nls.oskari` and `fi.nls.oskari.service`)
-- artifactId on most Oskari artifacts changed as follows:
+GroupId on all Oskari artifacts is now `org.oskari` (previously a mixture of `org.oskari`, `org.oskari.service`, `fi.nls.oskari` and `fi.nls.oskari.service`).
+ArtifactId on most Oskari artifacts changed as follows:
 
-    - `oskari-parent` (parent pom) is now `oskari-server`
-    - if it started `oskari-control-*` it is now `control-*`
-    - if it started with `oskari-*` (where * is not control*) it is now `service-*`
+- `oskari-parent` (parent pom) is now `oskari-server`
+- if artifactId started `oskari-control-*` it is now `control-*`
+- if artifactId started with `oskari-*` (where `*` is NOT `control-*`) it is now `service-*`
 
-Spring framework dependencies are now handled with "Bill of materials" import to managed dependencies so it's easier to use the same version of Spring artifacts that are used in Oskari.
+Spring framework dependencies are now handled with a "Bill of materials" import to managed
+ dependencies so it's easier to use the same version of Spring artifacts that are used in Oskari.
 
 ### Database / Core migrations
 
-All the database services now use MyBatis and Ibatis has been dropped from the dependencies.
+All the database services now use MyBatis. Ibatis has been dropped from the dependencies.
 
-In the core Flyway module we have dropped all of the 1.x Flyway migrations from oskari-server which lets us clean up some of the code.
+In the core Flyway module we have dropped all of the 1.x Flyway migrations from oskari-server
+ which lets us clean up some of the code regarding these.
 
 For new installs the Flyway baseline version is set at 2.0.0. 
-For existing installs the status table is dropped (to drop references to previous migrations that we have removed from oskari-server) as re-baselining is not allowed and the baseline is set at 2.0.4 which lets us skip new migrations that will initialize the database tables for empty database.
-There are new shared migrations for both new and old installs that will rename some of the tables in the database so naming is more consistent:
+For existing installs the status table is dropped (to drop references to previous migrations
+ that we have removed from oskari-server) as re-baselining is not allowed and the baseline
+ is set at 2.0.4. This lets us skip new migrations that will initialize the database tables
+ for empty database. 
+ 
+There are new shared migrations for both new and old installs that will rename some of the tables
+ in the database so naming is more consistent:
 
 - https://github.com/oskariorg/oskari-server/pull/618
 - https://github.com/oskariorg/oskari-server/pull/619
 
-### Flyway migrations
+After this all the database tables in the core module are prefixed with `oskari_`. 
+The user content modules (`myplaces`, `userlayer` etc) are not changed at this time.
 
-Setup-files are no longer supported (as it added unnecessary complexity). 
-Instead you can use AppSetupHelper to insert any appsetups to the database directly without having a setup-file that just references the appsetup/view files.
-
-- https://github.com/oskariorg/oskari-server/pull/615
+#### Flyway migrations
 
 The Flyway library has been updated to its latest version that includes an API change for all Java-based migrations.
-This requires additional manual work...
+This requires manual work for changes that have been described here: 
+
+- https://github.com/oskariorg/oskari-server/pull/614
 
 #### Flyway Helpers
 
-1.56.0
+Helpers for common Flyway operations have been updated for consistency in naming and parameter order.
+Setup-files are no longer supported (as it added unnecessary complexity). 
+Instead you can use `org.oskari.helpers.AppSetupHelper` to insert any appsetups/views to the
+ database directly that were previously referenced in setup-files.
+ You can also use `LayerHelper` to add initial map layers to the database as before.
+ The Java package has been changed from `fi.nls.oskari.db.LayerHelper` to `org.oskari.helpers.LayerHelper`
+ but methods remain unchanged. 
+
+Additional information:
+- https://github.com/oskariorg/oskari-server/pull/615
+
+1.56.0 allowed initializing content with "setup" files (not supported on 2.0+):
 ```
 fi.nls.oskari.db.DBHandler.setupAppContent(conn, [ref to a file under "setup"]);
 ```
-2.0.0
+For 2.0.0 instead run SQL as normal Flyway migrations in application module and insert appsetups/layers with related helpers as Java-based Flyway migrations
 ```
 org.oskari.helpers.AppSetupHelper.create(conn, [ref to a file under "json/views"])
 ```
 
-1.56.0: `fi.nls.oskari.util.FlywayHelper` -> 2.0.0 `org.oskari.helpers.AppSetupHelper`
+1.56.0 -> 2.0.0 changes to migration helpers
+```
+fi.nls.oskari.db.ViewHelper -> org.oskari.helpers.AppSetupHelper
+ViewHelper.insertView() -> AppSetupHelper.create()
 
+fi.nls.oskari.db.LayerHelper -> org.oskari.helpers.LayerHelper
+
+fi.nls.oskari.util.FlywayHelper -> org.oskari.helpers.AppSetupHelper
 FlywayHelper.getUserAndDefaultViewIds() -> AppSetupHelper.getSetupsForUserAndDefaultType() 
 FlywayHelper.viewContainsBundle() -> AppSetupHelper.appContainsBundle()
 FlywayHelper.addBundleWithDefaults() -> AppSetupHelper.addBundleToApp()
+FlywayHelper.getBundleFromView() -> AppSetupHelper.getAppBundle()
+```
 
 ### GeoTools/JTS upgraded
 
-JTS Java-packages have changed. If you have used the classes in your application specific code you will need to update to the new packages:
+We have updated the GeoTools library which introduces a change in JTS Java-packages.
+If you have used JTS classes in your application specific code you will need to update to the new packages:
+
 - https://github.com/locationtech/jts/blob/master/MIGRATION.md
 
 ### Updated Jetty
@@ -63,7 +91,8 @@ JTS Java-packages have changed. If you have used the classes in your application
 The download package from Oskari.org has an updated Jetty version. If you are using nginx and the 
 configurations provided in sample-configs repository note that we have removed
 the X-Forwarded-Port header from the config as it messed with for example the logout functionality with the new Jetty:
-https://github.com/oskariorg/sample-configs/commit/d3f36a33dd8dbaac475573a301b5d71af365b47d
+
+- https://github.com/oskariorg/sample-configs/commit/d3f36a33dd8dbaac475573a301b5d71af365b47d
 
 ## 1.54.0
 
