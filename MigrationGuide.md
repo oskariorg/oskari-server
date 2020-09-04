@@ -14,9 +14,6 @@ ArtifactId on most Oskari artifacts changed as follows:
 - if artifactId started `oskari-control-*` it is now `control-*`
 - if artifactId started with `oskari-*` (where `*` is NOT `control-*`) it is now `service-*`
 
-Spring framework dependencies are now handled with a "Bill of materials" import to managed
- dependencies so it's easier to use the same version of Spring artifacts that are used in Oskari.
-
 ### Database / Core migrations
 
 All the database services now use MyBatis. Ibatis has been dropped from the dependencies.
@@ -82,6 +79,13 @@ FlywayHelper.addBundleWithDefaults() -> AppSetupHelper.addBundleToApp()
 FlywayHelper.getBundleFromView() -> AppSetupHelper.getAppBundle()
 ```
 
+### Spring framework upgraded
+
+If you have application-specific code that uses Spring you might need to adapt them to the 5.x version.
+
+Spring framework dependencies are now handled with a "Bill of materials" import to managed
+ dependencies so it's easier to use the same version of Spring artifacts that are used in Oskari.
+
 ### GeoTools/JTS upgraded
 
 We have updated the GeoTools library which introduces a change in JTS Java-packages.
@@ -101,7 +105,7 @@ Updating services based on the zip-download on https://oskari.org/download you c
 
 1) Replace the jetty-distribution folder with the new one (from for example the updated zip file): https://github.com/oskariorg/sample-configs/pull/8
 2) Replace oskari-server/webapps/geoserver directory with the new one (from for example the updated zip file): https://github.com/oskariorg/sample-configs/pull/7
-3) Update any systemctl or similar scripts to point to the new Jetty folder:
+3) Update any systemctl or similar service/startup scripts to point to the new Jetty folder:
 
 - Replacing `java -jar ../jetty-distribution-9.4.12.v20180830/start.jar`
 - With:     `java -jar ../jetty-distribution-9.4.31.v20200723/start.jar`
