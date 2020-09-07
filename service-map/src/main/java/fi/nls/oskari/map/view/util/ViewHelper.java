@@ -147,7 +147,6 @@ public class ViewHelper {
         viewJSON.put("metadata", view.getMetadata());
         viewJSON.put("application", view.getApplication());
         viewJSON.put("page", view.getPage());
-        viewJSON.put("developmentPath", view.getDevelopmentPath());
         viewJSON.put("bundles", createBundles(bundleService, view.getBundles()));
         return viewJSON;
     }
@@ -193,11 +192,9 @@ public class ViewHelper {
             final JSONObject oskari = viewJSON.getJSONObject("oskari");
             view.setApplication(oskari.getString("application"));
             view.setPage(oskari.getString("page"));
-            view.setDevelopmentPath(oskari.getString("development_prefix"));
         } else {
             view.setApplication(viewJSON.getString("application"));
             view.setPage(viewJSON.getString("page"));
-            view.setDevelopmentPath(viewJSON.getString("developmentPath"));
         }
 
         addBundles(bundleService, view, viewJSON.getJSONArray("bundles"));
@@ -220,9 +217,6 @@ public class ViewHelper {
             }
             if (bJSON.has("instance")) {
                 bundle.setBundleinstance(bJSON.getString("instance"));
-            }
-            if (bJSON.has("startup")) {
-                bundle.setStartup(bJSON.getJSONObject("startup").toString());
             }
             if (bJSON.has("config")) {
                 bundle.setConfig(bJSON.getJSONObject("config").toString());

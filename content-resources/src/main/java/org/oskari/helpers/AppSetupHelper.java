@@ -48,7 +48,7 @@ public class AppSetupHelper {
             LayerHelper.refreshLayerCapabilities();
             return viewId;
         } catch (Exception ex) {
-            log.error(ex, "Unable to insert appsetup! ");
+            log.error( "Unable to insert appsetup! Msg: ", ex.getMessage());
             throw new ServiceRuntimeException("Unable to insert appsetup", ex);
         }
     }
@@ -348,8 +348,8 @@ public class AppSetupHelper {
 
     private static View createView(Connection conn, final JSONObject viewJSON)
             throws Exception {
+        final View view = new View();
         try {
-            final View view = new View();
             view.setCreator(ConversionHelper.getLong(viewJSON.optString("creator"), -1));
             view.setIsPublic(viewJSON.optBoolean("public", false));
             view.setOnlyForUuId(viewJSON.optBoolean("onlyUuid", true));
@@ -358,11 +358,15 @@ public class AppSetupHelper {
             view.setIsDefault(viewJSON.optBoolean("default"));
             final JSONObject oskari = JSONHelper.getJSONObject(viewJSON, "oskari");
             view.setPage(oskari.getString("page"));
-            view.setDevelopmentPath(oskari.getString("development_prefix"));
             view.setApplication(oskari.getString("application"));
+        } catch (Exception ex) {
+            log.error( "Unable to construct view (metadata missing)! Msg:", ex.getMessage());
+            throw ex;
+        }
 
-            setupLayers(viewJSON);
+        setupLayers(viewJSON);
 
+        try{
             final JSONArray bundles = viewJSON.getJSONArray("bundles");
             for (int i = 0; i < bundles.length(); ++i) {
                 final JSONObject bJSON = bundles.getJSONObject(i);
@@ -385,9 +389,9 @@ public class AppSetupHelper {
             }
             return view;
         } catch (Exception ex) {
-            log.error(ex, "Unable to insert view! ");
+            log.error("Unable to construct view (problem with bundles)! Msg:", ex.getMessage());
+            throw ex;
         }
-        return null;
     }
 
     private static void replaceSelectedLayers(final Bundle mapfull, final Set<Integer> idSet) {

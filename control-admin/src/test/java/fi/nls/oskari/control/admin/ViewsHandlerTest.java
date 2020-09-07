@@ -179,7 +179,6 @@ public class ViewsHandlerTest extends JSONActionRouteTest {
         view.setOnlyForUuId(false);
         view.setApplication("foo");
         view.setPage("bar");
-        view.setDevelopmentPath("baz");
         return view;
     }
 

@@ -12,7 +12,6 @@ public class Bundle implements Comparable, Serializable {
 
     private String state;
     private String config;
-    private String startup = null;
     private String name;
     private String bundleinstance;
 
@@ -26,7 +25,6 @@ public class Bundle implements Comparable, Serializable {
                 "seqNo    = '" + seqNo +"'\n" +
                 "state    = '" + state +"'\n" +
                 "config   = '" + config +"'\n" +
-                "startup  = '" + startup +"'\n" +
                 "bundleinstance  = '" + bundleinstance +"'\n" +
                 "name     = '" + name +"'\n";
 
@@ -116,8 +114,6 @@ public class Bundle implements Comparable, Serializable {
         return builder.toString();
     }
 
-    public void setStartup(String startup) {/* always null in DB */}
-
     /**
      * Returns the "bundleid" as known by frontend
      * @return
@@ -146,7 +142,6 @@ public class Bundle implements Comparable, Serializable {
         b.setBundleId(getBundleId()); // db id
         b.setName(getName()); // bundleid as known by client
         b.setBundleinstance(getBundleinstance());
-        b.setStartup(getStartup());
         b.setConfig(getConfig());
         b.setState(getState());
         b.setSeqNo(getSeqNo());
