@@ -85,6 +85,7 @@ If you have application-specific code that uses Spring you might need to adapt t
 
 Spring framework dependencies are now handled with a "Bill of materials" import to managed
  dependencies so it's easier to use the same version of Spring artifacts that are used in Oskari.
+ This means you shouldn't have to (re)declare the version on any Spring artifacts on pom.xml of your application.
 
 ### GeoTools/JTS upgraded
 
