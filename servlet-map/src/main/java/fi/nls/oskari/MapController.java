@@ -173,7 +173,7 @@ public class MapController {
 
 
         log.debug("Serving view with id:", view.getId());
-        log.debug("View:", view.getDevelopmentPath(), "/", view.getApplication(), "/", view.getPage());
+        log.debug("View:", view.getApplication(), "/", view.getPage());
         model.addAttribute("viewId", view.getId());
         model.addAttribute("appsetupId", view.getId());
         model.addAttribute("appsetupUUID", view.getUuid());

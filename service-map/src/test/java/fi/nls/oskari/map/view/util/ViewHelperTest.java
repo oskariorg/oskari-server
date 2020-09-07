@@ -74,7 +74,6 @@ public class ViewHelperTest {
         assertEquals(false, view.isOnlyForUuId());
         assertEquals("servlet", view.getApplication());
         assertEquals("index", view.getPage());
-        assertEquals("/applications/sample", view.getDevelopmentPath());
 
         List<Bundle> bundles = view.getBundles();
         assertNotNull(bundles);
@@ -97,7 +96,6 @@ public class ViewHelperTest {
         view1.setOnlyForUuId(false);
         view1.setApplication("foo");
         view1.setPage("bar");
-        view1.setDevelopmentPath("baz");
         view1.addBundle(randomBundle);
 
         JSONObject viewJSON = ViewHelper.viewToJson(bundleService, view1);
@@ -110,7 +108,6 @@ public class ViewHelperTest {
         assertEquals(view1.isOnlyForUuId(), view2.isOnlyForUuId());
         assertEquals(view1.getApplication(), view2.getApplication());
         assertEquals(view1.getPage(), view2.getPage());
-        assertEquals(view1.getDevelopmentPath(), view2.getDevelopmentPath());
 
         List<Bundle> bundles1 = view1.getBundles();
         List<Bundle> bundles2 = view2.getBundles();
