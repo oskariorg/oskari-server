@@ -318,15 +318,16 @@ public class AppSetupHelper {
         for (Long id : appsetupIds) {
             if (!AppSetupHelper.appContainsBundle(connection, id, bundleName)) {
                 AppSetupHelper.addBundleToApp(connection, id, bundleName);
-                if (bundle.getConfig() == null) {
-                    // no need to update config, move to next
+                if (bundle.getConfig() == null && bundle.getState() == null) {
+                    // no need to update, move to next
                     continue;
                 }
             }
             // update config even if it is null since this might be an update instead of insert
             Bundle dbBundle = AppSetupHelper.getAppBundle(connection, id, bundleName);
             dbBundle.setConfig(bundle.getConfig());
-            AppSetupHelper.updateAppBundle(connection, id, bundle);
+            dbBundle.setState(bundle.getState());
+            AppSetupHelper.updateAppBundle(connection, id, dbBundle);
         }
     }
 
