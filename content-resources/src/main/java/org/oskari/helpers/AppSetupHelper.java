@@ -16,10 +16,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.*;
 
 /**
@@ -281,6 +278,57 @@ public class AppSetupHelper {
             statement.execute();
         }
         return null;
+    }
+
+    /**
+     * Adds or updates a bundle to all apps referenced by getSetupsForUserAndDefaultType(conn)
+     * @param connection
+     * @param bundle
+     * @throws SQLException
+     */
+    public static void addBundleToDefaultAndUserApps(Connection connection, Bundle bundle)
+            throws SQLException {
+        List<Long> appsetupIds = AppSetupHelper.getSetupsForUserAndDefaultType(connection);
+        addOrUpdateBundleInApps(connection, bundle, appsetupIds);
+    }
+
+    /**
+     * Adds or updates a bundle to all apps referenced by getSetupsForUserAndDefaultType(conn, application)
+     * @param connection
+     * @param bundle
+     * @throws SQLException
+     */
+    public static void addBundleToDefaultAndUserApps(Connection connection, Bundle bundle, String application)
+            throws SQLException {
+        List<Long> appsetupIds = AppSetupHelper.getSetupsForUserAndDefaultType(connection, application);
+        addOrUpdateBundleInApps(connection, bundle, appsetupIds);
+    }
+
+    /**
+     * Convenience method for adding or updating a bundle in multiple appsetups.
+     * See addBundleToDefaultAndUserApps() for even more convenience.
+     * @param connection
+     * @param bundle
+     * @param appsetupIds
+     * @throws SQLException
+     */
+    public static void addOrUpdateBundleInApps(Connection connection, Bundle bundle, List<Long> appsetupIds)
+            throws SQLException {
+        String bundleName = bundle.getName();
+        for (Long id : appsetupIds) {
+            if (!AppSetupHelper.appContainsBundle(connection, id, bundleName)) {
+                AppSetupHelper.addBundleToApp(connection, id, bundleName);
+                if (bundle.getConfig() == null && bundle.getState() == null) {
+                    // no need to update, move to next
+                    continue;
+                }
+            }
+            // update config even if it is null since this might be an update instead of insert
+            Bundle dbBundle = AppSetupHelper.getAppBundle(connection, id, bundleName);
+            dbBundle.setConfig(bundle.getConfig());
+            dbBundle.setState(bundle.getState());
+            AppSetupHelper.updateAppBundle(connection, id, dbBundle);
+        }
     }
 
     public static void addBundleToApp(Connection connection, long viewId, String bundleid)
