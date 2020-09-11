@@ -418,7 +418,7 @@ public class AppSetupHelper {
             final JSONArray bundles = viewJSON.getJSONArray("bundles");
             for (int i = 0; i < bundles.length(); ++i) {
                 final JSONObject bJSON = bundles.getJSONObject(i);
-                final Bundle bundle = BundleHelper.getRegisteredBundle(bJSON.getString("id"), conn);
+                final Bundle bundle = BundleHelper.getRegisteredBundle(conn, bJSON.getString("id"));
                 if (bundle == null) {
                     throw new Exception("Bundle not registered - id:" + bJSON.getString("id"));
                 }

@@ -70,6 +70,9 @@ org.oskari.helpers.AppSetupHelper.create(conn, [ref to a file under "json/views"
 fi.nls.oskari.db.ViewHelper -> org.oskari.helpers.AppSetupHelper
 ViewHelper.insertView() -> AppSetupHelper.create()
 
+fi.nls.oskari.db.BundleHelper -> org.oskari.helpers.BundleHelper
+all method parameters with connection changed for consistency
+
 fi.nls.oskari.db.LayerHelper -> org.oskari.helpers.LayerHelper
 
 fi.nls.oskari.util.FlywayHelper -> org.oskari.helpers.AppSetupHelper
