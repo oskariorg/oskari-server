@@ -36,6 +36,10 @@ public class BundleHelper {
         return getRegisteredBundle(conn, name) != null;
     }
 
+    public static void registerBundle(Connection conn, String name) throws SQLException {
+        registerBundle(conn, new Bundle(name));
+    }
+
     public static void registerBundle(Connection conn, Bundle bundle) throws SQLException {
         if (isBundleRegistered(conn, bundle.getName())) {
             // already registered
