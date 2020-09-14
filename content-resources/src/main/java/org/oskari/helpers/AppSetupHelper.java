@@ -8,10 +8,7 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
 import fi.nls.oskari.service.ServiceRuntimeException;
-import fi.nls.oskari.util.ConversionHelper;
-import fi.nls.oskari.util.IOHelper;
-import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.util.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -385,13 +382,40 @@ public class AppSetupHelper {
         return selectedLayerIds;
     }
 
-    private static JSONObject readViewFile(final String viewfile)
-            throws Exception {
-        log.info("/ - /json/views/" + viewfile);
-        String json = IOHelper.readString(AppSetupHelper.class.getResourceAsStream("/json/views/" + viewfile));
-        JSONObject viewJSON = JSONHelper.createJSONObject(json);
-        log.debug(viewJSON);
-        return viewJSON;
+    protected static JSONObject readViewFile(final String viewfile) {
+        String json = getPaths(viewfile).stream()
+                .map(filename -> tryResource(filename))
+                .filter(j -> j != null && !j.isEmpty())
+                .findFirst()
+                .orElse(null);
+
+        if (json == null) {
+            throw new OskariRuntimeException("Couldn't locate appsetup JSON for " + viewfile);
+        }
+        return JSONHelper.createJSONObject(json);
+    }
+
+    private static List<String> getPaths(String filename) {
+        List<String> paths = new ArrayList<>();
+        if (filename == null) {
+            return paths;
+        } else if (filename.startsWith("/")) {
+            paths.add(filename);
+            return paths;
+        }
+        paths.add("/json/views/" + filename);
+        paths.add("/json/apps/" + filename);
+        paths.add("/" + filename);
+        return paths;
+    }
+
+    private static String tryResource(String name) {
+        try {
+            return IOHelper.readString(AppSetupHelper.class.getResourceAsStream(name));
+        } catch (Exception e) {
+            log.info("Tried file:", name, "- Error:", e.getMessage());
+        }
+        return null;
     }
 
     private static View createView(Connection conn, final JSONObject viewJSON)

@@ -8,6 +8,9 @@ import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.OskariRuntimeException;
+import org.json.JSONObject;
 import org.oskari.admin.LayerCapabilitiesHelper;
 import org.oskari.admin.MapLayerGroupsHelper;
 import org.oskari.admin.MapLayerPermissionsHelper;
@@ -15,6 +18,7 @@ import org.oskari.maplayer.model.MapLayer;
 import org.oskari.maplayer.admin.LayerAdminJSONHelper;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,7 +30,7 @@ public class LayerHelper {
     private static final OskariLayerService layerService = new OskariLayerServiceMybatisImpl();
 
     public static int setupLayer(final String layerfile) throws IOException {
-        final String jsonStr = IOHelper.readString(LayerHelper.class.getResourceAsStream("/json/layers/" + layerfile));
+        final String jsonStr = readLayerFile(layerfile);
         MapLayer layer = LayerAdminJSONHelper.readJSON(jsonStr);
         final List<OskariLayer> dbLayers = layerService.findByUrlAndName(layer.getUrl(), layer.getName());
         if(!dbLayers.isEmpty()) {
@@ -87,4 +91,38 @@ public class LayerHelper {
         }
     }
 
+    protected static String readLayerFile(final String file) {
+        String json = getPaths(file).stream()
+                .map(filename -> tryResource(filename))
+                .filter(j -> j != null && !j.isEmpty())
+                .findFirst()
+                .orElse(null);
+
+        if (json == null) {
+            throw new OskariRuntimeException("Couldn't locate layer JSON for " + file);
+        }
+        return json;
+    }
+
+    private static List<String> getPaths(String filename) {
+        List<String> paths = new ArrayList<>();
+        if (filename == null) {
+            return paths;
+        } else if (filename.startsWith("/")) {
+            paths.add(filename);
+            return paths;
+        }
+        paths.add("/json/layers/" + filename);
+        paths.add("/" + filename);
+        return paths;
+    }
+
+    private static String tryResource(String name) {
+        try {
+            return IOHelper.readString(LayerHelper.class.getResourceAsStream(name));
+        } catch (Exception e) {
+            log.info("Tried file:", name, "- Error:", e.getMessage());
+        }
+        return null;
+    }
 }
