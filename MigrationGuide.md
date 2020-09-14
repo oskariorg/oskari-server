@@ -68,7 +68,11 @@ org.oskari.helpers.AppSetupHelper.create(conn, [ref to a file under "json/views"
 1.56.0 -> 2.0.0 changes to migration helpers
 ```
 fi.nls.oskari.db.ViewHelper -> org.oskari.helpers.AppSetupHelper
-ViewHelper.insertView() -> AppSetupHelper.create()
+ViewHelper.insertView("appsetup.json) -> AppSetupHelper.create("/json/appsetup.json")
+Inserts the appsetup like before but now you can give full path to the file instead of it being assumed to be prefixed.
+
+fi.nls.oskari.db.BundleHelper -> org.oskari.helpers.BundleHelper
+all method parameters with connection changed for consistency
 
 fi.nls.oskari.db.LayerHelper -> org.oskari.helpers.LayerHelper
 
