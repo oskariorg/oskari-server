@@ -278,12 +278,24 @@ public class AppSetupHelper {
     }
 
     /**
+     * Adds a bundle to all apps referenced by getSetupsForUserAndDefaultType(conn)
+     * @param connection
+     * @param bundlename
+     * @throws SQLException
+     */
+    public static void addBundleToApps(Connection connection, String bundlename)
+            throws SQLException {
+        List<Long> appsetupIds = AppSetupHelper.getSetupsForUserAndDefaultType(connection);
+        addOrUpdateBundleInApps(connection, new Bundle(bundlename), appsetupIds);
+    }
+
+    /**
      * Adds or updates a bundle to all apps referenced by getSetupsForUserAndDefaultType(conn)
      * @param connection
      * @param bundle
      * @throws SQLException
      */
-    public static void addBundleToDefaultAndUserApps(Connection connection, Bundle bundle)
+    public static void addBundleToApps(Connection connection, Bundle bundle)
             throws SQLException {
         List<Long> appsetupIds = AppSetupHelper.getSetupsForUserAndDefaultType(connection);
         addOrUpdateBundleInApps(connection, bundle, appsetupIds);
@@ -295,7 +307,7 @@ public class AppSetupHelper {
      * @param bundle
      * @throws SQLException
      */
-    public static void addBundleToDefaultAndUserApps(Connection connection, Bundle bundle, String application)
+    public static void addBundleToApps(Connection connection, Bundle bundle, String application)
             throws SQLException {
         List<Long> appsetupIds = AppSetupHelper.getSetupsForUserAndDefaultType(connection, application);
         addOrUpdateBundleInApps(connection, bundle, appsetupIds);

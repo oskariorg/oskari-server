@@ -83,6 +83,11 @@ FlywayHelper.addBundleWithDefaults() -> AppSetupHelper.addBundleToApp()
 FlywayHelper.getBundleFromView() -> AppSetupHelper.getAppBundle()
 ```
 
+Added a new helper for easily adding a new bundle to the usual appsetup types (USER and DEFAULT):
+```
+AppSetupHelper.addBundleToApps(connection, bundlename)
+```
+
 ### Spring framework upgraded
 
 If you have application-specific code that uses Spring you might need to adapt them to the 5.x version.
