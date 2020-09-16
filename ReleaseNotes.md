@@ -20,7 +20,7 @@ Details can be found in [Migration Guide](https://github.com/oskariorg/oskari-se
 
 ### Library updates
 
-We have updated a bunch of libraries that require changes to application based on Oskari. 
+We have updated a bunch of libraries that require changes to applications based on Oskari. 
 The changes required are detailed in the [Migration Guide](https://github.com/oskariorg/oskari-server/blob/master/MigrationGuide.md)
 and you can also take a look at changes for the [sample-server-extension](https://github.com/oskariorg/sample-server-extension/milestone/5?closed=1)
  to give you a better idea what these mean for your app.
@@ -36,7 +36,7 @@ Bigger upgrades include:
 - GeoServer 2.13.2 -> 2.17.2 (WPS-modules updated in pre-built package)
 - Dropped Ibatis (everything now uses MyBatis instead)
 
-Spring is managed with "Bill Of Materials" so it's easier for an application to use the same version as Oskari-server 
+Spring is now managed with "Bill Of Materials" so it's easier for an application to use the same version as Oskari-server 
 without re-declaring the version (spring artifacts are in managed dependencies so you don't have to declare version for them on your app).
  
 The updates introduce a bunch of code changes that are required to be matched on applications based on Oskari.
@@ -48,10 +48,11 @@ Details can be found in [Migration Guide](https://github.com/oskariorg/oskari-se
 Support for setup.json files have been dropped. While this might feel like a downgrade it actually makes creating 
 initial content for applications simpler and easier to understand. Everything is now done using Flyway-migrations and
 everything you could do with a setup.json you can do with migrations. For the oskari-server core modules this includes
- creating database tables for empty database and populating them with initial content.
+ creating database tables for empty database and populating them with initial content. We have dropped all the 1.x
+ migrations and with that have been able to cleanup the codebase a fair bit.
 
 We also improved the helpers that can be used with application specific Flyway-modules to make registering bundles, 
-layer and appsetup inserts/updates easier in applications. We also renamed some of the database tables so table names are
+map layer and appsetup inserts/updates easier in applications. We also renamed some of the database tables so table names are
 now consistent. 
 
 Because of Flyway API changes you will need to modify your application specific migrations.
