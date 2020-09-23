@@ -92,7 +92,7 @@ public class SearchWorker {
 
         JSONArray methodArray = new JSONArray();
         for(String channelId : sc.getChannels()) {
-            methodArray.put(JSONHelper.createJSONObject(channelId, query.findResult(channelId).getSearchMethod()));
+            methodArray.put(JSONHelper.createJSONObject(channelId, !query.findResult(channelId).isQueryFailed()));
         }
         JSONHelper.putValue(result, KEY_METHODS, methodArray);
         return result;

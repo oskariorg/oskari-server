@@ -1,5 +1,10 @@
 # Release Notes
 
+## 2.0.1
+
+Changes coordinates type from string to double on search channels and search results.
+Frontend assumes numbers on 2.0 and most of the code casts numbers to strings just for the SearchResultItem setter. 
+
 ## 2.0.0
 
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/25?closed=1
