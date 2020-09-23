@@ -3,6 +3,7 @@ package org.oskari.service.wfs.client;
 import java.util.Objects;
 import java.util.Optional;
 
+import fi.nls.oskari.domain.map.wfs.WFSLayerAttributes;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
@@ -74,8 +75,7 @@ public class OskariFeatureClient {
     private SimpleFeatureCollection getFeaturesNoTransform(String id, OskariLayer layer,
             ReferencedEnvelope bbox, CoordinateReferenceSystem crs,
             Optional<UserLayerService> processor) {
-        Filter filter = processor.map(proc -> proc.getWFSFilter(id, bbox)).orElse(null);
-
+        Filter filter = wfsClient.getWFSFilter(id, layer, bbox, processor);
         SimpleFeatureCollection sfc = wfsClient.getFeatures(layer, bbox, crs, filter);
 
         if (processor.isPresent()) {

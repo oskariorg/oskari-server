@@ -18,6 +18,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import org.oskari.geojson.GeoJSONReader2;
 import org.oskari.geojson.GeoJSONSchemaDetector;
+import org.oskari.service.user.UserLayerService;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -26,10 +27,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
+
 import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.KEY_FEATURE_OUTPUT_FORMATS;
 import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.KEY_MAX_FEATURES;
 
@@ -43,6 +42,7 @@ public class OskariWFSClient {
     private static final String PROPERTY_FORCE_GML = "forceGML";
     private static final String JSON_OUTPUT_FORMAT = "application/json";
     private static final int DEFAULT_MAX_FEATURES = 10000;
+    private static final String KEY_FILTER = "filter";
 
     public SimpleFeatureCollection getFeatures(OskariLayer layer,
             ReferencedEnvelope bbox, CoordinateReferenceSystem crs, Filter filter) {
@@ -64,6 +64,7 @@ public class OskariWFSClient {
                 bbox.getMaxX(), bbox.getMaxY(),
                 srsName);
     }
+
 
     protected static SimpleFeatureCollection getFeatures(String endPoint,
             String user, String pass, Map<String, String> query,
@@ -171,5 +172,18 @@ public class OskariWFSClient {
     protected static int getMaxFeatures(OskariLayer layer) {
         return layer.getCapabilities().optInt(KEY_MAX_FEATURES, DEFAULT_MAX_FEATURES);
     }
-
+    protected static Filter getWFSFilter (String id, OskariLayer layer, ReferencedEnvelope bbox, Optional<UserLayerService> processor) {
+        if (processor.isPresent()) {
+            return processor.get().getWFSFilter(id, bbox);
+        }
+        JSONObject attr = layer.getAttributes();
+        JSONObject attFilter = attr.optJSONObject(KEY_FILTER);
+        if (attFilter == null) {
+            return null;
+        }
+        Filter attrFilter = OskariWFSFilter.getFilter(attFilter);
+        Filter bboxFilter = OskariWFSFilter.getBBOXFilter(layer, bbox);
+        Filter f = OskariWFSFilter.joinAndFilters(Arrays.asList(attrFilter, bboxFilter)); // for debugging
+        return f;
+    }
 }
