@@ -34,8 +34,8 @@ public class What3WordsSearchChannelTest {
         JSONObject json = ResourceHelper.readJSONResource("What3Words-success.json", this);
         SearchResultItem item = channel.parseResult(json, "EPSG:3067");
         assertEquals("Title", item.getTitle(), "carting.pint.invent");
-        assertEquals("Lat", item.getLat(), "6675293.715526561");
-        assertEquals("Lon", item.getLon(), "385547.65760422836");
+        assertEquals("Lat", item.getLat(), 6675293.715526561, 0.1);
+        assertEquals("Lon", item.getLon(), 385547.65760422836, 0.1);
     }
 
     @Test

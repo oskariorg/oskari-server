@@ -238,10 +238,10 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
         }
         // transform points to map projection and create a WKT bbox
         try {
-            double x1 = Double.parseDouble(item.getWestBoundLongitude());
-            double y1 = Double.parseDouble(item.getSouthBoundLatitude());
-            double x2 = Double.parseDouble(item.getEastBoundLongitude());
-            double y2 = Double.parseDouble(item.getNorthBoundLatitude());
+            double x1 = item.getWestBoundLongitude();
+            double y1 = item.getSouthBoundLatitude();
+            double x2 = item.getEastBoundLongitude();
+            double y2 = item.getNorthBoundLatitude();
 
             GeometryFactory gf = new GeometryFactory();
             CoordinateSequence cs = GeometryHelper.createLinearRing(gf, x1, y1, x2, y2);
