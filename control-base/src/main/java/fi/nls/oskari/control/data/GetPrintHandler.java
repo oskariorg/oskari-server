@@ -251,18 +251,16 @@ public class GetPrintHandler extends AbstractWFSFeaturesHandler {
         }
         printLayers.removeIf(layer -> layer.getOpacity() <= 0);
         // set custom stylea
-        if (params.getRequest().getMethod().equals("POST")) {
-            JSONObject payload = params.getPayLoadJSON();
-            JSONObject customStyles = payload.optJSONObject(PARM_CUSTOM_STYLES);
-            if (customStyles != null) {
-                printLayers.forEach(l -> {
-                    String id = l.getLayerId();
-                    if (customStyles.has(id)) {
-                        l.setCustomStyle(JSONHelper.getJSONObject(customStyles, id));
-                    }
-                });
-            }
+        JSONObject customStyles = getCustomStyles(params);
+        if (customStyles != null) {
+            printLayers.forEach(l -> {
+                String id = l.getLayerId();
+                if (customStyles.has(id)) {
+                    l.setCustomStyle(JSONHelper.getJSONObject(customStyles, id));
+                }
+            });
         }
+
         return printLayers;
     }
 
@@ -321,6 +319,29 @@ public class GetPrintHandler extends AbstractWFSFeaturesHandler {
             opacity = 100;
         }
         return Math.min(opacity, 100);
+    }
+    /**
+     * Returns custom styles from param or payload or null if not present.
+     */
+    private JSONObject getCustomStyles(ActionParameters params) {
+        try {
+            JSONObject customStyles = params.getHttpParamAsJSON(PARM_CUSTOM_STYLES);
+            if (customStyles != null) {
+                return customStyles;
+            }
+        } catch (ActionParamsException ignored) {
+            LOG.ignore(ignored);
+        }
+
+        if ("POST".equals(params.getRequest().getMethod())) {
+            try {
+                JSONObject payload = params.getPayLoadJSON();
+                return payload.optJSONObject(PARM_CUSTOM_STYLES);
+            } catch(ActionParamsException ignored) {
+                LOG.ignore("Payload not included in request", ignored);
+            }
+        }
+        return null;
     }
 
     private void setTiles(List<PrintLayer> layers, String tilesJson)
