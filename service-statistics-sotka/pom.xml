@@ -4,13 +4,12 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>fi.nls.oskari</groupId>
-		<artifactId>oskari-parent</artifactId>
-        <version>1.56.0</version>
+        <groupId>org.oskari</groupId>
+        <artifactId>oskari-server</artifactId>
+        <version>2.1.0-SNAPSHOT</version>
 	</parent>
 
-    <groupId>fi.nls.oskari.service</groupId>
-    <artifactId>oskari-statistics-sotka</artifactId>
+    <artifactId>service-statistics-sotka</artifactId>
     <packaging>jar</packaging>
     <name>Statistics Service for Sotka</name>
 
@@ -20,12 +19,12 @@
             <artifactId>mybatis</artifactId>
         </dependency>
         <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-map</artifactId>
+            <groupId>org.oskari</groupId>
+            <artifactId>service-map</artifactId>
         </dependency>
         <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-statistics-common</artifactId>
+            <groupId>org.oskari</groupId>
+            <artifactId>service-statistics-common</artifactId>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -33,7 +32,7 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>fi.nls.oskari</groupId>
+            <groupId>org.oskari</groupId>
             <artifactId>shared-test-resources</artifactId>
             <scope>test</scope>
         </dependency>
@@ -49,41 +48,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    <build>
-    	<pluginManagement>
-    		<plugins>
-    			<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-    			<plugin>
-    				<groupId>org.eclipse.m2e</groupId>
-    				<artifactId>lifecycle-mapping</artifactId>
-    				<version>1.0.0</version>
-    				<configuration>
-    					<lifecycleMappingMetadata>
-    						<pluginExecutions>
-    							<pluginExecution>
-    								<pluginExecutionFilter>
-    									<groupId>
-    										pl.project13.maven
-    									</groupId>
-    									<artifactId>
-    										git-commit-id-plugin
-    									</artifactId>
-    									<versionRange>
-    										[2.0.4,)
-    									</versionRange>
-    									<goals>
-    										<goal>revision</goal>
-    									</goals>
-    								</pluginExecutionFilter>
-    								<action>
-    									<ignore></ignore>
-    								</action>
-    							</pluginExecution>
-    						</pluginExecutions>
-    					</lifecycleMappingMetadata>
-    				</configuration>
-    			</plugin>
-    		</plugins>
-    	</pluginManagement>
-    </build>
 </project>

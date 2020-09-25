@@ -199,18 +199,12 @@ public class What3WordsSearchChannel extends SearchChannel {
         item.setTitle(title);
         item.setDescription(title);
         final JSONObject position = JSONHelper.getJSONObject(dataItem, "geometry");
-        final String lat = "" + position.optDouble("lat");
-        final String lon = "" + position.optDouble("lng");
+        final double lat = position.optDouble("lat");
+        final double lon = position.optDouble("lng");
 
         // convert to map projection
-        final Point point = ProjectionHelper.transformPoint(
-                ConversionHelper.getDouble(lon, -1),
-                ConversionHelper.getDouble(lat, -1),
-                sourceCrs,
-                targetCrs);
+        final Point point = ProjectionHelper.transformPoint(lon, lat, sourceCrs, targetCrs);
         if(point == null) {
-            item.setLon("");
-            item.setLat("");
             return null;
         }
 

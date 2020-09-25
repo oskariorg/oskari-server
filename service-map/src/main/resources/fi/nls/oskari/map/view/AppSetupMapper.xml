@@ -8,14 +8,12 @@
 
     <resultMap id="viewWithConf" type="View">
         <result property="id" column="id" />
-        <result property="oldId" column="old_id" />
         <result property="uuid" column="uuid" />
         <result property="name" column="name" />
         <result property="description" column="description" />
         <result property="type" column="type" />
         <result property="application" column="application" />
         <result property="page" column="page" />
-        <result property="developmentPath" column="application_dev_prefix" />
         <result property="pubDomain" column="domain" />
         <result property="lang" column="lang" />
         <result property="creator" column="creator" />
@@ -29,10 +27,9 @@
     <resultMap id="bundle" type="Bundle">
         <result property="bundleId" column="bundle_id" />
         <result property="seqNo" column="seqno" />
-        <result property="viewId" column="view_id" />
+        <result property="viewId" column="appsetup_id" />
         <result property="state" column="state" />
         <result property="config" column="config" />
-        <result property="startup" column="startup" />
         <result property="name" column="name" />
         <result property="bundleinstance" column="bundleinstance" />
     </resultMap>
@@ -41,9 +38,9 @@
             parameterType="java.util.Map"
             resultMap="viewWithConf">
         SELECT   id, name, description, type, uuid, only_uuid,
-        application, page, application_dev_prefix, creator,
-        is_public, is_default, domain, lang, old_id, metadata
-        FROM   portti_view
+        application, page, creator,
+        is_public, is_default, domain, lang, metadata
+        FROM   oskari_appsetup
         ORDER BY created ASC
         OFFSET ${offset} limit ${limit}
     </select>
@@ -52,9 +49,9 @@
             parameterType="java.lang.Long"
             resultMap="viewWithConf">
         SELECT   id, name, description, type, uuid, only_uuid,
-        application, page, application_dev_prefix, creator,
-        is_public, is_default, domain, lang, old_id, metadata
-        FROM   portti_view
+        application, page, creator,
+        is_public, is_default, domain, lang, metadata
+        FROM   oskari_appsetup
         WHERE   id = #{id}
     </select>
 
@@ -62,38 +59,28 @@
             parameterType="java.lang.String"
             resultMap="viewWithConf">
         SELECT   id, name, description, type, uuid, only_uuid,
-        application, page, application_dev_prefix, creator,
-        is_public, is_default, domain, lang, old_id, metadata
-        FROM   portti_view
+        application, page, creator,
+        is_public, is_default, domain, lang, metadata
+        FROM   oskari_appsetup
         WHERE   uuid::text = #{uuId}
-    </select>
-
-    <select id="getViewWithConfByOldId"
-            parameterType="java.lang.Long"
-            resultMap="viewWithConf">
-        SELECT   id, name, description, type, uuid, only_uuid,
-        application, page, application_dev_prefix, creator,
-        is_public, is_default, domain, lang, old_id, metadata
-        FROM   portti_view
-        WHERE   old_id = #{old_id}
     </select>
 
     <select id="getViewWithConfByViewName"
             parameterType="java.lang.String"
             resultMap="viewWithConf">
         SELECT   id, name, description, type, uuid, only_uuid,
-        application, page, application_dev_prefix, creator,
-        is_public, is_default, domain, lang, old_id, metadata
-        FROM   portti_view
+        application, page, creator,
+        is_public, is_default, domain, lang, metadata
+        FROM   oskari_appsetup
         WHERE   name = #{name}
     </select>
 
     <select id="getViewsWithConfByUserId"
             resultMap="viewWithConf">
         SELECT   id, name, description, type, uuid, only_uuid,
-        application, page, application_dev_prefix, creator,
-        is_public, is_default, domain, lang, old_id, metadata
-        FROM   portti_view
+        application, page, creator,
+        is_public, is_default, domain, lang, metadata
+        FROM   oskari_appsetup
         WHERE   creator = #{user_id}
         ORDER BY   name ASC
     </select>
@@ -101,42 +88,42 @@
     <select id="getBundlesByViewId"
             parameterType="java.lang.Long"
             resultMap="bundle">
-        SELECT   s.view_id, s.bundle_id, s.seqno, s.state, s.config, s.startup, s.bundleinstance, b.name
-        FROM   portti_view_bundle_seq s, portti_bundle b
-        WHERE   view_id = #{view_id} AND s.bundle_id = b.id
+        SELECT   s.appsetup_id, s.bundle_id, s.seqno, s.state, s.config, s.bundleinstance, b.name
+        FROM   oskari_appsetup_bundles s, oskari_bundle b
+        WHERE   appsetup_id = #{view_id} AND s.bundle_id = b.id
         ORDER BY s.seqno ASC
     </select>
 
     <update id="update"
                parameterType="View">
-        UPDATE portti_view
+        UPDATE oskari_appsetup
         SET name = #{name}, description = #{description},
-        application = #{application}, page = #{page}, application_dev_prefix = #{developmentPath},
+        application = #{application}, page = #{page},
         domain = #{pubDomain}, lang = #{lang}, is_public = #{isPublic}, is_default = #{isDefault}, metadata = #{metadataAsString}
         WHERE id = #{id}
     </update>
 
     <update id="updateUsage"
                parameterType="View">
-        UPDATE portti_view
+        UPDATE oskari_appsetup
         SET used=now(),
-        usagecount=(SELECT usagecount+1 FROM portti_view WHERE id=#{id})
+        usagecount=(SELECT usagecount+1 FROM oskari_appsetup WHERE id=#{id})
         WHERE id=#{id};
     </update>
 
     <insert id="addBundle"
                parameterType="Bundle">
-        INSERT INTO portti_view_bundle_seq (view_id, bundle_id, seqno, state, config, bundleinstance)
+        INSERT INTO oskari_appsetup_bundles (appsetup_id, bundle_id, seqno, state, config, bundleinstance)
         VALUES ( #{viewId}, #{bundleId}, #{seqNo}, #{state}, #{config}, #{bundleinstance})
     </insert>
 
     <update id="updateBundleSettingsInView"
             parameterType="java.util.Map">
-        UPDATE portti_view_bundle_seq SET
+        UPDATE oskari_appsetup_bundles SET
         config = #{config},
         state = #{state},
         bundleinstance = #{bundleinstance}
-        WHERE view_id = #{view_id} AND bundle_id = #{bundle_id}
+        WHERE appsetup_id = #{view_id} AND bundle_id = #{bundle_id}
     </update>
 
 </mapper>

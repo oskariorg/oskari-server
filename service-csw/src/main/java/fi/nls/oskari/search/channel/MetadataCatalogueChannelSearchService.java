@@ -1,14 +1,14 @@
 package fi.nls.oskari.search.channel;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Polygon;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.Polygon;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.CoordinateSequence;
-import com.vividsolutions.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.CoordinateSequence;
+import org.locationtech.jts.geom.GeometryFactory;
 import fi.mml.portti.service.search.ChannelSearchResult;
 import fi.mml.portti.service.search.IllegalSearchCriteriaException;
 import fi.mml.portti.service.search.SearchCriteria;
@@ -238,10 +238,10 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
         }
         // transform points to map projection and create a WKT bbox
         try {
-            double x1 = Double.parseDouble(item.getWestBoundLongitude());
-            double y1 = Double.parseDouble(item.getSouthBoundLatitude());
-            double x2 = Double.parseDouble(item.getEastBoundLongitude());
-            double y2 = Double.parseDouble(item.getNorthBoundLatitude());
+            double x1 = item.getWestBoundLongitude();
+            double y1 = item.getSouthBoundLatitude();
+            double x2 = item.getEastBoundLongitude();
+            double y2 = item.getNorthBoundLatitude();
 
             GeometryFactory gf = new GeometryFactory();
             CoordinateSequence cs = GeometryHelper.createLinearRing(gf, x1, y1, x2, y2);

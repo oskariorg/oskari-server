@@ -2,11 +2,10 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>fi.nls.oskari</groupId>
-        <artifactId>oskari-parent</artifactId>
-        <version>1.56.0</version>
+        <groupId>org.oskari</groupId>
+        <artifactId>oskari-server</artifactId>
+        <version>2.1.0-SNAPSHOT</version>
     </parent>
-    <groupId>org.oskari</groupId>
     <artifactId>service-print</artifactId>
 
     <properties>
@@ -15,15 +14,15 @@
 
     <dependencies>
         <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-map</artifactId>
+            <groupId>org.oskari</groupId>
+            <artifactId>service-map</artifactId>
         </dependency>
         <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-control</artifactId>
+            <groupId>org.oskari</groupId>
+            <artifactId>service-control</artifactId>
         </dependency>
         <dependency>
-            <groupId>fi.nls.oskari</groupId>
+            <groupId>org.oskari</groupId>
             <artifactId>service-logging</artifactId>
         </dependency>
         <dependency>
@@ -44,14 +43,13 @@
             <artifactId>hystrix-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>fi.nls.oskari</groupId>
+            <groupId>org.oskari</groupId>
             <artifactId>shared-test-resources</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.xmlgraphics</groupId>
             <artifactId>fop</artifactId>
-            <version>2.3</version>
         </dependency>
     </dependencies>
 

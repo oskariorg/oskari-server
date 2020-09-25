@@ -13,7 +13,7 @@ import org.json.JSONObject;
 import org.oskari.geojson.GeoJSONReader;
 import org.oskari.wfst.WFSTRequestBuilder;
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 
 import fi.nls.oskari.domain.map.MyPlace;
 import fi.nls.oskari.util.GML2Writer;

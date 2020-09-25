@@ -20,11 +20,11 @@ import org.oskari.permissions.model.ResourceType;
 
 import fi.nls.oskari.wfs.WFSSearchChannelsConfiguration;
 
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.MultiLineString;
-import com.vividsolutions.jts.geom.MultiPoint;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Polygon;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.MultiLineString;
+import org.locationtech.jts.geom.MultiPoint;
+import org.locationtech.jts.geom.MultiPolygon;
+import org.locationtech.jts.geom.Polygon;
 
 import fi.mml.portti.service.search.ChannelSearchResult;
 import fi.mml.portti.service.search.SearchCriteria;
@@ -216,7 +216,7 @@ public class WFSSearchChannel extends SearchChannel {
                 setupDefaults(item);
                 item.setTitle(getTitle(featureJSON));
 
-                if(featureJSON.has("geometry")) {
+                if (featureJSON.has("geometry")) {
                     JSONObject featuresObj_geometry = featureJSON.getJSONObject("geometry");
 
                     String geomType = featuresObj_geometry.getString("type").toUpperCase();
@@ -224,33 +224,33 @@ public class WFSSearchChannel extends SearchChannel {
                     if (geomType.equals(GT_GEOM_POLYGON)) {
                         Polygon polygon = geom.readPolygon(featuresObj_geometry.toString());
                         item.addValue(PARAM_GEOMETRY, WKTHelper.getWKT(polygon));
-                        item.setLat(Double.toString(polygon.getCentroid().getCoordinate().y));
-                        item.setLon(Double.toString(polygon.getCentroid().getCoordinate().x));
+                        item.setLat(polygon.getCentroid().getCoordinate().y);
+                        item.setLon(polygon.getCentroid().getCoordinate().x);
                     } else if (geomType.equals(GT_GEOM_LINESTRING)) {
                         LineString lineGeom = geom.readLine(featuresObj_geometry.toString());
                         item.addValue(PARAM_GEOMETRY, WKTHelper.getWKT(lineGeom));
-                        item.setLat(Double.toString(lineGeom.getCentroid().getCoordinate().y));
-                        item.setLon(Double.toString(lineGeom.getCentroid().getCoordinate().x));
+                        item.setLat(lineGeom.getCentroid().getCoordinate().y);
+                        item.setLon(lineGeom.getCentroid().getCoordinate().x);
                     } else if (geomType.equals(GT_GEOM_POINT)) {
-                        com.vividsolutions.jts.geom.Point pointGeom = geom.readPoint(featuresObj_geometry.toString());
+                        org.locationtech.jts.geom.Point pointGeom = geom.readPoint(featuresObj_geometry.toString());
                         item.addValue(PARAM_GEOMETRY, WKTHelper.getWKT(pointGeom));
-                        item.setLat(Double.toString(pointGeom.getCentroid().getCoordinate().y));
-                        item.setLon(Double.toString(pointGeom.getCentroid().getCoordinate().x));
+                        item.setLat(pointGeom.getCentroid().getCoordinate().y);
+                        item.setLon(pointGeom.getCentroid().getCoordinate().x);
                     } else if (geomType.equals(GT_GEOM_MULTIPOLYGON)) {
                         MultiPolygon polygon = geom.readMultiPolygon(featuresObj_geometry.toString());
                         item.addValue(PARAM_GEOMETRY, WKTHelper.getWKT(polygon));
-                        item.setLat(Double.toString(polygon.getCentroid().getCoordinate().y));
-                        item.setLon(Double.toString(polygon.getCentroid().getCoordinate().x));
+                        item.setLat(polygon.getCentroid().getCoordinate().y);
+                        item.setLon(polygon.getCentroid().getCoordinate().x);
                     } else if (geomType.equals(GT_GEOM_MULTILINESTRING)) {
                         MultiLineString lineGeom = geom.readMultiLine(featuresObj_geometry.toString());
                         item.addValue(PARAM_GEOMETRY, WKTHelper.getWKT(lineGeom));
-                        item.setLat(Double.toString(lineGeom.getCentroid().getCoordinate().y));
-                        item.setLon(Double.toString(lineGeom.getCentroid().getCoordinate().x));
+                        item.setLat(lineGeom.getCentroid().getCoordinate().y);
+                        item.setLon(lineGeom.getCentroid().getCoordinate().x);
                     } else if (geomType.equals(GT_GEOM_MULTIPOINT)) {
                         MultiPoint pointGeom = geom.readMultiPoint(featuresObj_geometry.toString());
                         item.addValue(PARAM_GEOMETRY, WKTHelper.getWKT(pointGeom));
-                        item.setLat(Double.toString(pointGeom.getCentroid().getCoordinate().y));
-                        item.setLon(Double.toString(pointGeom.getCentroid().getCoordinate().x));
+                        item.setLat(pointGeom.getCentroid().getCoordinate().y);
+                        item.setLon(pointGeom.getCentroid().getCoordinate().x);
                     }
                 }
                 searchResultList.addItem(item);

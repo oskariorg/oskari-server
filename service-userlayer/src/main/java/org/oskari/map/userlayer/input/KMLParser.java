@@ -19,7 +19,7 @@ import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.kml.v22.KML;
 import org.geotools.kml.v22.KMLConfiguration;
 import org.geotools.referencing.CRS;
-import org.geotools.xml.PullParser;
+import org.geotools.xsd.PullParser;
 import org.geotools.geometry.jts.JTS;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -27,7 +27,7 @@ import org.oskari.map.userlayer.service.UserLayerException;
 import org.opengis.referencing.operation.MathTransform;
 import org.xml.sax.SAXException;
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 
 import fi.nls.oskari.service.ServiceException;
 

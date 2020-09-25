@@ -1,6 +1,7 @@
 package flyway.userlayer;
 
-import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
+import org.flywaydb.core.api.migration.BaseJavaMigration;
+import org.flywaydb.core.api.migration.Context;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,14 +10,15 @@ import java.sql.ResultSet;
 /**
  * Checks if feature id config is already present in the db and inserts it if not
  */
-public class V1_0_2__Insert_id_for_userlayerdata implements JdbcMigration {
+public class V1_0_2__Insert_id_for_userlayerdata extends BaseJavaMigration {
 
-    public void migrate(Connection connection)
+    public void migrate(Context context)
             throws Exception {
         // check existing value before inserting
-        final boolean hasIdSpecInPlace = hasExistingConfig(connection);
+        Connection conn = context.getConnection();
+        final boolean hasIdSpecInPlace = hasExistingConfig(conn);
         if (!hasIdSpecInPlace) {
-            makeInsert(connection);
+            makeInsert(conn);
         }
     }
 

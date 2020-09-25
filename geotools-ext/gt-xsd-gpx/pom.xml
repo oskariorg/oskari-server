@@ -4,13 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>fi.nls.oskari</groupId>
-        <artifactId>oskari-parent</artifactId>
-        <version>1.56.0</version>
+        <groupId>org.oskari</groupId>
+        <artifactId>oskari-server</artifactId>
+        <version>2.1.0-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <groupId>org.oskari</groupId>
     <artifactId>gt-xsd-gpx</artifactId>
     <name>GPX XML Support</name>
     <description>GPX XML support for Geotools</description>
@@ -27,9 +26,6 @@
             <artifactId>gt-xsd-core</artifactId>
             <version>${geotools.version}</version>
         </dependency>
-        <!-- gt-xsd-core:tests was added in GeoTools 20.0 -->
-        <!-- Remove the comment when updating GeoTools version -->
-        <!--
         <dependency>
             <groupId>org.geotools.xsd</groupId>
             <artifactId>gt-xsd-core</artifactId>
@@ -37,7 +33,6 @@
             <scope>test</scope>
             <version>${geotools.version}</version>
         </dependency>
-         -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

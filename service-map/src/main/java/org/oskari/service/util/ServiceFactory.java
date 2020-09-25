@@ -1,7 +1,6 @@
 package org.oskari.service.util;
 
-import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupServiceIbatisImpl;
-import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupService;
+import org.oskari.service.maplayer.OskariMapLayerGroupService;
 import fi.mml.portti.service.search.SearchService;
 import fi.mml.portti.service.search.SearchServiceImpl;
 import fi.nls.oskari.map.layer.DataProviderService;
@@ -12,6 +11,7 @@ import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkService;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkServiceMybatisImpl;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheServiceMybatisImpl;
 import org.oskari.permissions.PermissionService;
@@ -51,7 +51,7 @@ public class ServiceFactory {
 
     public static OskariMapLayerGroupService getOskariMapLayerGroupService() {
         if (oskariMapLayerGroupService == null) {
-            oskariMapLayerGroupService = new OskariMapLayerGroupServiceIbatisImpl();
+            oskariMapLayerGroupService = OskariComponentManager.getComponentOfType(OskariMapLayerGroupService.class);
         }
         return oskariMapLayerGroupService;
     }

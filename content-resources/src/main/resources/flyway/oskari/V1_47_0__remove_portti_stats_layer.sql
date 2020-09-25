@@ -1,1 +1,0 @@
-DROP table IF EXISTS portti_stats_layer;

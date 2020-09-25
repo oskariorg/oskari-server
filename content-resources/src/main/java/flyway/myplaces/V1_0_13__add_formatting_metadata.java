@@ -1,17 +1,18 @@
 package flyway.myplaces;
 
 import fi.nls.oskari.db.DatasourceHelper;
-import fi.nls.oskari.geoserver.GeoserverPopulator;
-import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
+import org.oskari.usercontent.GeoserverPopulator;
+import org.flywaydb.core.api.migration.BaseJavaMigration;
+import org.flywaydb.core.api.migration.Context;
 import org.json.JSONObject;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
-public class V1_0_13__add_formatting_metadata implements JdbcMigration {
+public class V1_0_13__add_formatting_metadata extends BaseJavaMigration {
 
-    public void migrate(Connection ignored) throws Exception {
+    public void migrate(Context ignored) throws Exception {
         // myplaces _can_ use other db than the default one
         // -> Use connection to default db for this migration
         DataSource ds = DatasourceHelper.getInstance().getDataSource();

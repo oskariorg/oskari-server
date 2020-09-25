@@ -58,30 +58,42 @@ public abstract class AbstractWFSFeaturesHandler extends ActionHandler {
     }
 
     protected OskariLayer findLayer(String id, User user, Optional<UserLayerService> processor) throws ActionException {
-        int layerId = getLayerId(id, processor);
+        return processor.isPresent()
+                ? findUserLayer(id, user, processor.get())
+                : findMapLayer(id, user);
+    }
+
+    private OskariLayer findUserLayer(String id, User user, UserLayerService processor) throws ActionException {
+        int layerId = processor.getBaselayerId();
         OskariLayer layer = permissionHelper.getLayer(layerId, user);
-        if (!OskariLayer.TYPE_WFS.equals(layer.getType())) {
-            return layer;
-        }
-        if (processor.isPresent() && !processor.get().hasViewPermission(id, user)) {
+        requireWFSLayer(layer);
+        if (!processor.hasViewPermission(id, user)) {
             throw new ActionDeniedException("User doesn't have permissions for requested layer");
         }
         return layer;
     }
 
+    protected OskariLayer findMapLayer(String id, User user) throws ActionException {
+        int layerId;
+        try {
+            layerId = Integer.parseInt(id);
+        } catch (NumberFormatException e) {
+            throw new ActionParamsException(ERR_INVALID_ID);
+        }
+        OskariLayer layer = permissionHelper.getLayer(layerId, user);
+        requireWFSLayer(layer);
+        return layer;
+    }
+
+    /**
+     * @deprecated this method is included in {@link #findLayer(String, User, Optional)}
+     * and will be marked private in a future release
+     */
+    @Deprecated
     protected void requireWFSLayer(OskariLayer layer) throws ActionParamsException {
         if (!OskariLayer.TYPE_WFS.equals(layer.getType())) {
             throw new ActionParamsException(ERR_LAYER_TYPE_NOT_WFS);
         }
     }
-    
-    private int getLayerId(String id, Optional<UserLayerService> processor) throws ActionParamsException {
-        try {
-            return processor.map(UserLayerService::getBaselayerId)
-                    .orElseGet(() -> Integer.parseInt(id));
-        } catch (NumberFormatException e) {
-            throw new ActionParamsException(ERR_INVALID_ID);
-        }
-    }
-    
+
 }

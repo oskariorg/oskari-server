@@ -2,7 +2,7 @@ package org.geotools.gpx;
 
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
-import org.geotools.xml.Node;
+import org.geotools.xsd.Node;
 
 public enum GPXField implements GPXParseableField {
 

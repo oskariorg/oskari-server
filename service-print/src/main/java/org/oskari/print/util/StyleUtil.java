@@ -101,7 +101,7 @@ public class StyleUtil {
         }
         Color color = ColorUtil.parseColor(JSONHelper.optString(stroke, "color"));
         if (color != null) {
-            style.setFillColor(color);
+            style.setStrokeColor(color);
         }
     }
 

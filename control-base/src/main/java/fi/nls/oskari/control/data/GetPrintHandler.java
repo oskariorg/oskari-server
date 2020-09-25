@@ -306,6 +306,25 @@ public class GetPrintHandler extends AbstractWFSFeaturesHandler {
         return printLayer;
     }
 
+    /**
+     * Override findMaplayer from AbstractWFSFeaturesHandler since that one requires the layer to be WFS and print is ok
+     * with having other types as well
+     * @param id
+     * @param user
+     * @return
+     * @throws ActionException
+     */
+    @Override
+    protected OskariLayer findMapLayer(String id, User user) throws ActionException {
+        int layerId;
+        try {
+            layerId = Integer.parseInt(id);
+        } catch (NumberFormatException e) {
+            throw new ActionParamsException(ERR_INVALID_ID);
+        }
+        return permissionHelper.getLayer(layerId, user);
+    }
+
     private int getOpacity(Integer requestedOpacity, Integer layersDefaultOpacity) {
         int opacity;
         if (requestedOpacity != null) {

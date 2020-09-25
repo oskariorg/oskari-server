@@ -12,18 +12,11 @@ import java.util.Set;
 
 import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlObject;
-import org.geotools.geometry.jts.JTS;
-import org.geotools.referencing.CRS;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.MathTransform;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.io.WKTReader;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Polygon;
 
-import fi.mml.wms.v111.BoundingBox;
 import fi.mml.wms.v111.Format;
 import fi.mml.wms.v111.GetFeatureInfo;
 import fi.mml.wms.v111.Keyword;
@@ -33,7 +26,6 @@ import fi.mml.wms.v111.LegendURL;
 import fi.mml.wms.v111.SRS;
 import fi.mml.wms.v111.Style;
 import fi.mml.wms.v111.WMTMSCapabilitiesDocument;
-import fi.nls.oskari.map.geometry.ProjectionHelper;
 
 /**
  * 1.1.1 implementation of WMS
