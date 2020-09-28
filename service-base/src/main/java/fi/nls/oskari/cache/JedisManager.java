@@ -21,6 +21,7 @@ import java.util.Set;
 public class JedisManager {
 
     public static String ERROR_REDIS_COMMUNICATION_FAILURE = "redis_communication_failure";
+    public static String PUBSUB_CHANNEL_PREFIX = "oskari_";
     public static final int EXPIRY_TIME_DAY = 86400;
 
     private final static Logger log = LogFactory.getLogger(JedisManager.class);
@@ -455,7 +456,7 @@ public class JedisManager {
             if (jedis == null) {
                 return null;
             }
-            return jedis.publish(channel, message);
+            return jedis.publish(PUBSUB_CHANNEL_PREFIX + channel, message);
         } catch(JedisConnectionException e) {
             log.error("Failed to publish on:", channel);
             return null;

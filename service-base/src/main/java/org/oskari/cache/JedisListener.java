@@ -15,7 +15,7 @@ public class JedisListener extends JedisPubSub {
     private ExecutorService service = Executors.newFixedThreadPool(1);
 
     public JedisListener(String channel) {
-        startListening("oskari_" + channel);
+        startListening(JedisManager.PUBSUB_CHANNEL_PREFIX + channel);
     }
 
     private void startListening(String channel) {

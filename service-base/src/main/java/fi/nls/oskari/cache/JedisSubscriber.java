@@ -6,7 +6,7 @@ import redis.clients.jedis.JedisPubSub;
 
 /**
  * Use org.oskari.cache.JedisListener instead
- * @deprecated 
+ * @deprecated
  */
 @Deprecated
 public class JedisSubscriber extends JedisPubSub {
