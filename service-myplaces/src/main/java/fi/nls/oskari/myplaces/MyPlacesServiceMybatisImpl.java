@@ -214,7 +214,7 @@ public class MyPlacesServiceMybatisImpl extends MyPlacesService {
             // update data in cache
             MyPlaceCategory layer = getFromCache(id);
             if (layer != null && rows > 0) {
-                layer.setPublisher_name(name);
+                cache.remove(getCacheKey(id));
             }
             return rows;
         } catch (Exception e) {

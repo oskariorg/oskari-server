@@ -18,6 +18,7 @@ import java.util.Set;
  */
 public class JedisManager {
 
+    public static final String CLUSTERED_ENV_PROFILE = "redis-session";
     public static String ERROR_REDIS_COMMUNICATION_FAILURE = "redis_communication_failure";
     public static String PUBSUB_CHANNEL_PREFIX = "oskari_";
     public static final int EXPIRY_TIME_DAY = 86400;
@@ -29,7 +30,7 @@ public class JedisManager {
     private static final String KEY_REDIS_HOSTNAME = "redis.hostname";
     private static final String KEY_REDIS_PORT = "redis.port";
     private static final String KEY_REDIS_POOL_SIZE = "redis.pool.size";
-
+    private static Boolean isClustered = null;
 
     /**
      * Blocking construction of instances from other classes by making constructor private
@@ -494,4 +495,16 @@ public class JedisManager {
         }).start();
     }
 
+    public static boolean isClusterEnv() {
+        if (isClustered == null) {
+            final String[] configuredProfiles = PropertyUtil.getCommaSeparatedList("oskari.profiles");
+            for (String profile: configuredProfiles) {
+                if (CLUSTERED_ENV_PROFILE.equalsIgnoreCase(profile)) {
+                    isClustered = true;
+                }
+            }
+            isClustered = false;
+        }
+        return isClustered;
+    }
 }

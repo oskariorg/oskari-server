@@ -209,7 +209,7 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
             // update data in cache
             UserLayer layer = getFromCache(id);
             if (layer != null && result > 0) {
-                layer.setPublisher_name(name);
+                cache.remove(Long.toString(id));
             }
             return result;
         } catch (Exception e) {

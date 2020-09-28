@@ -48,7 +48,7 @@ public class CacheManager {
      *
      * @param name name of the cache
      * @param supplier function which creates a new cache if one doesn't exists for the key
-     * @param <T>  type mapping for cache
+     * @param <T1>  type mapping for cache
      * @return
      */
     @SuppressWarnings("unchecked")

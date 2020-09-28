@@ -3,6 +3,7 @@ package fi.nls.oskari.cache;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.PropertyUtil;
+import org.oskari.cache.JedisSubscriberClient;
 
 import java.util.Queue;
 import java.util.Set;
@@ -18,8 +19,8 @@ public class Cache<T> {
     private static final Logger log = LogFactory.getLogger(Cache.class);
 
     // the items are sorted by key.compare(key) -> we should map the String to a "CacheKey" which compares insertion time
-    private final ConcurrentNavigableMap<String,T> items = new ConcurrentSkipListMap<String, T>();
-    private final Queue<String> keys = new ConcurrentLinkedQueue<String>();
+    private final ConcurrentNavigableMap<String,T> items = new ConcurrentSkipListMap<>();
+    private final Queue<String> keys = new ConcurrentLinkedQueue<>();
     private volatile int limit = 1000;
     private volatile long expiration = 30L * 60L * 1000L;
     private volatile long lastFlush = currentTime();
@@ -27,6 +28,7 @@ public class Cache<T> {
     public final static String PROPERTY_LIMIT_PREFIX = "oskari.cache.limit.";
     private boolean cacheSizeConfigured = false;
     private boolean cacheMissDebugEnabled = false;
+    private JedisSubscriberClient subscriberClient;
 
     public void setCacheMissDebugEnabled(boolean enabled) {
         cacheMissDebugEnabled = enabled;
@@ -44,6 +46,13 @@ public class Cache<T> {
             cacheSizeConfigured = true;
             limit = configuredLimit;
         }
+        if (JedisManager.isClusterEnv()) {
+            subscriberClient = new JedisSubscriberClient(getChannelName(), (key) -> removeSilent(key));
+        }
+    }
+
+    private String getChannelName() {
+        return "cache_" + name;
     }
 
     private String getLimitPropertyName() {
@@ -114,6 +123,13 @@ public class Cache<T> {
     }
 
     public T remove(final String name) {
+        if (JedisManager.isClusterEnv()) {
+            JedisManager.publish(getChannelName(), name);
+        }
+        return removeSilent(name);
+    }
+
+    protected T removeSilent(final String name) {
         flush(false);
         T value = items.remove(name);
         keys.remove(name);
