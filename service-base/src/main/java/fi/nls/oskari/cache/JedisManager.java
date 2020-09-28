@@ -467,17 +467,19 @@ public class JedisManager {
 
     /**
      * Thread-safe SUBSCRIBE
+     * @deprecated Use org.oskari.cache.JedisListener instead
      *
      * @param subscriber
      * @param channel
      */
+    @Deprecated
     public static void subscribe(final JedisSubscriber subscriber, final String channel) {
         new Thread(() -> {
             // "Make sure the subscriber and publisher threads do not share the same Jedis connection."
             // A client subscribed to one or more channels should not issue commands,
             // although it can subscribe and unsubscribe to and from other channels.
             // NOTE!! create a new client for subscriptions instead of using pool to make sure clients don't conflict
-                try (Jedis jedis = instance.getJedis()){
+                try (Jedis jedis = new Jedis(getHost(), getPort())) {
                     if (jedis == null) {
                         return;
                     }
