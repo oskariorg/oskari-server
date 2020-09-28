@@ -10,9 +10,7 @@ import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -468,7 +466,7 @@ public class JedisManager {
 
     /**
      * Thread-safe SUBSCRIBE
-     * @deprecated Use org.oskari.cache.JedisListener instead
+     * @deprecated Use org.oskari.cache.MessageListener/JedisSubscriberClient instead
      *
      * @param subscriber
      * @param channel

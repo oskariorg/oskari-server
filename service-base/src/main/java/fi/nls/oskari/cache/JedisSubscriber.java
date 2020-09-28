@@ -5,7 +5,7 @@ import fi.nls.oskari.log.Logger;
 import redis.clients.jedis.JedisPubSub;
 
 /**
- * Use org.oskari.cache.JedisListener instead
+ * Use org.oskari.cache.MessageListener/JedisSubscriberClient instead
  * @deprecated
  */
 @Deprecated
