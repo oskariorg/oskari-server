@@ -469,29 +469,29 @@ public class JedisManager {
      * @deprecated Use org.oskari.cache.MessageListener/JedisSubscriberClient instead
      *
      * @param subscriber
-     * @param channel
+     * @param pChannel channel to subscribe to
      */
     @Deprecated
-    public static void subscribe(final JedisSubscriber subscriber, final String channel) {
+    public static void subscribe(final JedisSubscriber subscriber, final String pChannel) {
         new Thread(() -> {
+            String channel = PUBSUB_CHANNEL_PREFIX + pChannel;
             // "Make sure the subscriber and publisher threads do not share the same Jedis connection."
             // A client subscribed to one or more channels should not issue commands,
             // although it can subscribe and unsubscribe to and from other channels.
             // NOTE!! create a new client for subscriptions instead of using pool to make sure clients don't conflict
-                try (Jedis jedis = new Jedis(getHost(), getPort())) {
-                    if (jedis == null) {
-                        return;
-                    }
-                    log.warn("Subscribing on", channel);
-                    // Subscribe is a blocking action hence the thread
-                    // Also we don't care about pooling here since
-                    // the client remains blocked for subscription
-                    jedis.subscribe(subscriber, channel);
-                } catch (Exception e) {
-                    log.error(e,"Subscribing on:", channel, "failed");
+            try (Jedis jedis = new Jedis(getHost(), getPort())) {
+                if (jedis == null) {
+                    return;
                 }
+                log.warn("Subscribing on", channel);
+                // Subscribe is a blocking action hence the thread
+                // Also we don't care about pooling here since
+                // the client remains blocked for subscription
+                jedis.subscribe(subscriber, channel);
+            } catch (Exception e) {
+                log.error(e,"Subscribing on:", channel, "failed");
             }
-        ).start();
+        }).start();
     }
 
 }
