@@ -6,7 +6,6 @@ import org.oskari.helpers.FlywaydbMigrator;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.scheduler.SchedulerService;
-import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.quartz.SchedulerException;
 
@@ -19,9 +18,6 @@ import javax.naming.Context;
 public class WebappHelper {
 
     private static final DatasourceHelper DS_HELPER = DatasourceHelper.getInstance();
-    private static final String KEY_REDIS_HOSTNAME = "redis.hostname";
-    private static final String KEY_REDIS_PORT = "redis.port";
-    private static final String KEY_REDIS_POOL_SIZE = "redis.pool.size";
 
     private static final String STR_LOG_LINE = "#########################################################";
 
@@ -55,10 +51,7 @@ public class WebappHelper {
 
             // init jedis
             log.info("Initializing Redis connections");
-            JedisManager.connect(
-                    ConversionHelper.getInt(PropertyUtil.get(KEY_REDIS_POOL_SIZE), 30),
-                    PropertyUtil.get(KEY_REDIS_HOSTNAME, "localhost"),
-                    ConversionHelper.getInt(PropertyUtil.get(KEY_REDIS_PORT), 6379));
+            JedisManager.connect();
             log.info("Oskari-map context initialization done");
             log.info(STR_LOG_LINE);
         } catch (Exception ex) {
@@ -88,7 +81,7 @@ public class WebappHelper {
 
         // loop "db.additional.pools" to see if we need any more pools configured
         log.info("- checking additional DataSources");
-        final String[] additionalPools = DS_HELPER.getAdditionalModules();
+        final String[] additionalPools = DatasourceHelper.getAdditionalModules();
         for(String pool : additionalPools) {
             if(!DS_HELPER.checkDataSource(ctx, pool)) {
                 log.error("Couldn't initialize DataSource for module:", pool);
@@ -114,7 +107,7 @@ public class WebappHelper {
                 throw e;
             }
         }
-        final String[] additionalPools = DS_HELPER.getAdditionalModules();
+        final String[] additionalPools = DatasourceHelper.getAdditionalModules();
         for(String module : additionalPools) {
             final String poolName = DS_HELPER.getOskariDataSourceName(module);
             try {
