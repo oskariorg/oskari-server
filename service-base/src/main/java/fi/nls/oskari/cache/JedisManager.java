@@ -3,12 +3,16 @@ package fi.nls.oskari.cache;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceRuntimeException;
+import fi.nls.oskari.util.ConversionHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -16,20 +20,36 @@ import java.util.Set;
  */
 public class JedisManager {
 
-    private static final JedisManager instance = new JedisManager();
-
-    private static volatile JedisPool pool;
+    public static String ERROR_REDIS_COMMUNICATION_FAILURE = "redis_communication_failure";
+    public static final int EXPIRY_TIME_DAY = 86400;
 
     private final static Logger log = LogFactory.getLogger(JedisManager.class);
-    public static String ERROR_REDIS_COMMUNICATION_FAILURE = "redis_communication_failure";
+    private static final JedisManager instance = new JedisManager();
+    private static volatile JedisPool pool;
 
-    public static final int EXPIRY_TIME_DAY = 86400;
+    private static final String KEY_REDIS_HOSTNAME = "redis.hostname";
+    private static final String KEY_REDIS_PORT = "redis.port";
+    private static final String KEY_REDIS_POOL_SIZE = "redis.pool.size";
+
 
     /**
      * Blocking construction of instances from other classes by making constructor private
      */
     private JedisManager() {}
 
+    public static String getHost() {
+        return PropertyUtil.get(KEY_REDIS_HOSTNAME, "localhost");
+    }
+    public static int getPort() {
+        return ConversionHelper.getInt(PropertyUtil.get(KEY_REDIS_PORT), 6379);
+    }
+    public static int getPoolSize() {
+        return ConversionHelper.getInt(PropertyUtil.get(KEY_REDIS_POOL_SIZE), 30);
+    }
+
+    public static void connect() {
+        JedisManager.connect(getPoolSize(), getHost(), getPort());
+    }
     /**
      * Connects configured connection pool to a Redis server
      */
@@ -453,21 +473,24 @@ public class JedisManager {
      */
     public static void subscribe(final JedisSubscriber subscriber, final String channel) {
         new Thread(() -> {
+            // "Make sure the subscriber and publisher threads do not share the same Jedis connection."
+            // A client subscribed to one or more channels should not issue commands,
+            // although it can subscribe and unsubscribe to and from other channels.
+            // NOTE!! create a new client for subscriptions instead of using pool to make sure clients don't conflict
                 try (Jedis jedis = instance.getJedis()){
                     if (jedis == null) {
                         return;
                     }
                     log.warn("Subscribing on", channel);
+                    // Subscribe is a blocking action hence the thread
+                    // Also we don't care about pooling here since
+                    // the client remains blocked for subscription
                     jedis.subscribe(subscriber, channel);
                 } catch (Exception e) {
-                    log.error("Subscribing on:", channel, "failed miserably");
-                    // TODO: needs more testing...
-                    // unsubscribe() was called in finally before lib update.
-                    // I don't see how that^ makes sense so moved it to error handling
-                    // though if subscription fails do we need to unsubscribe?
-                    subscriber.unsubscribe();
+                    log.error(e,"Subscribing on:", channel, "failed");
                 }
             }
         ).start();
     }
+
 }
