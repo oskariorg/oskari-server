@@ -58,8 +58,8 @@ public class GetReverseGeocodingResultHandler extends ActionHandler {
 
 
     public void handleAction(final ActionParameters params) throws ActionException {
-        final String lon = params.getRequiredParam(PARAM_LON);
-        final String lat = params.getRequiredParam(PARAM_LAT);
+        final double lon = params.getRequiredParamDouble(PARAM_LON);
+        final double lat = params.getRequiredParamDouble(PARAM_LAT);
         final String epsg = params.getRequiredParam(PARAM_EPSG_KEY);
         final String scale = params.getHttpParam(PARAM_SCALE);
 
@@ -69,7 +69,7 @@ public class GetReverseGeocodingResultHandler extends ActionHandler {
             sc.addParam(PARAM_SCALE, scale);
         }
         
-        sc.setReverseGeocode(ConversionHelper.getDouble(lat, -1), ConversionHelper.getDouble(lon, -1));
+        sc.setReverseGeocode(lat, lon);
         // eg. EPSG:3067
         sc.setSRS(epsg);
 
