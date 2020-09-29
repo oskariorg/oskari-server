@@ -65,5 +65,16 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+        <!-- PowerMock can be used to mock static/private methods -->
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-mockito2</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>

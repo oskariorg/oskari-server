@@ -7,6 +7,7 @@ import org.oskari.cache.JedisSubscriberClient;
 
 import java.util.Queue;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
@@ -16,7 +17,12 @@ import java.util.concurrent.ConcurrentSkipListMap;
  */
 public class Cache<T> {
 
+    public static final String PROPERTY_LIMIT_PREFIX = "oskari.cache.limit.";
+
     private static final Logger LOG = LogFactory.getLogger(Cache.class);
+
+    protected static final String CLUSTER_CMD_FLUSH = "FLUSH";
+    protected static final String CLUSTER_CMD_REMOVE_PREFIX = "REM: ";
 
     // the items are sorted by key.compare(key) -> we should map the String to a "CacheKey" which compares insertion time
     private final ConcurrentNavigableMap<String,T> items = new ConcurrentSkipListMap<>();
@@ -25,10 +31,12 @@ public class Cache<T> {
     private volatile long expiration = 30L * 60L * 1000L;
     private volatile long lastFlush = currentTime();
     private String name;
-    public final static String PROPERTY_LIMIT_PREFIX = "oskari.cache.limit.";
     private boolean cacheSizeConfigured = false;
     private boolean cacheMissDebugEnabled = false;
+
+    // for clustered env
     private JedisSubscriberClient subscriberClient;
+    private final String cacheInstanceId = UUID.randomUUID().toString();
 
     public void setCacheMissDebugEnabled(boolean enabled) {
         cacheMissDebugEnabled = enabled;
@@ -47,12 +55,8 @@ public class Cache<T> {
             limit = configuredLimit;
         }
         if (JedisManager.isClusterEnv()) {
-            subscriberClient = new JedisSubscriberClient(getChannelName(), (key) -> removeSilent(key));
+            subscriberClient = new JedisSubscriberClient(getChannelName(), (msg) -> handleClusterMsg(msg));
         }
-    }
-
-    private String getChannelName() {
-        return "cache_" + name;
     }
 
     private String getLimitPropertyName() {
@@ -123,13 +127,11 @@ public class Cache<T> {
     }
 
     public T remove(final String name) {
-        if (JedisManager.isClusterEnv()) {
-            JedisManager.publish(getChannelName(), name);
-        }
+        notifyRemoval(name);
         return removeSilent(name);
     }
 
-    private T removeSilent(final String name) {
+    protected T removeSilent(final String name) {
         flush(false);
         T value = items.remove(name);
         keys.remove(name);
@@ -181,5 +183,49 @@ public class Cache<T> {
 
     private static long currentTime() {
         return System.nanoTime() / 1000000L;
+    }
+
+    /* ************************************************
+     * Cluster env methods
+     * ************************************************
+     */
+
+    protected void handleClusterMsg(String data) {
+        if (data == null) {
+            return;
+        }
+        String myPrefix = cacheInstanceId + "_";
+        if (data.startsWith(myPrefix)) {
+            // this is my own message -> ignore it
+            return;
+        }
+        String msg = data.substring(myPrefix.length());
+        if (CLUSTER_CMD_FLUSH.equals(msg)) {
+            flush(true);
+            return;
+        }
+        if (msg.startsWith(CLUSTER_CMD_REMOVE_PREFIX)) {
+            removeSilent(msg.substring(CLUSTER_CMD_REMOVE_PREFIX.length()));
+            return;
+        }
+        LOG.warn("Received unrecognized cluster msg:", data);
+    }
+
+    private void notifyRemoval(String key) {
+        sendClusterCmd(CLUSTER_CMD_REMOVE_PREFIX + key);
+    }
+
+    private void sendClusterCmd(String msg) {
+        if (!JedisManager.isClusterEnv()) {
+            return;
+        }
+        JedisManager.publish(getChannelName(), cacheInstanceId + "_" + msg);
+    }
+
+    private String getChannelName() {
+        return "cache_" + name;
+    }
+    protected String getCacheInstanceId() {
+        return cacheInstanceId;
     }
 }
