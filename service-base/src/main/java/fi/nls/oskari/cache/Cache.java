@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentSkipListMap;
  */
 public class Cache<T> {
 
-    private static final Logger log = LogFactory.getLogger(Cache.class);
+    private static final Logger LOG = LogFactory.getLogger(Cache.class);
 
     // the items are sorted by key.compare(key) -> we should map the String to a "CacheKey" which compares insertion time
     private final ConcurrentNavigableMap<String,T> items = new ConcurrentSkipListMap<>();
@@ -69,7 +69,7 @@ public class Cache<T> {
      */
     public void setLimit(int limit) {
         if(cacheSizeConfigured) {
-            log.info("Trying to set cache limit, but it's configured by user so ignoring automatic limit change.",
+            LOG.info("Trying to set cache limit, but it's configured by user so ignoring automatic limit change.",
                     "Limit is", this.limit, "- Change limit with property: ", getLimitPropertyName());
             return;
         }
@@ -117,7 +117,7 @@ public class Cache<T> {
         T value = items.get(name);
 
         if(cacheMissDebugEnabled && value == null) {
-            log.debug("Cache", getName(), "miss for name", name);
+            LOG.debug("Cache", getName(), "miss for name", name);
         }
         return value;
     }
@@ -129,7 +129,7 @@ public class Cache<T> {
         return removeSilent(name);
     }
 
-    protected T removeSilent(final String name) {
+    private T removeSilent(final String name) {
         flush(false);
         T value = items.remove(name);
         keys.remove(name);
@@ -146,8 +146,8 @@ public class Cache<T> {
         final boolean overflowing = (items.size() >= limit);
         if(overflowing) {
             // limit reached - remove oldest object
-            log.warn("Cache", getName(), "overflowing! Limit is", limit);
-            log.info("Configure larger limit for cache by setting the property:", getLimitPropertyName());
+            LOG.warn("Cache", getName(), "overflowing! Limit is", limit);
+            LOG.info("Configure larger limit for cache by setting the property:", getLimitPropertyName());
             final String key = keys.poll();
             if(key != null) {
                 items.remove(key);
@@ -162,7 +162,7 @@ public class Cache<T> {
         final long now = currentTime();
         if(force || isTimeToFlush(now)) {
             // flushCache
-            log.debug("Flushing cache! Cache:", getName(), "Forced: ", force);
+            LOG.debug("Flushing cache! Cache:", getName(), "Forced: ", force);
             items.clear();
             keys.clear();
             lastFlush = now;
