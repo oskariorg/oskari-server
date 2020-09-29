@@ -140,6 +140,7 @@ public class Cache<T> {
         flush(false);
         if(item == null) {
             // can't save null value
+            remove(name);
             return false;
         }
         final boolean overflowing = (items.size() >= limit);
