@@ -43,6 +43,14 @@ This requires manual work for changes that have been described here:
 
 - https://github.com/oskariorg/oskari-server/pull/614
 
+You also have an option to just drop the current application Flyway-module assuming everyone that wants to use your app
+has a database dump for it. You can add a new module for future migrations with a different name (or same name but you will
+need to manually drop the database table for oskari_status_[your module name]). If you are not planning on the migrations to 
+work on an empty database this is the most cost-effective way to do this.
+
+Even if you want to upgrade your current migrations to work for an empty database you might want to clean them up and 
+combine them. It's possible to check in a migration if initial content needs to be inserted and only insert if needed etc.
+   
 #### Flyway Helpers
 
 Helpers for common Flyway operations have been updated for consistency in naming and parameter order.
@@ -68,7 +76,11 @@ org.oskari.helpers.AppSetupHelper.create(conn, [ref to a file under "json/views"
 1.56.0 -> 2.0.0 changes to migration helpers
 ```
 fi.nls.oskari.db.ViewHelper -> org.oskari.helpers.AppSetupHelper
-ViewHelper.insertView() -> AppSetupHelper.create()
+ViewHelper.insertView("appsetup.json) -> AppSetupHelper.create("/json/appsetup.json")
+Inserts the appsetup like before but now you can give full path to the file instead of it being assumed to be prefixed.
+
+fi.nls.oskari.db.BundleHelper -> org.oskari.helpers.BundleHelper
+all method parameters with connection changed for consistency
 
 fi.nls.oskari.db.LayerHelper -> org.oskari.helpers.LayerHelper
 
@@ -77,6 +89,11 @@ FlywayHelper.getUserAndDefaultViewIds() -> AppSetupHelper.getSetupsForUserAndDef
 FlywayHelper.viewContainsBundle() -> AppSetupHelper.appContainsBundle()
 FlywayHelper.addBundleWithDefaults() -> AppSetupHelper.addBundleToApp()
 FlywayHelper.getBundleFromView() -> AppSetupHelper.getAppBundle()
+```
+
+Added a new helper for easily adding a new bundle to the usual appsetup types (USER and DEFAULT):
+```
+AppSetupHelper.addBundleToApps(connection, bundlename)
 ```
 
 ### Spring framework upgraded
@@ -93,6 +110,14 @@ We have updated the GeoTools library which introduces a change in JTS Java-packa
 If you have used JTS classes in your application specific code you will need to update to the new packages:
 
 - https://github.com/locationtech/jts/blob/master/MIGRATION.md
+
+It might be as simple as:
+```
+import com.vividsolutions.jts.*' -> org.locationtech.jts.*;
+import org.geotools.xml.* -> org.geotools.xsd.*
+```
+
+When compiling your application Java will let you know if compilation fails because of these.
 
 ### Updated Jetty and GeoServer
 

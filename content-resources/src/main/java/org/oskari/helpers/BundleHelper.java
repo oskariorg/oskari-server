@@ -32,12 +32,16 @@ public class BundleHelper {
         SERVICE.addBundleTemplate(bundle);
     }
 
-    public static boolean isBundleRegistered(final String id, Connection conn) throws SQLException {
-        return getRegisteredBundle(id, conn) != null;
+    public static boolean isBundleRegistered(Connection conn, final String name) throws SQLException {
+        return getRegisteredBundle(conn, name) != null;
     }
 
-    public static void registerBundle(final Bundle bundle, Connection conn) throws SQLException {
-        if (isBundleRegistered(bundle.getName(), conn)) {
+    public static void registerBundle(Connection conn, String name) throws SQLException {
+        registerBundle(conn, new Bundle(name));
+    }
+
+    public static void registerBundle(Connection conn, Bundle bundle) throws SQLException {
+        if (isBundleRegistered(conn, bundle.getName())) {
             // already registered
             LOG.info("Bundle", bundle.getName(), "already registered - Skipping!");
             return;
@@ -52,10 +56,10 @@ public class BundleHelper {
         }
     }
 
-    public static Bundle getRegisteredBundle(final String id, Connection conn) throws SQLException {
+    public static Bundle getRegisteredBundle(Connection conn, String name) throws SQLException {
         try (PreparedStatement statement = conn
                 .prepareStatement("SELECT id, name, config, state FROM oskari_bundle WHERE name=?")) {
-            statement.setString(1, id);
+            statement.setString(1, name);
             try (ResultSet rs = statement.executeQuery()) {
                 if (!rs.next()) {
                     return null;
@@ -70,8 +74,8 @@ public class BundleHelper {
         }
     }
 
-    public static void unregisterBundle(final String bundleName, Connection conn) throws SQLException {
-        if (isBundleRegistered(bundleName, conn)) {
+    public static void unregisterBundle(Connection conn, String bundleName) throws SQLException {
+        if (isBundleRegistered(conn, bundleName)) {
             try (PreparedStatement statement = conn.prepareStatement("DELETE FROM oskari_bundle WHERE name=?")) {
                 statement.setString(1, bundleName);
                 statement.execute();

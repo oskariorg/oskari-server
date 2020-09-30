@@ -8,18 +8,12 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
 import fi.nls.oskari.service.ServiceRuntimeException;
-import fi.nls.oskari.util.ConversionHelper;
-import fi.nls.oskari.util.IOHelper;
-import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.util.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.*;
 
 /**
@@ -283,6 +277,69 @@ public class AppSetupHelper {
         return null;
     }
 
+    /**
+     * Adds a bundle to all apps referenced by getSetupsForUserAndDefaultType(conn)
+     * @param connection
+     * @param bundlename
+     * @throws SQLException
+     */
+    public static void addBundleToApps(Connection connection, String bundlename)
+            throws SQLException {
+        List<Long> appsetupIds = AppSetupHelper.getSetupsForUserAndDefaultType(connection);
+        addOrUpdateBundleInApps(connection, new Bundle(bundlename), appsetupIds);
+    }
+
+    /**
+     * Adds or updates a bundle to all apps referenced by getSetupsForUserAndDefaultType(conn)
+     * @param connection
+     * @param bundle
+     * @throws SQLException
+     */
+    public static void addBundleToApps(Connection connection, Bundle bundle)
+            throws SQLException {
+        List<Long> appsetupIds = AppSetupHelper.getSetupsForUserAndDefaultType(connection);
+        addOrUpdateBundleInApps(connection, bundle, appsetupIds);
+    }
+
+    /**
+     * Adds or updates a bundle to all apps referenced by getSetupsForUserAndDefaultType(conn, application)
+     * @param connection
+     * @param bundle
+     * @throws SQLException
+     */
+    public static void addBundleToApps(Connection connection, Bundle bundle, String application)
+            throws SQLException {
+        List<Long> appsetupIds = AppSetupHelper.getSetupsForUserAndDefaultType(connection, application);
+        addOrUpdateBundleInApps(connection, bundle, appsetupIds);
+    }
+
+    /**
+     * Convenience method for adding or updating a bundle in multiple appsetups.
+     * See addBundleToDefaultAndUserApps() for even more convenience.
+     * @param connection
+     * @param bundle
+     * @param appsetupIds
+     * @throws SQLException
+     */
+    public static void addOrUpdateBundleInApps(Connection connection, Bundle bundle, List<Long> appsetupIds)
+            throws SQLException {
+        String bundleName = bundle.getName();
+        for (Long id : appsetupIds) {
+            if (!AppSetupHelper.appContainsBundle(connection, id, bundleName)) {
+                AppSetupHelper.addBundleToApp(connection, id, bundleName);
+                if (bundle.getConfig() == null && bundle.getState() == null) {
+                    // no need to update, move to next
+                    continue;
+                }
+            }
+            // update config even if it is null since this might be an update instead of insert
+            Bundle dbBundle = AppSetupHelper.getAppBundle(connection, id, bundleName);
+            dbBundle.setConfig(bundle.getConfig());
+            dbBundle.setState(bundle.getState());
+            AppSetupHelper.updateAppBundle(connection, id, dbBundle);
+        }
+    }
+
     public static void addBundleToApp(Connection connection, long viewId, String bundleid)
             throws SQLException {
         final String sql ="INSERT INTO oskari_appsetup_bundles" +
@@ -337,13 +394,40 @@ public class AppSetupHelper {
         return selectedLayerIds;
     }
 
-    private static JSONObject readViewFile(final String viewfile)
-            throws Exception {
-        log.info("/ - /json/views/" + viewfile);
-        String json = IOHelper.readString(AppSetupHelper.class.getResourceAsStream("/json/views/" + viewfile));
-        JSONObject viewJSON = JSONHelper.createJSONObject(json);
-        log.debug(viewJSON);
-        return viewJSON;
+    protected static JSONObject readViewFile(final String viewfile) {
+        String json = getPaths(viewfile).stream()
+                .map(filename -> tryResource(filename))
+                .filter(j -> j != null && !j.isEmpty())
+                .findFirst()
+                .orElse(null);
+
+        if (json == null) {
+            throw new OskariRuntimeException("Couldn't locate appsetup JSON for " + viewfile);
+        }
+        return JSONHelper.createJSONObject(json);
+    }
+
+    private static List<String> getPaths(String filename) {
+        List<String> paths = new ArrayList<>();
+        if (filename == null) {
+            return paths;
+        } else if (filename.startsWith("/")) {
+            paths.add(filename);
+            return paths;
+        }
+        paths.add("/json/views/" + filename);
+        paths.add("/json/apps/" + filename);
+        paths.add("/" + filename);
+        return paths;
+    }
+
+    private static String tryResource(String name) {
+        try {
+            return IOHelper.readString(AppSetupHelper.class.getResourceAsStream(name));
+        } catch (Exception e) {
+            log.info("Tried file:", name, "- Error:", e.getMessage());
+        }
+        return null;
     }
 
     private static View createView(Connection conn, final JSONObject viewJSON)
@@ -370,7 +454,7 @@ public class AppSetupHelper {
             final JSONArray bundles = viewJSON.getJSONArray("bundles");
             for (int i = 0; i < bundles.length(); ++i) {
                 final JSONObject bJSON = bundles.getJSONObject(i);
-                final Bundle bundle = BundleHelper.getRegisteredBundle(bJSON.getString("id"), conn);
+                final Bundle bundle = BundleHelper.getRegisteredBundle(conn, bJSON.getString("id"));
                 if (bundle == null) {
                     throw new Exception("Bundle not registered - id:" + bJSON.getString("id"));
                 }

@@ -18,6 +18,12 @@ public class Bundle implements Comparable, Serializable {
     private JSONObject configJSON;
     private JSONObject stateJSON;
 
+    public Bundle() { }
+
+    public Bundle(String name) {
+        setName(name);
+    }
+
     public String toString() {
         return
                 "bundleId = '" + bundleId +"'\n" +
