@@ -7,6 +7,7 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.Set;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 @Ignore
@@ -62,5 +63,14 @@ public class JedisManagerTest {
 
         Long res = JedisManager.publish("test", "test message");
         assertTrue(res == 1);
+    }
+
+    @Test
+    public void testCluster() {
+        assertFalse("Null input returns false ", JedisManager.hasClusterProfile(null));
+        assertFalse("Empty profile list returns false", JedisManager.hasClusterProfile(new String[]{}));
+        assertFalse("Profiles without Redis session returns false", JedisManager.hasClusterProfile(new String[]{"some", "other"}));
+        assertTrue("Redis session profile as single returns true", JedisManager.hasClusterProfile(new String[]{JedisManager.CLUSTERED_ENV_PROFILE}));
+        assertTrue("Redis session profile in list returns true", JedisManager.hasClusterProfile(new String[]{"some", JedisManager.CLUSTERED_ENV_PROFILE, "other"}));
     }
 }

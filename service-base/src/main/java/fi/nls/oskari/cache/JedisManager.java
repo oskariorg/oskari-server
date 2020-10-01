@@ -498,13 +498,20 @@ public class JedisManager {
     public static boolean isClusterEnv() {
         if (isClustered == null) {
             final String[] configuredProfiles = PropertyUtil.getCommaSeparatedList("oskari.profiles");
-            for (String profile: configuredProfiles) {
-                if (CLUSTERED_ENV_PROFILE.equalsIgnoreCase(profile)) {
-                    isClustered = true;
-                }
-            }
-            isClustered = false;
+            isClustered = hasClusterProfile(configuredProfiles);
         }
         return isClustered;
+    }
+
+    protected static boolean hasClusterProfile(String[] configuredProfiles) {
+        if (configuredProfiles == null) {
+            return false;
+        }
+        for (String profile: configuredProfiles) {
+            if (CLUSTERED_ENV_PROFILE.equalsIgnoreCase(profile.trim())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
