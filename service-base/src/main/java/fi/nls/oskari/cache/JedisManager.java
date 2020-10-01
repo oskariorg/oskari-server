@@ -451,10 +451,11 @@ public class JedisManager {
      * @return long
      */
     public static Long publish(final String channel, final String message) {
-        try (Jedis jedis = instance.getJedis()){
+        try (Jedis jedis = instance.getJedis()) {
             if (jedis == null) {
                 return null;
             }
+            log.debug("Sending to", PUBSUB_CHANNEL_PREFIX + channel, "msg:", message);
             return jedis.publish(PUBSUB_CHANNEL_PREFIX + channel, message);
         } catch(JedisConnectionException e) {
             log.error("Failed to publish on:", channel);
