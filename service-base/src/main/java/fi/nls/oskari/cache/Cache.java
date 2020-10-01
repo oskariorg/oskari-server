@@ -57,7 +57,8 @@ public class Cache<T> {
         LOG.debug("Is clustered env:", JedisManager.isClusterEnv());
         if (JedisManager.isClusterEnv()) {
             LOG.info("Cluster aware cache:", cacheInstanceId);
-            subscriberClient = new JedisSubscriberClient(getChannelName(), (msg) -> handleClusterMsg(msg));
+            subscriberClient = new JedisSubscriberClient("cache");
+            subscriberClient.addListener(getChannelName(), (msg) -> handleClusterMsg(msg));
         }
     }
 

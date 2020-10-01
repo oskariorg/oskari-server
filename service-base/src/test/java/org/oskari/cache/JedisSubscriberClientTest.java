@@ -3,6 +3,9 @@ package org.oskari.cache;
 import fi.nls.oskari.cache.JedisManager;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 public class JedisSubscriberClientTest {
@@ -11,22 +14,55 @@ public class JedisSubscriberClientTest {
     public void testPubSub() throws Exception {
         org.junit.Assume.assumeTrue(redisAvailable());
 
-        final String[] receivedMessage = new String[1];
-        final String[] receivedMessage2 = new String[1];
-        final JedisSubscriberClient sub1 = new JedisSubscriberClient("test", (msg) -> receivedMessage[0] = msg);
-        final JedisSubscriberClient sub2 = new JedisSubscriberClient("test", (msg) -> receivedMessage2[0] = msg);
+        final List<String> sub1channel1 = new ArrayList<>();
+        final List<String> sub2channel1 = new ArrayList<>();
+        final List<String> sub1channel2 = new ArrayList<>();
+        final List<String> sub2channel2 = new ArrayList<>();
+        final JedisSubscriberClient sub1 = new JedisSubscriberClient("test");
+        sub1.addListener("testChannel", (msg) -> {
+            sub1channel1.add(msg);
+            //System.out.println("in listener: " + sub1channel1.size());
+        });
+        sub1.addListener("testChannel2", (msg) -> sub1channel2.add(msg));
+
+        final JedisSubscriberClient sub2 = new JedisSubscriberClient("test");
+        sub2.addListener("testChannel", (msg) -> {
+            sub2channel1.add(msg);
+            //System.out.println(sub2channel1.size());
+        });
+        sub2.addListener("testChannel2", (msg) -> sub2channel2.add(msg));
 
         // give time for subscriptions to complete
         Thread.sleep(500);
 
         String sentMessage = "test message";
-        Long res = JedisManager.publish("test", "test message");
-        assertTrue(res == 2);
+        long res = JedisManager.publish(
+                JedisSubscriberClient.getChannel("test", "testChannel"),
+                "test message");
+        assertEquals("Client count should be 2", 2, res);
 
-        assertNotNull(receivedMessage[0]);
-        assertEquals(receivedMessage[0], sentMessage);
-        assertNotNull(receivedMessage2[0]);
-        assertEquals(receivedMessage2[0], sentMessage);
+        Thread.sleep(500);
+
+        //System.out.println("before assert: " + sub1channel1.size());
+        assertEquals(1, sub1channel1.size());
+        assertNotNull(sub1channel1.get(0));
+        assertEquals(sentMessage, sub1channel1.get(0));
+        assertEquals(1, sub2channel1.size());
+        assertNotNull(sub2channel1.get(0));
+        assertEquals(sentMessage, sub2channel1.get(0));
+
+        res = JedisManager.publish(
+                JedisSubscriberClient.getChannel("test", "testChannel2"),
+                "test message");
+        assertEquals("Client count should be 2", 2, res);
+
+        Thread.sleep(500);
+        assertEquals(1, sub1channel2.size());
+        assertNotNull(sub1channel2.get(0));
+        assertEquals(sentMessage, sub1channel2.get(0));
+        assertEquals(1, sub2channel2.size());
+        assertNotNull(sub2channel2.get(0));
+        assertEquals(sentMessage, sub2channel2.get(0));
 
         sub1.stopListening();
         sub2.stopListening();
