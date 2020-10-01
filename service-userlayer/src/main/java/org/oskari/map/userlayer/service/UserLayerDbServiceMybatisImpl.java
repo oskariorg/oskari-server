@@ -104,6 +104,8 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
         } catch (Exception e) {
             log.error(e, "Failed to update userLayer", userLayer);
             throw new UserLayerException("Failed to update userlayer", UserLayerException.ErrorType.STORE);
+        } finally {
+            cache.remove(Long.toString(userLayer.getId()));
         }
     }
 

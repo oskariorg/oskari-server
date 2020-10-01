@@ -57,7 +57,7 @@ public class OskariMapLayerGroupServiceMybatisImpl extends OskariMapLayerGroupSe
             session.getMapper(MAPPER).update(group);
             session.commit();
         }
-        cache(group);
+        cache.remove(getCacheKey(group));
     }
     public void delete(MaplayerGroup group) {
         try (SqlSession session = factory.openSession(false)) {
