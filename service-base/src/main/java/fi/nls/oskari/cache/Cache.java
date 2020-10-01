@@ -54,7 +54,9 @@ public class Cache<T> {
             cacheSizeConfigured = true;
             limit = configuredLimit;
         }
+        LOG.debug("Is clustered env:", JedisManager.isClusterEnv());
         if (JedisManager.isClusterEnv()) {
+            LOG.info("Cluster aware cache:", cacheInstanceId);
             subscriberClient = new JedisSubscriberClient(getChannelName(), (msg) -> handleClusterMsg(msg));
         }
     }
@@ -135,6 +137,7 @@ public class Cache<T> {
         flush(false);
         T value = items.remove(name);
         keys.remove(name);
+        LOG.debug("Removed cached item:", name, getName());
         return value;
     }
 
@@ -157,6 +160,7 @@ public class Cache<T> {
         }
         items.put(name, item);
         keys.add(name);
+        LOG.debug("Cached item:", name, getName());
         return overflowing;
     }
 
@@ -164,7 +168,7 @@ public class Cache<T> {
         final long now = currentTime();
         if(force || isTimeToFlush(now)) {
             // flushCache
-            LOG.debug("Flushing cache! Cache:", getName(), "Forced: ", force);
+            LOG.info("Flushing cache! Cache:", getName(), "Forced: ", force, getName());
             items.clear();
             keys.clear();
             lastFlush = now;
@@ -191,12 +195,14 @@ public class Cache<T> {
      */
 
     protected void handleClusterMsg(String data) {
+        LOG.debug("Got message:", data, getName());
         if (data == null) {
             return;
         }
         String myPrefix = cacheInstanceId + "_";
         if (data.startsWith(myPrefix)) {
             // this is my own message -> ignore it
+            LOG.debug("Got my own message:", cacheInstanceId, getName());
             return;
         }
         String msg = data.substring(myPrefix.length());
@@ -205,6 +211,7 @@ public class Cache<T> {
             return;
         }
         if (msg.startsWith(CLUSTER_CMD_REMOVE_PREFIX)) {
+            // silently so we don't trigger a new cluster message
             removeSilent(msg.substring(CLUSTER_CMD_REMOVE_PREFIX.length()));
             return;
         }
