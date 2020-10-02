@@ -1,4 +1,4 @@
-package org.oskari.cache;
+package org.oskari.cluster;
 
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.log.LogFactory;
@@ -11,9 +11,9 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class JedisSubscriberClient extends JedisPubSub {
+public class ClusterClient extends JedisPubSub {
 
-    private final static Logger LOG = LogFactory.getLogger(JedisSubscriberClient.class);
+    private final static Logger LOG = LogFactory.getLogger(ClusterClient.class);
     private ExecutorService service = Executors.newFixedThreadPool(1);
     private String functionalityId;
     private Jedis client;
@@ -33,7 +33,7 @@ public class JedisSubscriberClient extends JedisPubSub {
      */
     public static long sendMessage(String functionalityId, String channel, String message) {
         // we can use the same client to send AND subscribe so using JdeisManagers pooled connections for sending
-        return JedisManager.publish(JedisSubscriberClient.getChannel(functionalityId, channel), message);
+        return JedisManager.publish(ClusterClient.getChannel(functionalityId, channel), message);
     }
 
     /**
@@ -46,7 +46,7 @@ public class JedisSubscriberClient extends JedisPubSub {
         return functionalityId + "_" + channel;
     }
 
-    public JedisSubscriberClient(String functionalityId) {
+    public ClusterClient(String functionalityId) {
         if (functionalityId == null) {
             throw new OskariRuntimeException("Requires functionalityId");
         }
@@ -71,7 +71,7 @@ public class JedisSubscriberClient extends JedisPubSub {
      * @return
      */
     public long sendMessage(String channel, String message) {
-        return JedisSubscriberClient.sendMessage(functionalityId, channel, message);
+        return ClusterClient.sendMessage(functionalityId, channel, message);
     }
 
     /**

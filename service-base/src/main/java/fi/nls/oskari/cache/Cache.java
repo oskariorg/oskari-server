@@ -3,7 +3,8 @@ package fi.nls.oskari.cache;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.PropertyUtil;
-import org.oskari.cache.JedisSubscriberClient;
+import org.oskari.cluster.ClusterClient;
+import org.oskari.cluster.ClusterManager;
 
 import java.util.Queue;
 import java.util.Set;
@@ -35,7 +36,6 @@ public class Cache<T> {
     private boolean cacheMissDebugEnabled = false;
 
     // for clustered env
-    private JedisSubscriberClient subscriberClient;
     private final String cacheInstanceId = UUID.randomUUID().toString();
 
     public void setCacheMissDebugEnabled(boolean enabled) {
@@ -57,8 +57,9 @@ public class Cache<T> {
         LOG.debug("Is clustered env:", JedisManager.isClusterEnv());
         if (JedisManager.isClusterEnv()) {
             LOG.info("Cluster aware cache:", cacheInstanceId);
-            subscriberClient = new JedisSubscriberClient("cache");
-            subscriberClient.addListener(getChannelName(), (msg) -> handleClusterMsg(msg));
+            ClusterManager.getInstance()
+                    .getClientFor("cache")
+                    .addListener(getChannelName(), (msg) -> handleClusterMsg(msg));
         }
     }
 

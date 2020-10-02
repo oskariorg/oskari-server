@@ -2,13 +2,14 @@ package org.oskari.cache;
 
 import fi.nls.oskari.cache.JedisManager;
 import org.junit.Test;
+import org.oskari.cluster.ClusterClient;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class JedisSubscriberClientTest {
+public class ClusterClientTest {
 
     @Test
     public void testPubSub() throws Exception {
@@ -18,14 +19,14 @@ public class JedisSubscriberClientTest {
         final List<String> sub2channel1 = new ArrayList<>();
         final List<String> sub1channel2 = new ArrayList<>();
         final List<String> sub2channel2 = new ArrayList<>();
-        final JedisSubscriberClient sub1 = new JedisSubscriberClient("test");
+        final ClusterClient sub1 = new ClusterClient("test");
         sub1.addListener("testChannel", (msg) -> {
             sub1channel1.add(msg);
             //System.out.println("in listener: " + sub1channel1.size());
         });
         sub1.addListener("testChannel2", (msg) -> sub1channel2.add(msg));
 
-        final JedisSubscriberClient sub2 = new JedisSubscriberClient("test");
+        final ClusterClient sub2 = new ClusterClient("test");
         sub2.addListener("testChannel", (msg) -> {
             sub2channel1.add(msg);
             //System.out.println(sub2channel1.size());
@@ -37,7 +38,7 @@ public class JedisSubscriberClientTest {
 
         String sentMessage = "test message";
         long res = JedisManager.publish(
-                JedisSubscriberClient.getChannel("test", "testChannel"),
+                ClusterClient.getChannel("test", "testChannel"),
                 "test message");
         assertEquals("Client count should be 2", 2, res);
 
@@ -52,7 +53,7 @@ public class JedisSubscriberClientTest {
         assertEquals(sentMessage, sub2channel1.get(0));
 
         res = JedisManager.publish(
-                JedisSubscriberClient.getChannel("test", "testChannel2"),
+                ClusterClient.getChannel("test", "testChannel2"),
                 "test message");
         assertEquals("Client count should be 2", 2, res);
 

@@ -1,4 +1,4 @@
-package org.oskari.cache;
+package org.oskari.cluster;
 
 @FunctionalInterface
 public interface MessageListener {
