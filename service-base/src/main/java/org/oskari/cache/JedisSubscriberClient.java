@@ -19,6 +19,33 @@ public class JedisSubscriberClient extends JedisPubSub {
     private Jedis client;
     private Map<String, List<MessageListener>> listeners = new HashMap<>();
 
+    /**
+     * Same as JedisManager.publish() but this uses the same functionality id <> channel separation as when
+     * listening to the messages.
+     *
+     * Mostly for documentary purposes on how you SHOULD send a message so the subscriber with the same
+     * functionality id will catch it.
+     *
+     * @param functionalityId
+     * @param channel
+     * @param message
+     * @return
+     */
+    public static long sendMessage(String functionalityId, String channel, String message) {
+        // we can use the same client to send AND subscribe so using JdeisManagers pooled connections for sending
+        return JedisManager.publish(JedisSubscriberClient.getChannel(functionalityId, channel), message);
+    }
+
+    /**
+     * For sending messages with JedisManager you can use this method to construct the channel for the functionality id/channel combo.
+     * @param functionalityId
+     * @param channel
+     * @return
+     */
+    public static String getChannel(String functionalityId, String channel) {
+        return functionalityId + "_" + channel;
+    }
+
     public JedisSubscriberClient(String functionalityId) {
         if (functionalityId == null) {
             throw new OskariRuntimeException("Requires functionalityId");
@@ -27,37 +54,30 @@ public class JedisSubscriberClient extends JedisPubSub {
         startListening(getFullChannelPrefix());
     }
 
-    public static String getChannel(String functionalityId, String channel) {
-        return functionalityId + "_" + channel;
-    }
-
-    public static long sendMessage(String functionalityId, String channel, String message) {
-        return JedisManager.publish(JedisSubscriberClient.getChannel(functionalityId, channel), message);
-    }
-
-    private String getFullChannelPrefix() {
-        return JedisManager.PUBSUB_CHANNEL_PREFIX + functionalityId + "_";
-    }
-
-    public String getChannel(String channel) {
-        return functionalityId + "_" + channel;
-    }
-
-    public long sendMessage(String channel, String message) {
-        return JedisManager.publish(JedisSubscriberClient.getChannel(functionalityId, channel), message);
-    }
-
-
+    /**
+     * The main method for listening to messages for the functionality
+     * @param channel
+     * @param listener
+     */
     public void addListener(String channel, MessageListener listener) {
         List<MessageListener> existingListeners = listeners.computeIfAbsent(channel, key -> new ArrayList<>());
         existingListeners.add(listener);
     }
 
-    @Override
-    public void onPMessage(String pattern, String channel, String message) {
-        getListeners(channel).stream().forEach(l -> l.onMessage(message));
+    /**
+     * Same as the other sendMessage but since it's called through the subscriber instance we already know the functionality id.
+     * @param channel
+     * @param message
+     * @return
+     */
+    public long sendMessage(String channel, String message) {
+        return JedisSubscriberClient.sendMessage(functionalityId, channel, message);
     }
 
+    /**
+     * Removes listeners and closes connection to Redis. A "destroy"/cleanup method and you can't use the subscriber
+     * after calling this.
+     */
     public void stopListening() {
         listeners.clear();
         try {
@@ -73,6 +93,21 @@ public class JedisSubscriberClient extends JedisPubSub {
         } catch (Exception ignored) {
             LOG.ignore("Error unsubscribing while shutting down", ignored);
         }
+    }
+
+    /**
+     * Not meant to be overridden. It's just a method we are overriding from JedisPubSub.
+     * @param pattern
+     * @param channel
+     * @param message
+     */
+    @Override
+    public void onPMessage(String pattern, String channel, String message) {
+        getListeners(channel).stream().forEach(l -> l.onMessage(message));
+    }
+
+    private String getFullChannelPrefix() {
+        return JedisManager.PUBSUB_CHANNEL_PREFIX + functionalityId + "_";
     }
 
     private List<MessageListener> getListeners(String channel) {
