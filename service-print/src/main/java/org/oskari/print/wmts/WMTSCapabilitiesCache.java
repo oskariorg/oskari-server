@@ -1,5 +1,6 @@
 package org.oskari.print.wmts;
 
+import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.cache.Cache;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
@@ -23,7 +24,7 @@ public class WMTSCapabilitiesCache {
 
     public WMTSCapabilitiesCache(CapabilitiesCacheService capabilitiesService) {
         this.capabilitiesService = capabilitiesService;
-        this.wmtsCapabilitiesCache = new Cache<>();
+        this.wmtsCapabilitiesCache = CacheManager.getCache(WMTSCapabilitiesCache.class.getName());
     }
 
     public WMTSCapabilities get(PrintLayer layer) throws ServiceException {

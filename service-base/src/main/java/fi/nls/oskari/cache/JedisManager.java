@@ -18,6 +18,7 @@ import java.util.Set;
  */
 public class JedisManager {
 
+    public static final String CLUSTERED_ENV_PROFILE = "redis-session";
     public static String ERROR_REDIS_COMMUNICATION_FAILURE = "redis_communication_failure";
     public static String PUBSUB_CHANNEL_PREFIX = "oskari_";
     public static final int EXPIRY_TIME_DAY = 86400;
@@ -29,7 +30,7 @@ public class JedisManager {
     private static final String KEY_REDIS_HOSTNAME = "redis.hostname";
     private static final String KEY_REDIS_PORT = "redis.port";
     private static final String KEY_REDIS_POOL_SIZE = "redis.pool.size";
-
+    private static Boolean isClustered = null;
 
     /**
      * Blocking construction of instances from other classes by making constructor private
@@ -450,10 +451,11 @@ public class JedisManager {
      * @return long
      */
     public static Long publish(final String channel, final String message) {
-        try (Jedis jedis = instance.getJedis()){
+        try (Jedis jedis = instance.getJedis()) {
             if (jedis == null) {
                 return null;
             }
+            log.debug("Sending to", PUBSUB_CHANNEL_PREFIX + channel, "msg:", message);
             return jedis.publish(PUBSUB_CHANNEL_PREFIX + channel, message);
         } catch(JedisConnectionException e) {
             log.error("Failed to publish on:", channel);
@@ -494,4 +496,23 @@ public class JedisManager {
         }).start();
     }
 
+    public static boolean isClusterEnv() {
+        if (isClustered == null) {
+            final String[] configuredProfiles = PropertyUtil.getCommaSeparatedList("oskari.profiles");
+            isClustered = hasClusterProfile(configuredProfiles);
+        }
+        return isClustered;
+    }
+
+    protected static boolean hasClusterProfile(String[] configuredProfiles) {
+        if (configuredProfiles == null) {
+            return false;
+        }
+        for (String profile: configuredProfiles) {
+            if (CLUSTERED_ENV_PROFILE.equalsIgnoreCase(profile.trim())) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

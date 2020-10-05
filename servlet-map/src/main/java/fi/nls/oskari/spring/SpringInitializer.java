@@ -42,6 +42,11 @@ public class SpringInitializer extends AbstractHttpSessionApplicationInitializer
         }
     }
 
+    /**
+     * @see fi.nls.oskari.cache.JedisManager#isClusterEnv()
+     * @param context
+     * @return
+     */
     private boolean isRedisSessionActived(WebApplicationContext context) {
         String[] profiles = context.getEnvironment().getActiveProfiles();
         for (String profile: profiles) {
