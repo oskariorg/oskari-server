@@ -32,8 +32,10 @@ public class ClusterClient extends JedisPubSub {
      * @return
      */
     public static long sendMessage(String functionalityId, String channel, String message) {
-        // we can use the same client to send AND subscribe so using JdeisManagers pooled connections for sending
-        return JedisManager.publish(ClusterClient.getChannel(functionalityId, channel), message);
+        // we can't use the same client to send AND subscribe so using JedisManagers pooled connections for sending
+        return JedisManager.publish(
+                ClusterClient.getChannel(functionalityId, channel),
+                ClusterManager.createClusterMsg(message));
     }
 
     /**
@@ -99,11 +101,18 @@ public class ClusterClient extends JedisPubSub {
      * Not meant to be overridden. It's just a method we are overriding from JedisPubSub.
      * @param pattern
      * @param channel
-     * @param message
+     * @param data
      */
     @Override
-    public void onPMessage(String pattern, String channel, String message) {
-        getListeners(channel).stream().forEach(l -> l.onMessage(message));
+    public void onPMessage(String pattern, String channel, String data) {
+        String msg = ClusterManager.readClusterMsg(data);
+        if (channel == null || msg == null) {
+            return;
+        }
+        LOG.debug("Got message:", msg);
+        getListeners(channel)
+            .stream()
+            .forEach(l -> l.onMessage(msg));
     }
 
     private String getFullChannelPrefix() {

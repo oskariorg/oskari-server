@@ -3,12 +3,10 @@ package fi.nls.oskari.cache;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.PropertyUtil;
-import org.oskari.cluster.ClusterClient;
 import org.oskari.cluster.ClusterManager;
 
 import java.util.Queue;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
@@ -35,9 +33,6 @@ public class Cache<T> {
     private boolean cacheSizeConfigured = false;
     private boolean cacheMissDebugEnabled = false;
 
-    // for clustered env
-    private final String cacheInstanceId = UUID.randomUUID().toString();
-
     public void setCacheMissDebugEnabled(boolean enabled) {
         cacheMissDebugEnabled = enabled;
     }
@@ -54,12 +49,12 @@ public class Cache<T> {
             cacheSizeConfigured = true;
             limit = configuredLimit;
         }
-        LOG.debug("Is clustered env:", JedisManager.isClusterEnv());
-        if (JedisManager.isClusterEnv()) {
-            LOG.info("Cluster aware cache:", cacheInstanceId);
-            ClusterManager.getInstance()
+        LOG.debug("Is clustered env:", ClusterManager.isClustered());
+        if (ClusterManager.isClustered()) {
+            LOG.info("Cluster aware cache:", getName());
+            ClusterManager
                     .getClientFor("cache")
-                    .addListener(getChannelName(), (msg) -> handleClusterMsg(msg));
+                    .addListener(getName(), (msg) -> handleClusterMsg(msg));
         }
     }
 
@@ -201,40 +196,28 @@ public class Cache<T> {
         if (data == null) {
             return;
         }
-        String myPrefix = cacheInstanceId + "_";
-        if (data.startsWith(myPrefix)) {
-            // this is my own message -> ignore it
-            LOG.debug("Got my own message:", cacheInstanceId, getName());
-            return;
-        }
-        String msg = data.substring(myPrefix.length());
-        if (CLUSTER_CMD_FLUSH.equals(msg)) {
+        if (CLUSTER_CMD_FLUSH.equals(data)) {
             flush(true);
             return;
         }
-        if (msg.startsWith(CLUSTER_CMD_REMOVE_PREFIX)) {
+        if (data.startsWith(CLUSTER_CMD_REMOVE_PREFIX)) {
             // silently so we don't trigger a new cluster message
-            removeSilent(msg.substring(CLUSTER_CMD_REMOVE_PREFIX.length()));
+            removeSilent(data.substring(CLUSTER_CMD_REMOVE_PREFIX.length()));
             return;
         }
         LOG.warn("Received unrecognized cluster msg:", data);
     }
 
     private void notifyRemoval(String key) {
-        sendClusterCmd(CLUSTER_CMD_REMOVE_PREFIX + key);
+        notifyCluster(CLUSTER_CMD_REMOVE_PREFIX + key);
     }
 
-    private void sendClusterCmd(String msg) {
-        if (!JedisManager.isClusterEnv()) {
+    private void notifyCluster(String msg) {
+        if (!ClusterManager.isClustered()) {
             return;
         }
-        JedisManager.publish(getChannelName(), cacheInstanceId + "_" + msg);
-    }
-
-    private String getChannelName() {
-        return "cache_" + name;
-    }
-    protected String getCacheInstanceId() {
-        return cacheInstanceId;
+        ClusterManager
+            .getClientFor("cache")
+            .sendMessage(getName(), msg);
     }
 }
