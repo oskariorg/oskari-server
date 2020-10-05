@@ -144,7 +144,7 @@ public class Cache<T> {
     public boolean put(final String name, final T item) {
         flush(false);
         if(item == null) {
-            // can't save null value
+            // can't save null value -> handle as removal
             remove(name);
             return false;
         }
@@ -158,7 +158,13 @@ public class Cache<T> {
                 items.remove(key);
             }
         }
-        items.put(name, item);
+        T existing = items.put(name, item);
+        if (existing != null) {
+            // if we had it in cache, notify cluster it was updated
+            notifyRemoval(name);
+            // also remove it from queue so its not there twice
+            keys.remove(name);
+        }
         keys.add(name);
         LOG.debug("Cached item:", name, getName());
         return overflowing;
