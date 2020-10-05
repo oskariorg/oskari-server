@@ -468,7 +468,7 @@ public class JedisManager {
 
     /**
      * Thread-safe SUBSCRIBE
-     * @deprecated Use org.oskari.cluster.MessageListener/JedisSubscriberClient instead
+     * @deprecated Use org.oskari.cluster.ClusterManager.getClientFor("[funcId]").addListener() instead
      *
      * @param subscriber
      * @param pChannel channel to subscribe to
