@@ -42,7 +42,7 @@ public class OskariWFSClient {
     private static final String PROPERTY_FORCE_GML = "forceGML";
     private static final String JSON_OUTPUT_FORMAT = "application/json";
     private static final int DEFAULT_MAX_FEATURES = 10000;
-    private static final String KEY_FILTER = "filter";
+    protected static final String KEY_FILTER = "filter";
 
     public SimpleFeatureCollection getFeatures(OskariLayer layer,
             ReferencedEnvelope bbox, CoordinateReferenceSystem crs, Filter filter) {
@@ -181,9 +181,12 @@ public class OskariWFSClient {
         if (attFilter == null) {
             return null;
         }
-        Filter attrFilter = OskariWFSFilter.getFilter(attFilter);
+        Filter attrFilter = OskariWFSFilter.getAttributeFilter(attFilter);
+        if (attrFilter == null) {
+            LOG.warn("Couldn't parse filter for WFS layer with id: " + layer.getId());
+            return null;
+        }
         Filter bboxFilter = OskariWFSFilter.getBBOXFilter(layer, bbox);
-        Filter f = OskariWFSFilter.joinAndFilters(Arrays.asList(attrFilter, bboxFilter)); // for debugging
-        return f;
+        return OskariWFSFilter.appendFilter(attrFilter, bboxFilter);
     }
 }
