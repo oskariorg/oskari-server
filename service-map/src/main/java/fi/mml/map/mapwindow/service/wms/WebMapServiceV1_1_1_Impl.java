@@ -234,6 +234,8 @@ public class WebMapServiceV1_1_1_Impl extends AbstractWebMapService {
         }
         String text = cursor.getTextValue();
         if (text == null || text.isEmpty()) {
+            // TODO: Should we allow for empty SRS (misconfiguration)
+            //  and just skip it instead of giving the user a warning message?
             return Optional.empty();
         }
         return Optional.of(text);
