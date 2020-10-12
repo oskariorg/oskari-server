@@ -100,29 +100,29 @@ public class OskariWFSFilterTest {
 
     @Test
     public void cqlTest() throws Exception {
-        Filter f = OskariWFSFilter.getAttributeFilter(equalFilter);
+        Filter f = OskariWFSFilterFactory.getAttributeFilter(equalFilter);
         Assert.assertEquals("name = 'helsinki'", CQL.toCQL(f));
-        f = OskariWFSFilter.getAttributeFilter(rangeFilter);
+        f = OskariWFSFilterFactory.getAttributeFilter(rangeFilter);
         Assert.assertEquals("population > 4000.0 AND population < 200000.0", CQL.toCQL(f));
-        f = OskariWFSFilter.getAttributeFilter(inclusiveFilter);
+        f = OskariWFSFilterFactory.getAttributeFilter(inclusiveFilter);
         Assert.assertEquals("population <= 200000.0 AND population >= 4000.0", CQL.toCQL(f));
-        f = OskariWFSFilter.getAttributeFilter(notInFilter);
+        f = OskariWFSFilterFactory.getAttributeFilter(notInFilter);
         Assert.assertEquals("name <> 'Helsinki' AND name <> 'Tampere'", CQL.toCQL(f));
-        f = OskariWFSFilter.getAttributeFilter(inFilter);
+        f = OskariWFSFilterFactory.getAttributeFilter(inFilter);
         Assert.assertEquals("name = 'Helsinki' OR name = 'Tampere'", CQL.toCQL(f));
-        f = OskariWFSFilter.getAttributeFilter(likeFilter);
+        f = OskariWFSFilterFactory.getAttributeFilter(likeFilter);
         Assert.assertEquals("name ILIKE 'Hels*' OR name ILIKE '*po*'", CQL.toCQL(f));
-        f = OskariWFSFilter.getAttributeFilter(notLikeFilter);
+        f = OskariWFSFilterFactory.getAttributeFilter(notLikeFilter);
         Assert.assertEquals("NOT (name ILIKE 'Hels*') AND NOT (name ILIKE '*po*')", CQL.toCQL(f));
 
-        f = OskariWFSFilter.getAttributeFilter(andFilter);
+        f = OskariWFSFilterFactory.getAttributeFilter(andFilter);
         String cqlAnd = CQL.toCQL(f);
         Assert.assertEquals("type = 'city' AND (population > 20000.0) AND (name <> 'Helsinki')", cqlAnd);
-        f = OskariWFSFilter.getAttributeFilter(orFilter);
+        f = OskariWFSFilterFactory.getAttributeFilter(orFilter);
         String cqlOr = CQL.toCQL(f);
         Assert.assertEquals("(name = 'Tampere') OR type = 'village'", cqlOr);
 
-        f = OskariWFSFilter.getAttributeFilter(andOrFlter);
+        f = OskariWFSFilterFactory.getAttributeFilter(andOrFlter);
         Assert.assertEquals("(" + cqlAnd +") AND (" + cqlOr + ")", CQL.toCQL(f));
     }
 
@@ -130,12 +130,12 @@ public class OskariWFSFilterTest {
     public void equalFilters() throws Exception {
         JSONObject jsonFilter = new JSONObject(equalFilter);
         JSONObject propertyFilter = jsonFilter.getJSONObject("property");
-        Filter f = OskariWFSFilter.getAttributeFilter(jsonFilter);
+        Filter f = OskariWFSFilterFactory.getAttributeFilter(jsonFilter);
         SimpleFeatureCollection sfc = fc.subCollection(f);
         Assert.assertEquals(0, sfc.size());
 
         propertyFilter.remove("caseSensitive"); // defaults to false
-        f = OskariWFSFilter.getAttributeFilter(jsonFilter);
+        f = OskariWFSFilterFactory.getAttributeFilter(jsonFilter);
         sfc = fc.subCollection(f);
         Assert.assertEquals(1, sfc.size());
         SimpleFeature feat =  sfc.features().next();
@@ -143,14 +143,14 @@ public class OskariWFSFilterTest {
 
         propertyFilter.put("key", "capital");
         propertyFilter.put("value", false);
-        f = OskariWFSFilter.getAttributeFilter(jsonFilter);
+        f = OskariWFSFilterFactory.getAttributeFilter(jsonFilter);
         sfc = fc.subCollection(f);
         Assert.assertEquals(3, sfc.size());
         Assert.assertFalse(sfc.contains(feat));
 
         propertyFilter.put("key", "population");
         propertyFilter.put("value", 600000);
-        f = OskariWFSFilter.getAttributeFilter(jsonFilter);
+        f = OskariWFSFilterFactory.getAttributeFilter(jsonFilter);
         sfc = fc.subCollection(f);
         Assert.assertEquals(1, sfc.size());
         Assert.assertTrue(sfc.contains(feat));
@@ -158,11 +158,11 @@ public class OskariWFSFilterTest {
 
     @Test
     public void rangeFilters() throws Exception {
-        Filter f = OskariWFSFilter.getAttributeFilter(rangeFilter);
+        Filter f = OskariWFSFilterFactory.getAttributeFilter(rangeFilter);
         SimpleFeatureCollection sfc = fc.subCollection(f);
         Assert.assertEquals(1, sfc.size());
         Assert.assertEquals("Sipoo", sfc.features().next().getAttribute("name"));
-        f = OskariWFSFilter.getAttributeFilter(inclusiveFilter);
+        f = OskariWFSFilterFactory.getAttributeFilter(inclusiveFilter);
         sfc = fc.subCollection(f);
         Assert.assertEquals(3, sfc.size());
         Assert.assertFalse(getFeatureNames(sfc).contains("Helsinki"));
@@ -170,7 +170,7 @@ public class OskariWFSFilterTest {
 
     @Test
     public void orFilter() throws Exception {
-        Filter f = OskariWFSFilter.getAttributeFilter(orFilter);
+        Filter f = OskariWFSFilterFactory.getAttributeFilter(orFilter);
         SimpleFeatureCollection sfc = fc.subCollection(f);
         Assert.assertEquals(2, sfc.size());
         List<String> names = getFeatureNames(sfc);
@@ -180,7 +180,7 @@ public class OskariWFSFilterTest {
 
     @Test
     public void andFilter() throws Exception {
-        Filter f = OskariWFSFilter.getAttributeFilter(andFilter);
+        Filter f = OskariWFSFilterFactory.getAttributeFilter(andFilter);
         SimpleFeatureCollection sfc = fc.subCollection(f);
         Assert.assertEquals(1, sfc.size());
         List<String> names = getFeatureNames(sfc);
@@ -189,7 +189,7 @@ public class OskariWFSFilterTest {
 
     @Test
     public void andOrFilter() throws Exception {
-        Filter f = OskariWFSFilter.getAttributeFilter(andOrFlter);
+        Filter f = OskariWFSFilterFactory.getAttributeFilter(andOrFlter);
         SimpleFeatureCollection sfc = fc.subCollection(f);
         Assert.assertEquals(1, sfc.size());
         List<String> names = getFeatureNames(sfc);
@@ -198,9 +198,9 @@ public class OskariWFSFilterTest {
 
     @Test
     public void inFilters() throws Exception {
-        Filter f = OskariWFSFilter.getAttributeFilter(notInFilter);
+        Filter f = OskariWFSFilterFactory.getAttributeFilter(notInFilter);
         SimpleFeatureCollection sfcNot = fc.subCollection(f);
-        f = OskariWFSFilter.getAttributeFilter(inFilter);
+        f = OskariWFSFilterFactory.getAttributeFilter(inFilter);
         SimpleFeatureCollection sfcIn = fc.subCollection(f);
 
         Assert.assertTrue("Subcollections should be disjoint sets", isDisjoint(sfcNot, sfcIn));
@@ -214,9 +214,9 @@ public class OskariWFSFilterTest {
 
     @Test
     public void likeFilters() throws Exception {
-        Filter fLike = OskariWFSFilter.getAttributeFilter(likeFilter);
+        Filter fLike = OskariWFSFilterFactory.getAttributeFilter(likeFilter);
         SimpleFeatureCollection sfcLike = fc.subCollection(fLike);
-        Filter fNot = OskariWFSFilter.getAttributeFilter(notLikeFilter);
+        Filter fNot = OskariWFSFilterFactory.getAttributeFilter(notLikeFilter);
         SimpleFeatureCollection sfcNot = fc.subCollection(fNot);
 
         Assert.assertTrue("Subcollections should be disjoint sets", isDisjoint(sfcNot, sfcLike));

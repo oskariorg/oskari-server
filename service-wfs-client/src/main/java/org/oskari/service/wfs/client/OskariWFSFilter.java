@@ -1,56 +1,215 @@
 package org.oskari.service.wfs.client;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.domain.map.wfs.WFSLayerCapabilities;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import fi.nls.oskari.service.ServiceRuntimeException;
 import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.geotools.referencing.CRS;
-import org.json.JSONObject;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
+import org.opengis.filter.expression.Expression;
 
 public class OskariWFSFilter {
-    private static FilterFactory ff = CommonFactoryFinder.getFilterFactory();
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-    static {
-        OBJECT_MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        OBJECT_MAPPER.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
+    private String key;
+    private String value; // equal
+    private boolean caseSensitive;
+    private Double greaterThan;
+    private Double atLeast;
+    private Double lessThan;
+    private Double atMost;
+    private List<String> like;
+    private List<String> notLike;
+    private List<String> in;
+    private List<String> notIn;
+
+    private OskariWFSFilter property;
+    private List<OskariWFSFilter> and;
+    private List<OskariWFSFilter> or;
+
+    private static final FilterFactory ff = CommonFactoryFinder.getFilterFactory();
+
+    public String getValue() {
+
+        return value;
     }
 
-    protected static Filter getBBOXFilter (OskariLayer layer, ReferencedEnvelope bbox) {
-        WFSLayerCapabilities caps = new WFSLayerCapabilities(layer.getCapabilities());
-        String geomName = caps.getGeometryAttribute();
-        return ff.bbox(geomName,
-                bbox.getMinX(), bbox.getMinY(),
-                bbox.getMaxX(), bbox.getMaxY(),
-                CRS.toSRS(bbox.getCoordinateReferenceSystem()));
-    }
-    protected static Filter getAttributeFilter(JSONObject filterJson) {
-        return getAttributeFilter(filterJson.toString());
-    }
-    protected static Filter getAttributeFilter(String filterJson) {
-        WFSFilter wfsFilter = readJSONFilter(filterJson);
-        return wfsFilter.getFilter();
+    public void setValue(String value) {
+        this.value = value;
     }
 
-    public static WFSFilter readJSONFilter(String json) {
-        try {
-            return OBJECT_MAPPER.readValue(json, WFSFilter.class);
-        } catch (Exception ex) {
-            throw new ServiceRuntimeException("Coudn't parse filter from: " + json, ex);
+    public boolean isCaseSensitive() {
+        return caseSensitive;
+    }
+
+    public void setCaseSensitive(boolean caseSensitive) {
+        this.caseSensitive = caseSensitive;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public double getGreaterThan() {
+        return greaterThan;
+    }
+
+    public void setGreaterThan(double greaterThan) {
+        this.greaterThan = greaterThan;
+    }
+
+    public double getAtLeast() {
+        return atLeast;
+    }
+
+    public void setAtLeast(double atLeast) {
+        this.atLeast = atLeast;
+    }
+
+    public double getLessThan() {
+        return lessThan;
+    }
+
+    public void setLessThan(double lessThan) {
+        this.lessThan = lessThan;
+    }
+
+    public double getAtMost() {
+        return atMost;
+    }
+
+    public void setAtMost(double atMost) {
+        this.atMost = atMost;
+    }
+
+    public List<String> getLike() {
+        return like;
+    }
+
+    public void setLike(List<String> like) {
+        this.like = like;
+    }
+
+    public List<String> getNotLike() {
+        return notLike;
+    }
+
+    public void setNotLike(List<String> notLike) {
+        this.notLike = notLike;
+    }
+
+    public List<String> getIn() {
+        return in;
+    }
+
+    public void setIn(List<String> in) {
+        this.in = in;
+    }
+
+    public List<String> getNotIn() {
+        return notIn;
+    }
+
+    public void setNotIn(List<String> notIn) {
+        this.notIn = notIn;
+    }
+    public OskariWFSFilter getProperty() {
+        return property;
+    }
+
+    public void setProperty(OskariWFSFilter property) {
+        this.property = property;
+    }
+
+    public List<OskariWFSFilter> getAnd() {
+        return and;
+    }
+
+    public void setAnd(List<OskariWFSFilter> and) {
+        this.and = and;
+    }
+
+    public List<OskariWFSFilter> getOr() {
+        return or;
+    }
+
+    public void setOr(List<OskariWFSFilter> or) {
+        this.or = or;
+    }
+    protected Filter getFilter() {
+        if (key != null) {
+            return getPropertyFilter();
         }
-    }
-    protected static Filter appendFilter(final Filter main, final Filter toAppend) {
-        if (main == null) {
-            return toAppend;
-        } else {
-            return ff.and(main, toAppend);
+        if (property !=null) {
+            return property.getPropertyFilter();
         }
+        Filter filter = null;
+        if (and != null) {
+            List<Filter> andFilters = and.stream().map(f -> f.getFilter()).collect(Collectors.toList());
+            if (!andFilters.isEmpty()) {
+                filter = OskariWFSFilterFactory.appendFilter(filter, ff.and(andFilters));
+            }
+        }
+        if (or != null) {
+            List<Filter> orFilters = or.stream().map(f -> f.getFilter()).collect(Collectors.toList());
+            if (!orFilters.isEmpty()) {
+                filter = OskariWFSFilterFactory.appendFilter(filter, ff.or(orFilters));
+            }
+        }
+        return filter;
     }
-
-
+    protected Filter getPropertyFilter() {
+        Expression name = ff.property(key);
+        if (value != null) {
+            return ff.equal(name, ff.literal(value), isCaseSensitive());
+        }
+        List <Filter> filters = new ArrayList<>();
+        if (greaterThan != null) {
+            filters.add(ff.greater(name, ff.literal(greaterThan)));
+        }
+        if (lessThan != null) {
+            filters.add(ff.less(name, ff.literal(lessThan)));
+        }
+        if (atMost != null) {
+            filters.add(ff.lessOrEqual(name, ff.literal(atMost)));
+        }
+        if (atLeast != null) {
+            filters.add(ff.greaterOrEqual(name, ff.literal(atLeast)));
+        }
+        if (filters.size() > 2) {
+            throw new ServiceRuntimeException("Coudn't create range filter from: " + filters);
+        } else if (!filters.isEmpty()) {
+            return ff.and(filters);
+        }
+        if (in != null) {
+            filters = in.stream()
+                    .map(value -> ff.equal(name, ff.literal(value), isCaseSensitive()))
+                    .collect(Collectors.toList());
+            return filters.isEmpty() ? null : ff.or(filters);
+        }
+        if (notIn != null) {
+            filters = notIn.stream()
+                    .map(value -> ff.notEqual(name, ff.literal(value), isCaseSensitive()))
+                    .collect(Collectors.toList());
+            return filters.isEmpty() ? null : ff.and(filters);
+        }
+        if (like != null) {
+            filters = like.stream()
+                    .map(value -> ff.like(name, value))
+                    .collect(Collectors.toList());
+            return filters.isEmpty() ? null : ff.or(filters);
+        }
+        if (notLike != null) {
+            filters = notLike.stream()
+                    .map(value -> ff.like(name, value))
+                    .map(f -> ff.not(f))
+                    .collect(Collectors.toList());
+            return filters.isEmpty() ? null : ff.and(filters);
+        }
+        return null;
+    }
 }

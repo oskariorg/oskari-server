@@ -181,12 +181,12 @@ public class OskariWFSClient {
         if (attFilter == null) {
             return null;
         }
-        Filter attrFilter = OskariWFSFilter.getAttributeFilter(attFilter);
+        Filter attrFilter = OskariWFSFilterFactory.getAttributeFilter(attFilter);
         if (attrFilter == null) {
             LOG.warn("Couldn't parse filter for WFS layer with id: " + layer.getId());
             return null;
         }
-        Filter bboxFilter = OskariWFSFilter.getBBOXFilter(layer, bbox);
-        return OskariWFSFilter.appendFilter(attrFilter, bboxFilter);
+        Filter bboxFilter = OskariWFSFilterFactory.getBBOXFilter(layer, bbox);
+        return OskariWFSFilterFactory.appendFilter(attrFilter, bboxFilter);
     }
 }
