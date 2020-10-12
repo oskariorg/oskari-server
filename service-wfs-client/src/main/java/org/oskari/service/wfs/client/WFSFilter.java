@@ -147,19 +147,20 @@ public class WFSFilter {
         if (property !=null) {
             return property.getPropertyFilter();
         }
-        if (and != null && !and.isEmpty()) {
+        Filter filter = null;
+        if (and != null) {
             List<Filter> andFilters = and.stream().map(f -> f.getFilter()).collect(Collectors.toList());
             if (!andFilters.isEmpty()) {
-                return ff.and(andFilters);
+                filter = OskariWFSFilter.appendFilter(filter, ff.and(andFilters));
             }
         }
         if (or != null) {
             List<Filter> orFilters = or.stream().map(f -> f.getFilter()).collect(Collectors.toList());
             if (!orFilters.isEmpty()) {
-                return ff.or(orFilters);
+                filter = OskariWFSFilter.appendFilter(filter, ff.or(orFilters));
             }
         }
-        return null;
+        return filter;
     }
     protected Filter getPropertyFilter() {
         Expression name = ff.property(key);
@@ -205,6 +206,7 @@ public class WFSFilter {
         if (notLike != null) {
             filters = notLike.stream()
                     .map(value -> ff.like(name, value))
+                    .map(f -> ff.not(f))
                     .collect(Collectors.toList());
             return filters.isEmpty() ? null : ff.and(filters);
         }
