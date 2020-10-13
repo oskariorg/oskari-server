@@ -1,0 +1,800 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!DOCTYPE WMT_MS_Capabilities SYSTEM
+        "http://schemas.opengis.net/wms/1.1.0/capabilities_1_1_0.dtd"[ <!ELEMENT VendorSpecificCapabilities EMPTY>]>
+<WMT_MS_Capabilities version="1.1.1">
+    <Service>
+        <Name>OGC:WMS</Name>
+        <Title>no title set, add some in metadata</Title>
+        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink"
+                        xlink:href="https://gis.lmi.is/mapcache?"></OnlineResource>
+    </Service>
+    <Capability>
+        <Request>
+            <GetCapabilities>
+                <Format>application/vnd.ogc.wms_xml</Format>
+                <DCPType>
+                    <HTTP>
+                        <Get>
+                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink"
+                                            xlink:href="https://gis.lmi.is/mapcache?"></OnlineResource>
+                        </Get>
+                    </HTTP>
+                </DCPType>
+            </GetCapabilities>
+            <GetMap>
+                <Format>image/png</Format>
+                <Format>image/jpeg</Format>
+                <DCPType>
+                    <HTTP>
+                        <Get>
+                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink"
+                                            xlink:href="https://gis.lmi.is/mapcache?"></OnlineResource>
+                        </Get>
+                    </HTTP>
+                </DCPType>
+            </GetMap>
+            <GetFeatureInfo>
+                <Format>text/plain</Format>
+                <Format>application/vnd.ogc.gml</Format>
+                <DCPType>
+                    <HTTP>
+                        <Get>
+                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink"
+                                            xlink:href="https://gis.lmi.is/mapcache?"></OnlineResource>
+                        </Get>
+                    </HTTP>
+                </DCPType>
+            </GetFeatureInfo>
+        </Request>
+        <Exception>
+            <Format>text/plain</Format>
+        </Exception>
+        <VendorSpecificCapabilities>
+            <TileSet>
+                <SRS>EPSG:3857</SRS>
+                <BoundingBox SRS="EPSG:3857" minx="-20037508.342789" miny="-20037508.342789" maxx="20037508.342789"
+                             maxy="20037508.342789"></BoundingBox>
+                <Resolutions>156543.03392804099712520838 78271.51696402048401068896 39135.75848201022745342925
+                    19567.87924100512100267224 9783.93962050256050133612 4891.96981025128025066806
+                    2445.98490512564012533403 1222.99245256282006266702 611.49622628141003133351
+                    305.74811314070478829308 152.87405657035250783338 76.43702828517623970583 38.21851414258812695834
+                    19.10925707129405992646 9.55462853564703173959 4.77731426782351586979 2.38865713391175793490
+                </Resolutions>
+                <Width>256</Width>
+                <Height>256</Height>
+                <Format>image/png</Format>
+                <Layers>LMI_Island_einfalt</Layers>
+                <Styles></Styles>
+            </TileSet>
+            <TileSet>
+                <SRS>EPSG:3857</SRS>
+                <BoundingBox SRS="EPSG:3857" minx="-20037508.342789" miny="-20037508.342789" maxx="20037508.342789"
+                             maxy="20037508.342789"></BoundingBox>
+                <Resolutions>156543.03392804099712520838 78271.51696402048401068896 39135.75848201022745342925
+                    19567.87924100512100267224 9783.93962050256050133612 4891.96981025128025066806
+                    2445.98490512564012533403 1222.99245256282006266702 611.49622628141003133351
+                    305.74811314070478829308 152.87405657035250783338 76.43702828517623970583 38.21851414258812695834
+                    19.10925707129405992646 9.55462853564703173959 4.77731426782351586979
+                </Resolutions>
+                <Width>256</Width>
+                <Height>256</Height>
+                <Format>image/png</Format>
+                <Layers>Bathymetry_3857</Layers>
+                <Styles></Styles>
+            </TileSet>
+            <TileSet>
+                <SRS>EPSG:3857</SRS>
+                <BoundingBox SRS="EPSG:3857" minx="-20037508.342789" miny="-20037508.342789" maxx="20037508.342789"
+                             maxy="20037508.342789"></BoundingBox>
+                <Resolutions>156543.03392804099712520838 78271.51696402048401068896 39135.75848201022745342925
+                    19567.87924100512100267224 9783.93962050256050133612 4891.96981025128025066806
+                    2445.98490512564012533403 1222.99245256282006266702 611.49622628141003133351
+                    305.74811314070478829308 152.87405657035250783338 76.43702828517623970583 38.21851414258812695834
+                    19.10925707129405992646 9.55462853564703173959 4.77731426782351586979 2.38865713391175793490
+                </Resolutions>
+                <Width>256</Width>
+                <Height>256</Height>
+                <Format>image/png</Format>
+                <Layers>AMS</Layers>
+                <Styles></Styles>
+            </TileSet>
+            <TileSet>
+                <SRS>EPSG:3857</SRS>
+                <BoundingBox SRS="EPSG:3857" minx="-20037508.342789" miny="-20037508.342789" maxx="20037508.342789"
+                             maxy="20037508.342789"></BoundingBox>
+                <Resolutions>156543.03392804099712520838 78271.51696402048401068896 39135.75848201022745342925
+                    19567.87924100512100267224 9783.93962050256050133612 4891.96981025128025066806
+                    2445.98490512564012533403 1222.99245256282006266702 611.49622628141003133351
+                    305.74811314070478829308 152.87405657035250783338 76.43702828517623970583 38.21851414258812695834
+                    19.10925707129405992646 9.55462853564703173959 4.77731426782351586979 2.38865713391175793490
+                    1.19432856695587897633
+                </Resolutions>
+                <Width>256</Width>
+                <Height>256</Height>
+                <Format>image/png</Format>
+                <Layers>LMI_Kort</Layers>
+                <Styles></Styles>
+            </TileSet>
+            <TileSet>
+                <SRS>EPSG:3857</SRS>
+                <BoundingBox SRS="EPSG:3857" minx="-20037508.342789" miny="-20037508.342789" maxx="20037508.342789"
+                             maxy="20037508.342789"></BoundingBox>
+                <Resolutions>156543.03392804099712520838 78271.51696402048401068896 39135.75848201022745342925
+                    19567.87924100512100267224 9783.93962050256050133612 4891.96981025128025066806
+                    2445.98490512564012533403 1222.99245256282006266702 611.49622628141003133351
+                    305.74811314070478829308 152.87405657035250783338 76.43702828517623970583 38.21851414258812695834
+                    19.10925707129405992646 9.55462853564703173959 4.77731426782351586979 2.38865713391175793490
+                </Resolutions>
+                <Width>256</Width>
+                <Height>256</Height>
+                <Format>image/png</Format>
+                <Layers>LMI_raster:atlas</Layers>
+                <Styles></Styles>
+            </TileSet>
+            <TileSet>
+                <SRS>EPSG:3057</SRS>
+                <BoundingBox SRS="EPSG:3057" minx="-161616.000000" miny="-72.000000" maxx="1021477.000000"
+                             maxy="1068116.000000"></BoundingBox>
+                <Resolutions>156543.03392804099712520838 78271.51696402048401068896 39135.75848201022745342925
+                    19567.87924100512100267224 9783.93962050256050133612 4891.96981025128025066806
+                    2445.98490512564012533403 1222.99245256282006266702 611.49622628141003133351
+                    305.74811314070478829308 152.87405657035250783338 76.43702828517623970583 38.21851414258812695834
+                    19.10925707129405992646 9.55462853564703173959 4.77731426782351586979 2.38865713391175793490
+                    1.19432856695587897633
+                </Resolutions>
+                <Width>256</Width>
+                <Height>256</Height>
+                <Format>image/png</Format>
+                <Layers>DEM_3057</Layers>
+                <Styles></Styles>
+            </TileSet>
+            <TileSet>
+                <SRS>EPSG:3857</SRS>
+                <BoundingBox SRS="EPSG:3857" minx="-20037508.342789" miny="-20037508.342789" maxx="20037508.342789"
+                             maxy="20037508.342789"></BoundingBox>
+                <Resolutions>156543.03392804099712520838 78271.51696402048401068896 39135.75848201022745342925
+                    19567.87924100512100267224 9783.93962050256050133612 4891.96981025128025066806
+                    2445.98490512564012533403 1222.99245256282006266702 611.49622628141003133351
+                    305.74811314070478829308 152.87405657035250783338 76.43702828517623970583 38.21851414258812695834
+                    19.10925707129405992646 9.55462853564703173959 4.77731426782351586979
+                </Resolutions>
+                <Width>256</Width>
+                <Height>256</Height>
+                <Format>image/png</Format>
+                <Layers>LMI_raster:Atlas_50</Layers>
+                <Styles></Styles>
+            </TileSet>
+            <TileSet>
+                <SRS>EPSG:3857</SRS>
+                <BoundingBox SRS="EPSG:3857" minx="-20037508.342789" miny="-20037508.342789" maxx="20037508.342789"
+                             maxy="20037508.342789"></BoundingBox>
+                <Resolutions>156543.03392804099712520838 78271.51696402048401068896 39135.75848201022745342925
+                    19567.87924100512100267224 9783.93962050256050133612 4891.96981025128025066806
+                    2445.98490512564012533403 1222.99245256282006266702 611.49622628141003133351
+                    305.74811314070478829308 152.87405657035250783338 76.43702828517623970583 38.21851414258812695834
+                    19.10925707129405992646 9.55462853564703173959 4.77731426782351586979 2.38865713391175793490
+                    1.19432856695587897633
+                </Resolutions>
+                <Width>256</Width>
+                <Height>256</Height>
+                <Format>image/png</Format>
+                <Layers>LMI_Landslag</Layers>
+                <Styles></Styles>
+            </TileSet>
+            <TileSet>
+                <SRS>EPSG:3057</SRS>
+                <BoundingBox SRS="EPSG:3057" minx="-161616.000000" miny="-72.000000" maxx="1021477.000000"
+                             maxy="1068116.000000"></BoundingBox>
+                <Resolutions>156543.03392804099712520838 78271.51696402048401068896 39135.75848201022745342925
+                    19567.87924100512100267224 9783.93962050256050133612 4891.96981025128025066806
+                    2445.98490512564012533403 1222.99245256282006266702 611.49622628141003133351
+                    305.74811314070478829308 152.87405657035250783338 76.43702828517623970583 38.21851414258812695834
+                    19.10925707129405992646 9.55462853564703173959 4.77731426782351586979 2.38865713391175793490
+                </Resolutions>
+                <Width>256</Width>
+                <Height>256</Height>
+                <Format>image/png</Format>
+                <Layers>LMI_Island_einfalt_3057</Layers>
+                <Styles></Styles>
+            </TileSet>
+            <TileSet>
+                <SRS>EPSG:3857</SRS>
+                <BoundingBox SRS="EPSG:3857" minx="-20037508.342789" miny="-20037508.342789" maxx="20037508.342789"
+                             maxy="20037508.342789"></BoundingBox>
+                <Resolutions>156543.03392804099712520838 78271.51696402048401068896 39135.75848201022745342925
+                    19567.87924100512100267224 9783.93962050256050133612 4891.96981025128025066806
+                    2445.98490512564012533403 1222.99245256282006266702 611.49622628141003133351
+                    305.74811314070478829308 152.87405657035250783338 76.43702828517623970583 38.21851414258812695834
+                    19.10925707129405992646 9.55462853564703173959 4.77731426782351586979 2.38865713391175793490
+                    1.19432856695587897633
+                </Resolutions>
+                <Width>256</Width>
+                <Height>256</Height>
+                <Format>image/png</Format>
+                <Layers>DEM_3857</Layers>
+                <Styles></Styles>
+            </TileSet>
+            <TileSet>
+                <SRS>EPSG:8088</SRS>
+                <BoundingBox SRS="EPSG:8088" minx="2038384.000000" miny="-200072.000000" maxx="3221477.000000"
+                             maxy="868116.000000"></BoundingBox>
+                <Resolutions>156543.03392804099712520838 78271.51696402048401068896 39135.75848201022745342925
+                    19567.87924100512100267224 9783.93962050256050133612 4891.96981025128025066806
+                    2445.98490512564012533403 1222.99245256282006266702 611.49622628141003133351
+                    305.74811314070478829308 152.87405657035250783338 76.43702828517623970583 38.21851414258812695834
+                    19.10925707129405992646 9.55462853564703173959 4.77731426782351586979 2.38865713391175793490
+                    1.19432856695587897633
+                </Resolutions>
+                <Width>256</Width>
+                <Height>256</Height>
+                <Format>image/png</Format>
+                <Layers>DEM_8088</Layers>
+                <Styles></Styles>
+            </TileSet>
+            <TileSet>
+                <SRS>EPSG:3057</SRS>
+                <BoundingBox SRS="EPSG:3057" minx="-161616.000000" miny="-72.000000" maxx="1021477.000000"
+                             maxy="1068116.000000"></BoundingBox>
+                <Resolutions>156543.03392804099712520838 78271.51696402048401068896 39135.75848201022745342925
+                    19567.87924100512100267224 9783.93962050256050133612 4891.96981025128025066806
+                    2445.98490512564012533403 1222.99245256282006266702 611.49622628141003133351
+                    305.74811314070478829308 152.87405657035250783338 76.43702828517623970583 38.21851414258812695834
+                    19.10925707129405992646 9.55462853564703173959 4.77731426782351586979 2.38865713391175793490
+                    1.19432856695587897633
+                </Resolutions>
+                <Width>256</Width>
+                <Height>256</Height>
+                <Format>image/png</Format>
+                <Layers>LMI_Kort_3057</Layers>
+                <Styles></Styles>
+            </TileSet>
+            <TileSet>
+                <SRS>EPSG:3057</SRS>
+                <BoundingBox SRS="EPSG:3057" minx="-161616.000000" miny="-72.000000" maxx="1021477.000000"
+                             maxy="1068116.000000"></BoundingBox>
+                <Resolutions>156543.03392804099712520838 78271.51696402048401068896 39135.75848201022745342925
+                    19567.87924100512100267224 9783.93962050256050133612 4891.96981025128025066806
+                    2445.98490512564012533403 1222.99245256282006266702 611.49622628141003133351
+                    305.74811314070478829308 152.87405657035250783338 76.43702828517623970583 38.21851414258812695834
+                    19.10925707129405992646 9.55462853564703173959 4.77731426782351586979 2.38865713391175793490
+                </Resolutions>
+                <Width>256</Width>
+                <Height>256</Height>
+                <Format>image/png</Format>
+                <Layers>LMI_raster:atlas_3057</Layers>
+                <Styles></Styles>
+            </TileSet>
+            <TileSet>
+                <SRS>EPSG:3057</SRS>
+                <BoundingBox SRS="EPSG:3057" minx="-161616.000000" miny="-72.000000" maxx="1021477.000000"
+                             maxy="1068116.000000"></BoundingBox>
+                <Resolutions>156543.03392804099712520838 78271.51696402048401068896 39135.75848201022745342925
+                    19567.87924100512100267224 9783.93962050256050133612 4891.96981025128025066806
+                    2445.98490512564012533403 1222.99245256282006266702 611.49622628141003133351
+                    305.74811314070478829308 152.87405657035250783338 76.43702828517623970583 38.21851414258812695834
+                    19.10925707129405992646 9.55462853564703173959 4.77731426782351586979 2.38865713391175793490
+                    1.19432856695587897633 0.59716428347793950593
+                </Resolutions>
+                <Width>256</Width>
+                <Height>256</Height>
+                <Format>image/png</Format>
+                <Layers>Ornefni_an_mannvirkja</Layers>
+                <Styles></Styles>
+            </TileSet>
+            <TileSet>
+                <SRS>EPSG:3057</SRS>
+                <BoundingBox SRS="EPSG:3057" minx="-161616.000000" miny="-72.000000" maxx="1021477.000000"
+                             maxy="1068116.000000"></BoundingBox>
+                <Resolutions>156543.03392804099712520838 78271.51696402048401068896 39135.75848201022745342925
+                    19567.87924100512100267224 9783.93962050256050133612 4891.96981025128025066806
+                    2445.98490512564012533403 1222.99245256282006266702 611.49622628141003133351
+                    305.74811314070478829308 152.87405657035250783338 76.43702828517623970583 38.21851414258812695834
+                    19.10925707129405992646 9.55462853564703173959 4.77731426782351586979 2.38865713391175793490
+                    1.19432856695587897633 0.59716428347793950593
+                </Resolutions>
+                <Width>256</Width>
+                <Height>256</Height>
+                <Format>image/png</Format>
+                <Layers>Ornefni</Layers>
+                <Styles></Styles>
+            </TileSet>
+            <TileSet>
+                <SRS>EPSG:3857</SRS>
+                <BoundingBox SRS="EPSG:3857" minx="-20037508.342789" miny="-20037508.342789" maxx="20037508.342789"
+                             maxy="20037508.342789"></BoundingBox>
+                <Resolutions>156543.03392804099712520838 78271.51696402048401068896 39135.75848201022745342925
+                    19567.87924100512100267224 9783.93962050256050133612 4891.96981025128025066806
+                    2445.98490512564012533403 1222.99245256282006266702 611.49622628141003133351
+                    305.74811314070478829308 152.87405657035250783338 76.43702828517623970583 38.21851414258812695834
+                    19.10925707129405992646 9.55462853564703173959 4.77731426782351586979 2.38865713391175793490
+                </Resolutions>
+                <Width>256</Width>
+                <Height>256</Height>
+                <Format>image/png</Format>
+                <Layers>LMI_Island_einfalt_3857</Layers>
+                <Styles></Styles>
+            </TileSet>
+            <TileSet>
+                <SRS>EPSG:8088</SRS>
+                <BoundingBox SRS="EPSG:8088" minx="2038384.000000" miny="-200072.000000" maxx="3221477.000000"
+                             maxy="868116.000000"></BoundingBox>
+                <Resolutions>156543.03392804099712520838 78271.51696402048401068896 39135.75848201022745342925
+                    19567.87924100512100267224 9783.93962050256050133612 4891.96981025128025066806
+                    2445.98490512564012533403 1222.99245256282006266702 611.49622628141003133351
+                    305.74811314070478829308 152.87405657035250783338 76.43702828517623970583 38.21851414258812695834
+                    19.10925707129405992646 9.55462853564703173959 4.77731426782351586979 2.38865713391175793490
+                </Resolutions>
+                <Width>256</Width>
+                <Height>256</Height>
+                <Format>image/png</Format>
+                <Layers>LMI_Island_einfalt_8088</Layers>
+                <Styles></Styles>
+            </TileSet>
+            <TileSet>
+                <SRS>EPSG:3857</SRS>
+                <BoundingBox SRS="EPSG:3857" minx="-20037508.342789" miny="-20037508.342789" maxx="20037508.342789"
+                             maxy="20037508.342789"></BoundingBox>
+                <Resolutions>156543.03392804099712520838 78271.51696402048401068896 39135.75848201022745342925
+                    19567.87924100512100267224 9783.93962050256050133612 4891.96981025128025066806
+                    2445.98490512564012533403 1222.99245256282006266702 611.49622628141003133351
+                    305.74811314070478829308 152.87405657035250783338 76.43702828517623970583 38.21851414258812695834
+                    19.10925707129405992646 9.55462853564703173959 4.77731426782351586979 2.38865713391175793490
+                    1.19432856695587897633
+                </Resolutions>
+                <Width>256</Width>
+                <Height>256</Height>
+                <Format>image/png</Format>
+                <Layers>DEM</Layers>
+                <Styles></Styles>
+            </TileSet>
+            <TileSet>
+                <SRS>EPSG:3857</SRS>
+                <BoundingBox SRS="EPSG:3857" minx="-20037508.342789" miny="-20037508.342789" maxx="20037508.342789"
+                             maxy="20037508.342789"></BoundingBox>
+                <Resolutions>156543.03392804099712520838 78271.51696402048401068896 39135.75848201022745342925
+                    19567.87924100512100267224 9783.93962050256050133612 4891.96981025128025066806
+                    2445.98490512564012533403 1222.99245256282006266702 611.49622628141003133351
+                    305.74811314070478829308 152.87405657035250783338 76.43702828517623970583 38.21851414258812695834
+                    19.10925707129405992646 9.55462853564703173959 4.77731426782351586979 2.38865713391175793490
+                    1.19432856695587897633
+                </Resolutions>
+                <Width>256</Width>
+                <Height>256</Height>
+                <Format>image/png</Format>
+                <Layers>LMI_Kort_3857</Layers>
+                <Styles></Styles>
+            </TileSet>
+            <TileSet>
+                <SRS>EPSG:3057</SRS>
+                <BoundingBox SRS="EPSG:3057" minx="-161616.000000" miny="-72.000000" maxx="1021477.000000"
+                             maxy="1068116.000000"></BoundingBox>
+                <Resolutions>156543.03392804099712520838 78271.51696402048401068896 39135.75848201022745342925
+                    19567.87924100512100267224 9783.93962050256050133612 4891.96981025128025066806
+                    2445.98490512564012533403 1222.99245256282006266702 611.49622628141003133351
+                    305.74811314070478829308 152.87405657035250783338 76.43702828517623970583 38.21851414258812695834
+                    19.10925707129405992646 9.55462853564703173959 4.77731426782351586979
+                </Resolutions>
+                <Width>256</Width>
+                <Height>256</Height>
+                <Format>image/png</Format>
+                <Layers>Bathymetry_3057</Layers>
+                <Styles></Styles>
+            </TileSet>
+            <TileSet>
+                <SRS>EPSG:3857</SRS>
+                <BoundingBox SRS="EPSG:3857" minx="-20037508.342789" miny="-20037508.342789" maxx="20037508.342789"
+                             maxy="20037508.342789"></BoundingBox>
+                <Resolutions>156543.03392804099712520838 78271.51696402048401068896 39135.75848201022745342925
+                    19567.87924100512100267224 9783.93962050256050133612 4891.96981025128025066806
+                    2445.98490512564012533403 1222.99245256282006266702 611.49622628141003133351
+                    305.74811314070478829308 152.87405657035250783338 76.43702828517623970583 38.21851414258812695834
+                    19.10925707129405992646 9.55462853564703173959 4.77731426782351586979 2.38865713391175793490
+                </Resolutions>
+                <Width>256</Width>
+                <Height>256</Height>
+                <Format>image/png</Format>
+                <Layers>LMI_raster:atlas_3857</Layers>
+                <Styles></Styles>
+            </TileSet>
+            <TileSet>
+                <SRS>EPSG:8088</SRS>
+                <BoundingBox SRS="EPSG:8088" minx="2038384.000000" miny="-200072.000000" maxx="3221477.000000"
+                             maxy="868116.000000"></BoundingBox>
+                <Resolutions>156543.03392804099712520838 78271.51696402048401068896 39135.75848201022745342925
+                    19567.87924100512100267224 9783.93962050256050133612 4891.96981025128025066806
+                    2445.98490512564012533403 1222.99245256282006266702 611.49622628141003133351
+                    305.74811314070478829308 152.87405657035250783338 76.43702828517623970583 38.21851414258812695834
+                    19.10925707129405992646 9.55462853564703173959 4.77731426782351586979 2.38865713391175793490
+                    1.19432856695587897633
+                </Resolutions>
+                <Width>256</Width>
+                <Height>256</Height>
+                <Format>image/png</Format>
+                <Layers>LMI_Kort_8088</Layers>
+                <Styles></Styles>
+            </TileSet>
+            <TileSet>
+                <SRS>EPSG:8088</SRS>
+                <BoundingBox SRS="EPSG:8088" minx="2038384.000000" miny="-200072.000000" maxx="3221477.000000"
+                             maxy="868116.000000"></BoundingBox>
+                <Resolutions>156543.03392804099712520838 78271.51696402048401068896 39135.75848201022745342925
+                    19567.87924100512100267224 9783.93962050256050133612 4891.96981025128025066806
+                    2445.98490512564012533403 1222.99245256282006266702 611.49622628141003133351
+                    305.74811314070478829308 152.87405657035250783338 76.43702828517623970583 38.21851414258812695834
+                    19.10925707129405992646 9.55462853564703173959 4.77731426782351586979 2.38865713391175793490
+                </Resolutions>
+                <Width>256</Width>
+                <Height>256</Height>
+                <Format>image/png</Format>
+                <Layers>LMI_raster:atlas_8088</Layers>
+                <Styles></Styles>
+            </TileSet>
+        </VendorSpecificCapabilities>
+        <Layer>
+            <Title>no title set, add some in metadata</Title>
+            <SRS></SRS>
+            <Layer cascaded="1" queryable="0">
+                <Name>LMI_Island_einfalt</Name>
+                <Title>LMÍ, Ísland, einfalt</Title>
+                <Abstract>Einfalt bakgrunnskort fyrir Landupplýsingagátt.
+                    Um er að ræða strandlínu og helstu jökla úr IS 50V.
+                </Abstract>
+                <KeywordList>
+                    <keyword>LMI_Island_einfalt</keyword>
+                    <keyword>basemap</keyword>
+                </KeywordList>
+                <BoundingBox SRS="EPSG:3857" minx="-3439772.266000" miny="8377507.565000" maxx="-612257.199400"
+                             maxy="10939756.910000"></BoundingBox>
+                <SRS>EPSG:3857</SRS>
+                <SRS>EPSG:900913</SRS>
+                <BoundingBox SRS="EPSG:8088" minx="2035476.470000" miny="-206348.388100" maxx="3223148.993000"
+                             maxy="869623.111800"></BoundingBox>
+                <SRS>EPSG:8088</SRS>
+                <BoundingBox SRS="EPSG:3057" minx="-164523.529800" miny="-6348.387973" maxx="1023148.993000"
+                             maxy="1069623.112000"></BoundingBox>
+                <SRS>EPSG:3057</SRS>
+            </Layer>
+            <Layer cascaded="1" queryable="0">
+                <Name>Bathymetry_3857</Name>
+                <Title>Bathymetry EPSG:3857</Title>
+                <Abstract>Bathymetry hillshade</Abstract>
+                <KeywordList>
+                    <keyword>Bathymetry</keyword>
+                    <keyword>hillshade</keyword>
+                </KeywordList>
+                <BoundingBox SRS="EPSG:3857" minx="-3439772.265512" miny="8377507.564603" maxx="-612257.199363"
+                             maxy="10939756.913197"></BoundingBox>
+                <SRS>EPSG:3857</SRS>
+                <SRS>EPSG:900913</SRS>
+            </Layer>
+            <Layer cascaded="1" queryable="0">
+                <Name>AMS</Name>
+                <Title>AMS 1:50.000</Title>
+                <Abstract>
+                    AMS kort samsett, 1:50.000, (en. Historical Raster Map)
+                </Abstract>
+                <KeywordList>
+                    <keyword>AMS</keyword>
+                </KeywordList>
+                <BoundingBox SRS="EPSG:3857" minx="-3439772.266000" miny="8377507.565000" maxx="-612257.199400"
+                             maxy="10939756.910000"></BoundingBox>
+                <SRS>EPSG:3857</SRS>
+                <SRS>EPSG:900913</SRS>
+                <BoundingBox SRS="EPSG:8088" minx="2035476.470000" miny="-206348.388100" maxx="3223148.993000"
+                             maxy="869623.111800"></BoundingBox>
+                <SRS>EPSG:8088</SRS>
+                <BoundingBox SRS="EPSG:3057" minx="-164523.529800" miny="-6348.387973" maxx="1023148.993000"
+                             maxy="1069623.112000"></BoundingBox>
+                <SRS>EPSG:3057</SRS>
+            </Layer>
+            <Layer cascaded="1" queryable="0">
+                <Name>LMI_Kort</Name>
+                <Title>LMI_Kort</Title>
+                <Abstract>LMI basemap</Abstract>
+                <KeywordList>
+                    <keyword>LMI_Kort</keyword>
+                    <keyword>basemap</keyword>
+                </KeywordList>
+                <BoundingBox SRS="EPSG:3857" minx="-2461078.242000" miny="9346568.412000" maxx="-2393282.112000"
+                             maxy="9414909.276000"></BoundingBox>
+                <SRS>EPSG:3857</SRS>
+                <SRS>EPSG:900913</SRS>
+                <BoundingBox SRS="EPSG:8088" minx="-104925.923300" miny="-595407.773700" maxx="3437414.957000"
+                             maxy="2166701.739000"></BoundingBox>
+                <SRS>EPSG:8088</SRS>
+                <BoundingBox SRS="EPSG:3057" minx="-2304925.923000" miny="-395407.773700" maxx="1237414.957000"
+                             maxy="2366701.739000"></BoundingBox>
+                <SRS>EPSG:3057</SRS>
+            </Layer>
+            <Layer cascaded="1" queryable="0">
+                <Name>LMI_raster:atlas</Name>
+                <Title>Atlas 1:100.000</Title>
+                <Abstract>
+                    Atlas - vefkort LMÍ, 1:100.000 (en. historical raster
+                    map).
+                </Abstract>
+                <KeywordList>
+                    <keyword>Atlas</keyword>
+                </KeywordList>
+                <BoundingBox SRS="EPSG:3857" minx="-3439772.266000" miny="8377507.565000" maxx="-612257.199400"
+                             maxy="10939756.910000"></BoundingBox>
+                <SRS>EPSG:3857</SRS>
+                <SRS>EPSG:900913</SRS>
+                <BoundingBox SRS="EPSG:8088" minx="2035476.470000" miny="-206348.388100" maxx="3223148.993000"
+                             maxy="869623.111800"></BoundingBox>
+                <SRS>EPSG:8088</SRS>
+                <BoundingBox SRS="EPSG:3057" minx="-164523.529800" miny="-6348.387973" maxx="1023148.993000"
+                             maxy="1069623.112000"></BoundingBox>
+                <SRS>EPSG:3057</SRS>
+            </Layer>
+            <Layer cascaded="1" queryable="0">
+                <Name>DEM_3057</Name>
+                <Title>DEM EPSG:3057</Title>
+                <Abstract>DEM hillshade</Abstract>
+                <KeywordList>
+                    <keyword>DEM</keyword>
+                    <keyword>hillshade</keyword>
+                </KeywordList>
+                <BoundingBox SRS="EPSG:3057" minx="244254.076900" miny="311023.019200" maxx="757633.338000"
+                             maxy="686916.968700"></BoundingBox>
+                <SRS>EPSG:3057</SRS>
+            </Layer>
+            <Layer cascaded="1" queryable="0">
+                <Name>LMI_raster:Atlas_50</Name>
+                <Title>Herforingjaráðskort Dana, 1:50.000</Title>
+                <Abstract>Atlas 1:50.000</Abstract>
+                <KeywordList>
+                    <keyword>Herforingjaráðskort</keyword>
+                    <keyword>Atlas</keyword>
+                </KeywordList>
+                <BoundingBox SRS="EPSG:3857" minx="-3439772.266000" miny="8377507.565000" maxx="-612257.199400"
+                             maxy="10939756.910000"></BoundingBox>
+                <SRS>EPSG:3857</SRS>
+                <SRS>EPSG:900913</SRS>
+                <BoundingBox SRS="EPSG:8088" minx="2035476.470000" miny="-206348.388100" maxx="3223148.993000"
+                             maxy="869623.111800"></BoundingBox>
+                <SRS>EPSG:8088</SRS>
+                <BoundingBox SRS="EPSG:3057" minx="-164523.529800" miny="-6348.387973" maxx="1023148.993000"
+                             maxy="1069623.112000"></BoundingBox>
+                <SRS>EPSG:3057</SRS>
+            </Layer>
+            <Layer cascaded="1" queryable="0">
+                <Name>LMI_Landslag</Name>
+                <Title>LMI_Landslag</Title>
+                <Abstract>LMI basemap</Abstract>
+                <KeywordList>
+                    <keyword>LMI_Landslag</keyword>
+                    <keyword>basemap</keyword>
+                </KeywordList>
+                <BoundingBox SRS="EPSG:3857" minx="-2461078.242000" miny="9346568.412000" maxx="-2393282.112000"
+                             maxy="9414909.276000"></BoundingBox>
+                <SRS>EPSG:3857</SRS>
+                <SRS>EPSG:900913</SRS>
+                <BoundingBox SRS="EPSG:8088" minx="-104925.923300" miny="-595407.773700" maxx="3437414.957000"
+                             maxy="2166701.739000"></BoundingBox>
+                <SRS>EPSG:8088</SRS>
+                <BoundingBox SRS="EPSG:3057" minx="-2304925.923000" miny="-395407.773700" maxx="1237414.957000"
+                             maxy="2366701.739000"></BoundingBox>
+                <SRS>EPSG:3057</SRS>
+            </Layer>
+            <Layer cascaded="1" queryable="0">
+                <Name>LMI_Island_einfalt_3057</Name>
+                <Title>LMÍ, Ísland, einfalt EPSG:3057</Title>
+                <Abstract>Einfalt bakgrunnskort fyrir Landupplýsingagátt.
+                    Um er að ræða strandlínu og helstu jökla úr IS 50V.
+                </Abstract>
+                <KeywordList>
+                    <keyword>LMI_Island_einfalt</keyword>
+                    <keyword>basemap</keyword>
+                </KeywordList>
+                <BoundingBox SRS="EPSG:3057" minx="-164523.529800" miny="-6348.387973" maxx="1023148.993000"
+                             maxy="1069623.112000"></BoundingBox>
+                <SRS>EPSG:3057</SRS>
+            </Layer>
+            <Layer cascaded="1" queryable="0">
+                <Name>DEM_3857</Name>
+                <Title>DEM EPSG:3857</Title>
+                <Abstract>DEM hillshade</Abstract>
+                <KeywordList>
+                    <keyword>DEM</keyword>
+                    <keyword>hillshade</keyword>
+                </KeywordList>
+                <BoundingBox SRS="EPSG:3857" minx="-2681409.030000" miny="9152569.540000" maxx="-1468254.324000"
+                             maxy="10034620.780000"></BoundingBox>
+                <SRS>EPSG:3857</SRS>
+                <SRS>EPSG:900913</SRS>
+            </Layer>
+            <Layer cascaded="1" queryable="0">
+                <Name>DEM_8088</Name>
+                <Title>DEM EPSG:8088</Title>
+                <Abstract>DEM hillshade</Abstract>
+                <KeywordList>
+                    <keyword>DEM</keyword>
+                    <keyword>hillshade</keyword>
+                </KeywordList>
+                <BoundingBox SRS="EPSG:8088" minx="2444254.079000" miny="111023.019300" maxx="2957633.338000"
+                             maxy="486916.968600"></BoundingBox>
+                <SRS>EPSG:8088</SRS>
+            </Layer>
+            <Layer cascaded="1" queryable="0">
+                <Name>LMI_Kort_3057</Name>
+                <Title>LMI_Kort EPSG:3057</Title>
+                <Abstract>LMI basemap</Abstract>
+                <KeywordList>
+                    <keyword>LMI_Kort</keyword>
+                    <keyword>basemap</keyword>
+                </KeywordList>
+                <BoundingBox SRS="EPSG:3057" minx="-2304925.923000" miny="-395407.773700" maxx="1237414.957000"
+                             maxy="2366701.739000"></BoundingBox>
+                <SRS>EPSG:3057</SRS>
+            </Layer>
+            <Layer cascaded="1" queryable="0">
+                <Name>LMI_raster:atlas_3057</Name>
+                <Title>Atlas 1:100.000 EPSG:3057</Title>
+                <Abstract>
+                    Atlas - vefkort LMÍ, 1:100.000 (en. historical raster
+                    map).
+                </Abstract>
+                <KeywordList>
+                    <keyword>Atlas</keyword>
+                </KeywordList>
+                <BoundingBox SRS="EPSG:3057" minx="-164523.529800" miny="-6348.387973" maxx="1023148.993000"
+                             maxy="1069623.112000"></BoundingBox>
+                <SRS>EPSG:3057</SRS>
+            </Layer>
+            <Layer cascaded="1" queryable="0">
+                <Name>Ornefni_an_mannvirkja</Name>
+                <Title>Örnefni án mannvirkja</Title>
+                <Abstract>
+                    IS 50V Örnefni án mannvirkja, 1:50.000, (en. Geographical
+                    Names without Structures).
+                </Abstract>
+                <KeywordList>
+                    <keyword>Örnefni</keyword>
+                    <keyword>Geographical names</keyword>
+                </KeywordList>
+                <BoundingBox SRS="EPSG:3057" minx="-164523.529800" miny="-6348.387973" maxx="1023148.993000"
+                             maxy="1069623.112000"></BoundingBox>
+                <SRS>EPSG:3057</SRS>
+                <BoundingBox SRS="EPSG:3857" minx="-3439772.266000" miny="8377507.565000" maxx="-612257.199400"
+                             maxy="10939756.910000"></BoundingBox>
+                <SRS>EPSG:3857</SRS>
+                <SRS>EPSG:900913</SRS>
+                <BoundingBox SRS="EPSG:8088" minx="2035476.470000" miny="-206348.388100" maxx="3223148.993000"
+                             maxy="869623.111800"></BoundingBox>
+                <SRS>EPSG:8088</SRS>
+            </Layer>
+            <Layer cascaded="1" queryable="0">
+                <Name>Ornefni</Name>
+                <Title>Örnefni</Title>
+                <Abstract>
+                    Örnefni og IS 50V mannvirki punktar, 1:50.000,
+                    (en. Geographical Names).
+                </Abstract>
+                <KeywordList>
+                    <keyword>Örnefni</keyword>
+                    <keyword>Geographical names</keyword>
+                </KeywordList>
+                <BoundingBox SRS="EPSG:3057" minx="-164523.529800" miny="-6348.387973" maxx="1023148.993000"
+                             maxy="1069623.112000"></BoundingBox>
+                <SRS>EPSG:3057</SRS>
+                <BoundingBox SRS="EPSG:3857" minx="-3439772.266000" miny="8377507.565000" maxx="-612257.199400"
+                             maxy="10939756.910000"></BoundingBox>
+                <SRS>EPSG:3857</SRS>
+                <SRS>EPSG:900913</SRS>
+                <BoundingBox SRS="EPSG:8088" minx="2035476.470000" miny="-206348.388100" maxx="3223148.993000"
+                             maxy="869623.111800"></BoundingBox>
+                <SRS>EPSG:8088</SRS>
+            </Layer>
+            <Layer cascaded="1" queryable="0">
+                <Name>LMI_Island_einfalt_3857</Name>
+                <Title>LMÍ, Ísland, einfalt EPSG:3857</Title>
+                <Abstract>Einfalt bakgrunnskort fyrir Landupplýsingagátt.
+                    Um er að ræða strandlínu og helstu jökla úr IS 50V.
+                </Abstract>
+                <KeywordList>
+                    <keyword>LMI_Island_einfalt</keyword>
+                    <keyword>basemap</keyword>
+                </KeywordList>
+                <BoundingBox SRS="EPSG:3857" minx="-3439772.266000" miny="8377507.565000" maxx="-612257.199400"
+                             maxy="10939756.910000"></BoundingBox>
+                <SRS>EPSG:3857</SRS>
+                <SRS>EPSG:900913</SRS>
+            </Layer>
+            <Layer cascaded="1" queryable="0">
+                <Name>LMI_Island_einfalt_8088</Name>
+                <Title>LMÍ, Ísland, einfalt EPSG:8088</Title>
+                <Abstract>Einfalt bakgrunnskort fyrir Landupplýsingagátt.
+                    Um er að ræða strandlínu og helstu jökla úr IS 50V.
+                </Abstract>
+                <KeywordList>
+                    <keyword>LMI_Island_einfalt</keyword>
+                    <keyword>basemap</keyword>
+                </KeywordList>
+                <BoundingBox SRS="EPSG:8088" minx="2035476.470000" miny="-206348.388100" maxx="3223148.993000"
+                             maxy="869623.111800"></BoundingBox>
+                <SRS>EPSG:8088</SRS>
+            </Layer>
+            <Layer cascaded="1" queryable="0">
+                <Name>DEM</Name>
+                <Title>DEM</Title>
+                <Abstract>DEM hillshade</Abstract>
+                <KeywordList>
+                    <keyword>DEM</keyword>
+                    <keyword>hillshade</keyword>
+                </KeywordList>
+                <BoundingBox SRS="EPSG:3857" minx="-2681409.030000" miny="9152569.540000" maxx="-1468254.324000"
+                             maxy="10034620.780000"></BoundingBox>
+                <SRS>EPSG:3857</SRS>
+                <SRS>EPSG:900913</SRS>
+                <BoundingBox SRS="EPSG:8088" minx="2444254.079000" miny="111023.019300" maxx="2957633.338000"
+                             maxy="486916.968600"></BoundingBox>
+                <SRS>EPSG:8088</SRS>
+                <BoundingBox SRS="EPSG:3057" minx="244254.076900" miny="311023.019200" maxx="757633.338000"
+                             maxy="686916.968700"></BoundingBox>
+                <SRS>EPSG:3057</SRS>
+            </Layer>
+            <Layer cascaded="1" queryable="0">
+                <Name>LMI_Kort_3857</Name>
+                <Title>LMI_Kort_3857</Title>
+                <BoundingBox SRS="EPSG:3857" minx="-2461078.242000" miny="9346568.412000" maxx="-2393282.112000"
+                             maxy="9414909.276000"></BoundingBox>
+                <SRS>EPSG:3857</SRS>
+                <SRS>EPSG:900913</SRS>
+            </Layer>
+            <Layer cascaded="1" queryable="0">
+                <Name>Bathymetry_3057</Name>
+                <Title>Bathymetry EPSG:3057</Title>
+                <Abstract>Bathymetry hillshade</Abstract>
+                <KeywordList>
+                    <keyword>Bathymetry</keyword>
+                    <keyword>hillshade</keyword>
+                </KeywordList>
+                <BoundingBox SRS="EPSG:3057" minx="-164523.529845" miny="-6348.387973" maxx="1023148.993474"
+                             maxy="1069623.111895"></BoundingBox>
+                <SRS>EPSG:3057</SRS>
+            </Layer>
+            <Layer cascaded="1" queryable="0">
+                <Name>LMI_raster:atlas_3857</Name>
+                <Title>Atlas 1:100.000 EPSG:3857</Title>
+                <Abstract>
+                    Atlas - vefkort LMÍ, 1:100.000 (en. historical raster
+                    map).
+                </Abstract>
+                <KeywordList>
+                    <keyword>Atlas</keyword>
+                </KeywordList>
+                <BoundingBox SRS="EPSG:3857" minx="-3439772.266000" miny="8377507.565000" maxx="-612257.199400"
+                             maxy="10939756.910000"></BoundingBox>
+                <SRS>EPSG:3857</SRS>
+                <SRS>EPSG:900913</SRS>
+            </Layer>
+            <Layer cascaded="1" queryable="0">
+                <Name>LMI_Kort_8088</Name>
+                <Title>LMI_Kort EPSG:8088</Title>
+                <Abstract>LMI basemap</Abstract>
+                <KeywordList>
+                    <keyword>LMI_Kort</keyword>
+                    <keyword>basemap</keyword>
+                </KeywordList>
+                <BoundingBox SRS="EPSG:8088" minx="-104925.923300" miny="-595407.773700" maxx="3437414.957000"
+                             maxy="2166701.739000"></BoundingBox>
+                <SRS>EPSG:8088</SRS>
+            </Layer>
+            <Layer cascaded="1" queryable="0">
+                <Name>LMI_raster:atlas_8088</Name>
+                <Title>Atlas 1:100.000 EPSG:8088</Title>
+                <Abstract>
+                    Atlas - vefkort LMÍ, 1:100.000 (en. historical raster
+                    map).
+                </Abstract>
+                <KeywordList>
+                    <keyword>Atlas</keyword>
+                </KeywordList>
+                <BoundingBox SRS="EPSG:8088" minx="2035476.470000" miny="-206348.388100" maxx="3223148.993000"
+                             maxy="869623.111800"></BoundingBox>
+                <SRS>EPSG:8088</SRS>
+            </Layer>
+        </Layer>
+    </Capability>
+</WMT_MS_Capabilities>
