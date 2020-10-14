@@ -96,7 +96,7 @@
         <hystrix.version>1.5.18</hystrix.version>
         <!-- Test deps versions -->
         <powermock.version>2.0.0</powermock.version>
-        <junit.version>4.11</junit.version>
+        <junit.version>4.13.1</junit.version>
         <xmlunit.version>1.6</xmlunit.version>
         <h2database.version>1.4.199</h2database.version>
 
