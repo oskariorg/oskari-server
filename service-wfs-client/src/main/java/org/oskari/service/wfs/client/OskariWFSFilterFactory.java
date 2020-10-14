@@ -47,6 +47,8 @@ public class OskariWFSFilterFactory {
     protected static Filter appendFilter(final Filter main, final Filter toAppend) {
         if (main == null) {
             return toAppend;
+        } else if (toAppend == null) {
+            return main;
         } else {
             return ff.and(main, toAppend);
         }
