@@ -1,6 +1,7 @@
 package org.geotools.mif;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,6 +44,16 @@ public class MIFDataReaderTest {
         assertEquals(EPSILON, 7748438.773, pline3.getCoordinateN(0).getY());
         assertEquals(EPSILON,  535262.676499178, pline3.getCoordinateN(38).getX());
         assertEquals(EPSILON, 7770000.000000000, pline3.getCoordinateN(38).getY());
+    }
+
+    @Test
+    public void testLine() throws URISyntaxException, IOException {
+        File mif = new File(getClass().getResource("L41_SahkoLinja.mif").toURI());
+        try (MIFDataReader r = new MIFDataReader(mif)) {
+            while (r.hasNext()) {
+                assertNotNull(r.next());
+            }
+        }
     }
 
 }
