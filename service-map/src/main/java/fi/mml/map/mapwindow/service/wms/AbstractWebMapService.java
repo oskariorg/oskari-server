@@ -20,7 +20,7 @@ public abstract class AbstractWebMapService implements WebMapService {
     protected Map<String, String> styles;
     protected Map<String, String> legends;
 
-    public static final int RECURSION_LIMIT = 10;
+    static final int RECURSION_LIMIT = 10;
 
     protected AbstractWebMapService(String getCapabilitiesUrl) {
         this.getCapabilitiesUrl = getCapabilitiesUrl;
