@@ -7,7 +7,6 @@ import fi.nls.oskari.map.geometry.WKTHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.oskari.utils.common.Sets;
@@ -275,7 +274,7 @@ public class LayerJSONFormatter {
         Set<String> srs = new HashSet<>();
         srs.addAll(JSONHelper.getArrayAsList(jsonForcedSRS));
         srs.addAll(JSONHelper.getArrayAsList(jsonCapabilitiesSRS));
-        LOG.debug("SRSs from attributes and capabilities:", StringUtils.join(srs, ','));
+        LOG.debug("SRSs from attributes and capabilities:", srs);
         return srs;
     }
     public static JSONObject getFormatsJSON(final Collection<String> formats) {

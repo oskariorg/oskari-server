@@ -3,7 +3,7 @@ package fi.nls.oskari;
 import fi.mml.portti.service.search.*;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
@@ -41,7 +41,7 @@ public class SearchWorker {
             return ERR_EMPTY;
         }
         searchString = Jsoup.clean(searchString, Whitelist.none());
-        searchString = StringEscapeUtils.unescapeHtml(searchString);
+        searchString = StringEscapeUtils.unescapeHtml4(searchString);
         if (searchString.contains("*") && searchString.length() <= 4) {
             return ERR_TOO_SHORT;
         }
