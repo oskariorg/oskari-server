@@ -12,7 +12,9 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import java.io.ByteArrayOutputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Default handler for WFS Search channel filter and title
@@ -22,19 +24,27 @@ public class WFSChannelHandler extends OskariComponent {
     public static final String ID = "DEFAULT";
     protected static final XMLOutputFactory XOF = XMLOutputFactory.newInstance();
 
-    protected void writePropertyIsLike(XMLStreamWriter xsw, String name, String value) throws XMLStreamException {
+    protected void writePropertyIsLike(XMLStreamWriter xsw, String name, String value, Map<String, String> toggles) throws XMLStreamException {
         xsw.writeStartElement("PropertyIsLike");
-        xsw.writeAttribute("wildCard", "*");
-        xsw.writeAttribute("singleChar", ".");
-        xsw.writeAttribute("escape", "!");
-        xsw.writeAttribute("matchCase", "false");
+        for(Map.Entry<String, String> entry: toggles.entrySet()) {
+            xsw.writeAttribute(entry.getKey(), entry.getValue());
+        }
         xsw.writeStartElement("PropertyName");
-        xsw.writeCharacters(name + "*");
+        xsw.writeCharacters(name);
         xsw.writeEndElement();
         xsw.writeStartElement("Literal");
-        xsw.writeCharacters("*" + value + "*");
+        xsw.writeCharacters(value);
         xsw.writeEndElement();
         xsw.writeEndElement();
+    }
+
+    protected void writePropertyIsLike(XMLStreamWriter xsw, String name, String value) throws XMLStreamException {
+        Map<String, String> toggles = new HashMap<>();
+        toggles.put("wildCard", "*");
+        toggles.put("singleChar", ".");
+        toggles.put("escape", "!");
+        toggles.put("matchCase", "false");
+        writePropertyIsLike(xsw, name, value, toggles);
     }
 
     public String createFilter(SearchCriteria sc, WFSSearchChannelsConfiguration config) {
@@ -45,7 +55,7 @@ public class WFSChannelHandler extends OskariComponent {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             XMLStreamWriter xsw = XOF.createXMLStreamWriter(baos);
-            xsw.writeStartDocument();
+            // don't write start document as it is the <?zml ?> that we don't want here
             xsw.writeStartElement("Filter");
 
             if (hasMultipleParams){
@@ -54,7 +64,7 @@ public class WFSChannelHandler extends OskariComponent {
 
             for(int j = 0; j < params.length(); j++) {
                 String param = params.optString(j);
-                writePropertyIsLike(xsw, param, searchStr);
+                writePropertyIsLike(xsw, param, "*" + searchStr + "*");
             }
 
             if (hasMultipleParams){

@@ -12,7 +12,9 @@ import org.json.JSONArray;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import java.io.ByteArrayOutputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Simple address parser handling/filter creation.
@@ -46,12 +48,12 @@ public class SimpleAddressWFSSearchHandler extends WFSChannelHandler {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             XMLStreamWriter xsw = XOF.createXMLStreamWriter(baos);
-            xsw.writeStartDocument();
+            // don't write start document as it is the <?zml ?> that we don't want here
             xsw.writeStartElement("Filter");
             xsw.writeStartElement("And");
 
-            writePropertyIsLike(xsw, params.optString(0), streetName);
-            writePropertyIsLike(xsw, params.optString(1), streetNumber);
+            writePropertyIsLike(xsw, params.optString(0), streetName + "*", getWildCardToggles());
+            writePropertyIsLike(xsw, params.optString(1), streetNumber + "*", getWildCardToggles());
 
             // /And
             xsw.writeEndElement();
@@ -66,6 +68,14 @@ public class SimpleAddressWFSSearchHandler extends WFSChannelHandler {
         return baos.toString();
     }
 
+    private Map<String, String> getWildCardToggles() {
+        Map<String, String> toggles = new HashMap<>();
+        toggles.put("wildCard", "*");
+        toggles.put("singleChar", ">");
+        toggles.put("escape", "!");
+        toggles.put("matchCase", "false");
+        return toggles;
+    }
     /**
      * Returns the true if test contains numbers and/or a/b.
      *
