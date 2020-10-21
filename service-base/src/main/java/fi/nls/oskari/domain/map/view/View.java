@@ -2,7 +2,7 @@ package fi.nls.oskari.domain.map.view;
 
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import org.apache.commons.lang3.text.StrSubstitutor;
+import org.apache.commons.text.StringSubstitutor;
 import org.json.JSONObject;
 
 import java.io.Serializable;
@@ -25,7 +25,7 @@ public class View implements Serializable {
         final Map<String, String> valuesMap = new HashMap();
         valuesMap.put("lang", getLang());
         valuesMap.put("uuid", getUuid());
-        final StrSubstitutor sub = new StrSubstitutor(valuesMap);
+        final StringSubstitutor sub = new StringSubstitutor(valuesMap);
 
         String baseUrl = getBaseUrlForView(getType().toLowerCase(), getLang());
         return sub.replace(baseUrl);
