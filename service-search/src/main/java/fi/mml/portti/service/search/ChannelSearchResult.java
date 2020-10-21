@@ -20,7 +20,7 @@ public class ChannelSearchResult  implements Serializable {
 	private boolean truncated;
 	private boolean queryFailed;
 
-	private List<SearchResultItem> searchResultItems = new ArrayList<SearchResultItem>();
+	private List<SearchResultItem> searchResultItems = new ArrayList<>();
 	private String searchMethod;
 	
 	public ChannelSearchResult() {
@@ -42,7 +42,9 @@ public class ChannelSearchResult  implements Serializable {
 		this.channelId = channel;
 	}
 
+	@Deprecated
 	public String getSearchMethod() { return searchMethod;	}
+	@Deprecated
 	public void setSearchMethod(String searchMethod) {this.searchMethod = searchMethod;	}
 
 	public boolean isAvailable() {

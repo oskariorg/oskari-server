@@ -95,7 +95,6 @@ public class View implements Serializable {
 
     private String application = "full-map"; // app name
     private String page = "view"; // JSP
-    private String developmentPath = "/applications";
     private long creator = -1;
     private boolean isPublic = false;
     private boolean isDefault = false;
@@ -122,14 +121,6 @@ public class View implements Serializable {
 
     public String getLang() { return this.lang; }
     public void setLang(String lang) { this.lang = lang; }
-
-    public String getDevelopmentPath() {
-        return developmentPath;
-    }
-
-    public void setDevelopmentPath(String developmentPath) {
-        this.developmentPath = developmentPath;
-    }
 
     public String getType() { return this.type; }
     public void setType(String type) { this.type = type; }
@@ -257,7 +248,6 @@ public class View implements Serializable {
         view.setName(getName());
         view.setDescription(getDescription());
         view.setType(getType());
-        view.setDevelopmentPath(getDevelopmentPath());
         view.setApplication(getApplication());
         view.setIsPublic(isPublic());
         view.setLang(getLang());

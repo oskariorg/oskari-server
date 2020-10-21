@@ -120,7 +120,7 @@ public class PermissionServiceMybatisImpl extends PermissionService {
 
         if (exists(resource)) {
             setPermissions(resource.getId(), resource.getPermissions());
-            cache.put(getCacheKey(resource), resource);
+            cache.remove(getCacheKey(resource));
         } else {
             insertResource(resource);
         }

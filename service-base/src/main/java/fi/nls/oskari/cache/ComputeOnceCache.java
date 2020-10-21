@@ -16,6 +16,7 @@ public class ComputeOnceCache<T> extends Cache<T> {
     }
 
     public ComputeOnceCache(int limit, long expiration) {
+        super();
         setLimit(limit);
         setExpiration(expiration);
         tmp = new ConcurrentHashMap<>();

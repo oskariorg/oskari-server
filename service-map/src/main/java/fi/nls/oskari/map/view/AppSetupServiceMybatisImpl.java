@@ -336,7 +336,6 @@ public class AppSetupServiceMybatisImpl extends ViewService {
         params.put("bundle_id", bundle.getBundleId());
 
         params.put("seqno", bundle.getSeqNo());
-        params.put("startup", bundle.getStartup());
         params.put("config", bundle.getConfig());
         params.put("state", bundle.getState());
         params.put("bundleinstance", bundle.getBundleinstance());

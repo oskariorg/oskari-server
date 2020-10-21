@@ -111,10 +111,17 @@ public class OpenStreetMapSearchChannel extends SearchChannel {
                 item.setLocationTypeCode(JSONHelper.getStringFromJSON(dataItem, "class", ""));
                 item.setType(JSONHelper.getStringFromJSON(dataItem, "class", ""));
                 item.setRegion(JSONHelper.getStringFromJSON(address, "city", ""));
+                final double lat = dataItem.optDouble("lat");
+                final double lon = dataItem.optDouble("lon");
 
-                item.setLon(JSONHelper.getStringFromJSON(dataItem, "lon", ""));
-                item.setLat(JSONHelper.getStringFromJSON(dataItem, "lat", ""));
+                // convert to map projection
+                final Point point = ProjectionHelper.transformPoint(lon, lat, sourceCrs, targetCrs);
+                if (point == null) {
+                    continue;
+                }
 
+                item.setLon(point.getLon());
+                item.setLat(point.getLat());
                 // FIXME: add more automation on result rank scaling
                 try {
                     item.setRank(100 * (int) Math.round(dataItem.getDouble("importance")));
@@ -122,21 +129,6 @@ public class OpenStreetMapSearchChannel extends SearchChannel {
                     item.setRank(0);
                 }
                 searchResultList.addItem(item);
-                // convert to map projection
-                final Point point = ProjectionHelper.transformPoint(
-                        ConversionHelper.getDouble(item.getLon(), -1),
-                        ConversionHelper.getDouble(item.getLat(), -1),
-                        sourceCrs,
-                        targetCrs);
-                if (point == null) {
-                    item.setLon("");
-                    item.setLat("");
-                    continue;
-                }
-
-                item.setLon(point.getLon());
-                item.setLat(point.getLat());
-
             }
         } catch (Exception e) {
             log.error(e, "Failed to search locations from register of OpenStreetMap");

@@ -4,6 +4,11 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import redis.clients.jedis.JedisPubSub;
 
+/**
+ * Use org.oskari.cache.MessageListener/JedisSubscriberClient instead
+ * @deprecated
+ */
+@Deprecated
 public class JedisSubscriber extends JedisPubSub {
 
     private final static Logger log = LogFactory.getLogger(JedisSubscriber.class);
@@ -17,7 +22,6 @@ public class JedisSubscriber extends JedisPubSub {
     @Override
     public void onMessage(String channel, String message) {
         log.warn("Message received. Channel: " + channel + " Message: " + message);
-
     }
 
     @Override

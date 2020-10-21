@@ -1,5 +1,6 @@
 package fi.nls.oskari.spring.session;
 
+import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.util.PropertyUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,13 +16,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @EnableRedisHttpSession(maxInactiveIntervalInSeconds=7200)
 public class RedisSessionConfig extends WebMvcConfigurerAdapter {
 
-    public static final String PROFILE ="redis-session";
+    public static final String PROFILE = JedisManager.CLUSTERED_ENV_PROFILE;
 
     @Bean
     public JedisConnectionFactory connectionFactory() {
         RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(
-                PropertyUtil.get("redis.hostname", "127.0.0.1"),
-                PropertyUtil.getOptional("redis.port", 6379));
+                JedisManager.getHost(), JedisManager.getPort());
         JedisConnectionFactory jedis = new JedisConnectionFactory(config);
         return jedis;
     }

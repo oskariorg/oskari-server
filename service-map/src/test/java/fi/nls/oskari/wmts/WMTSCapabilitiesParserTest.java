@@ -38,6 +38,7 @@ public class WMTSCapabilitiesParserTest {
     final String capabilitiesInput_Tampere = ResourceHelper.readStringResource("WMTSCapabilitiesParserTest-input-tampere.xml", this);
     final String capabilitiesInput_Spain = ResourceHelper.readStringResource("WMTSCapabilitiesParserTest-input-spain.xml", this);
     final String capabilitiesInput_IS = ResourceHelper.readStringResource("WMTSCapabilitiesParserTest-input-is.xml", this);
+    final String capabilitiesInput_LMI = ResourceHelper.readStringResource("WMTSCapabilitiesParserTest-input-LMI.xml", this);
     final String expectedJSON_NLS = ResourceHelper.readStringResource("WMTSCapabilitiesParserTest-expected-results-NLS.json", this);
     final String expectedJSON_tampere = ResourceHelper.readStringResource("WMTSCapabilitiesParserTest-expected-results-tampere.json", this);
     final String expectedJSON_Spain = ResourceHelper.readStringResource("WMTSCapabilitiesParserTest-expected-results-spain.json", this);
@@ -63,6 +64,25 @@ public class WMTSCapabilitiesParserTest {
         assertFalse("'format' value should have been removed since the layer doesn't support RESTful WMTS", options.has("format"));
     }
 
+    @Test
+    public void testParsingMapServerMultiColonTileMatrix_LMI() throws Exception {
+        WMTSCapabilitiesParser.parseCapabilities(capabilitiesInput_LMI);
+        // Just testing we are not throwing exception for having tilematrix reference of "EPSG:3057:0"
+        /*
+        Limit of "EPSG:3857:0" on layer:
+
+            <TileMatrixLimits>
+                <TileMatrix>EPSG:3857:0</TileMatrix>
+
+        Should map to:
+
+        <TileMatrixSet>
+            <ows:Identifier>EPSG:3857</ows:Identifier>
+            ...
+            <TileMatrix>
+                <ows:Identifier>0</ows:Identifier>
+         */
+    }
     @Test
     public void testAsJSON_NLS() throws Exception {
         WMTSCapabilities caps = WMTSCapabilitiesParser.parseCapabilities(capabilitiesInput_NLS);

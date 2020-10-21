@@ -257,7 +257,8 @@ public class WMTSCapabilitiesParser {
         }
 
         // ref might be prefixed with the id of TileMatrixSet and ':', atleast MapCache does this
-        int i = ref.indexOf(':');
+        // We need to split from the last ':' as the ref might be something like "EPSG:3067:0"
+        int i = ref.lastIndexOf(':');
         if (i > 0 && ref.startsWith(tms.getId())) {
             ref = ref.substring(i + 1);
             tm = tileMatrices.get(ref);

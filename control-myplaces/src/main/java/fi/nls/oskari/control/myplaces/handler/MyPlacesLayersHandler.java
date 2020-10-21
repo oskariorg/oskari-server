@@ -58,10 +58,11 @@ public class MyPlacesLayersHandler extends RestActionHandler {
         try {
             String uuid = params.getUser().getUuid();
             categories = layerService.getByUserId(uuid);
-            if (categories.isEmpty()) {
-                // If user has no categories insert a new default category
+            boolean hasDefault = categories.stream().filter(c -> c.isDefault()).findAny().isPresent();
+            if (!hasDefault) {
+                // If user has no default category insert a new category as default
                 MyPlaceCategory category = insertDefaultCategory(uuid);
-                categories = Collections.singletonList(category);
+                categories.add(category);
             }
         } catch (ServiceException e) {
             LOG.warn(e);

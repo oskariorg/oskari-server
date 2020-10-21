@@ -1,0 +1,12 @@
+<Filter>
+    <And>
+        <PropertyIsLike wildCard='*' singleChar='>' escape='!' matchCase='false'>
+            <PropertyName>street</PropertyName>
+            <Literal>testing*</Literal>
+        </PropertyIsLike>
+        <PropertyIsLike wildCard='*' singleChar='>' escape='!' matchCase='false'>
+            <PropertyName>number</PropertyName>
+            <Literal>*</Literal>
+        </PropertyIsLike>
+    </And>
+</Filter>

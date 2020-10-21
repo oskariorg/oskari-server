@@ -170,18 +170,29 @@ public class MIFDataReader implements Iterator<Geometry>, AutoCloseable {
     private Geometry parsePLine(String line) throws IOException {
         String[] a = line.split("\\s+");
 
-        int numLines = 1;
-        if (a.length >= 2 && startsWithIgnoreCase(a[1], "MULTIPLE")) {
-            numLines = Integer.parseInt(a[2]);
+        if (a.length == 3) {
+            // PLINE MULTIPLE numlines
+            if (!startsWithIgnoreCase(a[1], "MULTIPLE")) {
+                throw new IllegalArgumentException("Invalid PLINE statement, expected MULTIPLE for 2 arguments");
+            }
+            int numLines = Integer.parseInt(a[2]);
+            LineString[] lineStrings = new LineString[numLines];
+            for (int i = 0; i < numLines; i++) {
+                int numpts = Integer.parseInt(mif.poll().trim());
+                lineStrings[i] = gf.createLineString(readCoordinatesN(numpts));
+            }
+            skipOptional(OPTIONAL_PLINE);
+            return numLines == 1 ? lineStrings[0] : gf.createMultiLineString(lineStrings);
+        } else {
+            // PLINE numpts OR
+            // PLINE
+            // numpts
+            String _numpts = a.length == 2 ? a[1] : mif.poll().trim();
+            int numpts = Integer.parseInt(_numpts);
+            LineString ls = gf.createLineString(readCoordinatesN(numpts));
+            skipOptional(OPTIONAL_PLINE);
+            return ls;
         }
-
-        LineString[] lineStrings = new LineString[numLines];
-        for (int i = 0; i < numLines; i++) {
-            int numpts = Integer.parseInt(mif.poll().trim());
-            lineStrings[i] = gf.createLineString(readCoordinatesN(numpts));
-        }
-        skipOptional(OPTIONAL_PLINE);
-        return numLines == 1 ? lineStrings[0] : gf.createMultiLineString(lineStrings);
     }
 
     private Geometry parseRegion(String line) throws NumberFormatException, IOException {
@@ -309,7 +320,7 @@ public class MIFDataReader implements Iterator<Geometry>, AutoCloseable {
 
     private void skipOptional(String s) throws IOException {
         String line = mif.peek();
-        if (!startsWithIgnoreCase(line, s)) {
+        if (startsWithIgnoreCase(line, s)) {
             mif.poll();
         }
     }
