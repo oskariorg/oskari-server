@@ -1,0 +1,12 @@
+<Filter>
+    <Or>
+        <PropertyIsLike wildCard='*' singleChar='.' escape='!' matchCase='false'>
+            <PropertyName>testParam</PropertyName>
+            <Literal>*testing*</Literal>
+        </PropertyIsLike>
+        <PropertyIsLike wildCard='*' singleChar='.' escape='!' matchCase='false'>
+            <PropertyName>anotherParam</PropertyName>
+            <Literal>*testing*</Literal>
+        </PropertyIsLike>
+    </Or>
+</Filter>
