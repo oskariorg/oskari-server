@@ -1,16 +1,17 @@
-package fi.nls.oskari.search.channel;
+package oskari.search.channel;
 
 import fi.mml.portti.service.search.SearchCriteria;
+import fi.nls.oskari.search.channel.SimpleAddressWFSSearchHandler;
+import fi.nls.oskari.search.channel.WFSChannelHandler;
 import fi.nls.oskari.wfs.WFSSearchChannelsConfiguration;
 import fi.nls.test.util.ResourceHelper;
-import fi.nls.test.util.TestHelper;
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.json.JSONArray;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 /**
  * These test cases might not make sense (or the filter impl).
