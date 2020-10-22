@@ -13,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.util.*;
+import java.util.jar.Manifest;
 import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -47,6 +48,7 @@ public class IOHelper {
 
     private static SSLSocketFactory TRUSTED_FACTORY;
     private static HostnameVerifier TRUSTED_VERIFIER;
+    private static String userAgent;
 
     public static int getConnectionTimeoutMs() {
         return PropertyUtil.getOptional("oskari.connection.timeout", 3000);
@@ -63,6 +65,14 @@ public class IOHelper {
     public static String getMyDomain() {
         return PropertyUtil.get("oskari.domain", "http://localhost:8080");
     }
+    public static String getUserAgent() {
+        if (userAgent == null) {
+            Package pkg = Manifest.class.getPackage();
+            userAgent = "Oskari/" + pkg.getImplementationVersion();
+        }
+        return userAgent;
+    }
+
     /**
      * Reads the given input stream and converts its contents to a string using #DEFAULT_CHARSET
      * @param is
@@ -660,6 +670,16 @@ public class IOHelper {
         if (value != null) {
             con.setRequestProperty(HEADER_CONTENTTYPE, value);
         }
+    }
+
+    /**
+     * Writes User-agent and Referer headers to the connection.
+     * @param con       connection to write to
+     * @throws IOException
+     */
+    public static void addIdentifierHeaders(final HttpURLConnection con) throws IOException {
+        con.setRequestProperty(HEADER_USERAGENT, getUserAgent());
+        con.setRequestProperty(HEADER_REFERER, getMyDomain());
     }
 
     /**
