@@ -9,7 +9,6 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.search.channel.SearchChannel;
-import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
@@ -20,7 +19,7 @@ import org.json.JSONObject;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
+import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -78,8 +77,9 @@ public class OpenStreetMapSearchChannel extends SearchChannel {
         }
 
         String url = getUrl(searchCriteria);
-
-        String data = IOHelper.readString(getConnection(url));
+        HttpURLConnection connection = getConnection(url);
+        IOHelper.addIdentifierHeaders(connection);
+        String data = IOHelper.readString(connection);
         log.debug("DATA: " + data);
         return JSONHelper.createJSONArray(data);
     }
