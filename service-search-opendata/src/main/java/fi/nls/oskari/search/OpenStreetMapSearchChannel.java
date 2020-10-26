@@ -57,7 +57,7 @@ public class OpenStreetMapSearchChannel extends SearchChannel {
         params.put("accept-language", searchCriteria.getLocale());
         int maxResults = getMaxResults(searchCriteria.getMaxResults());
         if (maxResults > 0) {
-            params.put("limit", Integer.toString(maxResults) + 1);
+            params.put("limit", Integer.toString(maxResults + 1));
         }
         params.put("q", searchCriteria.getSearchString());
 
