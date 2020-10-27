@@ -105,7 +105,6 @@ public class GetLayerTileHandler extends ActionHandler {
 
             final int responseCode = con.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_NOT_FOUND) {
-                con.disconnect();
                 // prevent excessive logging by handling a common case where service responds with 404
                 params.getResponse().sendError(HttpServletResponse.SC_NOT_FOUND);
                 LOG.debug("URL reported 404:", url);
