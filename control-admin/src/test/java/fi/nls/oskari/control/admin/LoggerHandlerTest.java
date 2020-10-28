@@ -3,8 +3,6 @@ package fi.nls.oskari.control.admin;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 
 public class LoggerHandlerTest {
