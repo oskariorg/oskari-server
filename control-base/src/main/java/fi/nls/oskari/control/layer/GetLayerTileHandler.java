@@ -96,12 +96,20 @@ public class GetLayerTileHandler extends ActionHandler {
             con.setFollowRedirects(true);
             con.setUseCaches(false);
             con.connect();
+            // tell the service who is making the requests
+            IOHelper.addIdentifierHeaders(con);
 
             if (doOutPut) {
                 IOHelper.writeToConnection(con, postParams);
             }
 
             final int responseCode = con.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_NOT_FOUND) {
+                // prevent excessive logging by handling a common case where service responds with 404
+                params.getResponse().sendError(HttpServletResponse.SC_NOT_FOUND);
+                LOG.debug("URL reported 404:", url);
+                return;
+            }
             final String contentType = con.getContentType().toLowerCase();
             if(responseCode != HttpURLConnection.HTTP_OK || !isContentTypeOK(contentType)) {
                 LOG.warn("URL", url, "returned HTTP response code", responseCode,
