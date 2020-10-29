@@ -10,17 +10,17 @@ import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
-import org.oskari.log.AuditLog;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.oskari.log.AuditLog;
 
 import java.util.List;
 
 @OskariActionRoute("Users")
 public class UsersHandler extends RestActionHandler {
 
-    private Logger log = LogFactory.getLogger(UsersHandler.class);
+    private static final Logger LOG = LogFactory.getLogger(UsersHandler.class);
     private UserService userService = null;
 
     private static final String PARAM_ID = "id";
@@ -35,32 +35,29 @@ public class UsersHandler extends RestActionHandler {
         try {
             userService = UserService.getInstance();
         } catch (ServiceException se) {
-            log.error(se, "Unable to initialize User service!");
+            LOG.error(se, "Unable to initialize User service!");
         }
     }
 
     @Override
     public void handleGet(ActionParameters params) throws ActionException {
-        log.info("handleGet");
         final JSONObject response;
         long id = getId(params);
         try {
             if (id > -1) {
-                log.info("handleGet: has id");
+                LOG.debug("handleGet: has id", id);
                 User user = userService.getUser(id);
                 response = user2Json(user);
             } else {
-                log.info("handleGet: no id");
+                LOG.debug("handleGet: no id");
                 List<User> users = userService.getUsers();
-                
-                log.info("found: " + users.size() + "users");
+
+                LOG.debug("Found: " + users.size() + "users");
                 response = new JSONObject();
                 JSONArray arr = new JSONArray();
                 response.put("users", arr);
-                
-                
+
                 List<User> newUsers = userService.getUsersWithRoles();
-                
                 for (User user : newUsers) {
                     arr.put(user2Json(user));
                 }
@@ -68,13 +65,11 @@ public class UsersHandler extends RestActionHandler {
         } catch (ServiceException | JSONException se) {
             throw new ActionException(se.getMessage(), se);
         }
-        log.info(response);
         ResponseHelper.writeResponse(params, response);
     }
 
     @Override
     public void handlePost(ActionParameters params) throws ActionException {
-        log.debug("handlePost");
         User user = new User();
         getUserParams(user, params);
         String[] roles = params.getRequest().getParameterValues("roles");
@@ -87,15 +82,15 @@ public class UsersHandler extends RestActionHandler {
         try {
             if (user.getId() > -1) {
                 //retUser = userService.modifyUser(user);
-            	log.debug("roles size: " + roles.length);
-            	retUser = userService.modifyUserwithRoles(user, roles);
-            	log.debug("done modifying user");
+                LOG.debug("roles size: " + roles.length);
+                retUser = userService.modifyUserwithRoles(user, roles);
+                LOG.debug("done modifying user");
                 if (password != null && !"".equals(password.trim())) {
                     userService.updateUserPassword(retUser.getScreenname(), password);
                 }
                 audit.updated(AuditLog.ResourceType.USER);
             } else {
-            	log.debug("NOW IN POST and creating a new user!!!!!!!!!!!!!");
+                LOG.debug("NOW IN POST and creating a new user!!!!!!!!!!!!!");
                 if (password == null || password.trim().isEmpty()) {
                     throw new ActionException("Parameter 'password' not found.");
                 }
@@ -118,7 +113,7 @@ public class UsersHandler extends RestActionHandler {
 
     @Override
     public void handlePut(ActionParameters params) throws ActionException {
-        log.debug("handlePut");
+        LOG.debug("handlePut");
         User user = new User();
         getUserParams(user, params);
         String password = params.getRequiredParam(PARAM_PASSWORD);
@@ -144,7 +139,7 @@ public class UsersHandler extends RestActionHandler {
 
     @Override
     public void handleDelete(ActionParameters params) throws ActionException {
-        log.debug("handleDelete");
+        LOG.debug("handleDelete");
         long id = getId(params);
         if (id > -1) {
             try {
@@ -188,13 +183,13 @@ public class UsersHandler extends RestActionHandler {
         uo.put("lastName", user.getLastname());
         uo.put("user", user.getScreenname());
         uo.put("email", user.getEmail());
-        
+
         JSONArray rolesArray = new JSONArray();
-        for(Role role : user.getRoles()){
-        	rolesArray.put(role.getId());
+        for (Role role : user.getRoles()) {
+            rolesArray.put(role.getId());
         }
         JSONHelper.put(uo, "roles", rolesArray);
-        
+
         return uo;
     }
 
