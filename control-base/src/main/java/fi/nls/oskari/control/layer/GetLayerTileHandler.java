@@ -95,9 +95,9 @@ public class GetLayerTileHandler extends ActionHandler {
             con.setDoInput(true);
             con.setFollowRedirects(true);
             con.setUseCaches(false);
-            con.connect();
             // tell the service who is making the requests
             IOHelper.addIdentifierHeaders(con);
+            con.connect();
 
             if (doOutPut) {
                 IOHelper.writeToConnection(con, postParams);
