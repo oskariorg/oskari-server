@@ -368,7 +368,9 @@ public class MapfullHandler extends BundleHandler {
                                              final Set<String> bundleIds,
                                              final boolean useDirectURL,
                                              final boolean modifyURLs) {
-
+        if (publishedAnalysis.isEmpty()) {
+            return;
+        }
         final boolean analyseBundlePresent = bundleIds.contains(BUNDLE_ANALYSE);
         final Set<String> permissions = permissionsService.getResourcesWithGrantedPermissions(
                 AnalysisLayer.TYPE, user, PermissionType.VIEW_PUBLISHED.name());
