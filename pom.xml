@@ -71,7 +71,7 @@
         <stax-api.version>1.0-2</stax-api.version>
         <stax2-api.version>3.1.4</stax2-api.version>
         <woodstox.version>5.1.0</woodstox.version>
-        <xmlbeans.version>2.6.0</xmlbeans.version>
+        <xmlbeans.version>3.1.0</xmlbeans.version>
 
         <jackson.version>2.11.2</jackson.version>
         <jsonld-java.version>0.3</jsonld-java.version>
