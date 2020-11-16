@@ -37,7 +37,7 @@ public class OskariWFSFilterFactory {
         return filter.getFilter();
     }
 
-    public static OskariWFSFilter readJSONFilter(String json) {
+    private static OskariWFSFilter readJSONFilter(String json) {
         try {
             return OBJECT_MAPPER.readValue(json, OskariWFSFilter.class);
         } catch (Exception ex) {
@@ -53,6 +53,4 @@ public class OskariWFSFilterFactory {
             return ff.and(main, toAppend);
         }
     }
-
-
 }
