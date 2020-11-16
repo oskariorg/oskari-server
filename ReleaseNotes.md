@@ -1,5 +1,45 @@
 # Release Notes
 
+## 2.1.0
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/26?closed=1
+
+WFS-layers can now have a filter for fetching features:
+- Admin users can set filter to layer "attributes" 
+- https://github.com/oskariorg/oskari-docs/issues/228
+- https://oskari.org/documentation/examples/oskari-filter
+
+Log levels can now be updated programmatically:
+- Admin users can set log levels at runtime (no UI for this yet)
+- Helps debugging issues in production
+- For details: https://github.com/oskariorg/oskari-server/pull/658
+
+Improved support for clustered server environment:
+- Caches communicate removals/flushes between cluster nodes
+- Programmatically setting log level is communicated between cluster nodes
+- Documentation available in https://oskari.org/documentation/features/server/clustering
+
+Redis PubSub integration rewrite:
+- fi.nls.oskari.cache.JedisSubscriber has been deprecated
+- Use org.oskari.cluster.ClusterManager instead
+
+Identifying Oskari instance in HTTP requests:
+- Added `IOHelper.addIdentifierHeaders(connection)` for identifying Oskari to services. Adds headers:
+-- User-agent header with Oskari/[version] based on metadata in jar-file
+-- Referer with value from oskari.domain in oskari-ext.properties
+- OSM Search channel and layer tile proxying now sends client identifiers to the service
+
+Other improvements and changes:
+- Improvements on WMS capabilities parsing
+- Improvements on MIF/MID file reading when importing datasets
+- Fix for feature data export on Excel format
+- Logging reduced in layer tile proxy and printing for HTTP 404 answers from service
+- Other improvements
+
+Library updates:
+- Updated commons-lang 3.8.1 -> 3.11
+- Dropped commons-lang 2 (updated code to use version 3)
+
 ## 2.0.1
 
 Changes coordinates type from string to double on search channels and search results.
