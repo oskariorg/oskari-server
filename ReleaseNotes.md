@@ -25,8 +25,8 @@ Redis PubSub integration rewrite:
 
 Identifying Oskari instance in HTTP requests:
 - Added `IOHelper.addIdentifierHeaders(connection)` for identifying Oskari to services. Adds headers:
--- User-agent header with Oskari/[version] based on metadata in jar-file
--- Referer with value from oskari.domain in oskari-ext.properties
+  - User-agent header with Oskari/[version] based on metadata in jar-file
+  - Referer with value from oskari.domain in oskari-ext.properties
 - OSM Search channel and layer tile proxying now sends client identifiers to the service
 
 Other improvements and changes:
