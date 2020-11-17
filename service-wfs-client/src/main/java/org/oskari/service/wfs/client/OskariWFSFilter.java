@@ -11,6 +11,9 @@ import org.opengis.filter.FilterFactory;
 import org.opengis.filter.expression.Expression;
 
 public class OskariWFSFilter {
+    private static final String WILD_CARD = "*";
+    private static final String SINGLE_CHAR = "?";
+    private static final String ESCAPE = "!";
     private String key;
     private String value; // equal
     private boolean caseSensitive;
@@ -18,8 +21,8 @@ public class OskariWFSFilter {
     private Double atLeast;
     private Double lessThan;
     private Double atMost;
-    private List<String> like;
-    private List<String> notLike;
+    private String like;
+    private String notLike;
     private List<String> in;
     private List<String> notIn;
 
@@ -86,19 +89,19 @@ public class OskariWFSFilter {
         this.atMost = atMost;
     }
 
-    public List<String> getLike() {
+    public String getLike() {
         return like;
     }
 
-    public void setLike(List<String> like) {
+    public void setLike(String like) {
         this.like = like;
     }
 
-    public List<String> getNotLike() {
+    public String getNotLike() {
         return notLike;
     }
 
-    public void setNotLike(List<String> notLike) {
+    public void setNotLike(String notLike) {
         this.notLike = notLike;
     }
 
@@ -198,17 +201,10 @@ public class OskariWFSFilter {
             return filters.isEmpty() ? null : ff.and(filters);
         }
         if (like != null) {
-            filters = like.stream()
-                    .map(value -> ff.like(name, value))
-                    .collect(Collectors.toList());
-            return filters.isEmpty() ? null : ff.or(filters);
+            return ff.like(name, like, WILD_CARD, SINGLE_CHAR, ESCAPE, isCaseSensitive());
         }
         if (notLike != null) {
-            filters = notLike.stream()
-                    .map(value -> ff.like(name, value))
-                    .map(f -> ff.not(f))
-                    .collect(Collectors.toList());
-            return filters.isEmpty() ? null : ff.and(filters);
+            return ff.not(ff.like(name, notLike, WILD_CARD, SINGLE_CHAR, ESCAPE, isCaseSensitive()));
         }
         return null;
     }
