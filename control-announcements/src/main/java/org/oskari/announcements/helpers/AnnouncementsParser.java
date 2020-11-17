@@ -1,8 +1,8 @@
-package java.announcements.helpers;
+package org.oskari.announcements.helpers;
 
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
-import java.announcements.helpers.AnnouncementParams;
+import org.oskari.announcements.helpers.AnnouncementParams;
 import org.json.JSONException;
 import org.json.JSONObject;
 

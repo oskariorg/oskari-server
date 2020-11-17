@@ -1,4 +1,4 @@
-package java.announcements.actions;
+package org.oskari.announcements.actions;
 
 import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionException;

@@ -1,11 +1,11 @@
-package java.announcements.helpers;
+package org.oskari.announcements.helpers;
 
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.PropertyUtil;
-import java.announcements.helpers.AnnouncementParams;
+import org.oskari.announcements.helpers.AnnouncementParams;
 
 import org.json.JSONArray;
 import org.json.JSONException;

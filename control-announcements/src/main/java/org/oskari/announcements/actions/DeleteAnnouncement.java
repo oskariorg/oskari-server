@@ -1,4 +1,4 @@
-package java.announcements.actions;
+package org.oskari.announcements.actions;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
@@ -6,25 +6,24 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.ResponseHelper;
-import fi.nls.oskari.control.RestActionHandler;
-import java.announcements.helpers.AnnouncementsDBHelper;
+import org.oskari.announcements.helpers.AnnouncementsDBHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-@OskariActionRoute("UpdateAnnouncement")
-public class UpdateAnnouncement extends AnnouncementsRestActionHandler{
-    private static Logger LOG = LogFactory.getLogger(SaveAnnouncement.class);
+@OskariActionRoute("DeleteAnnouncement")
+public class DeleteAnnouncement extends AnnouncementsRestActionHandler {
+    private static Logger LOG = LogFactory.getLogger(DeleteAnnouncement.class);
 
     @Override
     public void handlePost(ActionParameters params) throws ActionException {
         requireAnnouncementsConfigured();
 
         try {
-            JSONObject result = AnnouncementsDBHelper.updateAnnouncement(params);
+            JSONObject result = AnnouncementsDBHelper.deleteAnnouncement(params);
             ResponseHelper.writeResponse(params, result);
         } catch (JSONException e) {
-            LOG.error("Error updating announcement", e);
-            throw new ActionException("Cannot update announcement");
+            LOG.error("Error with deleting announcement", e);
+            throw new ActionException("Cannot delete announcement");
         }
     }
 }

@@ -1,4 +1,4 @@
-package java.announcements.actions;
+package org.oskari.announcements.actions;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
@@ -7,7 +7,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.control.RestActionHandler;
-import java.announcements.helpers.AnnouncementsDBHelper;
+import org.oskari.announcements.helpers.AnnouncementsDBHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 

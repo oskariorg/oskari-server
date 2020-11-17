@@ -1,4 +1,4 @@
-package java.announcements.helpers;
+package org.oskari.announcements.helpers;
 
 public class AnnouncementParams {
     private String id;

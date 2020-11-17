@@ -1,4 +1,4 @@
-package java.announcements.actions;
+package org.oskari.announcements.actions;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
@@ -6,12 +6,12 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.ResponseHelper;
-import java.announcements.helpers.AnnouncementsDBHelper;
+import org.oskari.announcements.helpers.AnnouncementsDBHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-@OskariActionRoute("GetAdminAnnouncements")
-public class GetAdminAnnouncements extends AnnouncementsRestActionHandler{
+@OskariActionRoute("GetAnnouncements")
+public class GetAnnouncements extends AnnouncementsRestActionHandler{
     private static Logger LOG = LogFactory.getLogger(GetAnnouncements.class);
 
     @Override
@@ -19,12 +19,12 @@ public class GetAdminAnnouncements extends AnnouncementsRestActionHandler{
         requireAnnouncementsConfigured();
 
         try {
-            JSONObject result = AnnouncementsDBHelper.getAdminAnnouncements();
+            JSONObject result = AnnouncementsDBHelper.getAnnouncements();
             
             ResponseHelper.writeResponse(params, 200, result);
         } catch (JSONException e) {
-            LOG.error("Error for fetching admin-announcements", e);
-            throw new ActionException("Cannot get admin-announcements");
+            LOG.error("Error for fetching announcements", e);
+            throw new ActionException("Cannot get announcements");
         }
     }
 }
