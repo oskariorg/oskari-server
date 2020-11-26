@@ -5,11 +5,11 @@ install: true
 jdk:
   - openjdk8
   - openjdk11
-  - oraclejdk11
+#  - oraclejdk11
 
-matrix:
-  allow_failures:
-    - jdk: oraclejdk11
+#matrix:
+#  allow_failures:
+#    - jdk: oraclejdk11
 
 addons:
   apt:
@@ -17,7 +17,7 @@ addons:
       - openjdk-8-jdk
 
 notifications:
-  slack: oskari:N5vZf0lzsIGpQ8nAPRfHgQ91
+ # slack: oskari:N5vZf0lzsIGpQ8nAPRfHgQ91
   webhooks:
     urls:
       - secure: "jFL9lnYQWrHe+3b749MfPQEpqhqY6Cr7nI48Zkj2wSDhMfuTId2ujawAoXDZGUcqmWVMR4T4uQnhpRX05jEQkTkSweAWV7TefJF4YH/5s2wq85K0KpvNpueWwYrc0ZCYi4o62ls1/BXYkLQm2+OyY620jI+GpxaAzIc7jt7aFDg="
