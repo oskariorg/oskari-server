@@ -1,7 +1,5 @@
 package fi.nls.oskari.control.admin;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.map.OskariLayer;
@@ -22,7 +20,6 @@ public class LayerAdminUsageCheckHandler extends RestActionHandler {
 
     private static final String PARAM_LAYER_ID = "id";
     private OskariLayerService mapLayerService;
-    private ObjectMapper mapper = new ObjectMapper();
 
     @Override
     public void init() {
@@ -35,9 +32,16 @@ public class LayerAdminUsageCheckHandler extends RestActionHandler {
 
     @Override
     public void handleGet(ActionParameters params) throws ActionException {
+        params.requireAdminUser();
         final int layerId = params.getRequiredParamInt(PARAM_LAYER_ID);
         LOG.info("Checking layer usage in other layers for layerId: ", layerId);
         Map<String, Set<Integer>> layerUsages = new HashMap<>();
+        Set<Integer> timeseriesLayerIds = getTimeseriesLayerIds(layerId);
+        layerUsages.put("timeseries", timeseriesLayerIds);
+        ResponseHelper.writeResponse(params, layerUsages);
+    }
+
+    private Set<Integer> getTimeseriesLayerIds(int layerId) throws ActionException {
         Set<Integer> timeseriesLayerIds = new HashSet<>();
         for (OskariLayer layer : mapLayerService.findAll()) {
             JSONObject options = layer.getOptions();
@@ -53,20 +57,8 @@ public class LayerAdminUsageCheckHandler extends RestActionHandler {
                 throw new ActionException("Cannot parse layer metadata options for layer: " +
                         layer.getName() + ", id: " + layer.getId());
             }
-
         }
-        layerUsages.put("timeseries", timeseriesLayerIds);
-        writeResponse(params, layerUsages);
-    }
-
-    private void writeResponse(ActionParameters params, Object output) {
-        params.getResponse().setCharacterEncoding("UTF-8");
-        params.getResponse().setContentType("application/json;charset=UTF-8");
-        try {
-            ResponseHelper.writeResponse(params, mapper.writeValueAsString(output));
-        } catch (JsonProcessingException e) {
-            ResponseHelper.writeError(params, "Couldn't serialize JSON");
-        }
+        return timeseriesLayerIds;
     }
 
 }
