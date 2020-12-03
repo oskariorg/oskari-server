@@ -187,6 +187,7 @@ public class TransformationService {
         List<String> geomcols = new ArrayList<String>();
         geomcols.add(ns_prefix + ":" + geometryProperty);
         geomcols.add(ns_prefix + ":geometry"); // default geometry
+        geomcols.add(ns_prefix + ":geom"); // geoserver uses geom in resultset
 
         MutableInt ncount = new MutableInt(0);
         MutableInt tcount = new MutableInt(0);
