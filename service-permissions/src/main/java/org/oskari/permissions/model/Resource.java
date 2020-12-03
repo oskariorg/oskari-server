@@ -83,6 +83,9 @@ public class Resource {
     }
 
     public boolean hasPermission(User user, String permissionType) {
+        if (user == null) {
+            return false;
+        }
         boolean userHasRoleWithId = getPermissions().stream()
                 .filter(p -> p.isOfType(permissionType))
                 .filter(p -> p.getExternalType() == PermissionExternalType.ROLE)
