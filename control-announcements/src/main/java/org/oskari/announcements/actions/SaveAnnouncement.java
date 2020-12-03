@@ -17,7 +17,7 @@ public class SaveAnnouncement extends AnnouncementsRestActionHandler{
 
     @Override
     public void handlePost(ActionParameters params) throws ActionException {
-        requireAnnouncementsConfigured();
+        params.requireAdminUser();
 
         try {
             JSONObject result = AnnouncementsDBHelper.saveAnnouncement(params);

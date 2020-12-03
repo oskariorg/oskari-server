@@ -16,7 +16,7 @@ public class GetAdminAnnouncements extends AnnouncementsRestActionHandler{
 
     @Override
     public void handleGet(ActionParameters params) throws ActionException {
-        requireAnnouncementsConfigured();
+        params.requireAdminUser();
 
         try {
             JSONObject result = AnnouncementsDBHelper.getAdminAnnouncements();

@@ -16,7 +16,6 @@ public class GetAnnouncements extends AnnouncementsRestActionHandler{
 
     @Override
     public void handleGet(ActionParameters params) throws ActionException {
-        requireAnnouncementsConfigured();
 
         try {
             JSONObject result = AnnouncementsDBHelper.getAnnouncements();
