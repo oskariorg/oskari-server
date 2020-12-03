@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Search helper
+ * Announcements parser
  */
 public class AnnouncementsParser {
     public static final String KEY_ID = "id";

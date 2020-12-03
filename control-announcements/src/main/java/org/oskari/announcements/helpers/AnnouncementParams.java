@@ -4,7 +4,6 @@ public class AnnouncementParams {
     private String id;
     private String title;
     private Object value;
-    private boolean needCastVarchar;
 
 
     public AnnouncementParams() {}
@@ -40,19 +39,11 @@ public class AnnouncementParams {
         this.title = title;
     }
 
-    public Object getValue() {
+    public String getValue() {
         return value;
     }
 
-    public void setValue(Object value) {
+    public void setValue(String value) {
         this.value = value;
-    }
-
-    public boolean isNeedCastVarchar() {
-        return needCastVarchar;
-    }
-
-    public void setNeedCastVarchar(boolean needCastVarchar) {
-        this.needCastVarchar = needCastVarchar;
     }
 }

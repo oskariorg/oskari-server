@@ -17,7 +17,7 @@ import java.text.SimpleDateFormat;
 import java.time.*;
 
 /**
- * Helper for seutumasia db handling.
+ * Helper for announcements db handling.
  */
 public class AnnouncementsDBHelper {
     private static final String PROPERTY_DB_URL = "db.url";
