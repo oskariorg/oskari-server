@@ -38,7 +38,7 @@ public class LayerAdminUsageCheckHandler extends RestActionHandler {
         Map<String, Set<Integer>> layerUsages = new HashMap<>();
         Set<Integer> timeseriesLayerIds = getTimeseriesLayerIds(layerId);
         layerUsages.put("timeseries", timeseriesLayerIds);
-        ResponseHelper.writeResponse(params, layerUsages);
+        ResponseHelper.writeResponse(params, new JSONObject(layerUsages));
     }
 
     private Set<Integer> getTimeseriesLayerIds(int layerId) throws ActionException {
@@ -48,7 +48,11 @@ public class LayerAdminUsageCheckHandler extends RestActionHandler {
             try {
                 if (options != null && options.has("timeseries")) {
                     JSONObject timeseriesOptions = options.getJSONObject("timeseries");
-                    Integer metadataLayerId = timeseriesOptions.getJSONObject("metadata").getInt("layer");
+                    JSONObject timeseriesMetadata = timeseriesOptions.optJSONObject("metadata");
+                    if (timeseriesMetadata == null) {
+                        continue;
+                    }
+                    Integer metadataLayerId = timeseriesMetadata.getInt("layer");
                     if (metadataLayerId == layerId) {
                         timeseriesLayerIds.add(layer.getId());
                     }
@@ -60,5 +64,4 @@ public class LayerAdminUsageCheckHandler extends RestActionHandler {
         }
         return timeseriesLayerIds;
     }
-
 }
