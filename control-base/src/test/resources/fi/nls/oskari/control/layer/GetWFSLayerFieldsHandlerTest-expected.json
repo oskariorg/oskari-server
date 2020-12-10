@@ -1,0 +1,11 @@
+{
+    "attributes": {
+        "test-attribute": "string"
+    },
+    "geometryField": "geometry",
+    "locale": {
+        "fi": {
+            "test-attribute": "label for fi"
+        }
+    }
+}
