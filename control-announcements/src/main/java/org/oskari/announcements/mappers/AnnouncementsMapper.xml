@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.oskari.announcements.mappers.AnnouncementsMapper">
+
+    <select id="getAnnouncements"
+            resultType="java.util.HashMap">
+        select 
+            id, 
+            title,
+            content,
+            begin_date,
+            end_date,
+            active
+        from 
+            oskari_announcements
+        where
+            begin_date <= #{beginDate} ::DATE AND end_date >= #{endDate} ::DATE
+        order by
+            id desc
+    </select>
+
+    <select id="getAdminAnnouncements"
+            resultType="java.util.HashMap">
+        select 
+            id, 
+            title,
+            content,
+            begin_date,
+            end_date,
+            active
+        from 
+            oskari_announcements
+        order by
+            id desc
+    </select>
+
+    <insert id="saveAnnouncement" 
+        resultMap="SaveAnnouncementsResult" parameterType="Announcement">
+        insert into 
+            oskari_announcements(title, content, begin_date, end_date, active)
+        values 
+            (#{title}, #{content}, #{begin_date}, #{end_date}, #{active})
+        returning
+            id
+    </insert>
+
+    <update id="updateAnnouncement" 
+        resultType="int" parameterType="Announcement">
+        update
+            oskari_announcements
+        set 
+            title = #{title}, content = #{content}, begin_date = #{begin_date}, end_date = #{end_date}, active = #{active}
+        where
+            id = #{id}
+        returning
+            id
+    </update>
+
+    <delete id="deleteAnnouncement" 
+            parameterType="int"
+            resultType="int">
+        delete from
+            oskari_announcements
+        where
+            id = #{id}
+        returning
+            id
+    </delete>
+</mapper>
+

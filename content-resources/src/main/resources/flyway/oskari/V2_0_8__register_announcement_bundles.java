@@ -1,4 +1,4 @@
-package flyway.announcements;
+package flyway.oskari;
 
 import java.sql.Connection;
 import org.flywaydb.core.api.migration.BaseJavaMigration;
@@ -14,12 +14,7 @@ public class V1_0_0__register_announcement_bundles extends BaseJavaMigration {
         Connection connection = context.getConnection();
 		
 		// BundleHelper checks if these bundles are already registered
-        Bundle bundle = new Bundle();
-        bundle.setName("announcements");
-        BundleHelper.registerBundle(connection, bundle);
-
-        Bundle admin = new Bundle();
-        admin.setName("admin-announcements");
-        BundleHelper.registerBundle(connection, admin);
+        BundleHelper.registerBundle(connection, "announcements");
+        BundleHelper.registerBundle(connection, "admin-announcements");
 	}
 }
