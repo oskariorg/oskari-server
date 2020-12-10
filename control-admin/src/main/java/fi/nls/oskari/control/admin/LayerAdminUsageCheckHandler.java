@@ -9,7 +9,6 @@ import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.ResponseHelper;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.*;
@@ -36,31 +35,15 @@ public class LayerAdminUsageCheckHandler extends RestActionHandler {
         final int layerId = params.getRequiredParamInt(PARAM_LAYER_ID);
         LOG.info("Checking layer usage in other layers for layerId: ", layerId);
         Map<String, Set<Integer>> layerUsages = new HashMap<>();
-        Set<Integer> timeseriesLayerIds = getTimeseriesLayerIds(layerId);
-        layerUsages.put("timeseries", timeseriesLayerIds);
+        layerUsages.put("timeseries", getTimeseriesLayerIds(layerId));
         ResponseHelper.writeResponse(params, new JSONObject(layerUsages));
     }
 
     private Set<Integer> getTimeseriesLayerIds(int layerId) throws ActionException {
         Set<Integer> timeseriesLayerIds = new HashSet<>();
-        for (OskariLayer layer : mapLayerService.findAll()) {
-            JSONObject options = layer.getOptions();
-            try {
-                if (options != null && options.has("timeseries")) {
-                    JSONObject timeseriesOptions = options.getJSONObject("timeseries");
-                    JSONObject timeseriesMetadata = timeseriesOptions.optJSONObject("metadata");
-                    if (timeseriesMetadata == null) {
-                        continue;
-                    }
-                    Integer metadataLayerId = timeseriesMetadata.getInt("layer");
-                    if (metadataLayerId == layerId) {
-                        timeseriesLayerIds.add(layer.getId());
-                    }
-                }
-            } catch (JSONException e) {
-                throw new ActionException("Cannot parse layer metadata options for layer: " +
-                        layer.getName() + ", id: " + layer.getId());
-            }
+        Set<OskariLayer> layers = LayerAdminHelper.getTimeseriesReferencedLayers(layerId, mapLayerService.findAll());
+        for (OskariLayer layer : layers) {
+            timeseriesLayerIds.add(layer.getId());
         }
         return timeseriesLayerIds;
     }

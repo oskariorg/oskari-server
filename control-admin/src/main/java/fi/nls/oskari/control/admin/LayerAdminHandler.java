@@ -12,6 +12,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.DataProviderService;
 import fi.nls.oskari.map.layer.OskariLayerService;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.GetLayerKeywords;
 import fi.nls.oskari.util.PropertyUtil;
@@ -26,7 +27,6 @@ import org.oskari.maplayer.admin.LayerValidator;
 import org.oskari.maplayer.model.MapLayer;
 import org.oskari.maplayer.model.MapLayerAdminOutput;
 import org.oskari.log.AuditLog;
-import org.oskari.service.util.ServiceFactory;
 
 import java.util.*;
 
@@ -41,8 +41,23 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
     private static final String KEY_UPDATE_CAPA_FAIL = "updateCapabilitiesFail";
     private static final String KEY_PERMISSIONS_FAIL = "insertPermissionsFail";
     private static final String ERROR_NO_LAYER_WITH_ID = "layer_not_found";
-    private OskariLayerService mapLayerService = ServiceFactory.getMapLayerService();
-    private DataProviderService dataProviderService = ServiceFactory.getDataProviderService();
+    private OskariLayerService mapLayerService;
+    private DataProviderService dataProviderService;
+
+    @Override
+    public void init() {
+        try {
+            mapLayerService = OskariComponentManager.getComponentOfType(OskariLayerService.class);
+        } catch (Exception e) {
+            throw new ServiceRuntimeException("Exception occured while initializing map layer service", e);
+        }
+        try {
+            dataProviderService = OskariComponentManager.getComponentOfType(DataProviderService.class);
+        } catch (Exception e) {
+            throw new ServiceRuntimeException("Exception occured while initializing data provider service", e);
+        }
+        super.init();
+    }
 
     /**
      * Get layer for edit (admin)
@@ -106,6 +121,7 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
         final OskariLayer ml = getMapLayer(params.getUser(), id);
         MapLayerAdminOutput output = getLayerForEdit(params.getUser(), ml);
         try {
+            cleanupLayerReferences(id);
             mapLayerService.delete(id);
 
             MapLayerPermissionsHelper.removePermissions(id);
@@ -121,6 +137,17 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
         } catch (Exception e) {
             throw new ActionException("Couldn't delete map layer - id:" + id, e);
         }
+    }
+
+    public List<OskariLayer> cleanupLayerReferences(int layerId) throws ActionException {
+        Set<OskariLayer> layers = LayerAdminHelper.getTimeseriesReferencedLayers(layerId, mapLayerService.findAll());
+        for (OskariLayer layer : layers) {
+            JSONObject options = layer.getOptions();
+            options.remove("timeseries");
+            layer.setOptions(options);
+            mapLayerService.update(layer);
+        }
+        return new ArrayList<>(layers);
     }
 
     private void writeResponse(ActionParameters params, MapLayerAdminOutput output) {
