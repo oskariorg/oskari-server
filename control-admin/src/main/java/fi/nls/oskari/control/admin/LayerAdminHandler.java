@@ -27,7 +27,6 @@ import org.oskari.maplayer.admin.LayerValidator;
 import org.oskari.maplayer.model.MapLayer;
 import org.oskari.maplayer.model.MapLayerAdminOutput;
 import org.oskari.log.AuditLog;
-import org.oskari.service.util.ServiceFactory;
 
 import java.util.*;
 
@@ -141,29 +140,14 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
     }
 
     public List<OskariLayer> cleanupLayerReferences(int layerId) throws ActionException {
-        List<OskariLayer> layers = mapLayerService.findAll();
+        Set<OskariLayer> layers = LayerAdminHelper.getTimeseriesReferencedLayers(layerId, mapLayerService.findAll());
         for (OskariLayer layer : layers) {
             JSONObject options = layer.getOptions();
-            try {
-                if (options != null && options.has("timeseries")) {
-                    JSONObject timeseriesOptions = options.getJSONObject("timeseries");
-                    JSONObject timeseriesMetadata = timeseriesOptions.optJSONObject("metadata");
-                    if (timeseriesMetadata == null) {
-                        continue;
-                    }
-                    Integer metadataLayerId = timeseriesMetadata.getInt("layer");
-                    if (metadataLayerId == layerId) {
-                        options.remove("timeseries");
-                        layer.setOptions(options);
-                        mapLayerService.update(layer);
-                    }
-                }
-            } catch (JSONException e) {
-                throw new ActionException("Cannot parse layer metadata options for layer: " +
-                        layer.getName() + ", id: " + layer.getId());
-            }
+            options.remove("timeseries");
+            layer.setOptions(options);
+            mapLayerService.update(layer);
         }
-        return layers;
+        return new ArrayList<>(layers);
     }
 
     private void writeResponse(ActionParameters params, MapLayerAdminOutput output) {
