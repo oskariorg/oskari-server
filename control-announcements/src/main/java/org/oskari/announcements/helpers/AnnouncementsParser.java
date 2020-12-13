@@ -2,16 +2,11 @@ package org.oskari.announcements.helpers;
 
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
-import org.oskari.announcements.helpers.Announcement;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONArray;
 import java.util.List;
 import java.util.Map;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Announcements parser
  */
@@ -31,17 +26,11 @@ public class AnnouncementsParser {
      * @throws ActionParamsException
      */
     public static Announcement parseAnnouncementParams (ActionParameters params) throws JSONException, ActionParamsException {
-        JSONObject jsonParams =  params.getHttpParamAsJSON("params");
-        System.out.println("============!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!=============================");
-        System.out.println("jsonParams");
-        System.out.println(jsonParams);
-
+        JSONObject jsonParams =  params.getPayLoadJSON();
         Announcement Announcement = new Announcement();
 
         if (jsonParams.has(KEY_ID)) {
             Announcement.setId(jsonParams.getInt(KEY_ID));
-            System.out.println("id");
-            System.out.println(jsonParams.getInt(KEY_ID));
         }
 
         if (jsonParams.has(KEY_TITLE)) {
@@ -61,12 +50,9 @@ public class AnnouncementsParser {
         }
 
         if (jsonParams.has(KEY_ACTIVE)) {
-            Announcement.setActive(jsonParams.getString(KEY_ACTIVE));
+            Announcement.setActive(jsonParams.getBoolean(KEY_ACTIVE));
         }
-
-        System.out.println("Announcement");
-        System.out.println(Announcement);
-
+        
         return Announcement;
     }
 

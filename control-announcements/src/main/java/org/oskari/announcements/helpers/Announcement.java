@@ -4,18 +4,18 @@ public class Announcement {
     private Integer id;
     private String title;
     private String content;
-    private String beginDate;
-    private String endDate;
-    private String active;
+    private String begin_date;
+    private String end_date;
+    private Boolean active;
     
     public Announcement() {}
 
-    public Announcement(final Integer id, final String title, final String content, final String beginDate, final String endDate, final String active) {
+    public Announcement(final Integer id, final String title, final String content, final String begin_date, final String end_date, final Boolean active) {
         this.id = id;
         this.title = title;
         this.content = content;
-        this.beginDate = beginDate;
-        this.endDate = endDate;
+        this.begin_date = begin_date;
+        this.end_date = end_date;
         this.active = active;
     }
 
@@ -44,26 +44,26 @@ public class Announcement {
     }
 
     public String getBeginDate() {
-        return beginDate;
+        return begin_date;
     }
 
-    public void setBeginDate(String beginDate) {
-        this.beginDate = beginDate;
+    public void setBeginDate(String begin_date) {
+        this.begin_date = begin_date;
     }
 
     public String getEndDate() {
-        return endDate;
+        return end_date;
     }
 
-    public void setEndDate(String endDate) {
-        this.endDate = endDate;
+    public void setEndDate(String end_date) {
+        this.end_date = end_date;
     }
 
-    public String getActive() {
+    public Boolean getActive() {
         return active;
     }
 
-    public void setActive(String active) {
+    public void setActive(Boolean active) {
         this.active = active;
     }
 }

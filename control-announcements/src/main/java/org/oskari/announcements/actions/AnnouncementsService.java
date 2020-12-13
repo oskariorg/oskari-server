@@ -4,9 +4,6 @@ import org.oskari.announcements.helpers.Announcement;
 import fi.nls.oskari.service.OskariComponent;
 import org.json.JSONObject;
 
-import java.util.List;
-import java.util.Map;
-
 public abstract class AnnouncementsService extends OskariComponent {
 
     public abstract JSONObject getAnnouncements();
