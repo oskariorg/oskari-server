@@ -7,7 +7,7 @@ import org.flywaydb.core.api.migration.Context;
 import org.oskari.helpers.BundleHelper;
 import fi.nls.oskari.domain.map.view.Bundle;
 
-public class V1_0_0__register_announcement_bundles extends BaseJavaMigration {
+public class V2_0_8__register_announcement_bundles extends BaseJavaMigration {
 
     @Override
 	public void migrate(Context context) throws Exception {

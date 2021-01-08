@@ -16,6 +16,7 @@ import fi.nls.oskari.log.Logger;
 import org.json.JSONObject;
 import org.oskari.announcements.helpers.AnnouncementsParser;
 import org.oskari.announcements.mappers.AnnouncementsMapper;
+import java.time.LocalDate;
 
 @Oskari
 public class AnnouncementsServiceMybatisImpl extends AnnouncementsService{
@@ -71,7 +72,7 @@ public class AnnouncementsServiceMybatisImpl extends AnnouncementsService{
         JSONObject data = new JSONObject();
         try {
             final AnnouncementsMapper mapper = session.getMapper(AnnouncementsMapper.class);
-            data = parser.parseAnnouncementsMap(mapper.getAnnouncements());
+            data = parser.parseAnnouncementsMap(mapper.getAnnouncements(LocalDate.now()));
             session.commit();
         } catch (Exception e) {
             throw new RuntimeException("Failed to get announcements", e);

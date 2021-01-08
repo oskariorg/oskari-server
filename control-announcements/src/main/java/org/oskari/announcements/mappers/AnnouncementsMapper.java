@@ -1,5 +1,6 @@
 package org.oskari.announcements.mappers;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -12,9 +13,9 @@ import org.oskari.announcements.helpers.Announcement;
 public interface AnnouncementsMapper {
     @Select("SELECT id, title, content, begin_date, end_date, active"
             + " FROM oskari_announcements"
-            + " WHERE begin_date <= #{beginDate} ::DATE AND end_date >= #{endDate} ::DATE"
+            + " WHERE begin_date <= #{date} ::DATE AND end_date >= #{date} ::DATE"
             + " ORDER BY id desc")
-    List<Map<String,Object>> getAnnouncements();
+    List<Map<String,Object>> getAnnouncements(@Param("date") final LocalDate date);
 
     @Select("SELECT id, title, content, begin_date, end_date, active"
             + " FROM oskari_announcements"

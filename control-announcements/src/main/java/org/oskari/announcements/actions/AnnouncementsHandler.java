@@ -30,7 +30,6 @@ public class AnnouncementsHandler extends RestActionHandler {
             } else {
                 result = service.getAnnouncements();
             }
-            System.out.println(result);
             ResponseHelper.writeResponse(params, 200, result);
         
         } catch (Exception e) {
