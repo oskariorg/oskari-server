@@ -16,7 +16,6 @@ import fi.nls.oskari.util.JSONHelper;
 
 @OskariActionRoute("Announcements")
 public class AnnouncementsHandler extends RestActionHandler {
-    private static final Logger LOG = LogFactory.getLogger(AnnouncementsHandler.class);
     private AnnouncementsService service = new AnnouncementsServiceMybatisImpl();
 
     // Handle get announcements
@@ -33,7 +32,7 @@ public class AnnouncementsHandler extends RestActionHandler {
             ResponseHelper.writeResponse(params, 200, result);
         
         } catch (Exception e) {
-            LOG.error("Error", e);
+            throw new ActionException("Cannot get announcements", e);
         }
     }
     // Handle update announcements
@@ -56,8 +55,7 @@ public class AnnouncementsHandler extends RestActionHandler {
 
             ResponseHelper.writeResponse(params, result);
         } catch (JSONException e) {
-            LOG.error("Error updating announcement", e);
-            throw new ActionException("Cannot update announcement");
+            throw new ActionException("Cannot update announcement", e);
         }
     }
     // Handle delete announcements
@@ -75,8 +73,7 @@ public class AnnouncementsHandler extends RestActionHandler {
             JSONHelper.putValue(result, "id", deleteId);
             ResponseHelper.writeResponse(params, result);
         } catch (Exception e) {
-            LOG.error("Error with deleting announcement", e);
-            throw new ActionException("Cannot delete announcement");
+            throw new ActionException("Cannot delete announcement", e);
         }
     }
     // Handle save announcements
@@ -100,8 +97,7 @@ public class AnnouncementsHandler extends RestActionHandler {
 
             ResponseHelper.writeResponse(params, result);
         } catch (Exception e) {
-            LOG.error("Error saving announcement", e);
-            throw new ActionException("Cannot save announcement");
+            throw new ActionException("Cannot save announcement", e);
         }
     }
 }
