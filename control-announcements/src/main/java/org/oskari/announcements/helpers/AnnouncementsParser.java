@@ -27,33 +27,33 @@ public class AnnouncementsParser {
      */
     public static Announcement parseAnnouncementParams (ActionParameters params) throws JSONException, ActionParamsException {
         JSONObject jsonParams =  params.getPayLoadJSON();
-        Announcement Announcement = new Announcement();
+        Announcement announcement = new Announcement();
 
         if (jsonParams.has(KEY_ID)) {
-            Announcement.setId(jsonParams.getInt(KEY_ID));
+            announcement.setId(jsonParams.getInt(KEY_ID));
         }
 
         if (jsonParams.has(KEY_TITLE)) {
-            Announcement.setTitle(jsonParams.getString(KEY_TITLE));
+            announcement.setTitle(jsonParams.getString(KEY_TITLE));
         }
 
         if (jsonParams.has(KEY_CONTENT)) {
-            Announcement.setContent(jsonParams.getString(KEY_CONTENT));
+            announcement.setContent(jsonParams.getString(KEY_CONTENT));
         }
         
         if (jsonParams.has(KEY_BEGIN_DATE)) {
-            Announcement.setBeginDate(jsonParams.getString(KEY_BEGIN_DATE));
+            announcement.setBeginDate(jsonParams.getString(KEY_BEGIN_DATE));
         }
         
         if (jsonParams.has(KEY_END_DATE)) {
-            Announcement.setEndDate(jsonParams.getString(KEY_END_DATE));
+            announcement.setEndDate(jsonParams.getString(KEY_END_DATE));
         }
 
         if (jsonParams.has(KEY_ACTIVE)) {
-            Announcement.setActive(jsonParams.getBoolean(KEY_ACTIVE));
+            announcement.setActive(jsonParams.getBoolean(KEY_ACTIVE));
         }
         
-        return Announcement;
+        return announcement;
     }
 
     public JSONObject parseAnnouncementsMap(final List<Map<String,Object>> list) throws JSONException {
