@@ -13,6 +13,7 @@ import fi.nls.oskari.db.DatasourceHelper;
 import org.oskari.announcements.helpers.Announcement;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.ServiceRuntimeException;
 import org.json.JSONObject;
 import org.oskari.announcements.helpers.AnnouncementsParser;
 import org.oskari.announcements.mappers.AnnouncementsMapper;
@@ -51,82 +52,53 @@ public class AnnouncementsServiceMybatisImpl extends AnnouncementsService{
     }
 
     public JSONObject getAdminAnnouncements() {
-        LOG.debug("get admin announcements");
-        final SqlSession session = factory.openSession();
-        JSONObject data = new JSONObject();
-        try {
+        try (final SqlSession session = factory.openSession()) {
             final AnnouncementsMapper mapper = session.getMapper(AnnouncementsMapper.class);
-            data = parser.parseAnnouncementsMap(mapper.getAdminAnnouncements());
-            session.commit();
+            return parser.parseAnnouncementsMap(mapper.getAdminAnnouncements());
         } catch (Exception e) {
-            throw new RuntimeException("Failed to get admin announcements", e);
-        } finally {
-            session.close();
+            throw new ServiceRuntimeException("Failed to get admin announcements", e);
         }
-        return data;
     }
 
     public JSONObject getAnnouncements() {
-        LOG.debug("get announcements");
-        final SqlSession session = factory.openSession();
-        JSONObject data = new JSONObject();
-        try {
+        try (final SqlSession session = factory.openSession()) {
             final AnnouncementsMapper mapper = session.getMapper(AnnouncementsMapper.class);
-            data = parser.parseAnnouncementsMap(mapper.getAnnouncements(LocalDate.now()));
-            session.commit();
+            return parser.parseAnnouncementsMap(mapper.getAnnouncements(LocalDate.now()));
         } catch (Exception e) {
-            throw new RuntimeException("Failed to get announcements", e);
-        } finally {
-            session.close();
+            throw new ServiceRuntimeException("Failed to get announcements", e);
         }
-        return data;
     }
 
     public int updateAnnouncement(final Announcement announcement) {
-        LOG.debug("update announcement");
-        final SqlSession session = factory.openSession();
         int updateId = -1;
-        try {
+        try (final SqlSession session = factory.openSession()) {
             final AnnouncementsMapper mapper = session.getMapper(AnnouncementsMapper.class);
             updateId = mapper.updateAnnouncement(announcement);
-            session.commit();
+            return updateId;
         } catch (Exception e) {
-            throw new RuntimeException("Failed to update announcement", e);
-        } finally {
-            session.close();
+            throw new ServiceRuntimeException("Failed to update announcements", e);
         }
-        return updateId;
     }
 
     public int saveAnnouncement(final Announcement announcement) {
-        LOG.debug("save new announcement");
-        final SqlSession session = factory.openSession();
         int saveId = -1;
-        try {
+        try (final SqlSession session = factory.openSession()) {
             final AnnouncementsMapper mapper = session.getMapper(AnnouncementsMapper.class);
             saveId = mapper.saveAnnouncement(announcement);
-            session.commit();
+            return saveId;
         } catch (Exception e) {
-            throw new RuntimeException("Failed to save announcement", e);
-        } finally {
-            session.close();
+            throw new ServiceRuntimeException("Failed to save announcements", e);
         }
-        return saveId;
     }
 
     public int deleteAnnouncement(int id) {
-        LOG.debug("delete announcement with id: " + id);
-        final SqlSession session = factory.openSession();
         int deletedId = -1;
-        try {
+        try (final SqlSession session = factory.openSession()) {
             final AnnouncementsMapper mapper = session.getMapper(AnnouncementsMapper.class);
             deletedId = mapper.deleteAnnouncement(id);
-            session.commit();
+            return deletedId;
         } catch (Exception e) {
-            LOG.error(e, "Couldn't delete announcement with id:", id);
-        } finally {
-            session.close();
+            throw new ServiceRuntimeException("Failed to save announcements", e);
         }
-        return deletedId;
     }
 }
