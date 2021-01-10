@@ -74,6 +74,7 @@ public class AnnouncementsServiceMybatisImpl extends AnnouncementsService{
         try (final SqlSession session = factory.openSession()) {
             final AnnouncementsMapper mapper = session.getMapper(AnnouncementsMapper.class);
             updateId = mapper.updateAnnouncement(announcement);
+            session.commit();
             return updateId;
         } catch (Exception e) {
             throw new ServiceRuntimeException("Failed to update announcements", e);
@@ -85,6 +86,7 @@ public class AnnouncementsServiceMybatisImpl extends AnnouncementsService{
         try (final SqlSession session = factory.openSession()) {
             final AnnouncementsMapper mapper = session.getMapper(AnnouncementsMapper.class);
             saveId = mapper.saveAnnouncement(announcement);
+            session.commit();
             return saveId;
         } catch (Exception e) {
             throw new ServiceRuntimeException("Failed to save announcements", e);
@@ -96,9 +98,10 @@ public class AnnouncementsServiceMybatisImpl extends AnnouncementsService{
         try (final SqlSession session = factory.openSession()) {
             final AnnouncementsMapper mapper = session.getMapper(AnnouncementsMapper.class);
             deletedId = mapper.deleteAnnouncement(id);
+            session.commit();
             return deletedId;
         } catch (Exception e) {
-            throw new ServiceRuntimeException("Failed to save announcements", e);
+            throw new ServiceRuntimeException("Failed to delete announcements", e);
         }
     }
 }
