@@ -152,6 +152,13 @@
                 <artifactId>control-base</artifactId>
                 <version>${oskari.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.oskari</groupId>
+                <artifactId>control-announcements</artifactId>
+                <version>${oskari.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.oskari</groupId>
                 <artifactId>download-basket</artifactId>
@@ -1204,6 +1211,7 @@
         <module>service-feedback</module>
         <module>service-feedback-open311</module>
         <module>download-basket</module>
+        <module>control-announcements</module>
 
         <!-- print -->
         <module>service-print</module>
