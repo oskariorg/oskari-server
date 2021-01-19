@@ -22,7 +22,7 @@ public class AnnouncementsHandler extends RestActionHandler {
 
         try {
             JSONObject result = new JSONObject();
-            if (params.getUser().isAdmin()) {
+            if (params.getHttpParam("all", false) && params.getUser().isAdmin()) {
                 result = service.getAdminAnnouncements();
             } else {
                 result = service.getAnnouncements();
@@ -60,12 +60,8 @@ public class AnnouncementsHandler extends RestActionHandler {
     @Override
     public void handleDelete(ActionParameters params) throws ActionException {
         params.requireAdminUser();
+        int id = params.getRequiredParamInt("id");
         try {
-            int id = -1;
-            JSONObject jsonParams =  params.getPayLoadJSON();
-            if (jsonParams.has("id")) {
-                id = jsonParams.getInt("id");
-            }
             int deleteId = service.deleteAnnouncement(id);
             final JSONObject result = new JSONObject();
             JSONHelper.putValue(result, "id", deleteId);
