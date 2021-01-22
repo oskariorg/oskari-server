@@ -33,6 +33,7 @@ public class LayerJSONFormatter {
     protected static final String KEY_LOCALIZED_NAME = "name"; // FIXME: title
     protected static final String KEY_SUBTITLE = "subtitle";
     protected static final String KEY_OPTIONS = "options";
+    protected static final String KEY_LEGENDS = "legends";
     protected static final String KEY_ADMIN = "admin";
     protected static final String KEY_DATA_PROVIDER = "orgName";
     protected static final String[] STYLE_KEYS ={"name", "title", "legend"};
@@ -146,7 +147,6 @@ public class LayerJSONFormatter {
         JSONHelper.putValue(layerJson, "srs_name", layer.getSrs_name());
         JSONHelper.putValue(layerJson, "version", layer.getVersion());
 
-        JSONHelper.putValue(layerJson, "legendImage", layer.getLegendImage());
         JSONHelper.putValue(layerJson, "baseLayerId", layer.getParentId());
 
         JSONHelper.putValue(layerJson, "created", layer.getCreated());
@@ -192,7 +192,6 @@ public class LayerJSONFormatter {
         }
         JSONHelper.putValue(additionalData, key, value);
     }
-
     protected boolean useProxy(final OskariLayer layer) {
         boolean forceProxy = false;
         if (layer.getAttributes() != null) {
@@ -215,12 +214,49 @@ public class LayerJSONFormatter {
         return IOHelper.constructUrl(PropertyUtil.get(PROPERTY_AJAXURL), urlParams);
     }
 
-
+    public JSONArray createStylesJSON(OskariLayer layer, boolean isSecure) {
+        JSONArray styles = new JSONArray();
+        Map<String, String> legends = JSONHelper.getObjectAsMap(layer.getOptions().optJSONObject(KEY_LEGENDS));
+        JSONArray styleList = JSONHelper.getEmptyIfNull(layer.getCapabilities().optJSONArray(KEY_STYLES));
+        String globalLegend = layer.getLegendImage();
+        boolean hasGlobal = globalLegend != null && !globalLegend.isEmpty();
+        if (styleList.length() == 0 && hasGlobal) {
+            styleList = new JSONArray();
+            styleList.put(createStylesJSON("default","" , globalLegend));
+        }
+        for(int i = 0; i < styleList.length(); i++) {
+            JSONObject style = styleList.optJSONObject(i);
+            String legend = style.optString(KEY_LEGEND);
+            String name = style.optString(KEY_STYLE_NAME);
+            String title = style.optString(KEY_STYLE_TITLE);
+            if (legends.containsKey(name)) {
+                legend = legends.get(name);
+            } else if (hasGlobal) {
+                legend = globalLegend;
+            }
+            boolean secureUrl = legend.toLowerCase().startsWith("https://") || legend.startsWith("/");
+            if((!secureUrl && isSecure) || useProxy(layer)) {
+                legend = buildLegendUrl(layer, name);
+            }
+            styles.put(createStylesJSON(name, title, legend));
+        }
+        return styles;
+    }
     public static JSONObject createStylesJSON(String name, String title, String legend) {
         final JSONObject style = JSONHelper.createJSONObject(STYLE_KEYS[0], name);
         JSONHelper.putValue(style, STYLE_KEYS[1], title);
         JSONHelper.putValue(style, STYLE_KEYS[2], legend);
         return style;
+    }
+    protected String buildLegendUrl(final OskariLayer layer, final String styleName) {
+        Map<String, String> urlParams = new HashMap<String, String>();
+        urlParams.put("action_route", "GetLayerTile");
+        urlParams.put("id", Integer.toString(layer.getId()));
+        urlParams.put(KEY_LEGEND, "true");
+        if(styleName != null){
+            urlParams.put(KEY_STYLE, styleName);
+        }
+        return IOHelper.constructUrl(PropertyUtil.get(PROPERTY_AJAXURL), urlParams);
     }
 
     // This is solution of transition for dataUrl and for dataUrl_uuid
