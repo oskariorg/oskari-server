@@ -24,7 +24,6 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
 
     private static Logger log = LogFactory.getLogger(LayerJSONFormatterWMS.class);
     public static final String KEY_GFICONTENT = "gfiContent";
-    public static final String KEY_LEGENDIMAGE = "legendImage";
     public static final String KEY_ATTRIBUTES = "attributes";
 
 
@@ -48,6 +47,11 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
             else {
                 JSONHelper.putValue(formats, KEY_VALUE, layer.getGfiType());
             }
+        }
+        try {
+            JSONHelper.putValue(layerJson, KEY_STYLES, createStylesJSON(layer, isSecure));
+        } catch (Exception e) {
+            log.warn(e, "Populating layer styles failed for id: " + layer.getId());
         }
         includeCapabilitiesInfo(layerJson, layer, layer.getCapabilities());
         return layerJson;
@@ -77,39 +81,6 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
                                          final JSONObject capabilities) {
         if(capabilities == null) {
             return;
-        }
-
-        try {
-            final JSONArray styles;
-            // construct a modified styles list
-            final JSONArray styleList = capabilities.optJSONArray(KEY_STYLES);
-            styles = new JSONArray();
-            // replace legendimage urls
-            if(styleList != null) {
-            	for(int i = 0; i < styleList.length(); ++i) {
-            		JSONObject style = styleList.optJSONObject(i);
-            		if (style != null && style.has(KEY_LEGEND)) {
-            			// copy the values to a new object to not affect the original
-            			style = new JSONObject(style, STYLE_KEYS);
-            			// update url from actual to proxied version
-            			JSONHelper.putValue(style, KEY_LEGEND, buildLegendUrl(layer, style.optString("name")));
-            		}
-            		styles.put(style);
-            	}
-            }
-
-            JSONHelper.putValue(layerJson, KEY_STYLES, styles);
-
-            final String globalLegend = layer.getLegendImage();
-            // if we have a global legend url, setup the JSON
-            if(globalLegend != null && !globalLegend.isEmpty()) {
-            	JSONHelper.putValue(layerJson, KEY_LEGENDIMAGE, buildLegendUrl(layer, null));
-            	// copy the original value so we can show them for admins
-            	addInfoForAdmin(layerJson, KEY_LEGENDIMAGE, globalLegend);
-            }
-
-        } catch (Exception e) {
-            log.warn(e, "Populating layer styles failed!");
         }
 
         JSONHelper.putValue(layerJson, KEY_FORMATS, capabilities.optJSONObject(KEY_FORMATS));
@@ -192,17 +163,6 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
             styles.add(createStylesJSON(styleName, stylesMap.get(styleName), legend));
         }
         return styles;
-    }
-
-    private String buildLegendUrl(final OskariLayer layer, final String styleName) {
-        Map<String, String> urlParams = new HashMap<String, String>();
-        urlParams.put("action_route", "GetLayerTile");
-        urlParams.put("id", Integer.toString(layer.getId()));
-        urlParams.put(KEY_LEGEND, "true");
-        if(styleName != null){
-            urlParams.put(KEY_STYLE, styleName);
-        }
-        return IOHelper.constructUrl(PropertyUtil.get(PROPERTY_AJAXURL), urlParams);
     }
 
     private static JSONObject formatTime(List<String> times) throws IllegalArgumentException {

@@ -201,6 +201,10 @@ public class OskariLayerWorker {
         FORMATTER.addInfoForAdmin(layerJson, "capabilitiesUpdateRate", layer.getCapabilitiesUpdateRateSec());
 
         FORMATTER.addInfoForAdmin(layerJson, "organizationId", layer.getDataproviderId());
+        String legendImage = layer.getLegendImage();
+        if(legendImage != null && !legendImage.isEmpty()) {
+            FORMATTER.addInfoForAdmin(layerJson, "legendImage", legendImage);
+        }
     }
 
     /**

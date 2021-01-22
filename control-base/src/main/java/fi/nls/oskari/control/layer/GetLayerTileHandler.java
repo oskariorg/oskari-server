@@ -33,6 +33,7 @@ public class GetLayerTileHandler extends ActionHandler {
     private static final Logger LOG = LogFactory.getLogger(GetLayerTileHandler.class);
     private static final String LEGEND = "legend";
     private static final String NAME = "name";
+    private static final String KEY_LEGENDS = "legends";
     private static final List<String> RESERVED_PARAMETERS = Arrays.asList(new String[]{KEY_ID, ActionControl.PARAM_ROUTE, LEGEND});
     private static final int TIMEOUT_CONNECTION = PropertyUtil.getOptional("GetLayerTile.timeout.connection", 1000);
     private static final int TIMEOUT_READ = PropertyUtil.getOptional("GetLayerTile.timeout.read", 5000);
@@ -208,6 +209,11 @@ public class GetLayerTileHandler extends ActionHandler {
     private String getLegendURL(final OskariLayer layer, String style_name) {
         String lurl = layer.getLegendImage();
         if (style_name != null) {
+            // Get overridden legends
+            Map<String,String> legends = JSONHelper.getObjectAsMap(layer.getOptions().optJSONObject(KEY_LEGENDS));
+            if (legends.containsKey(style_name)) {
+                return legends.get(style_name);
+            }
             // Get Capabilities style url
             JSONObject json = layer.getCapabilities();
             if (json.has(CapabilitiesConstants.KEY_STYLES)) {
