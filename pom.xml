@@ -43,6 +43,11 @@
     </scm>
 
     <properties>
+        <!-- Allows local deploy like:
+         mvn deploy -Dmaven.release.url=file:///my/repo/rel -Dmaven.snapshot.url=file:///my/repo/snap
+         -->
+        <maven.release.url>https://oskari.org/nexus/content/repositories/releases/</maven.release.url>
+        <maven.snapshot.url>https://oskari.org/nexus/content/repositories/snapshots/</maven.snapshot.url>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.version>1.8</jdk.version>
         <oskari.version>${project.version}</oskari.version>
@@ -1066,12 +1071,12 @@
         <repository>
             <id>oskari_org</id>
             <name>Oskari.org repository</name>
-            <url>https://oskari.org/nexus/content/repositories/releases/</url>
+            <url>${maven.release.url}</url>
         </repository>
         <repository>
             <id>oskari_org_snapshot</id>
             <name>Oskari.org snapshot repository</name>
-            <url>https://oskari.org/nexus/content/repositories/snapshots/</url>
+            <url>${maven.snapshot.url}</url>
         </repository>
         <repository>
             <id>osgeo</id>
@@ -1085,12 +1090,12 @@
         <repository>
             <id>oskari_org</id>
             <name>Oskari.org repository</name>
-            <url>https://oskari.org/nexus/content/repositories/releases/</url>
+            <url>${maven.release.url}</url>
         </repository>
         <snapshotRepository>
             <id>oskari_org</id>
             <name>Oskari.org repository</name>
-            <url>https://oskari.org/nexus/content/repositories/snapshots/</url>
+            <url>${maven.snapshot.url}</url>
         </snapshotRepository>
     </distributionManagement>
 
