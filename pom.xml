@@ -1066,12 +1066,12 @@
         <repository>
             <id>oskari_org</id>
             <name>Oskari.org repository</name>
-            <url>https://oskari.org/nexus/content/repositories/releases/</url>
+            <url>https://oskari.org/repository/maven/releases/</url>
         </repository>
         <repository>
             <id>oskari_org_snapshot</id>
             <name>Oskari.org snapshot repository</name>
-            <url>https://oskari.org/nexus/content/repositories/snapshots/</url>
+            <url>https://oskari.org/repository/maven/snapshots/</url>
         </repository>
         <repository>
             <id>osgeo</id>
@@ -1085,12 +1085,12 @@
         <repository>
             <id>oskari_org</id>
             <name>Oskari.org repository</name>
-            <url>https://oskari.org/nexus/content/repositories/releases/</url>
+            <url>https://oskari.org/repository/maven/releases/</url>
         </repository>
         <snapshotRepository>
             <id>oskari_org</id>
             <name>Oskari.org repository</name>
-            <url>https://oskari.org/nexus/content/repositories/snapshots/</url>
+            <url>https://oskari.org/repository/maven/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 
