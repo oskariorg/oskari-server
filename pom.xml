@@ -62,9 +62,8 @@
         <commons-collections.version>3.2.2</commons-collections.version>
         <commons-codec.version>1.7</commons-codec.version>
         <commons-fileupload.version>1.4</commons-fileupload.version>
-        <commons-dbcp2.version>2.0.1</commons-dbcp2.version>
+        <commons-dbcp2.version>2.8.0</commons-dbcp2.version>
 
-        <lambdaj.version>2.3.3</lambdaj.version>
         <jsoup.version>1.13.1</jsoup.version>
 
         <axiom.version>1.2.22</axiom.version>
@@ -619,11 +618,6 @@
                 <groupId>com.github.jsonld-java</groupId>
                 <artifactId>jsonld-java</artifactId>
                 <version>${jsonld-java.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.googlecode.lambdaj</groupId>
-                <artifactId>lambdaj</artifactId>
-                <version>${lambdaj.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.jsoup</groupId>
