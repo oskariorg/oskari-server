@@ -42,7 +42,7 @@ public class LayerJSONFormatter {
     private static String[] SUPPORTED_GET_FEATURE_INFO_FORMATS = new String[] {
             "text/html", "text/plain", "application/vnd.ogc.se_xml",
             "application/vnd.ogc.gml", "application/vnd.ogc.wms_xml",
-            "text/xml" };
+            "text/xml", "application/json" };
 
     private static final Logger LOG = LogFactory.getLogger(LayerJSONFormatter.class);
     // map different layer types for JSON formatting
