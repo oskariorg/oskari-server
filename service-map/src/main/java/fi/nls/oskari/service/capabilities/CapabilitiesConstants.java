@@ -9,6 +9,8 @@ public class CapabilitiesConstants {
     // OskariLayer capabilities json
     public static final String KEY_STYLES = "styles";
     public static final String KEY_STYLE = "style";
+    public static final String KEY_STYLE_NAME = "name";
+    public static final String KEY_STYLE_TITLE = "title";
     public static final String KEY_SRS = "srs";
     public static final String KEY_MAX_FEATURES = "maxFeatures";
     public static final String KEY_AVAILABLE = "available";

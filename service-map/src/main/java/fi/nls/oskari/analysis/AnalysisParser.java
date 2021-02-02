@@ -1430,15 +1430,15 @@ public class AnalysisParser {
         }
         return featureSet;
     }
-    public AnalysisLayer parseSwitch2UnionLayer(AnalysisLayer analysisLayer, String analyse, String filter1,
-                                               String filter2, String baseUrl, String outputFormat) {
+    public AnalysisLayer parseSwitch2UnionLayer(String analyse, String filter1, String filter2, String baseUrl,
+                                                User user, AnalysisLayer analysisLayer, String outputFormat) {
         try {
             JSONObject json = JSONHelper.createJSONObject(analyse);
             // Switch to UNION method
             json.remove(JSON_KEY_METHOD);
             json.put(JSON_KEY_METHOD, "union");
 
-            AnalysisLayer al2 = this.parseAnalysisLayer(json, filter1, filter2, baseUrl, null);
+            AnalysisLayer al2 = this.parseAnalysisLayer(json, filter1, filter2, baseUrl, user);
             // Set preused field definition
             al2.setFields(analysisLayer.getFields());
             // Aggregate results for to append to union result

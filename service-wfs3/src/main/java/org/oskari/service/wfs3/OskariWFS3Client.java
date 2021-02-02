@@ -201,7 +201,7 @@ public class OskariWFS3Client {
         }
     }
 
-    private static void validateResponse(HttpURLConnection conn, String expectedContentType)
+    public static void validateResponse(HttpURLConnection conn, String expectedContentType)
             throws ServiceRuntimeException, IOException {
         if (conn.getResponseCode() != 200) {
             throw new ServiceRuntimeException("Unexpected status code " + conn.getResponseCode());
@@ -226,7 +226,7 @@ public class OskariWFS3Client {
         return path.toString();
     }
 
-    private static String getItemsPath(String endPoint, String collectionId) {
+    public static String getItemsPath(String endPoint, String collectionId) {
         return getCollectionsPath(endPoint, collectionId) + "/items";
     }
 

@@ -87,8 +87,8 @@ public class CreateAnalysisLayerHandler extends RestActionHandler {
     }
 
     private AnalysisLayer getAggregateLayer(String analyse, String filter1, String filter2,
-                                            String baseUrl, AnalysisLayer analysisLayer, String outputFormat) {
-            return analysisParser.parseSwitch2UnionLayer(analysisLayer, analyse, filter1, filter2, baseUrl, outputFormat);
+                                            String baseUrl, User user, AnalysisLayer analysisLayer, String outputFormat) {
+            return analysisParser.parseSwitch2UnionLayer(analyse, filter1, filter2, baseUrl, user, analysisLayer, outputFormat);
     }
 
     /**
@@ -114,15 +114,16 @@ public class CreateAnalysisLayerHandler extends RestActionHandler {
         // Get baseProxyUrl
         final String baseUrl = getBaseProxyUrl(params);
 
+        User user = params.getUser();
         // note! analysisLayer is replaced in aggregate handling!!
-        AnalysisLayer analysisLayer = getAnalysisLayer(analyseJson, filter1, filter2, baseUrl, params.getUser());
+        AnalysisLayer analysisLayer = getAnalysisLayer(analyseJson, filter1, filter2, baseUrl, user);
         Analysis analysis = null;
 
         if (analysisLayer.getMethod().equals(AnalysisParser.LAYER_UNION)) {
             // no WPS for merge analysis
             try {
                 analysis = analysisDataService.mergeAnalysisData(
-                        analysisLayer, analyse, params.getUser());
+                        analysisLayer, analyse, user);
             } catch (ServiceException e) {
                 throw new ActionException(ERROR_UNABLE_TO_MERGE_ANALYSIS_DATA, e);
             }
@@ -154,7 +155,7 @@ public class CreateAnalysisLayerHandler extends RestActionHandler {
                     if (!params.getHttpParam(PARAM_SAVE_BLN, true)) {
                         // NOTE!! Replacing the analysisLayer content for executing wps union method!
                         // Get response as geojson when no db store
-                        analysisLayer = getAggregateLayer(analyse, filter1, filter2, baseUrl, analysisLayer, JSONFORMAT);
+                        analysisLayer = getAggregateLayer(analyse, filter1, filter2, baseUrl, user, analysisLayer, JSONFORMAT);
                         // Get geometry as geojson for hilighting features of aggregate result
                         featureSet = wpsService.requestFeatureSet(analysisLayer);
                         // Just return result as JSON and don't save analysis to DB
@@ -170,7 +171,7 @@ public class CreateAnalysisLayerHandler extends RestActionHandler {
                         return;
                     }
                     // NOTE!! Replacing the analysisLayer!  - response is gml
-                    analysisLayer = getAggregateLayer(analyse, filter1, filter2, baseUrl, analysisLayer, null);
+                    analysisLayer = getAggregateLayer(analyse, filter1, filter2, baseUrl, user, analysisLayer, null);
                     featureSet = wpsService.requestFeatureSet(analysisLayer);
                     // Harmonize namespaces and element names
                     featureSet = analysisParser.harmonizeElementNames(featureSet, analysisLayer);
