@@ -41,6 +41,7 @@ public class MapLayerGroupsHandler extends RestActionHandler {
 	private static final String KEY_SELECTABLE = "selectable";
 	private static final String KEY_ORDER = "orderNumber";
 	private static final String PARAM_DELETE_LAYERS = "deleteLayers";
+	private static final int PARAM_LAYERLIST_HIERARCHY_MAXDEPTH = PropertyUtil.getOptional("layerlist.hierarchy.maxdepth", 2);
 
 	private OskariMapLayerGroupService oskariMapLayerGroupService;
 	private OskariLayerGroupLinkService linkService;
@@ -102,7 +103,7 @@ public class MapLayerGroupsHandler extends RestActionHandler {
 
 		// Check at group depth is maximum 3
 		if (!isAllowedGroupDepth(maplayerGroup)) {
-			throw new ActionParamsException("Maximum group depth is 3");
+			throw new ActionParamsException("Maximum subgroup depth is " + PARAM_LAYERLIST_HIERARCHY_MAXDEPTH);
 		}
 
 		final int id = oskariMapLayerGroupService.insert(maplayerGroup);
@@ -258,7 +259,7 @@ public class MapLayerGroupsHandler extends RestActionHandler {
 	 * @return is allowed group depth
 	 */
 	private boolean isAllowedGroupDepth(MaplayerGroup maplayerGroup) {
-		if (maplayerGroup.getParentId() != -1 && getGroupDepth(maplayerGroup.getParentId(), 0) > 2) {
+		if (maplayerGroup.getParentId() != -1 && getGroupDepth(maplayerGroup.getParentId(), 0) > PARAM_LAYERLIST_HIERARCHY_MAXDEPTH) {
 			return false;
 		}
 		return true;
