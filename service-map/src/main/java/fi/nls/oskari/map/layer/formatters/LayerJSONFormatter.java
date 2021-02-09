@@ -27,13 +27,14 @@ public class LayerJSONFormatter {
     public static final String PROPERTY_AJAXURL = "oskari.ajax.url.prefix";
     public static final String KEY_ATTRIBUTE_FORCED_SRS = "forcedSRS";
     public static final String KEY_ATTRIBUTE_IGNORE_COVERAGE = "ignoreCoverage";
+    public static final String KEY_LEGENDS = "legends";
+    public static final String KEY_GLOBAL_LEGEND = "legendImage";
     public static final String KEY_TYPE = "type";
     protected static final String KEY_ID = "id";
     protected static final String KEY_NAME = "layerName"; // FIXME: name
     protected static final String KEY_LOCALIZED_NAME = "name"; // FIXME: title
     protected static final String KEY_SUBTITLE = "subtitle";
     protected static final String KEY_OPTIONS = "options";
-    protected static final String KEY_LEGENDS = "legends";
     protected static final String KEY_ADMIN = "admin";
     protected static final String KEY_DATA_PROVIDER = "orgName";
     protected static final String[] STYLE_KEYS ={"name", "title", "legend"};
@@ -218,11 +219,10 @@ public class LayerJSONFormatter {
         JSONArray styles = new JSONArray();
         Map<String, String> legends = JSONHelper.getObjectAsMap(layer.getOptions().optJSONObject(KEY_LEGENDS));
         JSONArray styleList = JSONHelper.getEmptyIfNull(layer.getCapabilities().optJSONArray(KEY_STYLES));
-        String globalLegend = layer.getLegendImage();
-        boolean hasGlobal = globalLegend != null && !globalLegend.isEmpty();
-        if (styleList.length() == 0 && hasGlobal) {
+        String globalLegend = legends.getOrDefault(KEY_GLOBAL_LEGEND, "");
+        if (styleList.length() == 0 && !globalLegend.isEmpty()) {
             styleList = new JSONArray();
-            styleList.put(createStylesJSON("default","" , globalLegend));
+            styleList.put(createStylesJSON("","" , globalLegend));
         }
         for(int i = 0; i < styleList.length(); i++) {
             JSONObject style = styleList.optJSONObject(i);
@@ -231,7 +231,7 @@ public class LayerJSONFormatter {
             String title = style.optString(KEY_STYLE_TITLE);
             if (legends.containsKey(name)) {
                 legend = legends.get(name);
-            } else if (hasGlobal) {
+            } else if (!globalLegend.isEmpty()) {
                 legend = globalLegend;
             }
             boolean secureUrl = legend.toLowerCase().startsWith("https://") || legend.startsWith("/");
