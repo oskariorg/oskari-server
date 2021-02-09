@@ -99,7 +99,6 @@ public class OskariLayerServiceMybatisImpl extends OskariLayerService {
         result.setMaxScale((Double) data.get("maxscale"));
 
         // additional info
-        result.setLegendImage((String) data.get("legend_image"));
         result.setMetadataId((String) data.get("metadataid"));
 
         // map implementation parameters

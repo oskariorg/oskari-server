@@ -49,7 +49,6 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
 	private Double minScale = -1d;
 	private Double maxScale = -1d;
 
-    private String legendImage;
     private String metadataId;
 
     private JSONObject params = new JSONObject();
@@ -225,11 +224,24 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
 	public void setStyle(String style) {
 		this.style = style;
 	}
+
+    @Deprecated
 	public String getLegendImage() {
-		return legendImage;
+        if (!options.has("legends")) {
+            return "";
+        }
+        return JSONHelper.getJSONObject(options, "legends").optString("legendImage", "");
 	}
+    @Deprecated
 	public void setLegendImage(String legendImage) {
-		this.legendImage = legendImage;
+        JSONObject legends;
+        if (!options.has("legends")) {
+            legends = new JSONObject();
+            JSONHelper.putValue(options, "legends", legends);
+        } else {
+            legends = JSONHelper.getJSONObject(options, "legends");
+        }
+        JSONHelper.putValue(legends, "legendImage", legendImage);
 	}
 
     public int getParentId() {
