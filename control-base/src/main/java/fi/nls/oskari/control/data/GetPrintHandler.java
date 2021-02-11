@@ -105,6 +105,9 @@ public class GetPrintHandler extends AbstractWFSFeaturesHandler {
 
     public void handleAction(ActionParameters params) throws ActionException {
         PrintRequest pr = createPrintRequest(params);
+        for (PrintLayer layer : pr.getLayers()) {
+            layerAccessHandlers.forEach(handler -> handler.handle(layer.getOskariLayer(), pr.getUser()));
+        }
         switch (pr.getFormat()) {
         case PDF:
             handlePDF(pr, params);

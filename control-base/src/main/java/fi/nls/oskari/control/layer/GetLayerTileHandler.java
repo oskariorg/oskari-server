@@ -16,6 +16,7 @@ import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.oskari.permissions.PermissionService;
+import org.oskari.service.user.LayerAccessHandler;
 import org.oskari.service.util.ServiceFactory;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,6 +41,7 @@ public class GetLayerTileHandler extends ActionHandler {
     private static final boolean GATHER_METRICS = PropertyUtil.getOptional("GetLayerTile.metrics", true);
     private static final String METRICS_PREFIX = "Oskari.GetLayerTile";
     private PermissionHelper permissionHelper;
+    private Collection<LayerAccessHandler> layerAccessHandlers;
 
     // WMTS rest layers params
     private static final String KEY_STYLE = "STYLE";
@@ -53,6 +55,9 @@ public class GetLayerTileHandler extends ActionHandler {
      */
     public void init() {
         permissionHelper = new PermissionHelper(ServiceFactory.getMapLayerService(), OskariComponentManager.getComponentOfType(PermissionService.class));
+
+        Map<String, LayerAccessHandler> handlerComponents = OskariComponentManager.getComponentsOfType(LayerAccessHandler.class);
+        this.layerAccessHandlers = handlerComponents.values();
     }
 
     /**
@@ -87,6 +92,8 @@ public class GetLayerTileHandler extends ActionHandler {
         }
         // TODO: we should handle redirects here or in IOHelper or start using a lib that handles 301/302 properly
         HttpURLConnection con = getConnection(url, layer);
+
+        layerAccessHandlers.forEach(handler -> handler.handle(layer, params.getUser()));
 
         try {
             con.setRequestMethod(httpMethod);
