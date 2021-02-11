@@ -26,7 +26,6 @@ public class MapLayer {
     private double minscale = -1;
     private double maxscale = -1;
 
-    private String legend_image;
     private String metadataid;
     private boolean internal;
 
@@ -168,14 +167,6 @@ public class MapLayer {
 
     public void setMaxscale(double maxscale) {
         this.maxscale = maxscale;
-    }
-
-    public String getLegend_image() {
-        return legend_image;
-    }
-
-    public void setLegend_image(String legend_image) {
-        this.legend_image = legend_image;
     }
 
     public String getMetadataid() {

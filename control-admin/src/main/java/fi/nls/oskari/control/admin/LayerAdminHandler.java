@@ -308,7 +308,6 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
                         PropertyUtil.get("oskari.native.srs", "EPSG:4326"))));
 
         ml.setStyle(getOrDefaultStr(layer.getStyle(), ml.getStyle()));
-        ml.setLegendImage(getOrDefaultStr(layer.getLegend_image(), ml.getLegendImage()));
         ml.setMetadataId(getOrDefaultStr(layer.getMetadataid(), ml.getMetadataId()));
         if (layer.getAttributes() != null) {
             ml.setAttributes(new JSONObject(layer.getAttributes()));

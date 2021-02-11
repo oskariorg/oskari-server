@@ -61,7 +61,6 @@ public class LayerAdminJSONHelper {
         layer.setMinScale(model.getMinscale());
         layer.setMaxScale(model.getMaxscale());
 
-        layer.setLegendImage(model.getLegend_image());
         layer.setMetadataId(model.getMetadataid());
         if (model.getParams() != null) {
             layer.setParams(new JSONObject(model.getParams()));
@@ -114,7 +113,6 @@ public class LayerAdminJSONHelper {
         out.setMinscale(layer.getMinScale());
         out.setMaxscale(layer.getMaxScale());
 
-        out.setLegend_image(layer.getLegendImage());
         out.setMetadataid(layer.getMetadataId());
 
         out.setParams(JSONHelper.getObjectAsMap(layer.getParams()));

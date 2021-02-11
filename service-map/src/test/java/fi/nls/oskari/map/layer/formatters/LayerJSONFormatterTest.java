@@ -5,6 +5,7 @@ import fi.nls.oskari.service.capabilities.CapabilitiesConstants;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
@@ -51,6 +52,9 @@ public class LayerJSONFormatterTest {
         }
         return "";
     }
+    private static void setGlobalLegend (OskariLayer layer) throws JSONException {
+        layer.getOptions().getJSONObject(LayerJSONFormatter.KEY_LEGENDS).put(LayerJSONFormatter.KEY_GLOBAL_LEGEND, GLOBAL_LEGEND);
+    }
 
     @Test
     public void getFixedDataUrl() {
@@ -77,7 +81,7 @@ public class LayerJSONFormatterTest {
         Assert.assertEquals("Style 2 should have legend url defined in capabilities", "http://example.com/style2", getLegend(layerJSON, "style2"));
 
 
-        layer.setLegendImage(GLOBAL_LEGEND);
+        setGlobalLegend(layer);
         layerJSON = FORMATTER.getJSON(layer, LANG, false, CRS);
         Assert.assertEquals("Style 1 should have overrided legend url", "https://mydomain.org", getLegend(layerJSON, "style1"));
         Assert.assertEquals("Style 2 should have global legend", GLOBAL_LEGEND, getLegend(layerJSON, "style2"));
@@ -85,7 +89,7 @@ public class LayerJSONFormatterTest {
         layer.setCapabilities(new JSONObject());
         layerJSON = FORMATTER.getJSON(layer, LANG, false, CRS);
         Assert.assertTrue(layerJSON.getJSONArray("styles").length() == 1);
-        Assert.assertEquals("layer should have default style with global legend", GLOBAL_LEGEND, getLegend(layerJSON, "default"));
+        Assert.assertEquals("layer should have default style with global legend", GLOBAL_LEGEND, getLegend(layerJSON, ""));
 
     }
     @Test
@@ -109,5 +113,13 @@ public class LayerJSONFormatterTest {
         Assert.assertEquals( "Proxy non-secure url with secure connection",
                 String.format(proxyLegend, "style2"),
                 getLegend(layerJSON, "style2"));
+    }
+
+    // test deprecated methods
+    @Test
+    public void legendImage() throws Exception {
+        OskariLayer layer = new OskariLayer();
+        layer.setLegendImage(GLOBAL_LEGEND);
+        Assert.assertEquals(GLOBAL_LEGEND,layer.getLegendImage());
     }
 }

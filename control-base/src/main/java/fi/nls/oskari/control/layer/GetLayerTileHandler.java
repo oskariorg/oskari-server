@@ -25,6 +25,8 @@ import java.util.*;
 
 import fi.nls.oskari.service.capabilities.CapabilitiesConstants;
 import static fi.nls.oskari.control.ActionConstants.KEY_ID;
+import static fi.nls.oskari.map.layer.formatters.LayerJSONFormatter.KEY_LEGENDS;
+import static fi.nls.oskari.map.layer.formatters.LayerJSONFormatter.KEY_GLOBAL_LEGEND;
 
 
 @OskariActionRoute("GetLayerTile")
@@ -33,7 +35,6 @@ public class GetLayerTileHandler extends ActionHandler {
     private static final Logger LOG = LogFactory.getLogger(GetLayerTileHandler.class);
     private static final String LEGEND = "legend";
     private static final String NAME = "name";
-    private static final String KEY_LEGENDS = "legends";
     private static final List<String> RESERVED_PARAMETERS = Arrays.asList(new String[]{KEY_ID, ActionControl.PARAM_ROUTE, LEGEND});
     private static final int TIMEOUT_CONNECTION = PropertyUtil.getOptional("GetLayerTile.timeout.connection", 1000);
     private static final int TIMEOUT_READ = PropertyUtil.getOptional("GetLayerTile.timeout.read", 5000);
@@ -203,16 +204,20 @@ public class GetLayerTileHandler extends ActionHandler {
     /**
      * Get Legend image url
      * @param layer  Oskari layer
-     * @param style_name  style name for legend
+     * @param styleName  style name for legend
      * @return
      */
-    private String getLegendURL(final OskariLayer layer, String style_name) {
-        String lurl = layer.getLegendImage();
-        if (style_name != null) {
-            // Get overridden legends
-            Map<String,String> legends = JSONHelper.getObjectAsMap(layer.getOptions().optJSONObject(KEY_LEGENDS));
-            if (legends.containsKey(style_name)) {
-                return legends.get(style_name);
+    private String getLegendURL(final OskariLayer layer, String styleName) {
+        // Get overridden legends
+        Map<String,String> legends = JSONHelper.getObjectAsMap(layer.getOptions().optJSONObject(KEY_LEGENDS));
+        String lurl = legends.getOrDefault(KEY_GLOBAL_LEGEND, "");
+        if (styleName != null) {
+            if (legends.containsKey(styleName)) {
+                return legends.get(styleName);
+            }
+            if (!lurl.isEmpty()) {
+                // use global legend url
+                return lurl;
             }
             // Get Capabilities style url
             JSONObject json = layer.getCapabilities();
@@ -221,7 +226,7 @@ public class GetLayerTileHandler extends ActionHandler {
                 JSONArray styles = JSONHelper.getJSONArray(json, CapabilitiesConstants.KEY_STYLES);
                 for (int i = 0; i < styles.length(); i++) {
                     final JSONObject style = JSONHelper.getJSONObject(styles, i);
-                    if (JSONHelper.getStringFromJSON(style, NAME, "").equals(style_name)) {
+                    if (JSONHelper.getStringFromJSON(style, NAME, "").equals(styleName)) {
                         return style.optString(LEGEND);
                     }
                 }
