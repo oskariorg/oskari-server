@@ -65,6 +65,7 @@ public class GetWFSFeaturesHandler extends AbstractWFSFeaturesHandler {
         }
 
         ReferencedEnvelope bbox = parseBbox(bboxStr, targetCRS);
+        layerAccessHandlers.forEach(handler -> handler.handle(layer, params.getUser()));
         SimpleFeatureCollection fc = getFeatures(id, layer, bbox, targetCRS, contentProcessor);
         if (fc.isEmpty()) {
             ResponseHelper.writeResponse(params, 200,

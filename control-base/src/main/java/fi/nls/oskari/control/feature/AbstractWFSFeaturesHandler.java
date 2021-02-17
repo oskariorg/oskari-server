@@ -7,6 +7,7 @@ import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.service.OskariComponentManager;
 
 import org.oskari.permissions.PermissionService;
+import org.oskari.service.user.LayerAccessHandler;
 import org.oskari.service.user.UserLayerService;
 import org.oskari.service.util.ServiceFactory;
 import org.oskari.service.wfs.client.CachingOskariWFSClient;
@@ -28,6 +29,7 @@ public abstract class AbstractWFSFeaturesHandler extends ActionHandler {
     protected OskariFeatureClient featureClient;
     protected PermissionHelper permissionHelper;
     protected Collection<UserLayerService> userContentProcessors;
+    protected Collection<LayerAccessHandler> layerAccessHandlers;
 
     protected void setPermissionHelper(PermissionHelper permissionHelper) {
         this.permissionHelper = permissionHelper;
@@ -45,6 +47,9 @@ public abstract class AbstractWFSFeaturesHandler extends ActionHandler {
         };
         Map<String, UserLayerService> components = OskariComponentManager.getComponentsOfType(UserLayerService.class);
         this.userContentProcessors = components.values();
+
+        Map<String, LayerAccessHandler> handlerComponents = OskariComponentManager.getComponentsOfType(LayerAccessHandler.class);
+        this.layerAccessHandlers = handlerComponents.values();
     }
 
     protected OskariWFSClient createWFSClient() {
