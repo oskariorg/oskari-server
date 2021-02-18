@@ -41,7 +41,8 @@ public class GetWFSLayerFieldsHandlerTest extends JSONActionRouteTest {
     private static void mockWFSGetLayerFields() throws JSONException, ServiceException {
         PowerMockito.mockStatic(WFSGetLayerFields.class);
         final JSONObject mockFields = getMockFields();
-        when(WFSGetLayerFields.getLayerFields(any())).thenReturn(mockFields);
+        //when(WFSGetLayerFields.getLayerFields(any())).thenReturn(mockFields);
+        when(WFSGetLayerFields.getLayerFields(any())).thenAnswer(invocation -> mockFields);
     }
 
     private static JSONObject getMockFields() throws JSONException {
