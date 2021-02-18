@@ -69,6 +69,9 @@ public class WFSDescribeFeatureHelper {
      * e.g. http://tampere.navici.com/tampere_wfs_geoserver/ows?SERVICE=WFS&VERSION=1.1.0&REQUEST=DescribeFeatureType&TYPENAME=tampere_ora:KIINTEISTOT_ALUE
      */
     public static String parseDescribeFeatureUrl(String url, String version, String typename) {
+        if (url == null) {
+            return null;
+        }
 
         if (url.toLowerCase().indexOf("service=") == -1) {
             url = IOHelper.addQueryString(url, "service=WFS");

@@ -952,6 +952,9 @@ public class IOHelper {
         if (queryString == null || queryString.trim().isEmpty()) {
             return url;
         }
+        if (url == null || url.isEmpty()) {
+            return queryString;
+        }
         final StringBuilder urlBuilder = new StringBuilder(url);
         char lastChar = urlBuilder.charAt(urlBuilder.length()-1);
         if (!url.contains("?")) {
