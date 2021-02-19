@@ -46,6 +46,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.version>1.8</jdk.version>
         <oskari.version>${project.version}</oskari.version>
+        <!-- Value comes from profile when needed -->
+        <module.build.config></module.build.config>
 
         <spring.version>5.3.3</spring.version>
         <spring-security.version>5.4.2</spring-security.version>
@@ -965,18 +967,11 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.1</version>
                 <configuration>
+                    <!-- module.build.config is a workaround for test/mock libraries on Java 11 -->
                     <!-- headless=true prevents forking java process from stealing window focus on Mac OS -->
-                    <!-- add-opens and illegal-access is a workaround for test/mock libraries -->
                     <!-- syslog.level makes builds less verbose (defaults to system.out logger) -->
                     <argLine>
-                        --add-opens java.base/java.lang=ALL-UNNAMED
-                        --add-opens java.base/java.util=ALL-UNNAMED
-                        --add-opens java.base/java.util.concurrent=ALL-UNNAMED
-                        --add-opens java.base/java.util.stream=ALL-UNNAMED
-                        --add-opens java.base/java.net=ALL-UNNAMED
-                        --add-opens java.base/java.io=ALL-UNNAMED
-                        --add-opens java.xml/jdk.xml.internal=ALL-UNNAMED
-                        --illegal-access=warn
+                        ${module.build.config}
                         -Djava.awt.headless=true
                         -Doskari.syslog.level=warn</argLine>
                 </configuration>
@@ -1124,6 +1119,25 @@
     </pluginRepositories>
 
     <profiles>
+        <profile>
+            <id>javamodules</id>
+            <!-- required for build/mock libraries to work on Java 11 -->
+            <activation>
+                <jdk>[9,)</jdk>
+            </activation>
+            <properties>
+                <module.build.config>
+                    --add-opens java.base/java.lang=ALL-UNNAMED
+                    --add-opens java.base/java.util=ALL-UNNAMED
+                    --add-opens java.base/java.util.concurrent=ALL-UNNAMED
+                    --add-opens java.base/java.util.stream=ALL-UNNAMED
+                    --add-opens java.base/java.net=ALL-UNNAMED
+                    --add-opens java.base/java.io=ALL-UNNAMED
+                    --add-opens java.xml/jdk.xml.internal=ALL-UNNAMED
+                    --illegal-access=warn
+                </module.build.config>
+            </properties>
+        </profile>
         <profile>
             <id>owasp-check</id>
             <build>
