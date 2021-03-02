@@ -46,6 +46,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.version>1.8</jdk.version>
         <oskari.version>${project.version}</oskari.version>
+        <!-- Value comes from profile when needed -->
+        <module.build.config></module.build.config>
 
         <spring.version>5.3.3</spring.version>
         <spring-security.version>5.4.2</spring-security.version>
@@ -98,8 +100,8 @@
         <pdfbox.version>2.0.16</pdfbox.version>
         <hystrix.version>1.5.18</hystrix.version>
         <!-- Test deps versions -->
-        <powermock.version>2.0.0</powermock.version>
-        <junit.version>4.13.1</junit.version>
+        <powermock.version>2.0.9</powermock.version>
+        <junit.version>4.13.2</junit.version>
         <xmlunit.version>1.6</xmlunit.version>
         <h2database.version>1.4.199</h2database.version>
 
@@ -861,6 +863,11 @@
 
             <dependency>
                 <groupId>org.powermock</groupId>
+                <artifactId>powermock-core</artifactId>
+                <version>${powermock.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.powermock</groupId>
                 <artifactId>powermock-module-junit4</artifactId>
                 <version>${powermock.version}</version>
             </dependency>
@@ -960,13 +967,22 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.1</version>
                 <configuration>
-                    <!-- prevent forking java process from stealing
-                    window focus on Mac OS -->
-                    <argLine>-Djava.awt.headless=true</argLine>
-                    <!--systemPropertyVariables>
-                        <oskari.syslog.level></oskari.syslog.level>
-                    </systemPropertyVariables -->
-                    <argLine>-Doskari.syslog.level=warn</argLine>
+                    <!-- module.build.config is a workaround for test/mock libraries on Java 11 -->
+                    <!-- headless=true prevents forking java process from stealing window focus on Mac OS -->
+                    <!-- syslog.level makes builds less verbose (defaults to system.out logger) -->
+                    <argLine>
+                        ${module.build.config}
+                        -Djava.awt.headless=true
+                        -Doskari.syslog.level=warn</argLine>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.22.1</version>
+                <configuration>
+                    <!-- Workaround for test/mock libraries -->
+                    <argLine>--add-opens java.base/java.lang=ALL-UNNAMED --illegal-access=permit</argLine>
                 </configuration>
             </plugin>
             <plugin>
@@ -1103,6 +1119,25 @@
     </pluginRepositories>
 
     <profiles>
+        <profile>
+            <id>javamodules</id>
+            <!-- required for build/mock libraries to work on Java 11 -->
+            <activation>
+                <jdk>[9,)</jdk>
+            </activation>
+            <properties>
+                <module.build.config>
+                    --add-opens java.base/java.lang=ALL-UNNAMED
+                    --add-opens java.base/java.util=ALL-UNNAMED
+                    --add-opens java.base/java.util.concurrent=ALL-UNNAMED
+                    --add-opens java.base/java.util.stream=ALL-UNNAMED
+                    --add-opens java.base/java.net=ALL-UNNAMED
+                    --add-opens java.base/java.io=ALL-UNNAMED
+                    --add-opens java.xml/jdk.xml.internal=ALL-UNNAMED
+                    --illegal-access=warn
+                </module.build.config>
+            </properties>
+        </profile>
         <profile>
             <id>owasp-check</id>
             <build>

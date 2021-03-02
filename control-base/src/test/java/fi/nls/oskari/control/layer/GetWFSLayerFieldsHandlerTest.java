@@ -5,9 +5,6 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.map.layer.OskariLayerService;
-import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
-import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.WFSGetLayerFields;
 import fi.nls.test.control.JSONActionRouteTest;
@@ -17,7 +14,6 @@ import org.json.JSONObject;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.oskari.permissions.PermissionService;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -28,7 +24,7 @@ import java.util.Map;
 import static org.mockito.Mockito.*;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({GetWFSLayerFieldsHandler.class, WFSGetLayerFields.class, OskariComponentManager.class})
+@PrepareForTest({GetWFSLayerFieldsHandler.class, WFSGetLayerFields.class})
 public class GetWFSLayerFieldsHandlerTest extends JSONActionRouteTest {
     private static final Integer WFS_LAYER_ID = 1;
     private static final Integer WMS_LAYER_ID = 2;
@@ -45,7 +41,8 @@ public class GetWFSLayerFieldsHandlerTest extends JSONActionRouteTest {
     private static void mockWFSGetLayerFields() throws JSONException, ServiceException {
         PowerMockito.mockStatic(WFSGetLayerFields.class);
         final JSONObject mockFields = getMockFields();
-        when(WFSGetLayerFields.getLayerFields(any())).thenReturn(mockFields);
+        //when(WFSGetLayerFields.getLayerFields(any())).thenReturn(mockFields);
+        when(WFSGetLayerFields.getLayerFields(any())).thenAnswer(invocation -> mockFields);
     }
 
     private static JSONObject getMockFields() throws JSONException {
@@ -54,13 +51,7 @@ public class GetWFSLayerFieldsHandlerTest extends JSONActionRouteTest {
     }
 
     private static void mockPermissionHelper() throws Exception {
-        OskariLayerService mockLayerService = mock(OskariLayerServiceMybatisImpl.class);
-        PowerMockito.mockStatic(OskariComponentManager.class);
-        when(OskariComponentManager.getComponentOfType(OskariLayerService.class)).thenReturn(mockLayerService);
-        PermissionService mockPermissionService = mock(PermissionService.class);
-        when(OskariComponentManager.getComponentOfType(PermissionService.class)).thenReturn(mockPermissionService);
         PermissionHelper mockPermissionHelper = mock(PermissionHelper.class);
-        PowerMockito.whenNew(PermissionHelper.class).withArguments(mockLayerService, mockPermissionService).thenReturn(mockPermissionHelper);
         when(mockPermissionHelper.getLayer(anyInt(), any(User.class))).thenAnswer(invocation -> {
             final Integer layerId = invocation.getArgument(0);
             if (layerId.equals(WFS_LAYER_ID)) {
@@ -71,6 +62,7 @@ public class GetWFSLayerFieldsHandlerTest extends JSONActionRouteTest {
                 throw new ActionParamsException("Layer not found for id: " + layerId);
             }
         });
+        handler.setPermissionHelper(mockPermissionHelper);
     }
 
     private static OskariLayer getMockLayer(String layerType) throws JSONException {

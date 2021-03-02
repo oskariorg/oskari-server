@@ -27,6 +27,9 @@ public class GetWFSLayerFieldsHandler extends RestActionHandler {
 
     @Override
     public void init() {
+        if (permissionHelper != null) {
+            return;
+        }
         try {
             final OskariLayerService layerService = OskariComponentManager.getComponentOfType(OskariLayerService.class);
             final PermissionService permissionService = OskariComponentManager.getComponentOfType(PermissionService.class);
@@ -34,6 +37,10 @@ public class GetWFSLayerFieldsHandler extends RestActionHandler {
         } catch (Exception e) {
             throw new ServiceRuntimeException("Exception occurred while initializing map layer service", e);
         }
+    }
+
+    public void setPermissionHelper(PermissionHelper helper) {
+        permissionHelper = helper;
     }
 
     @Override
