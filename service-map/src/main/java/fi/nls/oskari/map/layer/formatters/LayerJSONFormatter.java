@@ -39,7 +39,7 @@ public class LayerJSONFormatter {
     protected static final String[] STYLE_KEYS ={"name", "title", "legend"};
 
     // There working only plain text and html so ranked up
-    private static String[] SUPPORTED_GET_FEATURE_INFO_FORMATS = new String[] {
+    public static String[] SUPPORTED_GET_FEATURE_INFO_FORMATS = new String[] {
             "text/html", "text/plain", "application/vnd.ogc.se_xml",
             "application/vnd.ogc.gml", "application/vnd.ogc.wms_xml",
             "text/xml", "application/json" };

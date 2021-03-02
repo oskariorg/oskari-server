@@ -1,13 +1,19 @@
 package fi.nls.oskari.map.data.domain;
 
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
+import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.List;
+
+import static fi.nls.oskari.map.layer.formatters.LayerJSONFormatter.SUPPORTED_GET_FEATURE_INFO_FORMATS;
+import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.*;
 
 public class GFIRequestParams {
-
+    private static final String DEFAULT_FORMAT = SUPPORTED_GET_FEATURE_INFO_FORMATS[0];
     private OskariLayer layer;
 
     private double lat;
@@ -125,11 +131,6 @@ public class GFIRequestParams {
     }
 
     private String getAsQueryString() {
-        String infoFormat = layer.getGfiType();
-        if (infoFormat == null || "".equals(infoFormat)) {
-            infoFormat = "text/html";
-        }
-
         String wmsName = layer.getName();
 
         try { // try encode
@@ -140,7 +141,7 @@ public class GFIRequestParams {
 
 
         return WMS_GFI_BASE_PARAMS + "&SRS=" + getSRSName() + "&BBOX=" + getBbox() + "&X=" + getX()
-                + "&Y=" + getY() + "&INFO_FORMAT=" + infoFormat
+                + "&Y=" + getY() + "&INFO_FORMAT=" + getInfoFormat()
                 + "&QUERY_LAYERS=" + wmsName + "&WIDTH="
                 + getWidth() + "&HEIGHT=" + getHeight() + "&STYLES="
                 + getCurrentStyle() + "&LAYERS=" + wmsName;
@@ -157,6 +158,27 @@ public class GFIRequestParams {
             queryUrl += "?";
         }
         return queryUrl;
+    }
+    private String getInfoFormat () {
+        String infoFormat = layer.getGfiType();
+        if (infoFormat != null && !infoFormat.isEmpty()) {
+            return infoFormat;
+        }
+        JSONObject formats = layer.getCapabilities().optJSONObject(KEY_FORMATS);
+        if (formats == null) {
+            return DEFAULT_FORMAT;
+        }
+        String value = formats.optString(KEY_VALUE);
+        if (!value.isEmpty()) {
+            return value;
+        }
+        List <String> available = JSONHelper.getArrayAsList(JSONHelper.getJSONArray(formats, KEY_AVAILABLE));
+        for(String format : SUPPORTED_GET_FEATURE_INFO_FORMATS) {
+            if (available.contains(format)) {
+                return format;
+            }
+        }
+        return DEFAULT_FORMAT;
     }
 
 }
