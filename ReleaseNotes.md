@@ -1,5 +1,54 @@
 # Release Notes
 
+## 2.2.0
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/28?closed=1
+
+- Added server side handlers and registrations for new functionality called `announcements`.
+- Reduce logging for common errors like client disconnecting during response writing etc.
+- Fixes for analysis functionality.
+- Added a new handler for getting configured metadata for a Vector feature source/WFS/OAPIF:
+  https://github.com/oskariorg/oskari-server/pull/670.
+  Metadata includes things like:
+  - attribute names and value types
+  - localized names for attributes
+  - name of the geometry field
+
+  Note! There are multiple previous implementations that return parts of the same metadata
+  (listed in the PR) that will be deprecated and the frontend will be migrated to use the new one
+  on future releases.
+
+- Added logic for an option to show a WMS-layer with timeseries without the time controls (as regular layer).
+- Added support for GFI response type/info-format `application/json`.
+- The group hierarchy depth for hierarchical layer listing can now be configured in
+  `oskari-ext.properties` with `layerlist.hierarchy.maxdepth` instead of being hard-coded (defaults to 2).
+- Changed my places label from `Link` to `More information` to match the form label when adding/editing features.
+- Improved legend image handling for map layers:
+  - Admin can now override/add a legend image url for each style for the layer (previously there was just one field)
+  - Legend-related configs are now stored in `oskari_maplayer` table `options` column under `legends` key
+
+- Added a plugin mechanism for tracking proxied requests to map layer services.
+  This enables adding access audit logging on application code:
+  https://github.com/oskariorg/oskari-server/pull/687
+- Add initial implementation for checking if a map layer is used by some functionality so we
+  can notify admin about it when removing the layer etc.
+  Currently only checks if layer is used as a timeseries metadata layer, but this can be improved
+  in the future to include notifying usage in embedded maps, region sets in thematic maps etc.
+
+- Changed the Maven repository path for Oskari artifacts under oskari.org (The old one is redirected to the new one and works as well but we migrated away from Nexus so it makes sense to change the path to not reference it).
+- Upgraded libs:
+  - GeoTools 23.2 -> 24.2 fixing an issue with some Shapefile imports
+  - JTS 1.16.1 -> 1.17.1
+  - Spring framework 5.2.8.RELEASE -> 5.3.3
+  - Spring security 5.3.4.RELEASE -> 5.4.2
+  - Spring session Dragonfruit -> 2020.0.3
+  - Flyway 6.5.5 -> 6.5.7
+  - Jedis 3.3.0 -> 3.5.1
+  - MyBatis 3.5.5 -> 3.5.6
+  - commons-dbcp2 2.0.1 -> 2.8.0
+  - Removed unused com.googlecode.lambda/lambdaj
+  - Removed unused com.github.jsonld-java/jsonld-java
+
 ## 2.1.0
 
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/26?closed=1
