@@ -18,6 +18,7 @@ public class WFSGetLayerFields {
     private static final String UNKNOWN = "unknown";
     private static final String ATTRIBUTES_KEY = "attributes";
     private static final String GEOMETRY_FIELD_KEY = "geometryField";
+    private static final String GEOMETRY_TYPE_KEY = "geometryType";
     private static final String CONTENT_TYPE_GEOJSON = "application/geo+json";
     /**
      * Return fields information for the WFS layer
@@ -135,7 +136,8 @@ public class WFSGetLayerFields {
                 "PolygonPropertyType",
                 "MultiPointPropertyType",
                 "MultiLinePropertyType",
-                "MultiPolygonPropertyType"
+                "MultiPolygonPropertyType",
+                "SurfacePropertyType"
             )
         );
         final Set<String> stringTypes = new HashSet<>(Arrays.asList("string", "date", "time"));
@@ -153,6 +155,7 @@ public class WFSGetLayerFields {
                 attributeType = attributeType.contains(":") ? attributeType.split(":")[1] : attributeType;
                 if (geometryPropertyTypes.contains(attributeType)) {
                     result.put(GEOMETRY_FIELD_KEY, attributeName);
+                    result.put(GEOMETRY_TYPE_KEY, attributeType);
                 } else if (stringTypes.contains(attributeType)) {
                     attributes.put(attributeName, STRING);
                 } else if (numericTypes.contains(attributeType)) {
