@@ -11,8 +11,10 @@ import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.ServiceRuntimeException;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.util.WFSGetLayerFields;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.oskari.permissions.PermissionService;
@@ -50,6 +52,7 @@ public class GetWFSLayerFieldsHandler extends RestActionHandler {
             JSONObject fields = WFSGetLayerFields.getLayerFields(layer);
             JSONObject locale = getFieldsLocale(layer);
             fields.putOpt("locale", locale);
+            fields.putOpt("filter", getFieldsFilter(layer));
             return fields;
         } catch (ServiceException ex) {
             throw new ActionException("Error getting layer fields", ex);
@@ -61,6 +64,23 @@ public class GetWFSLayerFieldsHandler extends RestActionHandler {
     private JSONObject getFieldsLocale(OskariLayer layer) {
         JSONObject data = layer.getAttributes().optJSONObject("data");
         return data != null ? data.optJSONObject("locale") : null;
+    }
+    private JSONObject getFieldsFilter(OskariLayer layer) {
+        JSONObject data = layer.getAttributes().optJSONObject("data");
+        if(data == null) {
+            return null;
+        }
+        Object filterObj = data.opt("filter");
+        if (filterObj == null) {
+            return null;
+        }
+        if (filterObj instanceof JSONArray) {
+            return JSONHelper.createJSONObject("default", (JSONArray) filterObj);
+        }
+        if (filterObj instanceof JSONObject) {
+            return (JSONObject) filterObj;
+        }
+        return null;
     }
 
     private OskariLayer getLayer(int layerId, User user) throws ActionException {
