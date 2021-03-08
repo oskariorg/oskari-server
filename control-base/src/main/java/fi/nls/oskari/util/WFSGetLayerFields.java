@@ -12,10 +12,6 @@ import java.net.HttpURLConnection;
 import java.util.*;
 
 public class WFSGetLayerFields {
-    private static final String STRING = "string";
-    private static final String NUMBER = "number";
-    private static final String BOOLEAN = "boolean";
-    private static final String UNKNOWN = "unknown";
     private static final String ATTRIBUTES_KEY = "attributes";
     private static final String GEOMETRY_FIELD_KEY = "geometryField";
     private static final String GEOMETRY_TYPE_KEY = "geometryType";
@@ -93,23 +89,23 @@ public class WFSGetLayerFields {
             while (propertiesKeys.hasNext()) {
                 String attributeName = (String) propertiesKeys.next();
                 Object attributeValue = properties.get(attributeName);
-                String attributeType = UNKNOWN;
+                String attributeType = WFSConversionHelper.UNKNOWN;
                 if (attributeValue instanceof String) {
-                    attributeType = STRING;
+                    attributeType = WFSConversionHelper.STRING;
                 } else if (attributeValue instanceof Boolean) {
-                    attributeType = BOOLEAN;
+                    attributeType = WFSConversionHelper.BOOLEAN;
                 }  else if (
                     attributeValue instanceof Integer ||
                     attributeValue instanceof Long ||
                     attributeValue instanceof Float ||
                     attributeValue instanceof Double
                 ) {
-                    attributeType = NUMBER;
+                    attributeType = WFSConversionHelper.NUMBER;
                 }
 
                 // update attribute type if its not set or UNKNOWN
                 String currentAttributeType = attributes.optString(attributeName);
-                if (currentAttributeType.isEmpty() || currentAttributeType.equals(UNKNOWN)) {
+                if (currentAttributeType.isEmpty() || currentAttributeType.equals(WFSConversionHelper.UNKNOWN)) {
                     attributes.put(attributeName, attributeType);
                 }
             }
@@ -128,21 +124,6 @@ public class WFSGetLayerFields {
      */
     private static JSONObject getFeatureTypeFields(OskariLayer layer) throws ServiceException {
         final JSONObject response = WFSDescribeFeatureHelper.getWFSFeaturePropertyTypes(layer, String.valueOf(layer.getId()));
-        final Set<String> geometryPropertyTypes = new HashSet<>(
-            Arrays.asList(
-                "GeometryPropertyType",
-                "PointPropertyType",
-                "LinePropertyType",
-                "PolygonPropertyType",
-                "MultiPointPropertyType",
-                "MultiLinePropertyType",
-                "MultiPolygonPropertyType",
-                "SurfacePropertyType"
-            )
-        );
-        final Set<String> stringTypes = new HashSet<>(Arrays.asList("string", "date", "time"));
-        final Set<String> numericTypes = new HashSet<>(Arrays.asList("decimal", "int", "integer", "float", "double"));
-        final Set<String> booleanTypes = new HashSet<>(Arrays.asList("boolean"));
         try {
             final JSONObject propertyTypes = response.getJSONObject("propertyTypes");
             final Iterator<?> attributeNames = propertyTypes.keys();
@@ -153,17 +134,11 @@ public class WFSGetLayerFields {
                 String attributeType = propertyTypes.getString(attributeName);
                 // remove xml namespace prefix if there's one
                 attributeType = attributeType.contains(":") ? attributeType.split(":")[1] : attributeType;
-                if (geometryPropertyTypes.contains(attributeType)) {
+                if (WFSConversionHelper.isGeometryType(attributeType)) {
                     result.put(GEOMETRY_FIELD_KEY, attributeName);
                     result.put(GEOMETRY_TYPE_KEY, attributeType);
-                } else if (stringTypes.contains(attributeType)) {
-                    attributes.put(attributeName, STRING);
-                } else if (numericTypes.contains(attributeType)) {
-                    attributes.put(attributeName, NUMBER);
-                } else if (booleanTypes.contains(attributeType)) {
-                    attributes.put(attributeName, BOOLEAN);
                 } else {
-                    attributes.put(attributeName, UNKNOWN);
+                    attributes.put(attributeName, WFSConversionHelper.getSimpleType(attributeType));
                 }
             }
             result.put(ATTRIBUTES_KEY, attributes);
