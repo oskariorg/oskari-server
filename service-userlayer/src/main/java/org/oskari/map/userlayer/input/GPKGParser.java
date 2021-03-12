@@ -9,7 +9,6 @@ import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureSource;
-import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.map.userlayer.service.UserLayerException;
 
@@ -32,24 +31,23 @@ public class GPKGParser implements FeatureCollectionParser {
         params.put("database", file);
 
         DataStore store = null;
-        SimpleFeatureCollection collection = null;
         try {
             store = DataStoreFinder.getDataStore(params);
             for (String typeName : store.getTypeNames()) {
                 SimpleFeatureSource source = store.getFeatureSource(typeName);
-                SimpleFeatureType sft = store.getSchema(typeName);
-                CoordinateReferenceSystem crs = sft
+                CoordinateReferenceSystem crs = source.getSchema()
                         .getGeometryDescriptor()
                         .getCoordinateReferenceSystem();
                 if (crs != null) {
                     sourceCRS = crs;
                 }
-                collection = FeatureCollectionParsers.read(source, sourceCRS, targetCRS);
+                SimpleFeatureCollection collection = FeatureCollectionParsers.read(source, sourceCRS, targetCRS);
                 if (!collection.isEmpty()) {
-                    break;
+                    return collection;
                 }
             }
-            return collection;
+            throw new UserLayerException("Failed to parse GPKG: Could not find non-empty feature collection",
+                    UserLayerException.ErrorType.NO_FEATURES);
         } catch (ServiceException e) {
             // forward error on read: if in file UserLayerException. if in service ServiceException
             throw e;
