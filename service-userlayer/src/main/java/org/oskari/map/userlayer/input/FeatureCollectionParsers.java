@@ -33,6 +33,7 @@ public class FeatureCollectionParsers {
         case KMLParser.SUFFIX:
         case MIFParser.SUFFIX:
         case SHPParser.SUFFIX:
+        case GPKGParser.SUFFIX:
             return true;
         default:
             return false;
@@ -49,6 +50,7 @@ public class FeatureCollectionParsers {
         case KMLParser.SUFFIX: return new KMLParser();
         case MIFParser.SUFFIX: return new MIFParser();
         case SHPParser.SUFFIX: return new SHPParser();
+        case GPKGParser.SUFFIX: return new GPKGParser();
         default: return null;
         }
     }
