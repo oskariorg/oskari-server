@@ -47,6 +47,7 @@ import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.KEY_FEATU
  * Methods for parsing WFS capabilities data
  * Prototype
  */
+@Deprecated
 public class GetGtWFSCapabilities {
 
     private static final Logger log = LogFactory.getLogger(GetGtWFSCapabilities.class);
