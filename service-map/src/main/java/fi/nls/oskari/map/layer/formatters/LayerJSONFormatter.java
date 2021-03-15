@@ -7,8 +7,11 @@ import fi.nls.oskari.map.geometry.WKTHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
+import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.referencing.CRS;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.utils.common.Sets;
 
 import java.util.*;
@@ -152,7 +155,7 @@ public class LayerJSONFormatter {
         JSONHelper.putValue(layerJson, "created", layer.getCreated());
         JSONHelper.putValue(layerJson, "updated", layer.getUpdated());
 
-        JSONHelper.putValue(layerJson, "dataUrl_uuid", LayerJSONFormatter.getFixedDataUrl(layer.getMetadataId()));
+        JSONHelper.putValue(layerJson, KEY_METADATA, getMetadataUuid(layer));
         JSONHelper.putValue(layerJson, "style", layer.getStyle());
 
         // setup supported projections
@@ -257,6 +260,13 @@ public class LayerJSONFormatter {
             urlParams.put(KEY_STYLE, styleName);
         }
         return IOHelper.constructUrl(PropertyUtil.get(PROPERTY_AJAXURL), urlParams);
+    }
+    private String getMetadataUuid (OskariLayer layer) {
+        String fixed = LayerJSONFormatter.getFixedDataUrl(layer.getMetadataId());
+        if (fixed != null) {
+            return fixed;
+        }
+        return layer.getCapabilities().optString(KEY_METADATA);
     }
 
     // This is solution of transition for dataUrl and for dataUrl_uuid
@@ -365,5 +375,15 @@ public class LayerJSONFormatter {
         } catch (Exception ex) {
             LOG.debug("Error transforming coverage to", mapSRS, "from", wktWGS84);
         }
+    }
+    protected static String coverageToWKT (ReferencedEnvelope env) {
+        try {
+            CoordinateReferenceSystem wgs84 = CRS.decode("EPSG:4326", true);
+            env = env.transform(wgs84, true);
+            return WKTHelper.getBBOX(env.getMinX(), env.getMinY(), env.getMaxX(), env.getMaxY());
+        } catch (Exception e) {
+            LOG.debug("Error transforming coverage to WGS84 WKT");
+        }
+        return null;
     }
 }

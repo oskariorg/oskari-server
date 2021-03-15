@@ -19,6 +19,7 @@ public class CapabilitiesConstants {
     public static final String KEY_GEOM_NAME = WFSLayerCapabilities.KEY_GEOMETRYFIELD;
     public static final String KEY_NAMESPACE_URL = WFSLayerCapabilities.KEY_NAMESPACE_URL;
     public static final String KEY_LAYER_COVERAGE = "geom";
+    public static final String KEY_METADATA = "metadataUuid";
     public static final String KEY_ISQUERYABLE = "isQueryable";
     public static final String KEY_KEYWORDS = "keywords";
     public static final String KEY_CRS_URI = "crs-uri";

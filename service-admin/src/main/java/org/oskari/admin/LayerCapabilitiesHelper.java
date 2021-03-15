@@ -1,6 +1,5 @@
 package org.oskari.admin;
 
-import fi.mml.map.mapwindow.service.wms.WebMapService;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.view.ViewService;
@@ -14,17 +13,13 @@ import fi.nls.oskari.wms.WMSCapabilitiesService;
 import fi.nls.oskari.wmts.WMTSCapabilitiesService;
 import fi.nls.oskari.wmts.domain.WMTSCapabilities;
 import org.geotools.data.wfs.WFSDataStore;
-import org.oskari.maplayer.admin.LayerAdminJSONHelper;
 import org.oskari.maplayer.model.ServiceCapabilitiesResult;
-import org.oskari.maplayer.model.ServiceCapabilitiesResultWMS;
-import org.oskari.maplayer.model.ServiceCapabilitiesResultWMTS;
 import org.oskari.service.wfs3.WFS3Service;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class LayerCapabilitiesHelper {
 
@@ -72,8 +67,7 @@ public class LayerCapabilitiesHelper {
                 updateCapabilitiesWFS(ml);
                 break;
             case OskariLayer.TYPE_WMS:
-                WebMapService wms = wmsCapabilities.updateCapabilities(ml);
-                OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMS(wms, ml, getSystemCRSs());
+                wmsCapabilities.updateLayerCapabilities(ml, getSystemCRSs());
                 break;
             case OskariLayer.TYPE_WMTS:
                 WMTSCapabilities wmts = wmtsCapabilities.updateCapabilities(ml);

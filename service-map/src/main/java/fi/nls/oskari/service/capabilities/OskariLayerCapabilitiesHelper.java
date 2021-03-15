@@ -24,6 +24,8 @@ import java.util.Set;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.data.wfs.WFSDataStore;
 import org.geotools.data.wfs.internal.WFSGetCapabilities;
+import org.geotools.ows.wms.Layer;
+import org.geotools.ows.wms.WMSCapabilities;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.oskari.service.wfs3.WFS3Service;
@@ -40,6 +42,7 @@ public class OskariLayerCapabilitiesHelper {
      * @throws WebMapServiceParseException if something goes wrong
      * @throws LayerNotFoundInCapabilitiesException if layer can't be found in capabilities
      */
+    @Deprecated
     public static WebMapService parseWMSCapabilities(String xml, OskariLayer ml)
             throws WebMapServiceParseException, LayerNotFoundInCapabilitiesException {
         // flush cache, otherwise only db is updated but code retains the old cached version
@@ -54,7 +57,7 @@ public class OskariLayerCapabilitiesHelper {
     public static void setPropertiesFromCapabilitiesWMS(WebMapService wms, OskariLayer ml) {
         setPropertiesFromCapabilitiesWMS(wms, ml, null);
     }
-
+    @Deprecated
     public static void setPropertiesFromCapabilitiesWMS(WebMapService wms,
             OskariLayer ml, Set<String> systemCRSs) {
         JSONObject caps = LayerJSONFormatterWMS.createCapabilitiesJSON(wms, systemCRSs);
@@ -70,7 +73,23 @@ public class OskariLayerCapabilitiesHelper {
             ml.setStyle(style);
         }
     }
+    public static void setPropertiesFromCapabilitiesWMS(WMSCapabilities capa, Layer capabilitiesLayer,
+                                                        OskariLayer ml, Set<String> systemCRSs) {
+        JSONObject caps = LayerJSONFormatterWMS.createCapabilitiesJSON(capa, capabilitiesLayer, systemCRSs);
+        ml.setCapabilities(caps);
+        ml.setCapabilitiesLastUpdated(new Date());
+    }
 
+    public static void setDefaultStyleFromCapabilitiesJSON(OskariLayer ml) {
+        JSONArray styles = ml.getCapabilities().optJSONArray(KEY_STYLES);
+        String style = "";
+        if (styles != null && styles.length() > 0) {
+            style = JSONHelper.optString(JSONHelper.getJSONObject(styles, 0), "name");
+        }
+        ml.setStyle(style);
+    }
+
+    @Deprecated
     private static String getDefaultStyle(OskariLayer ml, final JSONObject caps) {
         String style = null;
         if (ml.getId() == -1 && ml.getLegendImage() == null && caps.has(KEY_STYLES)) {
@@ -96,7 +115,6 @@ public class OskariLayerCapabilitiesHelper {
             OskariLayer ml, String crs) {
         setPropertiesFromCapabilitiesWMTS(caps, ml, Collections.emptySet());
     }
-
     public static void setPropertiesFromCapabilitiesWMTS(WMTSCapabilities caps,
             OskariLayer ml, Set<String> systemCRSs) {
         int id = ml.getId();
