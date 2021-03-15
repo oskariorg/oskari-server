@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
+@Deprecated
 public abstract class AbstractWebMapService implements WebMapService {
 
     protected static final QName XLINK_HREF = new QName("http://www.w3.org/1999/xlink", "href");

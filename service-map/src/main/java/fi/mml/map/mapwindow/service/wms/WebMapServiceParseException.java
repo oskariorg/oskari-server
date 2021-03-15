@@ -4,6 +4,7 @@ package fi.mml.map.mapwindow.service.wms;
  * Exception should be thrown if xml of web map service cannot be parsed
  *
  */
+@Deprecated
 public class WebMapServiceParseException extends Exception {
 
 	private static final long serialVersionUID = 1L;

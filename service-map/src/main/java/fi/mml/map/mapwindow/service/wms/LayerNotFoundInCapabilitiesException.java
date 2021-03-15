@@ -1,5 +1,6 @@
 package fi.mml.map.mapwindow.service.wms;
 
+@Deprecated
 public class LayerNotFoundInCapabilitiesException extends Exception {
 
     private static final long serialVersionUID = 1L;

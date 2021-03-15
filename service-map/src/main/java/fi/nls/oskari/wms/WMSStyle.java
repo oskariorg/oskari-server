@@ -9,6 +9,7 @@ import org.json.JSONObject;
 /**
  * Class for Oskari WMS capabilities layer style
  */
+@Deprecated
 public class WMSStyle {
 
  /*   [{

@@ -3,6 +3,7 @@ package fi.mml.map.mapwindow.service.wms;
 import java.util.List;
 import java.util.Map;
 
+@Deprecated
 public interface WebMapService {
 
 	/**
@@ -78,5 +79,4 @@ public interface WebMapService {
      * @return String bounding box
      */
     String getGeom();
-
 }
