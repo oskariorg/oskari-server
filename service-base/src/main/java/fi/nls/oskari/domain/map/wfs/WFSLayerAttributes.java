@@ -123,7 +123,7 @@ public class WFSLayerAttributes {
 
     public List<String> getSelectedAttributes(String lang) {
         return params.getOrDefault(lang,
-                params.getOrDefault("default", Collections.emptyList()));
+                params.getOrDefault(PropertyUtil.getDefaultLanguage(), Collections.emptyList()));
     }
 
     public String getNamespaceURL() {

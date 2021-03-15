@@ -40,7 +40,6 @@ public class LayerJSONFormatterUSERLAYER extends LayerJSONFormatterUSERDATA {
         JSONObject attributes = JSONHelper.getJSONObject(layerJson, "attributes");
         JSONObject data = new JSONObject();
         JSONObject types = new JSONObject();
-        JSONObject filter = new JSONObject();
         Map<String, JSONObject> locale = new HashMap<>();
         JSONArray filteredFields = new JSONArray();
         for(int i = 0; i < fields.length(); i++){
@@ -48,7 +47,7 @@ public class LayerJSONFormatterUSERLAYER extends LayerJSONFormatterUSERDATA {
             String name = JSONHelper.optString(field, "name");
             String type = JSONHelper.optString(field, "type");
             if (DEFAULT_GEOMETRY_NAME.equals(name)) {
-                JSONHelper.putValue(data, "geometryField", name);
+                JSONHelper.putValue(data, "geometryName", name);
                 JSONHelper.putValue(data, "geometryType", type);
                 continue;
             }
@@ -65,9 +64,8 @@ public class LayerJSONFormatterUSERLAYER extends LayerJSONFormatterUSERDATA {
         }
 
         JSONHelper.putValue(attributes, "data", data);
-        JSONHelper.putValue(data, "filter", filter);
+        JSONHelper.putValue(data, "filter", filteredFields);
         JSONHelper.putValue(data, "types", types);
-        JSONHelper.put(filter, "default", filteredFields);
         JSONObject loc = new JSONObject();
         locale.keySet().forEach(lang -> JSONHelper.putValue(loc, lang, locale.get(lang)));
         JSONHelper.putValue(data, "locale", loc);

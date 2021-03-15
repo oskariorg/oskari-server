@@ -64,7 +64,7 @@ public class LayerJSONFormatterUSERLAYERTest {
         Assert.assertEquals("string", types.getString("NAME"));
         Assert.assertEquals("number", types.getString("CODE"));
 
-        Assert.assertEquals("the_geom", data.getString("geometryField"));
+        Assert.assertEquals("the_geom", data.getString("geometryName"));
         Assert.assertEquals("MultiPolygon", data.getString("geometryType"));
     }
 }
