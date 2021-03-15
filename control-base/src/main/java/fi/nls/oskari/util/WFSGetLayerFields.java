@@ -12,9 +12,11 @@ import java.net.HttpURLConnection;
 import java.util.*;
 
 public class WFSGetLayerFields {
-    private static final String ATTRIBUTES_KEY = "attributes";
-    private static final String GEOMETRY_FIELD_KEY = "geometryField";
-    private static final String GEOMETRY_TYPE_KEY = "geometryType";
+    private static final String KEY_TYPES = "types";
+    private static final String KEY_LOCALE = "locale";
+    private static final String KEY_SELECTED = "selected";
+    private static final String KEY_GEOMETRY_NAME = "geometryName";
+    private static final String KEY_GEOMETRY_TYPE = "geometryType";
     private static final String CONTENT_TYPE_GEOJSON = "application/geo+json";
     /**
      * Return fields information for the WFS layer
@@ -57,8 +59,8 @@ public class WFSGetLayerFields {
             final JSONArray features = getCollectionItems(layer);
             final JSONObject attributes = getFeatureAttributes(features);
             final JSONObject result = new JSONObject();
-            result.put(ATTRIBUTES_KEY, attributes);
-            result.put(GEOMETRY_FIELD_KEY, "geometry");
+            result.put(KEY_TYPES, attributes);
+            result.put(KEY_GEOMETRY_NAME, "geometry");
             return result;
         } catch (JSONException ex) {
             throw new ServiceException("Couldn't parse collection items response", ex);
@@ -135,16 +137,30 @@ public class WFSGetLayerFields {
                 // remove xml namespace prefix if there's one
                 attributeType = attributeType.contains(":") ? attributeType.split(":")[1] : attributeType;
                 if (WFSConversionHelper.isGeometryType(attributeType)) {
-                    result.put(GEOMETRY_FIELD_KEY, attributeName);
-                    result.put(GEOMETRY_TYPE_KEY, attributeType);
+                    result.put(KEY_GEOMETRY_NAME, attributeName);
+                    result.put(KEY_GEOMETRY_TYPE, attributeType);
                 } else {
                     attributes.put(attributeName, WFSConversionHelper.getSimpleType(attributeType));
                 }
             }
-            result.put(ATTRIBUTES_KEY, attributes);
+            result.put(KEY_TYPES, attributes);
             return result;
         } catch (JSONException ex) {
             throw new ServiceException("Couldn't parse feature property types response", ex);
         }
+    }
+    public static void injectLayerAttributesData (OskariLayer layer, JSONObject fields) throws ServiceException {
+        JSONObject data = layer.getAttributes().optJSONObject("data");
+        if (data == null) {
+            return;
+        }
+        try {
+            fields.putOpt(KEY_LOCALE, data.optJSONObject("locale"));
+            // filter is array or localized object
+            fields.putOpt(KEY_SELECTED, data.opt("filter"));
+        } catch (JSONException e) {
+            throw new ServiceException("Invalid json in layer attributes, layer id: " + layer.getId(), e);
+        }
+
     }
 }

@@ -50,37 +50,11 @@ public class GetWFSLayerFieldsHandler extends RestActionHandler {
     private JSONObject getLayerFields(OskariLayer layer) throws ActionException {
         try {
             JSONObject fields = WFSGetLayerFields.getLayerFields(layer);
-            JSONObject locale = getFieldsLocale(layer);
-            fields.putOpt("locale", locale);
-            fields.putOpt("filter", getFieldsFilter(layer));
+            WFSGetLayerFields.injectLayerAttributesData(layer, fields);
             return fields;
         } catch (ServiceException ex) {
             throw new ActionException("Error getting layer fields", ex);
-        } catch (JSONException ex) {
-            throw new ActionException("Invalid attribute locale", ex);
         }
-    }
-
-    private JSONObject getFieldsLocale(OskariLayer layer) {
-        JSONObject data = layer.getAttributes().optJSONObject("data");
-        return data != null ? data.optJSONObject("locale") : null;
-    }
-    private JSONObject getFieldsFilter(OskariLayer layer) {
-        JSONObject data = layer.getAttributes().optJSONObject("data");
-        if(data == null) {
-            return null;
-        }
-        Object filterObj = data.opt("filter");
-        if (filterObj == null) {
-            return null;
-        }
-        if (filterObj instanceof JSONArray) {
-            return JSONHelper.createJSONObject("default", (JSONArray) filterObj);
-        }
-        if (filterObj instanceof JSONObject) {
-            return (JSONObject) filterObj;
-        }
-        return null;
     }
 
     private OskariLayer getLayer(int layerId, User user) throws ActionException {
