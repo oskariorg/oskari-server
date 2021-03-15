@@ -14,7 +14,7 @@ import java.util.*;
 public class WFSGetLayerFields {
     private static final String KEY_TYPES = "types";
     private static final String KEY_LOCALE = "locale";
-    private static final String KEY_SELECTED = "selected";
+    private static final String KEY_SELECTION = "selection";
     private static final String KEY_GEOMETRY_NAME = "geometryName";
     private static final String KEY_GEOMETRY_TYPE = "geometryType";
     private static final String CONTENT_TYPE_GEOJSON = "application/geo+json";
@@ -156,8 +156,8 @@ public class WFSGetLayerFields {
         }
         try {
             fields.putOpt(KEY_LOCALE, data.optJSONObject("locale"));
-            // filter is array or localized object
-            fields.putOpt(KEY_SELECTED, data.opt("filter"));
+            // selection is array or localized object of arrays
+            fields.putOpt(KEY_SELECTION, data.opt("filter"));
         } catch (JSONException e) {
             throw new ServiceException("Invalid json in layer attributes, layer id: " + layer.getId(), e);
         }
