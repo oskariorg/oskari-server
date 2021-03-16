@@ -7,5 +7,6 @@
         "fi": {
             "test-attribute": "label for fi"
         }
-    }
+    },
+    "selection": ["test-attribute"]
 }

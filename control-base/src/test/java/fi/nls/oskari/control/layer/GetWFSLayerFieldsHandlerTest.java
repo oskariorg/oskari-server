@@ -8,7 +8,6 @@ import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.service.OskariComponentManager;
-import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.WFSGetLayerFields;
 import fi.nls.test.control.JSONActionRouteTest;
 import fi.nls.test.util.ResourceHelper;
@@ -42,10 +41,11 @@ public class GetWFSLayerFieldsHandlerTest extends JSONActionRouteTest {
         handler.init();
     }
 
-    private static void mockWFSGetLayerFields() throws JSONException, ServiceException {
+    private static void mockWFSGetLayerFields() throws Exception {
         PowerMockito.mockStatic(WFSGetLayerFields.class);
         final JSONObject mockFields = getMockFields();
         when(WFSGetLayerFields.getLayerFields(any())).thenReturn(mockFields);
+        PowerMockito.doCallRealMethod().when(WFSGetLayerFields.class, "injectLayerAttributesData", any(OskariLayer.class), any(JSONObject.class));
     }
 
     private static JSONObject getMockFields() throws JSONException {
@@ -76,7 +76,7 @@ public class GetWFSLayerFieldsHandlerTest extends JSONActionRouteTest {
     private static OskariLayer getMockLayer(String layerType) throws JSONException {
         OskariLayer wfsLayer = new OskariLayer();
         wfsLayer.setType(layerType);
-        final String rawJsonStr = "{\"data\": {\"locale\": {\"fi\": {\"test-attribute\": \"label for fi\"}}}}";
+        final String rawJsonStr = "{\"data\": {\"locale\": {\"fi\": {\"test-attribute\": \"label for fi\"}},\"filter\":[\"test-attribute\"]}}";
         final JSONObject mockLayerAttributes = new JSONObject(rawJsonStr);
         wfsLayer.setAttributes(mockLayerAttributes);
         return wfsLayer;
@@ -86,8 +86,8 @@ public class GetWFSLayerFieldsHandlerTest extends JSONActionRouteTest {
     public void handleActionShouldReturnCorrectResponse() throws Exception {
         final ActionParameters params = getActionParameters("1");
         handler.handleAction(params);
-        JSONObject response = ResourceHelper.readJSONResource("GetWFSLayerFieldsHandlerTest-expected.json", this);
-        verifyResponseContent(response);
+        JSONObject expectedResult = ResourceHelper.readJSONResource("GetWFSLayerFieldsHandlerTest-expected.json", this);
+        verifyResponseContent(expectedResult);
     }
 
     @Test(expected =  ActionException.class)
