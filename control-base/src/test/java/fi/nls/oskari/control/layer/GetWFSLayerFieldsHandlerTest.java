@@ -49,7 +49,7 @@ public class GetWFSLayerFieldsHandlerTest extends JSONActionRouteTest {
     }
 
     private static JSONObject getMockFields() throws JSONException {
-        final String rawFieldsStr = "{\"attributes\": {\"test-attribute\": \"string\"}, \"geometryField\": \"geometry\"}";
+        final String rawFieldsStr = "{\"types\": {\"test-attribute\": \"string\"}, \"geometryName\": \"geometry\"}";
         return new JSONObject(rawFieldsStr);
     }
 

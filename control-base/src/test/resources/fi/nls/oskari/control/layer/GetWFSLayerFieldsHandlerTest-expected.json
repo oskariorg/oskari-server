@@ -1,8 +1,8 @@
 {
-    "attributes": {
+    "types": {
         "test-attribute": "string"
     },
-    "geometryField": "geometry",
+    "geometryName": "geometry",
     "locale": {
         "fi": {
             "test-attribute": "label for fi"
