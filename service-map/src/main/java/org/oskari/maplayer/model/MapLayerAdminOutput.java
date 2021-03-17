@@ -1,6 +1,6 @@
 package org.oskari.maplayer.model;
 
-import java.util.Map;
+import java.util.*;
 
 /**
  * Used as ouput data model for layers in the admin UI.
@@ -9,6 +9,8 @@ public class MapLayerAdminOutput extends MapLayer {
 
     private String warn;
     private Map<String, Object> capabilities;
+    private Date created;
+    private Date updated;
 
     public Map<String, Object> getCapabilities() {
         return capabilities;
@@ -16,6 +18,22 @@ public class MapLayerAdminOutput extends MapLayer {
 
     public void setCapabilities(Map<String, Object> capabilities) {
         this.capabilities = capabilities;
+    }
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
+    public Date getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(Date updated) {
+        this.updated = updated;
     }
 
     /**

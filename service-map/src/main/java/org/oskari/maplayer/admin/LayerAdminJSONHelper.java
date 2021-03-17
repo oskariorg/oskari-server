@@ -137,6 +137,9 @@ public class LayerAdminJSONHelper {
         out.setInternal(layer.isInternal()); // we might not need to write this
         out.setCapabilities(JSONHelper.getObjectAsMap(layer.getCapabilities()));
 
+        out.setCreated(layer.getCreated());
+        out.setUpdated(layer.getUpdated());
+
         // TODO: handle sublayers layer.getSublayers()
         // TODO: handle groups -> MapLayerGroupsHelper.findGroupsForNames_dangerzone_() + setGroupsForLayer()
         // TODO: role_permissions -> MapLayerPermissionsHelper.setLayerPermissions()
