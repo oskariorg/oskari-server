@@ -44,7 +44,7 @@ public class WFSConversionHelper {
     private static final Set<String> STRING_TYPES = new HashSet<>(Arrays.asList("string", "date", "time"));
     private static final Set<String> BOOLEAN_TYPES = new HashSet<>(Arrays.asList("boolean"));
 
-    public static boolean isNumeberType (String type) {
+    public static boolean isNumberType(String type) {
         return NUMBER_TYPES.contains(type);
     }
     public static boolean isStringType (String type) {
@@ -63,7 +63,7 @@ public class WFSConversionHelper {
         if (isStringType(type)) {
             return STRING;
         }
-        if (isNumeberType(type)) {
+        if (isNumberType(type)) {
             return NUMBER;
         }
         if (isBooleanType(type)) {
@@ -72,7 +72,7 @@ public class WFSConversionHelper {
         return UNKNOWN;
     }
     public static String getStringOrNumber (String type) {
-        return isNumeberType(type) ? NUMBER : STRING;
+        return isNumberType(type) ? NUMBER : STRING;
 
     }
     public static String stripNamespace(String tag) {
