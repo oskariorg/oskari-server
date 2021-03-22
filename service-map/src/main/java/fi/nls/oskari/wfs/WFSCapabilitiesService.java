@@ -18,7 +18,6 @@ import org.oskari.maplayer.admin.LayerAdminJSONHelper;
 import org.oskari.maplayer.model.ServiceCapabilitiesResult;
 import org.oskari.service.wfs3.WFS3Service;
 import org.oskari.service.wfs3.model.WFS3CollectionInfo;
-import org.oskari.service.wfs3.model.WFS3Exception;
 import org.oskari.utils.common.Sets;
 
 import java.io.IOException;

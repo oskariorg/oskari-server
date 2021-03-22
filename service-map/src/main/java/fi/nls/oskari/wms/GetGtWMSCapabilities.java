@@ -33,6 +33,7 @@ import java.util.logging.Level;
 /**
  * Methods for parsing WMS capabilities data
  */
+@Deprecated
 public class GetGtWMSCapabilities {
 
     private static final Logger log = LogFactory.getLogger(GetGtWMSCapabilities.class);

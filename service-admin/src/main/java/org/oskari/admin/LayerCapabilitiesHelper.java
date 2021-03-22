@@ -1,6 +1,5 @@
 package org.oskari.admin;
 
-import fi.mml.map.mapwindow.service.wms.WebMapService;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.view.ViewService;
@@ -68,8 +67,7 @@ public class LayerCapabilitiesHelper {
                 updateCapabilitiesWFS(ml);
                 break;
             case OskariLayer.TYPE_WMS:
-                WebMapService wms = wmsCapabilities.updateCapabilities(ml);
-                OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMS(wms, ml, getSystemCRSs());
+                wmsCapabilities.updateLayerCapabilities(ml, getSystemCRSs());
                 break;
             case OskariLayer.TYPE_WMTS:
                 WMTSCapabilities wmts = wmtsCapabilities.updateCapabilities(ml);

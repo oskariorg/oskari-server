@@ -14,6 +14,7 @@ import java.util.Map;
  * Time: 12:48
  * To change this template use File | Settings | File Templates.
  */
+@Deprecated
 public class WMSCapabilities implements WebMapService {
 
     private String capabilitiesURL = null;

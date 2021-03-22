@@ -36,6 +36,7 @@ import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.KEY_LAYER
 /**
  * Get capabilites for layer and returns JSON formatted as Oskari layers
  */
+@Deprecated
 @OskariActionRoute("GetWSCapabilities")
 public class GetWSCapabilitiesHandler extends ActionHandler {
 

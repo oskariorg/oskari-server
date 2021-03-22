@@ -1,5 +1,6 @@
 package fi.mml.map.mapwindow.service.wms;
 
+import java.lang.Exception;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -10,6 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import fi.mml.wms.v111.*;
 import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlObject;
 
@@ -17,19 +19,10 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Polygon;
 
-import fi.mml.wms.v111.Format;
-import fi.mml.wms.v111.GetFeatureInfo;
-import fi.mml.wms.v111.Keyword;
-import fi.mml.wms.v111.LatLonBoundingBox;
-import fi.mml.wms.v111.Layer;
-import fi.mml.wms.v111.LegendURL;
-import fi.mml.wms.v111.SRS;
-import fi.mml.wms.v111.Style;
-import fi.mml.wms.v111.WMTMSCapabilitiesDocument;
-
 /**
  * 1.1.1 implementation of WMS
  */
+@Deprecated
 public class WebMapServiceV1_1_1_Impl extends AbstractWebMapService {
 
     public WebMapServiceV1_1_1_Impl(String url, String data, String layerName)
@@ -96,6 +89,7 @@ public class WebMapServiceV1_1_1_Impl extends AbstractWebMapService {
                     .map(s -> Arrays.asList(s.split(",")))
                     .orElse(Collections.emptyList());
             this.keywords = parseKeywords(layer);
+            OnlineResource serviceResource = wmtms.getWMTMSCapabilities().getService().getOnlineResource();
         } catch (Exception e) {
             throw new WebMapServiceParseException(e);
         }

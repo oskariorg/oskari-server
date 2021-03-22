@@ -28,6 +28,7 @@ import fi.mml.capabilities.KeywordListDocument.KeywordList;
 /**
  * 1.3.0 implementation of WMS
  */
+@Deprecated
 public class WebMapServiceV1_3_0_Impl extends AbstractWebMapService {
 
     public WebMapServiceV1_3_0_Impl(String url, String data, String layerName)
@@ -49,7 +50,6 @@ public class WebMapServiceV1_3_0_Impl extends AbstractWebMapService {
             throws WebMapServiceParseException, LayerNotFoundInCapabilitiesException {
         try {
             WMSCapabilitiesDocument wms = WMSCapabilitiesDocument.Factory.parse(data);
-
             Layer layerCapabilities = wms.getWMSCapabilities().getCapability().getLayer();
             BoundingBox bbox = null;
             if (layerCapabilities.getBoundingBoxArray().length > 0) {

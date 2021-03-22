@@ -1,5 +1,6 @@
 package fi.mml.map.mapwindow.service.wms;
 
+@Deprecated
 public class WebMapServiceFactoryHelper {
 
     public static WebMapService createFromXML(final String layerName, final String xml)

@@ -4,13 +4,19 @@ import fi.mml.map.mapwindow.service.wms.WebMapService;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.map.geometry.WKTHelper;
 import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.util.PropertyUtil;
 
+import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.ows.wms.CRSEnvelope;
+import org.geotools.ows.wms.Layer;
+import org.geotools.ows.wms.WMSCapabilities;
+import org.geotools.ows.wms.xml.Dimension;
+import org.geotools.ows.wms.xml.Extent;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.net.URL;
 import java.util.*;
 import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.*;
 /**
@@ -25,6 +31,7 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
     private static Logger log = LogFactory.getLogger(LayerJSONFormatterWMS.class);
     public static final String KEY_GFICONTENT = "gfiContent";
     public static final String KEY_ATTRIBUTES = "attributes";
+    private static final String ISO_TIME = "ISO8601";
 
 
     public JSONObject getJSON(OskariLayer layer,
@@ -123,6 +130,119 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
         return true;
     }
 
+    public static JSONObject createCapabilitiesJSON(final WMSCapabilities caps, final Layer capabilitiesLayer,
+                                                    final Set<String> systemCRSs) {
+        JSONObject capabilities = new JSONObject();
+        if (caps == null) {
+            return capabilities;
+        }
+        // Get service infos
+        JSONHelper.putValue(capabilities, KEY_FORMATS, getGFIFormats(caps));
+        JSONHelper.putValue(capabilities, KEY_VERSION, caps.getVersion());
+        if(capabilitiesLayer == null) {
+            return capabilities;
+        }
+        // Get layer infos
+        JSONHelper.putValue(capabilities, KEY_ISQUERYABLE, capabilitiesLayer.isQueryable());
+        List<JSONObject> styles = getStyles(capabilitiesLayer);
+        JSONHelper.putValue(capabilities, KEY_STYLES, new JSONArray(styles));
+        JSONHelper.putValue(capabilities, KEY_METADATA, getMetadataUuid(caps, capabilitiesLayer));
+
+        final Set<String> crss = getCRSs(capabilitiesLayer, systemCRSs);
+        JSONHelper.putValue(capabilities, KEY_SRS, new JSONArray(crss));
+
+        Optional<String> geom = getCoverage(capabilitiesLayer);
+        if (geom.isPresent()) {
+            JSONHelper.putValue(capabilities, KEY_LAYER_COVERAGE, geom.get());
+        }
+        // Use setter because times can be object or array
+        setTimes(capabilities, capabilitiesLayer);
+
+        // TODO: should we parse keywords
+        //capabilitiesLayer.getKeywords();
+
+        return capabilities;
+    }
+
+    private static JSONObject getGFIFormats(final WMSCapabilities caps) {
+        List<String> formats = caps.getRequest().getGetFeatureInfo().getFormats();
+        return getFormatsJSON(formats);
+    }
+    private static List<JSONObject> getStyles(final Layer capabilitiesLayer) {
+        final List<JSONObject> styles = new ArrayList<>();
+        capabilitiesLayer.getStyles().stream().forEach(style -> {
+            String legend = (String) style.getLegendURLs().stream().findFirst().orElse("");
+            // TODO: title is InternationalString, should we get localized title
+            // String title = style.getTitle().toString(new Locale(PropertyUtil.getDefaultLocale()));
+            String title = style.getTitle().toString();
+            styles.add(createStylesJSON(style.getName(),title, legend));
+        });
+        return styles;
+    }
+    private static Set<String> getCRSs(final Layer capabilitiesLayer, final Set<String> systemCRSs) {
+        Set<String> crs = capabilitiesLayer.getSrs();
+        return getCRSsToStore(systemCRSs, crs);
+    }
+    private static String getMetadataUuid (WMSCapabilities caps, Layer capabilitiesLayer) {
+        // find first metadata url to parse uuid
+        URL metadataUrl = capabilitiesLayer.getMetadataURL().stream().map(meta->meta.getUrl()).findFirst().orElse(null);
+        if (metadataUrl == null) {
+            // TODO: does service url really has metadata uuid in it?? Should we check parent layers instead?
+            metadataUrl = caps.getService().getOnlineResource();
+        }
+        String url = metadataUrl != null ? metadataUrl.toString() : "";
+        return LayerJSONFormatter.getFixedDataUrl(url);
+    }
+    private static Optional<String> getCoverage (Layer capabilitiesLayer) {
+        // CRS:84 not EPSG:4326
+        CRSEnvelope extentWGS84 = capabilitiesLayer.getLatLonBoundingBox();
+        if (extentWGS84 == null) {
+            return Optional.empty();
+        }
+        return Optional.of(WKTHelper.getBBOX(extentWGS84.getMinX(),
+                extentWGS84.getMinY(),
+                extentWGS84.getMaxX(),
+                extentWGS84.getMaxY()));
+    }
+    private static Optional<String> getTransformedCoverage (Layer capabilitiesLayer) {
+        // if latlonbbox is missing, could also check from getLayerBoundingBoxes(), getBoundingBoxes() or extent methods
+        CRSEnvelope bbox = capabilitiesLayer.getLatLonBoundingBox();
+        if (bbox == null) {
+            return Optional.empty();
+        }
+        ReferencedEnvelope env = new ReferencedEnvelope (bbox.getMinX(), bbox.getMaxX(),bbox.getMinY(), bbox.getMaxY(), bbox.getCoordinateReferenceSystem());
+        return Optional.ofNullable(coverageToWKT(env));
+    }
+    private static void setTimes (JSONObject capabilities, Layer capabilitiesLayer) {
+        Dimension timeDimension = capabilitiesLayer.getDimension("time");
+        if (timeDimension == null || !ISO_TIME.equals(timeDimension.getUnits())) {
+            return;
+        }
+        // TODO: Fix logic, currently we only support one TimeRange or one or more singular values
+        // An interesting solution would be to "unroll" the time ranges to a list of singular
+        // values -- then KEY_TIMES would always be an array of ISO timestamps as strings
+        // Should we have times:{values:[time}, default:time, ranges:[{start,end,interval}]}
+        Extent ext = timeDimension.getExtent();
+        //String defaultTime = ext.getDefaultValue();
+        //boolean isMultiple = ext.isMultipleValues();
+        List<String> times = Arrays.asList(ext.getValue().split(","));
+        if (times.isEmpty()) {
+            return;
+        }
+        // Check if the first value is a TimeRange
+        String time = times.get(0);
+        int i = time.indexOf('/');
+        if (i == -1) {
+            JSONHelper.put(capabilities, KEY_TIMES, new JSONArray(times));
+        } else {
+            // First one is potentially a TimeRange
+            JSONHelper.putValue(capabilities, KEY_TIMES, parseTimeRange(time, i));
+            if (times.size() > 1) {
+                log.info("Handled only 1 TimeRange out of", times.size());
+            }
+        }
+    }
+
     /**
      * @deprecated
      * use {@link LayerJSONFormatterWMS#createCapabilitiesJSON(WebMapService, Set)}
@@ -131,9 +251,9 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
     public static JSONObject createCapabilitiesJSON(final WebMapService wms) {
         return createCapabilitiesJSON(wms, null);
     }
-
+    @Deprecated
     public static JSONObject createCapabilitiesJSON(final WebMapService wms,
-            Set<String> systemCRSs) {
+                                                    Set<String> systemCRSs) {
         JSONObject capabilities = new JSONObject();
         if(wms == null) {
             return capabilities;
@@ -146,6 +266,7 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
         JSONHelper.putValue(capabilities, KEY_FORMATS, formats);
         JSONHelper.putValue(capabilities, KEY_VERSION, wms.getVersion());
         JSONHelper.putValue(capabilities, KEY_LAYER_COVERAGE, wms.getGeom());
+        JSONHelper.putValue(capabilities, KEY_LAYER_COVERAGE, wms.getGeom());
 
         final Set<String> capabilitiesCRSs = getCRSs(wms);
         final Set<String> crss = getCRSsToStore(systemCRSs, capabilitiesCRSs);
@@ -155,6 +276,7 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
         return capabilities;
     }
 
+    @Deprecated
     public static List<JSONObject> createStylesArray(final WebMapService capabilities) {
         final List<JSONObject> styles = new ArrayList<>();
         final Map<String, String> stylesMap = capabilities.getSupportedStyles();
@@ -164,7 +286,7 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
         }
         return styles;
     }
-
+    @Deprecated
     private static JSONObject formatTime(List<String> times) throws IllegalArgumentException {
         if (times == null || times.isEmpty()) {
             return new JSONObject();
@@ -222,6 +344,7 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
      * @param wms WebMapService
      * @return JSONObject containing the most preferred supported format
      */
+    @Deprecated
     public static JSONObject getFormatsJSON(WebMapService wms) {
         final Set<String> formats = new HashSet<String>(Arrays.asList(wms.getFormats()));
         return getFormatsJSON(formats);
@@ -235,6 +358,7 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
      * @param wms WebMapService
      * @return Set<String> containing the supported coordinate ref systems of the WMS service
      */
+    @Deprecated
     public static Set<String> getCRSs(WebMapService wms) {
         String[] crss = wms.getCRSs();
         if (crss == null || crss.length == 0) {

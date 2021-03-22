@@ -15,6 +15,7 @@ import fi.nls.oskari.wms.WMSCapabilities;
  * Factory for creating WMS objects
  * 
  */
+@Deprecated
 public class WebMapServiceFactory {
 
     private static final CapabilitiesCacheService CAPABILITIES_SERVICE = OskariComponentManager.getComponentOfType(CapabilitiesCacheService.class);
@@ -33,11 +34,12 @@ public class WebMapServiceFactory {
 	 * @throws WebMapServiceParseException if something goes wrong when parsing
 	 * @throws LayerNotFoundInCapabilitiesException if layer is not found in capabilities
 	 */
+	@Deprecated
 	public static WebMapService buildWebMapService(int layerId)
 	        throws ServiceException, WebMapServiceParseException, LayerNotFoundInCapabilitiesException {
         return buildWebMapService(LAYER_SERVICE.find(layerId));
     }
-
+	@Deprecated
 	public static WebMapService buildWebMapService(OskariLayer layer)
 	        throws ServiceException, WebMapServiceParseException, LayerNotFoundInCapabilitiesException {
 	    final String cacheKey = "wmsCache_" + layer.getId();
@@ -75,11 +77,11 @@ public class WebMapServiceFactory {
     public static WebMapService createFromXML(final String layerName, final String xml) throws WebMapServiceParseException, LayerNotFoundInCapabilitiesException {
         return WebMapServiceFactoryHelper.createFromXML(layerName, xml);
     }
-
+	@Deprecated
     public static void flushCache(final int layerId) {
         wmsCache.remove("wmsCache_"+layerId);
     }
-
+	@Deprecated
     public static void flushCache() {
         wmsCache.flush(true);
     }

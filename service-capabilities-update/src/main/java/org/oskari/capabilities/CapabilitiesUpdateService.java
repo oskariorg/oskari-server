@@ -11,9 +11,6 @@ import java.util.Set;
 
 import javax.xml.stream.XMLStreamException;
 
-import fi.mml.map.mapwindow.service.wms.LayerNotFoundInCapabilitiesException;
-import fi.mml.map.mapwindow.service.wms.WebMapService;
-import fi.mml.map.mapwindow.service.wms.WebMapServiceParseException;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -21,8 +18,10 @@ import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilitiesHelper;
+import fi.nls.oskari.wms.WMSCapabilitiesService;
 import fi.nls.oskari.wmts.WMTSCapabilitiesParser;
 import fi.nls.oskari.wmts.domain.WMTSCapabilities;
+import org.geotools.ows.wms.WMSCapabilities;
 
 public class CapabilitiesUpdateService {
 
@@ -35,6 +34,7 @@ public class CapabilitiesUpdateService {
 
     private final OskariLayerService layerService;
     private final CapabilitiesCacheService capabilitiesCacheService;
+    private final WMSCapabilitiesService wmsService = new WMSCapabilitiesService();
 
     public CapabilitiesUpdateService(OskariLayerService layerService,
             CapabilitiesCacheService capabilitiesService) {
@@ -112,19 +112,21 @@ public class CapabilitiesUpdateService {
     private void updateWMSLayers(List<OskariLayer> layers, String data,
             Set<String> systemCRSs, List<CapabilitiesUpdateResult> results) {
         boolean shouldSaveCapabilities = false;
+        WMSCapabilities capa = wmsService.createCapabilities(data);
         for (OskariLayer layer : layers) {
             try {
-                WebMapService wms = OskariLayerCapabilitiesHelper.parseWMSCapabilities(data, layer);
-                OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMS(wms, layer, systemCRSs);
+                wmsService.updateLayerCapabilities(capa, layer, systemCRSs);
                 shouldSaveCapabilities = true;
                 layerService.update(layer);
                 results.add(CapabilitiesUpdateResult.ok(layer));
-            } catch (WebMapServiceParseException e) {
-                LOG.warn(e, "Failed to update Capabilities for layerId:", layer.getId());
-                results.add(CapabilitiesUpdateResult.err(layer, ERR_FAILED_TO_PARSE_CAPABILITIES));
-            } catch (LayerNotFoundInCapabilitiesException e) {
+
+            } catch (ServiceException e) {
                 LOG.warn(e, "Failed to update Capabilities for layerId:", layer.getId());
                 results.add(CapabilitiesUpdateResult.err(layer, ERR_LAYER_NOT_FOUND_IN_CAPABILITIES));
+
+            } catch (Exception e) {
+                LOG.warn(e, "Failed to update Capabilities for layerId:", layer.getId());
+                results.add(CapabilitiesUpdateResult.err(layer, ERR_FAILED_TO_PARSE_CAPABILITIES));
             }
         }
         if (shouldSaveCapabilities) {
