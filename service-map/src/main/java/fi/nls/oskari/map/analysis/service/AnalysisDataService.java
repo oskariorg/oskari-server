@@ -280,6 +280,7 @@ public class AnalysisDataService {
      *
      * @param analysis_id Key to one analysis
      * @return analysis columns and types
+     * @deprecated only GetWFSDescribeFeature needs this
      */
     public JSONObject getAnalysisNativeColumnTypes(final String analysis_id) {
         JSONObject columnTypes = new JSONObject(); // {fieldName1:type,fieldname2:type ... (type is string or numeric)

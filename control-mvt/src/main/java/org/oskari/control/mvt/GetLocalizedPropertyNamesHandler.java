@@ -17,6 +17,11 @@ import org.oskari.service.user.UserLayerService;
 import java.util.List;
 import java.util.Optional;
 
+/*
+ * @deprecated As of release 2.3.0, use fi.nls.oskari.control.layer.GetWFSLayerFields action route instead for WFS layers
+ * For Analysis, Myplaces and Userlayer use values returned from GetXXLayers action route (JSONFormatter handles)
+ */
+@Deprecated
 @OskariActionRoute("GetLocalizedPropertyNames")
 public class GetLocalizedPropertyNamesHandler extends AbstractWFSFeaturesHandler {
 

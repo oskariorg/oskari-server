@@ -20,7 +20,10 @@ import org.oskari.service.util.ServiceFactory;
 
 /**
  * Get WFS layer geometry type
+ * @deprecated As of release 2.3.0, use fi.nls.oskari.control.layer.GetWFSLayerFields action route instead for WFS layers
+ * For Analysis, Myplaces and Userlayer use values returned from GetXXLayers action route (JSONFormatter handles)
  */
+@Deprecated
 @OskariActionRoute("GetWFSLayerGeometryType")
 public class GetWFSLayerGeometryTypeHandler extends ActionHandler {
 

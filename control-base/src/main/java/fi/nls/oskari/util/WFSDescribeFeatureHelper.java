@@ -5,7 +5,6 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.service.AnalysisDataService;
 import fi.nls.oskari.service.ServiceException;
-import fi.nls.oskari.util.IOHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,10 +12,8 @@ import org.json.XML;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * Moved WFSDescribeFeature response parsing code from
@@ -42,29 +39,13 @@ public class WFSDescribeFeatureHelper {
 
     private final static String ENCODE_ATTRIBUTE = "encoding=\"";
 
-    private static final List<String> NUMERIC_FIELD_TYPES = Arrays.asList("double",
-            "byte",
-            "decimal",
-            "int",
-            "integer",
-            "long",
-            "negativeInteger",
-            "nonNegativeInteger",
-            "nonPositiveInteger",
-            "positiveInteger",
-            "short",
-            "unsignedLong",
-            "unsignedInt",
-            "unsignedShort",
-            "unsignedByte"
-    );
+
 
     /**
      *  Parses DescribeFeatureType url request for WFS request
      * @param url  Wfs service Url
      * @param version  Wfs service version
-     * @param xmlns  Feature type namespace
-     * @param featureTypeName  Feature type name
+     * @param typename  Feature type name
      * @return Wfs request url
      * e.g. http://tampere.navici.com/tampere_wfs_geoserver/ows?SERVICE=WFS&VERSION=1.1.0&REQUEST=DescribeFeatureType&TYPENAME=tampere_ora:KIINTEISTOT_ALUE
      */
@@ -160,20 +141,6 @@ public class WFSDescribeFeatureHelper {
     }
 
     /**
-     * Check is WFS property (field) type is numeric
-     * @param wfsTypeValue
-     * @return true, if numeric
-     */
-    private static boolean isNumericField(String wfsTypeValue) {
-        boolean numericValue = false;
-        String typeval = stripNamespace(wfsTypeValue);
-        if (NUMERIC_FIELD_TYPES.contains(typeval)) {
-            numericValue = true;
-        }
-        return numericValue;
-    }
-
-    /**
      * Strip namspace out of featureTypeName, if exists
      * @param tag featureTypeName
      * @return
@@ -197,7 +164,9 @@ public class WFSDescribeFeatureHelper {
      *
      * @param sid  Analysis layer id
      * @return analysis property names and types"
+     * @deprecated only GetWFSDescribeFeature needs this
      */
+    @Deprecated
     public static JSONObject getAnalysisFeaturePropertyTypes(String sid) {
         JSONObject propertyTypes = new JSONObject(); // Field names and types
         JSONObject js_out = new JSONObject();
@@ -273,8 +242,7 @@ public class WFSDescribeFeatureHelper {
     /**
      * Pick up property names and types out of DescribeFeatureType response
      * works with WFS version 1.0.0 and 1.1.0
-     * WFSlayerconfiguration ala Oskari
-     * @param lc WFSlayerconfiguration ala Oskari
+     * @param layer
      * @param layer_id
      * @return
      * @throws ServiceException
@@ -320,9 +288,8 @@ public class WFSDescribeFeatureHelper {
                 if (props_js.get(i) instanceof JSONObject) {
                     JSONObject prop_js = props_js.getJSONObject(i);
                     if (prop_js.has(KEY_NAME) && prop_js.has(KEY_TYPE)) {
-                        String strigOrNumeric = "string";
-                        if(isNumericField(prop_js.getString(KEY_TYPE))) strigOrNumeric="numeric" ;
-                        js_props_out.put(prop_js.getString(KEY_NAME), strigOrNumeric);
+                        String type = stripNamespace(prop_js.getString(KEY_TYPE));
+                        js_props_out.put(prop_js.getString(KEY_NAME), WFSConversionHelper.getStringOrNumber(type));
                     }
                 }
             }

@@ -22,6 +22,8 @@ import org.oskari.service.util.ServiceFactory;
 
 /**
  * Get WMS capabilites and return JSON
+ * @deprecated As of release 2.3.0, use fi.nls.oskari.control.layer.GetWFSLayerFields action route instead for WFS layers
+ * For Analysis, Myplaces and Userlayer use values returned from GetXXLayers action route (JSONFormatter handles)
  */
 @OskariActionRoute("GetWFSDescribeFeature")
 public class GetWFSDescribeFeatureHandler extends ActionHandler {

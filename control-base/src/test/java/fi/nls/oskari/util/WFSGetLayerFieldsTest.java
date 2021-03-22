@@ -37,8 +37,8 @@ public class WFSGetLayerFieldsTest {
         mockIOHelper();
         final OskariLayer layer = getWFSLayer("3.0.0");
         final JSONObject fields = WFSGetLayerFields.getLayerFields(layer);
-        assertEquals(fields.getString("geometryField"), "geometry");
-        final JSONObject attributes = fields.getJSONObject("attributes");
+        assertEquals(fields.getString("geometryName"), "geometry");
+        final JSONObject attributes = fields.getJSONObject("types");
         assertEquals(attributes.getString("fid"), "number");
         assertEquals(attributes.getString("attr-1"), "string");
         assertEquals(attributes.getString("attr-2"), "number");
@@ -51,8 +51,8 @@ public class WFSGetLayerFieldsTest {
         OskariLayer layer = getWFSLayer("2.0.0");
         mockWFSDescribeFeatureHelper(layer);
         final JSONObject fields = WFSGetLayerFields.getLayerFields(layer);
-        assertEquals(fields.get("geometryField"), "geom");
-        final JSONObject attributes = fields.getJSONObject("attributes");
+        assertEquals(fields.get("geometryName"), "geom");
+        final JSONObject attributes = fields.getJSONObject("types");
         assertEquals(attributes.getString("attr-1"), "number");
         assertEquals(attributes.getString("attr-2"), "string");
         assertEquals(attributes.getString("attr-3"), "number");
