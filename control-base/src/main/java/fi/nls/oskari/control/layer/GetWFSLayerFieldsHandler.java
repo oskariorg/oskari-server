@@ -25,6 +25,8 @@ import org.oskari.permissions.PermissionService;
 @OskariActionRoute("GetWFSLayerFields")
 public class GetWFSLayerFieldsHandler extends RestActionHandler {
     private static final String PARAM_LAYER_ID = "layer_id";
+    private static final String KEY_LOCALE = "locale";
+    private static final String KEY_SELECTION = "selection";
     private PermissionHelper permissionHelper;
 
     @Override
@@ -57,9 +59,15 @@ public class GetWFSLayerFieldsHandler extends RestActionHandler {
     private JSONObject getLayerFields(OskariLayer layer) throws ActionException {
         try {
             JSONObject fields = WFSGetLayerFields.getLayerFields(layer);
-            WFSGetLayerFields.injectLayerAttributesData(layer, fields);
+            JSONObject data = layer.getAttributes().optJSONObject("data");
+            if (data == null) {
+                return fields;
+            }
+            fields.putOpt(KEY_LOCALE, data.optJSONObject("locale"));
+            // selection is array or localized object of arrays
+            fields.putOpt(KEY_SELECTION, data.opt("filter"));
             return fields;
-        } catch (ServiceException ex) {
+        } catch (JSONException | ServiceException ex) {
             throw new ActionException("Error getting layer fields", ex);
         }
     }
