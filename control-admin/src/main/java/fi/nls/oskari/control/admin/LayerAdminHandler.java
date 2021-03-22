@@ -69,8 +69,9 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
     public void handleGet(ActionParameters params) throws ActionException {
         final int layerId = params.getRequiredParamInt(PARAM_LAYER_ID);
         OskariLayer ml = getMapLayer(params.getUser(), layerId);
+        boolean capabilitiesUpdated = updateCapabilities(ml);
         MapLayerAdminOutput output = getLayerForEdit(params.getUser(), ml);
-        if (!updateCapabilities(ml)) {
+        if (!capabilitiesUpdated) {
             output.setWarn(KEY_UPDATE_CAPA_FAIL);
         }
         writeResponse(params, output);

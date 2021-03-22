@@ -6,19 +6,14 @@ import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilitiesHelper;
-import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.wmts.domain.TileMatrixSet;
 import fi.nls.oskari.wmts.domain.WMTSCapabilities;
 import fi.nls.oskari.wmts.domain.WMTSCapabilitiesLayer;
-import org.json.JSONObject;
 import org.oskari.maplayer.admin.LayerAdminJSONHelper;
 import org.oskari.maplayer.model.ServiceCapabilitiesResultWMTS;
 import org.oskari.service.util.ServiceFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.*;
 
 public class WMTSCapabilitiesService {
     private CapabilitiesCacheService capabilitiesService = ServiceFactory.getCapabilitiesCacheService();
