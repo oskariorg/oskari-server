@@ -10,7 +10,7 @@ import org.json.JSONObject;
 
 @OskariViewModifier("timeseries")
 public class TimeseriesParamHandler extends ParamHandler {
-    private static final String KEY_TIME = "time";
+    private static final String KEY_VALUE = "value";
 
     public boolean handleParam(final ModifierParams params) throws ModifierException {
         String paramValue = params.getParamValue();
@@ -20,13 +20,13 @@ public class TimeseriesParamHandler extends ParamHandler {
         final JSONObject bundleState = getBundleState(params.getConfig(), BUNDLE_TIMESERIES);
         final String[] timeProps = paramValue.split("/");
         if (timeProps.length != 2) {
-            JSONHelper.putValue(bundleState, KEY_TIME, paramValue);
+            JSONHelper.putValue(bundleState, KEY_VALUE, Integer.parseInt(paramValue));
             return false;
         }
         JSONArray time = new JSONArray();
-        time.put(timeProps[0]);
-        time.put(timeProps[1]);
-        JSONHelper.putValue(bundleState, KEY_TIME, time);
+        time.put(Integer.parseInt(timeProps[0]));
+        time.put(Integer.parseInt(timeProps[1]));
+        JSONHelper.putValue(bundleState, KEY_VALUE, time);
         return false;
     }
 }
