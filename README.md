@@ -22,6 +22,11 @@ Run OWASP check with:
 
     mvn -P owasp-check
 
+## Prerequisites
+Oskari-server has been tested to compile using<br>
+* JDK 8
+* Apache Maven 3.6.3
+
 ## License
 
 This work is dual-licensed under MIT and [EUPL v1.1](https://joinup.ec.europa.eu/software/page/eupl/licence-eupl)
