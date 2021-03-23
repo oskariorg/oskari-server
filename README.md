@@ -23,7 +23,7 @@ Run OWASP check with:
     mvn -P owasp-check
 
 ## Prerequisites
-Oskari-server has been tested to compile using<br>
+Oskari-server has been tested to compile using
 * JDK 8
 * Apache Maven 3.6.3
 
