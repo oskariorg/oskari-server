@@ -98,25 +98,21 @@ public class GetViewsHandler extends ActionHandler {
         // The old publisher and normal view listing need them.
         final JSONObject state = new JSONObject();
         for (Bundle bundle : bundles) {
-            JSONObject bundleNode = bundleToJSONObjet(bundle);
+            JSONObject bundleNode = bundleToJSONObject(bundle);
             // If bundleNode is null putValue will actually eventually call remove, which is fine here
             JSONHelper.putValue(state, bundle.getBundleinstance(), bundleNode);
         }
         return state;
     }
 
-    private JSONObject bundleToJSONObjet(Bundle bundle) {
+    private JSONObject bundleToJSONObject(Bundle bundle) {
         JSONObject state = JSONHelper.createJSONObject(bundle.getState());
         if (state == null) {
             return null;
         }
-        JSONObject config = JSONHelper.createJSONObject(bundle.getConfig());
-        if (config == null) {
-            return null;
-        }
         JSONObject bundleNode = new JSONObject();
         JSONHelper.putValue(bundleNode, KEY_STATE, state);
-        JSONHelper.putValue(bundleNode, KEY_CONFIG, config);
+        JSONHelper.putValue(bundleNode, KEY_CONFIG, JSONHelper.createJSONObject(bundle.getConfig()));
         return bundleNode;
     }
 
