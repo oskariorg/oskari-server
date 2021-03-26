@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
+import fi.nls.oskari.domain.map.MyPlaceCategory;
 import org.oskari.log.AuditLog;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -61,27 +62,32 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
         final String layerId = params.getHttpParam(PARAM_LAYER_ID);
 
         try {
-            final JSONObject featureCollection;
-            if (layerId != null && !layerId.isEmpty()) {
-                LOG.debug("Get MyPlaces by layer id, uuid:", user.getUuid(),
-                        "layerId:", layerId, "crs:", crs);
-                long categoryId = Long.parseLong(layerId);
-                if (!service.canModifyCategory(user, categoryId)) {
-                    throw new ActionDeniedException(
-                            "Tried to GET features from category: " + categoryId);
-                }
-                featureCollection = featureService.getFeaturesByCategoryId(categoryId, crs);
-            } else {
-                LOG.debug("Get MyPlaces by user uuid, uuid:", user.getUuid(),
-                        "crs:", crs);
-                featureCollection = featureService.getFeaturesByUserId(user.getUuid(), crs);
-            }
-
+            final JSONObject featureCollection = getFeatures(user, layerId, crs);
             ResponseHelper.writeResponse(params, featureCollection);
         } catch (ServiceException e) {
             LOG.warn(e);
             throw new ActionException("Failed to get features");
         }
+    }
+    protected JSONObject getFeatures (User user, String layerId, String crs) throws ActionDeniedException, ServiceException {
+        if (layerId == null || layerId.isEmpty()) {
+            LOG.debug("Get MyPlaces by user uuid, uuid:", user.getUuid(),
+                    "crs:", crs);
+            return featureService.getFeaturesByUserId(user.getUuid(), crs);
+        }
+        LOG.debug("Get MyPlaces by layer id, uuid:", user.getUuid(),
+                "layerId:", layerId, "crs:", crs);
+        long categoryId = Long.parseLong(layerId);
+        if (!service.canModifyCategory(user, categoryId)) {
+            throw new ActionDeniedException(
+                    "Tried to GET features from category: " + categoryId);
+        }
+        return featureService.getFeaturesByCategoryId(categoryId, crs);
+    }
+    protected String getLayerName (String layerId) {
+        long categoryId = Long.parseLong(layerId);
+        MyPlaceCategory category = service.findCategory(categoryId);
+        return category != null ? category.getName() : "";
     }
 
     @Override

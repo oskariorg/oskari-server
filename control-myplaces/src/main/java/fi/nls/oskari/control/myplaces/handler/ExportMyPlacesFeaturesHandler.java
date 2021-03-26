@@ -1,17 +1,11 @@
 package fi.nls.oskari.control.myplaces.handler;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.control.RestActionHandler;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.myplaces.MyPlacesService;
-import fi.nls.oskari.myplaces.service.MyPlacesFeaturesService;
-import fi.nls.oskari.myplaces.service.wfst.MyPlacesFeaturesServiceWFST;
-import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONObject;
@@ -22,7 +16,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 @OskariActionRoute("ExportMyPlacesLayerFeatures")
-public class ExportMyPlacesFeaturesHandler extends RestActionHandler {
+public class ExportMyPlacesFeaturesHandler extends MyPlacesFeaturesHandler {
     private final static Logger LOG = LogFactory.getLogger(ExportMyPlacesFeaturesHandler.class);
     private static final String PARAM_SRS = "srs";
     private static final String PARAM_LAYER_ID = "categoryId";
@@ -32,19 +26,8 @@ public class ExportMyPlacesFeaturesHandler extends RestActionHandler {
     private static final String FILE_TYPE = "application/json";
     private static final int DEFAULT_INDENT = 2;
 
-    private MyPlacesFeaturesService featureService;
-    private MyPlacesService service;
     private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    @Override
-    public void init() {
-        super.init();
-        featureService = new MyPlacesFeaturesServiceWFST();
-        service = OskariComponentManager.getComponentOfType(MyPlacesService.class);
-    }
-    @Override
-    public void preProcess(ActionParameters params) throws ActionException {
-        params.requireLoggedInUser();
-    }
+
 
     @Override
     public void handleGet(ActionParameters params) throws ActionException {
@@ -54,14 +37,9 @@ public class ExportMyPlacesFeaturesHandler extends RestActionHandler {
         final int indent = params.getHttpParam(PARAM_INDENT, DEFAULT_INDENT);
         final boolean prettify = params.getHttpParam(PARAM_PRETTIFY, true);
         try {
-            long categoryId = Long.parseLong(layerId);
-            if (!service.canModifyCategory(user, categoryId)) {
-                throw new ActionDeniedException(
-                        "Tried to GET features from category: " + categoryId);
-            }
 
-            JSONObject featureCollection = featureService.getFeaturesByCategoryId(categoryId, srs);
-            String layerName = service.findCategory(categoryId).getName();
+            JSONObject featureCollection = getFeatures(user, layerId, srs);
+            String layerName = getLayerName(layerId);
             String timestamp = LocalDate.now().format(TIME_FORMAT);
             String fileName = layerName + "_" + timestamp + "." + FILE_EXT;
             HttpServletResponse response = params.getResponse();
