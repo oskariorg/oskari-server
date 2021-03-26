@@ -1,17 +1,20 @@
 package fi.nls.oskari.map.layer.formatters;
 
+import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.UserDataLayer;
 import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONObject;
+import org.oskari.permissions.model.PermissionType;
 
 import java.util.Map;
 
 public abstract class LayerJSONFormatterUSERDATA extends LayerJSONFormatterWFS {
 
     private static final boolean IS_SECURE = true;
+    private static final String KEY_PERMISSIONS = "permissions";
 
     public JSONObject getJSON(OskariLayer baseLayer, UserDataLayer layer, String srs) {
         return this.getJSON(baseLayer, layer, srs, PropertyUtil.getDefaultLanguage());
@@ -43,8 +46,12 @@ public abstract class LayerJSONFormatterUSERDATA extends LayerJSONFormatterWFS {
         wfsOpts.injectBaseLayerOptions(baseLayer.getOptions());
         JSONHelper.putValue(layerJson, KEY_OPTIONS, wfsOpts.getOptions());
 
-        //init permissionz here??
-
         return layerJson;
+    }
+    public static void setDefaultPermissions(JSONObject layerJson) {
+        JSONObject permissions = new JSONObject();
+        JSONHelper.putValue(permissions, PermissionType.PUBLISH.getJsonKey(), OskariLayerWorker.PUBLICATION_PERMISSION_OK);
+        JSONHelper.putValue(permissions, PermissionType.DOWNLOAD.getJsonKey(), OskariLayerWorker.DOWNLOAD_PERMISSION_OK);
+        JSONHelper.putValue(layerJson, KEY_PERMISSIONS, permissions);
     }
 }
