@@ -83,10 +83,11 @@ public class AnalysisHelper {
      * @return analysis layer data for front mapservice
      * @throws org.json.JSONException
      */
+    @Deprecated
     public static JSONObject getlayerJSON(final Analysis al, JSONObject baseOptions) {
         return getlayerJSON(al, baseOptions, PropertyUtil.getDefaultLanguage(), false, null, false);
     }
-
+    @Deprecated
     public static JSONObject getlayerJSON(final Analysis al, final JSONObject baseOptions,
                                           final String lang, final boolean useDirectURL,
                                           final String uuid, final boolean modifyURLs) {
@@ -158,7 +159,7 @@ public class AnalysisHelper {
 
         return json;
     }
-
+    @Deprecated
     public static JSONObject getAnalysisPermissions(boolean hasPublish, boolean hasDownload) {
 
         final JSONObject permissions = new JSONObject();
@@ -170,7 +171,7 @@ public class AnalysisHelper {
         }
         return permissions;
     }
-
+    @Deprecated
     private static JSONObject getAttributes (Analysis analysis, JSONObject analysisJSON, String lang) {
         JSONObject attributes = new JSONObject();
         JSONObject params = JSONHelper.getJSONObject(analysisJSON, JSKEY_METHODPARAMS);

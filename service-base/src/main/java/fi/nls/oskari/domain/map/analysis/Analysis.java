@@ -7,7 +7,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 public class Analysis extends UserDataLayer {
-
+    public static final String ID_PREFIX =  "analysis";
     private long layer_id;
     private String analyse_json;
     private String col1;
@@ -32,7 +32,7 @@ public class Analysis extends UserDataLayer {
     @Override
     public String getPrefixedId() {
         // OskariLayer.TYPE_ANALYSIS is 'analysislayer', Override getPrefixedId() to get correct prefix
-        return "analysis_" + getId();
+        return ID_PREFIX  + "_" + getId();
     }
 
     public long getOld_id() {

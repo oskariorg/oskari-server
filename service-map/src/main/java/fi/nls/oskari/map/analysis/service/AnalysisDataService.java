@@ -9,6 +9,7 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.domain.*;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
+import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterANALYSIS;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
@@ -38,6 +39,7 @@ public class AnalysisDataService {
     private static final AnalysisDbService analysisService = new AnalysisDbServiceMybatisImpl();
     private static final TransformationService transformationService = new TransformationService();
     private static final OskariLayerService mapLayerService = new OskariLayerServiceMybatisImpl();
+    private static final LayerJSONFormatterANALYSIS FORMATTER = new LayerJSONFormatterANALYSIS();
 
     /**
      * Returns the base WFS-layer for analysis
@@ -49,6 +51,14 @@ public class AnalysisDataService {
             return null;
         }
         return mapLayerService.find(ANALYSIS_BASELAYER_ID);
+    }
+
+    public static JSONObject parseAnalysis2JSON(Analysis layer, String srs) {
+        return parseAnalysis2JSON(layer, srs, PropertyUtil.getDefaultLanguage());
+    }
+    public static JSONObject parseAnalysis2JSON(final Analysis layer, final String srs, final String lang) {
+        OskariLayer baseLayer = getBaseLayer();
+        return FORMATTER.getJSON(baseLayer,layer, srs, lang);
     }
 
     public Analysis storeAnalysisData(final String featureset,
@@ -67,7 +77,9 @@ public class AnalysisDataService {
             // --------------------
             analysis.setAnalyse_json(json);
             analysis.setLayer_id(analysislayer.getId());
-            analysis.setName(analysislayer.getName());
+            String name = analysislayer.getName();
+            analysis.setName(name);
+            analysis.setLocalizedNames(name); // FIXME: analysis.setLocale(locale);
             analysis.setUuid(user.getUuid());
             if (analysislayer.getOverride_sld() != null && !analysislayer.getOverride_sld().isEmpty())
                 analysis.setOverride_SLD(analysislayer.getOverride_sld());
@@ -170,7 +182,9 @@ public class AnalysisDataService {
             // --------------------
             analysis.setAnalyse_json(json);
             analysis.setLayer_id(analysislayer.getId());
-            analysis.setName(analysislayer.getName());
+            String name = analysislayer.getName();
+            analysis.setName(name);
+            analysis.setLocalizedNames(name); // FIXME
             analysis.setUuid(user.getUuid());
             analysis.setOld_id(ids.get(0));
             // update style
