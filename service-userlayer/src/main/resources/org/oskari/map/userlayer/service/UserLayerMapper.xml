@@ -16,6 +16,7 @@
         <result property="publisher_name" column="publisher_name" />
         <result property="wkt" column = "wkt" />
         <result property="options" column = "options" />
+        <result property="locale" column = "locale" />
     </resultMap>
 	<!-- UserLayer related -->
 	<insert id="insertUserLayer" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
@@ -27,7 +28,8 @@
         fields,
         publisher_name,
         wkt,
-        options
+        options,
+        locale
         ) VALUES (
         #{uuid},
         #{layer_name},
@@ -36,7 +38,8 @@
         CAST (#{fields} as json),
         #{publisher_name},
         #{wkt},
-        CAST (#{options} as json)
+        CAST (#{options} as json),
+        CAST (#{locale} as json)
         )
     </insert>
 	
@@ -49,7 +52,8 @@
         fields = CAST (#{fields} as json),
         publisher_name = #{publisher_name},
         wkt = #{wkt},
-        options = CAST (#{options} as json)
+        options = CAST (#{options} as json),
+        locale = CAST (#{locale} as json)
         where id = #{id} and uuid = #{uuid}
     </update>
 
@@ -63,7 +67,8 @@
         fields,
         publisher_name,
         wkt,
-        options
+        options,
+        locale
         from
         user_layer
         where id = #{id}  
@@ -79,7 +84,8 @@
         fields,
         publisher_name,
         wkt,
-        options
+        options,
+        locale
         from
          user_layer
         where uuid = #{uuid} 

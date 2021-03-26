@@ -10,7 +10,6 @@ import fi.nls.oskari.map.geometry.WKTHelper;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterUSERLAYER;
-import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
@@ -56,7 +55,9 @@ public class UserLayerDataService {
         final SimpleFeatureType ft = fc.getSchema();
         final UserLayer userLayer = new UserLayer();
         userLayer.setUuid(uuid);
-        userLayer.setLayer_name(ConversionHelper.getString(name, ft.getTypeName()));
+        String ftName = ft.getTypeName();
+        userLayer.setName(ConversionHelper.getString(ftName, name));
+        userLayer.setLocalizedNames(ConversionHelper.getString(name, ftName)); // FIXME: userLayer.setLocale(locale);
         userLayer.setLayer_desc(ConversionHelper.getString(desc, ""));
         userLayer.setLayer_source(ConversionHelper.getString(source, ""));
         WFSLayerOptions wfsOptions = userLayer.getWFSLayerOptions();
