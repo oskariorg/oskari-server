@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.net.HttpURLConnection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -134,18 +135,11 @@ public class GetGeoPointDataService {
     }
 
     private String makeGFIcall(final String url,final String user,final String pw) {
-
-        final Map<String, String> headers = new HashMap<String,String>();
-        headers.put("User-Agent", "Mozilla/5.0 "
-                + "(Windows; U; Windows NT 6.0; pl; rv:1.9.1.2) "
-                + "Gecko/20090729 Firefox/3.5.2");
-        headers.put("Referer", "/");
-        headers.put("Cookie", "_ptifiut_");
-
         try {
             log.debug("Calling GFI url:", url);
             HttpURLConnection conn = IOHelper.getConnection(url, user, pw);
-            String gfiResponse = IOHelper.getURL(conn, headers,IOHelper.DEFAULT_CHARSET);
+            IOHelper.addIdentifierHeaders(conn);
+            String gfiResponse = IOHelper.getURL(conn, Collections.EMPTY_MAP, IOHelper.DEFAULT_CHARSET);
             log.debug("Got GFI response:", gfiResponse);
             return gfiResponse;
         } catch (IOException e) {
