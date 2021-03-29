@@ -1,13 +1,16 @@
 package fi.nls.oskari.map.data.domain;
 
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static fi.nls.oskari.map.layer.formatters.LayerJSONFormatter.SUPPORTED_GET_FEATURE_INFO_FORMATS;
 import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.*;
@@ -26,11 +29,17 @@ public class GFIRequestParams {
     private String height;
     private String currentStyle;
     private String srsName;
+    private JSONObject additionalParams;
 
-    private static final String WMS_GFI_FEAUTURE_COUNT = PropertyUtil.get("wms.gfi.feature.count","50");
-    private static final String WMS_GFI_BASE_PARAMS = "REQUEST=GetFeatureInfo"
-            + "&EXCEPTIONS=application/vnd.ogc.se_xml" + "&VERSION=1.1.1"
-            + "&FEATURE_COUNT="+ WMS_GFI_FEAUTURE_COUNT  + "&FORMAT=image/png" + "&SERVICE=WMS";
+    private static final String WMS_GFI_FEAUTURE_COUNT = PropertyUtil.get("wms.gfi.feature.count", "50");
+    private static final Map<String, String> WMS_GFI_BASE_PARAMS = new HashMap<String, String>() {{
+        put("REQUEST", "GetFeatureInfo");
+        put("EXCEPTIONS", "EXCEPTIONS=application/vnd.ogc.se_xml");
+        put("VERSION", "1.1.1");
+        put("FEATURE_COUNT", WMS_GFI_FEAUTURE_COUNT);
+        put("FORMAT", "image/png");
+        put("SERVICE", "WMS");
+    }};
 
     public OskariLayer getLayer() {
         return layer;
@@ -108,7 +117,7 @@ public class GFIRequestParams {
         if (currentStyle == null || "null".equals(currentStyle)) {
             currentStyle = layer.getStyle();
         }
-        if(currentStyle == null) {
+        if (currentStyle == null) {
             currentStyle = "";
         }
         return currentStyle;
@@ -126,25 +135,38 @@ public class GFIRequestParams {
         this.srsName = srsName;
     }
 
-    public String getGFIUrl() {
-        return getBaseQueryURL() + getAsQueryString();
+    public JSONObject getAdditionalParams() {
+        return additionalParams;
     }
 
-    private String getAsQueryString() {
+    public void setAdditionalParams(JSONObject params) {
+        this.additionalParams = params;
+    }
+
+    public String getGFIUrl() {
+        return IOHelper.constructUrl(getBaseQueryURL(), getQueryMap());
+    }
+
+    private Map<String, String> getQueryMap() {
         String wmsName = layer.getName();
+        Map<String, String> queryMap = new HashMap<>();
+        queryMap.putAll(WMS_GFI_BASE_PARAMS);
+        queryMap.put("SRS", getSRSName());
+        queryMap.put("BBOX", getBbox());
+        queryMap.put("X", getX());
+        queryMap.put("Y", getY());
+        queryMap.put("INFO_FORMAT", getInfoFormat());
+        queryMap.put("QUERY_LAYERS", wmsName);
+        queryMap.put("WIDTH", getWidth());
+        queryMap.put("HEIGHT", getHeight());
+        queryMap.put("STYLES", getCurrentStyle());
+        queryMap.put("LAYERS", wmsName);
 
-        try { // try encode
-            wmsName =  URLEncoder.encode(layer.getName(), "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            // encode unsupported then ignore it and use without encode
+        if (additionalParams != null) {
+            Map<String, String> additionalParamMap = JSONHelper.getObjectAsMap(additionalParams);
+            queryMap.putAll(additionalParamMap);
         }
-
-
-        return WMS_GFI_BASE_PARAMS + "&SRS=" + getSRSName() + "&BBOX=" + getBbox() + "&X=" + getX()
-                + "&Y=" + getY() + "&INFO_FORMAT=" + getInfoFormat()
-                + "&QUERY_LAYERS=" + wmsName + "&WIDTH="
-                + getWidth() + "&HEIGHT=" + getHeight() + "&STYLES="
-                + getCurrentStyle() + "&LAYERS=" + wmsName;
+        return queryMap;
     }
 
     private String getBaseQueryURL() {
@@ -154,12 +176,10 @@ public class GFIRequestParams {
             queryUrl = urls[0];
         }
 
-        if (queryUrl.indexOf("?") < 0) {
-            queryUrl += "?";
-        }
         return queryUrl;
     }
-    private String getInfoFormat () {
+
+    private String getInfoFormat() {
         String infoFormat = layer.getGfiType();
         if (infoFormat != null && !infoFormat.isEmpty()) {
             return infoFormat;
@@ -172,8 +192,8 @@ public class GFIRequestParams {
         if (!value.isEmpty()) {
             return value;
         }
-        List <String> available = JSONHelper.getArrayAsList(JSONHelper.getJSONArray(formats, KEY_AVAILABLE));
-        for(String format : SUPPORTED_GET_FEATURE_INFO_FORMATS) {
+        List<String> available = JSONHelper.getArrayAsList(JSONHelper.getJSONArray(formats, KEY_AVAILABLE));
+        for (String format : SUPPORTED_GET_FEATURE_INFO_FORMATS) {
             if (available.contains(format)) {
                 return format;
             }
