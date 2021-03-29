@@ -12,72 +12,135 @@ import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.MultiLineString;
 import org.locationtech.jts.geom.Point;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 /**
  * Binding test case for http://www.topografix.com/GPX/1/1:gpxType.
  *
  * <p>
  *  <pre>
  *   <code>
- *  &lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;xsd:complexType name="gpxType" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
- *      &lt;xsd:annotation&gt;
- *        &lt;xsd:documentation&gt;
- *  		GPX documents contain a metadata header, followed by waypoints, routes, and tracks.  You can add your own elements
- *  		to the extensions section of the GPX document.
- *  	  &lt;/xsd:documentation&gt;
- *  	&lt;/xsd:annotation&gt;
- *  	&lt;xsd:sequence&gt;
- *  	 &lt;xsd:element minOccurs="0" name="metadata" type="metadataType"&gt;
- *  	  &lt;xsd:annotation&gt;
- *  	   &lt;xsd:documentation&gt;
- *  		Metadata about the file.
- *  	   &lt;/xsd:documentation&gt;
- *  	  &lt;/xsd:annotation&gt;
- *  	 &lt;/xsd:element&gt;
- *  	 &lt;xsd:element maxOccurs="unbounded" minOccurs="0" name="wpt" type="wptType"&gt;
- *  	  &lt;xsd:annotation&gt;
- *  	   &lt;xsd:documentation&gt;
- *  		A list of waypoints.
- *  	   &lt;/xsd:documentation&gt;
- *  	  &lt;/xsd:annotation&gt;
- *  	 &lt;/xsd:element&gt;
- *  	 &lt;xsd:element maxOccurs="unbounded" minOccurs="0" name="rte" type="rteType"&gt;
- *  	  &lt;xsd:annotation&gt;
- *  	   &lt;xsd:documentation&gt;
- *  		A list of routes.
- *  	   &lt;/xsd:documentation&gt;
- *  	  &lt;/xsd:annotation&gt;
- *  	 &lt;/xsd:element&gt;
- *  	 &lt;xsd:element maxOccurs="unbounded" minOccurs="0" name="trk" type="trkType"&gt;
- *  	  &lt;xsd:annotation&gt;
- *  	   &lt;xsd:documentation&gt;
- *  		A list of tracks.
- *  	   &lt;/xsd:documentation&gt;
- *  	  &lt;/xsd:annotation&gt;
- *  	 &lt;/xsd:element&gt;
- *  	 &lt;xsd:element minOccurs="0" name="extensions" type="extensionsType"&gt;
- *        &lt;xsd:annotation&gt;
- *         &lt;xsd:documentation&gt;
- *  		You can add extend GPX by adding your own elements from another schema here.
- *  	   &lt;/xsd:documentation&gt;
- *  	  &lt;/xsd:annotation&gt;
- *  	 &lt;/xsd:element&gt;
- *  	&lt;/xsd:sequence&gt;
- *  
- *  	&lt;xsd:attribute fixed="1.1" name="version" type="xsd:string" use="required"&gt;
- *       &lt;xsd:annotation&gt;
- *        &lt;xsd:documentation&gt;
- *  		You must include the version number in your GPX document.
- *  	  &lt;/xsd:documentation&gt;
- *  	 &lt;/xsd:annotation&gt;
- *  	&lt;/xsd:attribute&gt;
- *  	&lt;xsd:attribute name="creator" type="xsd:string" use="required"&gt;
- *       &lt;xsd:annotation&gt;
- *        &lt;xsd:documentation&gt;
- *  		You must include the name or URL of the software that created your GPX document.  This allows others to
- *  		inform the creator of a GPX instance document that fails to validate.
- *  	  &lt;/xsd:documentation&gt;
- *  	 &lt;/xsd:annotation&gt;
- *  	&lt;/xsd:attribute&gt;
+ *  &lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;xsd:complexType name="gpxType" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+
+ *      &lt;xsd:annotation&gt;
+
+ *        &lt;xsd:documentation&gt;
+
+ *  		GPX documents contain a metadata header, followed by waypoints, routes, and tracks.  You can add your own elements
+
+ *  		to the extensions section of the GPX document.
+
+ *  	  &lt;/xsd:documentation&gt;
+
+ *  	&lt;/xsd:annotation&gt;
+
+ *  	&lt;xsd:sequence&gt;
+
+ *  	 &lt;xsd:element minOccurs="0" name="metadata" type="metadataType"&gt;
+
+ *  	  &lt;xsd:annotation&gt;
+
+ *  	   &lt;xsd:documentation&gt;
+
+ *  		Metadata about the file.
+
+ *  	   &lt;/xsd:documentation&gt;
+
+ *  	  &lt;/xsd:annotation&gt;
+
+ *  	 &lt;/xsd:element&gt;
+
+ *  	 &lt;xsd:element maxOccurs="unbounded" minOccurs="0" name="wpt" type="wptType"&gt;
+
+ *  	  &lt;xsd:annotation&gt;
+
+ *  	   &lt;xsd:documentation&gt;
+
+ *  		A list of waypoints.
+
+ *  	   &lt;/xsd:documentation&gt;
+
+ *  	  &lt;/xsd:annotation&gt;
+
+ *  	 &lt;/xsd:element&gt;
+
+ *  	 &lt;xsd:element maxOccurs="unbounded" minOccurs="0" name="rte" type="rteType"&gt;
+
+ *  	  &lt;xsd:annotation&gt;
+
+ *  	   &lt;xsd:documentation&gt;
+
+ *  		A list of routes.
+
+ *  	   &lt;/xsd:documentation&gt;
+
+ *  	  &lt;/xsd:annotation&gt;
+
+ *  	 &lt;/xsd:element&gt;
+
+ *  	 &lt;xsd:element maxOccurs="unbounded" minOccurs="0" name="trk" type="trkType"&gt;
+
+ *  	  &lt;xsd:annotation&gt;
+
+ *  	   &lt;xsd:documentation&gt;
+
+ *  		A list of tracks.
+
+ *  	   &lt;/xsd:documentation&gt;
+
+ *  	  &lt;/xsd:annotation&gt;
+
+ *  	 &lt;/xsd:element&gt;
+
+ *  	 &lt;xsd:element minOccurs="0" name="extensions" type="extensionsType"&gt;
+
+ *        &lt;xsd:annotation&gt;
+
+ *         &lt;xsd:documentation&gt;
+
+ *  		You can add extend GPX by adding your own elements from another schema here.
+
+ *  	   &lt;/xsd:documentation&gt;
+
+ *  	  &lt;/xsd:annotation&gt;
+
+ *  	 &lt;/xsd:element&gt;
+
+ *  	&lt;/xsd:sequence&gt;
+
+ *  
+
+ *  	&lt;xsd:attribute fixed="1.1" name="version" type="xsd:string" use="required"&gt;
+
+ *       &lt;xsd:annotation&gt;
+
+ *        &lt;xsd:documentation&gt;
+
+ *  		You must include the version number in your GPX document.
+
+ *  	  &lt;/xsd:documentation&gt;
+
+ *  	 &lt;/xsd:annotation&gt;
+
+ *  	&lt;/xsd:attribute&gt;
+
+ *  	&lt;xsd:attribute name="creator" type="xsd:string" use="required"&gt;
+
+ *       &lt;xsd:annotation&gt;
+
+ *        &lt;xsd:documentation&gt;
+
+ *  		You must include the name or URL of the software that created your GPX document.  This allows others to
+
+ *  		inform the creator of a GPX instance document that fails to validate.
+
+ *  	  &lt;/xsd:documentation&gt;
+
+ *  	 &lt;/xsd:annotation&gt;
+
+ *  	&lt;/xsd:attribute&gt;
+
  *    &lt;/xsd:complexType&gt; 
  *      
  *    </code>
