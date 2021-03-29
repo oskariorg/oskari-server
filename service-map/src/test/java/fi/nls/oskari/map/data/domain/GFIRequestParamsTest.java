@@ -41,28 +41,28 @@ public class GFIRequestParamsTest {
     @Test
     public void testDefault() {
         String format = parseInfoFormat(getParams().getGFIUrl());
-        Assert.assertEquals(HTML, format);
+        Assert.assertEquals(IOHelper.urlEncode(HTML), format);
     }
     @Test
     public void testGFIType() {
         GFIRequestParams params = getParams();
         params.getLayer().setGfiType(JSON);
         String format = parseInfoFormat(params.getGFIUrl());
-        Assert.assertEquals(JSON, format);
+        Assert.assertEquals(IOHelper.urlEncode(JSON), format);
     }
     @Test
     public void testCapabilitiesValue() {
         GFIRequestParams params = getParams();
         setCapabilities(params, true);
         String format = parseInfoFormat(params.getGFIUrl());
-        Assert.assertEquals(JSON, format);
+        Assert.assertEquals(IOHelper.urlEncode(JSON), format);
     }
     @Test
     public void testCapabilitiesAvailable() {
         GFIRequestParams params = getParams();
         setCapabilities(params, false);
         String format = parseInfoFormat(params.getGFIUrl());
-        Assert.assertEquals(TEXT, format);
+        Assert.assertEquals(IOHelper.urlEncode(TEXT), format);
 
     }
 }

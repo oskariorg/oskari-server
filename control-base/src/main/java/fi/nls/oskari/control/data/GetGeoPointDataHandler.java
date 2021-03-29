@@ -39,12 +39,14 @@ public class GetGeoPointDataHandler extends ActionHandler {
     private static final String PARAM_STYLES = "styles";
     private static final String PARAM_ZOOM = "zoom";
     private static final String PARAM_GEOJSON = "geojson";
+    private static final String PARAM_PARAMS = "params";
 
 	@Override
     public void handleAction(final ActionParameters params) throws ActionException {
 	     
 		final String layerIds = params.getRequiredParam(PARAM_LAYERS);
 		final String[] layerIdsArr = layerIds.split(",");
+		final JSONObject allLayerAdditionalParams = getAllLayerAdditionalParams(params);
 		
         final User user = params.getUser();
         final double lat = ConversionHelper.getDouble(params.getHttpParam(PARAM_LAT), -1);
@@ -97,6 +99,7 @@ public class GetGeoPointDataHandler extends ActionHandler {
 			    gfiParams.setY(params.getHttpParam(PARAM_Y));
 			    gfiParams.setZoom(zoom);
                 gfiParams.setSRSName(srs);
+                gfiParams.setAdditionalParams(allLayerAdditionalParams.optJSONObject(id));
 			    
 			    final JSONObject response = geoPointService.getWMSFeatureInfo(gfiParams);
                 if(response != null) {
@@ -128,6 +131,15 @@ public class GetGeoPointDataHandler extends ActionHandler {
 	        ResponseHelper.writeResponse(params, rootJson);
 		} catch (JSONException je) {
 		    throw new ActionException("Could not populate GFI JSON: " + log.getAsString(data), je);
+		}
+	}
+
+	private JSONObject getAllLayerAdditionalParams(final ActionParameters params) {
+		try {
+			return new JSONObject(params.getHttpParam(PARAM_PARAMS, "{}"));
+		} catch (JSONException e) {
+			log.warn("Couldn't parse params from POST request", e);
+			return new JSONObject();
 		}
 	}
 }
