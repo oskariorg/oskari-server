@@ -21,10 +21,8 @@ public class ExportMyPlacesFeaturesHandler extends MyPlacesFeaturesHandler {
     private static final String PARAM_SRS = "srs";
     private static final String PARAM_LAYER_ID = "categoryId";
     private static final String PARAM_INDENT = "indent";
-    private static final String PARAM_PRETTIFY = "prettify";
     private static final String FILE_EXT = "geojson";
     private static final String FILE_TYPE = "application/json";
-    private static final int DEFAULT_INDENT = 2;
 
     private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -34,8 +32,8 @@ public class ExportMyPlacesFeaturesHandler extends MyPlacesFeaturesHandler {
         final User user = params.getUser();
         final String srs = params.getHttpParam(PARAM_SRS, PropertyUtil.get("oskari.native.srs", "EPSG:4326"));
         final String layerId = params.getRequiredParam(PARAM_LAYER_ID);
-        final int indent = params.getHttpParam(PARAM_INDENT, DEFAULT_INDENT);
-        final boolean prettify = params.getHttpParam(PARAM_PRETTIFY, true);
+        final int indent = params.getHttpParam(PARAM_INDENT, -1);
+        final boolean prettify = indent > 0 && indent <= 8;
         try {
 
             JSONObject featureCollection = getFeatures(user, layerId, srs);
