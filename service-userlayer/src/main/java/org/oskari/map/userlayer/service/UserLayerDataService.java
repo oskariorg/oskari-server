@@ -57,7 +57,7 @@ public class UserLayerDataService {
         userLayer.setUuid(uuid);
         String ftName = ft.getTypeName();
         userLayer.setName(ConversionHelper.getString(ftName, name));
-        userLayer.setLocalizedNames(ConversionHelper.getString(name, ftName)); // FIXME: userLayer.setLocale(locale);
+        userLayer.setName(PropertyUtil.getDefaultLanguage(), ConversionHelper.getString(name, ftName)); // FIXME: userLayer.setLocale(locale);
         userLayer.setLayer_desc(ConversionHelper.getString(desc, ""));
         userLayer.setLayer_source(ConversionHelper.getString(source, ""));
         WFSLayerOptions wfsOptions = userLayer.getWFSLayerOptions();

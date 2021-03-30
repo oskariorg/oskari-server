@@ -77,10 +77,4 @@ public abstract class UserDataLayer extends JSONLocalizedNameAndTitle {
         }
         return options;
     }
-    // FIXME: used to populate localized name for new layers, remove when frontend sends locale object.
-    public void setLocalizedNames (String name) {
-        for (String lang : PropertyUtil.getSupportedLanguages()){
-            setName(lang, name);
-        }
-    }
 }

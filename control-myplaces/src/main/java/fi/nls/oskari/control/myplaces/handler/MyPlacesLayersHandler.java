@@ -5,6 +5,7 @@ import java.util.List;
 
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
+import fi.nls.oskari.util.PropertyUtil;
 import org.oskari.log.AuditLog;
 import org.oskari.myplaces.service.mybatis.MyPlacesLayersServiceMybatisImpl;
 import org.oskari.permissions.model.PermissionType;
@@ -79,7 +80,7 @@ public class MyPlacesLayersHandler extends RestActionHandler {
         category.setUuid(params.getUser().getUuid());
         String name = params.getRequiredParam(PARAM_NAME);
         category.setName(name);
-        category.setLocalizedNames(name); // FIXME: category.setLocale(params.getRequiredParam(PARAM_LOCALE));
+        category.setName(PropertyUtil.getDefaultLanguage(), name); // FIXME: category.setLocale(params.getRequiredParam(PARAM_LOCALE));
         category.getWFSLayerOptions()
                 .setDefaultFeatureStyle(JSONHelper.createJSONObject(params.getHttpParam(PARAM_STYLE)));
         try {
@@ -112,7 +113,7 @@ public class MyPlacesLayersHandler extends RestActionHandler {
                     .orElseThrow(() -> new ActionParamsException("Couldn't find myplaces layer, " + id));
             String name = params.getRequiredParam(PARAM_NAME);
             category.setName(name);
-            category.setLocalizedNames(name); // FIXME: category.setLocale(params.getRequiredParam(PARAM_LOCALE));
+            category.setName(PropertyUtil.getDefaultLanguage(), name); // FIXME: category.setLocale(params.getRequiredParam(PARAM_LOCALE));
             category.getWFSLayerOptions()
                 .setDefaultFeatureStyle(JSONHelper.createJSONObject(params.getHttpParam(PARAM_STYLE)));
             layerService.update(Collections.singletonList(category));
