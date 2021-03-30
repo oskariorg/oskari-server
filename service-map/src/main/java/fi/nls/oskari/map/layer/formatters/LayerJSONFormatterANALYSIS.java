@@ -1,5 +1,6 @@
 package fi.nls.oskari.map.layer.formatters;
 
+import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.analysis.AnalysisHelper;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.analysis.Analysis;
@@ -9,6 +10,7 @@ import fi.nls.oskari.util.WFSConversionHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.oskari.permissions.model.PermissionType;
 
 import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.KEY_LAYER_COVERAGE;
 
@@ -116,6 +118,17 @@ public class LayerJSONFormatterANALYSIS extends LayerJSONFormatterUSERDATA {
         JSONHelper.putValue(data, "locale", JSONHelper.createJSONObject(lang, locale));
         JSONHelper.putValue(attributes, "data", data);
         return attributes;
+    }
+    // The permissions for analysis layers are inherited from the source layer
+    public static void setPermissions(JSONObject layerJson, boolean hasPublish, boolean hasDownload) {
+        JSONObject permissions = new JSONObject();
+        if (hasPublish) {
+            JSONHelper.putValue(permissions, PermissionType.PUBLISH.getJsonKey(), OskariLayerWorker.PUBLICATION_PERMISSION_OK);
+        }
+        if (hasDownload) {
+            JSONHelper.putValue(permissions, PermissionType.DOWNLOAD.getJsonKey(), OskariLayerWorker.DOWNLOAD_PERMISSION_OK);
+        }
+        JSONHelper.putValue(layerJson, KEY_PERMISSIONS, permissions);
     }
 
 }

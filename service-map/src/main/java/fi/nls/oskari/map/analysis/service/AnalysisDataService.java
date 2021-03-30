@@ -79,7 +79,7 @@ public class AnalysisDataService {
             analysis.setLayer_id(analysislayer.getId());
             String name = analysislayer.getName();
             analysis.setName(name);
-            analysis.setLocalizedNames(name); // FIXME: analysis.setLocale(locale);
+            analysis.setName(PropertyUtil.getDefaultLanguage(), name); // FIXME: analysis.setLocale(locale);
             analysis.setUuid(user.getUuid());
             if (analysislayer.getOverride_sld() != null && !analysislayer.getOverride_sld().isEmpty())
                 analysis.setOverride_SLD(analysislayer.getOverride_sld());
@@ -184,7 +184,7 @@ public class AnalysisDataService {
             analysis.setLayer_id(analysislayer.getId());
             String name = analysislayer.getName();
             analysis.setName(name);
-            analysis.setLocalizedNames(name); // FIXME
+            analysis.setName(PropertyUtil.getDefaultLanguage(), name); // FIXME
             analysis.setUuid(user.getUuid());
             analysis.setOld_id(ids.get(0));
             // update style

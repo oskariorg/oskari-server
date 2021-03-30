@@ -18,6 +18,7 @@ import fi.nls.oskari.map.analysis.domain.SpatialJoinStatisticsMethodParams;
 import fi.nls.oskari.map.analysis.service.AnalysisDataService;
 import fi.nls.oskari.map.analysis.service.AnalysisWebProcessingService;
 import fi.nls.oskari.map.layer.OskariLayerService;
+import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterANALYSIS;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.ServiceUnauthorizedException;
@@ -227,9 +228,8 @@ public class CreateAnalysisLayerHandler extends RestActionHandler {
         else {
             log.warn("Couldn't get source permissions for analysis, result will have none");
         }
-        JSONObject baseOptions = AnalysisDataService.getBaseLayer().getOptions();
         // Get analysisLayer JSON for response to front
-        final JSONObject analysisLayerJSON = AnalysisHelper.getlayerJSON(analysis, baseOptions);
+        final JSONObject analysisLayerJSON = AnalysisDataService.parseAnalysis2JSON(analysis, null);
 
         // Additional param for new layer creation when merging layers:
         // - Notify client to remove merged layers since they are removed from backend
@@ -244,11 +244,7 @@ public class CreateAnalysisLayerHandler extends RestActionHandler {
         Set<String> publishPermission = permissionsService.getResourcesWithGrantedPermissions(ResourceType.analysislayer, params.getUser(), PermissionType.PUBLISH);
         Set<String> downloadPermission = permissionsService.getResourcesWithGrantedPermissions(ResourceType.analysislayer, params.getUser(), PermissionType.DOWNLOAD);
         String permissionKey = "analysis+" + analysis.getId();
-
-        JSONHelper.putValue(analysisLayerJSON, "permissions",
-                AnalysisHelper.getAnalysisPermissions(
-                        publishPermission.contains(permissionKey),
-                        downloadPermission.contains(permissionKey)));
+        LayerJSONFormatterANALYSIS.setPermissions(analysisLayerJSON, publishPermission.contains(permissionKey), downloadPermission.contains(permissionKey));
 
         AuditLog.user(params.getClientIp(), params.getUser())
                 .withParam("id", analysisLayer.getId())

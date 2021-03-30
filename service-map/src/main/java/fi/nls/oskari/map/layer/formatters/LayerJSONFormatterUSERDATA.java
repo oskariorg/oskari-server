@@ -14,7 +14,7 @@ import java.util.Map;
 public abstract class LayerJSONFormatterUSERDATA extends LayerJSONFormatterWFS {
 
     private static final boolean IS_SECURE = true;
-    private static final String KEY_PERMISSIONS = "permissions";
+    protected static final String KEY_PERMISSIONS = "permissions";
 
     public JSONObject getJSON(OskariLayer baseLayer, UserDataLayer layer, String srs) {
         return this.getJSON(baseLayer, layer, srs, PropertyUtil.getDefaultLanguage());
