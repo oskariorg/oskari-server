@@ -15,26 +15,22 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Migrate fields JSONObject to JSONArray from user_layer table
+ * Migrate name column to a locale JSONObject on analysis table
  */
 public class V1_0_10__name_localization extends BaseJavaMigration {
     private static final Logger LOG = LogFactory.getLogger(V1_0_10__name_localization.class);
-    private static final List<String> LANGUAGES = Arrays.asList(PropertyUtil.getSupportedLanguages());
     private static final String DFFAULT_LANGUAGE = PropertyUtil.getDefaultLanguage();
 
     public void migrate(Context context) throws Exception {
         Connection conn = context.getConnection();
         createLocaleColumn(conn);
         setLocales(conn);
-        LOG.info("Migrated analysis names to locales:", LANGUAGES );
+        LOG.info("Migrated analysis table name column to locale with language:", DFFAULT_LANGUAGE );
     }
     private void createLocaleColumn (Connection connection) throws Exception {
         final String sql = "ALTER TABLE analysis ADD COLUMN IF NOT EXISTS locale json DEFAULT '{}'";
-        final PreparedStatement statement = connection.prepareStatement(sql);
-        try {
+        try (PreparedStatement statement = connection.prepareStatement(sql)){
             statement.execute();
-        } finally {
-            statement.close();
         }
     }
     public void setLocales(Connection connection) throws Exception {
@@ -58,7 +54,7 @@ public class V1_0_10__name_localization extends BaseJavaMigration {
     }
     private JSONObject createLocale (String name) {
         JSONObject locale = new JSONObject();
-        LANGUAGES.forEach(lang -> JSONHelper.putValue(locale, lang, JSONHelper.createJSONObject("name", name)));
+        JSONHelper.putValue(locale, DFFAULT_LANGUAGE, JSONHelper.createJSONObject("name", name));
         return locale;
     }
 }
