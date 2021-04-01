@@ -39,7 +39,7 @@ public abstract class SearchService extends OskariComponent {
      */
 	public int getMaxResultsCount() {
 		if (maxCount == -1) {
-			maxCount = ConversionHelper.getInt(PropertyUtil.getOptional("search.max.results"), maxCount);
+			maxCount = ConversionHelper.getInt(PropertyUtil.getOptional("search.max.results"), 100);
 		}
 		return maxCount;
 	}
