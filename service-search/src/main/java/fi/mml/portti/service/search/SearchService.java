@@ -14,12 +14,11 @@ import java.util.Map;
  */
 public abstract class SearchService extends OskariComponent {
 
-	private int maxCount = 100;
+	private int maxCount = -1;
 
 	@Override
 	public void init() {
 		super.init();
-		maxCount = ConversionHelper.getInt(PropertyUtil.getOptional("search.max.results"), maxCount);
 	}
 
 	/**
@@ -36,9 +35,12 @@ public abstract class SearchService extends OskariComponent {
 	/**
 	 * Returns a generic maximum results instruction for search functions.
 	 * SearchChannels/implementations may opt to use this to
-	 * @return
+	 * @return maxCount  - Search results max count
      */
 	public int getMaxResultsCount() {
+		if (maxCount == -1) {
+			maxCount = ConversionHelper.getInt(PropertyUtil.getOptional("search.max.results"), maxCount);
+		}
 		return maxCount;
 	}
 }
