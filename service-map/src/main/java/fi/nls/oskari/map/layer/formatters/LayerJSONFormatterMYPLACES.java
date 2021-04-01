@@ -12,10 +12,10 @@ public class LayerJSONFormatterMYPLACES extends LayerJSONFormatterUSERDATA {
 
     private static final String KEY_IS_DEFAULT = "isDefault";
 
-    public JSONObject getJSON(OskariLayer baseLayer, MyPlaceCategory category, String srs) {
+    public JSONObject getJSON(OskariLayer baseLayer, MyPlaceCategory category, String srs, String lang) {
         category.getWFSLayerOptions().setProperty(KEY_IS_DEFAULT, category.isDefault());
 
-        return super.getJSON(baseLayer, category, srs);
+        return super.getJSON(baseLayer, category, srs, lang);
     }
 
 }

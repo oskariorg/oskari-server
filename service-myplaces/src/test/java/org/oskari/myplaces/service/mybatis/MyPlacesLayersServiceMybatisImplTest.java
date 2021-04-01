@@ -49,6 +49,7 @@ public class MyPlacesLayersServiceMybatisImplTest {
         expected.setPublisher_name("bazqux");
         expected.setDefault(true);
         expected.setOptions(options);
+        expected.setLocale(new JSONObject());
 
         assertEquals(0, expected.getId());
         assertEquals(1, service.insert(Arrays.asList(expected)));

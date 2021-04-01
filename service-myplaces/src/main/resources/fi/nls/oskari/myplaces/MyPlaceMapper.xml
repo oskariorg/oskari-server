@@ -11,6 +11,7 @@
         <result property="publisher_name" column="publisher_name" />
         <result property="category_name" column="category_name" />
         <result property="options" column="options" />
+        <result property="locale" column="locale" />
     </resultMap>
 
     <resultMap id="PlaceResult" type="MyPlace">
@@ -47,7 +48,8 @@
             category_name,
             uuid,
             publisher_name,
-            options
+            options,
+            locale
 	    from 
 	        categories 
 	    where id = #{id}
@@ -61,7 +63,8 @@
             category_name,
             uuid,
             publisher_name,
-            options
+            options,
+            locale
         from 
             categories 
         where id in
@@ -77,7 +80,8 @@
             category_name,
             uuid,
             publisher_name,
-            options
+            options,
+            locale
         from 
             categories
          where publisher_name is not null

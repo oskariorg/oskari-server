@@ -2,8 +2,6 @@ package fi.nls.oskari.map.layer.formatters;
 
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.WFSConversionHelper;
 import org.json.JSONArray;
@@ -18,9 +16,6 @@ import java.util.*;
 public class LayerJSONFormatterUSERLAYER extends LayerJSONFormatterUSERDATA {
 
     private static final String DEFAULT_GEOMETRY_NAME = "the_geom";
-
-    private static Logger log = LogFactory.getLogger(LayerJSONFormatterUSERLAYER.class);
-
 
     public JSONObject getJSON(final OskariLayer baseLayer, UserLayer ulayer, String srs, String lang) {
         final JSONObject layerJson = super.getJSON(baseLayer, ulayer, srs, lang);

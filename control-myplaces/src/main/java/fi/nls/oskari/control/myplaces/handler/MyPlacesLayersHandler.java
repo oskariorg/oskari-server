@@ -5,6 +5,7 @@ import java.util.List;
 
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
+import fi.nls.oskari.util.PropertyUtil;
 import org.oskari.log.AuditLog;
 import org.oskari.myplaces.service.mybatis.MyPlacesLayersServiceMybatisImpl;
 import org.oskari.permissions.model.PermissionType;
@@ -77,7 +78,9 @@ public class MyPlacesLayersHandler extends RestActionHandler {
     public void handlePost(ActionParameters params) throws ActionException {
         MyPlaceCategory category = new MyPlaceCategory();
         category.setUuid(params.getUser().getUuid());
-        category.setName(params.getRequiredParam(PARAM_NAME));
+        String name = params.getRequiredParam(PARAM_NAME);
+        category.setName(name);
+        category.setName(PropertyUtil.getDefaultLanguage(), name); // FIXME: category.setLocale(params.getRequiredParam(PARAM_LOCALE));
         category.getWFSLayerOptions()
                 .setDefaultFeatureStyle(JSONHelper.createJSONObject(params.getHttpParam(PARAM_STYLE)));
         try {
@@ -108,7 +111,9 @@ public class MyPlacesLayersHandler extends RestActionHandler {
         try {
             final MyPlaceCategory category = layerService.getById(id)
                     .orElseThrow(() -> new ActionParamsException("Couldn't find myplaces layer, " + id));
-            category.setName(params.getRequiredParam(PARAM_NAME));
+            String name = params.getRequiredParam(PARAM_NAME);
+            category.setName(name);
+            category.setName(PropertyUtil.getDefaultLanguage(), name); // FIXME: category.setLocale(params.getRequiredParam(PARAM_LOCALE));
             category.getWFSLayerOptions()
                 .setDefaultFeatureStyle(JSONHelper.createJSONObject(params.getHttpParam(PARAM_STYLE)));
             layerService.update(Collections.singletonList(category));
@@ -163,7 +168,7 @@ public class MyPlacesLayersHandler extends RestActionHandler {
 
     private MyPlaceCategory createDefaultCategory() {
         MyPlaceCategory category = new MyPlaceCategory();
-        category.setCategory_name("");
+        category.setName("");
         category.setDefault(true);
         category.getWFSLayerOptions().setDefaultFeatureStyle(WFSLayerOptions.getDefaultOskariStyle());
         return category;

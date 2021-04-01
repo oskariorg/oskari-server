@@ -11,6 +11,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.service.AnalysisDataService;
 import fi.nls.oskari.map.analysis.service.AnalysisDbService;
+import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterANALYSIS;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
@@ -54,16 +55,11 @@ public class GetAnalysisLayersHandler extends ActionHandler {
         final List<Analysis> list = analysisService.getAnalysisByUid(user.getUuid());
         Set<String> publishPermission = permissionsService.getResourcesWithGrantedPermissions(ResourceType.analysislayer, user, PermissionType.PUBLISH);
         Set<String> downloadPermission = permissionsService.getResourcesWithGrantedPermissions(ResourceType.analysislayer, user, PermissionType.DOWNLOAD);
-        JSONObject baseOptions = AnalysisDataService.getBaseLayer().getOptions();
         for(Analysis a: list) {
             // Parse analyse layer json out analysis
-            final JSONObject analysisLayer = AnalysisHelper.getlayerJSON(a, baseOptions);
+            final JSONObject analysisLayer = AnalysisDataService.parseAnalysis2JSON(a, null);
             final String permissionKey = "analysis+" + a.getId();
-
-            JSONHelper.putValue(analysisLayer, "permissions",
-                    AnalysisHelper.getAnalysisPermissions(
-                            publishPermission.contains(permissionKey),
-                            downloadPermission.contains(permissionKey)));
+            LayerJSONFormatterANALYSIS.setPermissions(analysisLayer, publishPermission.contains(permissionKey), downloadPermission.contains(permissionKey));
             layers.put(analysisLayer);
         }
 

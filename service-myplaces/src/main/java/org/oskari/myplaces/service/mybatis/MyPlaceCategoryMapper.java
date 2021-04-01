@@ -21,17 +21,18 @@ public interface MyPlaceCategoryMapper {
             @Result(property="isDefault", column="default"),
             @Result(property="publisher_name", column="publisher_name"),
             @Result(property="category_name", column="category_name"),
-            @Result(property="options", column="options")
+            @Result(property="options", column="options"),
+            @Result(property="locale", column="locale")
     })
-    @Select("SELECT id, uuid, \"default\", publisher_name, category_name, options FROM categories WHERE id = #{id}")
+    @Select("SELECT id, uuid, \"default\", publisher_name, category_name, options, locale FROM categories WHERE id = #{id}")
     public MyPlaceCategory getById(long id);
 
     @ResultMap("CategoryResult")
-    @Select("SELECT id, uuid, \"default\", publisher_name, category_name, options FROM categories WHERE uuid = #{uuid}")
+    @Select("SELECT id, uuid, \"default\", publisher_name, category_name, options, locale FROM categories WHERE uuid = #{uuid}")
     public List<MyPlaceCategory> getByUserId(String uuid);
 
-    @Insert("INSERT INTO categories (uuid, \"default\", publisher_name, category_name, options)"
-            + " VALUES (#{uuid}, #{isDefault}, #{publisher_name}, #{category_name}, CAST(#{options} as json))")
+    @Insert("INSERT INTO categories (uuid, \"default\", publisher_name, category_name, options, locale)"
+            + " VALUES (#{uuid}, #{isDefault}, #{publisher_name}, #{category_name}, CAST(#{options} as json), CAST(#{locale} as json))")
     @Options(useGeneratedKeys=true, keyColumn="id", keyProperty="id")
     public void insert(MyPlaceCategory category);
 
@@ -41,6 +42,7 @@ public interface MyPlaceCategoryMapper {
             + ",publisher_name = #{publisher_name}"
             + ",category_name = #{category_name}"
             + ",options = CAST(#{options} as json)"
+            + ",locale = CAST(#{locale} as json)"
             + " WHERE id = #{id}")
     public void update(MyPlaceCategory category);
 

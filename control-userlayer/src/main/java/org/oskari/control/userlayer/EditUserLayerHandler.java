@@ -2,6 +2,7 @@ package org.oskari.control.userlayer;
 
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
+import fi.nls.oskari.util.PropertyUtil;
 import org.oskari.log.AuditLog;
 import org.json.JSONObject;
 
@@ -36,7 +37,7 @@ public class EditUserLayerHandler extends RestActionHandler {
     public void handlePost(ActionParameters params) throws ActionException {
         String mapSrs = params.getHttpParam(ActionConstants.PARAM_SRS);
         final UserLayer userLayer = UserLayerHandlerHelper.getUserLayer(userLayerDbService, params);
-        userLayer.setLayer_name(params.getRequiredParam(PARAM_NAME));
+        userLayer.setName(PropertyUtil.getDefaultLanguage(), params.getRequiredParam(PARAM_NAME)); // FIXME: userLayer.setLocale(locale);
         userLayer.setLayer_desc(params.getHttpParam(PARAM_DESC, userLayer.getLayer_desc()));
         userLayer.setLayer_source(params.getHttpParam(PARAM_SOURCE, userLayer.getLayer_source()));
         WFSLayerOptions wfsOptions = userLayer.getWFSLayerOptions();

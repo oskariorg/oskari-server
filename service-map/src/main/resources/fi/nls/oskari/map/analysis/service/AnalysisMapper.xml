@@ -24,6 +24,7 @@
         <result property="select_to_data" column="select_to_data" />
         <result property="override_sld" column="override_sld" />
         <result property="options" column = "options" />
+        <result property="locale" column = "locale" />
     </resultMap>
 
     <select id="getAnalysisById" parameterType="long" resultMap="AnalysisResult">
@@ -45,7 +46,8 @@
         col10,
         select_to_data,
         override_sld,
-        options
+        options,
+        locale
         from
         analysis
         where id = #{id}
@@ -70,7 +72,8 @@
         col10,
         select_to_data,
         override_sld,
-        options
+        options,
+        locale
         from
         analysis
         <foreach item="id" collection="list" open="(" close=")" separator=",">
@@ -97,7 +100,8 @@
          col10,
          select_to_data,
          override_sld,
-         options
+         options,
+         locale
          from
          analysis
          where uuid = #{uid}
@@ -134,7 +138,8 @@
         col10,
         select_to_data,
         override_sld,
-        options
+        options,
+        locale
         ) VALUES (
         #{uuid},
         #{name},
@@ -152,7 +157,8 @@
         #{col10},
         #{select_to_data},
         #{override_sld},
-        CAST (#{options} as json)
+        CAST (#{options} as json),
+        CAST (#{locale} as json)
         )
     </insert>
 

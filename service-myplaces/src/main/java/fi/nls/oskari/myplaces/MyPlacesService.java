@@ -95,8 +95,12 @@ public abstract class MyPlacesService extends OskariComponent {
         return "My map layer";
     }
 
+
     public static JSONObject parseLayerToJSON (final MyPlaceCategory mpLayer, final String srs) {
-        return FORMATTER.getJSON(getBaseLayer(), mpLayer, srs);
+        return parseLayerToJSON(mpLayer, srs, PropertyUtil.getDefaultLanguage());
+    }
+    public static JSONObject parseLayerToJSON (final MyPlaceCategory mpLayer, final String srs, final String lang) {
+        return FORMATTER.getJSON(getBaseLayer(), mpLayer, srs, lang);
     }
 
     public JSONObject getCategoryAsWmsLayerJSON(final MyPlaceCategory mpLayer,
