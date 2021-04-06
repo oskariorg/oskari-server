@@ -63,11 +63,12 @@ public class SearchWorker {
         }
         return maximum;
     }
+
     /**
      * Makes a search based on criteria. Picks the configured/requested amount of results and
      * serializes the result to JSON.
      * @param sc
-     * @return
+     * @return result - Search results
      */
     public static JSONObject doSearch(final SearchCriteria sc) {
         
