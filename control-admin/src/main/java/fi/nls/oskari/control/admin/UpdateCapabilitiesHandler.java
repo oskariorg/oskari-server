@@ -44,7 +44,8 @@ import fi.nls.oskari.util.ResponseHelper;
  */
 @OskariActionRoute("UpdateCapabilities")
 public class UpdateCapabilitiesHandler extends RestActionHandler {
-
+    private static final String KEY_DATAPROVIDER_ID = "dataprovider_id";
+    private static final String KEY_GROUP_ID = "group_id";
     private OskariLayerService layerService;
     private CapabilitiesCacheService capabilitiesCacheService;
     private CapabilitiesUpdateService capabilitiesUpdateService;
@@ -84,9 +85,7 @@ public class UpdateCapabilitiesHandler extends RestActionHandler {
     @Override
     public void handlePost(ActionParameters params) throws ActionException {
         params.requireAdminUser();
-
-        String layerId = params.getHttpParam(ActionConstants.KEY_ID);
-        List<OskariLayer> layers = getLayersToUpdate(layerId);
+        List<OskariLayer> layers = getLayersToUpdate(params);
         Set<String> systemCRSs = getSystemCRSs();
 
         for (OskariLayer layer : layers) {
@@ -101,21 +100,29 @@ public class UpdateCapabilitiesHandler extends RestActionHandler {
 
         List<CapabilitiesUpdateResult> result =
                 capabilitiesUpdateService.updateCapabilities(layers, systemCRSs);
-        JSONObject response = createResponse(result, layerId, params);
+        JSONObject response = createResponse(result, params);
         ResponseHelper.writeResponse(params, response);
     }
 
-    private List<OskariLayer> getLayersToUpdate(String layerId)
+    private List<OskariLayer> getLayersToUpdate(ActionParameters params)
             throws ActionParamsException {
-        if (layerId == null) {
-            return layerService.findAll();
+        int layerId = params.getHttpParam(ActionConstants.KEY_ID, -1);
+        if (layerId > 0) {
+            OskariLayer layer = layerService.find(layerId);
+            if (layer == null) {
+                throw new ActionParamsException("Unknown layer id:" + layerId);
+            }
+            return Collections.singletonList(layer);
         }
-        int id = getId(layerId);
-        OskariLayer layer = layerService.find(id);
-        if (layer == null) {
-            throw new ActionParamsException("Unknown layer id:" + id);
+        int dataProviderId = params.getHttpParam(KEY_DATAPROVIDER_ID, -1);
+        if (dataProviderId > 0) {
+            return layerService.findByDataProviderId(dataProviderId);
         }
-        return Collections.singletonList(layer);
+        int groupId = params.getHttpParam(KEY_GROUP_ID, -1);
+        if (groupId > 0) {
+            return layerService.findByGroupId(groupId);
+        }
+        return layerService.findAll();
     }
 
     private int getId(String layerId) throws ActionParamsException {
@@ -134,7 +141,7 @@ public class UpdateCapabilitiesHandler extends RestActionHandler {
         }
     }
 
-    private JSONObject createResponse(List<CapabilitiesUpdateResult> result, String layerId, ActionParameters params)
+    private JSONObject createResponse(List<CapabilitiesUpdateResult> result, ActionParameters params)
             throws ActionException {
         try {
             JSONArray success = new JSONArray();
@@ -151,7 +158,7 @@ public class UpdateCapabilitiesHandler extends RestActionHandler {
             JSONObject response = new JSONObject();
             response.put("success", success);
             response.put("error", errors);
-
+            String layerId = params.getHttpParam(ActionConstants.KEY_ID);
             if (layerId != null && success.length() == 1) {
                 // If this is a update-single-layer request then add the updated information 
                 // Fetch the OskariLayer again to make sure we have all the fields updated in the object
