@@ -11,6 +11,7 @@ public class MapLayerAdminOutput extends MapLayer {
     private Map<String, Object> capabilities;
     private Date created;
     private Date updated;
+    private Date capabilities_last_updated;
 
     public Map<String, Object> getCapabilities() {
         return capabilities;
@@ -46,5 +47,13 @@ public class MapLayerAdminOutput extends MapLayer {
 
     public void setWarn(String warn) {
         this.warn = warn;
+    }
+
+    public Date getCapabilities_last_updated() {
+        return capabilities_last_updated;
+    }
+
+    public void setCapabilities_last_updated(Date capabilities_last_updated) {
+        this.capabilities_last_updated = capabilities_last_updated;
     }
 }

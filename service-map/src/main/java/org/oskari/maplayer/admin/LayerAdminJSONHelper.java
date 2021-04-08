@@ -139,6 +139,7 @@ public class LayerAdminJSONHelper {
 
         out.setCreated(layer.getCreated());
         out.setUpdated(layer.getUpdated());
+        out.setCapabilities_last_updated(layer.getCapabilitiesLastUpdated());
 
         // TODO: handle sublayers layer.getSublayers()
         // TODO: handle groups -> MapLayerGroupsHelper.findGroupsForNames_dangerzone_() + setGroupsForLayer()
