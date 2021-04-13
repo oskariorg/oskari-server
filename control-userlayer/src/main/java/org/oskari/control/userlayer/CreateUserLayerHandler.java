@@ -241,11 +241,6 @@ public class CreateUserLayerHandler extends RestActionHandler {
             return null;
         }
         String name = ze.getName();
-        if (name.indexOf('/') >= 0) {
-            ignored.put(name, "folder");
-            log.debug(name, "is inside a directory, ignoring");
-            return null;
-        }
         if (name.indexOf('.') == 0) {
             ignored.put(name, "hidden");
             log.debug(name, "starts with '.', ignoring");
