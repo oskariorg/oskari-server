@@ -170,6 +170,7 @@ public class MyPlacesLayersHandler extends RestActionHandler {
         MyPlaceCategory category = new MyPlaceCategory();
         category.setName("");
         category.setDefault(true);
+        category.setLocale(new JSONObject());
         category.getWFSLayerOptions().setDefaultFeatureStyle(WFSLayerOptions.getDefaultOskariStyle());
         return category;
     }
