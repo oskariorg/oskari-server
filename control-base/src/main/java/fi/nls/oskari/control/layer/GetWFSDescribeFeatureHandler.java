@@ -80,7 +80,7 @@ public class GetWFSDescribeFeatureHandler extends ActionHandler {
         }
         // Add WPS params
         WFSLayerAttributes attrs = new WFSLayerAttributes(layer.getAttributes());
-        JSONHelper.putValue(response, WPS_PARAMS, JSONHelper.createJSONObject(attrs.getWpsParams()));
+        JSONHelper.putValue(response, WPS_PARAMS, attrs.getWpsParams());
         return response;
     }
 

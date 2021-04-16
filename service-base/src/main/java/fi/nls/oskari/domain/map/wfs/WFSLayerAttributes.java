@@ -65,7 +65,7 @@ public class WFSLayerAttributes {
     private String namespaceURL;
     private int maxFeatures = 100000;
     private JSONObject attributes;
-    private String wpsParams;
+    private JSONObject wpsParams;
 
     public WFSLayerAttributes(JSONObject wfsAttrs) {
         if (wfsAttrs == null) {
@@ -78,7 +78,7 @@ public class WFSLayerAttributes {
         // Parsing failed for maxFeatures: java.lang.IllegalArgumentException: positiveInteger value '0' must be positive.
         maxFeatures = wfsAttrs.optInt("maxFeatures", maxFeatures);
         namespaceURL = wfsAttrs.optString("namespaceURL", namespaceURL);
-        wpsParams = wfsAttrs.optString("wpsParams", wpsParams);
+        wpsParams = wfsAttrs.optJSONObject("wpsParams");
         JSONObject data = wfsAttrs.optJSONObject("data");
         if (data != null) {
             locales = data.optJSONObject("locale");
@@ -129,7 +129,10 @@ public class WFSLayerAttributes {
     public String getNamespaceURL() {
         return namespaceURL;
     }
-    public String getWpsParams() {
+    public JSONObject getWpsParams() {
+        if (wpsParams == null) {
+            return new JSONObject();
+        }
         return wpsParams;
     }
 
