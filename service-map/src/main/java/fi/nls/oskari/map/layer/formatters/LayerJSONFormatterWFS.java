@@ -35,8 +35,6 @@ import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.*;
  */
 public class LayerJSONFormatterWFS extends LayerJSONFormatter {
 
-    private static final String KEY_WPS_PARAMS = "wps_params";
-
     private static Logger log = LogFactory.getLogger(LayerJSONFormatterWFS.class);
 
     public JSONObject getJSON(OskariLayer layer,
@@ -54,8 +52,6 @@ public class LayerJSONFormatterWFS extends LayerJSONFormatter {
             JSONHelper.putValue(layerJson, KEY_STYLE, layer.getStyle());
         }
         JSONHelper.putValue(layerJson, KEY_ISQUERYABLE, true);
-        WFSLayerAttributes attr = new WFSLayerAttributes(layer.getAttributes());
-        JSONHelper.putValue(layerJson, KEY_WPS_PARAMS, getWpsParams(attr.getWpsParams()) );
 
         return layerJson;
     }
@@ -68,19 +64,6 @@ public class LayerJSONFormatterWFS extends LayerJSONFormatter {
         JSONHelper.putValue(layerJson, KEY_STYLES, wfsOpts.getStyles().names());
     }
 
-    /**
-     * Constructs wps params json
-     *
-     * @param  wpsParams wfs layer configuration
-     */
-    private JSONObject getWpsParams(String wpsParams) {
-
-        JSONObject json = new JSONObject();
-        if (wpsParams == null) return json;
-
-        return JSONHelper.createJSONObject(wpsParams);
-
-    }
 
     public static JSONObject createCapabilitiesJSON(final WFSGetCapabilities capa, SimpleFeatureSource source, Set<String> systemCRSs) throws ServiceException {
 
