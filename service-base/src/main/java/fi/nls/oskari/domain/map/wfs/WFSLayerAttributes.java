@@ -49,7 +49,9 @@ import java.util.*;
  *                 "kunta_en": "Municipality",
  *                 "id_nro": "ID No."
  *             }
- *         }
+ *         },
+ *         "noDataValue": -1,
+ *         "commonId": "grd_id"
  *     },
  *     "maxFeatures": 100,
  *     "namespaceURL": "http://oskari.org"
@@ -58,14 +60,19 @@ import java.util.*;
 public class WFSLayerAttributes {
     public static final String KEY_NAMESPACEURL = "namespaceURL";
     public static final String KEY_MAXFEATURES = "maxFeatures";
-    public static final String KEY_WPS_PARAMS = "wpsParams";
+    public static final String KEY_NO_DATA_VALUE = "noDataValue";
+    public static final String KEY_COMMON_ID = "commonId";
+    public static final String KEY_WPS_TYPE = "wpsType";
 
     private Map<String, List<String>> params = new HashMap<>();
     private JSONObject locales = null;
     private String namespaceURL;
     private int maxFeatures = 100000;
+    private Integer noDataValue;
+    private String commonId;
+    private String wpsType;
     private JSONObject attributes;
-    private JSONObject wpsParams;
+
 
     public WFSLayerAttributes(JSONObject wfsAttrs) {
         if (wfsAttrs == null) {
@@ -78,7 +85,6 @@ public class WFSLayerAttributes {
         // Parsing failed for maxFeatures: java.lang.IllegalArgumentException: positiveInteger value '0' must be positive.
         maxFeatures = wfsAttrs.optInt("maxFeatures", maxFeatures);
         namespaceURL = wfsAttrs.optString("namespaceURL", namespaceURL);
-        wpsParams = wfsAttrs.optJSONObject("wpsParams");
         JSONObject data = wfsAttrs.optJSONObject("data");
         if (data != null) {
             locales = data.optJSONObject("locale");
@@ -96,6 +102,11 @@ public class WFSLayerAttributes {
                     params.put(lang, JSONHelper.getArrayAsList(localizedFilter.optJSONArray(lang)));
                 }
             }
+            if (data.has(KEY_NO_DATA_VALUE)) {
+                noDataValue = data.optInt(KEY_NO_DATA_VALUE, -1);
+            }
+            commonId = data.optString(KEY_COMMON_ID, commonId);
+            wpsType = data.optString(KEY_WPS_TYPE, wpsType);
         }
     }
     public Optional<JSONObject> getLocalization() {
@@ -129,12 +140,6 @@ public class WFSLayerAttributes {
     public String getNamespaceURL() {
         return namespaceURL;
     }
-    public JSONObject getWpsParams() {
-        if (wpsParams == null) {
-            return new JSONObject();
-        }
-        return wpsParams;
-    }
 
     public int getMaxFeatures() {
         return maxFeatures;
@@ -148,6 +153,16 @@ public class WFSLayerAttributes {
     public void setNamespaceURL(String namespaceURL) {
         this.namespaceURL = namespaceURL;
         JSONHelper.putValue(this.attributes, "namespaceURL", namespaceURL);
+    }
+    public Integer getNoDataValue() {
+        return noDataValue;
+    }
+
+    public String getCommonId() {
+        return commonId;
+    }
+    public String getWpsType() {
+        return wpsType;
     }
 
     public JSONObject getAttributes() {

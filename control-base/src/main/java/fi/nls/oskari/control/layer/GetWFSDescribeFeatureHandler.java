@@ -4,6 +4,7 @@ import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.wfs.WFSLayerAttributes;
 import fi.nls.oskari.map.layer.OskariLayerService;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
@@ -79,8 +80,14 @@ public class GetWFSDescribeFeatureHandler extends ActionHandler {
             }
         }
         // Add WPS params
-        WFSLayerAttributes attrs = new WFSLayerAttributes(layer.getAttributes());
-        JSONHelper.putValue(response, WPS_PARAMS, attrs.getWpsParams());
+        JSONObject wps =  new JSONObject();
+        try {
+            WFSLayerAttributes attrs = new WFSLayerAttributes(layer.getAttributes());
+            wps.putOpt("no_data", attrs.getNoDataValue());
+            wps.putOpt("join_key", attrs.getCommonId());
+            JSONHelper.putValue(response, WPS_PARAMS, wps);
+        } catch (JSONException ignored) {}
+
         return response;
     }
 

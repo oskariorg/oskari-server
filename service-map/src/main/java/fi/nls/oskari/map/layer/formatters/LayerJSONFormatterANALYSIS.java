@@ -4,6 +4,7 @@ import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.analysis.AnalysisHelper;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.analysis.Analysis;
+import fi.nls.oskari.domain.map.wfs.WFSLayerAttributes;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.WFSConversionHelper;
@@ -26,7 +27,6 @@ public class LayerJSONFormatterANALYSIS extends LayerJSONFormatterUSERDATA {
     private static final String JSKEY_MAXSCALE = "maxScale";
     private static final String JSKEY_METHODPARAMS = "methodParams";
     private static final String JSKEY_NO_DATA = "no_data";
-    private static final String JSKEY_WPS_PARAMS = "wpsParams";
     private static final String JSKEY_METHOD = "method";
     private static final String JSKEY_BBOX = "bbox";
     private static final String JSKEY_BOTTOM = "bottom";
@@ -87,11 +87,12 @@ public class LayerJSONFormatterANALYSIS extends LayerJSONFormatterUSERDATA {
     }
     private static JSONObject parseAttributes (JSONObject layerJson, Analysis analysis, JSONObject analysisJSON, String lang) {
         JSONObject attributes = JSONHelper.getJSONObject(layerJson, "attributes");
+        JSONObject data = new JSONObject();
         JSONObject params = JSONHelper.getJSONObject(analysisJSON, JSKEY_METHODPARAMS);
         if (params != null) {
             Object noData = JSONHelper.get(params, JSKEY_NO_DATA);
             if (noData != null) {
-                JSONHelper.putValue(attributes, JSKEY_WPS_PARAMS, JSONHelper.createJSONObject(JSKEY_NO_DATA, noData));
+                JSONHelper.putValue(data, WFSLayerAttributes.KEY_NO_DATA_VALUE, noData);
             }
         }
         String method = JSONHelper.optString(analysisJSON, JSKEY_METHOD);
@@ -112,7 +113,7 @@ public class LayerJSONFormatterANALYSIS extends LayerJSONFormatterUSERDATA {
                 JSONHelper.putValue(types, field, type);
             }
         }
-        JSONObject data = new JSONObject();
+
         JSONHelper.put(data, "filter", filter);
         JSONHelper.putValue(data, "types", types);
         JSONHelper.putValue(data, "locale", JSONHelper.createJSONObject(lang, locale));

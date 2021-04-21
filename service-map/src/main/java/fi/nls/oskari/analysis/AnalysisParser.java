@@ -1322,7 +1322,7 @@ public class AnalysisParser {
             return false;
         }
         WFSLayerAttributes attr = new WFSLayerAttributes(layer.getAttributes());
-        return ANALYSIS_INPUT_TYPE_GS_VECTOR.equals(attr.getWpsParams().optString(WPS_INPUT_TYPE));
+        return ANALYSIS_INPUT_TYPE_GS_VECTOR.equals(attr.getWpsType());
     }
     /**
      * Set analysis field types

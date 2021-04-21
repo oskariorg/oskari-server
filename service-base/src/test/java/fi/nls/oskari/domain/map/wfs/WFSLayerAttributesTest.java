@@ -13,9 +13,9 @@ public class WFSLayerAttributesTest {
             "    \"randomKey\": \"for testing\",\n" +
             "    \"maxFeatures\": 2000,\n" +
             "    \"namespaceURL\": \"http://oskari.org\",\n" +
-            "    \"wpsParams\":{\n" +
-            "       \"no_data\":-1,\n" +
-            "       \"join_key\":\"grid_id\"\n" +
+            "    \"data\":{\n" +
+            "       \"noDataValue\":-1,\n" +
+            "       \"commonId\":\"grid_id\"\n" +
             "    }\n" +
             "}";
 
@@ -167,7 +167,8 @@ public class WFSLayerAttributesTest {
         assertNull("Params was null", attrs.getAttributes());
         assertFalse("Filter wasn't given", attrs.hasFilter());
         assertFalse("Localization wasn't given", attrs.getLocalization("en").isPresent());
-        assertEquals("WPS params was empty", 0, attrs.getWpsParams().length());
+        assertNull("noDataValue was null", attrs.getNoDataValue());
+        assertNull("commonId was null", attrs.getCommonId());
     }
 
     @Test
@@ -204,9 +205,8 @@ public class WFSLayerAttributesTest {
         assertEquals("Namespace set", "http://oskari.org", attrs.getNamespaceURL());
         assertTrue("Input & output match", JSONHelper.isEqual(input, attrs.getAttributes()));
 
-        JSONObject wpsParams = attrs.getWpsParams();
-        assertEquals("No data set", -1, wpsParams.optInt("no_data"));
-        assertEquals("Join key set", "grid_id", wpsParams.optString("join_key"));
+        assertEquals("noDataValue set", -1, attrs.getNoDataValue().intValue());
+        assertEquals("commonId set", "grid_id", attrs.getCommonId());
 
         assertFalse("Filter wasn't given", attrs.hasFilter());
         assertFalse("Localization wasn't given", attrs.getLocalization("en").isPresent());
