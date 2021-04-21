@@ -12,6 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class V2_3_1__migrate_wps_params extends BaseJavaMigration {
@@ -31,7 +32,25 @@ public class V2_3_1__migrate_wps_params extends BaseJavaMigration {
         }
         try {
             JSONObject wpsParams = new JSONObject(wpsString);
-            JSONHelper.putValue(attr, WPS_PARAMS, wpsParams);
+            JSONObject data = attr.optJSONObject("data");
+            if (data == null) {
+                data = new JSONObject();
+            }
+            Iterator <String> keys = wpsParams.keys();
+            while (keys.hasNext()) {
+                String key = keys.next();
+                if ("no_data".equals(key)) {
+                    data.put("noDataValue", wpsParams.optInt(key, -1));
+                } else if ("join_key".equals(key)) {
+                    data.putOpt("commonId", wpsParams.optString(key, null));
+                } else if ("input_type".equals(key)) {
+                    data.putOpt("wpsType", wpsParams.optString(key, null));
+                } else {
+                    // if wps params has additional keys, store them
+                    data.put(key, wpsParams.get(key));
+                }
+            }
+
             updateAttributes(conn, id, attr);
         } catch (Exception ignored) {
             LOG.warn("Failed to migrate WPS params String:", wpsString, "to JSONObject for layer:", id);
