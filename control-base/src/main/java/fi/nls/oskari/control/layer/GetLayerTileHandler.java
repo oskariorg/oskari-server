@@ -74,14 +74,6 @@ public class GetLayerTileHandler extends ActionHandler {
         final int layerId = params.getRequiredParamInt(KEY_ID);
         final OskariLayer layer = permissionHelper.getLayer(layerId, params.getUser());
 
-        final MetricRegistry metrics = ActionControl.getMetrics();
-
-        Timer.Context actionTimer = null;
-        if(GATHER_METRICS) {
-            final com.codahale.metrics.Timer timer = metrics.timer(METRICS_PREFIX + "." + layerId);
-            actionTimer = timer.time();
-        }
-
         String httpMethod = params.getRequest().getMethod();
         String url;
         String postParams = null;
@@ -97,6 +89,14 @@ public class GetLayerTileHandler extends ActionHandler {
             // -> not an error really, but we don't want to go any further either
             ResponseHelper.writeError(params, "No URL configured", HttpServletResponse.SC_NOT_FOUND);
             return;
+        }
+
+        final MetricRegistry metrics = ActionControl.getMetrics();
+
+        Timer.Context actionTimer = null;
+        if (GATHER_METRICS) {
+            final com.codahale.metrics.Timer timer = metrics.timer(METRICS_PREFIX + "." + layerId);
+            actionTimer = timer.time();
         }
         // TODO: we should handle redirects here or in IOHelper or start using a lib that handles 301/302 properly
         HttpURLConnection con = getConnection(url, layer);
