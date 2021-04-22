@@ -13,6 +13,7 @@ import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 
+import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.oskari.permissions.PermissionService;
@@ -90,6 +91,12 @@ public class GetLayerTileHandler extends ActionHandler {
             postParams = IOHelper.getParams(getUrlParams(params.getRequest()));
         } else {
             url = getURL(params, layer);
+        }
+        if (url == null || url.trim().isEmpty()) {
+            // For example legend url for proxied layers can be empty
+            // -> not an error really, but we don't want to go any further either
+            ResponseHelper.writeError(params, "No URL configured", HttpServletResponse.SC_NOT_FOUND);
+            return;
         }
         // TODO: we should handle redirects here or in IOHelper or start using a lib that handles 301/302 properly
         HttpURLConnection con = getConnection(url, layer);
