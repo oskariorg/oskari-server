@@ -81,18 +81,5 @@ public class MyplacesHelper {
         } catch (FeignException ex) {
             LOG.error(ex, "Error adding featuretype my_places");
         }
-
-        // for viewing the places (WMS) - combination for layers/places
-        FeatureType featurePlacesCategories = new FeatureType();
-        try {
-            featurePlacesCategories.enabled = true;
-            featurePlacesCategories.name = "my_places_categories";
-            GeoserverPopulator.resolveCRS(featurePlacesCategories, srs);
-
-            geoserver.createFeatureType(featurePlacesCategories, GeoserverPopulator.NAMESPACE, storeName);
-            LOG.info("Added featuretype:", featurePlacesCategories);
-        } catch (FeignException ex) {
-            LOG.error(ex, "Error adding featuretype my_places_categories");
-        }
     }
 }
