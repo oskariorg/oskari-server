@@ -69,18 +69,5 @@ public class UserlayerHelper {
         } catch (FeignException ex) {
             LOG.error(ex, "Error adding featuretype vuser_layer_data");
         }
-
-        // for viewing (WMS) - combination for data/style
-        FeatureType featureStyledData = new FeatureType();
-        try {
-            featureStyledData.enabled = true;
-            featureStyledData.name = "user_layer_data_style";
-            GeoserverPopulator.resolveCRS(featureStyledData, srs);
-
-            geoserver.createFeatureType(featureStyledData, GeoserverPopulator.NAMESPACE, storeName);
-            LOG.info("Added featuretype:", featureStyledData);
-        } catch (FeignException ex) {
-            LOG.error(ex, "Error adding featuretype user_layer_data_style");
-        }
     }
 }
