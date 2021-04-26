@@ -51,7 +51,7 @@ public class V2_3_1__migrate_wps_params extends BaseJavaMigration {
                     data.put(key, wpsParams.get(key));
                 }
             }
-
+            attr.remove(WPS_PARAMS);
             updateAttributes(conn, id, attr);
         } catch (Exception ignored) {
             LOG.warn("Failed to migrate WPS params String:", wpsString, "to JSONObject for layer:", id);
