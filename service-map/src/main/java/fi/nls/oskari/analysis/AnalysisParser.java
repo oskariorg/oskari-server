@@ -67,7 +67,7 @@ public class AnalysisParser {
     private static final String ANALYSIS_RENDERING_ELEMENT = "analysis.rendering.element";
     private static final String ANALYSIS_WPS_ELEMENT_LOCALNAME = "analysis_data";
     private static final String ANALYSIS_PROPERTY_NAME = "analysis_id";
-    private static final String WPS_INPUT_TYPE = "input_type";
+    private static final String WPS_INPUT_TYPE = "wpsInputType";
 
     private static final String MYPLACES_BASELAYER_ID = "myplaces.baselayer.id";
     private static final String MYPLACES_PROPERTY_NAME = "category_id";
@@ -245,6 +245,10 @@ public class AnalysisParser {
             analysisLayer.setAnalysisMethodParams(method);
 
             //TODO: better input type mapping
+            // could be handled by:
+            // - adding gs_vector type for analysis, myplaces, userlayer baselayer
+            // - getWpsInputLayerType to get value from attributes.data.wpsInputType and default to wfs
+            // - check if geojson type matters
             method.setWps_reference_type(analysisLayer.getInputType());
             if (sid.indexOf(ANALYSIS_LAYER_PREFIX) == 0 || sid.indexOf(MYPLACES_LAYER_PREFIX) == 0 || sid.indexOf(USERLAYER_PREFIX) == 0) {
                 method.setWps_reference_type2(ANALYSIS_INPUT_TYPE_GS_VECTOR);
@@ -1321,8 +1325,8 @@ public class AnalysisParser {
         if (layer == null) {
             return false;
         }
-        WFSLayerAttributes attr = new WFSLayerAttributes(layer.getAttributes());
-        return ANALYSIS_INPUT_TYPE_GS_VECTOR.equals(attr.getWpsType());
+        JSONObject data = new WFSLayerAttributes(layer.getAttributes()).getAttributesData();
+        return ANALYSIS_INPUT_TYPE_GS_VECTOR.equals(JSONHelper.optString(data, WPS_INPUT_TYPE));
     }
     /**
      * Set analysis field types

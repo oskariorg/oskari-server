@@ -51,7 +51,8 @@ import java.util.*;
  *             }
  *         },
  *         "noDataValue": -1,
- *         "commonId": "grd_id"
+ *         "commonId": "grd_id",
+ *         "wpsInputType": "gs_vector"
  *     },
  *     "maxFeatures": 100,
  *     "namespaceURL": "http://oskari.org"
@@ -70,7 +71,6 @@ public class WFSLayerAttributes {
     private int maxFeatures = 100000;
     private Integer noDataValue;
     private String commonId;
-    private String wpsType;
     private JSONObject attributes;
 
 
@@ -106,7 +106,6 @@ public class WFSLayerAttributes {
                 noDataValue = data.optInt(KEY_NO_DATA_VALUE, -1);
             }
             commonId = data.optString(KEY_COMMON_ID, commonId);
-            wpsType = data.optString(KEY_WPS_TYPE, wpsType);
         }
     }
     public Optional<JSONObject> getLocalization() {
@@ -161,11 +160,15 @@ public class WFSLayerAttributes {
     public String getCommonId() {
         return commonId;
     }
-    public String getWpsType() {
-        return wpsType;
-    }
 
     public JSONObject getAttributes() {
         return attributes;
+    }
+    public JSONObject getAttributesData() {
+        if (attributes == null) {
+            return new JSONObject();
+        }
+        JSONObject data = JSONHelper.getJSONObject(attributes, "data");
+        return data == null ? new JSONObject() : data;
     }
 }

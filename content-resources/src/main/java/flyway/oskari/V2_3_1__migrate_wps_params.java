@@ -44,9 +44,10 @@ public class V2_3_1__migrate_wps_params extends BaseJavaMigration {
                 } else if ("join_key".equals(key)) {
                     data.putOpt("commonId", wpsParams.optString(key, null));
                 } else if ("input_type".equals(key)) {
-                    data.putOpt("wpsType", wpsParams.optString(key, null));
+                    data.putOpt("wpsInputType", wpsParams.optString(key, null));
                 } else {
                     // if wps params has additional keys, store them
+                    LOG.info("Found", key, "in layer:", id, "stored it to attributes.data but it not used");
                     data.put(key, wpsParams.get(key));
                 }
             }
