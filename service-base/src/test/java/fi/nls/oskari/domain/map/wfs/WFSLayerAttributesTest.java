@@ -9,6 +9,16 @@ import static org.junit.Assert.*;
 
 public class WFSLayerAttributesTest {
 
+    String simpleAttributes = "{\n" +
+            "    \"randomKey\": \"for testing\",\n" +
+            "    \"maxFeatures\": 2000,\n" +
+            "    \"namespaceURL\": \"http://oskari.org\",\n" +
+            "    \"data\":{\n" +
+            "       \"noDataValue\":-1,\n" +
+            "       \"commonId\":\"grid_id\"\n" +
+            "    }\n" +
+            "}";
+
     String attributesSimpleFilter = "{\n" +
             "    \"randomKey\": \"for testing\",\n" +
             "    \"data\": {\n" +
@@ -157,6 +167,8 @@ public class WFSLayerAttributesTest {
         assertNull("Params was null", attrs.getAttributes());
         assertFalse("Filter wasn't given", attrs.hasFilter());
         assertFalse("Localization wasn't given", attrs.getLocalization("en").isPresent());
+        assertNull("noDataValue was null", attrs.getNoDataValue());
+        assertNull("commonId was null", attrs.getCommonId());
     }
 
     @Test
@@ -183,5 +195,21 @@ public class WFSLayerAttributesTest {
         assertTrue("Input & output match", JSONHelper.isEqual(input, attrs.getAttributes()));
         assertTrue("Filter was given", attrs.hasFilter());
         assertTrue("English locale wasn't given", attrs.getLocalization("en").isPresent());
+    }
+    @Test
+    public void testSimpleAttributes() throws JSONException {
+        JSONObject input = new JSONObject(simpleAttributes);
+        WFSLayerAttributes attrs = new WFSLayerAttributes(input);
+
+        assertEquals("Max features set", 2000, attrs.getMaxFeatures());
+        assertEquals("Namespace set", "http://oskari.org", attrs.getNamespaceURL());
+        assertTrue("Input & output match", JSONHelper.isEqual(input, attrs.getAttributes()));
+
+        assertEquals("noDataValue set", -1, attrs.getNoDataValue().intValue());
+        assertEquals("commonId set", "grid_id", attrs.getCommonId());
+
+        assertFalse("Filter wasn't given", attrs.hasFilter());
+        assertFalse("Localization wasn't given", attrs.getLocalization("en").isPresent());
+        assertTrue("No attributes selected", attrs.getSelectedAttributes().isEmpty());
     }
 }

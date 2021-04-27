@@ -67,7 +67,7 @@ public class AnalysisParser {
     private static final String ANALYSIS_RENDERING_ELEMENT = "analysis.rendering.element";
     private static final String ANALYSIS_WPS_ELEMENT_LOCALNAME = "analysis_data";
     private static final String ANALYSIS_PROPERTY_NAME = "analysis_id";
-    private static final String WPS_INPUT_TYPE = "input_type";
+    private static final String WPS_INPUT_TYPE = "wpsInputType";
 
     private static final String MYPLACES_BASELAYER_ID = "myplaces.baselayer.id";
     private static final String MYPLACES_PROPERTY_NAME = "category_id";
@@ -162,8 +162,7 @@ public class AnalysisParser {
         analysisLayer.setMaxScale(wfsLayer.getMaxScale());
 
         // Set WFS input type, other than analysis_ and myplaces and geojson - default is REFERENCE
-        WFSLayerAttributes attrs = new WFSLayerAttributes(wfsLayer.getAttributes());
-        analysisLayer.setInputType(getWpsInputLayerType(attrs.getWpsParams(), analysisLayer.getInputType()));
+        analysisLayer.setInputType(getWpsInputLayerType(wfsLayer, analysisLayer.getInputType()));
 
         // Extract parameters for analysis methods from layer
 
@@ -246,11 +245,15 @@ public class AnalysisParser {
             analysisLayer.setAnalysisMethodParams(method);
 
             //TODO: better input type mapping
+            // could be handled by:
+            // - adding gs_vector type for analysis, myplaces, userlayer baselayer
+            // - getWpsInputLayerType to get value from attributes.data.wpsInputType and default to wfs
+            // - check if geojson type matters
             method.setWps_reference_type(analysisLayer.getInputType());
             if (sid.indexOf(ANALYSIS_LAYER_PREFIX) == 0 || sid.indexOf(MYPLACES_LAYER_PREFIX) == 0 || sid.indexOf(USERLAYER_PREFIX) == 0) {
                 method.setWps_reference_type2(ANALYSIS_INPUT_TYPE_GS_VECTOR);
                 method.setLayer_id2(this.getAnalysisInputId(analyseMethodParams));
-            } else if (isWpsInputLayerType(getWPSParams(lc2))) {
+            } else if (isGSVectorInputType(lc2)) {
                 method.setWps_reference_type2(ANALYSIS_INPUT_TYPE_GS_VECTOR);
             } else if (isJsonData) {
                 method.setWps_reference_type2(ANALYSIS_INPUT_TYPE_GEOJSON);
@@ -258,7 +261,7 @@ public class AnalysisParser {
                 method.setWps_reference_type2(ANALYSIS_INPUT_TYPE_WFS);
             }
             // Set WFS input type, other than analysis_ , myplaces_ and -userlayer - default is REFERENCE
-            analysisLayer.setInputType(getWpsInputLayerType(getWPSParams(wfsLayer), analysisLayer.getInputType()));
+            analysisLayer.setInputType(getWpsInputLayerType(wfsLayer, analysisLayer.getInputType()));
 
             // Set mode intersect or contains
             method.setIntersection_mode(JSONHelper.getStringFromJSON(analyseMethodParams, JSON_KEY_OPERATOR, "intersect"));
@@ -303,7 +306,7 @@ public class AnalysisParser {
             if (sid.indexOf(ANALYSIS_LAYER_PREFIX) == 0 || sid.indexOf(MYPLACES_LAYER_PREFIX) == 0 || sid.indexOf(USERLAYER_PREFIX) == 0) {
                 method.setWps_reference_type2(ANALYSIS_INPUT_TYPE_GS_VECTOR);
                 method.setLayer_id2(this.getAnalysisInputId(analyseMethodParams));
-            } else if (isWpsInputLayerType(getWPSParams(lc2))) {
+            } else if (isGSVectorInputType(lc2)) {
                 method.setWps_reference_type2(ANALYSIS_INPUT_TYPE_GS_VECTOR);
             } else if (isJsonData) {
                 method.setWps_reference_type2(ANALYSIS_INPUT_TYPE_GEOJSON);
@@ -311,7 +314,7 @@ public class AnalysisParser {
                 method.setWps_reference_type2(ANALYSIS_INPUT_TYPE_WFS);
             }
             // Set WFS input type, other than analysis_ , myplaces_ and -userlayer - default is REFERENCE
-            analysisLayer.setInputType(getWpsInputLayerType(getWPSParams(wfsLayer), analysisLayer.getInputType()));
+            analysisLayer.setInputType(getWpsInputLayerType(wfsLayer, analysisLayer.getInputType()));
 
             // Set mode intersect or contains
             method.setIntersection_mode(JSONHelper.getStringFromJSON(analyseMethodParams, JSON_KEY_OPERATOR, "intersect"));
@@ -356,7 +359,7 @@ public class AnalysisParser {
             if (sid.indexOf(ANALYSIS_LAYER_PREFIX) == 0 || sid.indexOf(MYPLACES_LAYER_PREFIX) == 0 || sid.indexOf(USERLAYER_PREFIX) == 0) {
                 method.setWps_reference_type2(ANALYSIS_INPUT_TYPE_GS_VECTOR);
                 method.setLayer_id2(this.getAnalysisInputId(analyseMethodParams));
-            } else if (isWpsInputLayerType(getWPSParams(lc2))) {
+            } else if (isGSVectorInputType(lc2)) {
                 method.setWps_reference_type2(ANALYSIS_INPUT_TYPE_GS_VECTOR);
             } else if (isJsonData) {
                 method.setWps_reference_type2(ANALYSIS_INPUT_TYPE_GEOJSON);
@@ -364,7 +367,7 @@ public class AnalysisParser {
                 method.setWps_reference_type2(ANALYSIS_INPUT_TYPE_WFS);
             }
             // Set WFS input type, other than analysis_ , myplaces_ and -userlayer - default is REFERENCE
-            analysisLayer.setInputType(getWpsInputLayerType(getWPSParams(wfsLayer), analysisLayer.getInputType()));
+            analysisLayer.setInputType(getWpsInputLayerType(wfsLayer, analysisLayer.getInputType()));
 
 
             // WFS filter
@@ -1270,13 +1273,6 @@ public class AnalysisParser {
         LOG.info("Couldn't get namespace url from layer");
         return "http://oskari.org";
     }
-    private String getWPSParams(OskariLayer layer) {
-        if (layer != null) {
-            WFSLayerAttributes attr = new WFSLayerAttributes(layer.getAttributes());
-            return attr.getWpsParams();
-        }
-        return null;
-    }
 
     private String getSRS(OskariLayer layer) {
         if (layer != null && layer.getSrs_name() != null) {
@@ -1311,29 +1307,26 @@ public class AnalysisParser {
 
     /**
      * Use gs_vector input type, when wfs input layer is in the same server as WPS service
-     * @param wps_params
+     * @param layer
      * @param defaultValue value to use if params don't suggest otherwise
      */
-    private String getWpsInputLayerType(String wps_params, String defaultValue) {
-        if (wps_params == null || wps_params.equals("{}")) {
-            return defaultValue;
-        }
-        JSONObject json = JSONHelper.createJSONObject(wps_params);
-        if (json == null) {
-            return defaultValue;
-        }
-        if (ANALYSIS_INPUT_TYPE_GS_VECTOR.equals(json.optString(WPS_INPUT_TYPE))) {
+    private String getWpsInputLayerType(OskariLayer layer, String defaultValue) {
+        if (isGSVectorInputType(layer)) {
             return ANALYSIS_INPUT_TYPE_GS_VECTOR;
         }
         return defaultValue;
     }
     /**
-     * Is wfs layer gs_vector input type for WPS
-     * @param wps_params  WFS layer configuration
+     * Check from wps params if wfs layer is gs_vector input type for WPS
+     * @param layer  WFS layer configuration
      * @return true, if is
      */
-    private boolean isWpsInputLayerType(String wps_params) {
-        return ANALYSIS_INPUT_TYPE_GS_VECTOR.equals(getWpsInputLayerType(wps_params, null));
+    private boolean isGSVectorInputType (OskariLayer layer) {
+        if (layer == null) {
+            return false;
+        }
+        JSONObject data = new WFSLayerAttributes(layer.getAttributes()).getAttributesData();
+        return ANALYSIS_INPUT_TYPE_GS_VECTOR.equals(JSONHelper.optString(data, WPS_INPUT_TYPE));
     }
     /**
      * Set analysis field types
