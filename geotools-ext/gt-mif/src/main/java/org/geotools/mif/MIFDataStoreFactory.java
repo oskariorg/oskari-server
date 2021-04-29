@@ -3,6 +3,7 @@ package org.geotools.mif;
 import java.awt.RenderingHints.Key;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Map;
@@ -51,7 +52,7 @@ public class MIFDataStoreFactory implements DataStoreFactorySpi {
     }
 
     @Override
-    public boolean canProcess(Map<String, ?> params) {
+    public boolean canProcess(Map<String, Serializable> params) {
         try {
             URL url = (URL) MIF_FILE_PARAM.lookUp(params);
             if (url == null) {
@@ -84,7 +85,7 @@ public class MIFDataStoreFactory implements DataStoreFactorySpi {
     }
 
     @Override
-    public DataStore createDataStore(Map<String, ?> params) throws IOException {
+    public DataStore createDataStore(Map<String, Serializable> params) throws IOException {
         URL url = (URL) MIF_FILE_PARAM.lookUp(params);
         String crs = (String) CRS_PARAM.lookUp(params);
         File mif = URLs.urlToFile(url);
@@ -113,7 +114,7 @@ public class MIFDataStoreFactory implements DataStoreFactorySpi {
     }
 
     @Override
-    public DataStore createNewDataStore(Map<String, ?> params) throws IOException {
+    public DataStore createNewDataStore(Map<String, Serializable> params) throws IOException {
         throw new UnsupportedOperationException("MIF Datastore is read only");
     }
 
