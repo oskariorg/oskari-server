@@ -1,5 +1,7 @@
 package fi.nls.oskari.map.layer.formatters;
 
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.wms.WMSStyle;
 import fi.nls.oskari.wmts.domain.WMTSCapabilities;
 
@@ -16,6 +18,7 @@ import java.util.*;
 import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.*;
 
 public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
+    private static Logger log = LogFactory.getLogger(LayerJSONFormatterWMTS.class);
 
     public JSONObject getJSON(OskariLayer layer,
                               final String lang,
@@ -35,10 +38,11 @@ public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
             styleName = "default";
         }
         JSONHelper.putValue(layerJson, "style", styleName);
-        JSONArray styles = new JSONArray();
-        // currently supporting only one style (default style)
-        styles.put(createStylesJSON(styleName, styleName, null));
-        JSONHelper.putValue(layerJson, "styles", styles);
+        try {
+            JSONHelper.putValue(layerJson, KEY_STYLES, createStylesJSON(layer, isSecure));
+        } catch (Exception e) {
+            log.warn(e, "Populating layer styles failed for id: " + layer.getId());
+        }
 
         // if options have urlTemplate -> use it (treat as a REST layer)
         final String urlTemplate = JSONHelper.getStringFromJSON(layer.getOptions(), "urlTemplate", null);
