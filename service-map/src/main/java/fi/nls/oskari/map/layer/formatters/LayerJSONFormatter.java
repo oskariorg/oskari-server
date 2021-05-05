@@ -237,9 +237,11 @@ public class LayerJSONFormatter {
             } else if (!globalLegend.isEmpty()) {
                 legend = globalLegend;
             }
-            boolean secureUrl = legend.toLowerCase().startsWith("https://") || legend.startsWith("/");
-            if((!secureUrl && isSecure) || useProxy(layer)) {
-                legend = buildLegendUrl(layer, name);
+            if (!legend.isEmpty()) {
+                boolean secureUrl = legend.toLowerCase().startsWith("https://") || legend.startsWith("/");
+                if ((!secureUrl && isSecure) || useProxy(layer)) {
+                    legend = buildLegendUrl(layer, name);
+                }
             }
             styles.put(createStylesJSON(name, title, legend));
         }
