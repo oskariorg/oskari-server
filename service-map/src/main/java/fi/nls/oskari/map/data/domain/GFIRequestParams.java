@@ -31,12 +31,12 @@ public class GFIRequestParams {
     private String srsName;
     private JSONObject additionalParams;
 
-    private static final String WMS_GFI_FEAUTURE_COUNT = PropertyUtil.get("wms.gfi.feature.count", "50");
+    private static final String WMS_GFI_FEATURE_COUNT = PropertyUtil.get("wms.gfi.feature.count", "50");
     private static final Map<String, String> WMS_GFI_BASE_PARAMS = new HashMap<String, String>() {{
         put("REQUEST", "GetFeatureInfo");
-        put("EXCEPTIONS", "EXCEPTIONS=application/vnd.ogc.se_xml");
+        put("EXCEPTIONS", "application/vnd.ogc.se_xml");
         put("VERSION", "1.1.1");
-        put("FEATURE_COUNT", WMS_GFI_FEAUTURE_COUNT);
+        put("FEATURE_COUNT", WMS_GFI_FEATURE_COUNT);
         put("FORMAT", "image/png");
         put("SERVICE", "WMS");
     }};
