@@ -10,7 +10,7 @@ For a full list of changes see: https://github.com/oskariorg/oskari-server/miles
 - Added support for a new control parameter "timeseries" to pass URL-parameter as part of frontend state.
 - GetWFSLayerFields now returns "filter" and "geometryType" as part of it's response.
 - Fixed an issue where bundle states were not written for appsetups on saved views listing when bundle config was missing. Fixes for example saved map rotation on views. 
-- GFI requests now sends out identifier headers declaring that an Oskari instance is requesting the data.
+- GFI requests now include identifier headers declaring that an Oskari instance is requesting the data.
 - Added a route that can be used to request a listing of users "my places" features as GeoJSON with a filename header.
 - Added support for localized layer names for user generated data.
 - Fixed an issue with global search result limit (defaulted to 100 because of timing issues instead of configured limit).
