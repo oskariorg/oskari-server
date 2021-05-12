@@ -1,5 +1,32 @@
 # Release Notes
 
+## 2.3.0
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/29?closed=1
+
+- Added support for GeoPackages for userlayer import (the UI doesn't say so but importing these should work).
+- When layer is loaded for editing the capabilities are now refreshed before the data is written out for frontend.
+- Metadata UUID is now included in the layer capabilities response
+- Added support for a new control parameter "timeseries" to pass URL-parameter as part of frontend state.
+- GetWFSLayerFields now returns "filter" and "geometryType" as part of it's response.
+- Fixed an issue where bundle states were not written for appsetups on saved views listing when bundle config was missing. Fixes for example saved map rotation on views. 
+- GFI requests now include identifier headers declaring that an Oskari instance is requesting the data.
+- Added a route that can be used to request a listing of users "my places" features as GeoJSON with a filename header.
+- Added support for localized layer names for user generated data.
+- Fixed an issue with global search result limit (defaulted to 100 because of timing issues instead of configured limit).
+- Added support for updating capabilities for layers based on data provider or group (previously available options were only by layer or all layers).
+- Improved user layer import parsing to allow folders inside zip for the imported files.
+- GeoServer artifacts updated for GeoServer 2.19 (updated bundled GeoServer as well/requires manual updating to update, but older installs work as well so update isn't necessary).
+- Fix for setup.war webapp (didn't work properly after some internal layers got removed).
+- Compiling oskari-server with latest Java 11 update works again.
+- Fixes for legend url proxying.
+- Added support for AWS ElastiCache Redis setup: https://github.com/oskariorg/oskari-server/pull/716
+- Updated dependencies:
+  - GeoTools 23.2 -> 24.2
+  - Spring 5.3.3 -> 5.3.5
+  - Spring-security 5.4.2 -> 5.4.6
+  - Session 2020.0.3 -> 2020.0.4
+    
 ## 2.2.0
 
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/28?closed=1
