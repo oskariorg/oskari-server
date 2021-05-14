@@ -34,9 +34,9 @@ public class GeoJSONSchemaDetector {
         replaceGeometry(json, GeoJSONReader2::toGeometry);
 
         if (ignoreGeometriesUnderProperties) {
-            replaceMapProperties(json, maybeGeometry -> isGeometry(maybeGeometry) ? null : maybeGeometry);
+            replaceMapProperties(json, propertyValue -> isGeometry(propertyValue) ? null : propertyValue);
         } else {
-            replaceMapProperties(json, maybeGeometry -> propertyToGeometry(maybeGeometry).orElse(maybeGeometry));
+            replaceMapProperties(json, propertyValue -> propertyToGeometry(propertyValue).orElse(propertyValue));
         }
 
         Map<String, Class<?>> bindings = new HashMap<>();
