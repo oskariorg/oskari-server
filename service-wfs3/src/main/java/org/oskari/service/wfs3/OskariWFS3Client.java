@@ -111,6 +111,9 @@ public class OskariWFS3Client {
 
         String path = getItemsPath(endPoint, collectionId);
         Map<String, String> query = getQueryParams(crsURI, bbox, bboxCrsURI, hardLimit);
+        // attach any extra params added for layer (for example properties=[prop name we are interested in])
+        query.putAll(JSONHelper.getObjectAsMap(layer.getParams()));
+
         Map<String, String> headers = Collections.singletonMap("Accept", CONTENT_TYPE_GEOJSON);
 
         List<SimpleFeatureCollection> pages = new ArrayList<>();
