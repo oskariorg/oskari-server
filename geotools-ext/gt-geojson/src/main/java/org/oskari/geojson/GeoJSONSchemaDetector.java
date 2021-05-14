@@ -3,6 +3,7 @@ package org.oskari.geojson;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
@@ -25,25 +26,18 @@ public class GeoJSONSchemaDetector {
     }
 
     @SuppressWarnings("unchecked")
-    public static SimpleFeatureType getSchema(Map<String, Object> json, CoordinateReferenceSystem crs, boolean ignoreGeometryProperties) {
+    public static SimpleFeatureType getSchema(Map<String, Object> json, CoordinateReferenceSystem crs, boolean ignoreGeometriesUnderProperties) {
         // FIXME: This creates a side-effect by modifying the input as well as returning the SimpleFeatureType.
         // Might cause problems later on...
 
         // Map feature.geometry fields to JTS Geometries
         replaceGeometry(json, GeoJSONReader2::toGeometry);
-        replaceMapProperties(json, it -> {
-            // Map properties of type Map<String, Object> to JTS geometries if possible, otherwise leave as is
-            try {
-                Geometry g = GeoJSONReader2.toGeometry(it);
-                if (ignoreGeometryProperties) {
-                    // If we want to ignore them return null to remove them from the properties map
-                    return null;
-                }
-                return g;
-            } catch (Exception e) {
-                return it;
-            }
-        });
+
+        if (ignoreGeometriesUnderProperties) {
+            replaceMapProperties(json, maybeGeometry -> isGeometry(maybeGeometry) ? null : maybeGeometry);
+        } else {
+            replaceMapProperties(json, maybeGeometry -> propertyToGeometry(maybeGeometry).orElse(maybeGeometry));
+        }
 
         Map<String, Class<?>> bindings = new HashMap<>();
         String type = GeoJSONUtil.getString(json, GeoJSON.TYPE);
@@ -83,6 +77,31 @@ public class GeoJSONSchemaDetector {
         }
 
         return sftb.buildFeatureType();
+    }
+
+    /**
+     * Try to convert Map<String, Object> representing GeoJSON Geometry to JTS Geometry
+     * @param maybeGeometry JSON Object under that might be GeoJSON Geometry
+     */
+    private static Optional<Object> propertyToGeometry(Map<String, Object> maybeGeometry) {
+        try {
+            return Optional.of(GeoJSONReader2.toGeometry(maybeGeometry));
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * Check if Map<String, Object> is GeoJSON Geometry
+     * @param maybeGeometry JSON object under that might be GeoJSON Geometry
+     */
+    private static boolean isGeometry(Map<String, Object> maybeGeometry) {
+        try {
+            GeoJSONReader2.toGeometry(maybeGeometry);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @SuppressWarnings("unchecked")
