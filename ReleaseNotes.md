@@ -1,5 +1,11 @@
 # Release Notes
 
+## 2.3.2
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/32?closed=1
+
+- Small changes for userlayer/analysis migrations to make them compatible with Postgres 9.4 (previously required 9.6)
+
 ## 2.3.1
 
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/31?closed=1
