@@ -1,5 +1,13 @@
 # Release Notes
 
+## 2.3.1
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/31?closed=1
+
+- Small change to my places migration to make it compatible with Postgres 9.4 (previously required 9.6)
+- Make WFSclient accept features without geometries.
+- Enable additional parameters from oskari_maplayer.params to be passed to OGC API Features services.
+
 ## 2.3.0
 
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/29?closed=1
