@@ -28,7 +28,7 @@ public class V1_0_15__name_localization extends BaseJavaMigration {
         LOG.info("Migrated categories table name column to locale with language:", DFFAULT_LANGUAGE );
     }
     private void createLocaleColumn (Connection connection) throws Exception {
-        final String sql = "ALTER TABLE categories ADD COLUMN IF NOT EXISTS locale json DEFAULT '{}'";
+        final String sql = "ALTER TABLE categories ADD COLUMN locale json DEFAULT '{}'";
         try (PreparedStatement statement = connection.prepareStatement(sql)){
             statement.execute();
         }
