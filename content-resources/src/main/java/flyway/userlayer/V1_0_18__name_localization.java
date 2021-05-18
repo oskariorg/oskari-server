@@ -28,7 +28,7 @@ public class V1_0_18__name_localization extends BaseJavaMigration {
         LOG.info("Migrated user_layer table name column to locale with language:", DFFAULT_LANGUAGE );
     }
     private void createLocaleColumn (Connection connection) throws Exception {
-        final String sql = "ALTER TABLE user_layer ADD COLUMN IF NOT EXISTS locale json DEFAULT '{}'";
+        final String sql = "ALTER TABLE user_layer ADD COLUMN locale json DEFAULT '{}'";
         try (PreparedStatement statement = connection.prepareStatement(sql)){
             statement.execute();
         }
