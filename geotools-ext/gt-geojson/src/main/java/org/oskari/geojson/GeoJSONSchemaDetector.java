@@ -69,8 +69,11 @@ public class GeoJSONSchemaDetector {
         SimpleFeatureTypeBuilder sftb = new SimpleFeatureTypeBuilder();
         sftb.setName("FeatureType");
         sftb.setNamespaceURI("http://oskari.org");
-        sftb.setDefaultGeometry(GeoJSONUtil.DEFAULT_GEOMETRY_ATTRIBUTE_NAME);
-        sftb.setCRS(crs);
+        // check if we expect request to return geometry (with properties param it might not)
+        if (bindings.containsKey(GeoJSONUtil.DEFAULT_GEOMETRY_ATTRIBUTE_NAME)) {
+            sftb.setDefaultGeometry(GeoJSONUtil.DEFAULT_GEOMETRY_ATTRIBUTE_NAME);
+            sftb.setCRS(crs);
+        }
 
         for (Map.Entry<String, Class<?>> attribute : bindings.entrySet()) {
             String name = attribute.getKey();
