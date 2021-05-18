@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.oskari</groupId>
         <artifactId>oskari-server</artifactId>
-        <version>2.4.0-SNAPSHOT</version>
+        <version>2.3.2</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <artifactId>geoserver-rest-client</artifactId>
