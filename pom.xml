@@ -92,8 +92,8 @@
         <jedis.version>3.5.1</jedis.version>
         <quartz-scheduler.version>2.3.2</quartz-scheduler.version>
 
-        <geotools.version>24.2</geotools.version>
-        <jts.version>1.17.1</jts.version>
+        <geotools.version>25.1</geotools.version>
+        <jts.version>1.18.1</jts.version>
         <mvt.version>3.1.0</mvt.version>
         <flexjson.version>2.0</flexjson.version>
 
