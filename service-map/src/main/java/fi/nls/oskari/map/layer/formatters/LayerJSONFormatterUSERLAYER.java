@@ -22,17 +22,18 @@ public class LayerJSONFormatterUSERLAYER extends LayerJSONFormatterUSERDATA {
         addLayerCoverageWKT(layerJson, ulayer.getWkt(), srs);
         JSONHelper.putValue(layerJson, "description", ulayer.getLayer_desc());
         JSONHelper.putValue(layerJson, "source", ulayer.getLayer_source());
-
-        parseFields(layerJson, ulayer.getFields());
-
+        JSONObject baseAttributes = JSONHelper.getJSONObject(layerJson, "attributes");
+        JSONObject layerAttributes = parseAttributes(ulayer.getFields());
+        // baseAttributes comes from baseLayer merge layer attributes
+        JSONHelper.putValue(layerJson, "attributes", JSONHelper.merge(baseAttributes, layerAttributes));
         return layerJson;
     }
     // parse fields like WFSLayerAttributes
-    private static void parseFields(JSONObject layerJson, final JSONArray fields) {
+    private static JSONObject parseAttributes(final JSONArray fields) {
+        JSONObject attributes = new JSONObject();
         if (fields == null || fields.length() == 0){
-            return;
+            return attributes;
         }
-        JSONObject attributes = JSONHelper.getJSONObject(layerJson, "attributes");
         JSONObject data = new JSONObject();
         JSONObject types = new JSONObject();
         Map<String, JSONObject> locale = new HashMap<>();
@@ -64,6 +65,6 @@ public class LayerJSONFormatterUSERLAYER extends LayerJSONFormatterUSERDATA {
         JSONObject loc = new JSONObject();
         locale.keySet().forEach(lang -> JSONHelper.putValue(loc, lang, locale.get(lang)));
         JSONHelper.putValue(data, "locale", loc);
-
+        return attributes;
     }
 }
