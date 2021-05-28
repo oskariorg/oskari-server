@@ -139,7 +139,7 @@ public class JedisManager {
      * @return string
      */
     public static String get(String key, boolean throwException) {
-        try (Jedis jedis = instance.getJedis(throwException)){
+        try (Jedis jedis = instance.getJedis(throwException)) {
             if (jedis == null) {
                 return null;
             }
@@ -168,7 +168,7 @@ public class JedisManager {
      * @return bytes
      */
 	public static byte[] get(byte[] key) {
-        try (Jedis jedis = instance.getJedis()){
+        try (Jedis jedis = instance.getJedis()) {
             if (jedis == null) {
                 return null;
             }
@@ -193,7 +193,7 @@ public class JedisManager {
      */
     public static String setex(String key, int seconds, String value) {
 
-        try (Jedis jedis = instance.getJedis()){
+        try (Jedis jedis = instance.getJedis()) {
             if (jedis == null) {
                 return null;
             }
@@ -216,7 +216,7 @@ public class JedisManager {
      * @return string
      */
     public static String setex(byte[] key, int seconds, byte[] value) {
-        try (Jedis jedis = instance.getJedis()){
+        try (Jedis jedis = instance.getJedis()) {
             if (jedis == null) {
                 return null;
             }
@@ -237,7 +237,7 @@ public class JedisManager {
      * @return keys
      */
     public static Set<String> keys(String pattern) {
-        try (Jedis jedis = instance.getJedis()){
+        try (Jedis jedis = instance.getJedis()) {
             if (jedis == null) {
                 return Collections.emptySet();
             }
@@ -258,7 +258,7 @@ public class JedisManager {
      * @return set of string
      */
 	public static Set<String> hkeys(String key) {
-        try (Jedis jedis = instance.getJedis()){
+        try (Jedis jedis = instance.getJedis()) {
             if (jedis == null) {
                 return Collections.emptySet();
             }
@@ -280,7 +280,7 @@ public class JedisManager {
      * @return string
      */
 	public static String hget(String key, String field) {
-        try (Jedis jedis = instance.getJedis()){
+        try (Jedis jedis = instance.getJedis()) {
             if (jedis == null) {
                 return null;
             }
@@ -299,19 +299,64 @@ public class JedisManager {
      *
      * @param key
      * @param field
-     * @return string
+     * @param value
+     * @return Long or null when there was an exception
      */
     public static Long hset(String key, String field, String value) {
-        try (Jedis jedis = instance.getJedis()){
+        try (Jedis jedis = instance.getJedis()) {
             if (jedis == null) {
                 return null;
             }
             return jedis.hset(key, field, value);
         } catch(JedisConnectionException e) {
-            log.error("Failed to hget", key);
+            log.error("Failed to hset", key);
             return null;
         } catch (Exception e) {
-            log.error("Getting", key, "failed miserably");
+            log.error("Setting", key, "failed miserably");
+            return null;
+        }
+    }
+
+    /**
+     * Thread-safe Long HDEL for Redis
+     *
+     * @param key
+     * @param fields
+     * @return Long or null when there was an exception
+     */
+    public static Long hdel(String key, String... fields) {
+        try (Jedis jedis = instance.getJedis()) {
+            if (jedis == null) {
+                return null;
+            }
+            return jedis.hdel(key, fields);
+        } catch(JedisConnectionException e) {
+            log.error("Failed to hdel", key);
+            return null;
+        } catch (Exception e) {
+            log.error("Removing", key, "with fields:", fields, "failed miserably");
+            return null;
+        }
+    }
+
+    /**
+     * Thread-safe Long HINCRBY for Redis
+     *
+     * @param key
+     * @param field
+     * @return Long or null when there was an exception
+     */
+    public static Long hincrBy(String key, String field, long increment) {
+        try (Jedis jedis = instance.getJedis()) {
+            if (jedis == null) {
+                return null;
+            }
+            return jedis.hincrBy(key, field, increment);
+        } catch(JedisConnectionException e) {
+            log.error("Failed to hincrBy", key, field);
+            return null;
+        } catch (Exception e) {
+            log.error("Incrementing", key, field, "failed miserably");
             return null;
         }
     }
@@ -323,7 +368,7 @@ public class JedisManager {
      * @return long
      */
     public static Long del(String... keys) {
-        try (Jedis jedis = instance.getJedis()){
+        try (Jedis jedis = instance.getJedis()) {
             if (jedis == null) {
                 return null;
             }
