@@ -82,11 +82,14 @@ public class LayerJSONFormatterANALYSIS extends LayerJSONFormatterUSERDATA {
                 // Don't add geom if some value is missing or invalid
             }
         }
-        parseAttributes(layerJson, analysis, analyseJson, lang);
+        JSONObject baseAttributes = JSONHelper.getJSONObject(layerJson, "attributes");
+        JSONObject layerAttributes = parseAttributes(analysis, analyseJson, lang);
+        // baseAttributes comes from baseLayer merge layer attributes
+        JSONHelper.putValue(layerJson, "attributes", JSONHelper.merge(baseAttributes, layerAttributes));
         return layerJson;
     }
-    private static JSONObject parseAttributes (JSONObject layerJson, Analysis analysis, JSONObject analysisJSON, String lang) {
-        JSONObject attributes = JSONHelper.getJSONObject(layerJson, "attributes");
+    private static JSONObject parseAttributes (Analysis analysis, JSONObject analysisJSON, String lang) {
+        JSONObject attributes = new JSONObject();
         JSONObject data = new JSONObject();
         JSONObject params = JSONHelper.getJSONObject(analysisJSON, JSKEY_METHODPARAMS);
         if (params != null) {

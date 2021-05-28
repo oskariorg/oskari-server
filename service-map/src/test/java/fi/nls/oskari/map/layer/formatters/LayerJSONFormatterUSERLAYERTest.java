@@ -67,4 +67,23 @@ public class LayerJSONFormatterUSERLAYERTest {
         Assert.assertEquals("the_geom", data.getString("geometryName"));
         Assert.assertEquals("MultiPolygon", data.getString("geometryType"));
     }
+
+    @Test
+    public void parseAttributes() throws JSONException {
+        OskariLayer baseLayer = new OskariLayer();
+        baseLayer.getAttributes().put("namespaceURL", NAMESPACE);
+        UserLayer ulayer = new UserLayer();
+        JSONArray fields = new JSONArray(FIELDS);
+        ulayer.setFields(fields);
+        JSONObject json = FORMATTER_USERLAYER.getJSON(baseLayer, ulayer, SRS, LANG);
+        fields.remove(2);
+        JSONObject anotherJson = FORMATTER_USERLAYER.getJSON(baseLayer, ulayer, SRS, LANG);
+
+        WFSLayerAttributes attr = new WFSLayerAttributes(json.getJSONObject("attributes"));
+        WFSLayerAttributes anotherAttr = new WFSLayerAttributes(anotherJson.getJSONObject("attributes"));
+
+        Assert.assertEquals(attr.getNamespaceURL(), anotherAttr.getNamespaceURL());
+        Assert.assertEquals(2, attr.getSelectedAttributes().size());
+        Assert.assertEquals(1, anotherAttr.getSelectedAttributes().size());
+    }
 }
