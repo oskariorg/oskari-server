@@ -299,7 +299,8 @@ public class JedisManager {
      *
      * @param key
      * @param field
-     * @return string
+     * @param value
+     * @return Long or null when there was an exception
      */
     public static Long hset(String key, String field, String value) {
         try (Jedis jedis = instance.getJedis()){
@@ -308,10 +309,32 @@ public class JedisManager {
             }
             return jedis.hset(key, field, value);
         } catch(JedisConnectionException e) {
-            log.error("Failed to hget", key);
+            log.error("Failed to hset", key);
             return null;
         } catch (Exception e) {
-            log.error("Getting", key, "failed miserably");
+            log.error("Setting", key, "failed miserably");
+            return null;
+        }
+    }
+
+    /**
+     * Thread-safe Long HDEL for Redis
+     *
+     * @param key
+     * @param fields
+     * @return Long or null when there was an exception
+     */
+    public static Long hdel(String key, String... fields) {
+        try (Jedis jedis = instance.getJedis()){
+            if (jedis == null) {
+                return null;
+            }
+            return jedis.hdel(key, fields);
+        } catch(JedisConnectionException e) {
+            log.error("Failed to hdel", key);
+            return null;
+        } catch (Exception e) {
+            log.error("Removing", key, "with fields:", fields, "failed miserably");
             return null;
         }
     }
