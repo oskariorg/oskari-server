@@ -340,6 +340,28 @@ public class JedisManager {
     }
 
     /**
+     * Thread-safe Long HINCRBY for Redis
+     *
+     * @param key
+     * @param field
+     * @return Long or null when there was an exception
+     */
+    public static Long hincrBy(String key, String field, long increment) {
+        try (Jedis jedis = instance.getJedis()){
+            if (jedis == null) {
+                return null;
+            }
+            return jedis.hincrBy(key, field, increment);
+        } catch(JedisConnectionException e) {
+            log.error("Failed to hincrBy", key, field);
+            return null;
+        } catch (Exception e) {
+            log.error("Incrementing", key, field, "failed miserably");
+            return null;
+        }
+    }
+
+    /**
      * Thread-safe Long DEL for Redis
      *
      * @param keys
