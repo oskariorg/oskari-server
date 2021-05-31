@@ -1,5 +1,11 @@
 # Release Notes
 
+## 2.3.3
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/33?closed=1
+
+Fixed an issue with object data/feature properties which were not shown correctly when there were multiple userlayer/analysis map layers on the map at the same time.
+
 ## 2.3.2
 
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/32?closed=1
