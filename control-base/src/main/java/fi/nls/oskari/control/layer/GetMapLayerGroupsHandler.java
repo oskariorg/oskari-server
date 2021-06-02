@@ -98,7 +98,7 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
         String cacheKey = getCacheKey(user, lang, crs, forceProxy);
         if (requestedIds == null) {
             // only use cache when the whole listing is requested
-            // FIXME!! Cache isn't flushed when permissions/layers are changed
+            // Note! Cache needs to be flushed externally on other routes when permissions/layers are changed
             response = cache.get(cacheKey);
         }
         if (response == null) {
