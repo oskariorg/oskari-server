@@ -22,10 +22,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -143,6 +140,8 @@ public class GetGeoPointDataService {
             String gfiResponse = IOHelper.getURL(conn, Collections.EMPTY_MAP, IOHelper.DEFAULT_CHARSET);
             log.debug("Got GFI response:", gfiResponse);
             return gfiResponse;
+        } catch (FileNotFoundException e) {
+            log.warn("404 - message:", e.getMessage());
         } catch (IOException e) {
             log.warn("Couldn't call GFI with url:", url, "Message:", e.getMessage());
             log.debug(e, "GFI IOException");
