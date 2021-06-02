@@ -137,11 +137,13 @@ public class GetGeoPointDataService {
             log.debug("Calling GFI url:", url);
             HttpURLConnection conn = IOHelper.getConnection(url, user, pw);
             IOHelper.addIdentifierHeaders(conn);
+            if (conn.getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND) {
+                log.info("Nothing found on:", url);
+                return null;
+            }
             String gfiResponse = IOHelper.getURL(conn, Collections.EMPTY_MAP, IOHelper.DEFAULT_CHARSET);
             log.debug("Got GFI response:", gfiResponse);
             return gfiResponse;
-        } catch (FileNotFoundException e) {
-            log.warn("404 - message:", e.getMessage());
         } catch (IOException e) {
             log.warn("Couldn't call GFI with url:", url, "Message:", e.getMessage());
             log.debug(e, "GFI IOException");
