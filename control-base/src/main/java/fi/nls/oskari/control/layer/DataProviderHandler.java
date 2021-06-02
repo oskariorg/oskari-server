@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import fi.nls.oskari.cache.CacheManager;
 import org.oskari.log.AuditLog;
 import org.oskari.service.util.ServiceFactory;
 
@@ -75,8 +76,6 @@ public class DataProviderHandler extends RestActionHandler {
 	 * Method deletes data provider.
 	 * Cascade in db will handle that layers for the data provider are also deleted
 	 *
-	 * @param int id
-	 * @param ActionParameters params
 	 * @throws ActionException
 	 */
 	private void deleteDataProvider(List<OskariLayer> layers, boolean deleteLayers, int id, ActionParameters params) throws ActionException {
@@ -95,11 +94,15 @@ public class DataProviderHandler extends RestActionHandler {
 					.withParam("name", dataProvider.getName(PropertyUtil.getDefaultLanguage()))
 					.withMsg("map layers " + layerNamesToBeDeleted + " deleted with data provider" )
 					.deleted(AuditLog.ResourceType.DATAPROVIDER);
-
+			flushLayerListCache();
 			// write deleted organization as response
 			ResponseHelper.writeResponse(params, dataProvider.getAsJSON());
 		} catch (Exception e) {
 			throw new ActionException("Couldn't delete data provider with id:" + id, e);
 		}
+	}
+
+	private void flushLayerListCache() {
+		CacheManager.getCache(GetMapLayerGroupsHandler.CACHE_NAME).flush(true);
 	}
 }

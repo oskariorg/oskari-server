@@ -1,10 +1,12 @@
 package fi.nls.oskari.control.admin;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
+import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
+import fi.nls.oskari.control.layer.GetMapLayerGroupsHandler;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.domain.map.OskariLayer;
@@ -57,6 +59,10 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
             throw new ServiceRuntimeException("Exception occured while initializing data provider service", e);
         }
         super.init();
+    }
+
+    private void flushLayerListCache() {
+        CacheManager.getCache(GetMapLayerGroupsHandler.CACHE_NAME).flush(true);
     }
 
     /**
@@ -112,7 +118,7 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
             // NOTE! only tell if permissions failed, this probably needs some refactoring to be useful
             output.setWarn(KEY_PERMISSIONS_FAIL);
         }
-
+        flushLayerListCache();
         writeResponse(params, output);
     }
 
@@ -135,6 +141,7 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
                     .deleted(AuditLog.ResourceType.MAPLAYER);
 
             writeResponse(params, output);
+            flushLayerListCache();
         } catch (Exception e) {
             throw new ActionException("Couldn't delete map layer - id:" + id, e);
         }

@@ -1,6 +1,7 @@
 package fi.nls.oskari.control.layer;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
+import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.map.OskariLayer;
@@ -38,7 +39,6 @@ public class DeleteLayerHandler extends AbstractLayerAdminHandler {
 
         try {
             mapLayerService.delete(layer.getId());
-
             AuditLog.user(params.getClientIp(), params.getUser())
                     .withParam("id", layer.getId())
                     .withParam("uiName", layer.getName(PropertyUtil.getDefaultLanguage()))
@@ -46,9 +46,13 @@ public class DeleteLayerHandler extends AbstractLayerAdminHandler {
                     .withParam("name", layer.getName())
                     .deleted(AuditLog.ResourceType.MAPLAYER);
 
+            flushLayerListCache();
         } catch (Exception e) {
             throw new ActionException("Couldn't delete map layer - id:" + layer.getId(), e);
         }
     }
 
+    private void flushLayerListCache() {
+        CacheManager.getCache(GetMapLayerGroupsHandler.CACHE_NAME).flush(true);
+    }
 }

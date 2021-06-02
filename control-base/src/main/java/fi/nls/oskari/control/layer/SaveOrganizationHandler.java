@@ -1,6 +1,7 @@
 package fi.nls.oskari.control.layer;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
+import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.log.LogFactory;
@@ -78,9 +79,13 @@ public class SaveOrganizationHandler extends RestActionHandler {
             } else {
                 throw new ActionDeniedException("Unauthorized user tried to update layer dataprovider - id=" + dataProvider.getId());
             }
-
+            flushLayerListCache();
         } catch (Exception e) {
             throw new ActionException("Couldn't update/insert map layer dataprovider", e);
         }
+    }
+
+    private void flushLayerListCache() {
+        CacheManager.getCache(GetMapLayerGroupsHandler.CACHE_NAME).flush(true);
     }
 }

@@ -1,6 +1,7 @@
 package fi.nls.oskari.control.layer;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
+import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
@@ -75,6 +76,7 @@ public class SaveLayerPermissionHandler extends RestActionHandler {
             }
             // TODO: previously didn't respond at all. Should respond with updated data
             ResponseHelper.writeResponse(params, "success");
+            flushLayerListCache();
         } catch (JSONException e) {
             throw new ActionParamsException("Invalid input");
         } finally {
@@ -92,6 +94,9 @@ public class SaveLayerPermissionHandler extends RestActionHandler {
         }
     }
 
+    private void flushLayerListCache() {
+        CacheManager.getCache(GetMapLayerGroupsHandler.CACHE_NAME).flush(true);
+    }
 }
 
 
