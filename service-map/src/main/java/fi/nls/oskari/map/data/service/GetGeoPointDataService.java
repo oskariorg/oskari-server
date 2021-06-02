@@ -134,7 +134,8 @@ public class GetGeoPointDataService {
         return response;
     }
 
-    private String makeGFIcall(final String url,final String user,final String pw) {
+    private String makeGFIcall(final String url, final String user, final String pw) {
+
         try {
             log.debug("Calling GFI url:", url);
             HttpURLConnection conn = IOHelper.getConnection(url, user, pw);
@@ -143,7 +144,8 @@ public class GetGeoPointDataService {
             log.debug("Got GFI response:", gfiResponse);
             return gfiResponse;
         } catch (IOException e) {
-            log.error(e, "Couldn't call GFI URL with url:", url);
+            log.warn("Couldn't call GFI with url:", url, "Message:", e.getMessage());
+            log.debug(e, "GFI IOException");
         }
         return null;
     }
