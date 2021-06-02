@@ -22,10 +22,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -134,16 +131,22 @@ public class GetGeoPointDataService {
         return response;
     }
 
-    private String makeGFIcall(final String url,final String user,final String pw) {
+    private String makeGFIcall(final String url, final String user, final String pw) {
+
         try {
             log.debug("Calling GFI url:", url);
             HttpURLConnection conn = IOHelper.getConnection(url, user, pw);
             IOHelper.addIdentifierHeaders(conn);
+            if (conn.getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND) {
+                log.info("Nothing found on:", url);
+                return null;
+            }
             String gfiResponse = IOHelper.getURL(conn, Collections.EMPTY_MAP, IOHelper.DEFAULT_CHARSET);
             log.debug("Got GFI response:", gfiResponse);
             return gfiResponse;
         } catch (IOException e) {
-            log.error(e, "Couldn't call GFI URL with url:", url);
+            log.warn("Couldn't call GFI with url:", url, "Message:", e.getMessage());
+            log.debug(e, "GFI IOException");
         }
         return null;
     }
