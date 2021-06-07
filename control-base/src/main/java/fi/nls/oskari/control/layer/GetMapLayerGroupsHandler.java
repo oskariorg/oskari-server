@@ -15,6 +15,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.DataProviderService;
 import fi.nls.oskari.map.layer.OskariLayerService;
+import fi.nls.oskari.map.layer.formatters.LayerJSONFormatter;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
@@ -35,7 +36,6 @@ import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLink;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkService;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkServiceMybatisImpl;
 import fi.nls.oskari.util.EnvHelper;
-import fi.nls.oskari.util.ResponseHelper;
 import org.oskari.service.util.ServiceFactory;
 
 /**
@@ -153,7 +153,7 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
             // getListOfMapLayers checks permissions
             JSONObject response = OskariLayerWorker.getListOfMapLayers(layers, user, lang, crs, isPublished, isSecure);
             response.put(KEY_GROUPS, getGroupJSON(groupsByParentId, linksByGroupId, sortedLayerIds, -1));
-            response.put(KEY_PROVIDERS, getProvidersJSON(lang));
+            response.put(KEY_PROVIDERS, getProvidersJSON(lang, getProviderIds(response)));
             return response.toString();
         } catch (JSONException e) {
             throw new ActionException("Failed to add groups", e);
@@ -216,11 +216,35 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
         return json;
     }
 
-    private JSONObject getProvidersJSON(String language) {
+    /**
+     * Constructs a set of dataprovider ids that are used in the layers that will be returned to the user.
+     * FIXME: This is terrible. We need to refactor how we write this stuff for the frontend...
+     * @param response
+     * @return
+     */
+    private Set<Integer> getProviderIds(JSONObject response) {
+        Set<Integer> providerIds = new HashSet<>();
+        JSONArray layers = response.optJSONArray(OskariLayerWorker.KEY_LAYERS);
+        for (int i = 0; i < layers.length(); i++) {
+            providerIds.add(layers.optJSONObject(i).optInt(LayerJSONFormatter.KEY_DATA_PROVIDER_ID, -1));
+        }
+        return providerIds;
+    }
+    /**
+     * Constructs an object that only has provider mapping for ids included in usedProviders parameter.
+     * @param language
+     * @param usedProviders
+     * @return
+     */
+    private JSONObject getProvidersJSON(String language, Set<Integer> usedProviders) {
         JSONObject result = new JSONObject();
         dataProviderService.findAll().stream()
-                .forEach(provider ->
-                        JSONHelper.putValue(result, Integer.toString(provider.getId()), provider.getName(language)));
+                .forEach(provider -> {
+                    int id = provider.getId();
+                    if (usedProviders.contains(id)) {
+                        JSONHelper.putValue(result, Integer.toString(id), provider.getName(language));
+                    }
+                });
         return result;
     }
 

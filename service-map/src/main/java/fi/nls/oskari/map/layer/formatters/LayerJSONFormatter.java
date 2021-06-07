@@ -33,6 +33,7 @@ public class LayerJSONFormatter {
     public static final String KEY_LEGENDS = "legends";
     public static final String KEY_GLOBAL_LEGEND = "legendImage";
     public static final String KEY_TYPE = "type";
+    public static final String KEY_DATA_PROVIDER_ID = "dataproviderId";
     protected static final String KEY_ID = "id";
     protected static final String KEY_NAME = "layerName"; // FIXME: name
     protected static final String KEY_LOCALIZED_NAME = "name"; // FIXME: title
@@ -40,7 +41,6 @@ public class LayerJSONFormatter {
     protected static final String KEY_OPTIONS = "options";
     protected static final String KEY_ADMIN = "admin";
     protected static final String KEY_DATA_PROVIDER = "orgName";
-    protected static final String KEY_DATA_PROVIDER_ID = "dataproviderId";
     protected static final String[] STYLE_KEYS ={"name", "title", "legend"};
 
     // There working only plain text and html so ranked up
