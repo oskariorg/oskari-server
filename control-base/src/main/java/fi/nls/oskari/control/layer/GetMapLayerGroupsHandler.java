@@ -13,9 +13,11 @@ import fi.nls.oskari.cache.Cache;
 import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.layer.DataProviderService;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.ConversionHelper;
+import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,6 +46,7 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
 
     public static final String CACHE_NAME = "LayerList";
     private static final String KEY_GROUPS = "groups";
+    private static final String KEY_PROVIDERS = "providers";
     private static final String KEY_LAYERS = "layers";
     private static final String KEY_ID = "id";
     private static final String KEY_ORDER_NUMBER = "orderNumber";
@@ -61,6 +64,8 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
     private OskariLayerService layerService;
     private OskariMapLayerGroupService groupService;
     private OskariLayerGroupLinkService linkService;
+    private DataProviderService dataProviderService;
+
     public void setLayerService(OskariLayerService service) {
         this.layerService = service;
     }
@@ -71,6 +76,9 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
 
     public void setLinkService(OskariLayerGroupLinkService linkService) {
         this.linkService = linkService;
+    }
+    public void setDataProviderService(DataProviderService service) {
+        this.dataProviderService = service;
     }
 
     @Override
@@ -84,6 +92,9 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
         }
         if (linkService == null) {
             setLinkService(new OskariLayerGroupLinkServiceMybatisImpl());
+        }
+        if (dataProviderService == null) {
+            setDataProviderService(OskariComponentManager.getComponentOfType(DataProviderService.class));
         }
     }
 
@@ -142,6 +153,7 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
             // getListOfMapLayers checks permissions
             JSONObject response = OskariLayerWorker.getListOfMapLayers(layers, user, lang, crs, isPublished, isSecure);
             response.put(KEY_GROUPS, getGroupJSON(groupsByParentId, linksByGroupId, sortedLayerIds, -1));
+            response.put(KEY_PROVIDERS, getProvidersJSON(lang));
             return response.toString();
         } catch (JSONException e) {
             throw new ActionException("Failed to add groups", e);
@@ -202,6 +214,14 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
             json.put(groupAsJson);
         }
         return json;
+    }
+
+    private JSONObject getProvidersJSON(String language) {
+        JSONObject result = new JSONObject();
+        dataProviderService.findAll().stream()
+                .forEach(provider ->
+                        JSONHelper.putValue(result, Integer.toString(provider.getId()), provider.getName(language)));
+        return result;
     }
 
     private JSONArray getLayersJSON(List<OskariLayerGroupLink> groupLayers) throws JSONException {
