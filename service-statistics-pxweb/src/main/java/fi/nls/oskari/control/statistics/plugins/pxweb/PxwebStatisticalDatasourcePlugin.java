@@ -122,7 +122,7 @@ public class PxwebStatisticalDatasourcePlugin extends StatisticalDatasourcePlugi
                                                           StatisticalIndicatorLayer regionset) {
         Map<String, IndicatorValue> values = new HashMap<>();
         String indicatorId = indicator.getId();
-        if(config.hasIndicatorKey()) {
+        if (config.hasIndicatorKey()) {
             // indicatorId will be something.px::[value of indicatorKey]
             int separatorIndex = indicatorId.lastIndexOf(PxwebConfig.ID_SEPARATOR);
             if(separatorIndex == -1) {
@@ -136,17 +136,28 @@ public class PxwebStatisticalDatasourcePlugin extends StatisticalDatasourcePlugi
         JSONArray query = new JSONArray();
         JSONObject payload = JSONHelper.createJSONObject("query", query);
         final String regionKey = config.getRegionKey();
+        if (!params.getDimensions().stream().anyMatch(d -> d.getId().equalsIgnoreCase(regionKey))) {
+            // force include region key if it's not present
+            //  as of June 2021 it's required for TK API
+            params.addDimension(new StatisticalIndicatorDataDimension(regionKey));
+        }
         for (StatisticalIndicatorDataDimension selector : params.getDimensions()) {
-            if (regionKey.equalsIgnoreCase(selector.getId())) {
-                // skip the region property
-                continue;
-            }
             JSONObject param = new JSONObject();
             JSONHelper.putValue(param, "code", selector.getId());
             JSONObject selection = new JSONObject();
-            JSONHelper.putValue(selection, "filter", "item");
             JSONArray paramValues = new JSONArray();
-            paramValues.put(selector.getValue());
+
+            if (regionKey.equalsIgnoreCase(selector.getId())) {
+                // we could use item and list all region ids in paramValues for which we want results
+                // but for all cases we currently have it would increase the size of data moved
+                // through the network without benefits so just requesting all of them.
+                // This was not required before June 2021 on for example Tilastokeskus API.
+                JSONHelper.putValue(selection, "filter", "all");
+                paramValues.put("*");
+            } else {
+                JSONHelper.putValue(selection, "filter", "item");
+                paramValues.put(selector.getValue());
+            }
             JSONHelper.putValue(selection, "values", paramValues);
 
             JSONHelper.putValue(param, "selection", selection);
@@ -169,7 +180,7 @@ public class PxwebStatisticalDatasourcePlugin extends StatisticalDatasourcePlugi
             }
             final String data = IOHelper.readString(con);
             JSONObject json = JSONHelper.createJSONObject(data);
-            if(json == null) {
+            if (json == null) {
                 LOG.debug("Got non-json response:", data);
                 throw new APIException("Response wasn't JSON");
             }
@@ -183,6 +194,7 @@ public class PxwebStatisticalDatasourcePlugin extends StatisticalDatasourcePlugi
                     .ifPresent(v -> values.put(v.getRegion(), v.getValue()));
             }
         } catch (IOException e) {
+            LOG.info("Tried querying url:\n", url, "\n with payload:\n", payload);
             throw new APIException("Couldn't get data from service/parsing failed", e);
         }
 
