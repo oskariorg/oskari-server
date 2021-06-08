@@ -33,6 +33,7 @@ public class LayerJSONFormatter {
     public static final String KEY_LEGENDS = "legends";
     public static final String KEY_GLOBAL_LEGEND = "legendImage";
     public static final String KEY_TYPE = "type";
+    public static final String KEY_DATA_PROVIDER_ID = "dataproviderId";
     protected static final String KEY_ID = "id";
     protected static final String KEY_NAME = "layerName"; // FIXME: name
     protected static final String KEY_LOCALIZED_NAME = "name"; // FIXME: title
@@ -125,6 +126,7 @@ public class LayerJSONFormatter {
         JSONHelper.putValue(layerJson, KEY_SUBTITLE, layer.getTitle(lang));
         if(layer.getGroup() != null) {
             JSONHelper.putValue(layerJson, KEY_DATA_PROVIDER, layer.getGroup().getName(lang));
+            JSONHelper.putValue(layerJson, KEY_DATA_PROVIDER_ID, layer.getGroup().getId());
         }
 
         if(layer.getOpacity() != null && layer.getOpacity() > -1 && layer.getOpacity() <= 100) {
