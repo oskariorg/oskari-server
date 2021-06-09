@@ -1,7 +1,7 @@
 package org.geotools.mif;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 
 public class MIFHeaderTest {
@@ -46,8 +47,13 @@ public class MIFHeaderTest {
         assertEquals(750, header.getVersion());
         assertEquals(StandardCharsets.ISO_8859_1, header.getCharset());
         CoordinateReferenceSystem actual = header.getCoordSys();
-        CoordinateReferenceSystem expected = CRS.decode("EPSG:3067", true);
-        assertTrue(CRS.equalsIgnoreMetadata(expected, actual));
+        MathTransform t = CRS.findMathTransform(actual, CRS.decode("EPSG:3067", true));
+        double[] src = new double[2];
+        double[] dst = new double[2];
+        src[0] = 357517.2;
+        src[1] = 6860602.8;
+        t.transform(src, 0, dst, 0, 1);
+        assertArrayEquals(src, dst, 0.0);
     }
 
 }
