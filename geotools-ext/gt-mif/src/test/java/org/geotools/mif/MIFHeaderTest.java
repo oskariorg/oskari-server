@@ -35,4 +35,16 @@ public class MIFHeaderTest {
         assertEquals("modify_time", header.getColumns()[i++].getName());
     }
 
+    @Test
+    public void testCoordSysWithExplicitBoundsTypeCode() throws URISyntaxException, IOException, NoSuchAuthorityCodeException, FactoryException, TransformException {
+        File mif = new File(getClass().getResource("has_explicit_bounds.mif").toURI());
+        MIFDataStore store = new MIFDataStore(mif, null);
+        MIFHeader header = store.readHeader();
+        assertEquals(750, header.getVersion());
+        assertEquals(StandardCharsets.ISO_8859_1, header.getCharset());
+        CoordinateReferenceSystem actual = header.getCoordSys();
+        CoordinateReferenceSystem expected = CRS.decode("EPSG:3067", true);
+        assertTrue(CRS.equalsIgnoreMetadata(expected, actual));
+    }
+
 }

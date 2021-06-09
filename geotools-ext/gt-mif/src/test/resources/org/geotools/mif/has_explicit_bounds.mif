@@ -1,0 +1,13 @@
+Version   750
+Charset "WindowsLatin1"
+Delimiter ","
+CoordSys Earth Projection 2008, 115, "m", 27, 0, 0.9996, 500000, 0 Bounds (-100000, 6000000) (1000000, 8000000)
+Columns 1
+  Koeala Char(200)
+Data
+Region 1
+4
+357517.2 6860602.8
+357539.1 6860613.8
+357556.1 6860578.1
+357533.8 6860567.8
