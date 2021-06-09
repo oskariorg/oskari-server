@@ -19,24 +19,30 @@ public enum MIFProjection {
 
     WGS84(1) {
         @Override
-        public CoordinateReferenceSystem toCRS(MIFDatum datum, double[] params) throws FactoryException {
+        public CoordinateReferenceSystem toCRS(MIFDatum datum, String[] params) throws FactoryException {
             return datum.toGeographicCRS();
         }
     },
     Transverse_Mercator(8, 24) {
         @Override
-        public CoordinateReferenceSystem toCRS(MIFDatum datum, double[] params) throws FactoryException {
+        public CoordinateReferenceSystem toCRS(MIFDatum datum, String[] params) throws FactoryException {
             GeographicCRS geoCRS = datum.toGeographicCRS();
 
             CartesianCS cartCS = DefaultCartesianCS.PROJECTED;
 
+            double origin_longitude = Double.parseDouble(params[0]);
+            double origin_latitude = Double.parseDouble(params[1]);
+            double scale_factor = Double.parseDouble(params[2]);
+            double false_easting = Double.parseDouble(params[3]);
+            double false_northing = Double.parseDouble(params[4]);
+
             MathTransformFactory mtFactory = ReferencingFactoryFinder.getMathTransformFactory(null);
             ParameterValueGroup parameters = mtFactory.getDefaultParameters("Transverse_Mercator");
-            parameters.parameter("central_meridian").setValue(params[0]);
-            parameters.parameter("latitude_of_origin").setValue(params[1]);
-            parameters.parameter("scale_factor").setValue(params[2]);
-            parameters.parameter("false_easting").setValue(params[3]);
-            parameters.parameter("false_northing").setValue(params[4]);
+            parameters.parameter("central_meridian").setValue(origin_longitude);
+            parameters.parameter("latitude_of_origin").setValue(origin_latitude);
+            parameters.parameter("scale_factor").setValue(scale_factor);
+            parameters.parameter("false_easting").setValue(false_easting);
+            parameters.parameter("false_northing").setValue(false_northing);
             Conversion conversion = new DefiningConversion("Transverse_Mercator", parameters);
 
             Map<String, Object> properties = Collections.singletonMap("name", "unnamed");
@@ -63,6 +69,6 @@ public enum MIFProjection {
         return null;
     }
 
-    public abstract CoordinateReferenceSystem toCRS(MIFDatum datum, double[] params) throws FactoryException;
+    public abstract CoordinateReferenceSystem toCRS(MIFDatum datum, String[] params) throws FactoryException;
 
 }

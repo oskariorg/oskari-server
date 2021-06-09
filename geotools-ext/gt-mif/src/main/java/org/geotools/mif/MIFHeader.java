@@ -180,10 +180,19 @@ public class MIFHeader {
                 int type = Integer.parseInt(parts[2]);
                 int datumId = Integer.parseInt(parts[3]);
                 // String unitname = parts[4];
+
+                // Projection numbers in the MAPINFOW.PRJ may be modified by the addition of a constant value to the
+                // base number listed in the Projection table, above. Valid values and their meanings are in the next table:
+                // 1000, System has affine transformations
+                // 2000, System has explicit bounds
+                // 3000, System with both affine and bounds
+                // -- just ignore these
+                type %= 1000;
+
                 int n = parts.length - 5;
-                double[] projectionParams = new double[n];
+                String[] projectionParams = new String[n];
                 for (int i = 0; i < n; i++) {
-                    projectionParams[i] = Double.parseDouble(parts[5 + i]);
+                    projectionParams[i] = parts[5 + i];
                 }
                 MIFProjection projection = MIFProjection.find(type);
                 MIFDatum datum = MIFDatum.find(datumId);
