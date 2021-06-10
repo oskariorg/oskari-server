@@ -125,12 +125,6 @@ public class OskariLayerWorker {
                 final String permissionKey = getPermissionKey(layer);
                 JSONObject permissions = getPermissions(user, permissionKey, permissionSet);
                 JSONHelper.putValue(layerJson, "permissions", permissions);
-                if(permissions.optBoolean(PermissionType.EDIT_LAYER.getJsonKey())) {
-                    // has edit rights, alter JSON/add info for admin bundle
-                    modifyCommonFieldsForEditing(layerJson, layer);
-                } else {
-                    FORMATTER.removeAdminInfo(layerJson);
-                }
 
                 layersList.put(layerJson);
             } catch(Exception ex) {
@@ -170,28 +164,6 @@ public class OskariLayerWorker {
             LOG.warn("Error creating layer JSON:", obj);
         }
         return null;
-    }
-
-    public static void modifyCommonFieldsForEditing(final JSONObject layerJson, final OskariLayer layer) {
-        // TODO: should loop sublayers as well if we want admin values for them:
-        // * localized names/subtitles (we dont need atm aince they are only shown to admin)
-        // * organizationId/inspireId is only relevant to parent layer
-        // * xslt might be something we want
-
-        // name
-        final JSONObject names = new JSONObject();
-        for (Map.Entry<String, String> localization : layer.getNames().entrySet()) {
-            JSONHelper.putValue(names, localization.getKey(), localization.getValue());
-        }
-        JSONHelper.putValue(layerJson, "name", names);
-
-        // subtitle/description
-        final JSONObject subtitles = new JSONObject();
-        for (Map.Entry<String, String> localization : layer.getTitles().entrySet()) {
-            JSONHelper.putValue(subtitles, localization.getKey(), localization.getValue());
-        }
-        JSONHelper.putValue(layerJson, "subtitle", subtitles);
-
     }
 
     /**

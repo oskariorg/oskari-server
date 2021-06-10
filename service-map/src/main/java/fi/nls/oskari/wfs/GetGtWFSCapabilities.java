@@ -610,8 +610,6 @@ public class GetGtWFSCapabilities {
 
             // NOTE! Important to remove id since this is at template
             JSONObject json = FORMATTER.getJSON(oskariLayer, PropertyUtil.getDefaultLanguage(), false, null);
-            // add/modify admin specific fields
-            OskariLayerWorker.modifyCommonFieldsForEditing(json, oskariLayer);
             // for admin ui only
             JSONHelper.putValue(json, "title", title);
             json.remove("id");

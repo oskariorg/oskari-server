@@ -264,9 +264,6 @@ OnlineResource xlink:type="simple" xlink:href="http://www.paikkatietohakemisto.f
 
             JSONObject json = FORMATTER.getJSON(oskariLayer, PropertyUtil.getDefaultLanguage(), false, currentCrs);
 
-            // add/modify admin specific fields
-            OskariLayerWorker.modifyCommonFieldsForEditing(json, oskariLayer);
-
             // Add *, if current map epsg is not supported in the service capabilities for this layer
             String remark = LayerJSONFormatterWMS.getCRSs(wmsImpl).contains(currentCrs) ? "" : " *";
 
