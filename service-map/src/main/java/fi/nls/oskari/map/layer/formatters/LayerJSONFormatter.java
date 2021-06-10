@@ -186,18 +186,6 @@ public class LayerJSONFormatter {
         layer.remove(KEY_ADMIN);
     }
 
-    public void addInfoForAdmin(final JSONObject layer, final String key, final Object value) {
-        if(layer == null) {
-            return;
-        }
-        // ensure we have the admin block in place
-        JSONObject additionalData = layer.optJSONObject(KEY_ADMIN);
-        if(additionalData == null) {
-            additionalData = new JSONObject();
-            JSONHelper.putValue(layer, KEY_ADMIN, additionalData);
-        }
-        JSONHelper.putValue(additionalData, key, value);
-    }
     protected boolean useProxy(final OskariLayer layer) {
         boolean forceProxy = false;
         if (layer.getAttributes() != null) {

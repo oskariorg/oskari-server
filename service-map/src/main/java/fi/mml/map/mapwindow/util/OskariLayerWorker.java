@@ -192,19 +192,6 @@ public class OskariLayerWorker {
         }
         JSONHelper.putValue(layerJson, "subtitle", subtitles);
 
-        FORMATTER.addInfoForAdmin(layerJson, "xslt", layer.getGfiXslt());
-
-        FORMATTER.addInfoForAdmin(layerJson, "username", layer.getUsername());
-        FORMATTER.addInfoForAdmin(layerJson, "password", layer.getPassword());
-        FORMATTER.addInfoForAdmin(layerJson, "url", layer.getUrl());
-        FORMATTER.addInfoForAdmin(layerJson, "capabilities", layer.getCapabilities());
-        FORMATTER.addInfoForAdmin(layerJson, "capabilitiesUpdateRate", layer.getCapabilitiesUpdateRateSec());
-
-        FORMATTER.addInfoForAdmin(layerJson, "organizationId", layer.getDataproviderId());
-        String legendImage = layer.getLegendImage();
-        if(legendImage != null && !legendImage.isEmpty()) {
-            FORMATTER.addInfoForAdmin(layerJson, "legendImage", legendImage);
-        }
     }
 
     /**
