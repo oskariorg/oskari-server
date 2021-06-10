@@ -28,8 +28,8 @@ import org.oskari.permissions.model.ResourceType;
 public class OskariLayerWorker {
 
     public static final String KEY_LAYERS = "layers";
-    public static final String PUBLICATION_PERMISSION_OK = "publication_permission_ok";
-    public static final String DOWNLOAD_PERMISSION_OK = "download_permission_ok";
+    public static final boolean PUBLICATION_PERMISSION_OK = true;
+    public static final boolean DOWNLOAD_PERMISSION_OK = true;
 
     private static final Logger LOG = LogFactory.getLogger(OskariLayerWorker.class);
 
@@ -219,7 +219,7 @@ public class OskariLayerWorker {
      * @return  reorder layers
      */
     public static List<OskariLayer> reorderLayers(List<OskariLayer> layers, List<String> ids) {
-        List<OskariLayer> reLayers = new ArrayList<OskariLayer>();
+        List<OskariLayer> reLayers = new ArrayList<>();
 
         for (String id : ids) {
             for (OskariLayer lay : layers) {
