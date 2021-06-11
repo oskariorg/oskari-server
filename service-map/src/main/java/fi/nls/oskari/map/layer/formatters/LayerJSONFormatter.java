@@ -39,7 +39,6 @@ public class LayerJSONFormatter {
     protected static final String KEY_LOCALIZED_NAME = "name"; // FIXME: title
     protected static final String KEY_SUBTITLE = "subtitle";
     protected static final String KEY_OPTIONS = "options";
-    protected static final String KEY_ADMIN = "admin";
     protected static final String KEY_DATA_PROVIDER = "orgName";
     protected static final String[] STYLE_KEYS ={"name", "title", "legend"};
 
@@ -179,25 +178,6 @@ public class LayerJSONFormatter {
         return layerJson;
     }
 
-    public void removeAdminInfo(final JSONObject layer) {
-        if(layer == null) {
-            return;
-        }
-        layer.remove(KEY_ADMIN);
-    }
-
-    public void addInfoForAdmin(final JSONObject layer, final String key, final Object value) {
-        if(layer == null) {
-            return;
-        }
-        // ensure we have the admin block in place
-        JSONObject additionalData = layer.optJSONObject(KEY_ADMIN);
-        if(additionalData == null) {
-            additionalData = new JSONObject();
-            JSONHelper.putValue(layer, KEY_ADMIN, additionalData);
-        }
-        JSONHelper.putValue(additionalData, key, value);
-    }
     protected boolean useProxy(final OskariLayer layer) {
         boolean forceProxy = false;
         if (layer.getAttributes() != null) {

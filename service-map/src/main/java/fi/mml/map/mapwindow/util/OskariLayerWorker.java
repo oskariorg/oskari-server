@@ -28,8 +28,8 @@ import org.oskari.permissions.model.ResourceType;
 public class OskariLayerWorker {
 
     public static final String KEY_LAYERS = "layers";
-    public static final String PUBLICATION_PERMISSION_OK = "publication_permission_ok";
-    public static final String DOWNLOAD_PERMISSION_OK = "download_permission_ok";
+    public static final boolean PUBLICATION_PERMISSION_OK = true;
+    public static final boolean DOWNLOAD_PERMISSION_OK = true;
 
     private static final Logger LOG = LogFactory.getLogger(OskariLayerWorker.class);
 
@@ -125,12 +125,6 @@ public class OskariLayerWorker {
                 final String permissionKey = getPermissionKey(layer);
                 JSONObject permissions = getPermissions(user, permissionKey, permissionSet);
                 JSONHelper.putValue(layerJson, "permissions", permissions);
-                if(permissions.optBoolean(PermissionType.EDIT_LAYER.getJsonKey())) {
-                    // has edit rights, alter JSON/add info for admin bundle
-                    modifyCommonFieldsForEditing(layerJson, layer);
-                } else {
-                    FORMATTER.removeAdminInfo(layerJson);
-                }
 
                 layersList.put(layerJson);
             } catch(Exception ex) {
@@ -170,41 +164,6 @@ public class OskariLayerWorker {
             LOG.warn("Error creating layer JSON:", obj);
         }
         return null;
-    }
-
-    public static void modifyCommonFieldsForEditing(final JSONObject layerJson, final OskariLayer layer) {
-        // TODO: should loop sublayers as well if we want admin values for them:
-        // * localized names/subtitles (we dont need atm aince they are only shown to admin)
-        // * organizationId/inspireId is only relevant to parent layer
-        // * xslt might be something we want
-
-        // name
-        final JSONObject names = new JSONObject();
-        for (Map.Entry<String, String> localization : layer.getNames().entrySet()) {
-            JSONHelper.putValue(names, localization.getKey(), localization.getValue());
-        }
-        JSONHelper.putValue(layerJson, "name", names);
-
-        // subtitle/description
-        final JSONObject subtitles = new JSONObject();
-        for (Map.Entry<String, String> localization : layer.getTitles().entrySet()) {
-            JSONHelper.putValue(subtitles, localization.getKey(), localization.getValue());
-        }
-        JSONHelper.putValue(layerJson, "subtitle", subtitles);
-
-        FORMATTER.addInfoForAdmin(layerJson, "xslt", layer.getGfiXslt());
-
-        FORMATTER.addInfoForAdmin(layerJson, "username", layer.getUsername());
-        FORMATTER.addInfoForAdmin(layerJson, "password", layer.getPassword());
-        FORMATTER.addInfoForAdmin(layerJson, "url", layer.getUrl());
-        FORMATTER.addInfoForAdmin(layerJson, "capabilities", layer.getCapabilities());
-        FORMATTER.addInfoForAdmin(layerJson, "capabilitiesUpdateRate", layer.getCapabilitiesUpdateRateSec());
-
-        FORMATTER.addInfoForAdmin(layerJson, "organizationId", layer.getDataproviderId());
-        String legendImage = layer.getLegendImage();
-        if(legendImage != null && !legendImage.isEmpty()) {
-            FORMATTER.addInfoForAdmin(layerJson, "legendImage", legendImage);
-        }
     }
 
     /**
@@ -251,32 +210,5 @@ public class OskariLayerWorker {
             JSONHelper.putValue(permission, PermissionType.EDIT_LAYER.getJsonKey(), true);
         }
         return permission;
-    }
-
-    /**
-     * Reorder Oskari layers in to requested order
-     * @param layers
-     * @param ids  layer ids and externalids
-     * @return  reorder layers
-     */
-    public static List<OskariLayer> reorderLayers(List<OskariLayer> layers, List<String> ids) {
-        List<OskariLayer> reLayers = new ArrayList<OskariLayer>();
-
-        for (String id : ids) {
-            for (OskariLayer lay : layers) {
-                if (Integer.toString(lay.getId()).equals(id)) {
-                    reLayers.add(lay);
-                    break;
-                }
-            }
-        }
-        return reLayers;
-    }
-
-    public static PermissionType getPermissionType(final boolean isPublished) {
-        if (isPublished) {
-            return PermissionType.VIEW_PUBLISHED;
-        }
-        return PermissionType.VIEW_LAYER;
     }
 }
