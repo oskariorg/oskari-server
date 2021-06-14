@@ -1,5 +1,20 @@
 # Release Notes
 
+## 2.4.0
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/30?closed=1
+
+- Cache layer listing results to improve performance as most users get the same result
+- Remove unused parts from layer listing response to improve performance
+- Added dataprovider identifiers for layers in listing response
+- Reduce unnecessary logging to remove clutter from logs
+- Improve MIF/MID parsing for imports
+- Add region filter to queries for PXWeb API 
+- Add support for HDEL and HINCRBY commands on Redis integration 
+- Upgrade libraries:
+    - GeoTools 24.2 -> 25.1
+    - JTS 1.17.1 -> 1.18.1
+
 ## 2.3.3
 
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/33?closed=1
