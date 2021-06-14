@@ -14,7 +14,6 @@ import org.oskari.capabilities.CapabilitiesUpdateResult;
 import org.oskari.capabilities.CapabilitiesUpdateService;
 import org.oskari.service.util.ServiceFactory;
 
-import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.map.layer.OskariLayerService;
@@ -163,11 +162,8 @@ public class UpdateCapabilitiesHandler extends RestActionHandler {
                 // If this is a update-single-layer request then add the updated information 
                 // Fetch the OskariLayer again to make sure we have all the fields updated in the object
                 OskariLayer layer = layerService.find(getId(layerId));
-                JSONObject layerJSON = OskariLayerWorker.getMapLayerJSON(layer,
-                        params.getUser(),
-                        params.getLocale().getLanguage(),
-                        params.getHttpParam(ActionConstants.PARAM_SRS));
-                response.put("layerUpdate", layerJSON);
+                // relying that this route is only callable by admins (check handlePost()) for requireAdminUser()
+                response.put("layerUpdate", layer.getCapabilities());
             }
 
             return response;
