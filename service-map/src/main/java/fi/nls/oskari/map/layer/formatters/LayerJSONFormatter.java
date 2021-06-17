@@ -138,9 +138,6 @@ public class LayerJSONFormatter {
             JSONHelper.putValue(layerJson, "maxScale", layer.getMaxScale());
         }
         JSONObject attributes = layer.getAttributes();
-        if (!attributes.optBoolean(KEY_ATTRIBUTE_IGNORE_COVERAGE, false)) {
-            addLayerCoverageWKT(layerJson, layer.getGeometry(), crs);
-        }
 
         JSONHelper.putValue(layerJson, "params", layer.getParams());
         JSONHelper.putValue(layerJson, KEY_OPTIONS, layer.getOptions());
@@ -343,23 +340,21 @@ public class LayerJSONFormatter {
         }
         return Sets.intersection(systemCRSs, capabilitiesCRSs);
     }
+
     // value will be not added if transform failed, that's ok since client can't handle it if it's in unknown projection
-    public static void addLayerCoverageWKT(final JSONObject layerJSON, final String wktWGS84, final String mapSRS) {
+    public static String getLayerCoverageWKT(final String wktWGS84, final String mapSRS) {
         if(wktWGS84 == null || wktWGS84.isEmpty() || mapSRS == null || mapSRS.isEmpty()) {
-            return;
+            return null;
         }
         try {
             // WTK is saved as EPSG:4326 in database
-            final String transformed = WKTHelper.transformLayerCoverage(wktWGS84, mapSRS);
-            if(transformed == null) {
-                LOG.debug("Transform failed for layer id:", layerJSON.opt("id"), "WKT was:", wktWGS84);
-                return;
-            }
-            JSONHelper.putValue(layerJSON, KEY_LAYER_COVERAGE, transformed);
+            return WKTHelper.transformLayerCoverage(wktWGS84, mapSRS);
         } catch (Exception ex) {
             LOG.debug("Error transforming coverage to", mapSRS, "from", wktWGS84);
         }
+        return null;
     }
+
     protected static String coverageToWKT (ReferencedEnvelope env) {
         try {
             CoordinateReferenceSystem wgs84 = CRS.decode("EPSG:4326", true);

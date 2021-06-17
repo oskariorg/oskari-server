@@ -9,6 +9,8 @@ import org.json.JSONObject;
 
 import java.util.*;
 
+import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.KEY_LAYER_COVERAGE;
+
 
 /**
  * User layer to oskari layer json
@@ -19,7 +21,7 @@ public class LayerJSONFormatterUSERLAYER extends LayerJSONFormatterUSERDATA {
 
     public JSONObject getJSON(final OskariLayer baseLayer, UserLayer ulayer, String srs, String lang) {
         final JSONObject layerJson = super.getJSON(baseLayer, ulayer, srs, lang);
-        addLayerCoverageWKT(layerJson, ulayer.getWkt(), srs);
+        JSONHelper.putValue(layerJson, KEY_LAYER_COVERAGE, getLayerCoverageWKT(ulayer.getWkt(), srs));
         JSONHelper.putValue(layerJson, "description", ulayer.getLayer_desc());
         JSONHelper.putValue(layerJson, "source", ulayer.getLayer_source());
         JSONObject baseAttributes = JSONHelper.getJSONObject(layerJson, "attributes");

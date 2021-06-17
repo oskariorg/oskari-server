@@ -21,6 +21,7 @@ import org.oskari.control.layer.model.LayerExtendedOutput;
 import org.oskari.control.layer.model.LayerOutput;
 import org.oskari.permissions.PermissionService;
 
+import static fi.nls.oskari.control.ActionConstants.PARAM_ID;
 import static fi.nls.oskari.control.ActionConstants.PARAM_SRS;
 
 /**
@@ -28,7 +29,6 @@ import static fi.nls.oskari.control.ActionConstants.PARAM_SRS;
  */
 @OskariActionRoute("DescribeLayer")
 public class DescribeLayerHandler extends RestActionHandler {
-    private static final String PARAM_LAYER_ID = "id";
     private PermissionHelper permissionHelper;
     private final ObjectMapper MAPPER = new ObjectMapper();
 
@@ -54,7 +54,7 @@ public class DescribeLayerHandler extends RestActionHandler {
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
-        final int layerId = params.getRequiredParamInt(PARAM_LAYER_ID);
+        final int layerId = params.getRequiredParamInt(PARAM_ID);
         final OskariLayer layer = permissionHelper.getLayer(layerId, params.getUser());
         final String crs = params.getHttpParam(PARAM_SRS);
         LayerExtendedOutput output = getLayerDetails(layer, params.getLocale().getLanguage(), crs);
