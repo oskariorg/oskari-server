@@ -121,7 +121,9 @@ public class OskariLayerWorker {
                 if (layerJson == null) {
                     continue;
                 }
-
+                // FIXME: formats isn't used by the frontend, but some capabilities parsing uses the layer JSON stuff
+                //  so forcing removal for it here until we can refactor it's usage from internal server code
+                layerJson.remove("formats");
                 final String permissionKey = getPermissionKey(layer);
                 JSONObject permissions = getPermissions(user, permissionKey, permissionSet);
                 JSONHelper.putValue(layerJson, "permissions", permissions);
