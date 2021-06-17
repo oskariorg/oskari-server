@@ -99,7 +99,6 @@ public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
         final Set<String> crss = getCRSsToStore(systemCRSs, capabilitiesCRSs);
         JSONHelper.putValue(capabilities, KEY_SRS, new JSONArray(crss));
 
-        JSONHelper.putValue(capabilities, KEY_FORMATS, getFormatsJSON(layer.getFormats()));
         JSONHelper.putValue(capabilities, KEY_ISQUERYABLE, layer.getInfoFormats().size() > 0);
 
         final JSONArray styles = new JSONArray();
