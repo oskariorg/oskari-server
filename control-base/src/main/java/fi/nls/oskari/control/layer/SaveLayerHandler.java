@@ -39,7 +39,9 @@ import static fi.nls.oskari.control.ActionConstants.PARAM_SRS;
 
 /**
  * Admin insert/update of WMS map layer
+ * @deprecated Use LayerAdmin instead
  */
+@Deprecated
 @OskariActionRoute("SaveLayer")
 public class SaveLayerHandler extends AbstractLayerAdminHandler {
 
