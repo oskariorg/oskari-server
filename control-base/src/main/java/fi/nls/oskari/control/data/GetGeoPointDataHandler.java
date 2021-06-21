@@ -13,7 +13,6 @@ import fi.nls.oskari.map.data.domain.GFIRestQueryParams;
 import fi.nls.oskari.map.data.service.GetGeoPointDataService;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
-import fi.nls.oskari.map.myplaces.service.GeoServerProxyService;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONArray;
@@ -26,7 +25,6 @@ public class GetGeoPointDataHandler extends ActionHandler {
 
 	private final OskariLayerService mapLayerService = new OskariLayerServiceMybatisImpl();
 	private final GetGeoPointDataService geoPointService = new GetGeoPointDataService();
-    private final GeoServerProxyService myplacesService = new GeoServerProxyService();
 
 	private Logger log = LogFactory.getLogger(GetGeoPointDataHandler.class);
 
@@ -66,19 +64,8 @@ public class GetGeoPointDataHandler extends ActionHandler {
 		final String srs = params.getHttpParam(PARAM_SRS, "EPSG:3067");
 
 		for (String id : layerIdsArr) {
-			if (id.indexOf('_') >= 0) {
-			    if (id.startsWith("myplaces_")) {
-			        // Myplaces wfs query modifier
-                    final JSONObject response = myplacesService.getFeatureInfo(lat, lon, zoom, id, user.getUuid(), srs);
-                    if(response != null) {
-                        data.put(response);
-                    }
-			    }
-			    continue;
-			}
-			
 			final int layerId = ConversionHelper.getInt(id, -1);
-			if(layerId == -1) {
+			if (layerId == -1) {
                 log.warn("Couldnt parse layer id", id);
                 continue;
 			}
