@@ -97,7 +97,7 @@
         <mvt.version>3.1.0</mvt.version>
         <flexjson.version>2.0</flexjson.version>
 
-        <pdfbox.version>2.0.16</pdfbox.version>
+        <pdfbox.version>2.0.24</pdfbox.version>
         <hystrix.version>1.5.18</hystrix.version>
         <!-- Test deps versions -->
         <powermock.version>2.0.9</powermock.version>
