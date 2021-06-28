@@ -34,7 +34,7 @@ public class LayerJSONFormatter {
     public static final String KEY_GLOBAL_LEGEND = "legendImage";
     public static final String KEY_TYPE = "type";
     public static final String KEY_DATA_PROVIDER_ID = "dataproviderId";
-    protected static final String KEY_ID = "id";
+    public static final String KEY_ID = "id";
     protected static final String KEY_NAME = "layerName"; // FIXME: name
     protected static final String KEY_LOCALIZED_NAME = "name"; // FIXME: title
     protected static final String KEY_SUBTITLE = "subtitle";
@@ -242,7 +242,7 @@ public class LayerJSONFormatter {
         }
         return IOHelper.constructUrl(PropertyUtil.get(PROPERTY_AJAXURL), urlParams);
     }
-    private String getMetadataUuid (OskariLayer layer) {
+    public static String getMetadataUuid (OskariLayer layer) {
         String fixed = LayerJSONFormatter.getFixedDataUrl(layer.getMetadataId());
         if (fixed != null) {
             return fixed;
@@ -291,7 +291,7 @@ public class LayerJSONFormatter {
      * @return null iff attributes.forcedSRS and capabilities.srs are both null
      *         otherwise a Set containing both (can be empty)
      */
-    protected static Set<String> getSRSs(JSONObject attributes, JSONObject capabilities) {
+    public static Set<String> getSRSs(JSONObject attributes, JSONObject capabilities) {
         JSONArray jsonForcedSRS = attributes != null ? attributes.optJSONArray(KEY_ATTRIBUTE_FORCED_SRS): null;
         JSONArray jsonCapabilitiesSRS = capabilities != null ? capabilities.optJSONArray(KEY_SRS): null;
         if (jsonForcedSRS == null && jsonCapabilitiesSRS == null) {
