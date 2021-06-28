@@ -1138,7 +1138,7 @@
                     --add-opens java.base/java.util.stream=ALL-UNNAMED
                     --add-opens java.base/java.net=ALL-UNNAMED
                     --add-opens java.base/java.io=ALL-UNNAMED
-                    --add-opens java.base/java.internal.loader=ALL-UNNAMED
+                    --add-opens java.base/jdk.internal.loader=ALL-UNNAMED
                     --add-opens java.xml/jdk.xml.internal=ALL-UNNAMED
                     --illegal-access=warn
                 </module.build.config>
