@@ -15,6 +15,7 @@ import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatter;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceRuntimeException;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONObject;
 import org.oskari.control.layer.model.LayerExtendedOutput;
@@ -71,14 +72,37 @@ public class DescribeLayerHandler extends RestActionHandler {
     }
 
     private LayerExtendedOutput getLayerDetails(OskariLayer layer, String lang, String crs) {
-        LayerExtendedOutput output = new LayerExtendedOutput();
+        LayerOutput output = new LayerExtendedOutput();
         output.id = layer.getId();
-        output.name = layer.getName(lang);
+        output.name = layer.getName();
+        output.url = layer.getUrl();
+        output.title = layer.getName(lang);
+        output.dataprovider = layer.getDataproviderId();
+        output.options = JSONHelper.getObjectAsMap(layer.getOptions());
+        if (output.options.isEmpty()) {
+            // remove empty map so it's not written to response
+            output.options = null;
+        }
+        output.params = JSONHelper.getObjectAsMap(layer.getParams());
+        if (output.params.isEmpty()) {
+            // remove empty map so it's not written to response
+            output.params = null;
+        }
+
+        // cast for convenience so it's easier to separate between base info and extended in the IDE
+        LayerExtendedOutput extended = (LayerExtendedOutput) output;
+        // extended metadata
+        extended.desc = layer.getTitle(lang);
         JSONObject attributes = layer.getAttributes();
         if (!attributes.optBoolean(LayerJSONFormatter.KEY_ATTRIBUTE_IGNORE_COVERAGE, false)) {
-            output.coverage = getCoverageWKT(layer.getGeometry(), crs);
+            extended.coverage = getCoverageWKT(layer.getGeometry(), crs);
         }
-        return output;
+        extended.attributes = JSONHelper.getObjectAsMap(attributes);
+        if (extended.attributes.isEmpty()) {
+            // remove empty map so it's not written to response
+            extended.attributes = null;
+        }
+        return extended;
     }
 
     // value will be not added if transform failed, that's ok since client can't handle it if it's in unknown projection
