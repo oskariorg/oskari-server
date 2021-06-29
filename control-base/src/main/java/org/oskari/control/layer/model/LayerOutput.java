@@ -11,12 +11,12 @@ public class LayerOutput {
 
     public int id;
     // technical name
-    public String name;
+    public String layer;
     public String url;
     public String type;
     public String version;
     // ui label for user
-    public String title;
+    public String name;
 
     public Double minScale;
     public Double maxScale;
