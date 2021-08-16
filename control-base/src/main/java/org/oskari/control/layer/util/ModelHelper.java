@@ -110,7 +110,7 @@ public class ModelHelper {
         output.metadataId = LayerJSONFormatter.getMetadataUuid(layer);
         output.srs = LayerJSONFormatter.getSRSs(layer.getAttributes(), layer.getCapabilities());
         output.created = layer.getCreated();
-        // TODO: do we want updated as well?
+        output.updated = layer.getUpdated();
 
         output.sublayers = layer.getSublayers().stream()
                 .map(sublayer -> getLayerDetails(sublayer, lang, crs))

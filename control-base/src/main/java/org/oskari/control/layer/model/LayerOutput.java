@@ -36,6 +36,7 @@ public class LayerOutput {
     public Map<String, Object> options = new HashMap<>();
 
     public Date created;
+    public Date updated;
 
     public String metadataId;
     public Set<String> srs;
