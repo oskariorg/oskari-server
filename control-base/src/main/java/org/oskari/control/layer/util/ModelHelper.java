@@ -51,7 +51,9 @@ public class ModelHelper {
             extended.coverage = getCoverageWKT(layer.getGeometry(), crs);
         }
         extended.attributes = getAsMap(attributes);
-        extended._dataproviderName = layer.getGroup().getName(lang);
+        if (layer.getGroup() != null) {
+            extended._dataproviderName = layer.getGroup().getName(lang);
+        }
 
         JSONObject capabilities = layer.getCapabilities();
         if (attributes.has(KEY_ISQUERYABLE)) {
