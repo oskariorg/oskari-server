@@ -1,21 +1,22 @@
 package fi.nls.oskari.control.layer;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.control.ActionConstants;
-import fi.nls.oskari.control.ActionException;
-import fi.nls.oskari.control.ActionHandler;
-import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
+import fi.nls.oskari.service.capabilities.CapabilitiesConstants;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
 import fi.nls.oskari.util.ResponseHelper;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.oskari.permissions.PermissionService;
 import org.oskari.service.util.ServiceFactory;
 
@@ -55,9 +56,15 @@ public class GetLayerCapabilitiesHandler extends ActionHandler {
             throws ActionException {
         final int layerId = params.getRequiredParamInt(ActionConstants.KEY_ID);
         final OskariLayer layer = permissionHelper.getLayer(layerId, params.getUser());
-        final String data = getCapabilities(layer);
-        ResponseHelper.writeResponse(params, HttpServletResponse.SC_OK,
+        if (params.getHttpParam("json", false)) {
+            final String data = getCapabilitiesJSON(layer, params.getRequiredParam("srs"));
+            ResponseHelper.writeResponse(params, HttpServletResponse.SC_OK,
+                    "application/json", data.getBytes(StandardCharsets.UTF_8));
+        } else {
+            final String data = getCapabilities(layer);
+            ResponseHelper.writeResponse(params, HttpServletResponse.SC_OK,
                     "text/xml", data.getBytes(StandardCharsets.UTF_8));
+        }
     }
 
     private String getCapabilities(OskariLayer layer) throws ActionException {
@@ -73,4 +80,38 @@ public class GetLayerCapabilitiesHandler extends ActionHandler {
         }
     }
 
+    private String getCapabilitiesJSON(OskariLayer layer, String crs) throws ActionException {
+        try {
+            JSONObject caps = layer.getCapabilities()
+                    .optJSONObject(CapabilitiesConstants.KEY_LAYER_CAPABILITIES);
+            JSONObject response = new JSONObject(caps.toString());
+            JSONArray linkList = response.optJSONArray("links");
+            JSONObject link = null;
+            for (int i = 0; i < linkList.length(); i++) {
+                link = linkList.optJSONObject(i);
+                JSONObject tileMatrixSet = link.optJSONObject("tileMatrixSet");
+                String projection = tileMatrixSet.optString("projection");
+                String shortProj = ProjectionHelper.shortSyntaxEpsg(projection);
+                if (crs.equals(shortProj)) {
+                    // use the first tilematrix matching the projection that is used
+                    JSONObject matrix = new JSONObject(tileMatrixSet.toString());
+                    matrix.put("projection", shortProj);
+                    break;
+                } else {
+                    // make sure we don't end up with non-null link after we have
+                    //  searched for the correct projection and not found it
+                    link = null;
+                }
+            }
+            if (link == null) {
+                throw new ActionParamsException("No tilematrix matching srs: " + crs);
+            }
+            JSONArray filteredLinkList = new JSONArray();
+            filteredLinkList.put(link);
+            response.put("links", filteredLinkList);
+            return response.toString();
+        } catch (Exception e) {
+            throw new ActionParamsException("Unable to parse JSON", e);
+        }
+    }
 }
