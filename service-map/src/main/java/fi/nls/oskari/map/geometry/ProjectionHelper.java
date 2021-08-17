@@ -141,12 +141,16 @@ public class ProjectionHelper implements PointTransformer {
         } catch (Exception e) {
             log.debug("EPSG geotools decoding failed", e);
         }
-        // try own parsing
+        // try own parsing for something like
+        //  "urn:ogc:def:crs:EPSG:6.3:3067"
+        //  "urn:ogc:def:crs:EPSG:6.18:3:3857"
+        //  "urn:ogc:def:crs:EPSG::3575"
         String[] epsg = crs.toUpperCase().split("EPSG");
         if (epsg.length > 1) {
             String[] code = epsg[1].split(":");
             if (code.length > 2) {
-                return "EPSG:" + code[2];
+                // get the last token
+                return "EPSG:" + code[code.length - 1];
             }
         }
         return crs;

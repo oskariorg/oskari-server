@@ -6,6 +6,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.junit.Assert.*;
 
 /**
@@ -229,5 +232,23 @@ public class ProjectionHelperTest {
         assertTrue("First axis north " + EPSG_4258, ProjectionHelper.isFirstAxisNorth(CRS.decode(EPSG_4258)));
         assertTrue("First axis north " + WKTHelper.PROJ_EPSG_4326, ProjectionHelper.isFirstAxisNorth(CRS.decode(WKTHelper.PROJ_EPSG_4326)));
         assertFalse("First axis NOT north " + EPSG_3067, ProjectionHelper.isFirstAxisNorth(CRS.decode(EPSG_3067)));
+    }
+
+    @Test
+    public void testShortSyntax() throws Exception {
+        Map<String, String> expected = new HashMap<>();
+        expected.put("EPSG:3067", "urn:ogc:def:crs:EPSG:6.3:3067"); // nlsfi
+        expected.put("EPSG:3857", "urn:ogc:def:crs:EPSG:6.18:3:3857"); // nasa
+        expected.put("EPSG:3575", "urn:ogc:def:crs:EPSG::3575"); // asdi
+        for (Map.Entry<String, String> entry : expected.entrySet()) {
+            assertEquals(entry.getKey(), ProjectionHelper.shortSyntaxEpsg(entry.getValue()));
+        }
+        assertNull("Null should return null", ProjectionHelper.shortSyntaxEpsg(null));
+        //assertNull("Random stuff should return null", ProjectionHelper.shortSyntaxEpsg("SG_ASegASEgae_:aeg:age:h4:4"));
+        assertEquals("Missing ':' works if GeoTools can decode", "EPSG:3067", ProjectionHelper.shortSyntaxEpsg("urn:ogc:def:crs:EPSG:3067"));
+        assertEquals("Missing ':' doesn't work if GeoTools can't decode", "asg:sgr:rej:J:EPSG:3067", ProjectionHelper.shortSyntaxEpsg("asg:sgr:rej:J:EPSG:3067"));
+        assertEquals("If GeoTools can't decode there needs to be atleast two parts after EPSG", "EPSG:3067", ProjectionHelper.shortSyntaxEpsg("asg:sgr:rej:J:EPSG::3067"));
+        assertEquals("Can be 3 parts after EPSG", "EPSG:3067", ProjectionHelper.shortSyntaxEpsg("asg:sgr:rej:J:EPSG:235:235.6:3067"));
+        assertEquals("Unparseable returns as is", "urn:ogc:def:crs:EPSG3067", ProjectionHelper.shortSyntaxEpsg("urn:ogc:def:crs:EPSG3067"));
     }
 }
