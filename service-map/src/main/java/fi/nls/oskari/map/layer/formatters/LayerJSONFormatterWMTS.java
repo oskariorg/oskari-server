@@ -28,40 +28,19 @@ public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
                               final String crs) {
 
         final JSONObject layerJson = getBaseJSON(layer, lang, isSecure, crs);
-
-        String crsForTileMatrixSet = crs != null ? crs : layer.getSrs_name();
-        String tileMatrixSetId = getTileMatrixSetId(layer.getCapabilities(), crsForTileMatrixSet);
-        JSONHelper.putValue(layerJson, "tileMatrixSetId", tileMatrixSetId);
-
-        // TODO: parse tileMatrixSetData for styles and set default style name from the one where isDefault = true
-        String styleName = layer.getStyle();
-
-        if(styleName == null || styleName.isEmpty()) {
-            styleName = "default";
-        }
-        JSONHelper.putValue(layerJson, "style", styleName);
+        JSONHelper.putValue(layerJson, "style", layer.getStyle());
         try {
-            JSONHelper.putValue(layerJson, KEY_STYLES, createStylesJSON(layer, isSecure));
+            JSONArray styles = createStylesJSON(layer, isSecure);
+            JSONHelper.putValue(layerJson, KEY_STYLES, styles);
         } catch (Exception e) {
             LOG.warn(e, "Populating layer styles failed for id: " + layer.getId());
         }
 
-        // if options have urlTemplate -> use it (treat as a REST layer)
-        final String urlTemplate = JSONHelper.getStringFromJSON(layer.getOptions(), "urlTemplate", null);
         final boolean needsProxy = useProxy(layer);
-        if(urlTemplate != null) {
-            if(needsProxy || isBeingProxiedViaOskariServer(layerJson.optString("url"))) {
-                // remove requestEncoding so we always get KVP params when proxying
-                JSONObject options = layerJson.optJSONObject("options");
-                options.remove("requestEncoding");
-            } else {
-                // setup tileURL for REST layers
-                final String originalUrl = layer.getUrl();
-                layer.setUrl(urlTemplate);
-                JSONHelper.putValue(layerJson, "tileUrl", layer.getUrl(isSecure));
-                // switch back the original url in case it's used down the line
-                layer.setUrl(originalUrl);
-            }
+        if (needsProxy || isBeingProxiedViaOskariServer(layerJson.optString("url"))) {
+            // force requestEncoding so we always get KVP params when proxying
+            JSONObject options = layerJson.optJSONObject("options");
+            JSONHelper.putValue(options, "requestEncoding", "KVP");
         }
 
         Set<String> srs = getSRSs(layer.getAttributes(), layer.getCapabilities());
