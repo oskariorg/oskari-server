@@ -1,5 +1,16 @@
 # Migration guide
 
+## 2.5.0
+
+### Userstyle bundle
+
+Userstyle functionality has been moved from wfsvector bundle to own bundle. You will need to add an import to the frontend code for your geoportal apps main.js:
+```
+import 'oskari-loader!oskari-frontend/packages/mapping/ol/userstyle/bundle.js';
+```
+The required changes have been made as pull requests for our demo app `sample-application` version 1.18.0:
+- https://github.com/oskariorg/sample-application/pull/17
+
 ## 2.0.0
 
 The required changes have been made as pull requests for our demo app `sample-server-extension` version 1.4.0:
