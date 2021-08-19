@@ -1,9 +1,9 @@
 package fi.nls.oskari.map.layer.formatters;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.wms.WMSStyle;
-import fi.nls.oskari.wmts.domain.WMTSCapabilities;
 
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
@@ -18,7 +18,9 @@ import java.util.*;
 import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.*;
 
 public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
-    private static Logger log = LogFactory.getLogger(LayerJSONFormatterWMTS.class);
+
+    private static final Logger LOG = LogFactory.getLogger(LayerJSONFormatterWMTS.class);
+    private static final ObjectMapper MAPPER = new ObjectMapper();
 
     public JSONObject getJSON(OskariLayer layer,
                               final String lang,
@@ -26,40 +28,19 @@ public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
                               final String crs) {
 
         final JSONObject layerJson = getBaseJSON(layer, lang, isSecure, crs);
-
-        String crsForTileMatrixSet = crs != null ? crs : layer.getSrs_name();
-        String tileMatrixSetId = getTileMatrixSetId(layer.getCapabilities(), crsForTileMatrixSet);
-        JSONHelper.putValue(layerJson, "tileMatrixSetId", tileMatrixSetId);
-
-        // TODO: parse tileMatrixSetData for styles and set default style name from the one where isDefault = true
-        String styleName = layer.getStyle();
-
-        if(styleName == null || styleName.isEmpty()) {
-            styleName = "default";
-        }
-        JSONHelper.putValue(layerJson, "style", styleName);
+        JSONHelper.putValue(layerJson, "style", layer.getStyle());
         try {
-            JSONHelper.putValue(layerJson, KEY_STYLES, createStylesJSON(layer, isSecure));
+            JSONArray styles = createStylesJSON(layer, isSecure);
+            JSONHelper.putValue(layerJson, KEY_STYLES, styles);
         } catch (Exception e) {
-            log.warn(e, "Populating layer styles failed for id: " + layer.getId());
+            LOG.warn(e, "Populating layer styles failed for id: " + layer.getId());
         }
 
-        // if options have urlTemplate -> use it (treat as a REST layer)
-        final String urlTemplate = JSONHelper.getStringFromJSON(layer.getOptions(), "urlTemplate", null);
         final boolean needsProxy = useProxy(layer);
-        if(urlTemplate != null) {
-            if(needsProxy || isBeingProxiedViaOskariServer(layerJson.optString("url"))) {
-                // remove requestEncoding so we always get KVP params when proxying
-                JSONObject options = layerJson.optJSONObject("options");
-                options.remove("requestEncoding");
-            } else {
-                // setup tileURL for REST layers
-                final String originalUrl = layer.getUrl();
-                layer.setUrl(urlTemplate);
-                JSONHelper.putValue(layerJson, "tileUrl", layer.getUrl(isSecure));
-                // switch back the original url in case it's used down the line
-                layer.setUrl(originalUrl);
-            }
+        if (needsProxy || isBeingProxiedViaOskariServer(layerJson.optString("url"))) {
+            // force requestEncoding so we always get KVP params when proxying
+            JSONObject options = layerJson.optJSONObject("options");
+            JSONHelper.putValue(options, "requestEncoding", "KVP");
         }
 
         Set<String> srs = getSRSs(layer.getAttributes(), layer.getCapabilities());
@@ -68,22 +49,6 @@ public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
         }
 
         return layerJson;
-    }
-
-    /**
-     * @deprecated use {@link #createCapabilitiesJSON(WMTSCapabilitiesLayer, Set)}
-     */
-    @Deprecated
-    public static JSONObject createCapabilitiesJSON(final WMTSCapabilities wmts,final WMTSCapabilitiesLayer layer) {
-        return createCapabilitiesJSON(layer, null);
-    }
-
-    /**
-     * @deprecated use {@link #createCapabilitiesJSON(WMTSCapabilitiesLayer, Set)}
-     */
-    @Deprecated
-    public static JSONObject createCapabilitiesJSON(final WMTSCapabilitiesLayer layer) {
-        return createCapabilitiesJSON(layer, null);
     }
 
     public static JSONObject createCapabilitiesJSON(final WMTSCapabilitiesLayer layer, Set<String> systemCRSs) {
@@ -108,6 +73,18 @@ public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
             }
         } catch (Exception ignored) {}
         JSONHelper.put(capabilities, KEY_STYLES, styles);
+
+        try {
+            // save the "raw" capabilities parsed as JSON
+            // TODO: this should be cleaned up so we don't need to write object to string to json
+            //  maybe by doing a "generic" capabilities class that can be extended for WMTS and write the
+            //  class to JSON string only for client and db
+            JSONObject raw = new JSONObject(MAPPER.writeValueAsString(layer));
+            JSONHelper.putValue(capabilities, KEY_LAYER_CAPABILITIES, raw);
+        } catch (Exception e) {
+            LOG.warn(e, "Error writing raw capabilities as JSON");
+        }
+
         return capabilities;
     }
 

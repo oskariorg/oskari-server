@@ -18,6 +18,8 @@ import java.util.Set;
 
 import javax.xml.stream.XMLStreamException;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import fi.nls.oskari.wmts.domain.WMTSCapabilitiesLayer;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,6 +45,8 @@ public class WMTSCapabilitiesParserTest {
     final String expectedJSON_tampere = ResourceHelper.readStringResource("WMTSCapabilitiesParserTest-expected-results-tampere.json", this);
     final String expectedJSON_Spain = ResourceHelper.readStringResource("WMTSCapabilitiesParserTest-expected-results-spain.json", this);
     final String expectedJSON_IS = ResourceHelper.readStringResource("WMTSCapabilitiesParserTest-expected-results-is.json", this);
+
+    final String expectedJSON_NLS_taustakartta = ResourceHelper.readStringResource("WMTSCapabilitiesParserTest-expected-single-layer-NLS-taustakartta.json", this);
 
     @Test
     public void testASDIParsing() throws Exception {
@@ -193,4 +197,22 @@ public class WMTSCapabilitiesParserTest {
             assertArrayEquals(eMatrix.getTopLeftCorner(), aMatrix.getTopLeftCorner(), 0);
         }
     }
+
+    /**
+     * These are used for giving OpenLayers on frontend a filtered response instead of the the whole XML.
+     * Note! Any changes to JSON response needs a matching change on the frontend/layerJSONFormatterWMTS.
+     * @throws Exception
+     */
+    @Test
+    public void testOLJSON_NLS() throws Exception {
+        WMTSCapabilities caps = WMTSCapabilitiesParser.parseCapabilities(capabilitiesInput_NLS);
+
+        WMTSCapabilitiesLayer layer = caps.getLayer("taustakartta");
+        ObjectMapper mapper = new ObjectMapper();
+        // TODO: add more layers for comparing
+        assertEquals("JSON should match", mapper.readTree(expectedJSON_NLS_taustakartta), mapper.readTree( mapper.writeValueAsString(layer)));
+    }
+
+
+
 }

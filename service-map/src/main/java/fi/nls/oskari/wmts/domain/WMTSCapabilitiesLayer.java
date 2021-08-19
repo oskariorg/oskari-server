@@ -1,5 +1,6 @@
 package fi.nls.oskari.wmts.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatter;
 import fi.nls.oskari.util.JSONHelper;
@@ -40,6 +41,7 @@ public class WMTSCapabilitiesLayer {
         return resourceUrls;
     }
 
+    @JsonIgnore
     public ResourceUrl getResourceUrlByType(final String type) {
         for (ResourceUrl url : resourceUrls) {
             if (url.getType().equalsIgnoreCase(type)) {
@@ -81,6 +83,7 @@ public class WMTSCapabilitiesLayer {
         return links;
     }
 
+    @JsonIgnore
     public List<TileMatrixLimits> getLimits(String tileMatrixSet) {
         for (TileMatrixLink link : links) {
             if (tileMatrixSet.equals(link.getTileMatrixSet().getId())) {
@@ -90,6 +93,7 @@ public class WMTSCapabilitiesLayer {
         return null;
     }
 
+    @JsonIgnore
     public JSONObject getAsJSON() {
         final JSONObject obj = new JSONObject();
         JSONHelper.putValue(obj, "type", OskariLayer.TYPE_WMTS);
@@ -136,6 +140,7 @@ public class WMTSCapabilitiesLayer {
         return obj;
     }
     // get as OskariLayer without capabilities object
+    @JsonIgnore
     public OskariLayer getOskariLayer(String url, String matrixsetId) {
         final OskariLayer layer = new OskariLayer();
         layer.setType(OskariLayer.TYPE_WMTS);

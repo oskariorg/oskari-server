@@ -191,7 +191,7 @@ public class LayerJSONFormatter {
     }
 
     public String getProxyUrl(final OskariLayer layer) {
-        Map<String, String> urlParams = new HashMap<String, String>();
+        Map<String, String> urlParams = new HashMap<>();
         urlParams.put("action_route", "GetLayerTile");
         urlParams.put(KEY_ID, Integer.toString(layer.getId()));
         return IOHelper.constructUrl(PropertyUtil.get(PROPERTY_AJAXURL), urlParams);
