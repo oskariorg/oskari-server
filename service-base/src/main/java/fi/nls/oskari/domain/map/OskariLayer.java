@@ -307,7 +307,7 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
                 return secureBaseUrl + getSimplifiedUrl();
             }
             // proxy layer url
-            Map<String, String> urlParams = new LinkedHashMap<String, String>();
+            Map<String, String> urlParams = new LinkedHashMap<>();
             urlParams.put("action_route", "GetLayerTile");
             urlParams.put("id", Integer.toString(getId()));
             return IOHelper.constructUrl(PropertyUtil.get(PROPERTY_AJAXURL), urlParams);

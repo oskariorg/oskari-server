@@ -17,7 +17,6 @@ import fi.nls.oskari.wmts.domain.WMTSCapabilities;
 import fi.nls.oskari.wmts.domain.WMTSCapabilitiesLayer;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
 
@@ -50,13 +49,6 @@ public class OskariLayerCapabilitiesHelper {
         return WebMapServiceFactory.createFromXML(ml.getName(), xml);
     }
 
-    /**
-     * @deprecated use {@link #setPropertiesFromCapabilitiesWMS(WebMapService, OskariLayer, Set)}
-     */
-    @Deprecated
-    public static void setPropertiesFromCapabilitiesWMS(WebMapService wms, OskariLayer ml) {
-        setPropertiesFromCapabilitiesWMS(wms, ml, null);
-    }
     @Deprecated
     public static void setPropertiesFromCapabilitiesWMS(WebMapService wms,
             OskariLayer ml, Set<String> systemCRSs) {
@@ -107,14 +99,6 @@ public class OskariLayerCapabilitiesHelper {
         return style;
     }
 
-    /**
-     * @deprecated use {@link #setPropertiesFromCapabilitiesWMTS(WMTSCapabilities, OskariLayer, Set)}
-     */
-    @Deprecated
-    public static void setPropertiesFromCapabilitiesWMTS(WMTSCapabilities caps,
-            OskariLayer ml, String crs) {
-        setPropertiesFromCapabilitiesWMTS(caps, ml, Collections.emptySet());
-    }
     public static void setPropertiesFromCapabilitiesWMTS(WMTSCapabilities caps,
             OskariLayer ml, Set<String> systemCRSs) {
         int id = ml.getId();

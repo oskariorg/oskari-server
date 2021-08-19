@@ -27,6 +27,7 @@ public class CapabilitiesConstants {
     public static final String KEY_LEGEND = "legend";
     public static final String KEY_VALUE = "value";
     public static final String KEY_TILEMATRIXIDS = "tileMatrixIds";
+    public static final String KEY_LAYER_CAPABILITIES = "layerCapabilities";
 
     //result map/json
     public static final String KEY_TITLE= "title";
