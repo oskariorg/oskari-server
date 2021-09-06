@@ -468,7 +468,11 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
      * @return
      */
     public JSONObject toJSON() {
-        return toJSON(getResourceId());
+        String id = getResourceId();
+        if (id == null || id.isEmpty()) {
+            id = Long.toString(System.nanoTime());
+        }
+        return toJSON(id);
     }
 
     /**

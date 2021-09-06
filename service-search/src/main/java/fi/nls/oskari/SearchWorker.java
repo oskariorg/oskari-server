@@ -84,11 +84,10 @@ public class SearchWorker {
 
         JSONArray itemArray = new JSONArray();
 
-        int itemCount = 0;
         for (SearchResultItem sri : items) {
-            itemArray.put(sri.toJSON(itemCount++));
+            itemArray.put(sri.toJSON());
         }
-        JSONHelper.putValue(result, KEY_TOTAL_COUNT, itemCount);
+        JSONHelper.putValue(result, KEY_TOTAL_COUNT, items.size());
         JSONHelper.putValue(result, KEY_LOCATIONS, itemArray);
 
         JSONArray methodArray = new JSONArray();
