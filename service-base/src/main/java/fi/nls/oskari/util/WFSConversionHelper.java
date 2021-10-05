@@ -38,7 +38,9 @@ public class WFSConversionHelper {
                 "MultiPointPropertyType",
                 "MultiLinePropertyType",
                 "MultiPolygonPropertyType",
-                "SurfacePropertyType"
+                "MultiLineStringPropertyType",
+                "SurfacePropertyType",
+                "MultiSurfacePropertyType"
             )
     );
     private static final Set<String> STRING_TYPES = new HashSet<>(Arrays.asList("string", "date", "time"));
