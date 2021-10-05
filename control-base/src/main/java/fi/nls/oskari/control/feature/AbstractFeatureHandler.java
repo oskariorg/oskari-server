@@ -107,12 +107,12 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
         return getFeature(jsonObject, jsonObject.optString("layerId"), srsName, jsonObject.getString("featureId"));
     }
 
-    // protected Feature getFeature(JSONObject jsonObject) throws ActionParamsException, JSONException, FactoryException {
-    protected Feature getFeature(JSONObject jsonObject, String layerId, String srsName, String featureId) throws ActionParamsException, JSONException, FactoryException {
-        boolean flipFeature = PropertyUtil.getOptional("actionhandler.AbstractFeatureHandler.forceXY", false);
-        OskariLayer layer = getLayer(layerId);
+    protected Feature initFeatureByLayer(String layerId) throws ActionParamsException {
+        return initFeatureByLayer(getLayer(layerId));
+    }
+
+    protected Feature initFeatureByLayer(OskariLayer layer) throws ActionParamsException {
         Feature feature = new Feature();
-        CoordinateReferenceSystem crs = CRS.decode(srsName);
         WFSLayerAttributes attrs = new WFSLayerAttributes(layer.getAttributes());
         WFSLayerCapabilities caps = new WFSLayerCapabilities(layer.getCapabilities());
         String layerName = layer.getName();
@@ -124,7 +124,19 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
         feature.setLayerName(layerName);
         feature.setNamespaceURI(attrs.getNamespaceURL());
         feature.setGMLGeometryProperty(caps.getGeometryAttribute());
-        feature.setId(featureId);
+        return feature;
+    }
+
+    // protected Feature getFeature(JSONObject jsonObject) throws ActionParamsException, JSONException, FactoryException {
+    protected Feature getFeature(JSONObject jsonObject, String layerId, String srsName, String featureId) throws ActionParamsException, JSONException, FactoryException {
+        boolean flipFeature = PropertyUtil.getOptional("actionhandler.AbstractFeatureHandler.forceXY", false);
+        Feature feature = initFeatureByLayer(layerId);
+        CoordinateReferenceSystem crs = CRS.decode(srsName);
+        if (featureId == null) {
+            feature.setId(featureId);
+        } else {
+            feature.setId(jsonObject.optString("id"));
+        }
 
         if(jsonObject.has("featureFields")) {
             JSONArray jsonArray = jsonObject.getJSONArray("featureFields");
