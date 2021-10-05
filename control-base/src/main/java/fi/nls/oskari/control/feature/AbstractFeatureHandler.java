@@ -174,7 +174,9 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
         if (jsonObject.has("geometry")) {
             String geojsonGeometry = jsonObject.getJSONObject("geometry").toString();
             try {
-                feature.setGeometry(GEOJSON_READER.read(geojsonGeometry));
+                Geometry geom = GEOJSON_READER.read(geojsonGeometry);
+                geom.setSRID(getSrid(srsName, 3067));
+                feature.setGeometry(geom);
             } catch (ParseException e) {
                 LOG.debug(e, "Error parsing geometry:\n", geojsonGeometry);
                 throw new ActionParamsException("Couldn't parse feature: " + geojsonGeometry);
