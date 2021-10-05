@@ -4,7 +4,6 @@ package fi.nls.oskari.control.feature;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import org.locationtech.jts.geom.*;
-import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.*;
 
 import fi.nls.oskari.control.ActionException;
@@ -48,7 +47,6 @@ import java.util.*;
 
 public abstract class AbstractFeatureHandler extends RestActionHandler {
 
-    public final static String CACHE_KEY_PREFIX = "WFSImage_";
     private static Logger LOG = LogFactory.getLogger(AbstractFeatureHandler.class);
 
     private OskariLayerService layerService;
@@ -262,22 +260,6 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
 
         return geometry;
 
-    }
-
-    protected void flushLayerTilesCache(int layerId) {
-        Set<String> keys = JedisManager.keys(CACHE_KEY_PREFIX + Integer.toString(layerId));
-        for (String key : keys) {
-            JedisManager.delAll(key);
-        }
-    }
-
-    protected void flushLayerTilesCache(Map<Integer, OskariLayer> layers) {
-        for (Integer layerId : layers.keySet()) {
-            Set<String> keys = JedisManager.keys(CACHE_KEY_PREFIX + Integer.toString(layerId));
-            for (String key : keys) {
-                JedisManager.delAll(key);
-            }
-        }
     }
 
     protected Map<Integer, OskariLayer> getLayers(JSONArray paramFeatures) throws JSONException, ActionParamsException {

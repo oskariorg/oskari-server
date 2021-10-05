@@ -53,9 +53,6 @@ public class SaveFeatureHandler extends AbstractFeatureHandler {
                 }
             }
 
-            flushLayerTilesCache(layers);
-
-
             if(exceptions.size() == paramFeatures.length()) {
                 throw new ActionException("Cannot save features: " + exceptions.toString());
             }

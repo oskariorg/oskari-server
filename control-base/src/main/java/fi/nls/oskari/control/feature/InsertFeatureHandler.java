@@ -52,8 +52,6 @@ public class InsertFeatureHandler extends AbstractFeatureHandler {
                 updatedFeatureIds.put(parseFeatureIdFromResponse(responseString));
             }
 
-            flushLayerTilesCache(layers);
-
             ResponseHelper.writeResponse(params, JSONHelper.createJSONObject("fids", updatedFeatureIds));
         } catch (JSONException e) {
             LOG.error(e, "JSON processing error");
