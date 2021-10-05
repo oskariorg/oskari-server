@@ -77,12 +77,14 @@ public class VectorFeatureWriterHandler extends AbstractFeatureHandler {
 
             Feature feature = getFeature(geojson, layerId, crs, geojson.optString("id"));
             final String wfstMessage = createWFSTMessageForInsert(feature);
-            LOG.debug("Inserting feature to service at", layer.getUrl(), "with payload", wfstMessage);
+            LOG.debug("Inserting feature to service at", layer.getUrl(), "with payload:\n", wfstMessage);
             final String responseString = postPayload(layer.getUsername(), layer.getPassword(), wfstMessage, getURLForNamespace(layer.getName(),layer.getUrl()));
 
+            LOG.debug("Got response:\n", responseString);
             String idFromResponse = parseFeatureIdFromInsertResponse(responseString);
             LOG.debug("Inserted feature with id:", idFromResponse);
-            if (!geojson.optString("id").equals(idFromResponse)) {
+            if (idFromResponse == null || idFromResponse.isEmpty()) {
+                LOG.warn("Problem with :", responseString);
                 throw new ActionParamsException("Returned id didn't match input: " + idFromResponse);
             }
             ResponseHelper.writeResponse(params, geojson);
@@ -110,9 +112,10 @@ public class VectorFeatureWriterHandler extends AbstractFeatureHandler {
             Feature feature = getFeature(geojson, layerId, crs, geojson.optString("id"));
 
             final String wfstMessage = createWFSTMessageForUpdate(feature);
-            LOG.debug("Updating feature to service at", layer.getUrl(), "with payload", wfstMessage);
+            LOG.debug("Updating feature to service at", layer.getUrl(), "with payload:\n", wfstMessage);
             String responseString = postPayload(layer.getUsername(), layer.getPassword(), wfstMessage, getURLForNamespace(layer.getName(),layer.getUrl()));
 
+            LOG.debug("Got response:\n", responseString);
             if (responseString.indexOf("Exception") > -1) {
                 throw new ActionException("Cannot save feature: " + responseString);
             }
