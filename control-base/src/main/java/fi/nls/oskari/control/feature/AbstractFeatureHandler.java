@@ -172,12 +172,12 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
             }
         }
         if (jsonObject.has("geometry")) {
-            String geojson = jsonObject.toString();
+            String geojsonGeometry = jsonObject.getJSONObject("geometry").toString();
             try {
-                feature.setGeometry(GEOJSON_READER.read(geojson));
+                feature.setGeometry(GEOJSON_READER.read(geojsonGeometry));
             } catch (ParseException e) {
-                LOG.debug(e, "Error parsing feature:\n", geojson);
-                throw new ActionParamsException("Couldn't parse feature: " + geojson);
+                LOG.debug(e, "Error parsing geometry:\n", geojsonGeometry);
+                throw new ActionParamsException("Couldn't parse feature: " + geojsonGeometry);
             }
         }
         return feature;
