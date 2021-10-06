@@ -1,8 +1,6 @@
 package fi.nls.oskari.map.layer.formatters;
 
 import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.domain.map.wfs.WFSLayerAttributes;
-import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.WKTHelper;
@@ -43,28 +41,10 @@ public class LayerJSONFormatterWFS extends LayerJSONFormatter {
                                      final String crs) {
 
         final JSONObject layerJson = getBaseJSON(layer, lang, isSecure, crs);
-        setStyles(layerJson, new WFSLayerOptions(layer.getOptions()));
-        // Use maplayer setup
-        if(layer.getStyle() == null || layer.getStyle().isEmpty() ){
-            JSONHelper.putValue(layerJson, KEY_STYLE, "default");
-        }
-        else {
-            JSONHelper.putValue(layerJson, KEY_STYLE, layer.getStyle());
-        }
         JSONHelper.putValue(layerJson, KEY_ISQUERYABLE, true);
 
         return layerJson;
     }
-
-    /**
-     * Constructs a style json
-     *
-     */
-    protected void setStyles(JSONObject layerJson, WFSLayerOptions wfsOpts) {
-        JSONHelper.putValue(layerJson, KEY_STYLES, wfsOpts.getStyles().names());
-    }
-
-
     public static JSONObject createCapabilitiesJSON(final WFSGetCapabilities capa, SimpleFeatureSource source, Set<String> systemCRSs) throws ServiceException {
 
         try {
