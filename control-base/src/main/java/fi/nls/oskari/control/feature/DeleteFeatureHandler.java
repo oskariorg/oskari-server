@@ -19,6 +19,10 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @deprecated Replaced by VectorFeatureWriterHandler
+ */
+@Deprecated
 @OskariActionRoute("DeleteFeature")
 public class DeleteFeatureHandler extends AbstractFeatureHandler {
     private static Logger LOG = LogFactory.getLogger(DeleteFeatureHandler.class);

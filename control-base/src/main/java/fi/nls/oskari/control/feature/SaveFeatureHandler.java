@@ -20,6 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @deprecated Replaced by VectorFeatureWriterHandler
+ */
+@Deprecated
 @OskariActionRoute("SaveFeature")
 public class SaveFeatureHandler extends AbstractFeatureHandler {
     private static Logger LOG = LogFactory.getLogger(SaveFeatureHandler.class);
