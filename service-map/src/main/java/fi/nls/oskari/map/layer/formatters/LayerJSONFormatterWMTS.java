@@ -28,7 +28,6 @@ public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
                               final String crs) {
 
         final JSONObject layerJson = getBaseJSON(layer, lang, isSecure, crs);
-        JSONHelper.putValue(layerJson, "style", layer.getStyle());
         try {
             JSONArray styles = createStylesJSON(layer, isSecure);
             JSONHelper.putValue(layerJson, KEY_STYLES, styles);
