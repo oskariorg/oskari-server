@@ -28,6 +28,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Map;
 
+/**
+ * @deprecated Replaced by VectorFeatureWriterHandler
+ */
+@Deprecated
 @OskariActionRoute("InsertFeature")
 public class InsertFeatureHandler extends AbstractFeatureHandler {
     private final static Logger LOG = LogFactory.getLogger(InsertFeatureHandler.class);
@@ -51,8 +55,6 @@ public class InsertFeatureHandler extends AbstractFeatureHandler {
                 final String responseString = postPayload(layer.getUsername(), layer.getPassword(), wfstMessage, getURLForNamespace(layer.getName(),layer.getUrl()));
                 updatedFeatureIds.put(parseFeatureIdFromResponse(responseString));
             }
-
-            flushLayerTilesCache(layers);
 
             ResponseHelper.writeResponse(params, JSONHelper.createJSONObject("fids", updatedFeatureIds));
         } catch (JSONException e) {

@@ -19,6 +19,10 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @deprecated Replaced by VectorFeatureWriterHandler
+ */
+@Deprecated
 @OskariActionRoute("DeleteFeature")
 public class DeleteFeatureHandler extends AbstractFeatureHandler {
     private static Logger LOG = LogFactory.getLogger(DeleteFeatureHandler.class);
@@ -37,7 +41,6 @@ public class DeleteFeatureHandler extends AbstractFeatureHandler {
         try {
             String payload = createPayload(jsonObject);
             String responseString = postPayload(layer.getUsername(), layer.getPassword(), payload, getURLForNamespace(layer.getName(), layer.getUrl()));
-            flushLayerTilesCache(layer.getId());
 
             if (responseString.indexOf("Exception") > -1) {
                 throw new ActionException("Cannot delete feature");
