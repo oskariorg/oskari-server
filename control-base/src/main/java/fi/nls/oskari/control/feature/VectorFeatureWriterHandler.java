@@ -9,6 +9,7 @@ import fi.nls.oskari.domain.map.Feature;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.util.XmlHelper;
 import org.json.JSONException;
@@ -31,17 +32,20 @@ import java.io.IOException;
 public class VectorFeatureWriterHandler extends AbstractFeatureHandler {
     private final static Logger LOG = LogFactory.getLogger(VectorFeatureWriterHandler.class);
 
-    public void handleDelete(ActionParameters params) throws ActionException {
+    public void preProcess(ActionParameters params) throws ActionException {
         params.requireLoggedInUser();
+    }
+
+    public void handleDelete(ActionParameters params) throws ActionException {
         String layerId = params.getRequiredParam("layerId");
         OskariLayer layer = getLayer(layerId);
         if (!canEdit(layer, params.getUser())) {
             throw new ActionDeniedException("User doesn't have edit permission for layer: " + layer.getId());
         }
-
+        String featureId = params.getRequiredParam("featureId");
         try {
             Feature feature = initFeatureByLayer(layer);
-            feature.setId(params.getRequiredParam("featureId"));
+            feature.setId(featureId);
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             FeatureWFSTRequestBuilder.deleteFeature(baos, feature);
@@ -51,7 +55,7 @@ public class VectorFeatureWriterHandler extends AbstractFeatureHandler {
             if (responseString.indexOf("Exception") > -1) {
                 throw new ActionException("Cannot delete feature");
             } else if (responseString.indexOf("<wfs:totalDeleted>1</wfs:totalDeleted>") > -1) {
-                ResponseHelper.writeResponse(params, "Feature deleted");
+                ResponseHelper.writeResponse(params, JSONHelper.createJSONObject("id", featureId));
             } else {
                 throw new ActionException("Unexpected response from service: " + responseString);
             }
@@ -60,11 +64,8 @@ public class VectorFeatureWriterHandler extends AbstractFeatureHandler {
         }
     }
 
-
     @Override
     public void handlePost(ActionParameters params) throws ActionException {
-        params.requireLoggedInUser();
-
         String layerId = params.getRequiredParam("layerId");
         String crs = params.getRequiredParam("crs");
         OskariLayer layer = getLayer(layerId);
@@ -95,11 +96,8 @@ public class VectorFeatureWriterHandler extends AbstractFeatureHandler {
         }
     }
 
-
     @Override
     public void handlePut(ActionParameters params) throws ActionException {
-        params.requireLoggedInUser();
-
         String layerId = params.getRequiredParam("layerId");
         String crs = params.getRequiredParam("crs");
         OskariLayer layer = getLayer(layerId);
@@ -172,13 +170,10 @@ public class VectorFeatureWriterHandler extends AbstractFeatureHandler {
             Element res3 = (Element) res.item(0);
             return res3.getAttribute("fid");
         } catch (ParserConfigurationException ex) {
-            LOG.error(ex, "Parser configuration error");
             throw new ActionException("Parser configuration error", ex);
         } catch (IOException ex) {
-            LOG.error(ex, "IO error");
             throw new ActionException("IO error", ex);
         } catch (SAXException ex) {
-            LOG.error(ex, "SAX processing error");
             throw new ActionException("SAX processing error", ex);
         }
     }
