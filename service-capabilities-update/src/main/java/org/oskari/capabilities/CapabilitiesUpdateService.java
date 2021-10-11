@@ -18,6 +18,8 @@ import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilitiesHelper;
+import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.wms.WMSCapabilitiesService;
 import fi.nls.oskari.wmts.WMTSCapabilitiesParser;
 import fi.nls.oskari.wmts.domain.WMTSCapabilities;
@@ -77,11 +79,13 @@ public class CapabilitiesUpdateService {
 
     private void updateCapabilities(UrlTypeVersion utv,
             List<OskariLayer> layers, Set<String> systemCRSs, List<CapabilitiesUpdateResult> results) {
-        final String url = utv.url;
+
+        OskariLayer credentialsLayer = layers.get(0);
+        final String url = IOHelper.constructUrl(utv.url, JSONHelper.getObjectAsMap(credentialsLayer.getParams()));
         final String type = utv.type;
         final String version = utv.version;
-        final String user = layers.get(0).getUsername();
-        final String pass = layers.get(0).getPassword();
+        final String user = credentialsLayer.getUsername();
+        final String pass = credentialsLayer.getPassword();
 
         int[] ids = layers.stream().mapToInt(OskariLayer::getId).toArray();
         LOG.debug("Updating Capabilities for a group of layers - url:", url,
