@@ -98,6 +98,7 @@ public class LayerJSONFormatter {
 
         JSONHelper.putValue(layerJson, KEY_ID, layer.getId());
 
+        boolean useProxy = useProxy(layer);
         //LOG.debug("Type", layer.getType());
         if(layer.isCollection()) {
             // fixing frontend type for collection layers
@@ -138,8 +139,10 @@ public class LayerJSONFormatter {
             JSONHelper.putValue(layerJson, "maxScale", layer.getMaxScale());
         }
         JSONObject attributes = layer.getAttributes();
-
-        JSONHelper.putValue(layerJson, "params", layer.getParams());
+        if (!useProxy) {
+            // don't write additional params for proxied urls
+            JSONHelper.putValue(layerJson, "params", layer.getParams());
+        }
         JSONHelper.putValue(layerJson, KEY_OPTIONS, layer.getOptions());
         JSONHelper.putValue(layerJson, "attributes", attributes);
 

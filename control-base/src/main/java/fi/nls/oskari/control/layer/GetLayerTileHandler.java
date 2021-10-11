@@ -170,6 +170,7 @@ public class GetLayerTileHandler extends ActionHandler {
         final HttpServletRequest httpRequest = params.getRequest();
         if (OskariLayer.TYPE_WMTS.equalsIgnoreCase(layer.getType())) {
             // check for rest url
+            // TODO: look at GetLayerCapabilitiesHandler and get resource url from capabilities instead
             final String urlTemplate = JSONHelper.getStringFromJSON(layer.getOptions(), "urlTemplate", null);
             if(urlTemplate != null) {
                 LOG.debug("REST WMTS layer proxy");
@@ -262,8 +263,9 @@ public class GetLayerTileHandler extends ActionHandler {
         try {
             final String username = layer.getUsername();
             final String password = layer.getPassword();
-            LOG.debug("Getting layer tile from url:", url);
-            return IOHelper.getConnection(url, username, password);
+            String urlWithExtraParams = IOHelper.constructUrl(url, JSONHelper.getObjectAsMap(layer.getParams()));
+            LOG.debug("Getting layer tile from url:", urlWithExtraParams);
+            return IOHelper.getConnection(urlWithExtraParams, username, password);
         } catch (Exception e) {
             throw new ActionException("Couldn't get connection to service", e);
         }
