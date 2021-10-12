@@ -1,5 +1,36 @@
 # Release Notes
 
+## 2.5.0
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/34?closed=1
+
+- Layerlisting response from server has been streamlined and some of the layer 
+   metadata has been removed like coverage geometry. The frontend handles this
+   internally by fetching the data when needed instead of having it all in the listing response.
+   This reduces the size of the listing response dramatically and improves performance.
+- New action route DescribeLayer that is currently just used for returning coverage geometry
+   for layer when available. There are plans for doing more with this endpoint.
+   Possibly combining it responses from GetWFSLayerFields and GetLayerCapabilities to a single generic endpoint.
+- WTMS capabilities are parsed and now stored in JSON format for layers. 
+   This enables giving frontend only the tile matrix information it needs for 
+   showing the layer for the current projection that is used on the browser.
+   This reduces network traffic and can vastly improve performance for WMTS-services with large capabilities documents.
+   Note! This requires all WMTS-layer capabilities to be refreshed from the server and this is done automatically with an upgrade script as a Flyway-migration.
+- The common search functionality no longer overrides a zoom scale hint with generic config IF it has been set by a channel.
+- Default style options for printing vector features have been synced with defaults used on the frontend code.
+- GetWFSLayerFields route now recognizes WFS attributes of types
+   MultiLineStringPropertyType and MultiSurfacePropertyType as geometries
+   instead of "unknown" type.
+- New action route VectorFeatureWriter has been added as a replacement for combining 
+   existing routes: InsertFeature, SaveFeature and DeleteFeature.
+   The previous ones have been deprecated for removal at a later version.
+   The new endpoint takes GeoJSON as request payload for the feature to be inserted/updated.
+   This route is used by the content-editor bundle under oskari-frontend-contrib repository.
+- Libraries updated:
+  - Jetty 9.4.39.v20210325 -> 9.4.42.v20210604
+  - jsoup 1.13.1 -> 1.14.2
+  - pdfbox 2.0.16 -> 2.0.24
+
 ## 2.4.0
 
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/30?closed=1
