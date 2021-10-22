@@ -2,6 +2,7 @@ package fi.nls.oskari.control.admin;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionException;
@@ -33,6 +34,7 @@ public class ServiceCapabilitiesHandler extends AbstractLayerAdminHandler {
     private static final Logger LOG = LogFactory.getLogger(ServiceCapabilitiesHandler.class);
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     static {
+        OBJECT_MAPPER.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         OBJECT_MAPPER.setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
 
