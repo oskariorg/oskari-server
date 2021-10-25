@@ -89,7 +89,7 @@
         <mybatis.version>3.5.7</mybatis.version>
         <flyway.version>6.5.7</flyway.version>
         <postgresql.version>42.2.16</postgresql.version>
-        <jedis.version>3.5.1</jedis.version>
+        <jedis.version>3.6.3</jedis.version>
         <quartz-scheduler.version>2.3.2</quartz-scheduler.version>
 
         <geotools.version>25.1</geotools.version>
