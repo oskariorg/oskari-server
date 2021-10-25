@@ -49,14 +49,14 @@
         <!-- Value comes from profile when needed -->
         <module.build.config></module.build.config>
 
-        <spring.version>5.3.5</spring.version>
-        <spring-security.version>5.4.6</spring-security.version>
+        <spring.version>5.3.11</spring.version>
+        <spring-security.version>5.5.3</spring-security.version>
         <!--
-        session-bom 2020.0.4 uses 2.4.x from session
-        which is aligned with core 5.3.5 and security 5.4.6 versions
-        https://github.com/spring-projects/spring-session/releases/tag/2.4.3
-        https://search.maven.org/artifact/org.springframework.session/spring-session-bom/2020.0.4/pom -->
-        <spring.session.version>2020.0.4</spring.session.version>
+        session-bom 2021.0.3 uses 2.5.3 from session
+        which is aligned with core 5.3.11 and security 5.5.3 versions
+        https://github.com/spring-projects/spring-session/releases/tag/2.5.3
+        https://search.maven.org/artifact/org.springframework.session/spring-session-bom/2021.0.3/pom -->
+        <spring.session.version>2021.0.3</spring.session.version>
 
         <javax.servlet.version>3.1.0</javax.servlet.version>
         <javax.servlet.jsp.version>2.3.3</javax.servlet.jsp.version>
