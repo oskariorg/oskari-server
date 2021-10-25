@@ -7,6 +7,7 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.WKTHelper;
 import fi.nls.oskari.util.JSONHelper;
 
+import org.geotools.data.ows.OperationType;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.ows.wms.CRSEnvelope;
 import org.geotools.ows.wms.Layer;
@@ -164,7 +165,8 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
     }
 
     private static JSONObject getGFIFormats(final WMSCapabilities caps) {
-        List<String> formats = caps.getRequest().getGetFeatureInfo().getFormats();
+        OperationType featInfo = caps.getRequest().getGetFeatureInfo();
+        List<String> formats = featInfo != null ? featInfo.getFormats() : Collections.emptyList();
         return getFormatsJSON(formats);
     }
     private static List<JSONObject> getStyles(final Layer capabilitiesLayer) {
