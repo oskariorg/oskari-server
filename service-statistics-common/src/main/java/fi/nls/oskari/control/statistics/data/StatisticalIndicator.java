@@ -1,5 +1,6 @@
 package fi.nls.oskari.control.statistics.data;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
 import fi.nls.oskari.util.PropertyUtil;
@@ -24,6 +25,7 @@ public class StatisticalIndicator {
     private Map<String, String> source = new HashMap<>();
     private Map<String, String> desc = new HashMap<>();
     private StatisticalIndicatorDataModel dataModel;
+    private Map<String, Object> metadata;
 
     public void setId(String id) {
         this.id = id;
@@ -141,5 +143,19 @@ public class StatisticalIndicator {
     }
     public void setDescription(Map<String, String> localized) {
         desc = localized;
+    }
+
+    public void setMetadata(Map<String, Object> values) {
+        metadata = values;
+    }
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public Map<String, Object> getMetadata() {
+        return metadata;
+    }
+    public void addMetadata(String key, Object value) {
+        if (metadata == null) {
+            metadata = new HashMap<>();
+        }
+        metadata.put(key, value);
     }
 }

@@ -77,14 +77,10 @@ public class PxwebConfig {
         return timeVariableId;
     }
 
-    public Optional<MetadataItem> getMetadata(String indicatorId) {
+    public MetadataItem getMetadata(String indicatorId) {
         if (metadata == null) {
-            return Optional.empty();
+            return null;
         }
-        MetadataItem item = metadata.get(indicatorId);
-        if (item == null) {
-            return Optional.empty();
-        }
-        return Optional.of(item);
+        return metadata.get(indicatorId);
     }
 }

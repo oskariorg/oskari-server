@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.control.statistics.data.*;
 import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
 import fi.nls.oskari.control.statistics.plugins.pxweb.PxwebConfig;
+import fi.nls.oskari.control.statistics.plugins.pxweb.json.MetadataItem;
 import fi.nls.oskari.control.statistics.plugins.pxweb.json.PxFolderItem;
 import fi.nls.oskari.control.statistics.plugins.pxweb.json.PxTableItem;
 import fi.nls.oskari.control.statistics.plugins.pxweb.json.VariablesItem;
@@ -49,6 +50,7 @@ public class PxwebIndicatorsParser {
             indicatorList = parseStructuredService(path, languages);
         }
         setupLayers(indicatorList, layers, url);
+        setupMetadata(indicatorList, languages);
         return indicatorList;
     }
 
@@ -150,6 +152,34 @@ public class PxwebIndicatorsParser {
             l.addParam("baseUrl", baseUrl);
             ind.addLayer(l);
         }
+    }
+
+    private void setupMetadata(List<StatisticalIndicator> indicators, Collection<String> languages) {
+        String defaultLang = PropertyUtil.getDefaultLanguage();
+        indicators.forEach(ind -> {
+            String id = ind.getId();
+            MetadataItem meta = config.getMetadata(id);
+            if (meta == null && id.contains(PxwebConfig.ID_SEPARATOR)) {
+                String shortID = id.substring(id.indexOf(PxwebConfig.ID_SEPARATOR) + PxwebConfig.ID_SEPARATOR.length());
+                meta = config.getMetadata(shortID);
+            }
+            if (meta == null) {
+                return;
+            }
+            ind.addSource(defaultLang, meta.source);
+            ind.addDescription(defaultLang, meta.desc);
+            ind.addMetadata("valueType", meta.valueType);
+            ind.addMetadata("decimalCount", meta.decimalCount);
+            ind.addMetadata("prio", meta.prio);
+            ind.addMetadata("updated", meta.updated);
+            ind.addMetadata("nextUpdate", meta.nextUpdate);
+            if (meta.timerange != null) {
+                ind.addMetadata("time_start", meta.timerange.start);
+                ind.addMetadata("time_end", meta.timerange.end);
+            }
+            ind.addMetadata("labels", meta.labels);
+            ind.addMetadata("regionsets", meta.regionsets);
+        });
     }
 
     protected PxTableItem getPxTable(String path) throws IOException {
