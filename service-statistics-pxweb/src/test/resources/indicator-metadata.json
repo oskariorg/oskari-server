@@ -1,0 +1,720 @@
+[
+  {
+    "code": "Koodi",
+    "name": "Indikaattorin nimi",
+    "source": "Tuottava tilasto",
+    "lyhenne": "Tilastolyhenne",
+    "labels": [
+      "SVT aihealue"
+    ],
+    "prio": null,
+    "updated": "LAST-UPDATE",
+    "nextUpdate": "NEXT-UPDATE",
+    "timerange": {
+      "start": "FIRST DATA",
+      "end": "LAST DATA"
+    },
+    "desc": "Kuvaus",
+    "decimalCount": null,
+    "valueType": "Lukutyyppi",
+    "regionsets": [
+      "Aluejaot"
+    ]
+  },
+  {
+    "code": "M408",
+    "name": "Taajama-aste, %",
+    "source": "Väestörakenne",
+    "lyhenne": "vaerak",
+    "labels": [
+      "Väestö"
+    ],
+    "prio": 1,
+    "updated": "1.4.2016",
+    "nextUpdate": "29.3.2017",
+    "timerange": {
+      "start": "1987",
+      "end": "2015"
+    },
+    "desc": "Taajama-aste tarkoittaa taajamissa asuvien osuutta väestöstä, jonka sijainti tunnetaan. Taajamaksi määritellään kaikki vähintään 200 asukkaan rakennusryhmät, joissa rakennusten välinen etäisyys ei yleensä ole 200 metriä suurempi",
+    "decimalCount": 1,
+    "valueType": "%osuus",
+    "regionsets": [
+      "Kunta",
+      "Maakunta",
+      "Seutukunta"
+    ]
+  },
+  {
+    "code": "M411",
+    "name": "Väkiluku",
+    "source": "Väestörakenne",
+    "lyhenne": "vaerak",
+    "labels": [
+      "Väestö"
+    ],
+    "prio": 2,
+    "updated": "1.4.2016",
+    "nextUpdate": "29.3.2017",
+    "timerange": {
+      "start": "1987",
+      "end": "2015"
+    },
+    "desc": "Väestöllä tarkoitetaan alueella vakinaisesti asuvaa väestöä. Ne henkilöt, joilla väestötietojärjestelmän mukaan oli kotipaikka Suomessa vuoden lopussa, kuuluvat väestöön kansalaisuudestaan riippumatta.",
+    "decimalCount": 0,
+    "valueType": "lkm",
+    "regionsets": [
+      "Kunta",
+      "Maakunta",
+      "Seutukunta"
+    ]
+  },
+  {
+    "code": "M476",
+    "name": "Väkiluvun muutos edellisestä vuodesta, %",
+    "source": "Väestörakenne",
+    "lyhenne": "vaerak",
+    "labels": [
+      "Väestö"
+    ],
+    "prio": 3,
+    "updated": "1.4.2016",
+    "nextUpdate": "29.3.2017",
+    "timerange": {
+      "start": "1998",
+      "end": "2015"
+    },
+    "desc": "Väkiluvun muutos on väkiluvun muutos prosentteina vuoden aikana.",
+    "decimalCount": 1,
+    "valueType": "%muu",
+    "regionsets": [
+      "Kunta",
+      "Maakunta",
+      "Seutukunta"
+    ]
+  },
+  {
+    "code": "M391",
+    "name": "Alle 15-vuotiaiden osuus väestöstä, %",
+    "source": "Väestörakenne",
+    "lyhenne": "vaerak",
+    "labels": [
+      "Väestö"
+    ],
+    "prio": 4,
+    "updated": "1.4.2016",
+    "nextUpdate": "29.3.2017",
+    "timerange": {
+      "start": "1987",
+      "end": "2015"
+    },
+    "desc": "Alle 15-vuotiaaiden osuus koko väestöstä. Väestöllä tarkoitetaan alueella vakinaisesti asuvaa väestöä. Ne henkilöt, joilla väestötietojärjestelmän mukaan oli kotipaikka Suomessa vuoden lopussa, kuuluvat väestöön kansalaisuudestaan riippumatta. Ikä on henkilön ikä kokonaisina vuosina vuoden lopussa.",
+    "decimalCount": 1,
+    "valueType": "%osuus",
+    "regionsets": [
+      "Kunta",
+      "Maakunta",
+      "Seutukunta"
+    ]
+  },
+  {
+    "code": "M421",
+    "name": "15-64 -vuotiaiden osuus väestöstä, %",
+    "source": "Väestörakenne",
+    "lyhenne": "vaerak",
+    "labels": [
+      "Väestö"
+    ],
+    "prio": 5,
+    "updated": "1.4.2016",
+    "nextUpdate": "29.3.2017",
+    "timerange": {
+      "start": "1987",
+      "end": "2015"
+    },
+    "desc": "15-64-uotiaiden osuus koko väestöstä. Väestöllä tarkoitetaan alueella vakinaisesti asuvaa väestöä. Ne henkilöt, joilla väestötietojärjestelmän mukaan oli kotipaikka Suomessa vuoden lopussa, kuuluvat väestöön kansalaisuudestaan riippumatta. Ikä on henkilön ikä kokonaisina vuosina vuoden lopussa.",
+    "decimalCount": 1,
+    "valueType": "%osuus",
+    "regionsets": [
+      "Kunta",
+      "Maakunta",
+      "Seutukunta"
+    ]
+  },
+  {
+    "code": "M478",
+    "name": "Yli 64-vuotiaiden osuus väestöstä, %",
+    "source": "Väestörakenne",
+    "lyhenne": "vaerak",
+    "labels": [
+      "Väestö"
+    ],
+    "prio": 6,
+    "updated": "1.4.2016",
+    "nextUpdate": "29.3.2017",
+    "timerange": {
+      "start": "1987",
+      "end": "2015"
+    },
+    "desc": "Yli 64-vuotiaiden osuus koko väestöstä. Väestöllä tarkoitetaan alueella vakinaisesti asuvaa väestöä. Ne henkilöt, joilla väestötietojärjestelmän mukaan oli kotipaikka Suomessa vuoden lopussa, kuuluvat väestöön kansalaisuudestaan riippumatta. Ikä on henkilön ikä kokonaisina vuosina vuoden lopussa.",
+    "decimalCount": 1,
+    "valueType": "%osuus",
+    "regionsets": [
+      "Kunta",
+      "Maakunta",
+      "Seutukunta"
+    ]
+  },
+  {
+    "code": "M404",
+    "name": "Ruotsinkielisten osuus väestöstä, %",
+    "source": "Väestörakenne",
+    "lyhenne": "vaerak",
+    "labels": [
+      "Väestö"
+    ],
+    "prio": 7,
+    "updated": "1.4.2016",
+    "nextUpdate": "29.3.2017",
+    "timerange": {
+      "start": "1987",
+      "end": "2015"
+    },
+    "desc": "Väestöllä tarkoitetaan alueella vakinaisesti asuvaa väestöä. Ne henkilöt, joilla väestötietojärjestelmän mukaan oli kotipaikka Suomessa vuoden lopussa, kuuluvat väestöön kansalaisuudestaan riippumatta.",
+    "decimalCount": 1,
+    "valueType": "%osuus",
+    "regionsets": [
+      "Kunta",
+      "Maakunta",
+      "Seutukunta"
+    ]
+  },
+  {
+    "code": "M410",
+    "name": "Ulkomaan kansalaisten osuus väestöstä, %",
+    "source": "Väestörakenne",
+    "lyhenne": "vaerak",
+    "labels": [
+      "Väestö"
+    ],
+    "prio": 8,
+    "updated": "1.4.2016",
+    "nextUpdate": "29.3.2017",
+    "timerange": {
+      "start": "1987",
+      "end": "2015"
+    },
+    "desc": "Kansalaisuudella tarkoitetaan jonkin maan kansalaisena olemista. Yleensä kansalaisuus saadaan syntyessä, mutta se voidaan vaihtaa muutettaessa toiseen maahan asumaan. Henkilöllä voi olla myös useamman maan kansalaisuus (kansalaisuuslaki 2003/359 ja kansalaisuusasetus 1985/699). Jos henkilöllä on kahden maan kansalaisuus, joista toinen on Suomen, hän on tilastoissa Suomen kansalaisena. Jos Suomessa asuvalla ulkomaan kansalaisella on useita ulkomaiden kansalaisuuksia, hän on rekisterissä ja tilastoissa sen maan kansalaisena, jonka passilla hän on maahan tullut.",
+    "decimalCount": 1,
+    "valueType": "%osuus",
+    "regionsets": [
+      "Kunta",
+      "Maakunta",
+      "Seutukunta"
+    ]
+  },
+  {
+    "code": "M303",
+    "name": "Syntyneiden enemmyys, henkilöä",
+    "source": "Syntyneet",
+    "lyhenne": "synt",
+    "labels": [
+      "Väestö"
+    ],
+    "prio": 9,
+    "updated": "14.4.2016",
+    "nextUpdate": "11.4.2017",
+    "timerange": {
+      "start": "2005",
+      "end": "2015"
+    },
+    "desc": "Syntyneiden enemmyys eli luonnollinen väestönlisäys tarkoittaa elävänä syntyneiden ja kuolleiden erotusta.",
+    "decimalCount": 0,
+    "valueType": "lkmneg",
+    "regionsets": [
+      "Kunta",
+      "Maakunta",
+      "Seutukunta"
+    ]
+  },
+  {
+    "code": "M297",
+    "name": "Kuntien välinen muuttovoitto/-tappio, henkilöä",
+    "source": "Muuttoliike",
+    "lyhenne": "muutl",
+    "labels": [
+      "Väestö"
+    ],
+    "prio": 10,
+    "updated": "17.5.2016",
+    "nextUpdate": "17.5.2017",
+    "timerange": {
+      "start": "2005",
+      "end": "2015"
+    },
+    "desc": "Kuntien välisellä muuttovoitolla/- tappiolla tarkoitetaan kuntien välistä nettomuuttoa. Kuntien välinen nettomuutto on kuntien välisen tulomuuton ja kuntien välisen lähtömuuton erotus kuntapohjaisten aluejakojen mukaan tietoja esitettäessä.",
+    "decimalCount": 0,
+    "valueType": "lkmneg",
+    "regionsets": [
+      "Kunta",
+      "Maakunta",
+      "Seutukunta"
+    ]
+  },
+  {
+    "code": "M302",
+    "name": "Perheiden lukumäärä",
+    "source": "Perheet",
+    "lyhenne": "perh",
+    "labels": [
+      "Väestö"
+    ],
+    "prio": 11,
+    "updated": "30.5.2016",
+    "nextUpdate": "26.5.2017",
+    "timerange": {
+      "start": "2005",
+      "end": "2015"
+    },
+    "desc": "Perheen muodostavat yhdessä asuvat avio- tai avoliitossa olevat tai parisuhteensa rekisteröineet henkilöt ja heidän lapsensa, jompikumpi vanhemmista lapsineen sekä avio- ja sekä parisuhteensa rekisteröineet henkilöt, joilla ei ole lapsia. Samaa sukupuolta olevat henkilöt ovat voineet 1.3.2002 lähtien rekisteröidä parisuhteensa.",
+    "decimalCount": 0,
+    "valueType": "lkm",
+    "regionsets": [
+      "Kunta",
+      "Maakunta",
+      "Seutukunta"
+    ]
+  },
+  {
+    "code": "M44",
+    "name": "Asuntokuntien lukumäärä",
+    "source": "Asunnot ja asuinolot",
+    "lyhenne": "asas",
+    "labels": [
+      "Asuminen"
+    ],
+    "prio": 12,
+    "updated": "24.5.2016",
+    "nextUpdate": "22.5.2017",
+    "timerange": {
+      "start": "2005",
+      "end": "2015"
+    },
+    "desc": "Asuntokunnan muodostavat kaikki samassa asuinhuoneistossa vakinaisesti asuvat henkilöt. Väestön keskusrekisterin mukaan vakinaisesti laitoksissa kirjoilla olevat, asunnottomat, ulkomailla ja tietymättömissä olevat henkilöt eivät muodosta asuntokuntia.",
+    "decimalCount": 0,
+    "valueType": "lkm",
+    "regionsets": [
+      "Kunta",
+      "Maakunta",
+      "Seutukunta"
+    ]
+  },
+  {
+    "code": "M62",
+    "name": "Rivi- ja pientaloissa asuvien asuntokuntien osuus, %",
+    "source": "Asunnot ja asuinolot",
+    "lyhenne": "asas",
+    "labels": [
+      "Asuminen"
+    ],
+    "prio": 13,
+    "updated": "24.5.2016",
+    "nextUpdate": "22.5.2017",
+    "timerange": {
+      "start": "2005",
+      "end": "2015"
+    },
+    "desc": "Rivi- ja pientaloissa asuvien asuntokuntien osuus kaikista asuntokunnista. Asuntokunnan muodostavat kaikki samassa asuinhuoneistossa vakinaisesti asuvat henkilöt. Väestötietojärjestelmän mukaan vakinaisesti laitoksissa kirjoilla olevat, asunnottomat, ulkomailla ja tietymättömissä olevat henkilöt eivät muodosta asuntokuntia. Rivitalot ovat asuinrakennuksia, joissa on vähintään kolme yhteen kytkettyä pientaloa. Pientaloilla tarkoitetaan omakotitaloja, paritaloja sekä kaksikerroksisia omakotitaloja, joissa on kaksi asuntoa.",
+    "decimalCount": 1,
+    "valueType": "%osuus",
+    "regionsets": [
+      "Kunta",
+      "Maakunta",
+      "Seutukunta"
+    ]
+  },
+  {
+    "code": "M70",
+    "name": "Vuokra-asunnoissa asuvien asuntokuntien osuus, %",
+    "source": "Asunnot ja asuinolot",
+    "lyhenne": "asas",
+    "labels": [
+      "Asuminen"
+    ],
+    "prio": 14,
+    "updated": "24.5.2016",
+    "nextUpdate": "22.5.2017",
+    "timerange": {
+      "start": "2005",
+      "end": "2015"
+    },
+    "desc": "Vuokra-asunnoissa asuvien asuntokuntien osuus kaikista asuntokunnista. Asuntokunnan muodostavat kaikki samassa asuinhuoneistossa vakinaisesti asuvat henkilöt. Väestötietojärjestelmän mukaan vakinaisesti laitoksissa kirjoilla olevat, asunnottomat, ulkomailla ja tietymättömissä olevat henkilöt eivät muodosta asuntokuntia. Vuokra-asunnolla tarkoitetaan asuntoa, jota asukas hallitsee huoneenvuokrasopimuksen perusteella, jolloin vuokralainen maksaa vuokraa huoneiston käyttöoikeudesta ja siihen liittyvistä etuuksista. Vuokra-asunnoiksi luokitellaan aravavuokra-, korkotukivuokra- ja muut vuokra- asunnot.",
+    "decimalCount": 1,
+    "valueType": "%osuus",
+    "regionsets": [
+      "Kunta",
+      "Maakunta",
+      "Seutukunta"
+    ]
+  },
+  {
+    "code": "M488",
+    "name": "Vähintään keskiasteen tutkinnon suorittaneiden osuus 15 vuotta täyttäneistä, %",
+    "source": "Väestön koulutusrakenne",
+    "lyhenne": "vkour",
+    "labels": [
+      "Koulutus"
+    ],
+    "prio": 15,
+    "updated": "3.11.2016",
+    "nextUpdate": "2.11.2017",
+    "timerange": {
+      "start": "1987",
+      "end": "2015"
+    },
+    "desc": "Vähintään keskiasteen tutkinnon suorittaneilla tarkoitetaan ylioppilastutkinnon, ammatillisen perustutkinnon, ammatti- ja erikoisammattitutkinnon suorittaneita sekä korkea-asteen tutkinnon suorittaneita.",
+    "decimalCount": 1,
+    "valueType": "%osuus",
+    "regionsets": [
+      "Kunta",
+      "Maakunta",
+      "Seutukunta"
+    ]
+  },
+  {
+    "code": "M486",
+    "name": "Korkea-asteen tutkinnon suorittaneiden osuus 15 vuotta täyttäneistä, %",
+    "source": "Väestön koulutusrakenne",
+    "lyhenne": "vkour",
+    "labels": [
+      "Koulutus"
+    ],
+    "prio": 16,
+    "updated": "3.11.2016",
+    "nextUpdate": "2.11.2017",
+    "timerange": {
+      "start": "1987",
+      "end": "2015"
+    },
+    "desc": "Korkea-asteen tutkinnon suorittaneisiin luetaan alimman korkea-asteen, alemman ja ylemmän korkeakouluasteen ja tutkijakouluasteen tutkinnon suorittaneet.",
+    "decimalCount": 1,
+    "valueType": "%osuus",
+    "regionsets": [
+      "Kunta",
+      "Maakunta",
+      "Seutukunta"
+    ]
+  },
+  {
+    "code": "M137",
+    "name": "Alueella asuvan työllisen työvoiman määrä",
+    "source": "Työssäkäynti",
+    "lyhenne": "tyokay",
+    "labels": [
+      "Väestö"
+    ],
+    "prio": 17,
+    "updated": "9.12.2016",
+    "nextUpdate": "17.2.2017",
+    "timerange": {
+      "start": "1987",
+      "end": "2014"
+    },
+    "desc": "Alueella asuvalla työllisellä työvoimalla tarkoitetaan kaikkia tällä alueella asuvia työllisiä riippumatta siitä, missä henkilön työpaikka sijaitsee. Alueella asuva työllinen työvoima muodostaa ns. työllisen yöväestön.",
+    "decimalCount": 0,
+    "valueType": "lkm",
+    "regionsets": [
+      "Kunta",
+      "Maakunta",
+      "Seutukunta"
+    ]
+  },
+  {
+    "code": "M140",
+    "name": "Työllisyysaste, %",
+    "source": "Työssäkäynti",
+    "lyhenne": "tyokay",
+    "labels": [
+      "Väestö"
+    ],
+    "prio": 18,
+    "updated": "9.12.2016",
+    "nextUpdate": "17.2.2017",
+    "timerange": {
+      "start": "1987",
+      "end": "2014"
+    },
+    "desc": "Työllisyysaste on 18-64-vuotiaiden työllisten osuus samanikäisestä väestöstä.",
+    "decimalCount": 1,
+    "valueType": "%osuus",
+    "regionsets": [
+      "Kunta",
+      "Maakunta",
+      "Seutukunta"
+    ]
+  },
+  {
+    "code": "M130",
+    "name": "Asuinkunnassaan työssäkäyvien osuus, %",
+    "source": "Työssäkäynti",
+    "lyhenne": "tyokay",
+    "labels": [
+      "Väestö"
+    ],
+    "prio": 19,
+    "updated": "28.9.2016",
+    "nextUpdate": "27.9.2017",
+    "timerange": {
+      "start": "1987",
+      "end": "2014"
+    },
+    "desc": "Asuinkunnassaan työssäkäyvien osuus työllisestä työvoimasta tarkoittaa omassa asuinkunnassaan työssäkäyvien osuutta kaikista kyseisessä kunnassa asuvista työllisistä.",
+    "decimalCount": 1,
+    "valueType": "%osuus",
+    "regionsets": [
+      "Kunta",
+      "Maakunta",
+      "Seutukunta"
+    ]
+  },
+  {
+    "code": "M162",
+    "name": "Työttömien osuus työvoimasta, %",
+    "source": "Työssäkäynti",
+    "lyhenne": "tyokay",
+    "labels": [
+      "Väestö"
+    ],
+    "prio": 20,
+    "updated": "9.12.2016",
+    "nextUpdate": "17.2.2017",
+    "timerange": {
+      "start": "1987",
+      "end": "2014"
+    },
+    "desc": "Työvoimaan kuuluvat 15-74-vuotiaat henkilöt, jotka vuoden viimeisellä viikolla olivat työllisiä tai työttömiä. Vuodesta 2005 lähtien työllisten alaikäraja on ollut 18 vuotta. Aikasarjan vertailukelpoisuuden vuoksi työttömyysaste on laskettu tässä 18-74-vuotiaasta väestöstä.",
+    "decimalCount": 1,
+    "valueType": "%osuus",
+    "regionsets": [
+      "Kunta",
+      "Maakunta",
+      "Seutukunta"
+    ]
+  },
+  {
+    "code": "M78",
+    "name": "Eläkeläisten osuus väestöstä, %",
+    "source": "Työssäkäynti",
+    "lyhenne": "tyokay",
+    "labels": [
+      "Väestö"
+    ],
+    "prio": 21,
+    "updated": "9.12.2016",
+    "nextUpdate": "17.2.2017",
+    "timerange": {
+      "start": "1987",
+      "end": "2014"
+    },
+    "desc": "Eläkeläisiksi katsotaan kaikki ne, jotka Kansaneläkelaitoksen tai Eläketurvakeskuksen tietojen mukaan saavat eläkettä (pl. perhe-eläke, osa-aikaeläke) eivätkä ole ansiotyössä. Kaikki yli 74-vuotiaat on päätelty eläkeläisiksi.",
+    "decimalCount": 1,
+    "valueType": "%osuus",
+    "regionsets": [
+      "Kunta",
+      "Maakunta",
+      "Seutukunta"
+    ]
+  },
+  {
+    "code": "M485",
+    "name": "Taloudellinen huoltosuhde",
+    "source": "Työssäkäynti",
+    "lyhenne": "tyokay",
+    "labels": [
+      "Väestö"
+    ],
+    "prio": 22,
+    "updated": "9.12.2016",
+    "nextUpdate": "17.2.2017",
+    "timerange": {
+      "start": "1987",
+      "end": "2014"
+    },
+    "desc": "Väestörakennetta mitataan ns. taloudellisella huoltosuhteella, jossa lasketaan kuinka monta työvoiman ulkopuolella olevaa ja työtöntä on sataa työllistä kohti.",
+    "decimalCount": 1,
+    "valueType": "suhde",
+    "regionsets": [
+      "Kunta",
+      "Maakunta",
+      "Seutukunta"
+    ]
+  },
+  {
+    "code": "M152",
+    "name": "Kunnassa olevien työpaikkojen lukumäärä",
+    "source": "Työssäkäynti",
+    "lyhenne": "tyokay",
+    "labels": [
+      "Väestö"
+    ],
+    "prio": 23,
+    "updated": "28.9.2016",
+    "nextUpdate": "27.9.2017",
+    "timerange": {
+      "start": "1987",
+      "end": "2014"
+    },
+    "desc": "Tietyllä alueella työskentelevien henkilöiden lukumäärää voidaan käyttää kuvaamaan työpaikkojen lukumäärää tällä alueella. Jokaisen työllisen henkilön on tällöin ajateltu muodostavan yhden työpaikan. Osa-aikaistakin työtä tekevä henkilö muodostaa laskennallisesti yhden työpaikan. Työsuhteet voivat olla luonteeltaan myös tilapäisiä ja lyhytaikaisia.",
+    "decimalCount": 0,
+    "valueType": "lkm",
+    "regionsets": [
+      "Kunta",
+      "Maakunta",
+      "Seutukunta"
+    ]
+  },
+  {
+    "code": "M72",
+    "name": "Alkutuotannon työpaikkojen osuus, %",
+    "source": "Työssäkäynti",
+    "lyhenne": "tyokay",
+    "labels": [
+      "Väestö"
+    ],
+    "prio": 24,
+    "updated": "28.9.2016",
+    "nextUpdate": "27.9.2017",
+    "timerange": {
+      "start": "2007",
+      "end": "2014"
+    },
+    "desc": "Alkutuotanto käsittää TOL 2008 -toimialaluokituksen luokan: A Maatalous, metsätalous ja kalatalous.",
+    "decimalCount": 1,
+    "valueType": "%osuus",
+    "regionsets": [
+      "Kunta",
+      "Maakunta",
+      "Seutukunta"
+    ]
+  },
+  {
+    "code": "M84",
+    "name": "Jalostuksen työpaikkojen osuus, %",
+    "source": "Työssäkäynti",
+    "lyhenne": "tyokay",
+    "labels": [
+      "Väestö"
+    ],
+    "prio": 25,
+    "updated": "28.9.2016",
+    "nextUpdate": "27.9.2017",
+    "timerange": {
+      "start": "2007",
+      "end": "2014"
+    },
+    "desc": "Jalostus käsittää TOL 2008 -toimialaluokituksen luokat: B Kaivostoiminta ja louhinta, C Teollisuus, D Sähkö-, kaasu- ja lämpöhuolto, jäähdytysliiketoiminta, E Vesihuolto, viemäri- ja jätevesihuolto, jätehuolto ja muu ympäristön puhtaanapito, F Rakentaminen.",
+    "decimalCount": 1,
+    "valueType": "%osuus",
+    "regionsets": [
+      "Kunta",
+      "Maakunta",
+      "Seutukunta"
+    ]
+  },
+  {
+    "code": "M106",
+    "name": "Palvelujen työpaikkojen osuus, %",
+    "source": "Työssäkäynti",
+    "lyhenne": "tyokay",
+    "labels": [
+      "Väestö"
+    ],
+    "prio": 26,
+    "updated": "28.9.2016",
+    "nextUpdate": "27.9.2017",
+    "timerange": {
+      "start": "2007",
+      "end": "2014"
+    },
+    "desc": "Palvelut käsittää TOL 2008 -toimialaluokituksen luokat: G Tukku- ja vähittäiskauppa, moottoriajoneuvojen ja moottoripyörien korjaus, H Kuljetus ja varastointi, I Majoitus- ja ravitsemistoiminta, J Informaatio ja viestintä, K Rahoitus- ja vakuutustoiminta, L Kiinteistöalan toiminta, M Ammatillinen, tieteellinen ja tekninen toiminta, N Hallinto- ja tukipalvelutoiminta, O Julkinen hallinto ja maanpuolustus, pakollinen sosiaalivakuutus, P Koulutus, Q Terveys- ja sosiaalipalvelut, R Taiteet, viihde ja virkistys, S Muu palvelutoiminta, T Kotitalouksien toiminta työnantajina.",
+    "decimalCount": 1,
+    "valueType": "%osuus",
+    "regionsets": [
+      "Kunta",
+      "Maakunta",
+      "Seutukunta"
+    ]
+  },
+  {
+    "code": "M499",
+    "name": "Vuosikate, euroa/asukas",
+    "source": "Kuntatalous",
+    "lyhenne": "kta",
+    "labels": [
+      "Julkinen talous"
+    ],
+    "prio": 27,
+    "updated": "4.11.2016",
+    "nextUpdate": "2.6.2017",
+    "timerange": {
+      "start": "2008",
+      "end": "2014"
+    },
+    "desc": "",
+    "decimalCount": 1,
+    "valueType": "suhde",
+    "regionsets": [
+      "Kunta",
+      "Maakunta",
+      "Seutukunta"
+    ]
+  },
+  {
+    "code": "M496",
+    "name": "Lainakanta, euroa/asukas",
+    "source": "Kuntatalous",
+    "lyhenne": "kta",
+    "labels": [
+      "Julkinen talous"
+    ],
+    "prio": 28,
+    "updated": "4.11.2016",
+    "nextUpdate": "2.6.2017",
+    "timerange": {
+      "start": "2008",
+      "end": "2014"
+    },
+    "desc": "",
+    "decimalCount": 1,
+    "valueType": "suhde",
+    "regionsets": [
+      "Kunta",
+      "Maakunta",
+      "Seutukunta"
+    ]
+  },
+  {
+    "code": "M495",
+    "name": "Konsernin lainakanta euroa/asukas",
+    "source": "Kuntatalous",
+    "lyhenne": "kta",
+    "labels": [
+      "Julkinen talous"
+    ],
+    "prio": 29,
+    "updated": "4.11.2016",
+    "nextUpdate": "2.6.2017",
+    "timerange": {
+      "start": "2008",
+      "end": "2014"
+    },
+    "desc": "",
+    "decimalCount": 1,
+    "valueType": "suhde",
+    "regionsets": [
+      "Kunta",
+      "Maakunta",
+      "Seutukunta"
+    ]
+  }
+]
