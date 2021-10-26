@@ -90,6 +90,7 @@ public class StatisticsHelper {
         pluginIndicatorJSON.put("public", indicator.isPublic());
         pluginIndicatorJSON.put("regionsets", toJSON(layers));
         pluginIndicatorJSON.put("selectors", toJSON(selectors));
+        pluginIndicatorJSON.put("metadata", indicator.getMetadata());
         return pluginIndicatorJSON;
     }
 
