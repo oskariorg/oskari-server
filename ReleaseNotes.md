@@ -1,5 +1,12 @@
 # Release Notes
 
+## 2.5.1
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/36?closed=1
+
+- Add error handling when parsing GetFeatureInfo from WMS capabilities
+- Upgrade MyBatis 3.5.6 -> 3.5.7
+
 ## 2.5.0
 
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/34?closed=1
