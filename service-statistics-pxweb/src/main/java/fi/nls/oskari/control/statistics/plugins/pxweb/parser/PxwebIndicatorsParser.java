@@ -174,12 +174,57 @@ public class PxwebIndicatorsParser {
             ind.addMetadata("updated", meta.updated);
             ind.addMetadata("nextUpdate", meta.nextUpdate);
             if (meta.timerange != null) {
+                StatisticalIndicatorDataDimension timeVar = ind.getDataModel().getDimension(ind.getDataModel().getTimeVariable());
+                List<IdNamePair> filteredValues = filterAvailableTimes(timeVar, meta);
+                if (filteredValues != null) {
+                    timeVar.setAllowedValues(filteredValues);
+                }
                 ind.addMetadata("time_start", meta.timerange.start);
                 ind.addMetadata("time_end", meta.timerange.end);
             }
             ind.addMetadata("labels", meta.labels);
             ind.addMetadata("regionsets", meta.regionsets);
         });
+    }
+
+    /**
+     * Returns a filtered allowed values list for time variable based on the metadata.
+     * Note! Assumes time values are ordered so timerange can be checked for "2000", "3/2000" or "January"
+     * @param timeVar the time dimension variable
+     * @param meta indicator specific metadata
+     * @return filtered list of time dimension values to replace current ones based on metadata
+     */
+    protected List<IdNamePair> filterAvailableTimes(StatisticalIndicatorDataDimension timeVar, MetadataItem meta) {
+        if (timeVar == null) {
+            return null;
+        }
+        if (meta == null) {
+            return timeVar.getAllowedValues();
+        }
+        if (meta.timerange == null) {
+            return timeVar.getAllowedValues();
+        }
+        final String timeStart = meta.timerange.start;
+        final String timeEnd = meta.timerange.end;
+        if (timeStart == null && timeEnd == null) {
+            return timeVar.getAllowedValues();
+        }
+        int startIndex = -1;
+        int endIndex = -1;
+        List<IdNamePair> timeValues = timeVar.getAllowedValues();
+        for (int idx = 0; idx < timeValues.size(); idx++) {
+            IdNamePair pair = timeValues.get(idx);
+            if (startIndex == -1 && pair.getKey().equals(timeStart)) {
+                startIndex = idx;
+            }
+            if (endIndex == -1 && pair.getKey().equals(timeEnd)) {
+                endIndex = idx + 1;
+            }
+        }
+        if (endIndex == -1) {
+            endIndex = timeValues.size();
+        }
+        return timeValues.subList(Math.max(0, startIndex), Math.min(endIndex, timeValues.size()));
     }
 
     protected PxTableItem getPxTable(String path) throws IOException {

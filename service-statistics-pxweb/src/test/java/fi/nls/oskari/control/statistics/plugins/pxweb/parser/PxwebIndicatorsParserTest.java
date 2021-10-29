@@ -1,47 +1,37 @@
 package fi.nls.oskari.control.statistics.plugins.pxweb.parser;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fi.nls.oskari.control.statistics.data.IdNamePair;
 import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataDimension;
 import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataModel;
 import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
 import fi.nls.oskari.control.statistics.plugins.pxweb.PxwebConfig;
+import fi.nls.oskari.control.statistics.plugins.pxweb.json.MetadataItem;
 import fi.nls.oskari.control.statistics.plugins.pxweb.json.PxTableItem;
-import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.util.ResourceHelper;
 import org.json.JSONObject;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.anyString;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
 import static org.powermock.api.mockito.PowerMockito.spy;
 
 /**
  * Tests that pxweb config can point directly to a px-file.
- *
+ * <p>
  * Note! If the config is modified AFTER users have saved embedded maps/views the saved state won't match the
- *  indicator id anymore -> migration to DB is required
+ * indicator id anymore -> migration to DB is required
  */
 public class PxwebIndicatorsParserTest {
 
     private static final Map<String, String> responses = new HashMap<>();
+
     static {
         // tk
         responses.put("https://pxnet2.stat.fi/pxweb/api/v1/fi/Kuntien_avainluvut/2017/", "px-folder-response.json");
@@ -118,7 +108,7 @@ public class PxwebIndicatorsParserTest {
     /**
      * Tests parsing when the configured url points to a DEEP folder structure (NOT to a px-file) AND indicator key is NOT configured.
      * PX-file refs are treated as indicators.
-     *
+     * <p>
      * TODO: Should indicator id be prefixed with the path it was found in (relative to root url configuration)?
      */
     @Test
@@ -142,7 +132,7 @@ public class PxwebIndicatorsParserTest {
     /**
      * Tests parsing when the configured url points to a folder structure (NOT to a px-file) AND indicator key is configured.
      * PX-file refs are processed like when configured url would point to a px-file AND all the indicators from all
-     *  the px-files in the whole folder structure is gathered as a single indicator list.
+     * the px-files in the whole folder structure is gathered as a single indicator list.
      */
     @Test
     public void testParseWithFolderStructureConfig() throws Exception {
@@ -219,8 +209,61 @@ public class PxwebIndicatorsParserTest {
                 //Mockito.when(parser.loadUrl(url)).thenReturn();
             }
             return parser;
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) {
+        }
         return null;
     }
 
+    @Test
+    public void testFilteringTimeValuesWithIndicatorMetadata() {
+        PxwebIndicatorsParser parser = getParser("config2folderstructWithIndicatorKey.json");
+        StatisticalIndicatorDataDimension timeVar = new StatisticalIndicatorDataDimension("time");
+        assertNull("No time variable + null meta == null as list", parser.filterAvailableTimes(null, null));
+        assertEquals("No allowed values + null meta should result in empty array", 0, parser.filterAvailableTimes(timeVar, null).size());
+
+        MetadataItem meta = new MetadataItem();
+        assertNull("No time variable == null as list", parser.filterAvailableTimes(null, meta));
+        assertEquals("No allowed values + empty meta should result in empty array", 0, parser.filterAvailableTimes(timeVar, new MetadataItem()).size());
+
+        // NOTE! Timerange filtering assumes times are in order
+        for (int  year = 1990; year < 2022; ++year) {
+            timeVar.addAllowedValue(Integer.toString(year));
+        }
+        assertEquals("Check that we have current amount of values in allowed values",32, timeVar.getAllowedValues().size());
+        assertEquals("Null meta shouldn't filter anything out", timeVar.getAllowedValues().size(), parser.filterAvailableTimes(timeVar, null).size());
+        assertEquals("Meta without time range shouldn't filter anything out", timeVar.getAllowedValues().size(), parser.filterAvailableTimes(timeVar, meta).size());
+
+        meta.timerange = new MetadataItem.Timerange();
+        assertEquals("Meta without start/end time shouldn't filter anything out", timeVar.getAllowedValues().size(), parser.filterAvailableTimes(timeVar, meta).size());
+
+        // with start time only
+        meta.timerange.start = "2000";
+        List<IdNamePair> values = parser.filterAvailableTimes(timeVar, meta);
+        assertEquals("Meta with start time should filter out years", 22, values.size());
+        assertEquals("First allowed value with meta start time should be 2000", "2000", values.get(0).getKey());
+        assertEquals("Last allowed value with meta end time should be 2021", "2021", values.get(values.size() - 1).getKey());
+        assertFalse("All years below 2000 should have been removed",
+                values.stream().mapToInt(item -> Integer.parseInt(item.getKey())).anyMatch(year -> year < 2000));
+
+        // with start + end time
+        meta.timerange.end = "2010";
+        values = parser.filterAvailableTimes(timeVar, meta);
+        assertEquals("Meta with start + end time should filter out years", 11, values.size());
+        assertEquals("First allowed value with meta start time should be 2000", "2000", values.get(0).getKey());
+        assertEquals("Last allowed value with meta end time should be 2010", "2010", values.get(values.size() - 1).getKey());
+        assertFalse("All years below 2000 should have been removed",
+                values.stream().mapToInt(item -> Integer.parseInt(item.getKey())).anyMatch(year -> year < 2000));
+        assertFalse("All years after 2010 should have been removed",
+                values.stream().mapToInt(item -> Integer.parseInt(item.getKey())).anyMatch(year -> year > 2010));
+
+        // with end time only
+        meta.timerange.start = null;
+        values = parser.filterAvailableTimes(timeVar, meta);
+        assertEquals("Meta with end time should filter out years", 21, values.size());
+        assertEquals("First allowed value with meta start time should be 1990", "1990", values.get(0).getKey());
+        assertEquals("Last allowed value with meta end time should be 2010", "2010", values.get(values.size() - 1).getKey());
+        assertFalse("All years after 2010 should have been removed",
+                values.stream().mapToInt(item -> Integer.parseInt(item.getKey())).anyMatch(year -> year > 2010));
+
+    }
 }
