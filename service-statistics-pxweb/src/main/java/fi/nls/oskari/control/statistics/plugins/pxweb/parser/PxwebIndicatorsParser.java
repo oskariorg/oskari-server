@@ -268,7 +268,7 @@ public class PxwebIndicatorsParser {
         final StatisticalIndicatorDataModel selectors = getModel(table);
         // actual indicators list is one of the "variables"
         VariablesItem indicatorList = table.getVariable(config.getIndicatorKey());
-        if(indicatorList == null) {
+        if (indicatorList == null) {
             return list;
         }
         for(IdNamePair item: indicatorList.getLabels()) {
@@ -276,7 +276,10 @@ public class PxwebIndicatorsParser {
             indicator.setId(createIndicatorId(table, item.getKey()));
             indicator.addName(lang, item.getValue());
             indicator.addDescription(lang, table.getTitle());
-            indicator.setDataModel(selectors);
+            // clone the model since we might need to modify it based on metadata
+            //  and without cloning the indicators share the reference
+            //  making changes to one bleed over to another one
+            indicator.setDataModel(selectors.clone());
             list.add(indicator);
         }
 
