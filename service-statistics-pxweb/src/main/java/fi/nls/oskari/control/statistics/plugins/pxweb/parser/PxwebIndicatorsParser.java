@@ -276,6 +276,9 @@ public class PxwebIndicatorsParser {
             indicator.setId(createIndicatorId(table, item.getKey()));
             indicator.addName(lang, item.getValue());
             indicator.addDescription(lang, table.getTitle());
+            // clone the model since we might need to modify it based on metadata
+            //  and without cloning the indicators share the reference
+            //  making changes to one bleed over to another one
             indicator.setDataModel(selectors.clone());
             list.add(indicator);
         }
