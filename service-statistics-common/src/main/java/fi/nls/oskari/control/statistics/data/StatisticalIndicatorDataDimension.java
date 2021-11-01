@@ -1,5 +1,6 @@
 package fi.nls.oskari.control.statistics.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fi.nls.oskari.control.statistics.plugins.APIException;
 
@@ -75,7 +76,10 @@ public class StatisticalIndicatorDataDimension {
         return id;
     }
     public void setValue(String value) {
-
+        if (value == null) {
+            this.value = null;
+            return;
+        }
         if (allowedValues.contains(new IdNamePair(value))) {
             this.value = value;
         } else {
@@ -116,5 +120,13 @@ public class StatisticalIndicatorDataDimension {
             comparator = Collections.reverseOrder();
         }
         Collections.sort(allowedValues, comparator);
+    }
+
+    public StatisticalIndicatorDataDimension clone() {
+        StatisticalIndicatorDataDimension model = new StatisticalIndicatorDataDimension(id);
+        model.setName(getName());
+        getAllowedValues().forEach(pair -> model.addAllowedValue(pair.getKey(), pair.getValue()));
+        model.setValue(getValue());
+        return model;
     }
 }
