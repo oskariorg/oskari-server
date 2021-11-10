@@ -155,22 +155,28 @@ public class PxwebIndicatorsParser {
     }
 
     private void setupMetadata(List<StatisticalIndicator> indicators, Collection<String> languages) {
-        String defaultLang = PropertyUtil.getDefaultLanguage();
         indicators.forEach(ind -> {
             String id = ind.getId();
-            MetadataItem meta = config.getMetadata(id);
-            if (meta == null && id.contains(PxwebConfig.ID_SEPARATOR)) {
-                String shortID = id.substring(id.indexOf(PxwebConfig.ID_SEPARATOR) + PxwebConfig.ID_SEPARATOR.length());
-                meta = config.getMetadata(shortID);
-            }
+            MetadataItem meta = getMetadata(id);
             if (meta == null) {
                 return;
             }
-            ind.addSource(defaultLang, meta.source);
-            ind.addDescription(defaultLang, meta.desc);
+            languages.forEach(lang -> {
+                String name = meta.getName(lang);
+                if (name != null) {
+                    ind.addName(lang, name);
+                }
+                String src = meta.getSource(lang);
+                if (src != null) {
+                    ind.addSource(lang, src);
+                }
+                String desc = meta.getDesc(lang);
+                if (desc != null) {
+                    ind.addDescription(lang, desc);
+                }
+            });
             ind.addMetadata("valueType", meta.valueType);
             ind.addMetadata("decimalCount", meta.decimalCount);
-            ind.addMetadata("prio", meta.prio);
             ind.addMetadata("updated", meta.updated);
             ind.addMetadata("nextUpdate", meta.nextUpdate);
             if (meta.timerange != null) {
@@ -182,9 +188,18 @@ public class PxwebIndicatorsParser {
                 ind.addMetadata("time_start", meta.timerange.start);
                 ind.addMetadata("time_end", meta.timerange.end);
             }
-            ind.addMetadata("labels", meta.labels);
-            ind.addMetadata("regionsets", meta.regionsets);
         });
+    }
+    private MetadataItem getMetadata(String indicatorId) {
+        MetadataItem meta = config.getMetadata(indicatorId);
+        if (meta != null) {
+            return meta;
+        }
+        if (indicatorId.contains(PxwebConfig.ID_SEPARATOR)) {
+            String shortID = indicatorId.substring(indicatorId.indexOf(PxwebConfig.ID_SEPARATOR) + PxwebConfig.ID_SEPARATOR.length());
+            return config.getMetadata(shortID);
+        }
+        return null;
     }
 
     /**
@@ -271,7 +286,7 @@ public class PxwebIndicatorsParser {
         if (indicatorList == null) {
             return list;
         }
-        for(IdNamePair item: indicatorList.getLabels()) {
+        for (IdNamePair item: indicatorList.getLabels()) {
             StatisticalIndicator indicator = new StatisticalIndicator();
             indicator.setId(createIndicatorId(table, item.getKey()));
             indicator.addName(lang, item.getValue());
