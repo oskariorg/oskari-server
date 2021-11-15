@@ -52,16 +52,22 @@ public class SearchWorker {
     }
 
     /**
+     * Returns the maximum amount of search results that should be queried.
+     * If requested is negative value, returns configured max results count.
+     * Requested count is checked against result hard limit which might be lower than the client requests
      * Returns the parameter value if it's not -1 or more than the maximum result count.
      * @param requested
      * @return maximum value of results or requested, which ever is smaller.
      */
     public static int getMaxResults(int requested) {
+        int hardLimit = searchService.getMaxResultsHardLimit();
         int maximum = searchService.getMaxResultsCount();
-        if(requested != -1 && requested < maximum) {
-            return requested;
+        if (requested < 0) {
+            return maximum;
+        } else if (hardLimit > 0 && requested > hardLimit) {
+            return hardLimit;
         }
-        return maximum;
+        return requested;
     }
 
     /**
@@ -71,7 +77,7 @@ public class SearchWorker {
      * @return result - Search results
      */
     public static JSONObject doSearch(final SearchCriteria sc) {
-        
+
         Query query = searchService.doSearch(sc);
         int maxResults = getMaxResults(sc.getMaxResults());
         List<SearchResultItem> items = query.getSortedResults(maxResults + 1);

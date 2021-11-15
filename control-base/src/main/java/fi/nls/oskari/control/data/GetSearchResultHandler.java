@@ -9,10 +9,15 @@ import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
+import fi.nls.oskari.util.ConversionHelper;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
+import org.json.JSONObject;
 
+import java.util.Collections;
 import java.util.Locale;
+import java.util.Map;
 
 @OskariActionRoute("GetSearchResult")
 public class GetSearchResultHandler extends ActionHandler {
@@ -51,7 +56,18 @@ public class GetSearchResultHandler extends ActionHandler {
         // default to configuration
         String[] channelIds = channels;
         final String channelParam = params.getHttpParam(PARAM_CHANNELIDS_KEY, "").trim();
-
+        Map<String, Object> options = getOptions(params.getHttpParam("options"));
+        options.forEach((key, value) -> {
+            if (key.equals("limit")) {
+                if (value instanceof String) {
+                    sc.setMaxResults(ConversionHelper.getInt((String)value, -1));
+                } else if (value instanceof Number) {
+                    sc.setMaxResults(((Number) value).intValue());
+                }
+            } else {
+                sc.addParam(key, value);
+            }
+        });
         // if channels defined in request, use channels from request
         if(!channelParam.isEmpty()) {
             channelIds = channelParam.split("\\s*,\\s*");
@@ -69,5 +85,13 @@ public class GetSearchResultHandler extends ActionHandler {
         } else {
             ResponseHelper.writeResponse(params, SearchWorker.doSearch(sc));
         }
+    }
+
+    private Map<String, Object> getOptions(String json) {
+        if (json == null) {
+            return Collections.emptyMap();
+        }
+        JSONObject tmp = JSONHelper.createJSONObject(json);
+        return JSONHelper.getObjectAsMap(tmp);
     }
 }
