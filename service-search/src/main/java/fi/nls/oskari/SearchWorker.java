@@ -64,7 +64,7 @@ public class SearchWorker {
         int maximum = searchService.getMaxResultsCount();
         if (requested < 0) {
             return maximum;
-        } else if (requested > hardLimit) {
+        } else if (hardLimit > 0 && requested > hardLimit) {
             return hardLimit;
         }
         return requested;
