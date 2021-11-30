@@ -7,7 +7,7 @@ import org.apache.commons.text.StringEscapeUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
-import org.jsoup.safety.Whitelist;
+import org.jsoup.safety.Safelist;
 
 import java.util.List;
 
@@ -40,7 +40,7 @@ public class SearchWorker {
         if (searchString == null || searchString.isEmpty()) {
             return ERR_EMPTY;
         }
-        searchString = Jsoup.clean(searchString, Whitelist.none());
+        searchString = Jsoup.clean(searchString, Safelist.none());
         searchString = StringEscapeUtils.unescapeHtml4(searchString);
         if (searchString.contains("*") && searchString.length() <= 4) {
             return ERR_TOO_SHORT;

@@ -6,15 +6,15 @@ import org.jsoup.nodes.Element;
 
 import java.util.List;
 
-public class CustomWhitelist extends Whitelist {
+public class CustomSafelist extends Safelist {
 
     private boolean allowDataUrlsForImages = false;
 
-    public CustomWhitelist() {
+    public CustomSafelist() {
         this(null);
     }
 
-    public CustomWhitelist(String functionality) {
+    public CustomSafelist(String functionality) {
         super();
         copiedFromRelaxed();
         // setup config

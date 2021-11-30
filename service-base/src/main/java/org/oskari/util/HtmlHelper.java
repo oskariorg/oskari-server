@@ -2,7 +2,7 @@ package org.oskari.util;
 
 import org.apache.commons.text.StringEscapeUtils;
 import org.jsoup.Jsoup;
-import org.jsoup.safety.Whitelist;
+import org.jsoup.safety.Safelist;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +16,7 @@ public class HtmlHelper {
      */
     public static final String cleanString(final String str) {
         if (str != null) {
-            String s = Jsoup.clean(str, Whitelist.none());
+            String s = Jsoup.clean(str, Safelist.none());
             return StringEscapeUtils.unescapeHtml4(s);
         }
         return str;
@@ -26,14 +26,14 @@ public class HtmlHelper {
                                                HashMap<String, String[]> attributes, HashMap<String[],String[]> protocols) {
 
         if (str != null) {
-            Whitelist whitelist = Whitelist.relaxed();
+            Safelist safelist = Safelist.relaxed();
 
             // Tags
-            whitelist.addTags(tags);
+            safelist.addTags(tags);
 
             // Attributes
             for (Map.Entry<String, String[]> attribute : attributes.entrySet()) {
-                whitelist.addAttributes(attribute.getKey(),attribute.getValue());
+                safelist.addAttributes(attribute.getKey(),attribute.getValue());
             }
 
             // Protocols
@@ -42,9 +42,9 @@ public class HtmlHelper {
                 if ((key == null)||(key.length < 2)) {
                     continue;
                 }
-                whitelist.addProtocols(key[0],key[1],protocol.getValue());
+                safelist.addProtocols(key[0],key[1],protocol.getValue());
             }
-            String s = Jsoup.clean(str, whitelist);
+            String s = Jsoup.clean(str, safelist);
             return StringEscapeUtils.unescapeHtml4(s);
         }
         return str;
@@ -52,8 +52,8 @@ public class HtmlHelper {
 
     public static final String cleanHTMLString(final String str) {
         if (str != null) {
-            Whitelist whitelist = Whitelist.relaxed();
-            whitelist.addTags(
+            Safelist safelist = Safelist.relaxed();
+            safelist.addTags(
                     "button",
                     "datalist",
                     "fieldset",
@@ -68,7 +68,7 @@ public class HtmlHelper {
                     "select",
                     "textarea"
             );
-            String s = Jsoup.clean(str, whitelist);
+            String s = Jsoup.clean(str, safelist);
             return StringEscapeUtils.unescapeHtml4(s);
         }
         return str;
