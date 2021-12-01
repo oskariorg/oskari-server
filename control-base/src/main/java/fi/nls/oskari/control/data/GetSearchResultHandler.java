@@ -9,6 +9,7 @@ import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
+import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
@@ -23,6 +24,7 @@ import java.util.Map;
 public class GetSearchResultHandler extends ActionHandler {
 
     private static final String PARAM_SEARCH_KEY = "searchKey";
+    private static final String PARAM_SEARCH_KEY_ALT = "q";
     private static final String PARAM_EPSG_KEY = "epsg";
     private static final String PARAM_CHANNELIDS_KEY = "channels";
     private static final String PARAM_AUTOCOMPLETE = "autocomplete";
@@ -36,17 +38,13 @@ public class GetSearchResultHandler extends ActionHandler {
 
 
     public void handleAction(final ActionParameters params) throws ActionException {
-        final String search = params.getHttpParam(PARAM_SEARCH_KEY);
-        if (search == null) {
-            throw new ActionParamsException("Search string was null");
-        }
+        final String search = params.getHttpParam(PARAM_SEARCH_KEY, params.getHttpParam(PARAM_SEARCH_KEY_ALT));
         final String epsg = params.getHttpParam(PARAM_EPSG_KEY);
-
-        final String error = SearchWorker.checkLegalSearch(search);
-
-        if (!SearchWorker.STR_TRUE.equals(error)) {
+        try {
+            SearchWorker.validateQuery(search);
+        } catch (ServiceException e) {
             // write error message key
-            ResponseHelper.writeResponse(params, error);
+            ResponseHelper.writeResponse(params, e.getMessage());
             return;
         }
         final Locale locale = params.getLocale();
