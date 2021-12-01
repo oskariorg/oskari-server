@@ -7,7 +7,7 @@ import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
-import org.jsoup.safety.Whitelist;
+import org.jsoup.safety.Safelist;
 
 import java.io.Serializable;
 import java.util.*;
@@ -493,7 +493,7 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
 		JSONHelper.putValue(node, KEY_CHANNELID, getChannelId());
 
         String region = ConversionHelper.getString(getRegion(), "");
-		JSONHelper.putValue(node, KEY_REGION, Jsoup.clean(region, Whitelist.none()));
+		JSONHelper.putValue(node, KEY_REGION, Jsoup.clean(region, Safelist.none()));
 
         // do the bbox if we have any of the bbox values (Should have all if has any one of these)
         if(getWestBoundLongitude() != null) {
