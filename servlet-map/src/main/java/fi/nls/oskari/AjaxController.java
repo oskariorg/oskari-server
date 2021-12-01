@@ -3,11 +3,11 @@ package fi.nls.oskari;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.service.ServiceUnauthorizedException;
 import fi.nls.oskari.spring.extension.OskariParam;
 import fi.nls.oskari.util.ResponseHelper;
 import org.oskari.log.AuditLog;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -21,6 +21,12 @@ import javax.servlet.http.HttpServletResponse;
 public class AjaxController {
 
     private final static Logger log = LogFactory.getLogger(AjaxController.class);
+
+    @RequestMapping("/action/{route}")
+    @ResponseBody
+    public void handleRoute(@OskariParam ActionParameters params, @PathVariable String route) {
+        handleAction(params, route);
+    }
 
     @RequestMapping("/action")
     @ResponseBody
