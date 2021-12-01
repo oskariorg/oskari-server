@@ -1,6 +1,7 @@
 package fi.nls.oskari;
 
 import fi.mml.portti.service.search.*;
+import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import org.apache.commons.text.StringEscapeUtils;
@@ -9,12 +10,13 @@ import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class SearchWorker {
 
     public static final String KEY_TOTAL_COUNT = "totalCount";
-    public static final String KEY_ERROR_TEXT = "errorText";
     public static final String KEY_LOCATIONS = "locations";
     public static final String KEY_METHODS = "methods";
     public static final String KEY_HAS_MORE = "hasMore";
@@ -25,13 +27,36 @@ public class SearchWorker {
     public static final String ERR_TOO_WILD = "too_many_stars";
 
     public static final String STR_TRUE = "true";
-    public static final String STR_NULL = "null";
-    /** Our service */
     private static SearchService searchService = new SearchServiceImpl();
+    private static final Set<String> WILDCARDS = new HashSet<>();
+    static {
+        WILDCARDS.add("*");
+        WILDCARDS.add("?");
+    }
+
+    /**
+     * Checks that query exists and is not only whitespace and/or wildcards
+     * @param query
+     * @throws ServiceException
+     */
+    public static void validateQuery(String query) throws ServiceException {
+        if (query == null || query.trim().isEmpty()) {
+            throw new ServiceException(ERR_EMPTY);
+        }
+        String q = query.trim();
+        int wildcardCount = WILDCARDS.stream()
+                .mapToInt(c -> ConversionHelper.count(q, c))
+                .sum();
+        if (wildcardCount == q.length()) {
+            // if query consists of only wildcards -> throw an error
+            throw new ServiceException(ERR_TOO_WILD);
+        }
+    }
 
     /**
      * Checks if search was legal
-     * 
+     *
+     * @deprecated Use validateQuery() instead
      * @param searchString
      * @return
      */
@@ -83,7 +108,7 @@ public class SearchWorker {
         List<SearchResultItem> items = query.getSortedResults(maxResults + 1);
 
         JSONObject result = new JSONObject();
-        if(items.size() > maxResults) {
+        if (items.size() > maxResults) {
             JSONHelper.putValue(result, KEY_HAS_MORE, true);
             items = items.subList(0, maxResults);
         }
@@ -97,7 +122,7 @@ public class SearchWorker {
         JSONHelper.putValue(result, KEY_LOCATIONS, itemArray);
 
         JSONArray methodArray = new JSONArray();
-        for(String channelId : sc.getChannels()) {
+        for (String channelId : sc.getChannels()) {
             methodArray.put(JSONHelper.createJSONObject(channelId, !query.findResult(channelId).isQueryFailed()));
         }
         JSONHelper.putValue(result, KEY_METHODS, methodArray);
