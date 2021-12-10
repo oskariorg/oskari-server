@@ -1,5 +1,11 @@
 # Release Notes
 
+## 2.5.2
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/37?closed=1
+
+- Upgrade Log4J 2.13.3 -> 2.15.0
+
 ## 2.5.1
 
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/36?closed=1
