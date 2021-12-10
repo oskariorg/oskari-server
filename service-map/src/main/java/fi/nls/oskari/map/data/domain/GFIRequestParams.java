@@ -159,7 +159,6 @@ public class GFIRequestParams {
         queryMap.put("QUERY_LAYERS", wmsName);
         queryMap.put("WIDTH", getWidth());
         queryMap.put("HEIGHT", getHeight());
-        queryMap.put("STYLES", getCurrentStyle());
         queryMap.put("LAYERS", wmsName);
 
         if (additionalParams != null) {
