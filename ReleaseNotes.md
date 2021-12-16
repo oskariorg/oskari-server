@@ -1,5 +1,13 @@
 # Release Notes
 
+## 2.5.3
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/38?closed=1
+
+- Upgrade Log4J 2.15.0 -> 2.16.0
+- Upgrade slf4j-api 1.7.30 -> 1.7.32
+- Fixed an issue that on rare cases prevented layers from being removed from the system due to misconfigured timeseries layer  
+
 ## 2.5.2
 
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/37?closed=1
