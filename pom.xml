@@ -105,8 +105,8 @@
         <xmlunit.version>1.6</xmlunit.version>
         <h2database.version>1.4.199</h2database.version>
 
-        <log4j.version>2.15.0</log4j.version>
-        <slf4j.version>1.7.30</slf4j.version>
+        <log4j.version>2.16.0</log4j.version>
+        <slf4j.version>1.7.32</slf4j.version>
         <metrics.version>4.1.0</metrics.version>
         <xom.version>1.2.5</xom.version>
     </properties>
