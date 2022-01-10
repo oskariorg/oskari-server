@@ -301,10 +301,34 @@ public class SimpleFeaturesMVTEncoderTest {
         double[] bbox = grid.getTileExtent(new TileCoord(7, 50, 101));
         List<Geometry> mvtGeoms = SimpleFeaturesMVTEncoder.asMVTGeoms(sfc, bbox, 4096, 256);
         assertEquals(8, mvtGeoms.size()); // 2078 bytes (151ms)
-
+/*
         bbox = grid.getTileExtent(new TileCoord(7, 50, 102));
         mvtGeoms = SimpleFeaturesMVTEncoder.asMVTGeoms(sfc, bbox, 4096, 256);
         assertEquals(175, mvtGeoms.size()); // 33063 bytes (~200ms)
+*/
+        long start = System.currentTimeMillis();
+        byte[] bytes = SimpleFeaturesMVTEncoder.encodeToByteArray(sfc, "test", bbox, 4096, 256);
+
+        long duration = System.currentTimeMillis() - start;
+        System.out.println(duration + "ms -> " + bytes.length);
+
+    }
+    @Test
+    public void testPolygons() throws Exception {
+        WFSTileGrid grid = new WFSTileGrid(new double[] { -548576, 6291456, -548576 + (8192*256), 6291456 + (8192*256) }, 15);
+        Map<String, Object> json;
+        try (InputStream in = getClass().getClassLoader().getResourceAsStream("polygons.json")) {
+            ObjectMapper om = new ObjectMapper();
+            json = om.readValue(in, new TypeReference<HashMap<String, Object>>() {});
+        }
+        CoordinateReferenceSystem crs = CRS.decode("EPSG:3067");
+        SimpleFeatureType schema = GeoJSONSchemaDetector.getSchema(json, crs);
+
+        SimpleFeatureCollection sfc = GeoJSONReader2.toFeatureCollection(json, schema);
+
+        double[] bbox = grid.getTileExtent(new TileCoord(10, 456, 826));
+        List<Geometry> mvtGeoms = SimpleFeaturesMVTEncoder.asMVTGeoms(sfc, bbox, 4096, 256);
+        assertEquals(28, mvtGeoms.size()); // 3941bytes (~300ms)
 
         long start = System.currentTimeMillis();
         byte[] bytes = SimpleFeaturesMVTEncoder.encodeToByteArray(sfc, "test", bbox, 4096, 256);
