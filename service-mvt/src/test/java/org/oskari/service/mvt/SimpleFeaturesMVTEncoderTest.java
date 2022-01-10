@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
@@ -281,5 +283,34 @@ public class SimpleFeaturesMVTEncoderTest {
         double[] bbox = grid.getTileExtent(new TileCoord(11, 917, 1651));
         List<Geometry> mvtGeoms = SimpleFeaturesMVTEncoder.asMVTGeoms(sfc, bbox, 4096, 256);
         assertEquals(1, mvtGeoms.size());
+    }
+
+    @Test
+    public void testBuildings() throws Exception {
+        WFSTileGrid grid = new WFSTileGrid(new double[] { -548576, 6291456, -548576 + (8192*256), 6291456 + (8192*256) }, 15);
+        Map<String, Object> json;
+        try (InputStream in = getClass().getClassLoader().getResourceAsStream("buildings.json")) {
+            ObjectMapper om = new ObjectMapper();
+            json = om.readValue(in, new TypeReference<HashMap<String, Object>>() {});
+        }
+        CoordinateReferenceSystem crs = CRS.decode("EPSG:3067");
+        SimpleFeatureType schema = GeoJSONSchemaDetector.getSchema(json, crs);
+
+        SimpleFeatureCollection sfc = GeoJSONReader2.toFeatureCollection(json, schema);
+
+        double[] bbox = grid.getTileExtent(new TileCoord(7, 50, 101));
+        List<Geometry> mvtGeoms = SimpleFeaturesMVTEncoder.asMVTGeoms(sfc, bbox, 4096, 256);
+        assertEquals(8, mvtGeoms.size()); // 2078 bytes (151ms)
+
+        bbox = grid.getTileExtent(new TileCoord(7, 50, 102));
+        mvtGeoms = SimpleFeaturesMVTEncoder.asMVTGeoms(sfc, bbox, 4096, 256);
+        assertEquals(175, mvtGeoms.size()); // 33063 bytes (~200ms)
+
+        long start = System.currentTimeMillis();
+        byte[] bytes = SimpleFeaturesMVTEncoder.encodeToByteArray(sfc, "test", bbox, 4096, 256);
+
+        long duration = System.currentTimeMillis() - start;
+        System.out.println(duration + "ms -> " + bytes.length);
+
     }
 }
