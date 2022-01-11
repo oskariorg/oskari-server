@@ -1,39 +1,36 @@
 package org.oskari.service.mvt;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
-
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.locationtech.jts.geom.Geometry;
 import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.type.Name;
 
-import com.wdtinc.mapbox_vector_tile.VectorTile.Tile.Feature.Builder;
-import com.wdtinc.mapbox_vector_tile.adapt.jts.IUserDataConverter;
-import com.wdtinc.mapbox_vector_tile.build.MvtLayerProps;
+import java.math.BigDecimal;
+import java.util.*;
 
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
-
-public class SimpleFeatureConverter implements IUserDataConverter {
+public class SimpleFeatureConverter {
 
     private static final Logger LOG = LogFactory.getLogger(SimpleFeatureConverter.class);
 
     private static final String KEY_ID = "_oid";
     private static final String COMPLEX_PROP_PREFIX = "$";
 
-    @Override
-    public void addTags(Object userData, MvtLayerProps layerProps, Builder featureBuilder) {
-        if (!(userData instanceof SimpleFeature)) {
+    public static Optional<Feature> fromGeometry(Geometry geom) {
+        if (geom == null || !(geom.getUserData() instanceof SimpleFeature)) {
             LOG.debug("userData not a SimpleFeature!");
-            return;
+            return Optional.empty();
         }
-        SimpleFeature f = (SimpleFeature) userData;
-
+        Feature feature = new Feature();
+        SimpleFeature f = (SimpleFeature) geom.getUserData();
         String id = f.getID();
-        addId(layerProps, featureBuilder, id);
+        feature.id = id;
+        feature.properties = new LinkedHashMap<>();
+        feature.properties.put(KEY_ID, id);
+        feature.geom = geom;
 
         Name geomPropertyName = f.getDefaultGeometryProperty().getName();
         for (Property p : f.getProperties()) {
@@ -56,30 +53,19 @@ public class SimpleFeatureConverter implements IUserDataConverter {
                         "could not handle class:", value.getClass());
                 continue;
             }
-
-            int valueIndex = layerProps.addValue(mvtValue);
-            if (valueIndex < 0) {
-                // Value wasn't IN (Boolean,Integer,Long,Float,Double,String)
-                // => Can't be encoded to MVT
-                LOG.warn("Skipping", id + "." + prop,
-                        "value type not valid for MVT encoding, class:", value.getClass());
-                continue;
-            }
-
-            int keyIndex = layerProps.addKey(mvtProp);
-            featureBuilder.addTags(keyIndex);
-            featureBuilder.addTags(valueIndex);
+            feature.properties.put(mvtProp, mvtValue);
         }
+        return Optional.of(feature);
     }
 
-    private String convertPropertyNameToMVT(String prop, Object value) {
+    private static String convertPropertyNameToMVT(String prop, Object value) {
         if (value instanceof Map || value instanceof List) {
             return COMPLEX_PROP_PREFIX + prop;
         }
         return prop;
     }
 
-    private Object convertValueToMVT(Object value) {
+    private static Object convertValueToMVT(Object value) {
         if (value instanceof Boolean
                 || value instanceof Integer
                 || value instanceof Long
@@ -100,15 +86,4 @@ public class SimpleFeatureConverter implements IUserDataConverter {
         // TODO: Handle dates and timestamps
         return null;
     }
-
-    private void addId(MvtLayerProps layerProps, Builder featureBuilder, String id) {
-        if (id == null || id.isEmpty()) {
-            return;
-        }
-        int valueIndex = layerProps.addValue(id);
-        int keyIndex = layerProps.addKey(KEY_ID);
-        featureBuilder.addTags(keyIndex);
-        featureBuilder.addTags(valueIndex);
-    }
-
 }
