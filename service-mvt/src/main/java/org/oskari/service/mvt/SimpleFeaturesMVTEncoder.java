@@ -38,13 +38,8 @@ public class SimpleFeaturesMVTEncoder {
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .forEach(f -> encoder.addFeature(layer, f.properties, f.geom));
-// Add one or more features with a layer name, a Map with attributes and a JTS Geometry.
-// The Geometry uses (0,0) in upper left and (256,256) in lower right.
 
-// Finally, get the byte array
-        byte[] encoded = encoder.encode();
-        return encoded;
-        //return encode(sfc, layer, bbox, extent, buffer).toByteArray();
+        return encoder.encode();
     }
 
     public static List<Geometry> asMVTGeoms(SimpleFeatureCollection sfc, double[] bbox, int extent, int buffer) {

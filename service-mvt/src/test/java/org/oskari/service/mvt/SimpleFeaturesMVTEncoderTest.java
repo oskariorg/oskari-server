@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
@@ -300,14 +298,14 @@ public class SimpleFeaturesMVTEncoderTest {
 /*
         double[] bbox = grid.getTileExtent(new TileCoord(7, 50, 101));
         List<Geometry> mvtGeoms = SimpleFeaturesMVTEncoder.asMVTGeoms(sfc, bbox, 4096, 256);
-        assertEquals(8, mvtGeoms.size()); // 2078 bytes (151ms)
+        assertEquals(8, mvtGeoms.size()); // wdtinc & no.ecc both 2078 bytes (~150ms)
 
         //assertEquals("Check size" ,2078, bytes.length);
         //assertTrue("Check time" ,duration < 400);
 */
         double[] bbox = grid.getTileExtent(new TileCoord(7, 50, 102));
         List<Geometry> mvtGeoms = SimpleFeaturesMVTEncoder.asMVTGeoms(sfc, bbox, 4096, 256);
-        assertEquals(175, mvtGeoms.size()); // 33063 bytes (~200ms)
+        assertEquals(175, mvtGeoms.size()); // wdtinc & no.ecc both 33063 bytes (~200ms)
 
         long start = System.currentTimeMillis();
         byte[] bytes = SimpleFeaturesMVTEncoder.encodeToByteArray(sfc, "test", bbox, 4096, 256);
@@ -331,7 +329,7 @@ public class SimpleFeaturesMVTEncoderTest {
 
         double[] bbox = grid.getTileExtent(new TileCoord(10, 456, 826));
         List<Geometry> mvtGeoms = SimpleFeaturesMVTEncoder.asMVTGeoms(sfc, bbox, 4096, 256);
-        assertEquals(28, mvtGeoms.size()); // 3941bytes (~300ms) ja no.ecc 1823bytes (~300ms) -> 4539
+        assertEquals(28, mvtGeoms.size()); // wdtinc 3941bytes (~300ms) / no.ecc 4539bytes (~300ms)
 
         long start = System.currentTimeMillis();
         byte[] bytes = SimpleFeaturesMVTEncoder.encodeToByteArray(sfc, "test", bbox, 4096, 256);
@@ -355,7 +353,7 @@ public class SimpleFeaturesMVTEncoderTest {
         SimpleFeatureCollection sfc = GeoJSONReader2.toFeatureCollection(json, schema);
         double[] bbox = grid.getTileExtent(new TileCoord(10, 459, 838));
         List<Geometry> mvtGeoms = SimpleFeaturesMVTEncoder.asMVTGeoms(sfc, bbox, 4096, 256);
-        assertEquals(284, mvtGeoms.size()); // 3941bytes (~300ms) ja no.ecc 1823bytes (~300ms) -> 32083bytes (~300ms)
+        assertEquals(284, mvtGeoms.size()); // wdtinc 3941bytes (~300ms) / no.ecc 32083bytes (~300ms)
 
         long start = System.currentTimeMillis();
         byte[] bytes = SimpleFeaturesMVTEncoder.encodeToByteArray(sfc, "test", bbox, 4096, 256);
