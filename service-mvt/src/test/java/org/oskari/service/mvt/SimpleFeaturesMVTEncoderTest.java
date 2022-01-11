@@ -1,8 +1,5 @@
 package org.oskari.service.mvt;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -32,6 +29,8 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LinearRing;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
+
+import static org.junit.Assert.*;
 
 public class SimpleFeaturesMVTEncoderTest {
 
@@ -298,20 +297,24 @@ public class SimpleFeaturesMVTEncoderTest {
 
         SimpleFeatureCollection sfc = GeoJSONReader2.toFeatureCollection(json, schema);
 
+/*
         double[] bbox = grid.getTileExtent(new TileCoord(7, 50, 101));
         List<Geometry> mvtGeoms = SimpleFeaturesMVTEncoder.asMVTGeoms(sfc, bbox, 4096, 256);
         assertEquals(8, mvtGeoms.size()); // 2078 bytes (151ms)
-/*
-        bbox = grid.getTileExtent(new TileCoord(7, 50, 102));
-        mvtGeoms = SimpleFeaturesMVTEncoder.asMVTGeoms(sfc, bbox, 4096, 256);
-        assertEquals(175, mvtGeoms.size()); // 33063 bytes (~200ms)
+
+        //assertEquals("Check size" ,2078, bytes.length);
+        //assertTrue("Check time" ,duration < 400);
 */
+        double[] bbox = grid.getTileExtent(new TileCoord(7, 50, 102));
+        List<Geometry> mvtGeoms = SimpleFeaturesMVTEncoder.asMVTGeoms(sfc, bbox, 4096, 256);
+        assertEquals(175, mvtGeoms.size()); // 33063 bytes (~200ms)
+
         long start = System.currentTimeMillis();
         byte[] bytes = SimpleFeaturesMVTEncoder.encodeToByteArray(sfc, "test", bbox, 4096, 256);
-
         long duration = System.currentTimeMillis() - start;
         System.out.println(duration + "ms -> " + bytes.length);
-
+        assertEquals("Check size" ,33063, bytes.length);
+        assertTrue("Check time" ,duration < 400); // Should be around ~200ms but CI might be slower
     }
     @Test
     public void testPolygons() throws Exception {
@@ -328,13 +331,39 @@ public class SimpleFeaturesMVTEncoderTest {
 
         double[] bbox = grid.getTileExtent(new TileCoord(10, 456, 826));
         List<Geometry> mvtGeoms = SimpleFeaturesMVTEncoder.asMVTGeoms(sfc, bbox, 4096, 256);
-        assertEquals(28, mvtGeoms.size()); // 3941bytes (~300ms)
+        assertEquals(28, mvtGeoms.size()); // 3941bytes (~300ms) ja no.ecc 1823bytes (~300ms) -> 4539
 
         long start = System.currentTimeMillis();
         byte[] bytes = SimpleFeaturesMVTEncoder.encodeToByteArray(sfc, "test", bbox, 4096, 256);
 
         long duration = System.currentTimeMillis() - start;
         System.out.println(duration + "ms -> " + bytes.length);
+        assertEquals("Check size" ,4539, bytes.length);
+        assertTrue("Check time" ,duration < 500); // Should be around ~300ms but CI might be slower
+    }
+    @Test
+    public void testLines() throws Exception {
+        WFSTileGrid grid = new WFSTileGrid(new double[] { -548576, 6291456, -548576 + (8192*256), 6291456 + (8192*256) }, 15);
+        Map<String, Object> json;
+        try (InputStream in = getClass().getClassLoader().getResourceAsStream("lines.json")) {
+            ObjectMapper om = new ObjectMapper();
+            json = om.readValue(in, new TypeReference<HashMap<String, Object>>() {});
+        }
+        CoordinateReferenceSystem crs = CRS.decode("EPSG:3067");
+        SimpleFeatureType schema = GeoJSONSchemaDetector.getSchema(json, crs);
+
+        SimpleFeatureCollection sfc = GeoJSONReader2.toFeatureCollection(json, schema);
+        double[] bbox = grid.getTileExtent(new TileCoord(10, 459, 838));
+        List<Geometry> mvtGeoms = SimpleFeaturesMVTEncoder.asMVTGeoms(sfc, bbox, 4096, 256);
+        assertEquals(284, mvtGeoms.size()); // 3941bytes (~300ms) ja no.ecc 1823bytes (~300ms) -> 32083bytes (~300ms)
+
+        long start = System.currentTimeMillis();
+        byte[] bytes = SimpleFeaturesMVTEncoder.encodeToByteArray(sfc, "test", bbox, 4096, 256);
+
+        long duration = System.currentTimeMillis() - start;
+        System.out.println(duration + "ms -> " + bytes.length);
+        assertEquals("Check size" ,32083, bytes.length);
+        assertTrue("Check time" ,duration < 500); // Should be around ~300ms but CI might be slower
 
     }
 }

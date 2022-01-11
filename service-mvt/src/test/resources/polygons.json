@@ -11,8 +11,7 @@
     "id": "Seutu_suuralueet.44",
     "geometry": {
       "type": "Polygon",
-      "coordinates": [
-        [
+      "coordinates": [[
           [387280.11706058, 6697572.85521517],
           [387232.33368136, 6697488.0404538],
           [387210.76140878, 6697449.87942349],
@@ -337,12 +336,6 @@
           [387125.365846, 6698125.49040624],
           [387156.81338009, 6698090.44142155],
           [387280.11706058, 6697572.85521517]
-        ],
-        [
-          [386472.14647514, 6696135.09113003],
-          [386448.86195199, 6696134.04730784],
-          [386448.88568634, 6696133.99656652],
-          [386472.14647514, 6696135.09113003]
         ]
       ]
     },
@@ -357,7 +350,7 @@
     }
   },{
     "type": "Feature",
-    "id": "Seutu_suuralueet.44",
+    "id": "Seutu_suuralueet.45",
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -706,7 +699,7 @@
     }
   },{
     "type": "Feature",
-    "id": "Seutu_suuralueet.44",
+    "id": "Seutu_suuralueet.46",
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -1055,7 +1048,7 @@
     }
   },{
     "type": "Feature",
-    "id": "Seutu_suuralueet.44",
+    "id": "Seutu_suuralueet.47",
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -1404,7 +1397,7 @@
     }
   },{
     "type": "Feature",
-    "id": "Seutu_suuralueet.44",
+    "id": "Seutu_suuralueet.48",
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -1753,7 +1746,7 @@
     }
   },{
     "type": "Feature",
-    "id": "Seutu_suuralueet.44",
+    "id": "Seutu_suuralueet.49",
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -2102,7 +2095,7 @@
     }
   },{
     "type": "Feature",
-    "id": "Seutu_suuralueet.44",
+    "id": "Seutu_suuralueet.50",
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -2451,7 +2444,7 @@
     }
   },{
     "type": "Feature",
-    "id": "Seutu_suuralueet.44",
+    "id": "Seutu_suuralueet.51",
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -2800,7 +2793,7 @@
     }
   },{
     "type": "Feature",
-    "id": "Seutu_suuralueet.44",
+    "id": "Seutu_suuralueet.52",
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -3149,7 +3142,7 @@
     }
   },{
     "type": "Feature",
-    "id": "Seutu_suuralueet.44",
+    "id": "Seutu_suuralueet.53",
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -3498,7 +3491,7 @@
     }
   },{
     "type": "Feature",
-    "id": "Seutu_suuralueet.44",
+    "id": "Seutu_suuralueet.54",
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -3847,7 +3840,7 @@
     }
   },{
     "type": "Feature",
-    "id": "Seutu_suuralueet.44",
+    "id": "Seutu_suuralueet.54",
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -4196,7 +4189,7 @@
     }
   },{
     "type": "Feature",
-    "id": "Seutu_suuralueet.44",
+    "id": "Seutu_suuralueet.55",
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -4545,7 +4538,7 @@
     }
   },{
     "type": "Feature",
-    "id": "Seutu_suuralueet.44",
+    "id": "Seutu_suuralueet.56",
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -4894,7 +4887,7 @@
     }
   },{
     "type": "Feature",
-    "id": "Seutu_suuralueet.44",
+    "id": "Seutu_suuralueet.57",
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -5243,7 +5236,7 @@
     }
   },{
     "type": "Feature",
-    "id": "Seutu_suuralueet.44",
+    "id": "Seutu_suuralueet.58",
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -5592,7 +5585,7 @@
     }
   },{
     "type": "Feature",
-    "id": "Seutu_suuralueet.44",
+    "id": "Seutu_suuralueet.59",
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -5941,7 +5934,7 @@
     }
   },{
     "type": "Feature",
-    "id": "Seutu_suuralueet.44",
+    "id": "Seutu_suuralueet.60",
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -6290,7 +6283,7 @@
     }
   },{
     "type": "Feature",
-    "id": "Seutu_suuralueet.44",
+    "id": "Seutu_suuralueet.61",
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -6639,7 +6632,7 @@
     }
   },{
     "type": "Feature",
-    "id": "Seutu_suuralueet.44",
+    "id": "Seutu_suuralueet.62",
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -6988,7 +6981,7 @@
     }
   },{
     "type": "Feature",
-    "id": "Seutu_suuralueet.44",
+    "id": "Seutu_suuralueet.63",
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -7337,7 +7330,7 @@
     }
   },{
     "type": "Feature",
-    "id": "Seutu_suuralueet.44",
+    "id": "Seutu_suuralueet.64",
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -7686,7 +7679,7 @@
     }
   },{
     "type": "Feature",
-    "id": "Seutu_suuralueet.44",
+    "id": "Seutu_suuralueet.65",
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -8035,7 +8028,7 @@
     }
   },{
     "type": "Feature",
-    "id": "Seutu_suuralueet.44",
+    "id": "Seutu_suuralueet.66",
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -8384,7 +8377,7 @@
     }
   },{
     "type": "Feature",
-    "id": "Seutu_suuralueet.44",
+    "id": "Seutu_suuralueet.67",
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -8733,7 +8726,7 @@
     }
   },{
     "type": "Feature",
-    "id": "Seutu_suuralueet.44",
+    "id": "Seutu_suuralueet.68",
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -9082,7 +9075,7 @@
     }
   },{
     "type": "Feature",
-    "id": "Seutu_suuralueet.44",
+    "id": "Seutu_suuralueet.69",
     "geometry": {
       "type": "Polygon",
       "coordinates": [
@@ -9431,7 +9424,7 @@
     }
   },{
     "type": "Feature",
-    "id": "Seutu_suuralueet.44",
+    "id": "Seutu_suuralueet.70",
     "geometry": {
       "type": "Polygon",
       "coordinates": [
