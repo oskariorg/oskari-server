@@ -31,7 +31,7 @@ public class SimpleFeaturesMVTEncoder {
     public static byte[] encodeToByteArray(SimpleFeatureCollection sfc,
             String layer, double[] bbox, int extent, int buffer) {
 
-        VectorTileEncoder encoder = new VectorTileEncoder();
+        VectorTileEncoder encoder = new VectorTileEncoder(extent, buffer, false);
         List<Geometry> mvtGeoms = asMVTGeoms(sfc, bbox, extent, buffer);
         mvtGeoms.stream()
                 .map(geom -> SimpleFeatureConverter.fromGeometry(geom))
