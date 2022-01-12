@@ -117,7 +117,7 @@ public class TestHelper {
 
     public static DataSource createMemDBforUnitTest() throws SQLException {
         JdbcDataSource ds = new JdbcDataSource();
-        ds.setURL("jdbc:h2:mem:test;MODE=PostgreSQL;DB_CLOSE_DELAY=-1");
+        ds.setURL("jdbc:h2:mem:test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH;DB_CLOSE_DELAY=-1");
         // in theory we should be able to initialize database schema/tables by calling
         // FlywaydbMigrator.migrate(ds);
         // BUT there's an issue with cyclic dependencies for Maven that we need to
