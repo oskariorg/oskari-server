@@ -2,9 +2,12 @@ package fi.nls.oskari.util;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
@@ -40,11 +43,29 @@ public class PropertyUtilTest {
         String workerCount = PropertyUtil.get("workerCount");
         assertEquals("Should get 10", workerCount, "10");
 
-        String redisHostname = PropertyUtil.get("redisHostname");
+        String redisHostname = PropertyUtil.get("redis.hostname");
         assertTrue("Should get 'localhost'", redisHostname.equals("localhost"));
 
         String redisPort = PropertyUtil.get("redisPort");
         assertEquals("Should get 6379", redisPort, "6379");
+    }
+
+    @Test
+    @Ignore("Run this manually if you need to, requires illegal reflective access which might break things")
+    public void testEnv() throws Exception {
+        String key = "redis.hostname";
+        String env = "OSKARI_REDIS_HOSTNAME";
+        String localhost = "localhost";
+        String localipv4 = "127.0.0.1";
+
+        // redis.hostname=localhost
+        assertEquals(localhost, PropertyUtil.get(key));
+
+        setenvHack(env, localipv4);
+        assertEquals(localipv4, PropertyUtil.get(key));
+
+        setenvHack(env, null);
+        assertEquals(localhost, PropertyUtil.get(key));
     }
 
     @Test(expected = DuplicateException.class)
@@ -95,7 +116,7 @@ public class PropertyUtilTest {
 
     @Test
     public void testOptional() throws Exception {
-        assertEquals("Should get 'localhost'", PropertyUtil.getOptional("redisHostname"), "localhost");
+        assertEquals("Should get 'localhost'", PropertyUtil.getOptional("redis.hostname"), "localhost");
         assertEquals("Should get '10'", PropertyUtil.getOptional("workerCount"), "10");
         assertEquals("Should get <null>", PropertyUtil.getOptional("non-existing-property"), null);
     }
@@ -177,6 +198,44 @@ public class PropertyUtilTest {
         assertEquals("Finnish value should match", value + " fi", PropertyUtil.getWithOptionalModifier(KEY, "fi", "en"));
         assertEquals("Missing value should fallback to english", value + " en", PropertyUtil.getWithOptionalModifier(KEY, "sv", "en"));
         assertEquals("Missing value with spanish default should match default key", value, PropertyUtil.getWithOptionalModifier(KEY, "sv", "es"));
+    }
+
+    private static void setenvHack(String key, String value) throws Exception {
+        try {
+            Class<?> processEnvironmentClass = Class.forName("java.lang.ProcessEnvironment");
+            Field theEnvironmentField = processEnvironmentClass.getDeclaredField("theEnvironment");
+            theEnvironmentField.setAccessible(true);
+            Map<String, String> env = (Map<String, String>) theEnvironmentField.get(null);
+            if (value == null) {
+                env.remove(key);
+            } else {
+                env.put(key, value);
+            }
+            Field theCaseInsensitiveEnvironmentField = processEnvironmentClass.getDeclaredField("theCaseInsensitiveEnvironment");
+            theCaseInsensitiveEnvironmentField.setAccessible(true);
+            Map<String, String> cienv = (Map<String, String>) theCaseInsensitiveEnvironmentField.get(null);
+            if (value == null) {
+                cienv.remove(key);
+            } else {
+                cienv.put(key, value);
+            }
+        } catch (NoSuchFieldException e) {
+            Class[] classes = Collections.class.getDeclaredClasses();
+            Map<String, String> env = System.getenv();
+            for(Class cl : classes) {
+                if("java.util.Collections$UnmodifiableMap".equals(cl.getName())) {
+                    Field field = cl.getDeclaredField("m");
+                    field.setAccessible(true);
+                    Object obj = field.get(env);
+                    Map<String, String> map = (Map<String, String>) obj;
+                    if (value == null) {
+                        map.remove(key);
+                    } else {
+                        map.put(key, value);
+                    }
+                }
+            }
+        }
     }
 
 }
