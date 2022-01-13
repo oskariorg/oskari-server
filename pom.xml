@@ -85,7 +85,7 @@
         <fi.mml.wms.version>1.1.1</fi.mml.wms.version>
         <fi.mml.nameregister.version>1.0</fi.mml.nameregister.version>
 
-        <jetty.version>9.4.42.v20210604</jetty.version>
+        <jetty.version>9.4.44.v20210927</jetty.version>
         <mybatis.version>3.5.7</mybatis.version>
         <flyway.version>6.5.7</flyway.version>
         <postgresql.version>42.2.16</postgresql.version>
