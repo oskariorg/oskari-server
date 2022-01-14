@@ -175,13 +175,13 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
     private void validateScaleDenominator(OskariLayer layer, WFSTileGrid grid, int z)
             throws ActionParamsException {
         double scaleDenominator = getScaleDenominator(grid, z);
-        if (layer.getMinScale() != null) {
+        if (layer.getMinScale() != null && layer.getMinScale() != -1) {
             if (scaleDenominator > layer.getMinScale()) {
                 // Bigger denominator <=> Smaller scale
                 throw new ActionParamsException("z too low for layer");
             }
         }
-        if (layer.getMaxScale() != null) {
+        if (layer.getMaxScale() != null && layer.getMaxScale() != -1) {
             if (scaleDenominator < layer.getMaxScale()) {
                 // Smaller denominator <=> Bigger scale
                 throw new ActionParamsException("z too high for layer");
