@@ -5,7 +5,8 @@
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/35?closed=1
 
 - Configuration can now be passed with ENV variables to override values in `oskari-ext.properties`: https://github.com/oskariorg/oskari-docs/issues/262
-- Removed most restrictions for search queries. Programmatic usage can now request more results than the default limit. Introduced a config to define a hard limit (defaults to 10x default limit). Also allowed programmatic usage to pass (channel specific) parameters to search channels through the common search API.
+- Removed most restrictions for search queries. Programmatic usage can now request more results than the default limit. Introduced a config to define a hard limit (defaults to 10x default limit https://github.com/oskariorg/oskari-server/pull/765).
+- Allowed additional parameters to be passed from frontend to search channels through the common search API. Usage of the additional parameters are documented on the RPC as there's no user interface for these but allows more options for programmatically initiated searches.
 - Changed MVT encoder implementation (for WFS-features as MVT) to fix JTS version mismatch with the library and enable polygon/linestrings features to be encoded as MVT once again.
 - Statistical indicator metadata improvements:
   - Generic API to allow additional metadata to be passed to frontend for indicators
