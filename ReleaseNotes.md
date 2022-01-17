@@ -1,5 +1,25 @@
 # Release Notes
 
+## 2.6.0
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/35?closed=1
+
+- Configuration can now be passed with ENV variables to override values in `oskari-ext.properties`: https://github.com/oskariorg/oskari-docs/issues/262
+- Removed most restrictions for search queries. Programmatic usage can now request more results than the default limit. Introduced a config to define a hard limit (defaults to 10x default limit). Also allowed programmatic usage to pass (channel specific) parameters to search channels through the common search API.
+- Changed MVT encoder implementation (for WFS-features as MVT) to fix JTS version mismatch with the library and enable polygon/linestrings features to be encoded as MVT once again.
+- Statistical indicator metadata improvements:
+  - Generic API to allow additional metadata to be passed to frontend for indicators
+  - PXWeb specific implementation to allow a JSON-file to be used to provide metadata like localized names and descriptions, start/end years and information about last/next update for data: https://oskari.org/documentation/features/thematicmaps/config
+- Action routes can now be called with a cleaner URL. This is now enabled by server but the frontend still uses the longer URL. More details: https://github.com/oskariorg/oskari-server/pull/767
+- Updated libraries:
+  - Jetty 9.4.42.v20210604 -> 9.4.44.v20210927
+  - Log4J 2.17.0 -> 2.17.1
+  - Spring 5.3.11 -> 5.3.14
+  - Spring Security 5.5.3 -> 5.6.1
+  - Spring Session 2021.0.3 -> 2021.1.1
+  - Jedis 3.6.3 -> 3.8.0
+  - com.h2database.h2 1.4.199 -> 2.0.206
+
 ## 2.5.3
 
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/38?closed=1
