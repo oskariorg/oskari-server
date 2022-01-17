@@ -2,6 +2,7 @@ package fi.nls.oskari.mybatis;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.MappedJdbcTypes;
@@ -40,10 +41,18 @@ public class JSONObjectMybatisTypeHandler extends BaseTypeHandler<JSONObject> {
     }
 
     public JSONObject valueOf(String s) {
+        if (s == null) {
+            return new JSONObject();
+        }
         try {
             return new JSONObject(s);
         } catch (JSONException e) {
-            log.error("Couldn't parse DB string to JSONObject:", s, e);
+            if (s.startsWith("\"{") && s.endsWith("}\"") && s.length() > 5) {
+                // H2 DB wraps a stringified json to quotes and escapes the content
+                String unwrapped = s.substring(1, s.length()  - 1);
+                return valueOf(StringEscapeUtils.unescapeJava(unwrapped));
+            }
+            log.info("Couldn't parse DB string to JSONObject:", s, e);
             return new JSONObject();
         }
     }
