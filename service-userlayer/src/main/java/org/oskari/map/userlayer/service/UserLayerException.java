@@ -12,7 +12,7 @@ import fi.nls.oskari.util.JSONHelper;
 public class UserLayerException extends ServiceException {
     private JSONObject options;
     private static final long serialVersionUID = 1L;
-    private static final String ERROR_KEY = "error";
+    private static final String ERROR_KEY = "errorKey";
     private static final String CAUSE_KEY = "cause";
 
     public UserLayerException(final String message, final Exception e) {

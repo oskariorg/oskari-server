@@ -76,10 +76,8 @@ public class CreateUserLayerHandler extends RestActionHandler {
     };
 
     private static final String PARAM_SOURCE_EPSG_KEY = "sourceEpsg";
-    private static final String KEY_NAME = "layer-name";
-    private static final String KEY_DESC = "layer-desc";
-    private static final String KEY_SOURCE = "layer-source";
-    private static final String KEY_STYLE = "layer-style";
+    private static final String KEY_STYLE = "style";
+    private static final String KEY_LOCALE = "locale";
 
     private static final int KB = 1024;
     private static final int MB = 1024 * KB;
@@ -402,11 +400,9 @@ public class CreateUserLayerHandler extends RestActionHandler {
     }
 
     private UserLayer createUserLayer(SimpleFeatureCollection fc, String uuid, Map<String, String> formParams) {
-        String name = formParams.get(KEY_NAME);
-        String desc = formParams.get(KEY_DESC);
-        String source = formParams.get(KEY_SOURCE);
-        String style = formParams.get(KEY_STYLE);
-        return UserLayerDataService.createUserLayer(fc, uuid, name, desc, source, style);
+        JSONObject locale = JSONHelper.createJSONObject(formParams.get(KEY_LOCALE));
+        JSONObject style = JSONHelper.createJSONObject(formParams.get(KEY_STYLE));
+        return UserLayerDataService.createUserLayer(fc, uuid, locale, style);
     }
 
     private void writeResponse(ActionParameters params, UserLayer ulayer) {
