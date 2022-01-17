@@ -14,7 +14,7 @@ For a full list of changes see: https://github.com/oskariorg/oskari-server/miles
 - Action routes can now be called with a cleaner URL. This is now enabled by server but the frontend still uses the longer URL. More details: https://github.com/oskariorg/oskari-server/pull/767
 - Updated libraries:
   - Jetty 9.4.42.v20210604 -> 9.4.44.v20210927
-  - Log4J 2.17.0 -> 2.17.1
+  - Log4J 2.16.0 -> 2.17.1
   - Spring 5.3.11 -> 5.3.14
   - Spring Security 5.5.3 -> 5.6.1
   - Spring Session 2021.0.3 -> 2021.1.1
