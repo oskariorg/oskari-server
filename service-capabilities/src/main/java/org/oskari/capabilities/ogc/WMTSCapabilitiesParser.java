@@ -34,7 +34,7 @@ public class WMTSCapabilitiesParser extends OGCCapabilitiesParser {
         try {
             WMTSCapabilities caps = WMTSCapabilitiesParserHelper.parseCapabilities(capabilities);
             Map<String, LayerCapabilities> layers = new HashMap<>();
-            caps.getLayers().stream().forEach(layer -> {
+            caps.getLayers().stream().map(layer -> {
                 LayerCapabilities l = new LayerCapabilities(layer.getId(), layer.getTitle());
                 l.setStyles(layer.getStyles(), layer.getDefaultStyle());
 
@@ -42,7 +42,8 @@ public class WMTSCapabilitiesParser extends OGCCapabilitiesParser {
                 l.addLayerSpecific(INFO_FORMATS, layer.getInfoFormats());
                 l.addLayerSpecific(RESOURCE_URLS, layer.getResourceUrls());
                 l.addLayerSpecific(TILEMATRIX, layer.getLinks());
-            });
+                return l;
+            }).forEach(l -> layers.put(l.getName(), l));
             return layers;
         } catch (Exception e) {
             throw new ServiceException("Unable to parse layers for WMTS", e);

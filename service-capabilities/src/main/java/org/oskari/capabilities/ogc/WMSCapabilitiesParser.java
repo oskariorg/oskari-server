@@ -3,6 +3,10 @@ package org.oskari.capabilities.ogc;
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.service.ServiceException;
+import org.oskari.capabilities.LayerCapabilities;
+
+import java.util.Collections;
+import java.util.Map;
 
 @Oskari(OskariLayer.TYPE_WMS)
 public class WMSCapabilitiesParser extends OGCCapabilitiesParser {
@@ -30,5 +34,9 @@ public class WMSCapabilitiesParser extends OGCCapabilitiesParser {
         } else {
             checkRootElementNameEquals(name, ROOT_WMS_LESS_THAN_130);
         }
+    }
+
+    public Map<String, LayerCapabilities> parseLayers(String xml) throws ServiceException {
+        return Collections.emptyMap();
     }
 }
