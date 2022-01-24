@@ -10,12 +10,10 @@ import org.oskari.capabilities.RawCapabilitiesResponse;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 public abstract class OGCCapabilitiesParser extends CapabilitiesParser {
-
 
     public String getType() {
         return this.getName().replaceAll("layer", "").toUpperCase();
@@ -34,9 +32,10 @@ public abstract class OGCCapabilitiesParser extends CapabilitiesParser {
         String capabilitiesUrl = contructCapabilitiesUrl(layer.getUrl(), layer.getVersion());
         RawCapabilitiesResponse response = fetchCapabilities(capabilitiesUrl, layer.getUsername(), layer.getPassword(), getExpectedContentType());
         String validResponse = validateResponse(response, layer.getVersion());
-        // TODO: parse response to layer map aka "actual work"
-        return Collections.emptyMap();
+        return parseLayers(validResponse);
     }
+
+    protected abstract Map<String, LayerCapabilities> parseLayers(String capabilities) throws ServiceException;
 
     protected String contructCapabilitiesUrl(String url, String version) {
         String urlLC = url.toLowerCase();
