@@ -117,7 +117,7 @@ public class XmlHelper {
         if (e == null) {
             return null;
         }
-        return e.getNodeValue();
+        return e.getTextContent();
     }
 
     /**
