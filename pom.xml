@@ -1210,6 +1210,7 @@
         <module>service-myplaces</module>
         <module>service-rating</module>
         <module>service-admin</module>
+        <module>service-capabilities</module>
         <module>service-capabilities-update</module>
 
         <module>service-search</module>
