@@ -47,15 +47,12 @@ public class WMTSCapabilitiesParserHelper {
     }
 
     private static Map<String, TileMatrixSet> parseTileMatrixSets(Element contents)
-            throws IllegalArgumentException, XMLStreamException {
+            throws IllegalArgumentException {
         Map<String, TileMatrixSet> tileMatrixSets = new HashMap<>();
 
-        NodeList list = contents.getElementsByTagName("TileMatrixSet");
-        for (int i = 0 ; i < list.getLength(); i++) {
-            Element node = (Element)list.item(i);
-            TileMatrixSet tms = parseTileMatrixSet(node);
-            tileMatrixSets.put(tms.getId(), tms);
-        }
+        XmlHelper.getChildElements(contents, "TileMatrixSet")
+                .map(node -> parseTileMatrixSet(node))
+                .forEach(tms -> tileMatrixSets.put(tms.getId(), tms));
 
         return tileMatrixSets;
     }
@@ -68,8 +65,7 @@ public class WMTSCapabilitiesParserHelper {
      * @throws XMLStreamException if
      * @throws IllegalArgumentException
      */
-    private static TileMatrixSet parseTileMatrixSet(Element tileMatrixSet)
-            throws XMLStreamException, IllegalArgumentException {
+    private static TileMatrixSet parseTileMatrixSet(Element tileMatrixSet) {
         String identifier = XmlHelper.getChildValue(tileMatrixSet, "Identifier");
         String crs = XmlHelper.getChildValue(tileMatrixSet, "SupportedCRS");
 
@@ -77,13 +73,11 @@ public class WMTSCapabilitiesParserHelper {
         Set<String> ids = new HashSet<>();
         List<TileMatrix> tileMatrises = new ArrayList<>();
 
-        NodeList list = tileMatrixSet.getElementsByTagName("TileMatrix");
-        for (int i = 0 ; i < list.getLength(); i++) {
-            Element e = (Element)list.item(i);
+        XmlHelper.getChildElements(tileMatrixSet, "TileMatrix").forEach(e -> {
             String id = XmlHelper.getChildValue(e, "Identifier");
             if (ids.contains(id)) {
-                throw new IllegalArgumentException("TileMatrix with id: " + id
-                        + " is specified multiple times!");
+                LOG.error("TileMatrix with id:", id, "is specified multiple times!");
+                return;
             }
             double scaleDenominator = Double.parseDouble(XmlHelper.getChildValue(e, "ScaleDenominator"));
             double[] topLeftCorner = parseTopLeftCorner(XmlHelper.getChildValue(e, "TopLeftCorner"));
@@ -95,7 +89,7 @@ public class WMTSCapabilitiesParserHelper {
                     tileWidth, tileHeight, matrixWidth, matrixHeight);
             tileMatrises.add(tm);
             ids.add(id);
-        }
+        });
 
         return new TileMatrixSet(identifier, crs, tileMatrises);
     }
@@ -115,21 +109,19 @@ public class WMTSCapabilitiesParserHelper {
     }
 
     private static Map<String, WMTSCapabilitiesLayer> parseLayers(Element contents,
-            Map<String, TileMatrixSet> tileMatrixSets) throws XMLStreamException {
+            Map<String, TileMatrixSet> tileMatrixSets) {
         Map<String, WMTSCapabilitiesLayer> layers = new HashMap<>();
 
-        NodeList list = contents.getElementsByTagName("Layer");
-        for (int i = 0 ; i < list.getLength(); i++) {
-            Element e = (Element)list.item(i);
+        XmlHelper.getChildElements(contents, "Layer").forEach(e -> {
             WMTSCapabilitiesLayer l = parseLayer(e, tileMatrixSets);
             layers.put(l.getId(), l);
-        }
+        });
 
         return layers;
     }
 
     private static WMTSCapabilitiesLayer parseLayer(Element layer,
-            Map<String, TileMatrixSet> tileMatrixSets) throws XMLStreamException {
+            Map<String, TileMatrixSet> tileMatrixSets) {
         String identifier = XmlHelper.getChildValue(layer, "Identifier");
         String title = XmlHelper.getChildValue(layer, "Title");
         List<LayerStyle> styles = parseStyles(layer);
