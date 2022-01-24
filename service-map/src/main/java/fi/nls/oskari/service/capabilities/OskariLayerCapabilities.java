@@ -82,7 +82,7 @@ public class OskariLayerCapabilities {
         sb.append("id=").append(id);
         sb.append(",url=").append(url);
         sb.append(",layertype=").append(layertype);
-        sb.append(",version=").append(id);
+        sb.append(",version=").append(version);
         sb.append(",data=").append(data.length() > 30 ? data.substring(0,  27) + "..." : data);
         sb.append(",created=").append(created);
         sb.append(",updated=").append(updated);
