@@ -1,9 +1,8 @@
 package org.oskari.capabilities;
 
 import org.oskari.capabilities.ogc.LayerStyle;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 
 // Something that can be serialized to oskari_maplayer.capabilities
 public class LayerCapabilities {
@@ -11,6 +10,7 @@ public class LayerCapabilities {
     private String name;
     private String title;
     private List<LayerStyle> styles;
+    private Set<String> srs;
     private String defaultStyle;
 
     private Map<String, Object> layerSpecific = new HashMap<>();
@@ -31,7 +31,9 @@ public class LayerCapabilities {
         this.styles = styles;
         this.defaultStyle = defaultStyle;
     }
-
+    public void setSrs(Set<String> supported) {
+        this.srs = supported;
+    }
 
     public String getName() {
         return name;
@@ -42,7 +44,16 @@ public class LayerCapabilities {
     }
 
     public List<LayerStyle> getStyles() {
+        if (styles == null) {
+            return Collections.emptyList();
+        }
         return styles;
+    }
+    public Set<String> getSrs() {
+        if (srs == null) {
+            return Collections.emptySet();
+        }
+        return srs;
     }
 
     public String getDefaultStyle() {

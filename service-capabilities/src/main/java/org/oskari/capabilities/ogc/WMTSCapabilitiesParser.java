@@ -9,9 +9,9 @@ import org.oskari.capabilities.ogc.wmts.WMTSCapabilitiesParserHelper;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-import static org.oskari.capabilities.ogc.CapabilitiesConstants.FORMATS;
-import static org.oskari.capabilities.ogc.CapabilitiesConstants.INFO_FORMATS;
+import static org.oskari.capabilities.ogc.CapabilitiesConstants.*;
 
 @Oskari(OskariLayer.TYPE_WMTS)
 public class WMTSCapabilitiesParser extends OGCCapabilitiesParser {
@@ -37,9 +37,17 @@ public class WMTSCapabilitiesParser extends OGCCapabilitiesParser {
             caps.getLayers().stream().map(layer -> {
                 LayerCapabilities l = new LayerCapabilities(layer.getId(), layer.getTitle());
                 l.setStyles(layer.getStyles(), layer.getDefaultStyle());
+                l.setSrs(layer.getLinks().stream()
+                        // TODO: normalize crs to short format
+                        .map(link -> link.getTileMatrixSet().getCrs())
+                        .collect(Collectors.toSet()));
 
+                // should we prioritize png over jpg?
                 l.addLayerSpecific(FORMATS, layer.getFormats());
+                // GFI is not handled for WMTS at all in GetGeoPointDataHandler
                 l.addLayerSpecific(INFO_FORMATS, layer.getInfoFormats());
+                // isqueryable is NOT used for WMTS currently
+                l.addLayerSpecific(IS_QUERYABLE, !layer.getInfoFormats().isEmpty());
                 l.addLayerSpecific(RESOURCE_URLS, layer.getResourceUrls());
                 l.addLayerSpecific(TILEMATRIX, layer.getLinks());
                 return l;
