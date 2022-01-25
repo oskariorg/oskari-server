@@ -46,7 +46,7 @@ public class WMTSCapabilitiesParser extends OGCCapabilitiesParser {
             }).forEach(l -> layers.put(l.getName(), l));
             return layers;
         } catch (Exception e) {
-            throw new ServiceException("Unable to parse layers for WMTS", e);
+            throw new ServiceException("Unable to parse layers for WMTS capabilities", e);
         }
     }
 }

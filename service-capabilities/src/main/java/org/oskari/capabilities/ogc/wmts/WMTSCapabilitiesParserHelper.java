@@ -10,7 +10,6 @@ import org.json.JSONObject;
 import org.oskari.capabilities.ogc.LayerStyle;
 import org.oskari.xml.XmlHelper;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.InputStream;
@@ -31,13 +30,13 @@ public class WMTSCapabilitiesParserHelper {
     }
 
     public static WMTSCapabilities parseCapabilities(InputStream in)
-            throws IllegalArgumentException, XMLStreamException {
+            throws IllegalArgumentException {
         Element doc = XmlHelper.parseXML(in);
         return parseCapabilities(doc);
     }
 
     public static WMTSCapabilities parseCapabilities(Element doc)
-            throws IllegalArgumentException, XMLStreamException {
+            throws IllegalArgumentException {
         Element contents = XmlHelper.getFirstChild(doc, "Contents");
 
         Map<String, TileMatrixSet> tileMatrixSets = parseTileMatrixSets(contents);
@@ -157,7 +156,7 @@ public class WMTSCapabilitiesParserHelper {
 
     private static Set<String> getTexts(Element layer, String keyword) {
         Set<String> texts =  XmlHelper.getChildElements(layer, keyword)
-                .map(Element::getNodeValue)
+                .map(Element::getTextContent)
                 .collect(Collectors.toSet());
         return texts;
     }

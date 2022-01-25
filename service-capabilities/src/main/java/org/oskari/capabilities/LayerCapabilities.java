@@ -37,6 +37,22 @@ public class LayerCapabilities {
         return name;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public List<LayerStyle> getStyles() {
+        return styles;
+    }
+
+    public String getDefaultStyle() {
+        return defaultStyle;
+    }
+
+    public Map<String, Object> getLayerSpecific() {
+        return layerSpecific;
+    }
+
     public void addLayerSpecific(String key, Object value) {
         layerSpecific.put(key, value);
     }
