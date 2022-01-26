@@ -381,6 +381,11 @@
 
             <dependency>
                 <groupId>org.oskari</groupId>
+                <artifactId>service-capabilities</artifactId>
+                <version>${oskari.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.oskari</groupId>
                 <artifactId>service-capabilities-update</artifactId>
                 <version>${oskari.version}</version>
             </dependency>
