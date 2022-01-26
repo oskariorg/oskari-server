@@ -14,13 +14,6 @@ public class LayerCapabilities {
     private String defaultStyle;
 
     private Map<String, Object> typeSpecific = new HashMap<>();
-    /*
-    private Set<String> formats;
-    private Set<String> infoFormats;
-    private List<ResourceUrl> resourceUrls;
-    private List<TileMatrixLink> links;
-    */
-    // TODO: add more fields that will be parsed
 
     public LayerCapabilities(String name, String title) {
         this.name = name;
@@ -49,6 +42,7 @@ public class LayerCapabilities {
         }
         return styles;
     }
+
     public Set<String> getSrs() {
         if (srs == null) {
             return Collections.emptySet();
