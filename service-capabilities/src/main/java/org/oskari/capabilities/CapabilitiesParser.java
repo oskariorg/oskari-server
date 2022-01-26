@@ -1,6 +1,5 @@
 package org.oskari.capabilities;
 
-import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.service.OskariComponent;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.ServiceUnauthorizedException;
@@ -16,7 +15,7 @@ public abstract class CapabilitiesParser extends OskariComponent {
     // timeout capabilities request after 30 seconds (configurable)
     private static final int TIMEOUT_MS = PropertyUtil.getOptional("capabilities.timeout", 30) * 1000;
 
-    public abstract Map<String, LayerCapabilities> getLayersFromService(OskariLayer layer) throws ServiceException;
+    public abstract Map<String, LayerCapabilities> getLayersFromService(ServiceConnectInfo src) throws ServiceException;
 
     public RawCapabilitiesResponse fetchCapabilities(String capabilitiesUrl, String user, String pass, String expectedContentType) throws ServiceException {
         try {

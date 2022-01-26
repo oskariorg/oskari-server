@@ -1,11 +1,11 @@
 package org.oskari.capabilities.ogc;
 
-import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.IOHelper;
 import org.oskari.capabilities.CapabilitiesParser;
 import org.oskari.capabilities.LayerCapabilities;
 import org.oskari.capabilities.RawCapabilitiesResponse;
+import org.oskari.capabilities.ServiceConnectInfo;
 
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -27,11 +27,11 @@ public abstract class OGCCapabilitiesParser extends CapabilitiesParser {
         return CapabilitiesValidator.validateXmlResponse(response, this, version);
     }
 
-    public Map<String, LayerCapabilities> getLayersFromService(OskariLayer layer) throws ServiceException {
+    public Map<String, LayerCapabilities> getLayersFromService(ServiceConnectInfo src) throws ServiceException {
 
-        String capabilitiesUrl = contructCapabilitiesUrl(layer.getUrl(), layer.getVersion());
-        RawCapabilitiesResponse response = fetchCapabilities(capabilitiesUrl, layer.getUsername(), layer.getPassword(), getExpectedContentType());
-        String validResponse = validateResponse(response, layer.getVersion());
+        String capabilitiesUrl = contructCapabilitiesUrl(src.getUrl(), src.getVersion());
+        RawCapabilitiesResponse response = fetchCapabilities(capabilitiesUrl, src.getUser(), src.getPass(), getExpectedContentType());
+        String validResponse = validateResponse(response, src.getVersion());
         return parseLayers(validResponse);
     }
 
