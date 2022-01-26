@@ -9,8 +9,11 @@
       "default": true
     }
   ],
+  "srs": [
+    "urn:ogc:def:crs:EPSG:6.3:3067"
+  ],
   "defaultStyle": "default",
-  "layerSpecific": {
+  "typeSpecific": {
     "tileMatrix": [
       {
         "limits": null,
@@ -214,7 +217,9 @@
         }
       }
     ],
-    "formats": ["image/png"],
+    "formats": [
+      "image/png"
+    ],
     "infoFormats": [],
     "resourceUrls": [
       {
@@ -222,6 +227,7 @@
         "type": "tile",
         "template": "http://foo.bar/baz/wmts/1.0.0/taustakartta/default/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"
       }
-    ]
+    ],
+    "isQueryable": false
   }
 }

@@ -24,7 +24,7 @@ public class WMTSCapabilitiesParserTest {
         Map<String, LayerCapabilities> layers = parser.parseLayers(xml);
         assertEquals("Should find a layer", 1, layers.size());
         String json = MAPPER.writeValueAsString(layers.values().iterator().next());
+        System.out.println(json);
         assertTrue("JSON should match", JSONHelper.isEqual(JSONHelper.createJSONObject(json), JSONHelper.createJSONObject(expected)));
-        //System.out.println(MAPPER.writeValueAsString(layers.values().toArray()[0]));
     }
 }

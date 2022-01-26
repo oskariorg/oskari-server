@@ -79,13 +79,22 @@ public class GetLayerCapabilitiesHandler extends ActionHandler {
             throw new ActionException("Error reading capabilities", ex);
         }
     }
+/*
 
+  "layerSpecific": {
+    "tileMatrix": [
+      {
+        "limits": null,
+        "tileMatrixSet": {
+          "identifier": "ETRS-TM35FIN",
+          "projection":
+ */
     private String getCapabilitiesJSON(OskariLayer layer, String crs) throws ActionException {
         try {
             JSONObject caps = layer.getCapabilities()
-                    .optJSONObject(CapabilitiesConstants.KEY_LAYER_CAPABILITIES);
+                    .optJSONObject(CapabilitiesConstants.KEY_LAYER_CAPABILITIES); // -> typeSpecific
             JSONObject response = new JSONObject(caps.toString());
-            JSONArray linkList = response.optJSONArray("links");
+            JSONArray linkList = response.optJSONArray("links"); // -> tileMatrix
             JSONObject link = null;
             for (int i = 0; i < linkList.length(); i++) {
                 link = linkList.optJSONObject(i);
@@ -94,6 +103,7 @@ public class GetLayerCapabilitiesHandler extends ActionHandler {
                 String shortProj = ProjectionHelper.shortSyntaxEpsg(projection);
                 if (crs.equals(shortProj)) {
                     // use the first tilematrix matching the projection that is used
+                    // clone it so we don't accidentally modify cached object
                     JSONObject matrix = new JSONObject(tileMatrixSet.toString());
                     matrix.put("projection", shortProj);
                     break;

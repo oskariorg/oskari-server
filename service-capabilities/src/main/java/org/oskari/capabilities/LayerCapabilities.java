@@ -13,7 +13,7 @@ public class LayerCapabilities {
     private Set<String> srs;
     private String defaultStyle;
 
-    private Map<String, Object> layerSpecific = new HashMap<>();
+    private Map<String, Object> typeSpecific = new HashMap<>();
     /*
     private Set<String> formats;
     private Set<String> infoFormats;
@@ -60,11 +60,11 @@ public class LayerCapabilities {
         return defaultStyle;
     }
 
-    public Map<String, Object> getLayerSpecific() {
-        return layerSpecific;
+    public Map<String, Object> getTypeSpecific() {
+        return typeSpecific;
     }
 
-    public void addLayerSpecific(String key, Object value) {
-        layerSpecific.put(key, value);
+    public void addCapabilityData(String key, Object value) {
+        typeSpecific.put(key, value);
     }
 }

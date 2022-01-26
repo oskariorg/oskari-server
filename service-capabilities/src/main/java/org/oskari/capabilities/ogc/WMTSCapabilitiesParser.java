@@ -11,15 +11,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.oskari.capabilities.ogc.CapabilitiesConstants.*;
-
 @Oskari(OskariLayer.TYPE_WMTS)
 public class WMTSCapabilitiesParser extends OGCCapabilitiesParser {
     private static final String NAMESPACE_WMTS = "http://www.opengis.net/wmts";
     private static final String ROOT_WMTS = "Capabilities";
-
-    private static final String RESOURCE_URLS = "resourceUrls";
-    private static final String TILEMATRIX = "tileMatrix";
 
     protected String getVersionParamName() {
         return "acceptVersions";
@@ -35,7 +30,7 @@ public class WMTSCapabilitiesParser extends OGCCapabilitiesParser {
             WMTSCapabilities caps = WMTSCapabilitiesParserHelper.parseCapabilities(capabilities);
             Map<String, LayerCapabilities> layers = new HashMap<>();
             caps.getLayers().stream().map(layer -> {
-                LayerCapabilities l = new LayerCapabilities(layer.getId(), layer.getTitle());
+                LayerCapabilitiesWMTS l = new LayerCapabilitiesWMTS(layer.getId(), layer.getTitle());
                 l.setStyles(layer.getStyles(), layer.getDefaultStyle());
                 l.setSrs(layer.getLinks().stream()
                         // TODO: normalize crs to short format
@@ -43,13 +38,11 @@ public class WMTSCapabilitiesParser extends OGCCapabilitiesParser {
                         .collect(Collectors.toSet()));
 
                 // should we prioritize png over jpg?
-                l.addLayerSpecific(FORMATS, layer.getFormats());
+                l.setFormats(layer.getFormats());
                 // GFI is not handled for WMTS at all in GetGeoPointDataHandler
-                l.addLayerSpecific(INFO_FORMATS, layer.getInfoFormats());
-                // isqueryable is NOT used for WMTS currently
-                l.addLayerSpecific(IS_QUERYABLE, !layer.getInfoFormats().isEmpty());
-                l.addLayerSpecific(RESOURCE_URLS, layer.getResourceUrls());
-                l.addLayerSpecific(TILEMATRIX, layer.getLinks());
+                l.setInfoFormats(layer.getInfoFormats());
+                l.setResourceUrls(layer.getResourceUrls());
+                l.setTileMatrices(layer.getLinks());
                 return l;
             }).forEach(l -> layers.put(l.getName(), l));
             return layers;
