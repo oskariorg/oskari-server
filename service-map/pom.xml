@@ -28,6 +28,10 @@
         </dependency>
         <dependency>
             <groupId>org.oskari</groupId>
+            <artifactId>service-capabilities</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.oskari</groupId>
             <artifactId>oskari-utils</artifactId>
         </dependency>
         <dependency>
