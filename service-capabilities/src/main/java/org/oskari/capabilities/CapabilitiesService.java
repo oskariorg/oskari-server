@@ -21,7 +21,7 @@ public class CapabilitiesService {
     private static final Logger LOG = LogFactory.getLogger(CapabilitiesService.class);
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
-    public static List<CapabilitiesUpdateResult> updateCapabilities(List<OskariLayer> layers, Set<String> systemCRSs) throws IOException, ServiceException {
+    public static List<CapabilitiesUpdateResult> updateCapabilities(List<OskariLayer> layers, Set<String> systemCRSs) throws ServiceException {
         List<CapabilitiesUpdateResult> results = new ArrayList<>(layers.size());
 
         Map<ServiceConnectInfo, List<OskariLayer>> layersByUTV = layers.stream()
@@ -63,6 +63,34 @@ public class CapabilitiesService {
             });
         }
         return results;
+    }
+    // TODO: check if we can find some common code for single vs list of layers
+    public static CapabilitiesUpdateResult updateCapabilities(OskariLayer layer, Set<String> systemCRSs) throws ServiceException {
+        boolean hasParser = getParser(layer.getType()) != null;
+        if (!hasParser) {
+            return CapabilitiesUpdateResult.err(layer, CapabilitiesUpdateResult.ERR_LAYER_TYPE_UNSUPPORTED);
+        }
+        ServiceConnectInfo info = ServiceConnectInfo.fromLayer(layer);
+        Map<String, LayerCapabilities> serviceCaps;
+        try {
+            serviceCaps = getLayersFromService(info);
+        } catch (IOException | ServiceException e) {
+            if (e instanceof IOException) {
+                return CapabilitiesUpdateResult.err(layer, CapabilitiesUpdateResult.ERR_FAILED_TO_FETCH_CAPABILITIES);
+            } else {
+                return CapabilitiesUpdateResult.err(layer, CapabilitiesUpdateResult.ERR_FAILED_TO_PARSE_CAPABILITIES);
+            }
+        }
+
+        LayerCapabilities capsForSingleLayer = serviceCaps.get(layer.getName());
+        if (capsForSingleLayer == null) {
+            LOG.warn("Error accessing Capabilities for service, url:", info.getUrl(),
+                    "type:", info.getType(), "version:", info.getVersion());
+            return CapabilitiesUpdateResult.err(layer, CapabilitiesUpdateResult.ERR_LAYER_NOT_FOUND_IN_CAPABILITIES);
+
+        }
+        layer.setCapabilities(toJSON(capsForSingleLayer, systemCRSs));
+        return CapabilitiesUpdateResult.ok(layer);
     }
 
     public static Map<String, LayerCapabilities> getLayersFromService(ServiceConnectInfo connectInfo) throws IOException, ServiceException {
