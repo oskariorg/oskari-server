@@ -11,6 +11,7 @@ import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.service.capabilities.CapabilitiesConstants;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 
 import javax.servlet.http.HttpServletResponse;
@@ -91,10 +92,10 @@ public class GetLayerCapabilitiesHandler extends ActionHandler {
  */
     private String getCapabilitiesJSON(OskariLayer layer, String crs) throws ActionException {
         try {
-            JSONObject caps = layer.getCapabilities()
-                    .optJSONObject(CapabilitiesConstants.KEY_LAYER_CAPABILITIES); // -> typeSpecific
-            JSONObject response = new JSONObject(caps.toString());
-            JSONArray linkList = response.optJSONArray("links"); // -> tileMatrix
+            JSONObject modifiedCapabilities = new JSONObject(layer.getCapabilities().toString());
+            // modify and remove matrices that are not used for current projection
+            JSONObject layerTypeSpecificCaps = (JSONObject) modifiedCapabilities.remove(CapabilitiesConstants.KEY_TYPE_SPECIFIC);
+            JSONArray linkList = layerTypeSpecificCaps.optJSONArray("tileMatrix"); // -> tileMatrix
             JSONObject link = null;
             for (int i = 0; i < linkList.length(); i++) {
                 link = linkList.optJSONObject(i);
@@ -118,6 +119,10 @@ public class GetLayerCapabilitiesHandler extends ActionHandler {
             }
             JSONArray filteredLinkList = new JSONArray();
             filteredLinkList.put(link);
+            // clean up and copy rest of it
+            layerTypeSpecificCaps.remove("tileMatrix");
+            JSONObject response = JSONHelper.merge(modifiedCapabilities, layerTypeSpecificCaps);
+            // add the tilematrix link/data for current projection
             response.put("links", filteredLinkList);
             return response.toString();
         } catch (Exception e) {
