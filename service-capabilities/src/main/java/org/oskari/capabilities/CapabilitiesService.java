@@ -1,26 +1,73 @@
 package org.oskari.capabilities;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.oskari.capabilities.ogc.OGCCapabilitiesParser;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.groupingBy;
 
 
 public class CapabilitiesService {
+    private static final Logger LOG = LogFactory.getLogger(CapabilitiesService.class);
     private static final ObjectMapper MAPPER = new ObjectMapper();
+
+    public static List<CapabilitiesUpdateResult> updateCapabilities(List<OskariLayer> layers, Set<String> systemCRSs) throws IOException, ServiceException {
+        List<CapabilitiesUpdateResult> results = new ArrayList<>(layers.size());
+
+        Map<ServiceConnectInfo, List<OskariLayer>> layersByUTV = layers.stream()
+                .filter(layer -> {
+                    boolean hasParser = getParser(layer.getType()) != null;
+                    if (!hasParser) {
+                        results.add(CapabilitiesUpdateResult.err(layer, CapabilitiesUpdateResult.ERR_LAYER_TYPE_UNSUPPORTED));
+                    }
+                    return hasParser;
+                })
+                .collect(groupingBy(layer -> ServiceConnectInfo.fromLayer(layer)));
+
+        for (ServiceConnectInfo utv : layersByUTV.keySet()) {
+            List<OskariLayer> layersFromOneService = layersByUTV.get(utv);
+            Map<String, LayerCapabilities> serviceCaps;
+            try {
+                serviceCaps = getLayersFromService(utv);
+            } catch (IOException | ServiceException e) {
+                layersFromOneService.stream().forEach(layer -> {
+                    if (e instanceof IOException) {
+                        results.add(CapabilitiesUpdateResult.err(layer, CapabilitiesUpdateResult.ERR_FAILED_TO_FETCH_CAPABILITIES));
+                    } else {
+                        results.add(CapabilitiesUpdateResult.err(layer, CapabilitiesUpdateResult.ERR_FAILED_TO_PARSE_CAPABILITIES));
+                    }
+                });
+                continue;
+            }
+
+            layersFromOneService.stream().forEach(layer -> {
+                LayerCapabilities capsForSingleLayer = serviceCaps.get(layer.getName());
+                if (capsForSingleLayer == null) {
+                    LOG.warn("Error accessing Capabilities for service, url:", utv.getUrl(),
+                            "type:", utv.getType(), "version:", utv.getVersion());
+                    results.add(CapabilitiesUpdateResult.err(layer, CapabilitiesUpdateResult.ERR_LAYER_NOT_FOUND_IN_CAPABILITIES));
+                    return;
+                }
+                layer.setCapabilities(toJSON(capsForSingleLayer, systemCRSs));
+                results.add(CapabilitiesUpdateResult.ok(layer));
+            });
+        }
+        return results;
+    }
 
     public static Map<String, LayerCapabilities> getLayersFromService(ServiceConnectInfo connectInfo) throws IOException, ServiceException {
         String layerType = connectInfo.getType();
-        OGCCapabilitiesParser parser = getParser(layerType);
+        CapabilitiesParser parser = getParser(layerType);
         if (parser == null) {
             throw new ServiceException("Unrecognized type: " + layerType);
         }
@@ -39,9 +86,9 @@ public class CapabilitiesService {
         }
     }
 
-    private static OGCCapabilitiesParser getParser(String layerType) {
-        return (OGCCapabilitiesParser) OskariComponentManager
-                .getComponentsOfType(OGCCapabilitiesParser.class)
+    private static CapabilitiesParser getParser(String layerType) {
+        return (CapabilitiesParser) OskariComponentManager
+                .getComponentsOfType(CapabilitiesParser.class)
                 .get(layerType);
     }
 

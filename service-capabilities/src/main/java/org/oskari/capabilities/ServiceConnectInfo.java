@@ -2,6 +2,8 @@ package org.oskari.capabilities;
 
 import fi.nls.oskari.domain.map.OskariLayer;
 
+import java.util.Objects;
+
 public class ServiceConnectInfo {
 
     private final String url;
@@ -45,5 +47,24 @@ public class ServiceConnectInfo {
 
     public String getPass() {
         return pass;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || !(o instanceof ServiceConnectInfo)) {
+            return false;
+        }
+        if (o == this) {
+            return true;
+        }
+        ServiceConnectInfo s = (ServiceConnectInfo) o;
+        return url.equals(s.url)
+                && type.equals(s.type)
+                && version.equals(s.version);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(url, type, version);
     }
 }
