@@ -10,7 +10,7 @@ import org.json.JSONObject;
 public abstract class UserDataLayer extends JSONLocalizedName {
 
     private long id;
-    private String name;
+    private String name; // use name from locale
     private String uuid;
     private String publisher_name;
     private WFSLayerOptions options;
@@ -28,11 +28,11 @@ public abstract class UserDataLayer extends JSONLocalizedName {
     public String getPrefixedId() {
         return getType() + "_" + getId();
     }
-
+    @Deprecated
     public String getName() {
         return name;
     }
-    
+    @Deprecated
     public void setName(String name) {
         this.name = name;
     }

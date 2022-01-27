@@ -27,7 +27,9 @@ public abstract class LayerJSONFormatterUSERDATA extends LayerJSONFormatterWFS {
         // Override base layer values
         JSONHelper.putValue(layerJson, KEY_TYPE, layer.getType());
         JSONHelper.putValue(layerJson, KEY_ID, layer.getPrefixedId());
+        JSONHelper.putValue(layerJson, KEY_LOCALE, layer.getLocale());
 
+        // TODO: remove name when all userdata layers can handle locale
         // override default name only if userdatalayer has name
         // add all localized names to allow user to edit them
         String name = layer.getName();

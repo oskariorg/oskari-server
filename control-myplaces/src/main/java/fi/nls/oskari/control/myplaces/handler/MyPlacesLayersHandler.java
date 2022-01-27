@@ -31,7 +31,7 @@ public class MyPlacesLayersHandler extends RestActionHandler {
     private final static Logger LOG = LogFactory.getLogger(MyPlacesLayersHandler.class);
 
     private static final String PARAM_ID = "id";
-    private static final String PARAM_NAME = "name";
+    private static final String PARAM_LOCALE = "locale";
     private static final String PARAM_STYLE = "style";
 
     private static final String KEY_MYPLACES = "layers";
@@ -78,11 +78,12 @@ public class MyPlacesLayersHandler extends RestActionHandler {
     public void handlePost(ActionParameters params) throws ActionException {
         MyPlaceCategory category = new MyPlaceCategory();
         category.setUuid(params.getUser().getUuid());
-        String name = params.getRequiredParam(PARAM_NAME);
-        category.setName(name);
-        category.setName(PropertyUtil.getDefaultLanguage(), name); // FIXME: category.setLocale(params.getRequiredParam(PARAM_LOCALE));
+        category.setLocale(params.getHttpParamAsJSON(PARAM_LOCALE));
         category.getWFSLayerOptions()
-                .setDefaultFeatureStyle(JSONHelper.createJSONObject(params.getHttpParam(PARAM_STYLE)));
+                .setDefaultFeatureStyle(params.getHttpParamAsJSON(PARAM_STYLE));
+        // FIXME: remove category_name column and update mappers to get rid of this
+        // copy default lang name to category_name from locale (not-null constraint)
+        category.setCategory_name(category.getName(PropertyUtil.getDefaultLanguage()));
         try {
             layerService.insert(Collections.singletonList(category));
             LOG.info("Inserted category:", category.getId());
@@ -111,11 +112,12 @@ public class MyPlacesLayersHandler extends RestActionHandler {
         try {
             final MyPlaceCategory category = layerService.getById(id)
                     .orElseThrow(() -> new ActionParamsException("Couldn't find myplaces layer, " + id));
-            String name = params.getRequiredParam(PARAM_NAME);
-            category.setName(name);
-            category.setName(PropertyUtil.getDefaultLanguage(), name); // FIXME: category.setLocale(params.getRequiredParam(PARAM_LOCALE));
+            category.setLocale(params.getHttpParamAsJSON(PARAM_LOCALE));
             category.getWFSLayerOptions()
-                .setDefaultFeatureStyle(JSONHelper.createJSONObject(params.getHttpParam(PARAM_STYLE)));
+                .setDefaultFeatureStyle(params.getHttpParamAsJSON(PARAM_STYLE));
+            // FIXME: remove category_name column and update mappers to get rid of this
+            // copy default lang name to category_name from locale (not-null constraint)
+            category.setCategory_name(category.getName(PropertyUtil.getDefaultLanguage()));
             layerService.update(Collections.singletonList(category));
             LOG.info("Updated category:", id);
             AuditLog.user(params.getClientIp(), params.getUser())
