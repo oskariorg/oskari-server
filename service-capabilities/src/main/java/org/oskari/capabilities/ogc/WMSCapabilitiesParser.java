@@ -8,7 +8,8 @@ import org.oskari.capabilities.LayerCapabilities;
 import java.util.Collections;
 import java.util.Map;
 
-@Oskari(OskariLayer.TYPE_WMS)
+// commented out until we have an implementation here for parseLayers()
+// @Oskari(OskariLayer.TYPE_WMS)
 public class WMSCapabilitiesParser extends OGCCapabilitiesParser {
 
     private static final String NAMESPACE_WMS = "http://www.opengis.net/wms";
