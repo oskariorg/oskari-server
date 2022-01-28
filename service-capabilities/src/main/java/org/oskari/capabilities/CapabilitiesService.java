@@ -64,8 +64,12 @@ public class CapabilitiesService {
         }
         return results;
     }
+
     // TODO: check if we can find some common code for single vs list of layers
-    public static CapabilitiesUpdateResult updateCapabilities(OskariLayer layer, Set<String> systemCRSs) throws ServiceException {
+    // this is a nice way of updating single layer for the caller but for mass update it's very
+    // inefficient since the capabilities are retrieved from the service for each layer
+    public static CapabilitiesUpdateResult updateCapabilities(OskariLayer layer, Set<String> systemCRSs)
+            throws ServiceException {
         boolean hasParser = getParser(layer.getType()) != null;
         if (!hasParser) {
             return CapabilitiesUpdateResult.err(layer, CapabilitiesUpdateResult.ERR_LAYER_TYPE_UNSUPPORTED);
