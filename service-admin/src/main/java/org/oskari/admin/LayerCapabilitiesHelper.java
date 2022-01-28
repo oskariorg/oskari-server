@@ -72,9 +72,7 @@ public class LayerCapabilitiesHelper {
                 break;
             case OskariLayer.TYPE_WMTS:
                 CapabilitiesService.updateCapabilities(ml, getSystemCRSs());
-                // TODO: handle error/update options for requestEncoding etc?
-                //WMTSCapabilities wmts = wmtsCapabilities.updateCapabilities(ml);
-                //OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMTS(wmts, ml, getSystemCRSs());
+                // TODO: handle error/update options for requestEncoding if it's required still
                 break;
         }
     }
