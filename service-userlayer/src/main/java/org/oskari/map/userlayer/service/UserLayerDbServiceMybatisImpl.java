@@ -58,6 +58,7 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
     }
 
     public int insertUserLayerAndData(final UserLayer userLayer, final List<UserLayerData> userLayerDataList) throws UserLayerException {
+        validateUserLayer(userLayer);
         try (SqlSession session = factory.openSession(ExecutorType.BATCH)) {
             int count = 0;
             final UserLayerMapper mapper = getMapper(session);
@@ -96,6 +97,7 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
      * @param userLayer
      */
     public int updateUserLayer(final UserLayer userLayer) throws UserLayerException {
+        validateUserLayer(userLayer);
         try (SqlSession session = factory.openSession()) {
             final UserLayerMapper mapper = getMapper(session);
             int result = mapper.updateUserLayer(userLayer);
@@ -119,7 +121,11 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
         }
         return layer;
     }
-
+    private void validateUserLayer (UserLayer layer) throws UserLayerException {
+        if (layer.getNames().isEmpty()) {
+            throw new UserLayerException("Couldn't find name for userlayer", UserLayerException.ErrorType.NO_NAME);
+        }
+    }
     /**
      * Get UserLayer row  by id
      *

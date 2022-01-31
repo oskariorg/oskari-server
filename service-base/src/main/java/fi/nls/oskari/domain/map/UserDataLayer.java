@@ -7,7 +7,7 @@ import org.json.JSONObject;
 /**
  * Common model for layers consisting of user created data.
  */
-public abstract class UserDataLayer extends JSONLocalizedNameAndTitle {
+public abstract class UserDataLayer extends JSONLocalizedName {
 
     private long id;
     private String name; // use name from locale
