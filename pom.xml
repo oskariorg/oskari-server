@@ -88,7 +88,7 @@
         <jetty.version>9.4.44.v20210927</jetty.version>
         <mybatis.version>3.5.7</mybatis.version>
         <flyway.version>6.5.7</flyway.version>
-        <postgresql.version>42.2.16</postgresql.version>
+        <postgresql.version>42.2.25</postgresql.version>
         <jedis.version>3.8.0</jedis.version>
         <quartz-scheduler.version>2.3.2</quartz-scheduler.version>
 
