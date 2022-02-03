@@ -1,0 +1,844 @@
+{
+  "name": "arcticsdi_wmts",
+  "title": "arcticsdi_wmts",
+  "styles": [
+    {
+      "title": "default",
+      "legend": null,
+      "name": "default",
+      "default": true
+    }
+  ],
+  "srs": [
+    "urn:ogc:def:crs:EPSG::3573",
+    "urn:ogc:def:crs:EPSG::3575",
+    "urn:ogc:def:crs:EPSG::3572"
+  ],
+  "defaultStyle": "default",
+  "typeSpecific": {
+    "tileMatrix": [
+      {
+        "limits": null,
+        "tileMatrixSet": {
+          "identifier": "EPSG:3575_arcticsdi",
+          "projection": "urn:ogc:def:crs:EPSG::3575",
+          "matrixIds": {
+            "EPSG:3575_arcticsdi:1": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 10,
+              "matrixHeight": 6,
+              "identifier": "EPSG:3575_arcticsdi:1",
+              "scaleDenominator": 5.12E7,
+              "topLeftCorner": {
+                "lon": -1.8133594E7,
+                "lat": 1.07763E7
+              }
+            },
+            "EPSG:3575_arcticsdi:0": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 5,
+              "matrixHeight": 3,
+              "identifier": "EPSG:3575_arcticsdi:0",
+              "scaleDenominator": 1.024E8,
+              "topLeftCorner": {
+                "lon": -1.8133594E7,
+                "lat": 1.07763E7
+              }
+            },
+            "EPSG:3575_arcticsdi:3": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 40,
+              "matrixHeight": 24,
+              "identifier": "EPSG:3575_arcticsdi:3",
+              "scaleDenominator": 1.28E7,
+              "topLeftCorner": {
+                "lon": -1.8133594E7,
+                "lat": 1.07763E7
+              }
+            },
+            "EPSG:3575_arcticsdi:2": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 20,
+              "matrixHeight": 12,
+              "identifier": "EPSG:3575_arcticsdi:2",
+              "scaleDenominator": 2.56E7,
+              "topLeftCorner": {
+                "lon": -1.8133594E7,
+                "lat": 1.07763E7
+              }
+            },
+            "EPSG:3575_arcticsdi:5": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 159,
+              "matrixHeight": 96,
+              "identifier": "EPSG:3575_arcticsdi:5",
+              "scaleDenominator": 3200000.0,
+              "topLeftCorner": {
+                "lon": -1.8133594E7,
+                "lat": 1.07763E7
+              }
+            },
+            "EPSG:3575_arcticsdi:4": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 80,
+              "matrixHeight": 48,
+              "identifier": "EPSG:3575_arcticsdi:4",
+              "scaleDenominator": 6400000.0,
+              "topLeftCorner": {
+                "lon": -1.8133594E7,
+                "lat": 1.07763E7
+              }
+            },
+            "EPSG:3575_arcticsdi:10": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 5061,
+              "matrixHeight": 3053,
+              "identifier": "EPSG:3575_arcticsdi:10",
+              "scaleDenominator": 100000.0,
+              "topLeftCorner": {
+                "lon": -1.8133594E7,
+                "lat": 1.07763E7
+              }
+            },
+            "EPSG:3575_arcticsdi:7": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 633,
+              "matrixHeight": 382,
+              "identifier": "EPSG:3575_arcticsdi:7",
+              "scaleDenominator": 800000.0,
+              "topLeftCorner": {
+                "lon": -1.8133594E7,
+                "lat": 1.07763E7
+              }
+            },
+            "EPSG:3575_arcticsdi:6": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 317,
+              "matrixHeight": 191,
+              "identifier": "EPSG:3575_arcticsdi:6",
+              "scaleDenominator": 1600000.0,
+              "topLeftCorner": {
+                "lon": -1.8133594E7,
+                "lat": 1.07763E7
+              }
+            },
+            "EPSG:3575_arcticsdi:9": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 2531,
+              "matrixHeight": 1527,
+              "identifier": "EPSG:3575_arcticsdi:9",
+              "scaleDenominator": 200000.0,
+              "topLeftCorner": {
+                "lon": -1.8133594E7,
+                "lat": 1.07763E7
+              }
+            },
+            "EPSG:3575_arcticsdi:8": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 1266,
+              "matrixHeight": 764,
+              "identifier": "EPSG:3575_arcticsdi:8",
+              "scaleDenominator": 400000.0,
+              "topLeftCorner": {
+                "lon": -1.8133594E7,
+                "lat": 1.07763E7
+              }
+            }
+          }
+        }
+      },
+      {
+        "limits": null,
+        "tileMatrixSet": {
+          "identifier": "EPSG:3573",
+          "projection": "urn:ogc:def:crs:EPSG::3573",
+          "matrixIds": {
+            "EPSG:3573:1": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 2,
+              "matrixHeight": 2,
+              "identifier": "EPSG:3573:1",
+              "scaleDenominator": 6.821058596428573E7,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3573:2": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 4,
+              "matrixHeight": 4,
+              "identifier": "EPSG:3573:2",
+              "scaleDenominator": 3.4105292989285715E7,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3573:3": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 8,
+              "matrixHeight": 8,
+              "identifier": "EPSG:3573:3",
+              "scaleDenominator": 1.705264649642857E7,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3573:4": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 16,
+              "matrixHeight": 16,
+              "identifier": "EPSG:3573:4",
+              "scaleDenominator": 8526323.246428572,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3573:5": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 32,
+              "matrixHeight": 32,
+              "identifier": "EPSG:3573:5",
+              "scaleDenominator": 4263161.625000001,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3573:6": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 64,
+              "matrixHeight": 64,
+              "identifier": "EPSG:3573:6",
+              "scaleDenominator": 2131580.8117857147,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3573:7": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 128,
+              "matrixHeight": 128,
+              "identifier": "EPSG:3573:7",
+              "scaleDenominator": 1065790.4060714287,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3573:8": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 256,
+              "matrixHeight": 256,
+              "identifier": "EPSG:3573:8",
+              "scaleDenominator": 532895.2028571429,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3573:9": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 512,
+              "matrixHeight": 512,
+              "identifier": "EPSG:3573:9",
+              "scaleDenominator": 266447.60146428575,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3573:15": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 32768,
+              "matrixHeight": 32768,
+              "identifier": "EPSG:3573:15",
+              "scaleDenominator": 4163.243771428572,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3573:14": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 16384,
+              "matrixHeight": 16384,
+              "identifier": "EPSG:3573:14",
+              "scaleDenominator": 8326.487546428572,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3573:17": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 131072,
+              "matrixHeight": 131072,
+              "identifier": "EPSG:3573:17",
+              "scaleDenominator": 1040.810942857143,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3573:16": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 65536,
+              "matrixHeight": 65536,
+              "identifier": "EPSG:3573:16",
+              "scaleDenominator": 2081.621885714286,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3573:11": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 2048,
+              "matrixHeight": 2048,
+              "identifier": "EPSG:3573:11",
+              "scaleDenominator": 66611.90035714286,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3573:10": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 1024,
+              "matrixHeight": 1024,
+              "identifier": "EPSG:3573:10",
+              "scaleDenominator": 133223.80075000002,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3573:13": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 8192,
+              "matrixHeight": 8192,
+              "identifier": "EPSG:3573:13",
+              "scaleDenominator": 16652.975092857145,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3573:12": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 4096,
+              "matrixHeight": 4096,
+              "identifier": "EPSG:3573:12",
+              "scaleDenominator": 33305.95018571429,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3573:0": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 1,
+              "matrixHeight": 1,
+              "identifier": "EPSG:3573:0",
+              "scaleDenominator": 1.3642117196428573E8,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            }
+          }
+        }
+      },
+      {
+        "limits": null,
+        "tileMatrixSet": {
+          "identifier": "EPSG:3572",
+          "projection": "urn:ogc:def:crs:EPSG::3572",
+          "matrixIds": {
+            "EPSG:3572:2": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 4,
+              "matrixHeight": 4,
+              "identifier": "EPSG:3572:2",
+              "scaleDenominator": 3.4105292989285715E7,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3572:3": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 8,
+              "matrixHeight": 8,
+              "identifier": "EPSG:3572:3",
+              "scaleDenominator": 1.705264649642857E7,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3572:4": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 16,
+              "matrixHeight": 16,
+              "identifier": "EPSG:3572:4",
+              "scaleDenominator": 8526323.246428572,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3572:5": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 32,
+              "matrixHeight": 32,
+              "identifier": "EPSG:3572:5",
+              "scaleDenominator": 4263161.625000001,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3572:6": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 64,
+              "matrixHeight": 64,
+              "identifier": "EPSG:3572:6",
+              "scaleDenominator": 2131580.8117857147,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3572:7": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 128,
+              "matrixHeight": 128,
+              "identifier": "EPSG:3572:7",
+              "scaleDenominator": 1065790.4060714287,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3572:8": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 256,
+              "matrixHeight": 256,
+              "identifier": "EPSG:3572:8",
+              "scaleDenominator": 532895.2028571429,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3572:9": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 512,
+              "matrixHeight": 512,
+              "identifier": "EPSG:3572:9",
+              "scaleDenominator": 266447.60146428575,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3572:14": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 16384,
+              "matrixHeight": 16384,
+              "identifier": "EPSG:3572:14",
+              "scaleDenominator": 8326.487546428572,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3572:13": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 8192,
+              "matrixHeight": 8192,
+              "identifier": "EPSG:3572:13",
+              "scaleDenominator": 16652.975092857145,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3572:16": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 65536,
+              "matrixHeight": 65536,
+              "identifier": "EPSG:3572:16",
+              "scaleDenominator": 2081.621885714286,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3572:15": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 32768,
+              "matrixHeight": 32768,
+              "identifier": "EPSG:3572:15",
+              "scaleDenominator": 4163.243771428572,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3572:10": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 1024,
+              "matrixHeight": 1024,
+              "identifier": "EPSG:3572:10",
+              "scaleDenominator": 133223.80075000002,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3572:12": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 4096,
+              "matrixHeight": 4096,
+              "identifier": "EPSG:3572:12",
+              "scaleDenominator": 33305.95018571429,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3572:11": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 2048,
+              "matrixHeight": 2048,
+              "identifier": "EPSG:3572:11",
+              "scaleDenominator": 66611.90035714286,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3572:17": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 131072,
+              "matrixHeight": 131072,
+              "identifier": "EPSG:3572:17",
+              "scaleDenominator": 1040.810942857143,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3572:0": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 1,
+              "matrixHeight": 1,
+              "identifier": "EPSG:3572:0",
+              "scaleDenominator": 1.3642117196428573E8,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3572:1": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 2,
+              "matrixHeight": 2,
+              "identifier": "EPSG:3572:1",
+              "scaleDenominator": 6.821058596428573E7,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            }
+          }
+        }
+      },
+      {
+        "limits": null,
+        "tileMatrixSet": {
+          "identifier": "EPSG:3575",
+          "projection": "urn:ogc:def:crs:EPSG::3575",
+          "matrixIds": {
+            "EPSG:3575:0": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 1,
+              "matrixHeight": 1,
+              "identifier": "EPSG:3575:0",
+              "scaleDenominator": 1.3642117196428573E8,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3575:1": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 2,
+              "matrixHeight": 2,
+              "identifier": "EPSG:3575:1",
+              "scaleDenominator": 6.821058596428573E7,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3575:2": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 4,
+              "matrixHeight": 4,
+              "identifier": "EPSG:3575:2",
+              "scaleDenominator": 3.4105292989285715E7,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3575:3": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 8,
+              "matrixHeight": 8,
+              "identifier": "EPSG:3575:3",
+              "scaleDenominator": 1.705264649642857E7,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3575:4": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 16,
+              "matrixHeight": 16,
+              "identifier": "EPSG:3575:4",
+              "scaleDenominator": 8526323.246428572,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3575:5": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 32,
+              "matrixHeight": 32,
+              "identifier": "EPSG:3575:5",
+              "scaleDenominator": 4263161.625000001,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3575:6": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 64,
+              "matrixHeight": 64,
+              "identifier": "EPSG:3575:6",
+              "scaleDenominator": 2131580.8117857147,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3575:7": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 128,
+              "matrixHeight": 128,
+              "identifier": "EPSG:3575:7",
+              "scaleDenominator": 1065790.4060714287,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3575:10": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 1024,
+              "matrixHeight": 1024,
+              "identifier": "EPSG:3575:10",
+              "scaleDenominator": 133223.80075000002,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3575:8": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 256,
+              "matrixHeight": 256,
+              "identifier": "EPSG:3575:8",
+              "scaleDenominator": 532895.2028571429,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3575:11": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 2048,
+              "matrixHeight": 2048,
+              "identifier": "EPSG:3575:11",
+              "scaleDenominator": 66611.90035714286,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3575:9": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 512,
+              "matrixHeight": 512,
+              "identifier": "EPSG:3575:9",
+              "scaleDenominator": 266447.60146428575,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3575:16": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 65536,
+              "matrixHeight": 65536,
+              "identifier": "EPSG:3575:16",
+              "scaleDenominator": 2081.621885714286,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3575:17": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 131072,
+              "matrixHeight": 131072,
+              "identifier": "EPSG:3575:17",
+              "scaleDenominator": 1040.810942857143,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3575:14": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 16384,
+              "matrixHeight": 16384,
+              "identifier": "EPSG:3575:14",
+              "scaleDenominator": 8326.487546428572,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3575:15": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 32768,
+              "matrixHeight": 32768,
+              "identifier": "EPSG:3575:15",
+              "scaleDenominator": 4163.243771428572,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3575:12": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 4096,
+              "matrixHeight": 4096,
+              "identifier": "EPSG:3575:12",
+              "scaleDenominator": 33305.95018571429,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            },
+            "EPSG:3575:13": {
+              "tileWidth": 256,
+              "tileHeight": 256,
+              "matrixWidth": 8192,
+              "matrixHeight": 8192,
+              "identifier": "EPSG:3575:13",
+              "scaleDenominator": 16652.975092857145,
+              "topLeftCorner": {
+                "lon": -4889334.802954878,
+                "lat": 4889334.802954878
+              }
+            }
+          }
+        }
+      }
+    ],
+    "formats": [
+      "image/png"
+    ],
+    "infoFormats": [],
+    "resourceUrls": [],
+    "isQueryable": false
+  }
+}
