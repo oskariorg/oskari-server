@@ -9,12 +9,8 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWFS;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWMS;
-import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWMTS;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.wmts.domain.ResourceUrl;
-import fi.nls.oskari.wmts.domain.WMTSCapabilities;
-import fi.nls.oskari.wmts.domain.WMTSCapabilitiesLayer;
 
 import java.io.IOException;
 import java.util.Date;
@@ -97,37 +93,6 @@ public class OskariLayerCapabilitiesHelper {
             }
         }
         return style;
-    }
-
-    public static void setPropertiesFromCapabilitiesWMTS(WMTSCapabilities caps,
-            OskariLayer ml, Set<String> systemCRSs) {
-        int id = ml.getId();
-        String name = ml.getName();
-
-        WMTSCapabilitiesLayer layer = caps.getLayer(name);
-        if (layer == null) {
-            String err = "Can not find Layer from GetCapabilities"
-                    + " layer id:" + id + " name: " + name;
-            LOG.warn(err);
-            throw new IllegalArgumentException(err);
-        }
-
-        ResourceUrl resUrl = layer.getResourceUrlByType("tile");
-        JSONObject options = ml.getOptions();
-        if (resUrl != null) {
-            JSONHelper.putValue(options, "requestEncoding", "REST");
-            JSONHelper.putValue(options, "format", resUrl.getFormat());
-            JSONHelper.putValue(options, "urlTemplate", resUrl.getTemplate());
-        } else {
-            LOG.debug("Layer", id, name, "does not report to support WMTS using RESTful");
-            options.remove("requestEncoding");
-            options.remove("format");
-            options.remove("urlTemplate");
-        }
-
-        JSONObject jscaps = LayerJSONFormatterWMTS.createCapabilitiesJSON(layer, systemCRSs);
-        ml.setCapabilities(jscaps);
-        ml.setCapabilitiesLastUpdated(new Date());
     }
 
     public static void setPropertiesFromCapabilitiesWFS(WFSDataStore data, OskariLayer ml,
