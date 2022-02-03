@@ -381,6 +381,11 @@
 
             <dependency>
                 <groupId>org.oskari</groupId>
+                <artifactId>service-capabilities</artifactId>
+                <version>${oskari.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.oskari</groupId>
                 <artifactId>service-capabilities-update</artifactId>
                 <version>${oskari.version}</version>
             </dependency>
@@ -1210,6 +1215,7 @@
         <module>service-myplaces</module>
         <module>service-rating</module>
         <module>service-admin</module>
+        <module>service-capabilities</module>
         <module>service-capabilities-update</module>
 
         <module>service-search</module>

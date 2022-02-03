@@ -57,6 +57,7 @@ public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
         }
 
         List<JSONObject> tileMatrix = createTileMatrixArray(layer);
+        // FIXME: maybe remove as looks like KEY_TILEMATRIXIDS is not used anywhere
         JSONHelper.putValue(capabilities, KEY_TILEMATRIXIDS, new JSONArray(tileMatrix));
 
         final Set<String> capabilitiesCRSs = getCRSs(layer);

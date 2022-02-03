@@ -21,6 +21,7 @@ import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilitiesHelper;
 import fi.nls.oskari.util.*;
 import org.oskari.admin.LayerCapabilitiesHelper;
+import org.oskari.capabilities.CapabilitiesService;
 import org.oskari.log.AuditLog;
 import fi.nls.oskari.wmts.WMTSCapabilitiesParser;
 import fi.nls.oskari.wmts.domain.WMTSCapabilities;
@@ -448,11 +449,15 @@ public class SaveLayerHandler extends AbstractLayerAdminHandler {
 
     private boolean handleWMTSSpecific(final ActionParameters params, OskariLayer ml, Set<String> systemCRSs) {
         try {
+            CapabilitiesService.updateCapabilities(ml, systemCRSs);
+            // TODO: remove these:
+            /*
             String currentCrs = params.getHttpParam(PARAM_SRS_NAME, ml.getSrs_name());
             String data = CapabilitiesCacheService.getFromService(ml);
             WMTSCapabilities caps = WMTSCapabilitiesParser.parseCapabilities(data);
             OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMTS(caps, ml, systemCRSs);
             capabilitiesService.save(ml, data);
+             */
             return true;
         } catch (Exception ex) {
             LOG.error(ex, "Failed to set capabilities for layer", ml);
