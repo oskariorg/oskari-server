@@ -35,9 +35,10 @@ public class EditUserLayerHandler extends RestActionHandler {
     public void handlePost(ActionParameters params) throws ActionException {
         String mapSrs = params.getHttpParam(ActionConstants.PARAM_SRS);
         final UserLayer userLayer = UserLayerHandlerHelper.getUserLayer(userLayerDbService, params);
-        userLayer.setLocale(params.getHttpParamAsJSON(PARAM_LOCALE));
+        JSONObject payload = params.getPayLoadJSON();
+        userLayer.setLocale(JSONHelper.getJSONObject(payload, PARAM_LOCALE));
         WFSLayerOptions wfsOptions = userLayer.getWFSLayerOptions();
-        wfsOptions.setDefaultFeatureStyle(params.getHttpParamAsJSON(PARAM_STYLE));
+        wfsOptions.setDefaultFeatureStyle(JSONHelper.getJSONObject(payload, PARAM_STYLE));
         try {
             userLayerDbService.updateUserLayer(userLayer);
         } catch (UserLayerException e) {
