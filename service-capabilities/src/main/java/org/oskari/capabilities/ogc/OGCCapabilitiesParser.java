@@ -10,6 +10,7 @@ import org.oskari.capabilities.ServiceConnectInfo;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,7 +28,7 @@ public abstract class OGCCapabilitiesParser extends CapabilitiesParser {
         return CapabilitiesValidator.validateXmlResponse(response, this, version);
     }
 
-    public Map<String, LayerCapabilities> getLayersFromService(ServiceConnectInfo src) throws ServiceException {
+    public Map<String, LayerCapabilities> getLayersFromService(ServiceConnectInfo src) throws IOException, ServiceException {
 
         String capabilitiesUrl = contructCapabilitiesUrl(src.getUrl(), src.getVersion());
         RawCapabilitiesResponse response = fetchCapabilities(capabilitiesUrl, src.getUser(), src.getPass(), getExpectedContentType());

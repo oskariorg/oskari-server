@@ -23,8 +23,6 @@ import fi.nls.oskari.util.*;
 import org.oskari.admin.LayerCapabilitiesHelper;
 import org.oskari.capabilities.CapabilitiesService;
 import org.oskari.log.AuditLog;
-import fi.nls.oskari.wmts.WMTSCapabilitiesParser;
-import fi.nls.oskari.wmts.domain.WMTSCapabilities;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.oskari.permissions.model.*;

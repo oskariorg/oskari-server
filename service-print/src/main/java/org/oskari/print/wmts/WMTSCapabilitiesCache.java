@@ -6,8 +6,8 @@ import fi.nls.oskari.cache.Cache;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheServiceMybatisImpl;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
-import fi.nls.oskari.wmts.WMTSCapabilitiesParser;
-import fi.nls.oskari.wmts.domain.WMTSCapabilities;
+import org.oskari.capabilities.ogc.wmts.WMTSCapabilities;
+import org.oskari.capabilities.ogc.wmts.WMTSCapabilitiesParserHelper;
 import org.oskari.print.request.PrintLayer;
 
 /**
@@ -46,7 +46,7 @@ public class WMTSCapabilitiesCache {
             final String pass = layer.getPassword();
             final OskariLayerCapabilities caps = capabilitiesService.getCapabilities(url, type, version, user, pass);
             final String data = caps.getData();
-            WMTSCapabilities wmtsCaps = WMTSCapabilitiesParser.parseCapabilities(data);
+            WMTSCapabilities wmtsCaps = WMTSCapabilitiesParserHelper.parseCapabilities(data);
             if (caps.getId() == null) {
                 capabilitiesService.save(caps);
             }
