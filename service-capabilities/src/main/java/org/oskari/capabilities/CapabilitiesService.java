@@ -142,7 +142,7 @@ public class CapabilitiesService {
      * @param crs
      * @return  epsg in short syntax
      */
-    private static String shortSyntaxEpsg(String crs) {
+    public static String shortSyntaxEpsg(String crs) {
         if (crs == null) {
             return null;
         }

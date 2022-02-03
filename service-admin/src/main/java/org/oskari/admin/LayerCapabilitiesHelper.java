@@ -11,7 +11,6 @@ import fi.nls.oskari.service.capabilities.OskariLayerCapabilitiesHelper;
 import fi.nls.oskari.wfs.WFSCapabilitiesService;
 import fi.nls.oskari.wms.WMSCapabilitiesService;
 import fi.nls.oskari.wmts.WMTSCapabilitiesService;
-import fi.nls.oskari.wmts.domain.WMTSCapabilities;
 import org.geotools.data.wfs.WFSDataStore;
 import org.oskari.capabilities.CapabilitiesService;
 import org.oskari.maplayer.model.ServiceCapabilitiesResult;

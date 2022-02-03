@@ -7,6 +7,7 @@ import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.oskari.capabilities.CapabilitiesService;
 import org.oskari.capabilities.ogc.LayerStyle;
 import org.oskari.xml.XmlHelper;
 import org.w3c.dom.Element;
@@ -240,37 +241,6 @@ public class WMTSCapabilitiesParserHelper {
         return null;
     }
 
-    public static JSONObject asJSON(WMTSCapabilities caps, String url, String currentCrs) {
-        // start building result
-        JSONObject result = new JSONObject();
-
-        JSONArray layersNode = new JSONArray();
-        JSONHelper.putValue(result, "layers", layersNode);
-        for (WMTSCapabilitiesLayer layer : caps.getLayers()) {
-            JSONObject layerJson = layer.getAsJSON();
-            String matrixsetid = getMatrixSetId(layer.getLinks(), currentCrs);
-            if (matrixsetid == null) {
-                JSONHelper.putValue(layerJson, "title", layer.getTitle() + "  *");
-                JSONHelper.putValue(result, "layersWithRemarks", "true");
-            } else {
-                JSONHelper.putValue(layerJson, "tileMatrixSetId", matrixsetid);
-            }
-            if (!layerJson.has("url")) {
-                JSONHelper.putValue(layerJson, "url", url);
-            }
-            layersNode.put(layerJson);
-
-        }
-
-        JSONObject matrixNode = new JSONObject();
-        JSONHelper.putValue(result, "matrixSets", matrixNode);
-        for (TileMatrixSet matrix : caps.getTileMatrixSets()) {
-            JSONHelper.putValue(matrixNode, matrix.getId(), matrix.getAsJSON());
-        }
-
-        return result;
-    }
-
     /**
      * Get tile matrix set id of current crs
      * @param links
@@ -281,7 +251,9 @@ public class WMTSCapabilitiesParserHelper {
         for (TileMatrixLink link : links) {
             TileMatrixSet tms = link.getTileMatrixSet();
             String tmsCrs = tms.getCrs();
-            String epsg = tmsCrs; // FIXME: ProjectionHelper.shortSyntaxEpsg(tmsCrs);
+            String epsg = CapabilitiesService.shortSyntaxEpsg(tmsCrs);
+            // TODO: ^ was previously ProjectionHelper.shortSyntaxEpsg(tmsCrs);
+            // but we could let it be the long one here if code for printing is updated
             if (currentCrs.equals(epsg)) {
                 return tms.getId();
             }

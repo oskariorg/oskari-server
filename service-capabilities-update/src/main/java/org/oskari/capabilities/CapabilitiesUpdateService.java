@@ -9,7 +9,6 @@ import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.wms.WMSCapabilitiesService;
-import fi.nls.oskari.wmts.domain.WMTSCapabilities;
 import org.geotools.ows.wms.WMSCapabilities;
 import org.oskari.capabilities.ogc.LayerCapabilitiesWMTS;
 
@@ -147,7 +146,6 @@ public class CapabilitiesUpdateService {
 
     private void updateWMTSLayers(List<OskariLayer> layers, Map<String, LayerCapabilities> capabilities,
             Set<String> systemCRSs, List<CapabilitiesUpdateResult> results) {
-        final WMTSCapabilities wmts;
         boolean shouldSaveCapabilities = false;
         for (OskariLayer layer : layers) {
             try {
