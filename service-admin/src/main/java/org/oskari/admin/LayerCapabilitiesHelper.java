@@ -11,8 +11,8 @@ import fi.nls.oskari.service.capabilities.OskariLayerCapabilitiesHelper;
 import fi.nls.oskari.wfs.WFSCapabilitiesService;
 import fi.nls.oskari.wms.WMSCapabilitiesService;
 import fi.nls.oskari.wmts.WMTSCapabilitiesService;
-import fi.nls.oskari.wmts.domain.WMTSCapabilities;
 import org.geotools.data.wfs.WFSDataStore;
+import org.oskari.capabilities.CapabilitiesService;
 import org.oskari.maplayer.model.ServiceCapabilitiesResult;
 import org.oskari.service.wfs3.WFS3Service;
 
@@ -70,8 +70,8 @@ public class LayerCapabilitiesHelper {
                 wmsCapabilities.updateLayerCapabilities(ml, getSystemCRSs());
                 break;
             case OskariLayer.TYPE_WMTS:
-                WMTSCapabilities wmts = wmtsCapabilities.updateCapabilities(ml);
-                OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMTS(wmts, ml, getSystemCRSs());
+                CapabilitiesService.updateCapabilities(ml, getSystemCRSs());
+                // TODO: handle error/update options for requestEncoding if it's required still
                 break;
         }
     }

@@ -6,12 +6,12 @@ import java.util.Set;
 
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.util.PropertyUtil;
+import org.oskari.capabilities.CapabilitiesUpdateResult;
+import org.oskari.capabilities.CapabilitiesUpdateService;
 import org.oskari.log.AuditLog;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.oskari.capabilities.CapabilitiesUpdateResult;
-import org.oskari.capabilities.CapabilitiesUpdateService;
 import org.oskari.service.util.ServiceFactory;
 
 import fi.nls.oskari.annotation.OskariActionRoute;

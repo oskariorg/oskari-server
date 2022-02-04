@@ -9,25 +9,13 @@
         <version>2.7.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>service-capabilities-update</artifactId>
-    <name>Layer Capabilities Update Service</name>
+    <artifactId>service-capabilities</artifactId>
+    <name>Layer Capabilities Service</name>
 
     <dependencies>
         <dependency>
             <groupId>org.oskari</groupId>
-            <artifactId>service-scheduler</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.oskari</groupId>
             <artifactId>service-base</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.oskari</groupId>
-            <artifactId>service-capabilities</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.oskari</groupId>
-            <artifactId>service-map</artifactId>
         </dependency>
         <dependency>
             <groupId>org.oskari</groupId>

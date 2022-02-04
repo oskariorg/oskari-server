@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Future;
 
+import org.oskari.capabilities.ogc.wmts.*;
 import org.oskari.print.request.PrintLayer;
 import org.oskari.print.util.Units;
 import org.oskari.print.wmts.GetTileRequestBuilder;
@@ -18,11 +19,6 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
-import fi.nls.oskari.wmts.domain.ResourceUrl;
-import fi.nls.oskari.wmts.domain.TileMatrix;
-import fi.nls.oskari.wmts.domain.TileMatrixSet;
-import fi.nls.oskari.wmts.domain.WMTSCapabilities;
-import fi.nls.oskari.wmts.domain.WMTSCapabilitiesLayer;
 import org.json.JSONObject;
 
 /**
