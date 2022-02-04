@@ -26,8 +26,9 @@ public class XmlHelper {
         if (xml == null) {
             return null;
         }
-        try {
-            return parseXML(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)));
+        byte[] bytes = xml.trim().getBytes(StandardCharsets.UTF_8);
+        try (InputStream s = new ByteArrayInputStream(bytes)) {
+            return parseXML(s);
         } catch (Exception e) {
             String logged = xml.length() > 30 ? xml.substring(27) + "..." : xml;
             LOGGER.error("Couldnt't parse XML", LOGGER.getCauseMessages(e), logged);
