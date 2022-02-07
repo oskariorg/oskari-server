@@ -114,14 +114,18 @@ public class JSONHelper {
         while(it.hasNext()) {
             String key = (String)it.next();
             try {
-                if (obj.opt(key) instanceof JSONObject){
-                    map.put(key, (T) getObjectAsMap((JSONObject) obj.opt(key)));
+                Object value = obj.opt(key);
+                if (JSONObject.NULL.equals(value)){
+                    map.put(key, null);
                 }
-                else if (obj.opt(key) instanceof JSONArray){
-                    map.put(key, (T) getArrayAsList( (JSONArray) obj.opt(key)));
+                else if (value instanceof JSONObject){
+                    map.put(key, (T) getObjectAsMap((JSONObject) value));
+                }
+                else if (value instanceof JSONArray){
+                    map.put(key, (T) getArrayAsList( (JSONArray) value));
                 }
                 else {
-                    map.put(key, (T) obj.opt(key));
+                    map.put(key, (T) value);
                 }
             }
             catch (Exception e) {
