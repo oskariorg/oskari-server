@@ -1,7 +1,11 @@
 package fi.nls.oskari.util;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.json.JSONObject;
 import org.junit.Test;
+
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -71,65 +75,21 @@ public class JSONHelperTest {
         assertTrue("Inserting inner object should be successful", JSONHelper.putValue(obj, "inner", innerObj));
         assertEquals("JSONObject 'inner' should return innerObj", JSONHelper.getJSONObject(obj, "inner"), innerObj);
     }
-
     @Test
-    public void testGetJSONArray() throws Exception {
+    public void testNullValueForGetObjectAsMap() throws Exception {
+        String input = "{'first':'a','second':null}".replace('\'', '"');
+        JSONObject obj = JSONHelper.createJSONObject(input);
 
-    }
+        Map<String, Object> map = JSONHelper.getObjectAsMap(obj);
+        assertNull("Should have null value", map.get("second"));
 
-    @Test
-    public void testGetEmptyIfNull() throws Exception {
+        String fromJSONObject = obj.toString();
+        assertEquals("toString() should match", input, fromJSONObject);
 
-    }
-
-    @Test
-    public void testGetStringFromJSON() throws Exception {
-
-    }
-/*
-    @Test
-    public void testPutValue() throws Exception {
-
-    }
-
-    @Test
-    public void testPutValue() throws Exception {
-
-    }
-
-    @Test
-    public void testPutValue() throws Exception {
-
-    }
-
-    @Test
-    public void testPutValue() throws Exception {
-
-    }
-
-    @Test
-    public void testPutValue() throws Exception {
-
-    }
-
-    @Test
-    public void testPutValue() throws Exception {
-
-    }
-
-    @Test
-    public void testPutValue() throws Exception {
-
-    }
-*/
-    @Test
-    public void testCreateJSONArray() throws Exception {
-
-    }
-
-    @Test
-    public void testIsEqual() throws Exception {
-
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+        String fromMapByJackson = mapper.writeValueAsString(map);
+        assertEquals("Jackson output should match", input, fromMapByJackson);
     }
 
     @Test
