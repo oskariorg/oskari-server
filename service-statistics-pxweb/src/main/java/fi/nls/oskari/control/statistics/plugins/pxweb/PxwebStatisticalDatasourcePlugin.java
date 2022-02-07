@@ -175,8 +175,9 @@ public class PxwebStatisticalDatasourcePlugin extends StatisticalDatasourcePlugi
             final HttpURLConnection con = IOHelper.getConnection(url);
             IOHelper.writeHeader(con, IOHelper.HEADER_CONTENTTYPE, IOHelper.CONTENT_TYPE_JSON + ";  charset=utf-8");
             IOHelper.writeToConnection(con, payload.toString().getBytes(IOHelper.CHARSET_UTF8));
-            if (con.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                throw new APIException("Couldn't connect to API at " + url);
+            int respCode = con.getResponseCode();
+            if (respCode != HttpURLConnection.HTTP_OK) {
+                throw new APIException("Couldn't connect to API. Got code '" + respCode + "' from " + url);
             }
             final String data = IOHelper.readString(con);
             JSONObject json = JSONHelper.createJSONObject(data);
