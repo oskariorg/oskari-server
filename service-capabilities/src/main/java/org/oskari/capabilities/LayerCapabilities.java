@@ -20,9 +20,15 @@ public class LayerCapabilities {
         this.title = title;
     }
 
+    public void setStyles(List<LayerStyle> styles) {
+        setStyles(styles, null);
+    }
     public void setStyles(List<LayerStyle> styles, String defaultStyle) {
         this.styles = styles;
         this.defaultStyle = defaultStyle;
+        if (defaultStyle == null && !styles.isEmpty()) {
+            this.defaultStyle = styles.get(0).getName();
+        }
     }
     public void setSrs(Set<String> supported) {
         this.srs = supported;
