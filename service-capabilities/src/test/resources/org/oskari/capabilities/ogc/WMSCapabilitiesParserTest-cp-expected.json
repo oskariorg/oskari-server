@@ -1,0 +1,48 @@
+{
+  "srs": [
+    "EPSG:3067"
+  ],
+  "defaultStyle": "CP.CadastralParcel.Default",
+  "name": "CP.CadastralParcel",
+  "styles": [
+    {
+      "default": false,
+      "legend": null,
+      "name": "CP.CadastralParcel.Default",
+      "title": "Cadastral Parcel Default Style"
+    },
+    {
+      "default": false,
+      "legend": null,
+      "name": "CP.CadastralParcel.LabelOnReferencePoint",
+      "title": "Cadastral Parcel - with label on reference point"
+    },
+    {
+      "default": false,
+      "legend": null,
+      "name": "CP.CadastralParcel.ReferencePointOnly",
+      "title": "Cadastral Parcel - reference point only"
+    },
+    {
+      "default": false,
+      "legend": null,
+      "name": "CP.CadastralParcel.OutlinesOnly",
+      "title": "Cadastral Parcel - outlines only"
+    }
+  ],
+  "title": "Cadastral Parcel",
+  "typeSpecific": {
+    "keywords": [
+      "Cadastral Parcel"
+    ],
+    "bbox": {
+      "minY": 59.36205414098515,
+      "minX": 15.608220469655935,
+      "srs": "EPSG:4326",
+      "maxY": 70.09468368748001,
+      "maxX": 33.107629330539034
+    },
+    "layers": [],
+    "desc": "Areas defined by cadastral registers or equivalent."
+  }
+}
