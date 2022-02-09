@@ -69,7 +69,7 @@ public class XmlHelper {
     }
 
     // if namespace declarations are missing the localname isn't working and we need to split it manually
-    private static String getLocalName(Element el) {
+    public static String getLocalName(Element el) {
         String loc = el.getLocalName();
         if (loc != null) {
             return loc;
