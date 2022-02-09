@@ -81,11 +81,10 @@ public class WFS3Service {
 
     private static <T> T load(String url, String user, String pass, Class<T> clazz)
             throws WFS3Exception, IOException {
-        HttpURLConnection conn = IOHelper.getConnection(url, user, pass);
         Map<String, String> headers = new HashMap<>();
         headers.put("Accept", "application/json");
-        conn = IOHelper.followRedirect(conn, user, pass, headers, 3);
-
+        HttpURLConnection conn = IOHelper.getConnection(url, user, pass, null, headers);
+        conn = IOHelper.followRedirect(conn, user, pass, null, headers, 3);
         int sc = conn.getResponseCode();
         if (sc == 200) {
             try (InputStream in = conn.getInputStream()) {
