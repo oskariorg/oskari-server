@@ -76,36 +76,49 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
         if(capabilities == null) {
             return;
         }
-
+        // TODO: only admin/server needs the gfi formats info -> remove?
         JSONHelper.putValue(layerJson, KEY_FORMATS, capabilities.optJSONObject(KEY_FORMATS));
 
         final JSONObject attrs = layer.getAttributes();
-        if(attrs != null && attrs.has(KEY_ISQUERYABLE)) {
+        if (attrs != null && attrs.has(KEY_ISQUERYABLE)) {
             // attributes can be used to force GFI for layer even if capabilities allow it or enable it not
             JSONHelper.putValue(layerJson, KEY_ISQUERYABLE, attrs.optBoolean(KEY_ISQUERYABLE));
-        } else {
+        } else if (capabilities.has(KEY_ISQUERYABLE)) {
             JSONHelper.putValue(layerJson, KEY_ISQUERYABLE, capabilities.optBoolean(KEY_ISQUERYABLE));
+        } else if (capabilities.has("typeSpecific")) {
+            JSONHelper.putValue(layerJson, KEY_ISQUERYABLE, capabilities.optJSONObject("typeSpecific").optBoolean(KEY_ISQUERYABLE));
         }
 
         // Do not override version, if already available
-        if(!layerJson.has(KEY_VERSION)) {
+        if (!layerJson.has(KEY_VERSION)) {
+            // TODO: where is this needed?
             JSONHelper.putValue(layerJson, KEY_VERSION, JSONHelper.getStringFromJSON(capabilities, KEY_VERSION, null));
         }
 
         // copy time from capabilities to attributes
         // timedata is merged into attributes  (times:{start:,end:,interval:}  or times: []
-        // only reason for this is that admin can see the values offered by service
-        if(capabilities.has(KEY_TIMES) && isTimeseriesLayer(layer)) {
+        // frontend uses this to detect if layer is a timeseries and construct the UI based on this
+        Object times = getTimesFromCapabilities(capabilities);
+        if (times != null && isTimeseriesLayer(layer)) {
             JSONHelper.putValue(layerJson, KEY_ATTRIBUTES, JSONHelper.merge(
                     JSONHelper.getJSONObject(layerJson, KEY_ATTRIBUTES),
-                    JSONHelper.createJSONObject(KEY_TIMES, JSONHelper.get(capabilities, KEY_TIMES))));
+                    JSONHelper.createJSONObject(KEY_TIMES, times)));
         }
+    }
 
+    private Object getTimesFromCapabilities(JSONObject capabilities) {
+        if (capabilities.has(KEY_TIMES)) {
+            return JSONHelper.get(capabilities, KEY_TIMES);
+        }
+        if (capabilities.has("typeSpecific")) {
+            return JSONHelper.get(capabilities.optJSONObject("typeSpecific"), KEY_TIMES);
+        }
+        return null;
     }
 
     private Boolean isTimeseriesLayer(final OskariLayer layer) {
         JSONObject options = layer.getOptions();
-        if(options != null && options.has("timeseries")) {
+        if (options != null && options.has("timeseries")) {
             JSONObject timeseriesOptions = options.optJSONObject("timeseries");
             if(timeseriesOptions != null && timeseriesOptions.has("ui")) {
                 String ui = timeseriesOptions.optString("ui");
