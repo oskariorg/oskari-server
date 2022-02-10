@@ -3,18 +3,13 @@ package fi.nls.oskari.myplaces;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterMYPLACES;
-import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWFS;
-import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWMS;
 import fi.nls.oskari.service.OskariComponent;
-import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import fi.nls.oskari.wms.WMSCapabilities;
 import org.json.JSONObject;
 import org.oskari.permissions.model.Resource;
 
@@ -30,10 +25,6 @@ public abstract class MyPlacesService extends OskariComponent {
     private static final int BASE_WFS_LAYER_ID = PropertyUtil.getOptional(MYPLACES_BASELAYER_ID, -1);
     private static final OskariLayerService mapLayerService = new OskariLayerServiceMybatisImpl();
 
-    private static String MYPLACES_WMS_NAME = PropertyUtil.get("myplaces.xmlns.prefix", "ows") + ":my_places_categories";
-    private static String MYPLACES_ACTUAL_WMS_URL = PropertyUtil.get("myplaces.wms.url");
-    private static final LayerJSONFormatterWMS JSON_FORMATTER_WMS = new LayerJSONFormatterWMS();
-    private static final LayerJSONFormatterWFS JSON_FORMATTER_WFS = new LayerJSONFormatterWFS();
     private static final LayerJSONFormatterMYPLACES FORMATTER = new LayerJSONFormatterMYPLACES();
     private static final Logger LOGGER = LogFactory.getLogger(MyPlacesService.class);
 
@@ -103,75 +94,4 @@ public abstract class MyPlacesService extends OskariComponent {
         return FORMATTER.getJSON(getBaseLayer(), mpLayer, srs, lang);
     }
 
-    public JSONObject getCategoryAsWmsLayerJSON(final MyPlaceCategory mpLayer,
-                                                final String lang, final boolean useDirectURL,
-                                                final String uuid, final boolean modifyURLs) {
-
-        final OskariLayer layer = new OskariLayer();
-        layer.setName(MYPLACES_WMS_NAME);
-        layer.setType(OskariLayer.TYPE_WMS);
-        String name = mpLayer.getCategory_name();
-        if (name == null || name.isEmpty())  {
-            name = getLayerUIName(lang);
-        }
-        layer.setName(lang, name);
-
-        /*
-Version 1.1.0 works better as it has fixed coordinate order, the OL3 default 1.3.0 causes problems with some setups like:
-ERROR org.geoserver.ows -
-java.lang.RuntimeException: Unable to encode filter [[ geometry bbox POLYGON ((4913648.8700826 4969613.8817587, 4913648.8700826 4970013.1540413, 4914182.3089174 4970013.1540413, 4914182.3089174 4969613.8817587, 4913648.8700826 4969613.88
-17587)) ] AND [[ category_id = 186 ] AND [ uuid = 8e1cd426-6d91-26-23 ]]]
-        at org.geoserver.wfs.GetFeature.encodeQueryAsKvp(GetFeature.java:892)
-        at org.geoserver.wfs.GetFeature.buildKvpFromRequest(GetFeature.java:814)
-         */
-        layer.setVersion("1.1.0");
-        layer.setTitle(lang, mpLayer.getPublisher_name());
-        layer.setOpacity(50);
-        JSONObject options = JSONHelper.createJSONObject("singleTile", true);
-        JSONHelper.putValue(options, "transitionEffect", JSONObject.NULL);
-        layer.setOptions(options);
-
-        // if useDirectURL -> geoserver URL
-        if (useDirectURL) {
-            layer.setUrl(MYPLACES_ACTUAL_WMS_URL +
-                    "(uuid='" + uuid + "'+OR+publisher_name+IS+NOT+NULL)+AND+category_id=" + mpLayer.getId());
-        } else {
-            layer.setUrl(MYPLACES_CLIENT_WMS_URL + mpLayer.getId() + "&");
-        }
-
-        final WMSCapabilities capabilities = new WMSCapabilities();
-        // enable gfi
-        capabilities.setQueryable(true);
-
-        JSONObject myPlaceLayer = JSON_FORMATTER_WMS.getJSON(layer, lang, modifyURLs, null, capabilities);
-        // flag with metaType for frontend
-        JSONHelper.putValue(myPlaceLayer, "metaType", "published");
-        JSONHelper.putValue(myPlaceLayer, "id", MYPLACES_LAYERID_PREFIX + mpLayer.getId());
-        return myPlaceLayer;
-    }
-
-    public JSONObject getCategoryAsWfsLayerJSON(final MyPlaceCategory mpLayer, final String lang) {
-
-        final OskariLayer layer = new OskariLayer();
-        layer.setName(MYPLACES_WMS_NAME);
-        layer.setType(OskariLayer.TYPE_WFS);
-        String name = mpLayer.getCategory_name();
-        if (name == null || name.isEmpty())  {
-            name = getLayerUIName(lang);
-        }
-        layer.setName(lang, name);
-        layer.setVersion("1.1.0");
-        layer.setTitle(lang, mpLayer.getPublisher_name());
-        layer.setOpacity(50);
-        WFSLayerOptions wfsOpts = mpLayer.getWFSLayerOptions();
-        OskariLayer base = getBaseLayer();
-        wfsOpts.injectBaseLayerOptions(base.getOptions());
-        layer.setOptions(wfsOpts.getOptions());
-
-        JSONObject myPlaceLayer = JSON_FORMATTER_WFS.getJSON(layer, lang, false, null);
-        // flag with metaType for frontend
-        JSONHelper.putValue(myPlaceLayer, "metaType", "published");
-        JSONHelper.putValue(myPlaceLayer, "id", MYPLACES_LAYERID_PREFIX + mpLayer.getId());
-        return myPlaceLayer;
-    }
 }

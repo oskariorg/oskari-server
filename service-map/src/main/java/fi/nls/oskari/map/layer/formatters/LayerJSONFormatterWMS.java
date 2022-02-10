@@ -64,19 +64,6 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
         return layerJson;
     }
 
-    public JSONObject getJSON(OskariLayer layer,
-                              final String lang,
-                              final boolean isSecure,
-                              final String crs,
-                              final WebMapService capabilities) {
-
-        final JSONObject layerJson = getJSON(layer, lang, isSecure, crs);
-        final JSONObject capsJSON = createCapabilitiesJSON(capabilities);
-        includeCapabilitiesInfo(layerJson, layer, capsJSON);
-
-        return layerJson;
-    }
-
     /**
      * Populate JSON with capabilities values
      * @param layerJson
