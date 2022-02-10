@@ -10,7 +10,6 @@ import org.w3c.dom.Element;
 
 import javax.xml.stream.XMLStreamException;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -71,6 +70,11 @@ public class WMSCapsParser1_3_0 extends WMSCapsParser {
             latlonBox = getBestMatch(boxes);
         }
         value.setBbox(latlonBox);
+
+        value.setMetadataUrl(getMetadataUrl(layer));
+        value.setMinScale(XmlHelper.getChildValue(layer, "MinScaleDenominator"));
+        value.setMaxScale(XmlHelper.getChildValue(layer, "MaxScaleDenominator"));
+
         // recurse to child layers
         value.setLayers(parseLayers(layer, infoformats));
         // TODO: time dimension
@@ -94,5 +98,17 @@ public class WMSCapsParser1_3_0 extends WMSCapsParser {
         double maxX = Double.parseDouble(XmlHelper.getChildValue(boundingBox, "eastBoundLongitude"));
         double maxY = Double.parseDouble(XmlHelper.getChildValue(boundingBox, "northBoundLatitude"));
         return new BoundingBox(minX, maxX, minY, maxY, defaultSrs);
+    }
+
+    private static String getMetadataUrl(Element layer) {
+        Element metadataEl = XmlHelper.getFirstChild(layer, "MetadataURL");
+        if (metadataEl == null) {
+            return null;
+        }
+        Element onlineResource = XmlHelper.getFirstChild(metadataEl, "OnlineResource");
+        if (onlineResource == null) {
+            return null;
+        }
+        return XmlHelper.getAttributeValue(onlineResource, "href");
     }
 }

@@ -12,6 +12,10 @@ public class LayerCapabilitiesWMS extends LayerCapabilitiesOGC {
     public static final String KEYWORDS = "keywords";
     public static final String BBOX = "bbox";
     public static final String LAYERS = "layers";
+    public static final String PARENT = "parent";
+    public static final String MIN_SCALE = "minScale";
+    public static final String MAX_SCALE = "maxScale";
+    public static final String METADATA_URL = "metadataUrl";
 
     public LayerCapabilitiesWMS(String name, String title) {
         super(name, title);
@@ -20,6 +24,38 @@ public class LayerCapabilitiesWMS extends LayerCapabilitiesOGC {
     @JsonIgnore
     public boolean isGroupLayer() {
         return this.getName() == null;
+    }
+
+    public void setParent(String parent) {
+        if (parent != null) {
+            addCapabilityData(PARENT, parent);
+        }
+    }
+    public void setMetadataUrl(String url) {
+        if (url != null) {
+            addCapabilityData(METADATA_URL, url);
+        }
+    }
+    public void setMinScale(String scale) {
+        if (scale == null) {
+            return;
+        }
+        try {
+            addCapabilityData(MIN_SCALE, Double.parseDouble(scale));
+        } catch (Exception ignored) {}
+    }
+    public void setMaxScale(String scale) {
+        if (scale == null) {
+            return;
+        }
+        try {
+            addCapabilityData(MAX_SCALE, Double.parseDouble(scale));
+        } catch (Exception ignored) {}
+    }
+
+    @JsonIgnore
+    public String getParent() {
+        return (String) getTypeSpecific().get(PARENT);
     }
 
     public void setDescription(String description) {

@@ -1,0 +1,35 @@
+{
+  "srs": [],
+  "defaultStyle": "default",
+  "name": "muinaismuistot",
+  "styles": [
+    {
+      "default": false,
+      "legend": "http://kartat.lounaispaikka.fi/ms6/maakuntakaavat/kymenlaakso/kymenlaakso_maakuntakaava_maaseutu_ms6?language=fin&version=1.3.0&service=WMS&request=GetLegendGraphic&sld_version=1.1.0&layer=muinaismuistot&format=image/png&STYLE=default",
+      "name": "default",
+      "title": "default"
+    }
+  ],
+  "title": "Muinaismuistot / Fornminnesobjekt",
+  "typeSpecific": {
+    "parent": "muinaismuistot",
+    "metadataUrl": "http://www.paikkatietohakemisto.fi/geonetwork/srv/fi/metadata.show.portti.metaMultiLingual?uuid=93a384df-31da-40fa-a001-2b3bb79c955c",
+    "keywords": [
+      "maaseutu",
+      "muinaismuisto",
+      "kaava",
+      "kymenlaakso"
+    ],
+    "maxScale": 150000,
+    "bbox": {
+      "minY": 60.1681,
+      "minX": 25.9856,
+      "srs": "EPSG:4326",
+      "maxY": 61.2928,
+      "maxX": 28.0104
+    },
+    "layers": [],
+    "minScale": 100000,
+    "desc": "Kymenlaakson maakuntakaava, maaseutu ja luonto: Muinaismuistot"
+  }
+}

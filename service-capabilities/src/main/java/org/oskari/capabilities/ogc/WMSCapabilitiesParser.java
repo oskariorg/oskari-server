@@ -42,23 +42,23 @@ public class WMSCapabilitiesParser extends OGCCapabilitiesParser {
         try {
             List<LayerCapabilitiesWMS> layers = WMSCapsParser.parseCapabilities(xml);
             Map<String, LayerCapabilities> value = new HashMap<>();
-            addLayers(value, layers);
+            addLayers(value, layers, null);
             return value;
         } catch (Exception e) {
             throw new ServiceException("Unable to parse layers for WMS capabilities", e);
         }
     }
 
-    private void addLayers(Map<String, LayerCapabilities> value, List<LayerCapabilitiesWMS> layers) {
+    private void addLayers(Map<String, LayerCapabilities> value, List<LayerCapabilitiesWMS> layers, String parent) {
         if (layers == null) {
             return;
         }
         layers.stream().forEach(l -> {
+            l.setParent(parent);
             if (!l.isGroupLayer()) {
                 value.put(l.getName(), l);
-            } else {
-                addLayers(value, l.getLayers());
             }
+            addLayers(value, l.getLayers(), l.getName());
         });
     }
 }

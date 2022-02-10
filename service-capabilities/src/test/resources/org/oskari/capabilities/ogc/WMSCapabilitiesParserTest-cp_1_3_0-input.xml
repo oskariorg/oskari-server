@@ -205,7 +205,7 @@
         </Abstract>
           <LegendURL width="22" height="40">
             <Format>image/png</Format>
-            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://fake.address/inspire-wms/CP/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=CP.CadastralParcel"/>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://fake.address/inspire-wms/CP/wms?request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=CP.CadastralParcel"/>
           </LegendURL>
         </Style>
         <Style>
@@ -215,7 +215,7 @@
           </Abstract>
           <LegendURL width="22" height="40">
             <Format>image/png</Format>
-            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://fake.address/inspire-wms/CP/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=CP.CadastralParcel&amp;style=CP.CadastralParcel.LabelOnReferencePoint"/>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://fake.address/inspire-wms/CP/wms?request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=CP.CadastralParcel&amp;style=CP.CadastralParcel.LabelOnReferencePoint"/>
           </LegendURL>
         </Style>
         <Style>
@@ -225,7 +225,7 @@
           </Abstract>
           <LegendURL width="20" height="20">
             <Format>image/png</Format>
-            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://fake.address/inspire-wms/CP/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=CP.CadastralParcel&amp;style=CP.CadastralParcel.ReferencePointOnly"/>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://fake.address/inspire-wms/CP/wms?request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=CP.CadastralParcel&amp;style=CP.CadastralParcel.ReferencePointOnly"/>
           </LegendURL>
         </Style>
         <Style>
@@ -235,7 +235,7 @@
           </Abstract>
           <LegendURL width="20" height="20">
             <Format>image/png</Format>
-            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://fake.address/inspire-wms/CP/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=CP.CadastralParcel&amp;style=CP.CadastralParcel.OutlinesOnly"/>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://fake.address/inspire-wms/CP/wms?request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=CP.CadastralParcel&amp;style=CP.CadastralParcel.OutlinesOnly"/>
           </LegendURL>
         </Style>
         <MinScaleDenominator>1.0</MinScaleDenominator>

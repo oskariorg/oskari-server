@@ -1,0 +1,30 @@
+{
+  "srs": [],
+  "defaultStyle": "A_SeaSurfaceTemperature",
+  "name": "arctic_sdi:SeaSurfaceTemperature",
+  "styles": [
+    {
+      "default": false,
+      "legend": "http://real.address.hidden/geoserver/wms?request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=SeaSurfaceTemperature",
+      "name": "A_SeaSurfaceTemperature",
+      "title": "Simple style for Snow Mosaic"
+    }
+  ],
+  "title": "SeaSurfaceTemperature",
+  "typeSpecific": {
+    "keywords": [
+      "WCS",
+      "SeaSurfaceTemperature",
+      "ImageMosaic"
+    ],
+    "bbox": {
+      "minY": 32.536799480530846,
+      "minX": -180,
+      "srs": "EPSG:4326",
+      "maxY": 90,
+      "maxX": 180
+    },
+    "layers": [],
+    "desc": ""
+  }
+}

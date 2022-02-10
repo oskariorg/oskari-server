@@ -7,34 +7,36 @@
   "styles": [
     {
       "default": false,
-      "legend": null,
+      "legend": "https://fake.address/inspire-wms/CP/wms?request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=CP.CadastralParcel",
       "name": "CP.CadastralParcel.Default",
       "title": "Cadastral Parcel Default Style"
     },
     {
       "default": false,
-      "legend": null,
+      "legend": "https://fake.address/inspire-wms/CP/wms?request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=CP.CadastralParcel&style=CP.CadastralParcel.LabelOnReferencePoint",
       "name": "CP.CadastralParcel.LabelOnReferencePoint",
       "title": "Cadastral Parcel - with label on reference point"
     },
     {
       "default": false,
-      "legend": null,
+      "legend": "https://fake.address/inspire-wms/CP/wms?request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=CP.CadastralParcel&style=CP.CadastralParcel.ReferencePointOnly",
       "name": "CP.CadastralParcel.ReferencePointOnly",
       "title": "Cadastral Parcel - reference point only"
     },
     {
       "default": false,
-      "legend": null,
+      "legend": "https://fake.address/inspire-wms/CP/wms?request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=CP.CadastralParcel&style=CP.CadastralParcel.OutlinesOnly",
       "name": "CP.CadastralParcel.OutlinesOnly",
       "title": "Cadastral Parcel - outlines only"
     }
   ],
   "title": "Cadastral Parcel",
   "typeSpecific": {
+    "metadataUrl": "http://www.paikkatietohakemisto.fi/geonetwork/srv/en/csw?request=GetRecordById&service=CSW&id=34af5151-8372-495c-a423-4f8de4bde152&elementSetName=full&outputSchema=http://www.isotc211.org/2005/gmd&version=2.0.2",
     "keywords": [
       "Cadastral Parcel"
     ],
+    "maxScale": 60000,
     "bbox": {
       "minY": 59.36205414098515,
       "minX": 15.608220469655935,
@@ -43,6 +45,7 @@
       "maxX": 33.107629330539034
     },
     "layers": [],
+    "minScale": 1,
     "desc": "Areas defined by cadastral registers or equivalent."
   }
 }

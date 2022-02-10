@@ -10,6 +10,7 @@ import org.w3c.dom.Element;
 
 import javax.xml.stream.XMLStreamException;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -69,6 +70,11 @@ public class WMSCapsParser1_1_1 extends WMSCapsParser {
             latlonBox = getBestMatch(boxes);
         }
         value.setBbox(latlonBox);
+
+        // <ScaleHint min="1.0" max="60000.0"/>
+        Map<String, String> scaleHints = XmlHelper.getAttributesAsMap(XmlHelper.getFirstChild(layer, "ScaleHint"));
+        value.setMinScale(scaleHints.get("min"));
+        value.setMaxScale(scaleHints.get("max"));
         // recurse to child layers
         value.setLayers(parseLayers(layer, infoformats));
         // TODO: time dimension
