@@ -12,6 +12,13 @@
   ],
   "title": "SeaSurfaceTemperature",
   "typeSpecific": {
+    "infoFormats": [
+      "text/html",
+      "application/json",
+      "application/vnd.ogc.gml/3.1.1",
+      "application/vnd.ogc.gml",
+      "text/plain"
+    ],
     "keywords": [
       "WCS",
       "SeaSurfaceTemperature",
@@ -24,6 +31,7 @@
       "maxY": 90,
       "maxX": 180
     },
+    "isQueryable": true,
     "layers": [],
     "desc": ""
   }

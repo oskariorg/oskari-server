@@ -14,6 +14,11 @@
   "typeSpecific": {
     "parent": "muinaismuistot",
     "metadataUrl": "http://www.paikkatietohakemisto.fi/geonetwork/srv/fi/metadata.show.portti.metaMultiLingual?uuid=93a384df-31da-40fa-a001-2b3bb79c955c",
+    "infoFormats": [
+      "text/html",
+      "application/vnd.ogc.gml",
+      "text/plain"
+    ],
     "keywords": [
       "maaseutu",
       "muinaismuisto",
@@ -28,6 +33,7 @@
       "maxY": 61.2928,
       "maxX": 28.0104
     },
+    "isQueryable": true,
     "layers": [],
     "minScale": 100000,
     "desc": "Kymenlaakson maakuntakaava, maaseutu ja luonto: Muinaismuistot"

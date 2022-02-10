@@ -53,7 +53,7 @@ public class WMSCapsParser1_1_1 extends WMSCapsParser {
         value.setSrs(XmlHelper.getChildElements(layer, "SRS")
                 .map(el -> el.getTextContent())
                 .collect(Collectors.toSet()));
-        boolean isQueryable = ConversionHelper.getBoolean(XmlHelper.getAttributeValue(layer, "queryable"), false);
+        boolean isQueryable = "1".equals(XmlHelper.getAttributeValue(layer, "queryable"));
         if (isQueryable) {
             value.setInfoFormats(infoformats);
         }

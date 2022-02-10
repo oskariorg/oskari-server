@@ -51,7 +51,7 @@ public class WMSCapabilitiesParserTest {
         Map<String, LayerCapabilities> layers = parser.parseLayers(xml);
         assertEquals("Should find layers", 2, layers.size());
         JSONObject json = CapabilitiesService.toJSON(layers.values().iterator().next(), SYSTEM_CRS);
-        System.out.println(json);
+        // System.out.println(json);
         assertTrue("JSON should match", JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)));
     }
 
