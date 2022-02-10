@@ -69,7 +69,7 @@ public class XmlHelper {
     }
 
     // if namespace declarations are missing the localname isn't working and we need to split it manually
-    public static String getLocalName(Element el) {
+    public static String getLocalName(Node el) {
         String loc = el.getLocalName();
         if (loc != null) {
             return loc;
@@ -144,7 +144,7 @@ public class XmlHelper {
         NamedNodeMap attrs = elem.getAttributes();
         for (int i = 0 ; i < attrs.getLength(); i++) {
             Node node = attrs.item(i);
-            attributes.put(node.getNodeName(), node.getNodeValue());
+            attributes.put(getLocalName(node), node.getNodeValue());
         }
         return attributes;
     }
