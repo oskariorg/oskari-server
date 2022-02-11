@@ -17,6 +17,7 @@ public class LayerCapabilitiesWMS extends LayerCapabilitiesOGC {
     public static final String MIN_SCALE = "minScale";
     public static final String MAX_SCALE = "maxScale";
     public static final String METADATA_URL = "metadataUrl";
+    public static final String TIMES = "times";
 
     public LayerCapabilitiesWMS(String name, String title) {
         super(name, title);
@@ -25,6 +26,12 @@ public class LayerCapabilitiesWMS extends LayerCapabilitiesOGC {
     @JsonIgnore
     public boolean isGroupLayer() {
         return this.getName() == null;
+    }
+
+    public void setTimes(Object times) {
+        if (times != null) {
+            addCapabilityData(TIMES, times);
+        }
     }
 
     public void setVersion(String ver) {
