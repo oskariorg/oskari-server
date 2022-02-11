@@ -1,8 +1,5 @@
 package org.oskari.capabilities.ogc.wms;
 
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.util.ConversionHelper;
 import org.oskari.capabilities.ogc.BoundingBox;
 import org.oskari.capabilities.ogc.LayerCapabilitiesWMS;
 import org.oskari.xml.XmlHelper;
@@ -17,7 +14,7 @@ import java.util.stream.Collectors;
 public class WMSCapsParser1_1_1 extends WMSCapsParser {
 
     public static final String ROOT_EL = "WMT_MS_Capabilities";
-    private static final Logger LOG = LogFactory.getLogger(WMSCapsParser1_1_1.class);
+    public static final String VERSION = "1.1.1";
 
     public static  List<LayerCapabilitiesWMS> parseCapabilities(Element doc)
             throws IllegalArgumentException, XMLStreamException {
@@ -50,6 +47,7 @@ public class WMSCapsParser1_1_1 extends WMSCapsParser {
         }
         String title = XmlHelper.getChildValue(layer, "Title");
         LayerCapabilitiesWMS value = new LayerCapabilitiesWMS(name, title);
+        value.setVersion(VERSION);
         value.setSrs(XmlHelper.getChildElements(layer, "SRS")
                 .map(el -> el.getTextContent())
                 .collect(Collectors.toSet()));

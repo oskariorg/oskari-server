@@ -7,6 +7,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.oskari.capabilities.CapabilitiesService;
 import org.oskari.capabilities.LayerCapabilities;
+import org.oskari.capabilities.ogc.wms.WMSCapsParser1_1_1;
+import org.oskari.capabilities.ogc.wms.WMSCapsParser1_3_0;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -35,6 +37,8 @@ public class WMSCapabilitiesParserTest {
         assertEquals("Should find layers", 2, layers.size());
         JSONObject json = CapabilitiesService.toJSON(layers.values().iterator().next(), SYSTEM_CRS);
         JSONObject expectedJSON = JSONHelper.createJSONObject(expected);
+        // Check and remove version as it is different on expected between 1.1.1 and 1.3.0 input
+        assertEquals("Check version", WMSCapsParser1_1_1.VERSION, json.optJSONObject("typeSpecific").remove("version"));
         // Note! 1.1.1 doesn't have the metadata url
         expectedJSON.optJSONObject("typeSpecific").remove("metadataUrl");
         // System.out.println(json);
@@ -51,6 +55,8 @@ public class WMSCapabilitiesParserTest {
         Map<String, LayerCapabilities> layers = parser.parseLayers(xml);
         assertEquals("Should find layers", 2, layers.size());
         JSONObject json = CapabilitiesService.toJSON(layers.values().iterator().next(), SYSTEM_CRS);
+        // Check and remove version as it is different on expected between 1.1.1 and 1.3.0 input
+        assertEquals("Check version", WMSCapsParser1_3_0.VERSION, json.optJSONObject("typeSpecific").remove("version"));
         // System.out.println(json);
         assertTrue("JSON should match", JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)));
     }
@@ -65,6 +71,8 @@ public class WMSCapabilitiesParserTest {
         Map<String, LayerCapabilities> layers = parser.parseLayers(xml);
         assertEquals("Should find layers", 9, layers.size());
         JSONObject json = CapabilitiesService.toJSON(layers.get("arctic_sdi:SeaSurfaceTemperature"), SYSTEM_CRS);
+        // Check and remove version as it is different on expected between 1.1.1 and 1.3.0 input
+        assertEquals("Check version", WMSCapsParser1_1_1.VERSION, json.optJSONObject("typeSpecific").remove("version"));
         // System.out.println(json);
         assertTrue("JSON should match", JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)));
     }
@@ -79,6 +87,8 @@ public class WMSCapabilitiesParserTest {
         Map<String, LayerCapabilities> layers = parser.parseLayers(xml);
         assertEquals("Should find layers", 9, layers.size());
         JSONObject json = CapabilitiesService.toJSON(layers.get("arctic_sdi:SeaSurfaceTemperature"), SYSTEM_CRS);
+        // Check and remove version as it is different on expected between 1.1.1 and 1.3.0 input
+        assertEquals("Check version", WMSCapsParser1_3_0.VERSION, json.optJSONObject("typeSpecific").remove("version"));
         // System.out.println(json);
         assertTrue("JSON should match", JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)));
     }
@@ -94,6 +104,8 @@ public class WMSCapabilitiesParserTest {
         assertEquals("Should find a layer", 25, layers.size());
 
         JSONObject json = CapabilitiesService.toJSON(layers.get("muinaismuistot"), SYSTEM_CRS);
+        // Check and remove version as it is different on expected between 1.1.1 and 1.3.0 input
+        assertEquals("Check version", WMSCapsParser1_3_0.VERSION, json.optJSONObject("typeSpecific").remove("version"));
         // System.out.println(json);
         assertTrue("JSON should match", JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)));
     }

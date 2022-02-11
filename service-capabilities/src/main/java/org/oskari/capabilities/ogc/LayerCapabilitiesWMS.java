@@ -8,6 +8,7 @@ import java.util.Set;
 
 public class LayerCapabilitiesWMS extends LayerCapabilitiesOGC {
 
+    public static final String VERSION = "version";
     public static final String DESCRIPTION = "desc";
     public static final String KEYWORDS = "keywords";
     public static final String BBOX = "bbox";
@@ -26,6 +27,11 @@ public class LayerCapabilitiesWMS extends LayerCapabilitiesOGC {
         return this.getName() == null;
     }
 
+    public void setVersion(String ver) {
+        if (ver != null) {
+            addCapabilityData(VERSION, ver);
+        }
+    }
     public void setParent(String parent) {
         if (parent != null) {
             addCapabilityData(PARENT, parent);

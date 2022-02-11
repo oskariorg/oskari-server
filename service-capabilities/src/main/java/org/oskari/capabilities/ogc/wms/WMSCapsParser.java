@@ -25,7 +25,7 @@ public class WMSCapsParser {
         }
         return parseCapabilities(doc);
     }
-    // Removes doctype so parser processes it succesfully:
+    // Removes doctype as it's not needed and allows parser to process it succesfully:
     // <!DOCTYPE WMT_MS_Capabilities SYSTEM "https://fake.address/inspire-wms/schemas/wms/1.1.1/WMS_MS_Capabilities.dtd">
     private static String removeDocType(String input) {
         if (input == null) {
