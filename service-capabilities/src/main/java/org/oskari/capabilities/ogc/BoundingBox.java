@@ -42,4 +42,13 @@ public class BoundingBox {
         }
         return srs.equalsIgnoreCase(this.srs);
     }
+
+    public String getWKT() {
+        // Duplicated from WKTHelper for convenience and not adding the dependency
+        return "POLYGON ((" + getMinX() + " " + getMinY() + ", " +
+                getMinX() + " " + getMaxY() + ", " +
+                getMaxX() + " " + getMaxY() + ", " +
+                getMaxX() + " " + getMinY() + ", " +
+                getMinX() + " " + getMinY() + "))";
+    }
 }

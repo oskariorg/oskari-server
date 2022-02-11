@@ -91,8 +91,9 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
 
         // Do not override version, if already available
         if (!layerJson.has(KEY_VERSION)) {
-            // TODO: where is this needed?
-            JSONHelper.putValue(layerJson, KEY_VERSION, JSONHelper.getStringFromJSON(capabilities, KEY_VERSION, null));
+            JSONHelper.putValue(layerJson, KEY_VERSION,
+                    JSONHelper.getStringFromJSON(capabilities, KEY_VERSION,
+                            JSONHelper.getStringFromJSON(capabilities.optJSONObject("typeSpecific"), KEY_VERSION, null)));
         }
 
         // copy time from capabilities to attributes
