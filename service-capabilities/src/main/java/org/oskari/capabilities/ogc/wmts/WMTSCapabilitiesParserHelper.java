@@ -30,12 +30,6 @@ public class WMTSCapabilitiesParserHelper {
         return parseCapabilities(doc);
     }
 
-    public static WMTSCapabilities parseCapabilities(InputStream in)
-            throws IllegalArgumentException {
-        Element doc = XmlHelper.parseXML(in);
-        return parseCapabilities(doc);
-    }
-
     public static WMTSCapabilities parseCapabilities(Element doc)
             throws IllegalArgumentException {
         Element contents = XmlHelper.getFirstChild(doc, "Contents");

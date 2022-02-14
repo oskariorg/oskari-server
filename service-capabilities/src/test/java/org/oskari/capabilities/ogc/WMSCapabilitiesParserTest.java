@@ -14,8 +14,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
 
 public class WMSCapabilitiesParserTest {
 
@@ -35,7 +35,8 @@ public class WMSCapabilitiesParserTest {
 
         Map<String, LayerCapabilities> layers = parser.parseLayers(xml);
         assertEquals("Should find layers", 2, layers.size());
-        JSONObject json = CapabilitiesService.toJSON(layers.values().iterator().next(), SYSTEM_CRS);
+        LayerCapabilitiesWMS layerCaps = (LayerCapabilitiesWMS) layers.get("CP.CadastralBoundary");
+        JSONObject json = CapabilitiesService.toJSON(layerCaps, SYSTEM_CRS);
         JSONObject expectedJSON = JSONHelper.createJSONObject(expected);
         // Check and remove version as it is different on expected between 1.1.1 and 1.3.0 input
         assertEquals("Check version", WMSCapsParser1_1_1.VERSION, json.optJSONObject("typeSpecific").remove("version"));
@@ -43,6 +44,9 @@ public class WMSCapabilitiesParserTest {
         expectedJSON.optJSONObject("typeSpecific").remove("metadataUrl");
         // System.out.println(json);
         assertTrue("JSON should match", JSONHelper.isEqual(json, expectedJSON));
+
+        String wkt = "POLYGON ((15.608220469655935 59.36205414098515, 15.608220469655935 70.09468368748001, 33.107629330539034 70.09468368748001, 33.107629330539034 59.36205414098515, 15.608220469655935 59.36205414098515))";
+        assertEquals("Coverage should match", wkt, layerCaps.getBbox().getWKT());
     }
 
     @Test
@@ -54,11 +58,15 @@ public class WMSCapabilitiesParserTest {
         parser.init();
         Map<String, LayerCapabilities> layers = parser.parseLayers(xml);
         assertEquals("Should find layers", 2, layers.size());
-        JSONObject json = CapabilitiesService.toJSON(layers.values().iterator().next(), SYSTEM_CRS);
+        LayerCapabilitiesWMS layerCaps = (LayerCapabilitiesWMS) layers.get("CP.CadastralBoundary");
+        JSONObject json = CapabilitiesService.toJSON(layerCaps, SYSTEM_CRS);
         // Check and remove version as it is different on expected between 1.1.1 and 1.3.0 input
         assertEquals("Check version", WMSCapsParser1_3_0.VERSION, json.optJSONObject("typeSpecific").remove("version"));
         // System.out.println(json);
         assertTrue("JSON should match", JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)));
+
+        String wkt = "POLYGON ((15.608220469655935 59.36205414098515, 15.608220469655935 70.09468368748001, 33.107629330539034 70.09468368748001, 33.107629330539034 59.36205414098515, 15.608220469655935 59.36205414098515))";
+        assertEquals("Coverage should match", wkt, layerCaps.getBbox().getWKT());
     }
 
     @Test
@@ -70,11 +78,15 @@ public class WMSCapabilitiesParserTest {
         parser.init();
         Map<String, LayerCapabilities> layers = parser.parseLayers(xml);
         assertEquals("Should find layers", 9, layers.size());
-        JSONObject json = CapabilitiesService.toJSON(layers.get("arctic_sdi:SeaSurfaceTemperature"), SYSTEM_CRS);
+        LayerCapabilitiesWMS layerCaps = (LayerCapabilitiesWMS) layers.get("arctic_sdi:SeaSurfaceTemperature");
+        JSONObject json = CapabilitiesService.toJSON(layerCaps, SYSTEM_CRS);
         // Check and remove version as it is different on expected between 1.1.1 and 1.3.0 input
         assertEquals("Check version", WMSCapsParser1_1_1.VERSION, json.optJSONObject("typeSpecific").remove("version"));
         // System.out.println(json);
         assertTrue("JSON should match", JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)));
+
+        String wkt = "POLYGON ((-180.0 32.536799480530846, -180.0 90.0, 180.0 90.0, 180.0 32.536799480530846, -180.0 32.536799480530846))";
+        assertEquals("Coverage should match", wkt, layerCaps.getBbox().getWKT());
     }
 
     @Test
@@ -86,11 +98,15 @@ public class WMSCapabilitiesParserTest {
         parser.init();
         Map<String, LayerCapabilities> layers = parser.parseLayers(xml);
         assertEquals("Should find layers", 9, layers.size());
-        JSONObject json = CapabilitiesService.toJSON(layers.get("arctic_sdi:SeaSurfaceTemperature"), SYSTEM_CRS);
+        LayerCapabilitiesWMS layerCaps = (LayerCapabilitiesWMS) layers.get("arctic_sdi:SeaSurfaceTemperature");
+        JSONObject json = CapabilitiesService.toJSON(layerCaps, SYSTEM_CRS);
         // Check and remove version as it is different on expected between 1.1.1 and 1.3.0 input
         assertEquals("Check version", WMSCapsParser1_3_0.VERSION, json.optJSONObject("typeSpecific").remove("version"));
         // System.out.println(json);
         assertTrue("JSON should match", JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)));
+
+        String wkt = "POLYGON ((-180.0 32.536799480530846, -180.0 90.0, 180.0 90.0, 180.0 32.536799480530846, -180.0 32.536799480530846))";
+        assertEquals("Coverage should match", wkt, layerCaps.getBbox().getWKT());
     }
 
     @Test
@@ -110,4 +126,33 @@ public class WMSCapabilitiesParserTest {
         assertTrue("JSON should match", JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)));
     }
 
+    @Test
+    public void parseLmi1_1_1() throws Exception {
+        String xml = ResourceHelper.readStringResource("WMSCapabilitiesParserTest-lmi_1_1_1-input.xml", this);
+        String expected = ResourceHelper.readStringResource("WMSCapabilitiesParserTest-lmi-expected.json", this);
+
+        WMSCapabilitiesParser parser = new WMSCapabilitiesParser();
+        parser.init();
+        Map<String, LayerCapabilities> layers = parser.parseLayers(xml);
+        assertEquals("Should find layers", 23, layers.size());
+        LayerCapabilitiesWMS layerCaps = (LayerCapabilitiesWMS) layers.get("LMI_Island_einfalt");
+        JSONObject json = CapabilitiesService.toJSON(layerCaps, SYSTEM_CRS);
+        // System.out.println(json);
+        assertTrue("JSON should match", JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)));
+    }
+
+    @Test
+    public void parseLipas1_3_0() throws Exception {
+        String xml = ResourceHelper.readStringResource("WMSCapabilitiesParserTest-lipas_1_3_0-input.xml", this);
+        String expected = ResourceHelper.readStringResource("WMSCapabilitiesParserTest-lipas-expected.json", this);
+
+        WMSCapabilitiesParser parser = new WMSCapabilitiesParser();
+        parser.init();
+        Map<String, LayerCapabilities> layers = parser.parseLayers(xml);
+        assertEquals("Should find layers", 175, layers.size());
+        LayerCapabilitiesWMS layerCaps = (LayerCapabilitiesWMS) layers.get("lipas_1500_jaaurheilualueet_ja_luonnonjaat");
+        JSONObject json = CapabilitiesService.toJSON(layerCaps, SYSTEM_CRS);
+        // System.out.println(json);
+        assertTrue("JSON should match", JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)));
+    }
 }

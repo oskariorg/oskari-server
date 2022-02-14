@@ -9,7 +9,6 @@ import org.oskari.xml.XmlHelper;
 import org.w3c.dom.Element;
 
 import javax.xml.stream.XMLStreamException;
-import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -19,31 +18,10 @@ public class WMSCapsParser {
 
     public static List<LayerCapabilitiesWMS> parseCapabilities(String xml)
             throws IllegalArgumentException, XMLStreamException {
-        Element doc = XmlHelper.parseXML(removeDocType(xml));
+        Element doc = XmlHelper.parseXML(xml);
         if (doc == null) {
             throw new XMLStreamException("Failed to parse XML");
         }
-        return parseCapabilities(doc);
-    }
-    // Removes doctype as it's not needed and allows parser to process it succesfully:
-    // <!DOCTYPE WMT_MS_Capabilities SYSTEM "https://fake.address/inspire-wms/schemas/wms/1.1.1/WMS_MS_Capabilities.dtd">
-    private static String removeDocType(String input) {
-        if (input == null) {
-            return input;
-        }
-        String upper = input.toUpperCase();
-        int index = upper.indexOf("<!DOCTYPE");
-        if (index == -1) {
-            return input;
-        }
-        int endIndex = upper.indexOf(">", index) + 1;
-        String start = input.substring(0, index);
-        return start + input.substring(endIndex);
-    }
-
-    public static List<LayerCapabilitiesWMS> parseCapabilities(InputStream in)
-            throws IllegalArgumentException, XMLStreamException {
-        Element doc = XmlHelper.parseXML(in);
         return parseCapabilities(doc);
     }
 
@@ -59,7 +37,7 @@ public class WMSCapsParser {
     }
 
     protected static Set<String> getTexts(Element parentEl, String childLocalName) {
-        Set<String> texts =  XmlHelper.getChildElements(parentEl, childLocalName)
+        Set<String> texts = XmlHelper.getChildElements(parentEl, childLocalName)
                 .map(Element::getTextContent)
                 .collect(Collectors.toSet());
         return texts;

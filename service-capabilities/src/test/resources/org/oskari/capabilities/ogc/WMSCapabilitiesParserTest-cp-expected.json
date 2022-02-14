@@ -2,41 +2,23 @@
   "srs": [
     "EPSG:3067"
   ],
-  "defaultStyle": "CP.CadastralParcel.Default",
-  "name": "CP.CadastralParcel",
+  "defaultStyle": "CP.CadastralBoundary.Default",
+  "name": "CP.CadastralBoundary",
   "styles": [
     {
       "default": false,
-      "legend": "https://fake.address/inspire-wms/CP/wms?request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=CP.CadastralParcel",
-      "name": "CP.CadastralParcel.Default",
-      "title": "Cadastral Parcel Default Style"
-    },
-    {
-      "default": false,
-      "legend": "https://fake.address/inspire-wms/CP/wms?request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=CP.CadastralParcel&style=CP.CadastralParcel.LabelOnReferencePoint",
-      "name": "CP.CadastralParcel.LabelOnReferencePoint",
-      "title": "Cadastral Parcel - with label on reference point"
-    },
-    {
-      "default": false,
-      "legend": "https://fake.address/inspire-wms/CP/wms?request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=CP.CadastralParcel&style=CP.CadastralParcel.ReferencePointOnly",
-      "name": "CP.CadastralParcel.ReferencePointOnly",
-      "title": "Cadastral Parcel - reference point only"
-    },
-    {
-      "default": false,
-      "legend": "https://fake.address/inspire-wms/CP/wms?request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=CP.CadastralParcel&style=CP.CadastralParcel.OutlinesOnly",
-      "name": "CP.CadastralParcel.OutlinesOnly",
-      "title": "Cadastral Parcel - outlines only"
+      "legend": "https://fake.address/inspire-wms/CP/ows?service=WMS&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=CP.CadastralBoundary",
+      "name": "CP.CadastralBoundary.Default",
+      "title": "Cadastral Boundary Default Style"
     }
   ],
-  "title": "Cadastral Parcel",
+  "title": "Cadastral Boundary",
   "typeSpecific": {
     "metadataUrl": "http://www.paikkatietohakemisto.fi/geonetwork/srv/en/csw?request=GetRecordById&service=CSW&id=34af5151-8372-495c-a423-4f8de4bde152&elementSetName=full&outputSchema=http://www.isotc211.org/2005/gmd&version=2.0.2",
     "keywords": [
-      "Cadastral Parcel"
+      "Cadastral Boundary"
     ],
-    "maxScale": 60000,
+    "maxScale": 20000,
     "bbox": {
       "wkt": "POLYGON ((15.608220469655935 59.36205414098515, 15.608220469655935 70.09468368748001, 33.107629330539034 70.09468368748001, 33.107629330539034 59.36205414098515, 15.608220469655935 59.36205414098515))",
       "minY": 59.36205414098515,
@@ -47,6 +29,6 @@
     },
     "layers": [],
     "minScale": 1,
-    "desc": "Areas defined by cadastral registers or equivalent."
+    "desc": "Part of the outline of a cadastral parcel. One cadastral boundary may be shared by two neighbouring cadastral parcels."
   }
 }

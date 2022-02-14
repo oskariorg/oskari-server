@@ -189,7 +189,7 @@
          </Abstract>
           <LegendURL width="20" height="20">
             <Format>image/png</Format>
-            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://fake.address/inspire-wms/CP/wms?request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=CP.CadastralBoundary"/>
+            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://fake.address/inspire-wms/CP/ows?service=WMS&amp;request=GetLegendGraphic&amp;format=image%2Fpng&amp;width=20&amp;height=20&amp;layer=CP.CadastralBoundary"/>
           </LegendURL>
         </Style>
         <ScaleHint min="1.0" max="20000.0"/>
