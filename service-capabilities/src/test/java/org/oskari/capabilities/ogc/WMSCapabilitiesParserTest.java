@@ -1,6 +1,8 @@
 package org.oskari.capabilities.ogc;
 
+import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.util.ResourceHelper;
 import org.json.JSONObject;
 import org.junit.BeforeClass;
@@ -10,9 +12,7 @@ import org.oskari.capabilities.LayerCapabilities;
 import org.oskari.capabilities.ogc.wms.WMSCapsParser1_1_1;
 import org.oskari.capabilities.ogc.wms.WMSCapsParser1_3_0;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertArrayEquals;
@@ -155,4 +155,22 @@ public class WMSCapabilitiesParserTest {
         // System.out.println(json);
         assertTrue("JSON should match", JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)));
     }
+
+
+
+    @Test
+    public void parseDummy() throws Exception {
+        String xml = ResourceHelper.readStringResource("WMSCapabilitiesParserTest-dummy_1_3_0-input.xml", this);
+        String expected = ResourceHelper.readStringResource("WMSCapabilitiesParserTest-dummy-expected.json", this);
+
+        WMSCapabilitiesParser parser = new WMSCapabilitiesParser();
+        parser.init();
+        Map<String, LayerCapabilities> layers = parser.parseLayers(xml);
+        assertEquals("Should find a layer", 1, layers.size());
+        LayerCapabilitiesWMS layerCaps = (LayerCapabilitiesWMS) layers.get("LayerName");
+        JSONObject json = CapabilitiesService.toJSON(layerCaps, SYSTEM_CRS);
+        // System.out.println(json);
+        assertTrue("JSON should match", JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)));
+    }
+
 }
