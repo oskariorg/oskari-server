@@ -39,6 +39,10 @@ public class LayerCapabilitiesWMS extends LayerCapabilitiesOGC {
             addCapabilityData(VERSION, ver);
         }
     }
+    @JsonIgnore
+    public String getVersion() {
+        return (String) getTypeSpecific().get(VERSION);
+    }
     public void setParent(String parent) {
         if (parent != null) {
             addCapabilityData(PARENT, parent);
@@ -57,6 +61,11 @@ public class LayerCapabilitiesWMS extends LayerCapabilitiesOGC {
             addCapabilityData(MIN_SCALE, Double.parseDouble(scale));
         } catch (Exception ignored) {}
     }
+
+    @JsonIgnore
+    public Double getMinScale() {
+        return (Double) getTypeSpecific().get(MIN_SCALE);
+    }
     public void setMaxScale(String scale) {
         if (scale == null) {
             return;
@@ -64,6 +73,10 @@ public class LayerCapabilitiesWMS extends LayerCapabilitiesOGC {
         try {
             addCapabilityData(MAX_SCALE, Double.parseDouble(scale));
         } catch (Exception ignored) {}
+    }
+    @JsonIgnore
+    public Double getMaxScale() {
+        return (Double) getTypeSpecific().get(MAX_SCALE);
     }
 
     @JsonIgnore

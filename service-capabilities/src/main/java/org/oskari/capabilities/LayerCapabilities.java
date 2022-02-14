@@ -57,6 +57,9 @@ public class LayerCapabilities {
     }
 
     public String getDefaultStyle() {
+        if (defaultStyle == null && styles != null && !styles.isEmpty()) {
+            return styles.get(0).getName();
+        }
         return defaultStyle;
     }
 
