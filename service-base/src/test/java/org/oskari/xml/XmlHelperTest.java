@@ -69,4 +69,20 @@ public class XmlHelperTest {
 
         assertEquals("Name attribute should have correct value", "my test 1", XmlHelper.getAttributeValue(caseElem, "name"));
     }
+
+    @Test
+    public void testXMLDocTypeParsing() throws Exception {
+
+        Element elem = XmlHelper.parseXML("<!DOCTYPE WMT_MS_Capabilities SYSTEM \"https://fake.address/inspire-wms/schemas/wms/1.1.1/WMS_MS_Capabilities.dtd\">" +
+                "<test><case name=\"my test\">testing</case></test>");
+        assertNotNull("All good, didn't throw exception", elem);
+    }
+    @Test
+    public void testXMLDocTypeParsing2() throws Exception {
+        String xml = "<!DOCTYPE WMT_MS_Capabilities SYSTEM\n" +
+                "            \"http://schemas.opengis.net/wms/1.1.0/capabilities_1_1_0.dtd\"[ <!ELEMENT VendorSpecificCapabilities EMPTY>]>" +
+                "<test><case name=\"my test\">testing</case></test>";
+        Element elem = XmlHelper.parseXML(xml);
+        assertNotNull("All good, didn't throw exception", elem);
+    }
 }
