@@ -115,6 +115,7 @@ public class CapabilitiesUpdateService {
                     continue;
                 }
                 layer.setCapabilities(CapabilitiesService.toJSON(caps, systemCRSs));
+                layer.setCapabilitiesLastUpdated(new Date());
                 layerService.update(layer);
                 results.add(CapabilitiesUpdateResult.ok(layer));
             } catch (IllegalArgumentException e) {

@@ -19,6 +19,17 @@ import java.util.stream.Collectors;
 
 public class WMSCapabilitiesService {
 
+    public ServiceCapabilitiesResultWMS getCapabilitiesResults(final String url, final String version, final String user, final String pwd,
+                                                               final Set<String> systemCRSs) throws ServiceException {
+        try {
+            ServiceConnectInfo info = new ServiceConnectInfo(url, OskariLayer.TYPE_WMS, version);
+            Map<String, LayerCapabilities> caps = CapabilitiesService.getLayersFromService(info);
+            return parseCapabilitiesResults(caps, url, user, pwd, systemCRSs);
+        } catch (Exception ex) {
+            throw new ServiceException("Couldn't read/get wms capabilities response from url: " + url, ex);
+        }
+    }
+
     protected static ServiceCapabilitiesResultWMS parseCapabilitiesResults(Map<String, LayerCapabilities> caps, String url,
                                                                            String user, String pwd, Set<String> systemCRSs) {
 
@@ -47,23 +58,6 @@ public class WMSCapabilitiesService {
         results.setStructure(parseStructureJson(list));
 
         return results;
-    }
-
-    private static List<MapLayerStructure> parseStructureJson(Collection<LayerCapabilitiesWMS> caps) {
-        List<MapLayerStructure> layers = caps.stream()
-                .map(l -> {
-                    if (!(l instanceof LayerCapabilitiesWMS)) {
-                        return null;
-                    }
-                    MapLayerStructure cap = new MapLayerStructure();
-                    cap.setName(l.getName());
-                    List<LayerCapabilitiesWMS> sublayers = l.getLayers();
-                    cap.setStructure(parseStructureJson(sublayers));
-                    return cap;
-                })
-                .filter(l -> l != null)
-                .collect(Collectors.toList());
-        return layers;
     }
 
     public static OskariLayer layerToOskariLayer(LayerCapabilities caps, String url, String user, String pw,
@@ -95,15 +89,21 @@ public class WMSCapabilitiesService {
         return oskariLayer;
     }
 
-    public ServiceCapabilitiesResultWMS getCapabilitiesResults(final String url, final String version, final String user, final String pwd,
-                                                               final Set<String> systemCRSs) throws ServiceException {
-        try {
-            ServiceConnectInfo info = new ServiceConnectInfo(url, OskariLayer.TYPE_WMS, version);
-            Map<String, LayerCapabilities> caps = CapabilitiesService.getLayersFromService(info);
-            return parseCapabilitiesResults(caps, url, user, pwd, systemCRSs);
-        } catch (Exception ex) {
-            throw new ServiceException("Couldn't read/get wms capabilities response from url: " + url, ex);
-        }
+    private static List<MapLayerStructure> parseStructureJson(Collection<LayerCapabilitiesWMS> caps) {
+        List<MapLayerStructure> layers = caps.stream()
+                .map(l -> {
+                    if (!(l instanceof LayerCapabilitiesWMS)) {
+                        return null;
+                    }
+                    MapLayerStructure cap = new MapLayerStructure();
+                    cap.setName(l.getName());
+                    List<LayerCapabilitiesWMS> sublayers = l.getLayers();
+                    cap.setStructure(parseStructureJson(sublayers));
+                    return cap;
+                })
+                .filter(l -> l != null)
+                .collect(Collectors.toList());
+        return layers;
     }
 
 }
