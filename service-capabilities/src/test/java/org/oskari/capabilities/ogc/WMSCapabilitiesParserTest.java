@@ -156,8 +156,6 @@ public class WMSCapabilitiesParserTest {
         assertTrue("JSON should match", JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)));
     }
 
-
-
     @Test
     public void parseDummy() throws Exception {
         String xml = ResourceHelper.readStringResource("WMSCapabilitiesParserTest-dummy_1_3_0-input.xml", this);
@@ -172,5 +170,4 @@ public class WMSCapabilitiesParserTest {
         // System.out.println(json);
         assertTrue("JSON should match", JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)));
     }
-
 }
