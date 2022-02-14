@@ -6,7 +6,6 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
-import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilitiesHelper;
 
 import fi.nls.oskari.util.PropertyUtil;
@@ -15,6 +14,10 @@ import org.geotools.ows.wms.WMSCapabilities;
 import org.geotools.ows.wms.xml.WMSSchema;
 import org.geotools.xml.DocumentFactory;
 import org.geotools.xml.handlers.DocumentHandler;
+import org.oskari.capabilities.CapabilitiesService;
+import org.oskari.capabilities.LayerCapabilities;
+import org.oskari.capabilities.ServiceConnectInfo;
+import org.oskari.capabilities.ogc.LayerCapabilitiesWMS;
 import org.oskari.maplayer.admin.LayerAdminJSONHelper;
 import org.oskari.maplayer.model.MapLayerStructure;
 import org.oskari.maplayer.model.ServiceCapabilitiesResultWMS;
@@ -24,62 +27,104 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class WMSCapabilitiesService {
     private static final Logger log = LogFactory.getLogger(WMSCapabilitiesService.class);
-    private CapabilitiesCacheService capabilitiesService = ServiceFactory.getCapabilitiesCacheService();
 
-    @Deprecated
-    public WebMapService updateCapabilities (OskariLayer ml) throws ServiceException {
-        String data =  CapabilitiesCacheService.getFromService(ml);
-        WebMapService wms;
-        try {
-            wms = OskariLayerCapabilitiesHelper.parseWMSCapabilities(data, ml);
-        } catch (Exception e) {
-            throw new ServiceException("Failed to parse WMS capabilities xml", e);
-        }
-        return wms;
-    }
-
-
-    public void updateLayerCapabilities (OskariLayer ml, final Set<String> systemCRSs) throws ServiceException {
-        String data =  CapabilitiesCacheService.getFromService(ml);
-        WMSCapabilities caps = createCapabilities(data);
-        Layer layer = findLayer(caps, ml.getName())
-                .orElseThrow(()-> new ServiceException("Can't find layer from capabilities xml for update: " + ml.getId()));
-        OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMS(caps, layer, ml, systemCRSs);
-        //update after parsing to cache valid xml
-        capabilitiesService.save(ml, data);
-    }
-    public void updateLayerCapabilities (WMSCapabilities caps, OskariLayer ml, final Set<String> systemCRSs) throws ServiceException {
-        Layer layer = findLayer(caps, ml.getName())
-                .orElseThrow(()-> new ServiceException("Can't find layer from capabilities xml for update: " + ml.getId()));
-        OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMS(caps, layer, ml, systemCRSs);
-    }
 
     public ServiceCapabilitiesResultWMS getCapabilitiesResults (final String url, final String version, final String user, final String pwd,
                                                                 final Set<String> systemCRSs) throws ServiceException {
         try {
-            OskariLayerCapabilities capabilities = capabilitiesService.getCapabilities(url, OskariLayer.TYPE_WMS, version, user, pwd);
-            // if capabilities is more than 5 minutes old, get it from the service directly
-            if (capabilities.isOlderThan(TimeUnit.MINUTES.toMillis(5))) {
-                capabilities = capabilitiesService.getCapabilitiesFromService(url, OskariLayer.TYPE_WMS, version, user, pwd);
-            }
-            final String xml = capabilities.getData();
-            ServiceCapabilitiesResultWMS results = parseCapabilitiesResults(xml, url, version, user, pwd, systemCRSs);
-            if (capabilities.getId() == null) {
-                capabilitiesService.save(capabilities);
-            }
-            return results;
+            ServiceConnectInfo info = new ServiceConnectInfo(url, OskariLayer.TYPE_WMS, version);
+            Map<String, LayerCapabilities> caps = CapabilitiesService.getLayersFromService(info);
+            return parseCapabilitiesResults(caps, url, user, pwd, systemCRSs);
         } catch (Exception ex) {
             throw new ServiceException("Couldn't read/get wms capabilities response from url: " + url, ex);
         }
     }
 
+    protected static ServiceCapabilitiesResultWMS parseCapabilitiesResults(Map<String, LayerCapabilities> caps, String url,
+                                                                           String user, String pwd, Set<String> systemCRSs) {
+
+        List<OskariLayer> layers = caps.values().stream()
+                .map(layer -> layerToOskariLayer(layer, url, user, pwd, systemCRSs))
+                .filter(l -> l != null)
+                .collect(Collectors.toList());
+
+
+        ServiceCapabilitiesResultWMS results = new ServiceCapabilitiesResultWMS();
+        results.setTitle("N/A");
+        if (!layers.isEmpty()) {
+            results.setVersion(layers.get(0).getVersion());
+            results.setLayers(layers.stream()
+                    .map(l -> LayerAdminJSONHelper.toJSON(l))
+                    .collect(Collectors.toList()));
+        }
+        // capabilitiesResult.setLayersWithErrors((List<String>) capabilities.get(CapabilitiesConstants.KEY_ERROR_LAYERS));
+        Collection<LayerCapabilitiesWMS> list = caps.values().stream().map(l -> {
+                    if (!(l instanceof LayerCapabilitiesWMS)) {
+                        return null;
+                    }
+                    return (LayerCapabilitiesWMS)l;
+                })
+                .filter(l -> l != null)
+                .collect(Collectors.toList());
+        results.setStructure(parseStructureJson(list));
+
+        return results;
+    }
+    private static List<MapLayerStructure> parseStructureJson (Collection<LayerCapabilitiesWMS> caps) {
+        //List<MapLayerStructure> layers = new ArrayList<>();
+        List<MapLayerStructure> layers = caps.stream()
+                .map(l -> {
+                    if (!(l instanceof LayerCapabilitiesWMS)) {
+                        return null;
+                    }
+                    MapLayerStructure cap = new MapLayerStructure();
+                    cap.setName(l.getName());
+                    List<LayerCapabilitiesWMS> sublayers = l.getLayers();
+                    cap.setStructure(parseStructureJson(sublayers));
+                    return cap;
+                })
+                .filter(l -> l != null)
+                .collect(Collectors.toList());
+        return layers;
+    }
+
+
+    public static OskariLayer layerToOskariLayer(LayerCapabilities caps, String url, String user, String pw,
+                                                 Set<String> systemCRSs) {
+        if (!(caps instanceof LayerCapabilitiesWMS)) {
+            return null;
+        }
+        final OskariLayer oskariLayer = new OskariLayer();
+        oskariLayer.setType(OskariLayer.TYPE_WMS);
+        oskariLayer.setUrl(url);
+        oskariLayer.setName(caps.getName());
+        oskariLayer.setUsername(user);
+        oskariLayer.setPassword(pw);
+
+        LayerCapabilitiesWMS wmsCaps = (LayerCapabilitiesWMS) caps;
+        oskariLayer.setVersion(wmsCaps.getVersion());
+        // Check what this comment means from previous impl: "THIS IS ON PURPOSE: min -> max, max -> min"
+        oskariLayer.setMaxScale(wmsCaps.getMaxScale());
+        oskariLayer.setMinScale(wmsCaps.getMinScale());
+
+        // setup UI names for all supported languages
+        final String[] languages = PropertyUtil.getSupportedLanguages();
+        String title = wmsCaps.getTitle();
+        for (String lang : languages) {
+            oskariLayer.setName(lang, title);
+        }
+        oskariLayer.setCapabilities(CapabilitiesService.toJSON(caps, systemCRSs));
+        oskariLayer.setStyle(wmsCaps.getDefaultStyle());
+        return oskariLayer;
+    }
+
+    @Deprecated
     protected static ServiceCapabilitiesResultWMS parseCapabilitiesResults(String xml, String url, String version,
             String user, String pwd, Set<String> systemCRSs) {
         WMSCapabilities caps = createCapabilities(xml);
@@ -102,22 +147,20 @@ public class WMSCapabilitiesService {
         return results;
     }
 
+    @Deprecated
     protected static Stream<Layer> getActualLayers(WMSCapabilities caps) {
         return caps.getLayerList()
                 .stream()
                 .filter(WMSCapabilitiesService::isActualLayer);
     }
 
+    @Deprecated
     private static boolean isActualLayer (Layer layer) {
         String layerName = layer.getName();
         return layerName != null && !layerName.isEmpty();
     }
-    private static Optional<Layer> findLayer (WMSCapabilities caps, String name) {
-        return getActualLayers(caps)
-                .filter(layer -> name.equals(layer.getName()))
-                .findFirst();
-    }
 
+    @Deprecated
     private static List<MapLayerStructure> parseStructureJson (Layer layer) {
         List<MapLayerStructure> layers = new ArrayList<>();
         List<Layer> sublayers = layer.getLayerChildren();
@@ -153,6 +196,7 @@ public class WMSCapabilitiesService {
         return layers;
     }
 
+    @Deprecated
     public static OskariLayer layerToOskariLayer(WMSCapabilities caps, Layer capabilitiesLayer, String url, String version, String user, String pw,
                                                  Set<String> systemCRSs) {
         final OskariLayer oskariLayer = new OskariLayer();
@@ -182,6 +226,7 @@ public class WMSCapabilitiesService {
         OskariLayerCapabilitiesHelper.setDefaultStyleFromCapabilitiesJSON(oskariLayer);
         return oskariLayer;
     }
+    @Deprecated
     public static WMSCapabilities createCapabilities(String xml) {
         if(xml == null || xml.isEmpty()) {
             return null;

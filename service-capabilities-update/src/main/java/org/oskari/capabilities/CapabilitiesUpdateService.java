@@ -5,12 +5,8 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.service.ServiceException;
-import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.wms.WMSCapabilitiesService;
-import org.geotools.ows.wms.WMSCapabilities;
-import org.oskari.capabilities.ogc.LayerCapabilitiesWMTS;
 
 import java.io.IOException;
 import java.util.*;
@@ -34,13 +30,9 @@ public class CapabilitiesUpdateService {
     private static final String ERR_FAILED_TO_PARSE_CAPABILITIES = "Failed to parse Capabilities";
 
     private final OskariLayerService layerService;
-    private final CapabilitiesCacheService capabilitiesCacheService;
-    private final WMSCapabilitiesService wmsService = new WMSCapabilitiesService();
 
-    public CapabilitiesUpdateService(OskariLayerService layerService,
-                                     CapabilitiesCacheService capabilitiesService) {
+    public CapabilitiesUpdateService(OskariLayerService layerService) {
         this.layerService = layerService;
-        this.capabilitiesCacheService = capabilitiesService;
     }
 
     public List<CapabilitiesUpdateResult> updateCapabilities(List<OskariLayer> layersToUpdate, Set<String> systemCRSs) {
@@ -93,15 +85,9 @@ public class CapabilitiesUpdateService {
         LOG.debug("Updating Capabilities for a group of layers - url:", url,
                 "type:", type, "version:", version, "ids:", Arrays.toString(ids));
 
-
         try {
-            if (OskariLayer.TYPE_WMS.equals(type)) {
-                String data = CapabilitiesCacheService.getFromService(url, type, version, info.getUser(), info.getPass());
-                updateWMSLayers(layers, data, systemCRSs, results);
-            } else if (OskariLayer.TYPE_WMS.equals(type)) {
-                Map<String, LayerCapabilities> capabilities = CapabilitiesService.getLayersFromService(info);
-                updateWMTSLayers(layers, capabilities, systemCRSs, results);
-            }
+            Map<String, LayerCapabilities> capabilities = CapabilitiesService.getLayersFromService(info);
+            updateLayers(layers, capabilities, systemCRSs, results);
         } catch (IOException e) {
             LOG.warn(e, "Error accessing Capabilities for service, url:", url,
                     "type:", type, "version:", version, "ids:", Arrays.toString(ids));
@@ -119,57 +105,21 @@ public class CapabilitiesUpdateService {
 
     }
 
-    private void updateWMSLayers(List<OskariLayer> layers, String data,
-            Set<String> systemCRSs, List<CapabilitiesUpdateResult> results) {
-        boolean shouldSaveCapabilities = false;
-        WMSCapabilities capa = wmsService.createCapabilities(data);
-        for (OskariLayer layer : layers) {
-            try {
-                wmsService.updateLayerCapabilities(capa, layer, systemCRSs);
-                shouldSaveCapabilities = true;
-                layerService.update(layer);
-                results.add(CapabilitiesUpdateResult.ok(layer));
-
-            } catch (ServiceException e) {
-                LOG.warn(e, "Failed to update Capabilities for layerId:", layer.getId());
-                results.add(CapabilitiesUpdateResult.err(layer, ERR_LAYER_NOT_FOUND_IN_CAPABILITIES));
-
-            } catch (Exception e) {
-                LOG.warn(e, "Failed to update Capabilities for layerId:", layer.getId());
-                results.add(CapabilitiesUpdateResult.err(layer, ERR_FAILED_TO_PARSE_CAPABILITIES));
-            }
-        }
-        if (shouldSaveCapabilities) {
-            capabilitiesCacheService.save(layers.get(0), data);
-        }
-    }
-
-    private void updateWMTSLayers(List<OskariLayer> layers, Map<String, LayerCapabilities> capabilities,
-            Set<String> systemCRSs, List<CapabilitiesUpdateResult> results) {
-        boolean shouldSaveCapabilities = false;
+    private void updateLayers(List<OskariLayer> layers, Map<String, LayerCapabilities> capabilities,
+                              Set<String> systemCRSs, List<CapabilitiesUpdateResult> results) {
         for (OskariLayer layer : layers) {
             try {
                 LayerCapabilities caps = capabilities.get(layer.getName());
-                if (caps == null || !(caps instanceof LayerCapabilitiesWMTS)) {
-                    results.add(CapabilitiesUpdateResult.err(layer, "Not found"));
+                if (caps == null) {
+                    results.add(CapabilitiesUpdateResult.err(layer, ERR_LAYER_NOT_FOUND_IN_CAPABILITIES));
                     continue;
                 }
                 layer.setCapabilities(CapabilitiesService.toJSON(caps, systemCRSs));
-                // TODO: set options.requestEncoding somewhere else if it's needed at all when the layer has resourceUrl for tile:
-                // JSONHelper.putValue(options, "requestEncoding", "REST");
-                // JSONHelper.putValue(options, "format", resUrl.getFormat());
-                // JSONHelper.putValue(options, "urlTemplate", resUrl.getTemplate());
-                shouldSaveCapabilities = true;
                 layerService.update(layer);
                 results.add(CapabilitiesUpdateResult.ok(layer));
             } catch (IllegalArgumentException e) {
                 results.add(CapabilitiesUpdateResult.err(layer, e.getMessage()));
             }
-        }
-        if (shouldSaveCapabilities) {
-            // First will do, since we only need the url type and version
-            // generic to json serialize for Map<String, LayerCapabilities>?
-            //capabilitiesCacheService.save(layers.get(0), data);
         }
     }
 
