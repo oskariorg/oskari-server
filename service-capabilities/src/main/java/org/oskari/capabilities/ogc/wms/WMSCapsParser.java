@@ -14,8 +14,6 @@ import java.util.stream.Collectors;
 
 public class WMSCapsParser {
 
-    private static final Logger LOG = LogFactory.getLogger(WMSCapsParser.class);
-
     public static List<LayerCapabilitiesWMS> parseCapabilities(String xml)
             throws IllegalArgumentException, XMLStreamException {
         Element doc = XmlHelper.parseXML(xml);
@@ -33,7 +31,7 @@ public class WMSCapsParser {
         } else if (WMSCapsParser1_3_0.ROOT_EL.equals(rootEl)) {
             return WMSCapsParser1_3_0.parseCapabilities(doc);
         }
-        throw new IllegalArgumentException("Unrecognized root element:" + rootEl);
+        throw new IllegalArgumentException(XmlHelper.generateUnexpectedElementMessage(doc));
     }
 
     protected static Set<String> getTexts(Element parentEl, String childLocalName) {

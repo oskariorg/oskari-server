@@ -15,29 +15,7 @@ import java.util.Map;
 @Oskari(OskariLayer.TYPE_WMS)
 public class WMSCapabilitiesParser extends OGCCapabilitiesParser {
 
-    private static final String NAMESPACE_WMS = "http://www.opengis.net/wms";
-
     protected String getDefaultVersion() { return "1.3.0"; }
-
-    protected void validateCapabilities(String version, String ns, String name)
-            throws ServiceException {
-
-        if (version == null) {
-            // Layer didn't specify a version - response could be of any WMS version
-            if (ns != null) {
-                // Can only be 1.3.0
-                checkNamespaceStartsWith(ns, NAMESPACE_WMS);
-                checkRootElementNameEquals(name, WMSCapsParser1_3_0.ROOT_EL);
-            } else {
-                checkRootElementNameEquals(name, WMSCapsParser1_1_1.ROOT_EL);
-            }
-        } else if ("1.3.0".equals(version)) {
-            checkNamespaceStartsWith(ns, NAMESPACE_WMS);
-            checkRootElementNameEquals(name, WMSCapsParser1_3_0.ROOT_EL);
-        } else {
-            checkRootElementNameEquals(name, WMSCapsParser1_1_1.ROOT_EL);
-        }
-    }
 
     public Map<String, LayerCapabilities> parseLayers(String xml) throws ServiceException {
         try {

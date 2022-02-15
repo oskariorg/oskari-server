@@ -16,7 +16,7 @@ import java.io.UnsupportedEncodingException;
 public class CapabilitiesValidator {
     private static final Logger LOG = LogFactory.getLogger(CapabilitiesValidator.class);
 
-    public static String validateXmlResponse(RawCapabilitiesResponse response, OGCCapabilitiesParser parser, String version)
+    public static String validateXmlResponse(RawCapabilitiesResponse response)
             throws ServiceException {
         String encoding = response.getEncoding();
 
@@ -36,9 +36,6 @@ public class CapabilitiesValidator {
                         + "using UTF-8 as default value");
                 encoding = IOHelper.DEFAULT_CHARSET;
             }
-
-            // Check that the response is what we expect
-            parser.validateCapabilities(xsr, version);
 
             // Convert "utf-8" to "UTF-8" for example
             encoding = encoding.toUpperCase();

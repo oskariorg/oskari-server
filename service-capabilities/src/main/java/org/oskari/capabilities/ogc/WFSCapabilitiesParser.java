@@ -19,12 +19,6 @@ public class WFSCapabilitiesParser extends OGCCapabilitiesParser {
         return "acceptVersions";
     }
     protected String getDefaultVersion() { return "1.1.0"; }
-    protected void validateCapabilities(String version, String ns, String name)
-            throws ServiceException {
-
-        checkNamespaceStartsWith(ns, NAMESPACE_WFS);
-        checkRootElementNameEquals(name, ROOT_WFS);
-    }
 
     public Map<String, LayerCapabilities> parseLayers(String xml) throws ServiceException {
         return Collections.emptyMap();

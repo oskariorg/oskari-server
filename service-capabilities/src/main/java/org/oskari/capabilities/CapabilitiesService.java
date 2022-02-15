@@ -44,7 +44,7 @@ public class CapabilitiesService {
                     if (e instanceof IOException) {
                         results.add(CapabilitiesUpdateResult.err(layer, CapabilitiesUpdateResult.ERR_FAILED_TO_FETCH_CAPABILITIES));
                     } else {
-                        results.add(CapabilitiesUpdateResult.err(layer, CapabilitiesUpdateResult.ERR_FAILED_TO_PARSE_CAPABILITIES));
+                        results.add(CapabilitiesUpdateResult.err(layer, CapabilitiesUpdateResult.ERR_FAILED_TO_PARSE_CAPABILITIES + "/" + ((ServiceException) e).getMessage()));
                     }
                 });
                 continue;
