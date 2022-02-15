@@ -19,6 +19,7 @@ public class WMTSCapabilitiesParser extends OGCCapabilitiesParser {
     protected String getVersionParamName() {
         return "acceptVersions";
     }
+    protected String getDefaultVersion() { return "1.0.0"; }
     protected void validateCapabilities(String version, String ns, String name)
             throws ServiceException {
         checkNamespaceStartsWith(ns, NAMESPACE_WMTS);

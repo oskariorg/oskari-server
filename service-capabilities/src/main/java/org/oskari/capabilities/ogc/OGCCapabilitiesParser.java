@@ -23,6 +23,7 @@ public abstract class OGCCapabilitiesParser extends CapabilitiesParser {
     protected String getExpectedContentType() {
         return "xml";
     }
+    protected abstract String getDefaultVersion();
 
     public String validateResponse(RawCapabilitiesResponse response, String version) throws ServiceException {
         return CapabilitiesValidator.validateXmlResponse(response, this, version);
@@ -49,7 +50,10 @@ public abstract class OGCCapabilitiesParser extends CapabilitiesParser {
         if (!urlLC.contains("request=")) {
             params.put("request", "GetCapabilities");
         }
-        if (!urlLC.contains("version=") && version != null && !version.isEmpty()) {
+        if (!urlLC.contains("version=")) {
+            if (version == null || version.isEmpty()) {
+                version = getDefaultVersion();
+            }
             params.put(getVersionParamName(), version);
         }
 

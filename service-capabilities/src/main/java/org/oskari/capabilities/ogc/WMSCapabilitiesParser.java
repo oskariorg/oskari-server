@@ -17,6 +17,8 @@ public class WMSCapabilitiesParser extends OGCCapabilitiesParser {
 
     private static final String NAMESPACE_WMS = "http://www.opengis.net/wms";
 
+    protected String getDefaultVersion() { return "1.3.0"; }
+
     protected void validateCapabilities(String version, String ns, String name)
             throws ServiceException {
 

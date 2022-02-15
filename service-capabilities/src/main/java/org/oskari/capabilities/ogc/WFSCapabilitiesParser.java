@@ -18,6 +18,7 @@ public class WFSCapabilitiesParser extends OGCCapabilitiesParser {
     protected String getVersionParamName() {
         return "acceptVersions";
     }
+    protected String getDefaultVersion() { return "1.1.0"; }
     protected void validateCapabilities(String version, String ns, String name)
             throws ServiceException {
 
