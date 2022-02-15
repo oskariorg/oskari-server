@@ -53,7 +53,7 @@ public class CapabilitiesService {
             layersFromOneService.stream().forEach(layer -> {
                 LayerCapabilities capsForSingleLayer = serviceCaps.get(layer.getName());
                 if (capsForSingleLayer == null) {
-                    LOG.warn("Error accessing Capabilities for service, url:", utv.getUrl(),
+                    LOG.warn("Error finding layer with name:", layer.getName(), "from Capabilities for service, url:", utv.getUrl(),
                             "type:", utv.getType(), "version:", utv.getVersion());
                     results.add(CapabilitiesUpdateResult.err(layer, CapabilitiesUpdateResult.ERR_LAYER_NOT_FOUND_IN_CAPABILITIES));
                     return;
@@ -88,7 +88,7 @@ public class CapabilitiesService {
 
         LayerCapabilities capsForSingleLayer = serviceCaps.get(layer.getName());
         if (capsForSingleLayer == null) {
-            LOG.warn("Error accessing Capabilities for service, url:", info.getUrl(),
+            LOG.warn("Error finding layer with name:", layer.getName(), "from Capabilities for service, url:", info.getUrl(),
                     "type:", info.getType(), "version:", info.getVersion());
             return CapabilitiesUpdateResult.err(layer, CapabilitiesUpdateResult.ERR_LAYER_NOT_FOUND_IN_CAPABILITIES);
 
