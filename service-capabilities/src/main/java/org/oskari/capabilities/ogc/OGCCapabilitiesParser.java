@@ -85,7 +85,7 @@ public abstract class OGCCapabilitiesParser extends CapabilitiesParser {
         if (ns == null) {
             throw new ServiceException("Expected non-null namespace!");
         }
-        if (!ns.startsWith(expected)) {
+        if (!ns.isEmpty() && !ns.startsWith(expected)) {
             throw new ServiceException(String.format(
                     "Expected namespace starting with '%s', got '%s'", expected, ns));
         }
