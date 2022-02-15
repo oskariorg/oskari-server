@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class XmlHelper {
@@ -223,6 +224,14 @@ public class XmlHelper {
         factory.setXIncludeAware(false);
         factory.setExpandEntityReferences(false);
         return factory;
+    }
+
+    public static String generateUnexpectedElementMessage(Element doc) {
+        String elName = XmlHelper.getLocalName(doc);
+        String children = XmlHelper.getChildElements(doc, null)
+                .map(n ->XmlHelper.getLocalName(n))
+                .collect(Collectors.joining());
+        return "Unexpected XML element: '" + elName + "' with children: " + children;
     }
 
     /**
