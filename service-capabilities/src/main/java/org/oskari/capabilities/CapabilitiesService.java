@@ -28,7 +28,7 @@ public class CapabilitiesService {
                 .filter(layer -> {
                     boolean hasParser = getParser(layer.getType()) != null;
                     if (!hasParser) {
-                        results.add(CapabilitiesUpdateResult.err(layer, CapabilitiesUpdateResult.ERR_LAYER_TYPE_UNSUPPORTED));
+                        results.add(CapabilitiesUpdateResult.err(layer, CapabilitiesUpdateResult.ERR_LAYER_TYPE_UNSUPPORTED + "/" + layer.getType()));
                     }
                     return hasParser;
                 })
@@ -44,7 +44,7 @@ public class CapabilitiesService {
                     if (e instanceof IOException) {
                         results.add(CapabilitiesUpdateResult.err(layer, CapabilitiesUpdateResult.ERR_FAILED_TO_FETCH_CAPABILITIES));
                     } else {
-                        results.add(CapabilitiesUpdateResult.err(layer, CapabilitiesUpdateResult.ERR_FAILED_TO_PARSE_CAPABILITIES + "/" + ((ServiceException) e).getMessage()));
+                        results.add(CapabilitiesUpdateResult.err(layer, CapabilitiesUpdateResult.ERR_FAILED_TO_PARSE_CAPABILITIES + "/" + e.getMessage()));
                     }
                 });
                 continue;
@@ -55,7 +55,7 @@ public class CapabilitiesService {
                 if (capsForSingleLayer == null) {
                     LOG.warn("Error finding layer with name:", layer.getName(), "from Capabilities for service, url:", utv.getUrl(),
                             "type:", utv.getType(), "version:", utv.getVersion());
-                    results.add(CapabilitiesUpdateResult.err(layer, CapabilitiesUpdateResult.ERR_LAYER_NOT_FOUND_IN_CAPABILITIES));
+                    results.add(CapabilitiesUpdateResult.err(layer, CapabilitiesUpdateResult.ERR_LAYER_NOT_FOUND_IN_CAPABILITIES+ "/" + layer.getName() + " from " + utv.getUrl()));
                     return;
                 }
                 layer.setCapabilities(toJSON(capsForSingleLayer, systemCRSs));
@@ -80,9 +80,9 @@ public class CapabilitiesService {
             serviceCaps = getLayersFromService(info);
         } catch (IOException | ServiceException e) {
             if (e instanceof IOException) {
-                return CapabilitiesUpdateResult.err(layer, CapabilitiesUpdateResult.ERR_FAILED_TO_FETCH_CAPABILITIES);
+                return CapabilitiesUpdateResult.err(layer, CapabilitiesUpdateResult.ERR_FAILED_TO_FETCH_CAPABILITIES + "/" + info.getUrl());
             } else {
-                return CapabilitiesUpdateResult.err(layer, CapabilitiesUpdateResult.ERR_FAILED_TO_PARSE_CAPABILITIES);
+                return CapabilitiesUpdateResult.err(layer, CapabilitiesUpdateResult.ERR_FAILED_TO_PARSE_CAPABILITIES + "/" + info.getUrl());
             }
         }
 
@@ -90,7 +90,7 @@ public class CapabilitiesService {
         if (capsForSingleLayer == null) {
             LOG.warn("Error finding layer with name:", layer.getName(), "from Capabilities for service, url:", info.getUrl(),
                     "type:", info.getType(), "version:", info.getVersion());
-            return CapabilitiesUpdateResult.err(layer, CapabilitiesUpdateResult.ERR_LAYER_NOT_FOUND_IN_CAPABILITIES);
+            return CapabilitiesUpdateResult.err(layer, CapabilitiesUpdateResult.ERR_LAYER_NOT_FOUND_IN_CAPABILITIES + "/" + layer.getName() + " from " + info.getUrl());
 
         }
         layer.setCapabilities(toJSON(capsForSingleLayer, systemCRSs));

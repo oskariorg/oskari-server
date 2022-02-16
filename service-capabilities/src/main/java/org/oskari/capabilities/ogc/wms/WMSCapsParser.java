@@ -1,7 +1,5 @@
 package org.oskari.capabilities.ogc.wms;
 
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
 import org.oskari.capabilities.ogc.BoundingBox;
 import org.oskari.capabilities.ogc.LayerCapabilitiesWMS;
 import org.oskari.capabilities.ogc.LayerStyle;
