@@ -39,16 +39,13 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
 
     public UpdateCapabilitiesJob() {
         this(new OskariLayerServiceMybatisImpl(),
-                new CapabilitiesCacheServiceMybatisImpl(),
                 new AppSetupServiceMybatisImpl());
     }
 
     public UpdateCapabilitiesJob(OskariLayerService layerService,
-            CapabilitiesCacheService capabilitiesCacheService,
             ViewService viewService) {
         this.layerService = layerService;
-        this.capabilitiesUpdateService = new CapabilitiesUpdateService(
-                layerService, capabilitiesCacheService);
+        this.capabilitiesUpdateService = new CapabilitiesUpdateService(layerService);
         this.viewService = viewService;
     }
 

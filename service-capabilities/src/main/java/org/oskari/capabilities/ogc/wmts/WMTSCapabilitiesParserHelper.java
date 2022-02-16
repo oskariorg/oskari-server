@@ -1,19 +1,14 @@
 package org.oskari.capabilities.ogc.wmts;
 
-//import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.ConversionHelper;
-import fi.nls.oskari.util.JSONHelper;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.oskari.capabilities.CapabilitiesService;
 import org.oskari.capabilities.ogc.LayerStyle;
 import org.oskari.xml.XmlHelper;
 import org.w3c.dom.Element;
 
 import javax.xml.stream.XMLStreamException;
-import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -30,15 +25,12 @@ public class WMTSCapabilitiesParserHelper {
         return parseCapabilities(doc);
     }
 
-    public static WMTSCapabilities parseCapabilities(InputStream in)
-            throws IllegalArgumentException {
-        Element doc = XmlHelper.parseXML(in);
-        return parseCapabilities(doc);
-    }
-
     public static WMTSCapabilities parseCapabilities(Element doc)
             throws IllegalArgumentException {
         Element contents = XmlHelper.getFirstChild(doc, "Contents");
+        if (contents == null) {
+            throw new IllegalArgumentException(XmlHelper.generateUnexpectedElementMessage(doc));
+        }
 
         Map<String, TileMatrixSet> tileMatrixSets = parseTileMatrixSets(contents);
         Map<String, WMTSCapabilitiesLayer> layers = parseLayers(contents, tileMatrixSets);

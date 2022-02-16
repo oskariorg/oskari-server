@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class XmlHelper {
@@ -26,7 +27,9 @@ public class XmlHelper {
         if (xml == null) {
             return null;
         }
-        byte[] bytes = xml.trim().getBytes(StandardCharsets.UTF_8);
+        // Note! Tries to forced removal of doctypes because:
+        // factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+        byte[] bytes = removeDocType(xml.trim()).getBytes(StandardCharsets.UTF_8);
         try (InputStream s = new ByteArrayInputStream(bytes)) {
             return parseXML(s);
         } catch (Exception e) {
@@ -36,16 +39,11 @@ public class XmlHelper {
         }
         return null;
     }
-    public static Element parseXML(final InputStream xml) {
+    public static Element parseXML(final InputStream xml) throws Exception {
         if (xml == null) {
             return null;
         }
-        try {
-            return newDocumentBuilderFactory().newDocumentBuilder().parse(xml).getDocumentElement();
-        } catch (Exception e) {
-            LOGGER.error("Couldnt't parse XML from inputstream", LOGGER.getCauseMessages(e));
-        }
-        return null;
+        return newDocumentBuilderFactory().newDocumentBuilder().parse(xml).getDocumentElement();
     }
 
     public static Stream<Element> getChildElements(final Element elem, final String localName) {
@@ -69,7 +67,7 @@ public class XmlHelper {
     }
 
     // if namespace declarations are missing the localname isn't working and we need to split it manually
-    private static String getLocalName(Element el) {
+    public static String getLocalName(Node el) {
         String loc = el.getLocalName();
         if (loc != null) {
             return loc;
@@ -144,7 +142,7 @@ public class XmlHelper {
         NamedNodeMap attrs = elem.getAttributes();
         for (int i = 0 ; i < attrs.getLength(); i++) {
             Node node = attrs.item(i);
-            attributes.put(node.getNodeName(), node.getNodeValue());
+            attributes.put(getLocalName(node), node.getNodeValue());
         }
         return attributes;
     }
@@ -173,6 +171,29 @@ public class XmlHelper {
         return xml;
     }
 
+    // Removes doctype as it's not needed and allows parser to process it succesfully:
+    // <!DOCTYPE WMT_MS_Capabilities SYSTEM "https://fake.address/inspire-wms/schemas/wms/1.1.1/WMS_MS_Capabilities.dtd">
+    // <!DOCTYPE WMT_MS_Capabilities SYSTEM
+    //    "http://schemas.opengis.net/wms/1.1.0/capabilities_1_1_0.dtd"[ <!ELEMENT VendorSpecificCapabilities EMPTY>]>
+    public static String removeDocType(String input) {
+        if (input == null) {
+            return input;
+        }
+        String upper = input.toUpperCase();
+        int index = upper.indexOf("<!DOCTYPE");
+        if (index == -1) {
+            return input;
+        }
+        int endIndex = upper.indexOf(">", index) + 1;
+        int newStartIndex = upper.indexOf("<", index + 1);
+        while (newStartIndex != -1 && newStartIndex < endIndex) {
+            endIndex = upper.indexOf(">", endIndex) + 1;
+            newStartIndex = upper.indexOf("<", newStartIndex + 1);
+        }
+        String start = input.substring(0, index);
+        return start + input.substring(endIndex);
+    }
+
     /**
      * Obtain a new instance of a DocumentBuilderFactory with security features enables.
      * This static method creates a new factory instance.
@@ -191,12 +212,26 @@ public class XmlHelper {
             factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
             factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
             factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+
+            factory.setFeature("http://xml.org/sax/features/namespaces", false);
+            factory.setFeature("http://xml.org/sax/features/validation", false);
+            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
+            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
         } catch (ParserConfigurationException ex) {
             LOGGER.warn("Unable to enable security features for DocumentBuilderFactory", ex.getMessage());
         }
+        factory.setValidating(false);
         factory.setXIncludeAware(false);
         factory.setExpandEntityReferences(false);
         return factory;
+    }
+
+    public static String generateUnexpectedElementMessage(Element doc) {
+        String elName = XmlHelper.getLocalName(doc);
+        String children = XmlHelper.getChildElements(doc, null)
+                .map(n ->XmlHelper.getLocalName(n))
+                .collect(Collectors.joining());
+        return "Unexpected XML element: '" + elName + "' with children: " + children;
     }
 
     /**

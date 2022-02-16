@@ -245,12 +245,21 @@ public class LayerJSONFormatter {
         }
         return IOHelper.constructUrl(PropertyUtil.get(PROPERTY_AJAXURL), urlParams);
     }
+
     private String getMetadataUuid (OskariLayer layer) {
         String fixed = LayerJSONFormatter.getFixedDataUrl(layer.getMetadataId());
         if (fixed != null) {
             return fixed;
         }
-        return layer.getCapabilities().optString(KEY_METADATA);
+        String olderMetadataCaps = layer.getCapabilities().optString(KEY_METADATA);
+        if (olderMetadataCaps != null) {
+            return olderMetadataCaps;
+        }
+        JSONObject typeSpecific = layer.getCapabilities().optJSONObject("typeSpecific");
+        if (typeSpecific == null) {
+            return null;
+        }
+        return LayerJSONFormatter.getFixedDataUrl(typeSpecific.optString("metadataUrl"));
     }
 
     // This is solution of transition for dataUrl and for dataUrl_uuid

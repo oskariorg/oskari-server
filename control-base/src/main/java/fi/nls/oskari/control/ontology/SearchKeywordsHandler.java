@@ -1,7 +1,5 @@
 package fi.nls.oskari.control.ontology;
 
-import fi.mml.map.mapwindow.service.wms.WebMapService;
-import fi.mml.map.mapwindow.service.wms.WebMapServiceFactory;
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
@@ -252,12 +250,11 @@ public class SearchKeywordsHandler extends ActionHandler {
         Set<String> layerKeywords = new HashSet<>();
         try {
             if(OskariLayer.TYPE_WMS.equals(layer.getType())) {
-                WebMapService wms = WebMapServiceFactory.buildWebMapService(layer);
-                if (wms == null || wms.getKeywords() == null) {
-                    log.warn("Error parsing keywords for layer", layer);
+                JSONObject capabilities = layer.getCapabilities().optJSONObject("typeSpecific");
+                if (capabilities == null) {
                     return EMPTY_RESULT;
                 }
-                layerKeywords.addAll(Arrays.asList(wms.getKeywords()));
+                layerKeywords.addAll(JSONHelper.getArrayAsList(capabilities.optJSONArray("keywords")));
             }
             else if(OskariLayer.TYPE_WFS.equals(layer.getType())) {
                 layerKeywords.addAll(Arrays.asList(wfsCapabilitiesparser.getKeywordsForLayer(layer)));

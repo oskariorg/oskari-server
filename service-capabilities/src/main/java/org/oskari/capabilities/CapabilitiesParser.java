@@ -19,11 +19,13 @@ public abstract class CapabilitiesParser extends OskariComponent {
 
     public RawCapabilitiesResponse fetchCapabilities(String capabilitiesUrl, String user, String pass, String expectedContentType) throws IOException, ServiceException {
         HttpURLConnection conn = IOHelper.getConnection(capabilitiesUrl, user, pass);
+        conn = IOHelper.followRedirect(conn, user, pass, 5);
         conn.setReadTimeout(TIMEOUT_MS);
+        IOHelper.addIdentifierHeaders(conn);
 
         int sc = conn.getResponseCode();
         if (sc == HttpURLConnection.HTTP_FORBIDDEN || sc == HttpURLConnection.HTTP_UNAUTHORIZED) {
-            throw new ServiceUnauthorizedException("Wrong credentials for service");
+            throw new ServiceUnauthorizedException("Wrong credentials for service on " + capabilitiesUrl);
         }
         if (sc != HttpURLConnection.HTTP_OK) {
             String msg = "Unexpected status code: " + sc  + " from: " + capabilitiesUrl;
@@ -32,9 +34,9 @@ public abstract class CapabilitiesParser extends OskariComponent {
 
         String contentType = conn.getContentType();
         if (contentType != null && expectedContentType != null && contentType.toLowerCase().indexOf(expectedContentType) == -1) {
-            throw new ServiceException("Unexpected Content-Type: " + contentType);
+            throw new ServiceException("Unexpected Content-Type: " + contentType + " from: " + capabilitiesUrl);
         }
-        RawCapabilitiesResponse response = new RawCapabilitiesResponse(capabilitiesUrl);
+        RawCapabilitiesResponse response = new RawCapabilitiesResponse(conn.getURL().toString());
         String encoding = IOHelper.getCharset(conn);
         response.setResponse(IOHelper.readBytes(conn), encoding);
         return response;

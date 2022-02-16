@@ -183,6 +183,16 @@ public class GFIRequestParams {
         if (infoFormat != null && !infoFormat.isEmpty()) {
             return infoFormat;
         }
+        JSONObject typeSpecific = layer.getCapabilities().optJSONObject("typeSpecific");
+        if (typeSpecific != null) {
+            List<String> available = JSONHelper.getArrayAsList(JSONHelper.getJSONArray(typeSpecific, "infoFormats"));
+            for (String format : SUPPORTED_GET_FEATURE_INFO_FORMATS) {
+                if (available.contains(format)) {
+                    return format;
+                }
+            }
+        }
+        // TODO: deprecated part
         JSONObject formats = layer.getCapabilities().optJSONObject(KEY_FORMATS);
         if (formats == null) {
             return DEFAULT_FORMAT;

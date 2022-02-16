@@ -13,17 +13,11 @@ import java.util.stream.Collectors;
 
 @Oskari(OskariLayer.TYPE_WMTS)
 public class WMTSCapabilitiesParser extends OGCCapabilitiesParser {
-    private static final String NAMESPACE_WMTS = "http://www.opengis.net/wmts";
-    private static final String ROOT_WMTS = "Capabilities";
 
     protected String getVersionParamName() {
         return "acceptVersions";
     }
-    protected void validateCapabilities(String version, String ns, String name)
-            throws ServiceException {
-        checkNamespaceStartsWith(ns, NAMESPACE_WMTS);
-        checkRootElementNameEquals(name, ROOT_WMTS);
-    }
+    protected String getDefaultVersion() { return "1.0.0"; }
 
     protected Map<String, LayerCapabilities> parseLayers(String capabilities) throws ServiceException {
         try {

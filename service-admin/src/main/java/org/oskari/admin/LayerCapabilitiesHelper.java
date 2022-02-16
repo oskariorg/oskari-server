@@ -8,23 +8,24 @@ import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesConstants;
 import fi.nls.oskari.service.capabilities.OskariLayerCapabilitiesHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.wfs.WFSCapabilitiesService;
 import fi.nls.oskari.wms.WMSCapabilitiesService;
-import fi.nls.oskari.wmts.WMTSCapabilitiesService;
 import org.geotools.data.wfs.WFSDataStore;
 import org.oskari.capabilities.CapabilitiesService;
+import org.oskari.capabilities.LayerCapabilities;
+import org.oskari.capabilities.ServiceConnectInfo;
+import org.oskari.maplayer.admin.LayerAdminJSONHelper;
 import org.oskari.maplayer.model.ServiceCapabilitiesResult;
 import org.oskari.service.wfs3.WFS3Service;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class LayerCapabilitiesHelper {
 
     private static final List<String> OWS_SERVICES = Arrays.asList("ows", "wms", "wmts", "wfs");
-    private static WMTSCapabilitiesService wmtsCapabilities = new WMTSCapabilitiesService();
     private static WMSCapabilitiesService wmsCapabilities = new WMSCapabilitiesService();
 
     // Hiding ugliness
@@ -41,10 +42,54 @@ public class LayerCapabilitiesHelper {
             case OskariLayer.TYPE_WFS:
                 return WFSCapabilitiesService.getCapabilitiesResults(url, version, username, password, getSystemCRSs());
             case OskariLayer.TYPE_WMTS:
-                return wmtsCapabilities.getCapabilitiesResults(url, version, username, password, currentSRS, getSystemCRSs());
+                return getCapabilitiesResultsWMTS(url, version, username, password, getSystemCRSs());
             default:
                 throw new ServiceException("Couldn't determine operation based on parameters");
         }
+    }
+
+    public static ServiceCapabilitiesResult getCapabilitiesResultsWMTS (final String url, final String version,
+                                                                 final String user, final String pw, final Set<String> systemCRSs)
+            throws ServiceException {
+        ServiceCapabilitiesResult results = new ServiceCapabilitiesResult();
+        results.setVersion(version);
+
+        ServiceConnectInfo info = new ServiceConnectInfo(url, OskariLayer.TYPE_WMTS, version);
+        info.setCredentials(user, pw);
+        try {
+            Map<String, LayerCapabilities> capabilitiesMap = CapabilitiesService.getLayersFromService(info);
+
+            List<OskariLayer> layers = new ArrayList<>();
+            final String[] languages = PropertyUtil.getSupportedLanguages();
+            for (LayerCapabilities cap : capabilitiesMap.values()) {
+                OskariLayer layer = new OskariLayer();
+                layer.setType(OskariLayer.TYPE_WMTS);
+                layer.setName(cap.getName());
+                layer.setUrl(url);
+                layer.setVersion(version);
+                layer.setUsername(user);
+                layer.setPassword(pw);
+
+                for (String lang : languages) {
+                    layer.setName(lang, cap.getTitle());
+                }
+                layer.setStyle(cap.getDefaultStyle());
+
+                layer.setCapabilities(CapabilitiesService.toJSON(cap, systemCRSs));
+                layers.add(layer);
+            }
+            results.setLayers(layers.stream()
+                    .map(l -> LayerAdminJSONHelper.toJSON(l))
+                    .collect(Collectors.toList()));
+
+        } catch (IOException e) {
+            throw new ServiceException("Error loading capabilities", e);
+        } catch (ServiceException e) {
+            // TODO: error handling?
+            throw e;
+        }
+
+        return results;
     }
 
     private static Map<String, List<Integer>> getExistingLayers(String url, String type) {
@@ -67,11 +112,8 @@ public class LayerCapabilitiesHelper {
                 updateCapabilitiesWFS(ml);
                 break;
             case OskariLayer.TYPE_WMS:
-                wmsCapabilities.updateLayerCapabilities(ml, getSystemCRSs());
-                break;
             case OskariLayer.TYPE_WMTS:
                 CapabilitiesService.updateCapabilities(ml, getSystemCRSs());
-                // TODO: handle error/update options for requestEncoding if it's required still
                 break;
         }
     }

@@ -20,7 +20,6 @@ import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.util.ViewHelper;
 import fi.nls.oskari.service.ServiceException;
-import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.util.ResponseHelper;
 
 /**
@@ -46,7 +45,6 @@ public class UpdateCapabilitiesHandler extends RestActionHandler {
     private static final String KEY_DATAPROVIDER_ID = "dataprovider_id";
     private static final String KEY_GROUP_ID = "group_id";
     private OskariLayerService layerService;
-    private CapabilitiesCacheService capabilitiesCacheService;
     private CapabilitiesUpdateService capabilitiesUpdateService;
     private ViewService viewService;
 
@@ -55,11 +53,9 @@ public class UpdateCapabilitiesHandler extends RestActionHandler {
     }
 
     public UpdateCapabilitiesHandler(OskariLayerService layerService,
-            CapabilitiesCacheService capabilitiesCacheService,
             ViewService viewService) {
         // Full-param constructor if one is required
         this.layerService = layerService;
-        this.capabilitiesCacheService = capabilitiesCacheService;
         this.viewService = viewService;
     }
 
@@ -69,12 +65,8 @@ public class UpdateCapabilitiesHandler extends RestActionHandler {
         if (layerService == null) {
             layerService = ServiceFactory.getMapLayerService();
         }
-        if (capabilitiesCacheService == null) {
-            capabilitiesCacheService = ServiceFactory.getCapabilitiesCacheService();
-        }
         if (capabilitiesUpdateService == null) {
-            capabilitiesUpdateService = new CapabilitiesUpdateService(
-                    layerService, capabilitiesCacheService);
+            capabilitiesUpdateService = new CapabilitiesUpdateService(layerService);
         }
         if (viewService == null) {
             viewService = ServiceFactory.getViewService();

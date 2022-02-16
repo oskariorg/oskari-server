@@ -12,6 +12,7 @@ public class LayerCapabilities {
     private List<LayerStyle> styles;
     private Set<String> srs;
     private String defaultStyle;
+    private String url;
 
     private Map<String, Object> typeSpecific = new HashMap<>();
 
@@ -20,9 +21,23 @@ public class LayerCapabilities {
         this.title = title;
     }
 
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public void setStyles(List<LayerStyle> styles) {
+        setStyles(styles, null);
+    }
     public void setStyles(List<LayerStyle> styles, String defaultStyle) {
         this.styles = styles;
         this.defaultStyle = defaultStyle;
+        if (defaultStyle == null && !styles.isEmpty()) {
+            this.defaultStyle = styles.get(0).getName();
+        }
     }
     public void setSrs(Set<String> supported) {
         this.srs = supported;
@@ -51,6 +66,9 @@ public class LayerCapabilities {
     }
 
     public String getDefaultStyle() {
+        if (defaultStyle == null && styles != null && !styles.isEmpty()) {
+            return styles.get(0).getName();
+        }
         return defaultStyle;
     }
 
