@@ -12,12 +12,21 @@ public class LayerCapabilities {
     private List<LayerStyle> styles;
     private Set<String> srs;
     private String defaultStyle;
+    private String url;
 
     private Map<String, Object> typeSpecific = new HashMap<>();
 
     public LayerCapabilities(String name, String title) {
         this.name = name;
         this.title = title;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public void setStyles(List<LayerStyle> styles) {

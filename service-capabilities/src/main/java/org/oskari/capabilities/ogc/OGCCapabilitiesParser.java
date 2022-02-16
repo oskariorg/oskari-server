@@ -34,7 +34,9 @@ public abstract class OGCCapabilitiesParser extends CapabilitiesParser {
         String capabilitiesUrl = contructCapabilitiesUrl(src.getUrl(), src.getVersion());
         RawCapabilitiesResponse response = fetchCapabilities(capabilitiesUrl, src.getUser(), src.getPass(), getExpectedContentType());
         String validResponse = validateResponse(response);
-        return parseLayers(validResponse);
+        Map<String, LayerCapabilities> layers = parseLayers(validResponse);
+        layers.values().stream().forEach(l -> l.setUrl(response.getUrl()));
+        return layers;
     }
 
     protected abstract Map<String, LayerCapabilities> parseLayers(String capabilities) throws ServiceException;

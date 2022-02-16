@@ -42,7 +42,7 @@ public class CapabilitiesService {
             } catch (IOException | ServiceException e) {
                 layersFromOneService.stream().forEach(layer -> {
                     if (e instanceof IOException) {
-                        results.add(CapabilitiesUpdateResult.err(layer, CapabilitiesUpdateResult.ERR_FAILED_TO_FETCH_CAPABILITIES));
+                        results.add(CapabilitiesUpdateResult.err(layer, CapabilitiesUpdateResult.ERR_FAILED_TO_FETCH_CAPABILITIES + "/" + utv.getUrl()));
                     } else {
                         results.add(CapabilitiesUpdateResult.err(layer, CapabilitiesUpdateResult.ERR_FAILED_TO_PARSE_CAPABILITIES + "/" + e.getMessage()));
                     }

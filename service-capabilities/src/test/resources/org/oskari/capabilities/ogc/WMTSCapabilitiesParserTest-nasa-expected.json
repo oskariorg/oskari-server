@@ -13,6 +13,7 @@
     }
   ],
   "title": "Blue Marble (MODIS)",
+  "url":null,
   "typeSpecific": {
     "tileMatrix": [
       {

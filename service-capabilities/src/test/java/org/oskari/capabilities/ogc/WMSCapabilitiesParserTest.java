@@ -1,8 +1,6 @@
 package org.oskari.capabilities.ogc;
 
-import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.util.ResourceHelper;
 import org.json.JSONObject;
 import org.junit.BeforeClass;
@@ -15,7 +13,6 @@ import org.oskari.capabilities.ogc.wms.WMSCapsParser1_3_0;
 import java.util.*;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertArrayEquals;
 
 public class WMSCapabilitiesParserTest {
 
