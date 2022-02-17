@@ -419,6 +419,7 @@ public class IOHelper {
 
             log.info("Following redirect to", location);
             HttpURLConnection newConnection = getConnection(location, user, pass, query, headers);
+            IOHelper.addIdentifierHeaders(newConnection);
             return followRedirect(newConnection, user, pass, query, headers, redirectLatch);
         } else {
             return conn;
@@ -678,8 +679,12 @@ public class IOHelper {
      * @throws IOException
      */
     public static void addIdentifierHeaders(final HttpURLConnection con) throws IOException {
-        con.setRequestProperty(HEADER_USERAGENT, getUserAgent());
-        con.setRequestProperty(HEADER_REFERER, getMyDomain());
+        try {
+            con.setRequestProperty(HEADER_USERAGENT, getUserAgent());
+            con.setRequestProperty(HEADER_REFERER, getMyDomain());
+        } catch (IllegalStateException e) {
+            log.warn("Couln't write ident headers:", e.getMessage());
+        }
     }
 
     /**
