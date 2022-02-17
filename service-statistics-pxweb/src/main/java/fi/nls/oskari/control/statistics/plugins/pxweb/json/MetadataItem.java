@@ -11,14 +11,18 @@ import java.util.Map;
     "source": {
       "fi": "Väestörakenne"
     },
-    "valueType": "percentage",
     "decimalCount": 1,
     "timerange": {
       "start": "1987",
       "end": "2015"
     },
     "updated": "1.4.2016",
-    "nextUpdate": "29.3.2017"
+    "nextUpdate": "29.3.2017",
+    // these are optional. They might not be in the JSON
+    "min": 0,
+    "max": 100000,
+    "base": 1000,
+    "isRatio": false
 }
  */
 public class MetadataItem {
@@ -27,11 +31,18 @@ public class MetadataItem {
     public Map<String,String> name;
     public Map<String,String> desc;
     public Map<String,String> source;
-    public String valueType;
 
-    public int decimalCount;
+    public Integer decimalCount;
+    // when was data last updated/when is the next update
     public String updated;
     public String nextUpdate;
+    // min/max values as scale for data (might not be known)
+    public Double min;
+    public Double max;
+    // base: On a divided scale, what is the dividing value (0 for pos/neg, but it can be 100 or 1000 etc)
+    public Double base;
+    // isRatio: choropleth or points
+    public Boolean isRatio;
 
     public Timerange timerange;
 

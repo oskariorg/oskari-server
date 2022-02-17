@@ -156,6 +156,8 @@ public class StatisticalIndicator {
         if (metadata == null) {
             metadata = new HashMap<>();
         }
-        metadata.put(key, value);
+        if (value != null) {
+            metadata.put(key, value);
+        }
     }
 }

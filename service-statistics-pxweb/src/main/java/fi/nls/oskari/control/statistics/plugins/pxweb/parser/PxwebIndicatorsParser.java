@@ -175,7 +175,11 @@ public class PxwebIndicatorsParser {
                     ind.addDescription(lang, desc);
                 }
             });
-            ind.addMetadata("valueType", meta.valueType);
+            ind.addMetadata("isRatio", meta.isRatio);
+            ind.addMetadata("base", meta.base);
+            ind.addMetadata("min", meta.min);
+            ind.addMetadata("max", meta.max);
+
             ind.addMetadata("decimalCount", meta.decimalCount);
             ind.addMetadata("updated", meta.updated);
             ind.addMetadata("nextUpdate", meta.nextUpdate);
