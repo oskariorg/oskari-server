@@ -683,7 +683,7 @@ public class IOHelper {
             con.setRequestProperty(HEADER_USERAGENT, getUserAgent());
             con.setRequestProperty(HEADER_REFERER, getMyDomain());
         } catch (IllegalStateException e) {
-            log.warn("Couln't write ident headers:", e.getMessage());
+            log.warn("Couldn't write ident headers:", e.getMessage());
         }
     }
 
