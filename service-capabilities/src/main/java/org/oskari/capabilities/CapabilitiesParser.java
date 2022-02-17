@@ -19,9 +19,9 @@ public abstract class CapabilitiesParser extends OskariComponent {
 
     public RawCapabilitiesResponse fetchCapabilities(String capabilitiesUrl, String user, String pass, String expectedContentType) throws IOException, ServiceException {
         HttpURLConnection conn = IOHelper.getConnection(capabilitiesUrl, user, pass);
+        IOHelper.addIdentifierHeaders(conn);
         conn = IOHelper.followRedirect(conn, user, pass, 5);
         conn.setReadTimeout(TIMEOUT_MS);
-        IOHelper.addIdentifierHeaders(conn);
 
         int sc = conn.getResponseCode();
         if (sc == HttpURLConnection.HTTP_FORBIDDEN || sc == HttpURLConnection.HTTP_UNAUTHORIZED) {
