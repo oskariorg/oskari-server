@@ -67,7 +67,7 @@ public class TIFFReader {
         return ifds.get(i);
     }
 
-    public void readStrip(int ifdIdx, int stripIdx, float[] dst) {
+    public float[] readStrip(int ifdIdx, int stripIdx, float[] dst) {
         IFD ifd = ifds.get(ifdIdx);
 
         if (ifd.getStripOffsets() == null) {
@@ -84,6 +84,35 @@ public class TIFFReader {
                 .order(bb.order())
                 .asFloatBuffer()
                 .get(dst);
+
+        return dst;
+    }
+
+    public short[] readStrip(int ifdIdx, int stripIdx, short[] dst) {
+        IFD ifd = ifds.get(ifdIdx);
+
+        if (ifd.getStripOffsets() == null) {
+            throw new IllegalArgumentException("Specified IFD is not striped");
+        }
+
+        for (int sf : ifd.getSampleFormat()) {
+            if (sf != 1 && sf != 2) {
+                throw new IllegalArgumentException("Specified IFD sampleFormat is not (un)signed integer");
+            }
+        }
+
+        for (int bps : ifd.getBitsPerSample()) {
+            if (bps != 16) {
+                throw new IllegalArgumentException("Specified IFD bits per sample is not 16");
+            }
+        }
+
+        ByteBuffer.wrap(getStripData(ifd, stripIdx, null))
+                .order(bb.order())
+                .asShortBuffer()
+                .get(dst);
+
+        return dst;
     }
 
     private byte[] getStripData(IFD ifd, int stripIdx, byte[] data)
@@ -107,7 +136,7 @@ public class TIFFReader {
         return data;
     }
 
-    public void readTile(int ifdIdx, int tileIdx, float[] dst)
+    public float[] readTile(int ifdIdx, int tileIdx, float[] dst)
             throws IllegalArgumentException {
         IFD ifd = ifds.get(ifdIdx);
 
@@ -125,6 +154,36 @@ public class TIFFReader {
                 .order(bb.order())
                 .asFloatBuffer()
                 .get(dst);
+
+        return dst;
+    }
+
+    public short[] readTile(int ifdIdx, int tileIdx, short[] dst)
+            throws IllegalArgumentException {
+        IFD ifd = ifds.get(ifdIdx);
+
+        if (ifd.getTileOffsets() == null) {
+            throw new IllegalArgumentException("Specified IFD is not tiled");
+        }
+
+        for (int sf : ifd.getSampleFormat()) {
+            if (sf != 1 && sf != 2) {
+                throw new IllegalArgumentException("Specified IFD sampleFormat is not (un)signed integer");
+            }
+        }
+
+        for (int bps : ifd.getBitsPerSample()) {
+            if (bps != 16) {
+                throw new IllegalArgumentException("Specified IFD bits per sample is not 16");
+            }
+        }
+
+        ByteBuffer.wrap(getTileData(ifd, tileIdx, null))
+                .order(bb.order())
+                .asShortBuffer()
+                .get(dst);
+
+        return dst;
     }
 
     private byte[] getTileData(IFD ifd, int tileIdx, byte[] data)
