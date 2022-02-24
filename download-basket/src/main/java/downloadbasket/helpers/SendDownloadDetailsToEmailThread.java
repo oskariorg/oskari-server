@@ -240,7 +240,7 @@ public class SendDownloadDetailsToEmailThread implements Runnable {
 
 			String user = PropertyUtil.getOptional("oskari.wfs.download.smtp.user");
 			String password = PropertyUtil.getOptional("oskari.wfs.download.smtp.password");
-			if(user != null && password != null) {
+			if (user != null && password != null) {
 				email.setAuthentication(user, password);
 			}
 
