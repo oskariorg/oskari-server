@@ -11,6 +11,9 @@ public class LongMIDColumn extends MIDColumn {
 
     @Override
     public Long parse(String str) {
+        if (str.isEmpty()) {
+            return null;
+        }
         return Long.parseLong(str);
     }
 

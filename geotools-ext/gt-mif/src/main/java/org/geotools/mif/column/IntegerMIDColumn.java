@@ -8,6 +8,9 @@ public class IntegerMIDColumn extends MIDColumn {
 
     @Override
     public Integer parse(String str) {
+        if (str.isEmpty()) {
+            return null;
+        }
         return Integer.parseInt(str);
     }
 

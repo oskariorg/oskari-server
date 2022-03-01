@@ -8,6 +8,9 @@ public class SmallIntMIDColumn extends MIDColumn {
 
     @Override
     public Short parse(String str) {
+        if (str.isEmpty()) {
+            return null;
+        }
         return Short.parseShort(str);
     }
 

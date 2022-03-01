@@ -8,6 +8,9 @@ public class FloatMIDColumn extends MIDColumn {
 
     @Override
     public Float parse(String str) {
+        if (str.isEmpty()) {
+            return null;
+        }
         return Float.parseFloat(str);
     }
 
