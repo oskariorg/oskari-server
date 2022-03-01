@@ -8,6 +8,9 @@ public class LogicalMIDColumn extends MIDColumn {
 
     @Override
     public Boolean parse(String str) {
+        if (str.isEmpty()) {
+            return null;
+        }
         return Boolean.parseBoolean(str);
     }
 

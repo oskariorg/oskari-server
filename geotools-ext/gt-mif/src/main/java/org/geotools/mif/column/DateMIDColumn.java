@@ -10,7 +10,7 @@ public class DateMIDColumn extends MIDColumn {
 
     @Override
     public LocalDate parse(String str) {
-        if (str == null || str.isEmpty()) {
+        if (str.isEmpty()) {
             return null;
         }
         return LocalDate.parse(str);

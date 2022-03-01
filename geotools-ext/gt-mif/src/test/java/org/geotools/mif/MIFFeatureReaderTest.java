@@ -1,6 +1,7 @@
 package org.geotools.mif;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -20,6 +21,69 @@ import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.geom.Polygon;
 
 public class MIFFeatureReaderTest {
+
+    @Test
+    public void testReadingEmptyMIDFields() throws URISyntaxException, IOException {
+        try {
+            File mif = new File(getClass().getResource("empty_fields.MIF").toURI());
+            File mid = new File(getClass().getResource("empty_fields.MID").toURI());
+            DataStore store = new MIFDataStore(mif, mid);
+            SimpleFeatureSource source = store.getFeatureSource("empty_fields");
+            SimpleFeatureCollection fc = source.getFeatures();
+            assertEquals(1, fc.size());
+            try (SimpleFeatureIterator it = fc.features()) {
+                if (!it.hasNext()) {
+                    fail();
+                }
+                SimpleFeature f = it.next();
+
+                /*
+                Region 1
+                4
+                357517.2 6860602.8
+                357539.1 6860613.8
+                357556.1 6860578.1
+                357533.8 6860567.8
+                 */
+                Polygon region = (Polygon) f.getDefaultGeometry();
+                assertEquals(5, region.getNumPoints()); // +1 because ring is automatically closed
+                assertEquals(0, region.getNumInteriorRing());
+
+                CoordinateSequence csq = region.getExteriorRing().getCoordinateSequence();
+                assertEquals( 357517.2, csq.getOrdinate(0, 0), 1e-9);
+                assertEquals(6860602.8, csq.getOrdinate(0, 1), 1e-9);
+                assertEquals( 357539.1, csq.getOrdinate(1, 0), 1e-9);
+                assertEquals(6860613.8, csq.getOrdinate(1, 1), 1e-9);
+                assertEquals( 357556.1, csq.getOrdinate(2, 0), 1e-9);
+                assertEquals(6860578.1, csq.getOrdinate(2, 1), 1e-9);
+                assertEquals( 357533.8, csq.getOrdinate(3, 0), 1e-9);
+                assertEquals(6860567.8, csq.getOrdinate(3, 1), 1e-9);
+                assertEquals( 357517.2, csq.getOrdinate(4, 0), 1e-9);
+                assertEquals(6860602.8, csq.getOrdinate(4, 1), 1e-9);
+
+                assertNull(f.getAttribute("id"));
+                assertEquals(Integer.class, f.getProperty("id").getType().getBinding());
+
+                assertNull(f.getAttribute("foo"));
+                assertEquals(Long.class, f.getProperty("foo").getType().getBinding());
+
+                assertNull(f.getAttribute("bar"));
+                assertEquals(Float.class, f.getProperty("bar").getType().getBinding());
+
+                assertNull(f.getAttribute("baz"));
+                assertEquals(Double.class, f.getProperty("baz").getType().getBinding());
+
+                assertNull(f.getAttribute("qux"));
+                assertEquals(Boolean.class, f.getProperty("qux").getType().getBinding());
+
+                if (it.hasNext()) {
+                    fail();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Test
     public void testFeatureReader() throws URISyntaxException, IOException {

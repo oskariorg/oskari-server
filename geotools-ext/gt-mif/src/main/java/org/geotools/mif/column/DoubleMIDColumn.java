@@ -11,6 +11,9 @@ public class DoubleMIDColumn extends MIDColumn {
 
     @Override
     public Double parse(String str) {
+        if (str.isEmpty()) {
+            return null;
+        }
         return Double.parseDouble(str);
     }
 
