@@ -63,26 +63,6 @@ public class OskariWFS3ClientTest {
 
     @Ignore("Depends on outside service, results might vary")
     @Test
-    public void testGetFeaturesHardLimitPaging() throws ServiceException, IOException {
-        OskariLayer layer = new OskariLayer();
-        layer.setUrl("https://beta-paikkatieto.maanmittauslaitos.fi/geographic-names/wfs3/v1/");
-        layer.setName("places");
-        CoordinateReferenceSystem crs = OskariWFS3Client.getCRS84();
-        int limit = OskariWFS3Client.PAGE_SIZE + 10;
-        SimpleFeatureCollection sfc = OskariWFS3Client.getFeatures(layer, null, crs);
-        assertEquals(limit, sfc.size());
-        int i = 0;
-        try (SimpleFeatureIterator it = sfc.features()) {
-            while (it.hasNext()) {
-                i++;
-                it.next();
-            }
-        }
-        assertEquals(limit, i);
-    }
-
-    @Ignore("Depends on outside service, results might vary")
-    @Test
     public void testGetFeaturesServiceSupportingCRS_EPSG3067() throws Exception {
         OskariLayer layer = new OskariLayer();
         layer.setUrl("https://beta-paikkatieto.maanmittauslaitos.fi/maastotiedot/wfs3/v1/");
