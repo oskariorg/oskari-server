@@ -74,7 +74,11 @@ public class OskariWFS3Client {
     }
 
     private OskariWFS3Client() {}
-    
+
+    /**
+     * @deprecated @see #getFeatures(OskariLayer, ReferencedEnvelope, CoordinateReferenceSystem, Filter)
+     */
+    @Deprecated
     public static SimpleFeatureCollection getFeatures(OskariLayer layer,
             ReferencedEnvelope bbox, CoordinateReferenceSystem crs) throws ServiceRuntimeException {
         return getFeatures(layer, bbox, crs, null);
@@ -109,7 +113,7 @@ public class OskariWFS3Client {
         // attach any extra params added for layer (for example properties=[prop name we are interested in])
         query.putAll(JSONHelper.getObjectAsMap(layer.getParams()));
 
-        Filter postFilter = null;
+        Filter postFilter = Filter.INCLUDE;
         if (filter != null) {
             postFilter = new FilterToOAPIFCoreQuery(layer).toQueryParameters(filter, query);
         } else if (bbox != null) {
@@ -129,10 +133,7 @@ public class OskariWFS3Client {
             Map<String, Object> geojson = readMap(conn);
             boolean ignoreGeometryProperties = true;
             SimpleFeatureType schema = GeoJSONSchemaDetector.getSchema(geojson, crs, ignoreGeometryProperties);
-            SimpleFeatureCollection sfc = GeoJSONReader2.toFeatureCollection(geojson, schema, transformCRS84ToTargetCRS);
-            if (postFilter != null) {
-                sfc = sfc.subCollection(postFilter);
-            }
+            SimpleFeatureCollection sfc = GeoJSONReader2.toFeatureCollection(geojson, schema, transformCRS84ToTargetCRS, postFilter);
             numFeatures += sfc.size();
             pages.add(sfc);
             String next = getLinkHref(geojson, "next");
@@ -144,10 +145,7 @@ public class OskariWFS3Client {
 
                 validateResponse(conn, CONTENT_TYPE_GEOJSON);
                 geojson = readMap(conn);
-                sfc = GeoJSONReader2.toFeatureCollection(geojson, schema, transformCRS84ToTargetCRS);
-                if (postFilter != null) {
-                    sfc = sfc.subCollection(postFilter);
-                }
+                sfc = GeoJSONReader2.toFeatureCollection(geojson, schema, transformCRS84ToTargetCRS, postFilter);
                 numFeatures += sfc.size();
                 pages.add(sfc);
                 next = getLinkHref(geojson, "next");
