@@ -34,7 +34,7 @@ import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.KEY_MAX_F
 
 public class OskariWFSClient {
 
-    private static final Logger LOG = LogFactory.getLogger(OskariWFS110Client.class);
+    private static final Logger LOG = LogFactory.getLogger(OskariWFSClient.class);
     private static final String EXC_HANDLING_OUTPUTFORMAT = "outputformat";
     private static final TypeReference<HashMap<String, Object>> TYPE_REF = new TypeReference<HashMap<String, Object>>() {};
     private static final ObjectMapper OM = new ObjectMapper();
