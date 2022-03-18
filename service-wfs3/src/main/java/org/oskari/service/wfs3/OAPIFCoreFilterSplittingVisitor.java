@@ -1,5 +1,7 @@
 package org.oskari.service.wfs3;
 
+import java.util.Set;
+
 import org.geotools.filter.FilterCapabilities;
 import org.geotools.filter.visitor.PostPreProcessFilterSplittingVisitor;
 import org.opengis.filter.Filter;
@@ -24,8 +26,21 @@ import org.opengis.filter.expression.PropertyName;
  */
 class OAPIFCoreFilterSplittingVisitor extends PostPreProcessFilterSplittingVisitor {
 
-    public OAPIFCoreFilterSplittingVisitor(FilterCapabilities fcs) {
+    private final Set<String> queryables;
+
+    public OAPIFCoreFilterSplittingVisitor(FilterCapabilities fcs, Set<String> queryables) {
         super(fcs, null, null);
+        this.queryables = queryables;
+    }
+
+    @Override
+    public Object visit(PropertyName expression, Object notUsed) {
+        if (queryables != null && queryables.contains(expression.getPropertyName())) {
+            preStack.push(expression);
+        } else {
+            postStack.push(expression);
+        }
+        return null;
     }
 
     @Override

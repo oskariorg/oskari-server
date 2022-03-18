@@ -1,10 +1,13 @@
 package org.oskari.service.wfs3;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.geotools.filter.FilterCapabilities;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.json.JSONArray;
 import org.opengis.filter.And;
 import org.opengis.filter.ExcludeFilter;
 import org.opengis.filter.Filter;
@@ -60,21 +63,23 @@ import org.opengis.filter.temporal.TEquals;
 import org.opengis.filter.temporal.TOverlaps;
 
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.util.JSONHelper;
 
 public class FilterToOAPIFCoreQuery implements FilterVisitor, ExpressionVisitor {
 
+    private static final String ATTRIBUTE_QUERYABLES = "queryables";
+
     private final OskariLayer layer;
-    private final FilterCapabilities capabilities;
     private boolean insideAnd = false;
 
     public FilterToOAPIFCoreQuery(OskariLayer layer) {
         this.layer = layer;
-        this.capabilities = createFilterCapabilities(layer);
     }
 
     public Filter toQueryParameters(Filter filter, Map<String, String> query) {
-        FilterCapabilities cap = capabilities;
-        OAPIFCoreFilterSplittingVisitor splitter = new OAPIFCoreFilterSplittingVisitor(cap);
+        FilterCapabilities capabilities = createFilterCapabilities(layer);
+        Set<String> queryables = getQueryables(layer);
+        OAPIFCoreFilterSplittingVisitor splitter = new OAPIFCoreFilterSplittingVisitor(capabilities, queryables);
         filter.accept(splitter, null);
         splitter.getFilterPre().accept(this, query);
         return splitter.getFilterPost();
@@ -89,6 +94,20 @@ public class FilterToOAPIFCoreQuery implements FilterVisitor, ExpressionVisitor 
         capabilities.addType(FilterCapabilities.SPATIAL_BBOX);
 
         return capabilities;
+    }
+
+    private Set<String> getQueryables(OskariLayer layer) {
+        JSONArray array = JSONHelper.getJSONArray(layer.getAttributes(), ATTRIBUTE_QUERYABLES);
+        if (array == null) {
+            return null;
+        }
+
+        List<String> queryables = JSONHelper.getArrayAsList(array);
+        if (queryables.isEmpty()) {
+            return null;
+        }
+
+        return new HashSet<>(queryables);
     }
 
     @Override
