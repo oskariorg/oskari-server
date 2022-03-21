@@ -38,7 +38,8 @@ public class WMSCapabilitiesParserTest {
         // Check and remove version as it is different on expected between 1.1.1 and 1.3.0 input
         assertEquals("Check version", WMSCapsParser1_1_1.VERSION, json.optJSONObject("typeSpecific").remove("version"));
         // Note! 1.1.1 doesn't have the metadata url
-        expectedJSON.optJSONObject("typeSpecific").remove("metadataUrl");
+        expectedJSON.optJSONObject("typeSpecific").remove(LayerCapabilitiesOGC.METADATA_URL);
+        expectedJSON.optJSONObject("typeSpecific").remove(LayerCapabilitiesOGC.METADATA_UUID);
         // System.out.println(json);
         assertTrue("JSON should match", JSONHelper.isEqual(json, expectedJSON));
 
