@@ -1,16 +1,17 @@
 package org.oskari.geojson;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.store.EmptyFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.geometry.jts.JTS;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.filter.Filter;
 import org.opengis.geometry.MismatchedDimensionException;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
@@ -49,6 +50,18 @@ public class GeoJSONReader2 {
     public static SimpleFeatureCollection toFeatureCollection(Map<String, Object> json,
             SimpleFeatureType schema, MathTransform transform)
                     throws MismatchedDimensionException, TransformException {
+        return toFeatureCollection(json, schema, null, Filter.INCLUDE);
+    }
+
+    public static SimpleFeatureCollection toFeatureCollection(
+            Map<String, Object> json,
+            SimpleFeatureType schema,
+            MathTransform transform,
+            Filter filter) throws MismatchedDimensionException, TransformException {
+        if (filter == null) {
+            filter = Filter.INCLUDE;
+        }
+
         String type = GeoJSONUtil.getString(json, GeoJSON.TYPE);
         if (!GeoJSON.FEATURE_COLLECTION.equals(type)) {
             throw new IllegalArgumentException("type was not " + GeoJSON.FEATURE_COLLECTION);
@@ -56,7 +69,7 @@ public class GeoJSONReader2 {
 
         List<Object> features = GeoJSONUtil.getList(json, GeoJSON.FEATURES);
         if (features.isEmpty()) {
-            return new GeoJSONFeatureCollection(Collections.emptyList(), null);
+            return new EmptyFeatureCollection(schema);
         }
 
         SimpleFeatureBuilder builder = new SimpleFeatureBuilder(schema);
@@ -64,7 +77,10 @@ public class GeoJSONReader2 {
         for (Object f : features) {
             @SuppressWarnings("unchecked")
             Map<String, Object> _f = (Map<String, Object>) f;
-            fc.add(toFeature(_f, builder, transform));
+            SimpleFeature feature = toFeature(_f, builder, transform);
+            if (filter.evaluate(feature)) {
+                fc.add(feature);
+            }
         }
 
         return new GeoJSONFeatureCollection(fc, schema);

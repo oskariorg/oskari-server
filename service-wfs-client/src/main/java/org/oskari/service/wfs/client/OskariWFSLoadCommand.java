@@ -57,7 +57,7 @@ public class OskariWFSLoadCommand extends HystrixCommand<SimpleFeatureCollection
     protected SimpleFeatureCollection run() throws Exception {
         switch (layer.getVersion()) {
         case WFS_3_VERSION:
-            return OskariWFS3Client.getFeatures(layer, bbox, crs);
+            return OskariWFS3Client.getFeatures(layer, bbox, crs, filter);
         case WFS_2_VERSION:
             return OskariWFS2Client.getFeatures(layer, bbox, crs, filter);
         default:
