@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.filter.FilterCapabilities;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.json.JSONArray;
@@ -67,7 +68,7 @@ import fi.nls.oskari.util.JSONHelper;
 
 public class FilterToOAPIFCoreQuery implements FilterVisitor, ExpressionVisitor {
 
-    private static final String ATTRIBUTE_QUERYABLES = "queryables";
+    static final String ATTRIBUTE_QUERYABLES = "queryables";
 
     private final OskariLayer layer;
     private boolean insideAnd = false;
@@ -79,9 +80,17 @@ public class FilterToOAPIFCoreQuery implements FilterVisitor, ExpressionVisitor 
     public Filter toQueryParameters(Filter filter, Map<String, String> query) {
         FilterCapabilities capabilities = createFilterCapabilities(layer);
         Set<String> queryables = getQueryables(layer);
+
+        SimpleAndFlatteningFilterVisitor flattener = new SimpleAndFlatteningFilterVisitor(CommonFactoryFinder.getFilterFactory());
+        filter = (Filter) filter.accept(flattener, null);
+
         OAPIFCoreFilterSplittingVisitor splitter = new OAPIFCoreFilterSplittingVisitor(capabilities, queryables);
         filter.accept(splitter, null);
-        splitter.getFilterPre().accept(this, query);
+
+        Filter preFilter = splitter.getFilterPre();
+        preFilter = (Filter) preFilter.accept(flattener, null);
+        preFilter.accept(this, query);
+
         return splitter.getFilterPost();
     }
 

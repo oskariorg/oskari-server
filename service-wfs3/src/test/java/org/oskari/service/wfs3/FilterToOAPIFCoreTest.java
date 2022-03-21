@@ -14,10 +14,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
+import org.opengis.filter.And;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
+import org.opengis.filter.PropertyIsEqualTo;
 import org.opengis.filter.PropertyIsNotEqualTo;
 import org.opengis.filter.expression.Literal;
+import org.opengis.filter.expression.PropertyName;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -62,6 +65,69 @@ public class FilterToOAPIFCoreTest {
         assertEquals(expected, actual);
 
         assertEquals(Filter.INCLUDE, postFilter);
+    }
+
+    @Test
+    public void testNotQueryablePropertyFilter() throws NoSuchAuthorityCodeException, FactoryException, JSONException {
+        OskariLayer layer = new OskariLayer();
+        String tm35finURI = "http://www.opengis.net/def/crs/EPSG/0/3067";
+        layer.setCapabilities(new JSONObject().put("crs-uri", new JSONArray(Arrays.asList(tm35finURI))));
+        layer.setAttributes(new JSONObject().put(FilterToOAPIFCoreQuery.ATTRIBUTE_QUERYABLES, new JSONArray(Arrays.asList("foo", "bar"))));
+
+        FilterToOAPIFCoreQuery f = new FilterToOAPIFCoreQuery(layer);
+        FilterFactory ff = CommonFactoryFinder.getFilterFactory();
+
+        double minEast = 500000.0;
+        double maxEast = 501000.0;
+        double minNorth = 6740263.0;
+        double maxNorth = 6741263.0;
+        CoordinateReferenceSystem tm35fin = CRS.decode("EPSG:3067");
+
+        int a = 50;
+        double b = -1337.0;
+        String c = "abc";
+        String d = "zzz";
+
+        Filter foo = ff.equals(ff.property("foo"), ff.literal(a));
+        Filter bar = ff.equals(ff.property("bar"), ff.literal(b));
+        Filter baz = ff.equals(ff.property("baz"), ff.literal(c));
+        Filter qux = ff.equals(ff.property("qux"), ff.literal(d));
+        Filter bbox = toBboxFilter(ff, minEast, minNorth, maxEast, maxNorth, tm35fin);
+        Filter and = ff.and(Arrays.asList(bbox, foo, bar, baz, qux));
+
+        Map<String, String> actual = new HashMap<>();
+        Filter postFilter = f.toQueryParameters(and, actual);
+
+        // baz and qux not queryable
+        Map<String, String> expected = new HashMap<>();
+        expected.put("foo", Integer.toString(a));
+        expected.put("bar", Double.toString(b));
+        expected.put("bbox", String.format(Locale.US, "%f,%f,%f,%f", minEast, minNorth, maxEast, maxNorth));
+        expected.put("bbox-crs", tm35finURI);
+        assertEquals(expected, actual);
+
+        if (!(postFilter instanceof And)) {
+            fail();
+        }
+        assertPropertyIsEqualTo(((And) postFilter).getChildren().get(1), "baz", c);
+        assertPropertyIsEqualTo(((And) postFilter).getChildren().get(0), "qux", d);
+    }
+
+    private void assertPropertyIsEqualTo(Filter filter, String expectedPropertyName, Object expectedLiteral) {
+        if (!(filter instanceof PropertyIsEqualTo)) {
+            fail();
+        }
+        PropertyIsEqualTo eq = (PropertyIsEqualTo) filter;
+
+        if (!(eq.getExpression1() instanceof PropertyName)) {
+            fail();
+        }
+        assertEquals(expectedPropertyName, ((PropertyName) eq.getExpression1()).getPropertyName());
+
+        if (!(eq.getExpression2() instanceof Literal)) {
+            fail();
+        }
+        assertEquals(expectedLiteral, ((Literal) eq.getExpression2()).getValue());
     }
 
     @Test

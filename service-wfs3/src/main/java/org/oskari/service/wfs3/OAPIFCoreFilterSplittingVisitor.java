@@ -35,7 +35,7 @@ class OAPIFCoreFilterSplittingVisitor extends PostPreProcessFilterSplittingVisit
 
     @Override
     public Object visit(PropertyName expression, Object notUsed) {
-        if (queryables != null && queryables.contains(expression.getPropertyName())) {
+        if (queryables == null || queryables.contains(expression.getPropertyName())) {
             preStack.push(expression);
         } else {
             postStack.push(expression);
