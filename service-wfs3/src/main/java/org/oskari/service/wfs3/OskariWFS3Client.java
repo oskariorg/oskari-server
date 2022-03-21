@@ -163,7 +163,12 @@ public class OskariWFS3Client {
     }
 
     private static int clamp(int value, int min, int max) {
-        return value > max ? max : value < min ? min : value;
+        if (value > max) {
+            return max;
+        } else if (value < min) {
+            return min;
+        }
+        return value;
     }
 
     static void addBboxToQuery(OskariLayer layer, ReferencedEnvelope bbox, Map<String, String> query) {
