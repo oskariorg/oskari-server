@@ -1,5 +1,6 @@
 package org.oskari.service.wfs3;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -81,17 +82,55 @@ public class FilterToOAPIFCoreQuery implements FilterVisitor, ExpressionVisitor 
         FilterCapabilities capabilities = createFilterCapabilities(layer);
         Set<String> queryables = getQueryables(layer);
 
-        SimpleAndFlatteningFilterVisitor flattener = new SimpleAndFlatteningFilterVisitor(CommonFactoryFinder.getFilterFactory());
-        filter = (Filter) filter.accept(flattener, null);
+        Filter flattenedFilter = flatten(filter);
 
         OAPIFCoreFilterSplittingVisitor splitter = new OAPIFCoreFilterSplittingVisitor(capabilities, queryables);
-        filter.accept(splitter, null);
+        flattenedFilter.accept(splitter, null);
 
-        Filter preFilter = splitter.getFilterPre();
-        preFilter = (Filter) preFilter.accept(flattener, null);
+        Filter preFilter = flatten(splitter.getFilterPre());
         preFilter.accept(this, query);
 
         return splitter.getFilterPost();
+    }
+
+    /**
+     * Flatten unnecessarily nested AND expressions if obvious it can be done (no OR expressions present)
+     * e.g. (a AND b) AND (c AND (d AND e))
+     * <=>   a AND b  AND  c AND  d AND e
+     */
+    private Filter flatten(Filter filter) {
+        if (!(filter instanceof And)) {
+            return filter;
+        }
+        And and = (And) filter;
+        if (and.getChildren().stream().anyMatch(it -> it instanceof Or)) {
+            // Not obvious we can do it -- bail out
+            return filter;
+        }
+        if (and.getChildren().stream().noneMatch(it -> it instanceof And)) {
+            // No nested ANDs, nothing to do
+            return filter;
+        }
+        // Recursive part
+        List<Filter> flattened = new ArrayList<>();
+        boolean ok = recursiveFlatten(and, flattened);
+        return ok ? CommonFactoryFinder.getFilterFactory().and(flattened) : filter;
+    }
+
+    private boolean recursiveFlatten(And filter, List<Filter> flattened) {
+        for (Filter child : filter.getChildren()) {
+            if (child instanceof Or) {
+                return false;
+            } else if (child instanceof And) {
+                boolean ok = recursiveFlatten((And) child, flattened);
+                if (!ok) {
+                    return false;
+                }
+            } else {
+                flattened.add(child);
+            }
+        }
+        return true;
     }
 
     private FilterCapabilities createFilterCapabilities(OskariLayer layer) {
