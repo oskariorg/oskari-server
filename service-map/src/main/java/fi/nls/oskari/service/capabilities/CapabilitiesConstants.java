@@ -1,6 +1,7 @@
 package fi.nls.oskari.service.capabilities;
 
 import fi.nls.oskari.domain.map.wfs.WFSLayerCapabilities;
+import org.oskari.capabilities.ogc.LayerCapabilitiesWMS;
 
 public class CapabilitiesConstants {
     public static final String WFS3_VERSION = "3.0.0";

@@ -21,6 +21,7 @@
       "1933-12-31T00:00:00.000Z",
       "1934-12-31T00:00:00.000Z"
     ],
+    "metadataId": "AAAAA1234-1234-1234-1AAA-1A1A1A111A1",
     "metadataUrl": "http://www.test.domain//csw?request=GetRecordById&service=CSW&id=AAAAA1234-1234-1234-1AAA-1A1A1A111A1&elementSetName=full&outputSchema=http%3A%2F%2Fwww.isotc211.org%2F2005%2Fgmd",
     "infoFormats": [
       "application/vnd.esri.wms_raw_xml",

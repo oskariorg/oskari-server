@@ -7,6 +7,7 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.ServiceRuntimeException;
+import fi.nls.oskari.util.IOHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -15,7 +16,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;
-
 
 public class CapabilitiesService {
     private static final Logger LOG = LogFactory.getLogger(CapabilitiesService.class);
@@ -116,6 +116,43 @@ public class CapabilitiesService {
         } catch (Exception e) {
             throw new ServiceRuntimeException("Error serializing capabilities as JSON", e);
         }
+    }
+
+    /**
+     * For parsing metadata uuid from url.
+     * @param url
+     * @return
+     */
+    public static String getIdFromMetadataUrl(String url) {
+        if (url == null || url.isEmpty()) {
+            return null;
+        }
+        if (!url.toLowerCase().startsWith("http")) {
+            // not a url -> return as is
+            return url;
+        }
+        try {
+            Map<String, List<String>> params = IOHelper.parseQuerystring(url);
+            String idParam = params.keySet().stream()
+                    .filter(key -> "uuid".equalsIgnoreCase(key) || "id".equalsIgnoreCase(key))
+                    .findFirst()
+                    .orElse(null);
+            if (idParam == null) {
+                // param not in url
+                return null;
+            }
+            List<String> values = params.getOrDefault(idParam, Collections.emptyList());
+            if (values.isEmpty()) {
+                // param was present but has no value
+                return null;
+            }
+            return values.get(0);
+        } catch (Exception ignored) {
+            // propably just not valid URL
+            LOG.ignore("Unexpected error parsing metadataid", ignored);
+        }
+        LOG.debug("Couldn't parse uuid from metadata url:", url);
+        return null;
     }
 
     private static CapabilitiesParser getParser(String layerType) {

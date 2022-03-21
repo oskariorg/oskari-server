@@ -7,14 +7,19 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.map.layer.DataProviderService;
+import fi.nls.oskari.map.layer.formatters.LayerJSONFormatter;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONObject;
+import org.oskari.capabilities.ogc.LayerCapabilitiesWMS;
 import org.oskari.maplayer.model.MapLayer;
 import org.oskari.maplayer.model.MapLayerAdminOutput;
 
 import java.util.*;
+
+import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.KEY_METADATA;
+import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.KEY_TYPE_SPECIFIC;
 
 public class LayerAdminJSONHelper {
 

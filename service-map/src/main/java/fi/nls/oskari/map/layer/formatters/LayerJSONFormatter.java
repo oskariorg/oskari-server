@@ -12,6 +12,8 @@ import org.geotools.referencing.CRS;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.oskari.capabilities.CapabilitiesService;
+import org.oskari.capabilities.ogc.LayerCapabilitiesOGC;
 import org.oskari.utils.common.Sets;
 
 import java.util.*;
@@ -247,7 +249,7 @@ public class LayerJSONFormatter {
     }
 
     private String getMetadataUuid (OskariLayer layer) {
-        String fixed = LayerJSONFormatter.getFixedDataUrl(layer.getMetadataId());
+        String fixed = CapabilitiesService.getIdFromMetadataUrl(layer.getMetadataId());
         if (fixed != null) {
             return fixed;
         }
@@ -255,44 +257,11 @@ public class LayerJSONFormatter {
         if (olderMetadataCaps != null) {
             return olderMetadataCaps;
         }
-        JSONObject typeSpecific = layer.getCapabilities().optJSONObject("typeSpecific");
+        JSONObject typeSpecific = layer.getCapabilities().optJSONObject(KEY_TYPE_SPECIFIC);
         if (typeSpecific == null) {
             return null;
         }
-        return LayerJSONFormatter.getFixedDataUrl(typeSpecific.optString("metadataUrl"));
-    }
-
-    // This is solution of transition for dataUrl and for dataUrl_uuid
-    public static String getFixedDataUrl(String metadataId) {
-        if(metadataId == null || metadataId.isEmpty()) {
-            return null;
-        }
-        if(!metadataId.toLowerCase().startsWith("http")) {
-            // not a url -> return as is
-            return metadataId;
-        }
-        try {
-            Map<String, List<String>> params = IOHelper.parseQuerystring(metadataId);
-            String idParam = params.keySet().stream()
-                    .filter(key -> "uuid".equalsIgnoreCase(key) || KEY_ID.equalsIgnoreCase(key))
-                    .findFirst()
-                    .orElse(null);
-            if (idParam == null) {
-                // param not in url
-                return null;
-            }
-            List<String> values = params.getOrDefault(idParam, Collections.emptyList());
-            if (values.isEmpty()) {
-                // param was present but has no value
-                return null;
-            }
-            return values.get(0);
-        } catch (Exception ignored) {
-            // propably just not valid URL
-            LOG.ignore("Unexpected error parsing metadataid", ignored);
-        }
-        LOG.debug("Couldn't parse uuid from metadata url:", metadataId);
-        return null;
+        return typeSpecific.optString(LayerCapabilitiesOGC.METADATA_UUID);
     }
 
     /**

@@ -16,7 +16,6 @@ public class LayerCapabilitiesWMS extends LayerCapabilitiesOGC {
     public static final String PARENT = "parent";
     public static final String MIN_SCALE = "minScale";
     public static final String MAX_SCALE = "maxScale";
-    public static final String METADATA_URL = "metadataUrl";
     public static final String TIMES = "times";
 
     public LayerCapabilitiesWMS(String name, String title) {
@@ -46,11 +45,6 @@ public class LayerCapabilitiesWMS extends LayerCapabilitiesOGC {
     public void setParent(String parent) {
         if (parent != null) {
             addCapabilityData(PARENT, parent);
-        }
-    }
-    public void setMetadataUrl(String url) {
-        if (url != null) {
-            addCapabilityData(METADATA_URL, url);
         }
     }
     public void setMinScale(String scale) {
