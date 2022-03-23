@@ -150,14 +150,14 @@ public class WFSLayerOptions {
         // line
         JSONObject stroke = new JSONObject();
         JSONHelper.putValue(stroke, "color", "#000000");
-        JSONHelper.putValue(stroke, "width",3);
+        JSONHelper.putValue(stroke, "width",1);
         JSONHelper.putValue(stroke, "lineDash", "solid");
         JSONHelper.putValue(stroke, "lineCap", "round" );
         JSONHelper.putValue(stroke, "lineJoin", "round");
         // area
         JSONObject strokeArea = new JSONObject();
         JSONHelper.putValue(strokeArea, "color", "#000000");
-        JSONHelper.putValue(strokeArea, "width", 3);
+        JSONHelper.putValue(strokeArea, "width", 1);
         JSONHelper.putValue(strokeArea, "lineDash", "solid");
         JSONHelper.putValue(strokeArea, "lineJoin", "round");
         JSONHelper.putValue(stroke, "area", strokeArea);
