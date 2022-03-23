@@ -67,7 +67,7 @@ public class WFSLayerOptionsTest {
         assertTrue(defaultStyle.has("stroke"));
         assertFalse(defaultStyle.has("text"));
 
-        assertEquals("Oskari default style stroke width is 3", 3,defaultStyle.getJSONObject("stroke").getInt("width"));
+        assertEquals("Oskari default style stroke width is 1", 1,defaultStyle.getJSONObject("stroke").getInt("width"));
         assertTrue("Options should return oskari default style", JSONHelper.isEqual(defaultStyle, WFSLayerOptions.getDefaultOskariStyle()));
     }
     @Test
