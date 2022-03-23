@@ -94,7 +94,7 @@ public class StatisticalIndicator {
         if(value == null || value.trim().isEmpty()) {
             // try any language
             value = map.values().stream()
-                    .filter(val -> val.trim().isEmpty())
+                    .filter(val -> !val.trim().isEmpty())
                     .findFirst()
                     .orElse(null);
         }
