@@ -81,7 +81,8 @@ public class WMSCapsParser {
     }
 
     protected static List<LayerStyle> parseStyles(Element layer) {
-        List<LayerStyle> styles =  XmlHelper.getChildElements(layer, "Style")
+        Map<String, LayerStyle> map = new HashMap<>(10);
+        XmlHelper.getChildElements(layer, "Style")
                 .map(styleEl -> {
                     LayerStyle style = new LayerStyle();
                     style.setName(XmlHelper.getChildValue(styleEl, "Name"));
@@ -92,8 +93,22 @@ public class WMSCapsParser {
                         style.setLegend(XmlHelper.getAttributeValue(resource, "href"));
                     }
                     return style;
-                })
-                .collect(Collectors.toList());
+                }).forEach(style -> {
+                    // Some layers might have multiple styles with same name
+                    // remove duplicates as name is used as unique identifier in requests
+                    String name = style.getName();
+                    LayerStyle existing = map.get(name);
+                    if (existing == null) {
+                        map.put(name, style);
+                    } else {
+                        String legend = style.getLegend();
+                        if (legend != null && !legend.isEmpty()) {
+                            // overwrite existing only if new one has a legend (don't care if old one did)
+                            map.put(name, style);
+                        }
+                    }
+                });
+        List<LayerStyle> styles = new ArrayList<>(map.values());
         return styles;
     }
 
