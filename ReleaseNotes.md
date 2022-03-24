@@ -1,5 +1,32 @@
 # Release Notes
 
+## 2.7.0
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/39?closed=1
+
+Capabilities parsing rewrite:
+- new module: service-capabilities
+- currently WMS and WMTS-layers have been migrated to the new parser/format
+- WFS/OGC API will be migrated in future/probably next release
+- admin functionality, programmatic initialization of layers and scheduled update for layers have been migrated to use the new service 
+- More details: https://github.com/oskariorg/oskari-server/pull/796
+
+Other fixes and improvements:
+- OGC API Features client now sends "Accept" header in requests to fix issues with services that respond with HTML if not requesting json
+- Added initial filtering capabilities for OGC API Features client: https://github.com/oskariorg/oskari-server/pull/816
+- TIFFReader improved in service-wcs: https://github.com/oskariorg/oskari-server/pull/813 
+- SaveLayer action route removed. LayerAdmin is used by the current admin functionalities.
+- Enabled userlayer layers to use localized value for name, description and source
+- Enabled myplaces layers to use localized value for name
+- Added layer analytics backend code for tracking problematic layers: https://github.com/oskariorg/oskari-server/pull/817
+- Improved MID-file parser to handle empty strings
+- Default vector feature stroke width for printing is now consistent with frontend map
+- Statistical data plugin for PXWeb has been refined regarding external metadata. See configuration doc at https://oskari.org/documentation/features/thematicmaps/config
+- Fixed an issue where saving statistical indicator while using UI language other than the instance default resulted in an error.
+- Download basket functionality now supports credentials for SMTP configuration: https://github.com/oskariorg/oskari-server/pull/814
+- Bumped h2 version 2.0.206 -> 2.1.210
+- PostgreSQL 42.2.16 -> 42.3.3
+
 ## 2.6.0
 
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/35?closed=1
