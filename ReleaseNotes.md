@@ -1,5 +1,9 @@
 # Release Notes
 
+## 2.7.1
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/39?closed=1
+
 ## 2.7.0
 
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/39?closed=1
