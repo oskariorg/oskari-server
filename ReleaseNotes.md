@@ -1,5 +1,15 @@
 # Release Notes
 
+## 2.7.1
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/41?closed=1
+
+Bumped dependencies:
+- Spring 5.3.14 -> 5.3.18
+- Spring Security 5.6.1 -> 5.6.2
+- Spring Session 2021.1.1 -> 2021.1.2
+- Jackson 2.12.1 -> 2.13.2 (databind to 2.13.2.2)
+
 ## 2.7.0
 
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/39?closed=1
