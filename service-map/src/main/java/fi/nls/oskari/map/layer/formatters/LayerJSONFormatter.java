@@ -253,15 +253,15 @@ public class LayerJSONFormatter {
         if (fixed != null) {
             return fixed;
         }
-        String olderMetadataCaps = layer.getCapabilities().optString(KEY_METADATA);
-        if (olderMetadataCaps != null) {
+        String olderMetadataCaps = layer.getCapabilities().optString(KEY_METADATA, null);
+        if (olderMetadataCaps != null && !olderMetadataCaps.trim().isEmpty()) {
             return olderMetadataCaps;
         }
         JSONObject typeSpecific = layer.getCapabilities().optJSONObject(KEY_TYPE_SPECIFIC);
         if (typeSpecific == null) {
             return null;
         }
-        return typeSpecific.optString(LayerCapabilitiesOGC.METADATA_UUID);
+        return typeSpecific.optString(LayerCapabilitiesOGC.METADATA_UUID, null);
     }
 
     /**
