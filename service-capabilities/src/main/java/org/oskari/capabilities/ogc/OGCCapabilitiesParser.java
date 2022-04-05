@@ -23,6 +23,9 @@ public abstract class OGCCapabilitiesParser extends CapabilitiesParser {
     protected String getExpectedContentType() {
         return "xml";
     }
+    protected String getExpectedContentType(String version) {
+        return getExpectedContentType();
+    }
     protected abstract String getDefaultVersion();
 
     public String validateResponse(RawCapabilitiesResponse response) throws ServiceException {
@@ -32,14 +35,18 @@ public abstract class OGCCapabilitiesParser extends CapabilitiesParser {
     public Map<String, LayerCapabilities> getLayersFromService(ServiceConnectInfo src) throws IOException, ServiceException {
 
         String capabilitiesUrl = contructCapabilitiesUrl(src.getUrl(), src.getVersion());
-        RawCapabilitiesResponse response = fetchCapabilities(capabilitiesUrl, src.getUser(), src.getPass(), getExpectedContentType());
+        RawCapabilitiesResponse response = fetchCapabilities(capabilitiesUrl, src.getUser(), src.getPass(), getExpectedContentType(src.getVersion()));
         String validResponse = validateResponse(response);
-        Map<String, LayerCapabilities> layers = parseLayers(validResponse);
+        Map<String, LayerCapabilities> layers = parseLayers(validResponse, src.getVersion());
         layers.values().stream().forEach(l -> l.setUrl(response.getUrl()));
         return layers;
     }
 
     protected abstract Map<String, LayerCapabilities> parseLayers(String capabilities) throws ServiceException;
+
+    protected Map<String, LayerCapabilities> parseLayers(String capabilities, String version) throws ServiceException {
+        return parseLayers(capabilities);
+    }
 
     protected String contructCapabilitiesUrl(String url, String version) {
         String urlLC = url.toLowerCase();
