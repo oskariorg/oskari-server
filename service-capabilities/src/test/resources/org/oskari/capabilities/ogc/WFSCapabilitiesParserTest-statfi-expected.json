@@ -1,0 +1,25 @@
+{
+  "srs": [],
+  "defaultStyle": null,
+  "name": "tilastointialueet:avi4500k",
+  "styles": [],
+  "title": "AVI-alueet (1:4 500 000)",
+  "url": null,
+  "typeSpecific": {
+    "metadataId": "b4693808-0f3b-4d5e-b366-c410b680ac19",
+    "metadataUrl": "http://www.paikkatietohakemisto.fi/geonetwork/srv/fi/csw?request=GetRecordById&service=CSW&id=b4693808-0f3b-4d5e-b366-c410b680ac19&elementSetName=full&outputSchema=http://www.isotc211.org/2005/gmd&version=2.0.2",
+    "keywords": [
+      "features",
+      "avi4500k"
+    ],
+    "bbox": {
+      "wkt": "POLYGON ((15.999210419254936 56.23928539106909, 15.999210419254936 73.5170461466599, 33.27697117484574 73.5170461466599, 33.27697117484574 56.23928539106909, 15.999210419254936 56.23928539106909))",
+      "minY": 56.23928539106909,
+      "minX": 15.999210419254936,
+      "srs": "EPSG:4326",
+      "maxY": 73.5170461466599,
+      "maxX": 33.27697117484574
+    },
+    "desc": "AVI-alueet (1:4 500 000)"
+  }
+}
