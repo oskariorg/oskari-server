@@ -24,7 +24,6 @@ import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 import org.oskari.geojson.GeoJSONReader2;
 import org.oskari.geojson.GeoJSONSchemaDetector;
-import org.oskari.service.wfs3.model.WFS3Link;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,6 +34,7 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
+import org.oskari.ogcapi.OpenAPILink;
 
 /**
  * Client code for WFS 3 Core services
@@ -222,7 +222,7 @@ public class OskariWFS3Client {
             return toLinks((List<Object>) _links).stream()
                     .filter(link -> rel.equals(link.getRel()))
                     .findAny()
-                    .map(WFS3Link::getHref)
+                    .map(OpenAPILink::getHref)
                     .orElse(null);
         }
         return null;
@@ -283,20 +283,20 @@ public class OskariWFS3Client {
     }
 
     @SuppressWarnings("unchecked")
-    protected static List<WFS3Link> toLinks(List<Object> arrayOflinks) {
+    protected static List<OpenAPILink> toLinks(List<Object> arrayOflinks) {
         return arrayOflinks.stream()
                 .map(obj -> (Map<String, String>) obj)
                 .map(OskariWFS3Client::toLink)
                 .collect(Collectors.toList());
     }
 
-    protected static WFS3Link toLink(Map<String, String> map) {
+    protected static OpenAPILink toLink(Map<String, String> map) {
         String href = map.get("href");
         String rel = map.get("rel");
         String type = map.get("type");
         String hreflang = map.get("hreflang");
         String title = map.get("title");
-        return new WFS3Link(href, rel, type, hreflang, title);
+        return new OpenAPILink(href, rel, type, hreflang, title);
     }
 
 

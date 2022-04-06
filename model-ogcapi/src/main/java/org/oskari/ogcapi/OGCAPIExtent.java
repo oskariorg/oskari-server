@@ -1,9 +1,9 @@
-package org.oskari.service.wfs3.model;
+package org.oskari.ogcapi;
 
 import java.time.Instant;
 import java.util.Arrays;
 
-public class WFS3Extent {
+public class OGCAPIExtent {
 
     private final String crs = "http://www.opengis.net/def/crs/OGC/1.3/CRS84";
     private double[] spatial;
@@ -42,7 +42,7 @@ public class WFS3Extent {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        WFS3Extent other = (WFS3Extent) obj;
+        OGCAPIExtent other = (OGCAPIExtent) obj;
         if (crs == null) {
             if (other.crs != null)
                 return false;

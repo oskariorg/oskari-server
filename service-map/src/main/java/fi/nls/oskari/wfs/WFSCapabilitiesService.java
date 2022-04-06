@@ -14,10 +14,10 @@ import org.geotools.data.DataStoreFinder;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.data.wfs.WFSDataStore;
 import org.geotools.data.wfs.internal.WFSGetCapabilities;
+import org.oskari.capabilities.ogc.api.features.OGCAPIFeaturesService;
 import org.oskari.maplayer.admin.LayerAdminJSONHelper;
 import org.oskari.maplayer.model.ServiceCapabilitiesResult;
-import org.oskari.service.wfs3.WFS3Service;
-import org.oskari.service.wfs3.model.WFS3CollectionInfo;
+import org.oskari.ogcapi.features.FeaturesCollectionInfo;
 import org.oskari.utils.common.Sets;
 
 import java.io.IOException;
@@ -146,10 +146,10 @@ public class WFSCapabilitiesService {
     }
 
     private static ServiceCapabilitiesResult getCapabilitiesOAPIF(String url, String user, String pw, Set<String> systemCRSs) throws ServiceException {
-        WFS3Service service = getCapabilitiesOAPIF(url, user, pw);
+        OGCAPIFeaturesService service = getCapabilitiesOAPIF(url, user, pw);
         List<OskariLayer> layers = new ArrayList<>();
 
-        for (WFS3CollectionInfo collection : service.getCollections()) {
+        for (FeaturesCollectionInfo collection : service.getCollections()) {
             String name = collection.getId();
             String title = collection.getTitle();
             OskariLayer ml = toOskariLayer(name, title, WFS3_VERSION, url, user, pw);
@@ -161,13 +161,13 @@ public class WFSCapabilitiesService {
         result.setLayers(layers.stream()
                 .map(l -> LayerAdminJSONHelper.toJSON(l))
                 .collect(Collectors.toList()));
-        // Do we need to parse title from WFS3Content.links
+        // Do we need to parse title from FeaturesContent.links
         return result;
     }
 
-    public static WFS3Service getCapabilitiesOAPIF(String url, String user, String pw) throws ServiceException {
+    public static OGCAPIFeaturesService getCapabilitiesOAPIF(String url, String user, String pw) throws ServiceException {
         try {
-            return WFS3Service.fromURL(url, user, pw);
+            return OGCAPIFeaturesService.fromURL(url, user, pw);
         } catch (JsonParseException | JsonMappingException e) {
             // Don't attach JsonParseException as its an IOException which is detected as root cause and wrong error is sent to user
             throw new ServiceException("Error parsing response from url: " + url + " Message: " + e.getMessage());

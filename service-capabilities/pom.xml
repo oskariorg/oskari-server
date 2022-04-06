@@ -19,6 +19,10 @@
         </dependency>
         <dependency>
             <groupId>org.oskari</groupId>
+            <artifactId>model-ogcapi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.oskari</groupId>
             <artifactId>shared-test-resources</artifactId>
             <scope>test</scope>
         </dependency>
