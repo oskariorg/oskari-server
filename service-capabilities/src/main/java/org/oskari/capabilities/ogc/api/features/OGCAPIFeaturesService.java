@@ -143,6 +143,7 @@ public class OGCAPIFeaturesService {
             return "EPSG:4326"; // same projection, but axis order differs
         }
         try {
+            // FIXME: this needs to be handled "somewhere"
             return crs; //CRS.lookupIdentifier(CRS.decode(crs), false);
         } catch (Exception e) {
             // Either failed - maybe the code is invalid
