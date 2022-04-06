@@ -176,6 +176,9 @@ public class CapabilitiesService {
     /**
      * Return epsg short
      * urn:ogc:def:crs:EPSG::32635  --> EPSG:32635
+     *
+     * Note!Base code copy/pasted from ProjectionHelper.shortSyntaxEpsg() for making most services work without GeoTools as dependency
+     *
      * @param crs
      * @return  epsg in short syntax
      */
@@ -183,7 +186,17 @@ public class CapabilitiesService {
         if (crs == null) {
             return null;
         }
-        // try own parsing for something like
+        if (crs.startsWith("http")) {
+            // assume it's the last bit in urls
+            // http://www.opengis.net/def/crs/EPSG/0/3067
+            int lastPartStartsAt = crs.lastIndexOf('/') + 1;
+            if (lastPartStartsAt == 0) {
+                // nope, something is not right -> return as is
+                return crs;
+            }
+            return "EPSG:" + crs.substring(lastPartStartsAt);
+        }
+        // try parsing for something like
         //  "urn:ogc:def:crs:EPSG:6.3:3067"
         //  "urn:ogc:def:crs:EPSG:6.18:3:3857"
         //  "urn:ogc:def:crs:EPSG::3575"

@@ -1,4 +1,4 @@
-package org.oskari.capabilities.ogc.api.features;
+package org.oskari.capabilities.ogc.api;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.nls.oskari.util.IOHelper;
+import org.oskari.capabilities.CapabilitiesService;
 import org.oskari.ogcapi.OGCAPIConformanceClass;
 import org.oskari.ogcapi.OGCAPIException;
 import org.oskari.ogcapi.OGCAPIReqClasses;
@@ -143,8 +144,7 @@ public class OGCAPIFeaturesService {
             return "EPSG:4326"; // same projection, but axis order differs
         }
         try {
-            // FIXME: this needs to be handled "somewhere"
-            return crs; //CRS.lookupIdentifier(CRS.decode(crs), false);
+            return CapabilitiesService.shortSyntaxEpsg(crs);
         } catch (Exception e) {
             // Either failed - maybe the code is invalid
             // Only thing certain is that we can not use this
