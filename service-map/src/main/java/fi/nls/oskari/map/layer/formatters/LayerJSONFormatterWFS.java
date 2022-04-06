@@ -18,7 +18,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.GeometryDescriptor;
-import org.oskari.capabilities.ogc.api.features.OGCAPIFeaturesService;
+import org.oskari.capabilities.ogc.api.OGCAPIFeaturesService;
 
 import java.util.Collections;
 import java.util.Set;

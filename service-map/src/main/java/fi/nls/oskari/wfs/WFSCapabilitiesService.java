@@ -14,7 +14,7 @@ import org.geotools.data.DataStoreFinder;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.data.wfs.WFSDataStore;
 import org.geotools.data.wfs.internal.WFSGetCapabilities;
-import org.oskari.capabilities.ogc.api.features.OGCAPIFeaturesService;
+import org.oskari.capabilities.ogc.api.OGCAPIFeaturesService;
 import org.oskari.maplayer.admin.LayerAdminJSONHelper;
 import org.oskari.maplayer.model.ServiceCapabilitiesResult;
 import org.oskari.ogcapi.features.FeaturesCollectionInfo;

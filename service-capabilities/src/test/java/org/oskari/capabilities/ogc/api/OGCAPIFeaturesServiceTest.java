@@ -1,4 +1,4 @@
-package org.oskari.capabilities.ogc.api.features;
+package org.oskari.capabilities.ogc.api;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
