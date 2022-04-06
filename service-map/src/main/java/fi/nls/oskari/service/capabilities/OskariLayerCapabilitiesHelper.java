@@ -1,14 +1,12 @@
 package fi.nls.oskari.service.capabilities;
 
 import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWFS;
 import fi.nls.oskari.service.ServiceException;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.data.wfs.WFSDataStore;
 import org.geotools.data.wfs.internal.WFSGetCapabilities;
-import org.oskari.service.wfs3.WFS3Service;
+import org.oskari.capabilities.ogc.api.features.OGCAPIFeaturesService;
 
 import java.io.IOException;
 import java.util.Date;
@@ -33,7 +31,7 @@ public class OskariLayerCapabilitiesHelper {
         ml.setCapabilitiesLastUpdated(new Date());
     }
 
-    public static void setPropertiesFromCapabilitiesOAPIF(WFS3Service service, OskariLayer ml,
+    public static void setPropertiesFromCapabilitiesOAPIF(OGCAPIFeaturesService service, OskariLayer ml,
                                                           Set<String> systemCRSs) {
         ml.setCapabilities(LayerJSONFormatterWFS.createCapabilitiesJSON(service, ml.getName(), systemCRSs));
         ml.setCapabilitiesLastUpdated(new Date());

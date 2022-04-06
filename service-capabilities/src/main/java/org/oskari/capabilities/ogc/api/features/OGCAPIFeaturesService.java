@@ -1,17 +1,10 @@
-package org.oskari.service.wfs3;
+package org.oskari.capabilities.ogc.api.features;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import org.geotools.referencing.CRS;
-import org.oskari.service.wfs3.model.WFS3CollectionInfo;
-import org.oskari.service.wfs3.model.WFS3ConformanceClass;
-import org.oskari.service.wfs3.model.WFS3Content;
-import org.oskari.service.wfs3.model.WFS3Exception;
-import org.oskari.service.wfs3.model.WFS3ReqClasses;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -22,8 +15,12 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.nls.oskari.util.IOHelper;
+import org.oskari.ogcapi.OGCAPIConformanceClass;
+import org.oskari.ogcapi.OGCAPIException;
+import org.oskari.ogcapi.OGCAPIReqClasses;
+import org.oskari.ogcapi.features.*;
 
-public class WFS3Service {
+public class OGCAPIFeaturesService {
     private static final ObjectMapper OM;
     static {
         OM = new ObjectMapper();
@@ -31,56 +28,56 @@ public class WFS3Service {
     }
 
     @JsonProperty(value="reqClasses")
-    private final WFS3ReqClasses reqClasses;
+    private final OGCAPIReqClasses reqClasses;
     @JsonProperty(value="content")
-    private final WFS3Content content;
+    private final FeaturesContent content;
 
     @JsonCreator
-    public WFS3Service(@JsonProperty(value="reqClasses") WFS3ReqClasses reqClasses,
-            @JsonProperty(value="content") WFS3Content content) {
+    public OGCAPIFeaturesService(@JsonProperty(value="reqClasses") OGCAPIReqClasses reqClasses,
+                                 @JsonProperty(value="content") FeaturesContent content) {
         Objects.requireNonNull(reqClasses);
         Objects.requireNonNull(content);
 
         this.reqClasses = reqClasses;
         this.content = content;
 
-        if (!conformsTo(WFS3ConformanceClass.Core)) {
+        if (!conformsTo(OGCAPIConformanceClass.Core)) {
             throw new IllegalArgumentException("Service doesn't conform to WFS 3 Core conformance class");
         }
-        if (!conformsTo(WFS3ConformanceClass.GeoJSON)) {
+        if (!conformsTo(OGCAPIConformanceClass.GeoJSON)) {
             throw new IllegalArgumentException("Service doesn't conform to WFS 3 GeoJSON conformance class");
         }
     }
 
-    public static WFS3Service fromURL(String url) throws WFS3Exception, IOException {
+    public static OGCAPIFeaturesService fromURL(String url) throws OGCAPIException, IOException {
         return fromURL(url, null, null);
     }
 
-    public static WFS3Service fromURL(String url, String user, String pass)
-            throws WFS3Exception, IOException {
+    public static OGCAPIFeaturesService fromURL(String url, String user, String pass)
+            throws OGCAPIException, IOException {
         while (url.endsWith("/")) {
             url = url.substring(0, url.length() - 1);
         }
 
         String conformanceUrl = url + "/conformance";
-        WFS3ReqClasses reqClasses = load(conformanceUrl, user, pass, WFS3ReqClasses.class);
+        OGCAPIReqClasses reqClasses = load(conformanceUrl, user, pass, OGCAPIReqClasses.class);
 
         String collectionsUrl = url + "/collections";
-        WFS3Content collections = load(collectionsUrl, user, pass, WFS3Content.class);
+        FeaturesContent collections = load(collectionsUrl, user, pass, FeaturesContent.class);
 
-        return new WFS3Service(reqClasses, collections);
+        return new OGCAPIFeaturesService(reqClasses, collections);
     }
 
-    public static byte[] toJSON(WFS3Service service) throws JsonProcessingException {
+    public static byte[] toJSON(OGCAPIFeaturesService service) throws JsonProcessingException {
         return OM.writeValueAsBytes(service);
     }
 
-    public static WFS3Service fromJSON(byte[] b) throws IOException {
-        return OM.readValue(b, WFS3Service.class);
+    public static OGCAPIFeaturesService fromJSON(byte[] b) throws IOException {
+        return OM.readValue(b, OGCAPIFeaturesService.class);
     }
 
     private static <T> T load(String url, String user, String pass, Class<T> clazz)
-            throws WFS3Exception, IOException {
+            throws OGCAPIException, IOException {
         Map<String, String> headers = new HashMap<>();
         headers.put("Accept", "application/json");
         HttpURLConnection conn = IOHelper.getConnection(url, user, pass, null, headers);
@@ -92,7 +89,7 @@ public class WFS3Service {
             }
         } else {
             try (InputStream err = conn.getErrorStream()) {
-                throw load(err, WFS3Exception.class);
+                throw load(err, OGCAPIException.class);
             }
         }
     }
@@ -102,15 +99,15 @@ public class WFS3Service {
         return OM.readValue(in, clazz);
     }
 
-    public boolean conformsTo(WFS3ConformanceClass req) {
+    public boolean conformsTo(OGCAPIConformanceClass req) {
         return reqClasses.getConformsTo().contains(req.url);
     }
 
-    public List<WFS3CollectionInfo> getCollections() {
+    public List<FeaturesCollectionInfo> getCollections() {
         return new ArrayList<>(content.getCollections());
     }
 
-    public Optional<WFS3CollectionInfo> getCollection(String id) {
+    public Optional<FeaturesCollectionInfo> getCollection(String id) {
         return content.getCollections().stream()
                 .filter(c -> c.getId().equals(id))
                 .findAny();
@@ -136,7 +133,7 @@ public class WFS3Service {
 
     public Set<String> getSupportedEpsgCodes(String collectionId) throws NoSuchElementException {
         return getSupportedCrsURIs(collectionId).stream()
-                .map(WFS3Service::convertCrsToEpsg)
+                .map(OGCAPIFeaturesService::convertCrsToEpsg)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
     }
@@ -146,7 +143,7 @@ public class WFS3Service {
             return "EPSG:4326"; // same projection, but axis order differs
         }
         try {
-            return CRS.lookupIdentifier(CRS.decode(crs), false);
+            return crs; //CRS.lookupIdentifier(CRS.decode(crs), false);
         } catch (Exception e) {
             // Either failed - maybe the code is invalid
             // Only thing certain is that we can not use this
@@ -162,7 +159,7 @@ public class WFS3Service {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        WFS3Service other = (WFS3Service) obj;
+        OGCAPIFeaturesService other = (OGCAPIFeaturesService) obj;
         if (content == null) {
             if (other.content != null)
                 return false;

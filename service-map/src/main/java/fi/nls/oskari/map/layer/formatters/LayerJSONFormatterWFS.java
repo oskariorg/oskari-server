@@ -18,7 +18,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.GeometryDescriptor;
-import org.oskari.service.wfs3.WFS3Service;
+import org.oskari.capabilities.ogc.api.features.OGCAPIFeaturesService;
 
 import java.util.Collections;
 import java.util.Set;
@@ -99,7 +99,7 @@ public class LayerJSONFormatterWFS extends LayerJSONFormatter {
 
         }
     }
-    public static JSONObject createCapabilitiesJSON (WFS3Service service, String collectionId, Set<String> systemCRSs) {
+    public static JSONObject createCapabilitiesJSON (OGCAPIFeaturesService service, String collectionId, Set<String> systemCRSs) {
         JSONObject capabilities = new JSONObject(); // override
         Set<String> crsUri  = service.getSupportedCrsURIs(collectionId);
         JSONHelper.put(capabilities, KEY_CRS_URI, new JSONArray(crsUri));

@@ -1,6 +1,6 @@
-package org.oskari.service.wfs3.model;
+package org.oskari.ogcapi;
 
-public class WFS3Exception extends Exception {
+public class OGCAPIException extends Exception {
 
     private static final long serialVersionUID = 1L;
 
