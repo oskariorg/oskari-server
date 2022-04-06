@@ -28,11 +28,11 @@ public class OGCAPIFeaturesServiceTest {
     @Before
     public void setup() throws Exception {
         OGCAPIReqClasses reqClasses;
-        try (InputStream in = getClass().getClassLoader().getResourceAsStream("wfs3Conformance.json")) {
+        try (InputStream in = getClass().getResourceAsStream("OGCAPIFeatures_Conformance.json")) {
             reqClasses = OGCAPIFeaturesService.load(in, OGCAPIReqClasses.class);
         }
         FeaturesContent content;
-        try (InputStream in = getClass().getClassLoader().getResourceAsStream("wfs3Content.json")) {
+        try (InputStream in = getClass().getResourceAsStream("OGCAPIFeatures_Content.json")) {
             content = OGCAPIFeaturesService.load(in, FeaturesContent.class);
         }
         service = new OGCAPIFeaturesService(reqClasses, content);
