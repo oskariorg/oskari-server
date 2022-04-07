@@ -23,6 +23,7 @@ public abstract class OGCCapabilitiesParser extends CapabilitiesParser {
     protected String getExpectedContentType() {
         return "xml";
     }
+    // allow overriding for OGC API services etc
     protected String getExpectedContentType(String version) {
         return getExpectedContentType();
     }
@@ -31,12 +32,16 @@ public abstract class OGCCapabilitiesParser extends CapabilitiesParser {
     public String validateResponse(RawCapabilitiesResponse response) throws ServiceException {
         return CapabilitiesValidator.validateXmlResponse(response);
     }
+    // allow overriding for OGC API services etc
+    public String validateResponse(RawCapabilitiesResponse response, String version) throws ServiceException {
+        return validateResponse(response);
+    }
 
     public Map<String, LayerCapabilities> getLayersFromService(ServiceConnectInfo src) throws IOException, ServiceException {
 
         String capabilitiesUrl = contructCapabilitiesUrl(src.getUrl(), src.getVersion());
         RawCapabilitiesResponse response = fetchCapabilities(capabilitiesUrl, src.getUser(), src.getPass(), getExpectedContentType(src.getVersion()));
-        String validResponse = validateResponse(response);
+        String validResponse = validateResponse(response, src.getVersion());
         Map<String, LayerCapabilities> layers = parseLayers(validResponse, src.getVersion());
         layers.values().stream().forEach(l -> l.setUrl(response.getUrl()));
         return layers;
@@ -44,6 +49,7 @@ public abstract class OGCCapabilitiesParser extends CapabilitiesParser {
 
     protected abstract Map<String, LayerCapabilities> parseLayers(String capabilities) throws ServiceException;
 
+    // allow overriding for OGC API services etc
     protected Map<String, LayerCapabilities> parseLayers(String capabilities, String version) throws ServiceException {
         return parseLayers(capabilities);
     }

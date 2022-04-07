@@ -7,6 +7,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.oskari.capabilities.CapabilitiesService;
 import org.oskari.capabilities.LayerCapabilities;
+import org.oskari.capabilities.ogc.api.OGCAPIFeaturesService;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -23,6 +24,7 @@ public class WFSCapabilitiesParserTest {
     public static void init() {
         SYSTEM_CRS.add("EPSG:3857");
         SYSTEM_CRS.add("EPSG:3067");
+        SYSTEM_CRS.add("EPSG:4326");
     }
 
     @Test
@@ -61,5 +63,22 @@ public class WFSCapabilitiesParserTest {
 
         String wkt = "POLYGON ((15.999210419254936 56.23928539106909, 15.999210419254936 73.5170461466599, 33.27697117484574 73.5170461466599, 33.27697117484574 56.23928539106909, 15.999210419254936 56.23928539106909))";
         assertEquals("Coverage should match", wkt, layerCaps.getBbox().getWKT());
+    }
+
+    @Test
+    public void parseStatFi3_0_0() throws Exception {
+        String serviceJSON = ResourceHelper.readStringResource("WFSCapabilitiesParserTest-statfi-3_0_0-input.json", this);
+        String expected = ResourceHelper.readStringResource("WFSCapabilitiesParserTest-statfi-3_0_0-expected.json", this);
+
+        OGCAPIFeaturesService se = OGCAPIFeaturesService.fromJSON(serviceJSON);
+
+        Map<String, LayerCapabilities> layers = parser.listToMap(parser.getOGCAPIFeatures(se));
+        assertEquals("Should find 19 layers", 19, layers.size());
+        LayerCapabilitiesWFS layerCaps = (LayerCapabilitiesWFS) layers.get("AreaStatisticalUnit_4500k_EPSG_4326_2020");
+
+        JSONObject json = CapabilitiesService.toJSON(layerCaps, SYSTEM_CRS);
+        // System.out.println(json);
+        JSONObject expectedJSON = JSONHelper.createJSONObject(expected);
+        assertTrue("JSON should match", JSONHelper.isEqual(json, expectedJSON));
     }
 }

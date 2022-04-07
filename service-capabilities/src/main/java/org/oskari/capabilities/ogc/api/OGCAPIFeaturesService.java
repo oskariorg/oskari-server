@@ -69,10 +69,16 @@ public class OGCAPIFeaturesService {
         return new OGCAPIFeaturesService(reqClasses, collections);
     }
 
+    public String toJSON() throws JsonProcessingException {
+        return OM.writeValueAsString(this);
+    }
     public static byte[] toJSON(OGCAPIFeaturesService service) throws JsonProcessingException {
         return OM.writeValueAsBytes(service);
     }
 
+    public static OGCAPIFeaturesService fromJSON(String json) throws IOException {
+        return OM.readValue(json, OGCAPIFeaturesService.class);
+    }
     public static OGCAPIFeaturesService fromJSON(byte[] b) throws IOException {
         return OM.readValue(b, OGCAPIFeaturesService.class);
     }

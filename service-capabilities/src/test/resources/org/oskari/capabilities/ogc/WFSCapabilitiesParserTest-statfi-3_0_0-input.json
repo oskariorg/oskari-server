@@ -1,0 +1,1297 @@
+{
+  "reqClasses": {
+    "conformsTo": [
+      "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core",
+      "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/oas30",
+      "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/geojson",
+      "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/html"
+    ]
+  },
+  "content": {
+    "links": [
+      {
+        "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections?f=json",
+        "rel": "self",
+        "type": "application/json",
+        "hreflang": null,
+        "title": "Metadata about the feature collections"
+      },
+      {
+        "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections?f=html",
+        "rel": "alternate",
+        "type": "text/html",
+        "hreflang": null,
+        "title": "Metadata about the feature collections"
+      },
+      {
+        "href": "https://www.paikkatietohakemisto.fi/geonetwork/srv/api/records/b4693808-0f3b-4d5e-b366-c410b680ac19/formatters/xml",
+        "rel": "describedby",
+        "type": "application/xml",
+        "hreflang": null,
+        "title": "Dataset metadata XML: Municipality-based statistical units"
+      },
+      {
+        "href": "https://www.paikkatietohakemisto.fi/geonetwork/srv/api/records/2f1b17d3-90e1-429d-8210-d504ecb4f4d7/formatters/xml",
+        "rel": "describedby",
+        "type": "application/xml",
+        "hreflang": null,
+        "title": "Dataset metadata XML: Grid net for statistics 5 km x 5 km"
+      },
+      {
+        "href": "https://www.paikkatietohakemisto.fi/geonetwork/srv/api/records/e0dfa7be-5bb0-42f9-b045-213fcdea9fd0/formatters/xml",
+        "rel": "describedby",
+        "type": "application/xml",
+        "hreflang": null,
+        "title": "Dataset metadata XML: Grid net for statistics 1 km x 1 km"
+      },
+      {
+        "href": "https://www.paikkatietohakemisto.fi/geonetwork/srv/eng/catalog.search#/metadata/b4693808-0f3b-4d5e-b366-c410b680ac19",
+        "rel": "describedby",
+        "type": "text/html",
+        "hreflang": null,
+        "title": "Dataset metadata: Municipality-based statistical units"
+      },
+      {
+        "href": "https://www.paikkatietohakemisto.fi/geonetwork/srv/eng/catalog.search#/metadata/2f1b17d3-90e1-429d-8210-d504ecb4f4d7",
+        "rel": "describedby",
+        "type": "text/html",
+        "hreflang": null,
+        "title": "Dataset metadata: Grid net for statistics 5 km x 5 km"
+      },
+      {
+        "href": "https://www.paikkatietohakemisto.fi/geonetwork/srv/eng/catalog.search#/metadata/e0dfa7be-5bb0-42f9-b045-213fcdea9fd0",
+        "rel": "describedby",
+        "type": "text/html",
+        "hreflang": null,
+        "title": "Dataset metadata: Grid net for statistics 1 km x 1 km"
+      },
+      {
+        "href": "https://stat.fi/org/lainsaadanto/copyright_en.html",
+        "rel": "license",
+        "type": "text/html",
+        "hreflang": null,
+        "title": "Creative Commons Attribution 4.0 International (CC BY 4.0)"
+      }
+    ],
+    "collections": [
+      {
+        "id": "AreaStatisticalUnit_4500k_EPSG_3067",
+        "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:3067",
+        "description": "INSPIRE SU AreaStatisticalUnit in Finland in 4500k scale EPSG:3067",
+        "links": [
+          {
+            "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_4500k_EPSG_3067/items?f=html",
+            "rel": "items",
+            "type": "text/html",
+            "hreflang": null,
+            "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:3067"
+          },
+          {
+            "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_4500k_EPSG_3067/items?f=json",
+            "rel": "items",
+            "type": "application/geo+json",
+            "hreflang": null,
+            "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:3067"
+          },
+          {
+            "href": "https://inspire.ec.europa.eu/featureconcept/AreaStatisticalUnit/AreaStatisticalUnit.en.json",
+            "rel": "tag",
+            "type": "application/json",
+            "hreflang": null,
+            "title": "Feature concept: Area Statistical Unit"
+          }
+        ],
+        "extent": null,
+        "crs": [
+          "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+        ]
+      },
+      {
+        "id": "AreaStatisticalUnit_4500k_EPSG_3067_2022",
+        "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:3067 2022",
+        "description": "INSPIRE SU AreaStatisticalUnit in Finland in 4500k scale EPSG:3067 year 2022",
+        "links": [
+          {
+            "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_4500k_EPSG_3067_2022/items?f=html",
+            "rel": "items",
+            "type": "text/html",
+            "hreflang": null,
+            "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:3067 2022"
+          },
+          {
+            "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_4500k_EPSG_3067_2022/items?f=json",
+            "rel": "items",
+            "type": "application/geo+json",
+            "hreflang": null,
+            "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:3067 2022"
+          },
+          {
+            "href": "https://inspire.ec.europa.eu/featureconcept/AreaStatisticalUnit/AreaStatisticalUnit.en.json",
+            "rel": "tag",
+            "type": "application/json",
+            "hreflang": null,
+            "title": "Feature concept: Area Statistical Unit"
+          }
+        ],
+        "extent": null,
+        "crs": [
+          "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+        ]
+      },
+      {
+        "id": "AreaStatisticalUnit_4500k_EPSG_3067_2021",
+        "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:3067 2021",
+        "description": "INSPIRE SU AreaStatisticalUnit in Finland in 4500k scale EPSG:3067 year 2021",
+        "links": [
+          {
+            "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_4500k_EPSG_3067_2021/items?f=html",
+            "rel": "items",
+            "type": "text/html",
+            "hreflang": null,
+            "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:3067 2021"
+          },
+          {
+            "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_4500k_EPSG_3067_2021/items?f=json",
+            "rel": "items",
+            "type": "application/geo+json",
+            "hreflang": null,
+            "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:3067 2021"
+          },
+          {
+            "href": "https://inspire.ec.europa.eu/featureconcept/AreaStatisticalUnit/AreaStatisticalUnit.en.json",
+            "rel": "tag",
+            "type": "application/json",
+            "hreflang": null,
+            "title": "Feature concept: Area Statistical Unit"
+          }
+        ],
+        "extent": null,
+        "crs": [
+          "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+        ]
+      },
+      {
+        "id": "AreaStatisticalUnit_4500k_EPSG_3067_2020",
+        "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:3067 2020",
+        "description": "INSPIRE SU AreaStatisticalUnit in Finland in 4500k scale EPSG:3067 year 2020",
+        "links": [
+          {
+            "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_4500k_EPSG_3067_2020/items?f=html",
+            "rel": "items",
+            "type": "text/html",
+            "hreflang": null,
+            "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:3067 2020"
+          },
+          {
+            "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_4500k_EPSG_3067_2020/items?f=json",
+            "rel": "items",
+            "type": "application/geo+json",
+            "hreflang": null,
+            "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:3067 2020"
+          },
+          {
+            "href": "https://inspire.ec.europa.eu/featureconcept/AreaStatisticalUnit/AreaStatisticalUnit.en.json",
+            "rel": "tag",
+            "type": "application/json",
+            "hreflang": null,
+            "title": "Feature concept: Area Statistical Unit"
+          }
+        ],
+        "extent": null,
+        "crs": [
+          "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+        ]
+      },
+      {
+        "id": "AreaStatisticalUnit_4500k_EPSG_4326",
+        "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:4326",
+        "description": "INSPIRE SU AreaStatisticalUnit in Finland in 4500k scale EPSG:4326",
+        "links": [
+          {
+            "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_4500k_EPSG_4326/items?f=html",
+            "rel": "items",
+            "type": "text/html",
+            "hreflang": null,
+            "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:4326"
+          },
+          {
+            "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_4500k_EPSG_4326/items?f=json",
+            "rel": "items",
+            "type": "application/geo+json",
+            "hreflang": null,
+            "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:4326"
+          },
+          {
+            "href": "https://inspire.ec.europa.eu/featureconcept/AreaStatisticalUnit/AreaStatisticalUnit.en.json",
+            "rel": "tag",
+            "type": "application/json",
+            "hreflang": null,
+            "title": "Feature concept: Area Statistical Unit"
+          }
+        ],
+        "extent": null,
+        "crs": [
+          "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+        ]
+      },
+      {
+        "id": "AreaStatisticalUnit_4500k_EPSG_4326_2022",
+        "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:4326 2022",
+        "description": "INSPIRE SU AreaStatisticalUnit in Finland in 4500k scale EPSG:4326 year 2022",
+        "links": [
+          {
+            "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_4500k_EPSG_4326_2022/items?f=html",
+            "rel": "items",
+            "type": "text/html",
+            "hreflang": null,
+            "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:4326 2022"
+          },
+          {
+            "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_4500k_EPSG_4326_2022/items?f=json",
+            "rel": "items",
+            "type": "application/geo+json",
+            "hreflang": null,
+            "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:4326 2022"
+          },
+          {
+            "href": "https://inspire.ec.europa.eu/featureconcept/AreaStatisticalUnit/AreaStatisticalUnit.en.json",
+            "rel": "tag",
+            "type": "application/json",
+            "hreflang": null,
+            "title": "Feature concept: Area Statistical Unit"
+          }
+        ],
+        "extent": null,
+        "crs": [
+          "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+        ]
+      },
+      {
+        "id": "AreaStatisticalUnit_4500k_EPSG_4326_2021",
+        "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:4326 2021",
+        "description": "INSPIRE SU AreaStatisticalUnit in Finland in 4500k scale EPSG:4326 year 2021",
+        "links": [
+          {
+            "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_4500k_EPSG_4326_2021/items?f=html",
+            "rel": "items",
+            "type": "text/html",
+            "hreflang": null,
+            "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:4326 2021"
+          },
+          {
+            "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_4500k_EPSG_4326_2021/items?f=json",
+            "rel": "items",
+            "type": "application/geo+json",
+            "hreflang": null,
+            "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:4326 2021"
+          },
+          {
+            "href": "https://inspire.ec.europa.eu/featureconcept/AreaStatisticalUnit/AreaStatisticalUnit.en.json",
+            "rel": "tag",
+            "type": "application/json",
+            "hreflang": null,
+            "title": "Feature concept: Area Statistical Unit"
+          }
+        ],
+        "extent": null,
+        "crs": [
+          "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+        ]
+      },
+      {
+        "id": "AreaStatisticalUnit_4500k_EPSG_4326_2020",
+        "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:4326 2020",
+        "description": "INSPIRE SU AreaStatisticalUnit in Finland in 4500k scale EPSG:4326 year 2020",
+        "links": [
+          {
+            "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_4500k_EPSG_4326_2020/items?f=html",
+            "rel": "items",
+            "type": "text/html",
+            "hreflang": null,
+            "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:4326 2020"
+          },
+          {
+            "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_4500k_EPSG_4326_2020/items?f=json",
+            "rel": "items",
+            "type": "application/geo+json",
+            "hreflang": null,
+            "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:4326 2020"
+          },
+          {
+            "href": "https://inspire.ec.europa.eu/featureconcept/AreaStatisticalUnit/AreaStatisticalUnit.en.json",
+            "rel": "tag",
+            "type": "application/json",
+            "hreflang": null,
+            "title": "Feature concept: Area Statistical Unit"
+          }
+        ],
+        "extent": null,
+        "crs": [
+          "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+        ]
+      },
+      {
+        "id": "AreaStatisticalUnit_1000k_EPSG_3067",
+        "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:3067",
+        "description": "INSPIRE SU AreaStatisticalUnit in Finland in 1000k scale EPSG:3067",
+        "links": [
+          {
+            "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_1000k_EPSG_3067/items?f=html",
+            "rel": "items",
+            "type": "text/html",
+            "hreflang": null,
+            "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:3067"
+          },
+          {
+            "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_1000k_EPSG_3067/items?f=json",
+            "rel": "items",
+            "type": "application/geo+json",
+            "hreflang": null,
+            "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:3067"
+          },
+          {
+            "href": "https://inspire.ec.europa.eu/featureconcept/AreaStatisticalUnit/AreaStatisticalUnit.en.json",
+            "rel": "tag",
+            "type": "application/json",
+            "hreflang": null,
+            "title": "Feature concept: Area Statistical Unit"
+          }
+        ],
+        "extent": null,
+        "crs": [
+          "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+        ]
+      },
+      {
+        "id": "AreaStatisticalUnit_1000k_EPSG_3067_2022",
+        "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:3067 2022",
+        "description": "INSPIRE SU AreaStatisticalUnit in Finland in 1000k scale EPSG:3067 year 2022",
+        "links": [
+          {
+            "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_1000k_EPSG_3067_2022/items?f=html",
+            "rel": "items",
+            "type": "text/html",
+            "hreflang": null,
+            "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:3067 2022"
+          },
+          {
+            "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_1000k_EPSG_3067_2022/items?f=json",
+            "rel": "items",
+            "type": "application/geo+json",
+            "hreflang": null,
+            "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:3067 2022"
+          },
+          {
+            "href": "https://inspire.ec.europa.eu/featureconcept/AreaStatisticalUnit/AreaStatisticalUnit.en.json",
+            "rel": "tag",
+            "type": "application/json",
+            "hreflang": null,
+            "title": "Feature concept: Area Statistical Unit"
+          }
+        ],
+        "extent": null,
+        "crs": [
+          "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+        ]
+      },
+      {
+        "id": "AreaStatisticalUnit_1000k_EPSG_3067_2021",
+        "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:3067 2021",
+        "description": "INSPIRE SU AreaStatisticalUnit in Finland in 1000k scale EPSG:3067 year 2021",
+        "links": [
+          {
+            "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_1000k_EPSG_3067_2021/items?f=html",
+            "rel": "items",
+            "type": "text/html",
+            "hreflang": null,
+            "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:3067 2021"
+          },
+          {
+            "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_1000k_EPSG_3067_2021/items?f=json",
+            "rel": "items",
+            "type": "application/geo+json",
+            "hreflang": null,
+            "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:3067 2021"
+          },
+          {
+            "href": "https://inspire.ec.europa.eu/featureconcept/AreaStatisticalUnit/AreaStatisticalUnit.en.json",
+            "rel": "tag",
+            "type": "application/json",
+            "hreflang": null,
+            "title": "Feature concept: Area Statistical Unit"
+          }
+        ],
+        "extent": null,
+        "crs": [
+          "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+        ]
+      },
+      {
+        "id": "AreaStatisticalUnit_1000k_EPSG_3067_2020",
+        "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:3067 2020",
+        "description": "INSPIRE SU AreaStatisticalUnit in Finland in 1000k scale EPSG:3067 year 2020",
+        "links": [
+          {
+            "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_1000k_EPSG_3067_2020/items?f=html",
+            "rel": "items",
+            "type": "text/html",
+            "hreflang": null,
+            "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:3067 2020"
+          },
+          {
+            "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_1000k_EPSG_3067_2020/items?f=json",
+            "rel": "items",
+            "type": "application/geo+json",
+            "hreflang": null,
+            "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:3067 2020"
+          },
+          {
+            "href": "https://inspire.ec.europa.eu/featureconcept/AreaStatisticalUnit/AreaStatisticalUnit.en.json",
+            "rel": "tag",
+            "type": "application/json",
+            "hreflang": null,
+            "title": "Feature concept: Area Statistical Unit"
+          }
+        ],
+        "extent": null,
+        "crs": [
+          "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+        ]
+      },
+      {
+        "id": "AreaStatisticalUnit_1000k_EPSG_4326",
+        "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:4326",
+        "description": "INSPIRE SU AreaStatisticalUnit in Finland in 1000k scale EPSG:4326",
+        "links": [
+          {
+            "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_1000k_EPSG_4326/items?f=html",
+            "rel": "items",
+            "type": "text/html",
+            "hreflang": null,
+            "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:4326"
+          },
+          {
+            "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_1000k_EPSG_4326/items?f=json",
+            "rel": "items",
+            "type": "application/geo+json",
+            "hreflang": null,
+            "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:4326"
+          },
+          {
+            "href": "https://inspire.ec.europa.eu/featureconcept/AreaStatisticalUnit/AreaStatisticalUnit.en.json",
+            "rel": "tag",
+            "type": "application/json",
+            "hreflang": null,
+            "title": "Feature concept: Area Statistical Unit"
+          }
+        ],
+        "extent": null,
+        "crs": [
+          "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+        ]
+      },
+      {
+        "id": "AreaStatisticalUnit_1000k_EPSG_4326_2022",
+        "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:4326 2022",
+        "description": "INSPIRE SU AreaStatisticalUnit in Finland in 1000k scale EPSG:4326 year 2022",
+        "links": [
+          {
+            "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_1000k_EPSG_4326_2022/items?f=html",
+            "rel": "items",
+            "type": "text/html",
+            "hreflang": null,
+            "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:4326 2022"
+          },
+          {
+            "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_1000k_EPSG_4326_2022/items?f=json",
+            "rel": "items",
+            "type": "application/geo+json",
+            "hreflang": null,
+            "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:4326 2022"
+          },
+          {
+            "href": "https://inspire.ec.europa.eu/featureconcept/AreaStatisticalUnit/AreaStatisticalUnit.en.json",
+            "rel": "tag",
+            "type": "application/json",
+            "hreflang": null,
+            "title": "Feature concept: Area Statistical Unit"
+          }
+        ],
+        "extent": null,
+        "crs": [
+          "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+        ]
+      },
+      {
+        "id": "AreaStatisticalUnit_1000k_EPSG_4326_2021",
+        "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:4326 2021",
+        "description": "INSPIRE SU AreaStatisticalUnit in Finland in 1000k scale EPSG:4326 year 2021",
+        "links": [
+          {
+            "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_1000k_EPSG_4326_2021/items?f=html",
+            "rel": "items",
+            "type": "text/html",
+            "hreflang": null,
+            "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:4326 2021"
+          },
+          {
+            "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_1000k_EPSG_4326_2021/items?f=json",
+            "rel": "items",
+            "type": "application/geo+json",
+            "hreflang": null,
+            "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:4326 2021"
+          },
+          {
+            "href": "https://inspire.ec.europa.eu/featureconcept/AreaStatisticalUnit/AreaStatisticalUnit.en.json",
+            "rel": "tag",
+            "type": "application/json",
+            "hreflang": null,
+            "title": "Feature concept: Area Statistical Unit"
+          }
+        ],
+        "extent": null,
+        "crs": [
+          "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+        ]
+      },
+      {
+        "id": "AreaStatisticalUnit_1000k_EPSG_4326_2020",
+        "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:4326 2020",
+        "description": "INSPIRE SU AreaStatisticalUnit in Finland in 1000k scale EPSG:4326 year 2020",
+        "links": [
+          {
+            "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_1000k_EPSG_4326_2020/items?f=html",
+            "rel": "items",
+            "type": "text/html",
+            "hreflang": null,
+            "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:4326 2020"
+          },
+          {
+            "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_1000k_EPSG_4326_2020/items?f=json",
+            "rel": "items",
+            "type": "application/geo+json",
+            "hreflang": null,
+            "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:4326 2020"
+          },
+          {
+            "href": "https://inspire.ec.europa.eu/featureconcept/AreaStatisticalUnit/AreaStatisticalUnit.en.json",
+            "rel": "tag",
+            "type": "application/json",
+            "hreflang": null,
+            "title": "Feature concept: Area Statistical Unit"
+          }
+        ],
+        "extent": null,
+        "crs": [
+          "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+        ]
+      },
+      {
+        "id": "StatisticalGrid_EPSG_3067",
+        "title": "INSPIRE SU StatisticalGrid EPSG:3067",
+        "description": "INSPIRE SU StatisticalGrid in Finland EPSG:3067",
+        "links": [
+          {
+            "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/StatisticalGrid_EPSG_3067/items?f=html",
+            "rel": "items",
+            "type": "text/html",
+            "hreflang": null,
+            "title": "INSPIRE SU StatisticalGrid EPSG:3067"
+          },
+          {
+            "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/StatisticalGrid_EPSG_3067/items?f=json",
+            "rel": "items",
+            "type": "application/geo+json",
+            "hreflang": null,
+            "title": "INSPIRE SU StatisticalGrid EPSG:3067"
+          },
+          {
+            "href": "https://inspire.ec.europa.eu/featureconcept/StatisticalGrid/StatisticalGrid.en.json",
+            "rel": "tag",
+            "type": "application/json",
+            "hreflang": null,
+            "title": "Feature concept: Statistical Grid"
+          }
+        ],
+        "extent": null,
+        "crs": [
+          "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+        ]
+      },
+      {
+        "id": "StatisticalGridCell_RES_5000m_EPSG_3067",
+        "title": "INSPIRE SU StatisticalGridCell RES 5000m EPSG:3067",
+        "description": "INSPIRE SU StatisticalGridCell RES 5000m in Finland EPSG:3067",
+        "links": [
+          {
+            "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/StatisticalGridCell_RES_5000m_EPSG_3067/items?f=html",
+            "rel": "items",
+            "type": "text/html",
+            "hreflang": null,
+            "title": "INSPIRE SU StatisticalGridCell RES 5000m EPSG:3067"
+          },
+          {
+            "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/StatisticalGridCell_RES_5000m_EPSG_3067/items?f=json",
+            "rel": "items",
+            "type": "application/geo+json",
+            "hreflang": null,
+            "title": "INSPIRE SU StatisticalGridCell RES 5000m EPSG:3067"
+          },
+          {
+            "href": "https://inspire.ec.europa.eu/featureconcept/StatisticalGridCell/StatisticalGridCell.en.json",
+            "rel": "tag",
+            "type": "application/json",
+            "hreflang": null,
+            "title": "Feature concept: Statistical Grid Cell"
+          }
+        ],
+        "extent": null,
+        "crs": [
+          "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+        ]
+      },
+      {
+        "id": "StatisticalGridCell_RES_1000m_EPSG_3067",
+        "title": "INSPIRE SU StatisticalGridCell RES 1000m EPSG:3067",
+        "description": "INSPIRE SU StatisticalGridCell RES 1000m in Finland EPSG:3067",
+        "links": [
+          {
+            "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/StatisticalGridCell_RES_1000m_EPSG_3067/items?f=html",
+            "rel": "items",
+            "type": "text/html",
+            "hreflang": null,
+            "title": "INSPIRE SU StatisticalGridCell RES 1000m EPSG:3067"
+          },
+          {
+            "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/StatisticalGridCell_RES_1000m_EPSG_3067/items?f=json",
+            "rel": "items",
+            "type": "application/geo+json",
+            "hreflang": null,
+            "title": "INSPIRE SU StatisticalGridCell RES 1000m EPSG:3067"
+          },
+          {
+            "href": "https://inspire.ec.europa.eu/featureconcept/StatisticalGridCell/StatisticalGridCell.en.json",
+            "rel": "tag",
+            "type": "application/json",
+            "hreflang": null,
+            "title": "Feature concept: Statistical Grid Cell"
+          }
+        ],
+        "extent": null,
+        "crs": [
+          "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+        ]
+      }
+    ]
+  },
+  "collections": [
+    {
+      "id": "AreaStatisticalUnit_4500k_EPSG_3067",
+      "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:3067",
+      "description": "INSPIRE SU AreaStatisticalUnit in Finland in 4500k scale EPSG:3067",
+      "links": [
+        {
+          "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_4500k_EPSG_3067/items?f=html",
+          "rel": "items",
+          "type": "text/html",
+          "hreflang": null,
+          "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:3067"
+        },
+        {
+          "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_4500k_EPSG_3067/items?f=json",
+          "rel": "items",
+          "type": "application/geo+json",
+          "hreflang": null,
+          "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:3067"
+        },
+        {
+          "href": "https://inspire.ec.europa.eu/featureconcept/AreaStatisticalUnit/AreaStatisticalUnit.en.json",
+          "rel": "tag",
+          "type": "application/json",
+          "hreflang": null,
+          "title": "Feature concept: Area Statistical Unit"
+        }
+      ],
+      "extent": null,
+      "crs": [
+        "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+      ]
+    },
+    {
+      "id": "AreaStatisticalUnit_4500k_EPSG_3067_2022",
+      "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:3067 2022",
+      "description": "INSPIRE SU AreaStatisticalUnit in Finland in 4500k scale EPSG:3067 year 2022",
+      "links": [
+        {
+          "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_4500k_EPSG_3067_2022/items?f=html",
+          "rel": "items",
+          "type": "text/html",
+          "hreflang": null,
+          "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:3067 2022"
+        },
+        {
+          "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_4500k_EPSG_3067_2022/items?f=json",
+          "rel": "items",
+          "type": "application/geo+json",
+          "hreflang": null,
+          "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:3067 2022"
+        },
+        {
+          "href": "https://inspire.ec.europa.eu/featureconcept/AreaStatisticalUnit/AreaStatisticalUnit.en.json",
+          "rel": "tag",
+          "type": "application/json",
+          "hreflang": null,
+          "title": "Feature concept: Area Statistical Unit"
+        }
+      ],
+      "extent": null,
+      "crs": [
+        "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+      ]
+    },
+    {
+      "id": "AreaStatisticalUnit_4500k_EPSG_3067_2021",
+      "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:3067 2021",
+      "description": "INSPIRE SU AreaStatisticalUnit in Finland in 4500k scale EPSG:3067 year 2021",
+      "links": [
+        {
+          "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_4500k_EPSG_3067_2021/items?f=html",
+          "rel": "items",
+          "type": "text/html",
+          "hreflang": null,
+          "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:3067 2021"
+        },
+        {
+          "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_4500k_EPSG_3067_2021/items?f=json",
+          "rel": "items",
+          "type": "application/geo+json",
+          "hreflang": null,
+          "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:3067 2021"
+        },
+        {
+          "href": "https://inspire.ec.europa.eu/featureconcept/AreaStatisticalUnit/AreaStatisticalUnit.en.json",
+          "rel": "tag",
+          "type": "application/json",
+          "hreflang": null,
+          "title": "Feature concept: Area Statistical Unit"
+        }
+      ],
+      "extent": null,
+      "crs": [
+        "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+      ]
+    },
+    {
+      "id": "AreaStatisticalUnit_4500k_EPSG_3067_2020",
+      "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:3067 2020",
+      "description": "INSPIRE SU AreaStatisticalUnit in Finland in 4500k scale EPSG:3067 year 2020",
+      "links": [
+        {
+          "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_4500k_EPSG_3067_2020/items?f=html",
+          "rel": "items",
+          "type": "text/html",
+          "hreflang": null,
+          "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:3067 2020"
+        },
+        {
+          "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_4500k_EPSG_3067_2020/items?f=json",
+          "rel": "items",
+          "type": "application/geo+json",
+          "hreflang": null,
+          "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:3067 2020"
+        },
+        {
+          "href": "https://inspire.ec.europa.eu/featureconcept/AreaStatisticalUnit/AreaStatisticalUnit.en.json",
+          "rel": "tag",
+          "type": "application/json",
+          "hreflang": null,
+          "title": "Feature concept: Area Statistical Unit"
+        }
+      ],
+      "extent": null,
+      "crs": [
+        "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+      ]
+    },
+    {
+      "id": "AreaStatisticalUnit_4500k_EPSG_4326",
+      "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:4326",
+      "description": "INSPIRE SU AreaStatisticalUnit in Finland in 4500k scale EPSG:4326",
+      "links": [
+        {
+          "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_4500k_EPSG_4326/items?f=html",
+          "rel": "items",
+          "type": "text/html",
+          "hreflang": null,
+          "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:4326"
+        },
+        {
+          "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_4500k_EPSG_4326/items?f=json",
+          "rel": "items",
+          "type": "application/geo+json",
+          "hreflang": null,
+          "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:4326"
+        },
+        {
+          "href": "https://inspire.ec.europa.eu/featureconcept/AreaStatisticalUnit/AreaStatisticalUnit.en.json",
+          "rel": "tag",
+          "type": "application/json",
+          "hreflang": null,
+          "title": "Feature concept: Area Statistical Unit"
+        }
+      ],
+      "extent": null,
+      "crs": [
+        "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+      ]
+    },
+    {
+      "id": "AreaStatisticalUnit_4500k_EPSG_4326_2022",
+      "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:4326 2022",
+      "description": "INSPIRE SU AreaStatisticalUnit in Finland in 4500k scale EPSG:4326 year 2022",
+      "links": [
+        {
+          "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_4500k_EPSG_4326_2022/items?f=html",
+          "rel": "items",
+          "type": "text/html",
+          "hreflang": null,
+          "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:4326 2022"
+        },
+        {
+          "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_4500k_EPSG_4326_2022/items?f=json",
+          "rel": "items",
+          "type": "application/geo+json",
+          "hreflang": null,
+          "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:4326 2022"
+        },
+        {
+          "href": "https://inspire.ec.europa.eu/featureconcept/AreaStatisticalUnit/AreaStatisticalUnit.en.json",
+          "rel": "tag",
+          "type": "application/json",
+          "hreflang": null,
+          "title": "Feature concept: Area Statistical Unit"
+        }
+      ],
+      "extent": null,
+      "crs": [
+        "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+      ]
+    },
+    {
+      "id": "AreaStatisticalUnit_4500k_EPSG_4326_2021",
+      "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:4326 2021",
+      "description": "INSPIRE SU AreaStatisticalUnit in Finland in 4500k scale EPSG:4326 year 2021",
+      "links": [
+        {
+          "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_4500k_EPSG_4326_2021/items?f=html",
+          "rel": "items",
+          "type": "text/html",
+          "hreflang": null,
+          "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:4326 2021"
+        },
+        {
+          "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_4500k_EPSG_4326_2021/items?f=json",
+          "rel": "items",
+          "type": "application/geo+json",
+          "hreflang": null,
+          "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:4326 2021"
+        },
+        {
+          "href": "https://inspire.ec.europa.eu/featureconcept/AreaStatisticalUnit/AreaStatisticalUnit.en.json",
+          "rel": "tag",
+          "type": "application/json",
+          "hreflang": null,
+          "title": "Feature concept: Area Statistical Unit"
+        }
+      ],
+      "extent": null,
+      "crs": [
+        "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+      ]
+    },
+    {
+      "id": "AreaStatisticalUnit_4500k_EPSG_4326_2020",
+      "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:4326 2020",
+      "description": "INSPIRE SU AreaStatisticalUnit in Finland in 4500k scale EPSG:4326 year 2020",
+      "links": [
+        {
+          "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_4500k_EPSG_4326_2020/items?f=html",
+          "rel": "items",
+          "type": "text/html",
+          "hreflang": null,
+          "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:4326 2020"
+        },
+        {
+          "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_4500k_EPSG_4326_2020/items?f=json",
+          "rel": "items",
+          "type": "application/geo+json",
+          "hreflang": null,
+          "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:4326 2020"
+        },
+        {
+          "href": "https://inspire.ec.europa.eu/featureconcept/AreaStatisticalUnit/AreaStatisticalUnit.en.json",
+          "rel": "tag",
+          "type": "application/json",
+          "hreflang": null,
+          "title": "Feature concept: Area Statistical Unit"
+        }
+      ],
+      "extent": null,
+      "crs": [
+        "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+      ]
+    },
+    {
+      "id": "AreaStatisticalUnit_1000k_EPSG_3067",
+      "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:3067",
+      "description": "INSPIRE SU AreaStatisticalUnit in Finland in 1000k scale EPSG:3067",
+      "links": [
+        {
+          "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_1000k_EPSG_3067/items?f=html",
+          "rel": "items",
+          "type": "text/html",
+          "hreflang": null,
+          "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:3067"
+        },
+        {
+          "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_1000k_EPSG_3067/items?f=json",
+          "rel": "items",
+          "type": "application/geo+json",
+          "hreflang": null,
+          "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:3067"
+        },
+        {
+          "href": "https://inspire.ec.europa.eu/featureconcept/AreaStatisticalUnit/AreaStatisticalUnit.en.json",
+          "rel": "tag",
+          "type": "application/json",
+          "hreflang": null,
+          "title": "Feature concept: Area Statistical Unit"
+        }
+      ],
+      "extent": null,
+      "crs": [
+        "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+      ]
+    },
+    {
+      "id": "AreaStatisticalUnit_1000k_EPSG_3067_2022",
+      "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:3067 2022",
+      "description": "INSPIRE SU AreaStatisticalUnit in Finland in 1000k scale EPSG:3067 year 2022",
+      "links": [
+        {
+          "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_1000k_EPSG_3067_2022/items?f=html",
+          "rel": "items",
+          "type": "text/html",
+          "hreflang": null,
+          "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:3067 2022"
+        },
+        {
+          "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_1000k_EPSG_3067_2022/items?f=json",
+          "rel": "items",
+          "type": "application/geo+json",
+          "hreflang": null,
+          "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:3067 2022"
+        },
+        {
+          "href": "https://inspire.ec.europa.eu/featureconcept/AreaStatisticalUnit/AreaStatisticalUnit.en.json",
+          "rel": "tag",
+          "type": "application/json",
+          "hreflang": null,
+          "title": "Feature concept: Area Statistical Unit"
+        }
+      ],
+      "extent": null,
+      "crs": [
+        "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+      ]
+    },
+    {
+      "id": "AreaStatisticalUnit_1000k_EPSG_3067_2021",
+      "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:3067 2021",
+      "description": "INSPIRE SU AreaStatisticalUnit in Finland in 1000k scale EPSG:3067 year 2021",
+      "links": [
+        {
+          "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_1000k_EPSG_3067_2021/items?f=html",
+          "rel": "items",
+          "type": "text/html",
+          "hreflang": null,
+          "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:3067 2021"
+        },
+        {
+          "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_1000k_EPSG_3067_2021/items?f=json",
+          "rel": "items",
+          "type": "application/geo+json",
+          "hreflang": null,
+          "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:3067 2021"
+        },
+        {
+          "href": "https://inspire.ec.europa.eu/featureconcept/AreaStatisticalUnit/AreaStatisticalUnit.en.json",
+          "rel": "tag",
+          "type": "application/json",
+          "hreflang": null,
+          "title": "Feature concept: Area Statistical Unit"
+        }
+      ],
+      "extent": null,
+      "crs": [
+        "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+      ]
+    },
+    {
+      "id": "AreaStatisticalUnit_1000k_EPSG_3067_2020",
+      "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:3067 2020",
+      "description": "INSPIRE SU AreaStatisticalUnit in Finland in 1000k scale EPSG:3067 year 2020",
+      "links": [
+        {
+          "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_1000k_EPSG_3067_2020/items?f=html",
+          "rel": "items",
+          "type": "text/html",
+          "hreflang": null,
+          "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:3067 2020"
+        },
+        {
+          "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_1000k_EPSG_3067_2020/items?f=json",
+          "rel": "items",
+          "type": "application/geo+json",
+          "hreflang": null,
+          "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:3067 2020"
+        },
+        {
+          "href": "https://inspire.ec.europa.eu/featureconcept/AreaStatisticalUnit/AreaStatisticalUnit.en.json",
+          "rel": "tag",
+          "type": "application/json",
+          "hreflang": null,
+          "title": "Feature concept: Area Statistical Unit"
+        }
+      ],
+      "extent": null,
+      "crs": [
+        "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+      ]
+    },
+    {
+      "id": "AreaStatisticalUnit_1000k_EPSG_4326",
+      "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:4326",
+      "description": "INSPIRE SU AreaStatisticalUnit in Finland in 1000k scale EPSG:4326",
+      "links": [
+        {
+          "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_1000k_EPSG_4326/items?f=html",
+          "rel": "items",
+          "type": "text/html",
+          "hreflang": null,
+          "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:4326"
+        },
+        {
+          "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_1000k_EPSG_4326/items?f=json",
+          "rel": "items",
+          "type": "application/geo+json",
+          "hreflang": null,
+          "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:4326"
+        },
+        {
+          "href": "https://inspire.ec.europa.eu/featureconcept/AreaStatisticalUnit/AreaStatisticalUnit.en.json",
+          "rel": "tag",
+          "type": "application/json",
+          "hreflang": null,
+          "title": "Feature concept: Area Statistical Unit"
+        }
+      ],
+      "extent": null,
+      "crs": [
+        "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+      ]
+    },
+    {
+      "id": "AreaStatisticalUnit_1000k_EPSG_4326_2022",
+      "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:4326 2022",
+      "description": "INSPIRE SU AreaStatisticalUnit in Finland in 1000k scale EPSG:4326 year 2022",
+      "links": [
+        {
+          "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_1000k_EPSG_4326_2022/items?f=html",
+          "rel": "items",
+          "type": "text/html",
+          "hreflang": null,
+          "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:4326 2022"
+        },
+        {
+          "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_1000k_EPSG_4326_2022/items?f=json",
+          "rel": "items",
+          "type": "application/geo+json",
+          "hreflang": null,
+          "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:4326 2022"
+        },
+        {
+          "href": "https://inspire.ec.europa.eu/featureconcept/AreaStatisticalUnit/AreaStatisticalUnit.en.json",
+          "rel": "tag",
+          "type": "application/json",
+          "hreflang": null,
+          "title": "Feature concept: Area Statistical Unit"
+        }
+      ],
+      "extent": null,
+      "crs": [
+        "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+      ]
+    },
+    {
+      "id": "AreaStatisticalUnit_1000k_EPSG_4326_2021",
+      "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:4326 2021",
+      "description": "INSPIRE SU AreaStatisticalUnit in Finland in 1000k scale EPSG:4326 year 2021",
+      "links": [
+        {
+          "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_1000k_EPSG_4326_2021/items?f=html",
+          "rel": "items",
+          "type": "text/html",
+          "hreflang": null,
+          "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:4326 2021"
+        },
+        {
+          "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_1000k_EPSG_4326_2021/items?f=json",
+          "rel": "items",
+          "type": "application/geo+json",
+          "hreflang": null,
+          "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:4326 2021"
+        },
+        {
+          "href": "https://inspire.ec.europa.eu/featureconcept/AreaStatisticalUnit/AreaStatisticalUnit.en.json",
+          "rel": "tag",
+          "type": "application/json",
+          "hreflang": null,
+          "title": "Feature concept: Area Statistical Unit"
+        }
+      ],
+      "extent": null,
+      "crs": [
+        "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+      ]
+    },
+    {
+      "id": "AreaStatisticalUnit_1000k_EPSG_4326_2020",
+      "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:4326 2020",
+      "description": "INSPIRE SU AreaStatisticalUnit in Finland in 1000k scale EPSG:4326 year 2020",
+      "links": [
+        {
+          "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_1000k_EPSG_4326_2020/items?f=html",
+          "rel": "items",
+          "type": "text/html",
+          "hreflang": null,
+          "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:4326 2020"
+        },
+        {
+          "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/AreaStatisticalUnit_1000k_EPSG_4326_2020/items?f=json",
+          "rel": "items",
+          "type": "application/geo+json",
+          "hreflang": null,
+          "title": "INSPIRE SU AreaStatisticalUnit 1000k EPSG:4326 2020"
+        },
+        {
+          "href": "https://inspire.ec.europa.eu/featureconcept/AreaStatisticalUnit/AreaStatisticalUnit.en.json",
+          "rel": "tag",
+          "type": "application/json",
+          "hreflang": null,
+          "title": "Feature concept: Area Statistical Unit"
+        }
+      ],
+      "extent": null,
+      "crs": [
+        "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+      ]
+    },
+    {
+      "id": "StatisticalGrid_EPSG_3067",
+      "title": "INSPIRE SU StatisticalGrid EPSG:3067",
+      "description": "INSPIRE SU StatisticalGrid in Finland EPSG:3067",
+      "links": [
+        {
+          "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/StatisticalGrid_EPSG_3067/items?f=html",
+          "rel": "items",
+          "type": "text/html",
+          "hreflang": null,
+          "title": "INSPIRE SU StatisticalGrid EPSG:3067"
+        },
+        {
+          "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/StatisticalGrid_EPSG_3067/items?f=json",
+          "rel": "items",
+          "type": "application/geo+json",
+          "hreflang": null,
+          "title": "INSPIRE SU StatisticalGrid EPSG:3067"
+        },
+        {
+          "href": "https://inspire.ec.europa.eu/featureconcept/StatisticalGrid/StatisticalGrid.en.json",
+          "rel": "tag",
+          "type": "application/json",
+          "hreflang": null,
+          "title": "Feature concept: Statistical Grid"
+        }
+      ],
+      "extent": null,
+      "crs": [
+        "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+      ]
+    },
+    {
+      "id": "StatisticalGridCell_RES_5000m_EPSG_3067",
+      "title": "INSPIRE SU StatisticalGridCell RES 5000m EPSG:3067",
+      "description": "INSPIRE SU StatisticalGridCell RES 5000m in Finland EPSG:3067",
+      "links": [
+        {
+          "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/StatisticalGridCell_RES_5000m_EPSG_3067/items?f=html",
+          "rel": "items",
+          "type": "text/html",
+          "hreflang": null,
+          "title": "INSPIRE SU StatisticalGridCell RES 5000m EPSG:3067"
+        },
+        {
+          "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/StatisticalGridCell_RES_5000m_EPSG_3067/items?f=json",
+          "rel": "items",
+          "type": "application/geo+json",
+          "hreflang": null,
+          "title": "INSPIRE SU StatisticalGridCell RES 5000m EPSG:3067"
+        },
+        {
+          "href": "https://inspire.ec.europa.eu/featureconcept/StatisticalGridCell/StatisticalGridCell.en.json",
+          "rel": "tag",
+          "type": "application/json",
+          "hreflang": null,
+          "title": "Feature concept: Statistical Grid Cell"
+        }
+      ],
+      "extent": null,
+      "crs": [
+        "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+      ]
+    },
+    {
+      "id": "StatisticalGridCell_RES_1000m_EPSG_3067",
+      "title": "INSPIRE SU StatisticalGridCell RES 1000m EPSG:3067",
+      "description": "INSPIRE SU StatisticalGridCell RES 1000m in Finland EPSG:3067",
+      "links": [
+        {
+          "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/StatisticalGridCell_RES_1000m_EPSG_3067/items?f=html",
+          "rel": "items",
+          "type": "text/html",
+          "hreflang": null,
+          "title": "INSPIRE SU StatisticalGridCell RES 1000m EPSG:3067"
+        },
+        {
+          "href": "https://geo.stat.fi:443/inspire/ogc/api/su/collections/StatisticalGridCell_RES_1000m_EPSG_3067/items?f=json",
+          "rel": "items",
+          "type": "application/geo+json",
+          "hreflang": null,
+          "title": "INSPIRE SU StatisticalGridCell RES 1000m EPSG:3067"
+        },
+        {
+          "href": "https://inspire.ec.europa.eu/featureconcept/StatisticalGridCell/StatisticalGridCell.en.json",
+          "rel": "tag",
+          "type": "application/json",
+          "hreflang": null,
+          "title": "Feature concept: Statistical Grid Cell"
+        }
+      ],
+      "extent": null,
+      "crs": [
+        "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+      ]
+    }
+  ]
+}
