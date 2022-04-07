@@ -120,8 +120,13 @@ public class LayerCapabilitiesHelper {
 
     private static void updateCapabilitiesWFS(OskariLayer ml) throws ServiceException {
         if (CapabilitiesConstants.WFS3_VERSION.equals(ml.getVersion())) {
-            OGCAPIFeaturesService service = WFSCapabilitiesService.getCapabilitiesOAPIF(ml.getUrl(), ml.getUsername(), ml.getPassword());
-            OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesOAPIF(service, ml, getSystemCRSs());
+            try {
+                Map<String, LayerCapabilities> caps = CapabilitiesService.getLayersFromService(ServiceConnectInfo.fromLayer(ml));
+                ml.setCapabilities(CapabilitiesService.toJSON(caps.get(ml.getName()), getSystemCRSs()));
+                ml.setCapabilitiesLastUpdated(new Date());
+            } catch (IOException e) {
+                throw new ServiceException("Error getting capabilities from " + ml.getUrl(), e);
+            }
         } else {
             WFSDataStore wfs = WFSCapabilitiesService.getDataStore(ml);
             OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWFS(wfs, ml, getSystemCRSs());

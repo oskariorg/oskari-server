@@ -30,11 +30,4 @@ public class OskariLayerCapabilitiesHelper {
         ml.setCapabilities(LayerJSONFormatterWFS.createCapabilitiesJSON(capa, source, systemCRSs));
         ml.setCapabilitiesLastUpdated(new Date());
     }
-
-    public static void setPropertiesFromCapabilitiesOAPIF(OGCAPIFeaturesService service, OskariLayer ml,
-                                                          Set<String> systemCRSs) {
-        ml.setCapabilities(LayerJSONFormatterWFS.createCapabilitiesJSON(service, ml.getName(), systemCRSs));
-        ml.setCapabilitiesLastUpdated(new Date());
-    }
-
 }

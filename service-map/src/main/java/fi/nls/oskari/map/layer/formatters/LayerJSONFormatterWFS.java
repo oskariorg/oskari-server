@@ -96,19 +96,6 @@ public class LayerJSONFormatterWFS extends LayerJSONFormatter {
             return json;
         } catch (Exception e) {
             throw new ServiceException( "Failed to create capabilities json: " + e.getMessage());
-
         }
     }
-    public static JSONObject createCapabilitiesJSON (OGCAPIFeaturesService service, String collectionId, Set<String> systemCRSs) {
-        JSONObject capabilities = new JSONObject(); // override
-        Set<String> crsUri  = service.getSupportedCrsURIs(collectionId);
-        JSONHelper.put(capabilities, KEY_CRS_URI, new JSONArray(crsUri));
-        Set<String> capabilitiesCRSs = service.getSupportedEpsgCodes(collectionId);
-        Set<String> crss = getCRSsToStore(systemCRSs, capabilitiesCRSs);
-        JSONHelper.putValue(capabilities, KEY_SRS, new JSONArray(crss));
-        Set<String> formats = service.getSupportedFormats(collectionId);
-        JSONHelper.put(capabilities, KEY_FEATURE_OUTPUT_FORMATS, new JSONArray(formats));
-        return capabilities;
-    }
-
 }
