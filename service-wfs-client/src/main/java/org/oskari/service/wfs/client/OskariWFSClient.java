@@ -16,6 +16,7 @@ import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import fi.nls.oskari.service.ServiceRuntimeException;
+import org.oskari.capabilities.ogc.CapabilitiesConstants;
 import org.oskari.geojson.GeoJSONReader2;
 import org.oskari.geojson.GeoJSONSchemaDetector;
 import org.oskari.service.user.UserLayerService;
@@ -160,17 +161,31 @@ public class OskariWFSClient {
     }
 
     protected static boolean tryGeoJSON (OskariLayer layer) {
-        if(layer.getAttributes().optBoolean(PROPERTY_FORCE_GML, false)) return false;
+        if (layer.getAttributes().optBoolean(PROPERTY_FORCE_GML, false)) {
+            return false;
+        }
 
         JSONObject capa = layer.getCapabilities();
         if (capa.has(KEY_FEATURE_OUTPUT_FORMATS)) {
             List<String> formats = JSONHelper.getArrayAsList(JSONHelper.getJSONArray(capa, KEY_FEATURE_OUTPUT_FORMATS));
             return formats.contains(JSON_OUTPUT_FORMAT);
         }
+        JSONObject typeSpecific = capa.optJSONObject("typeSpecific");
+        if (typeSpecific != null && typeSpecific.has(CapabilitiesConstants.FORMATS)) {
+            List<String> formats = JSONHelper.getArrayAsList(JSONHelper.getJSONArray(typeSpecific, CapabilitiesConstants.FORMATS));
+            return formats.contains(JSON_OUTPUT_FORMAT);
+        }
         return true;
     }
     protected static int getMaxFeatures(OskariLayer layer) {
-        return layer.getCapabilities().optInt(KEY_MAX_FEATURES, DEFAULT_MAX_FEATURES);
+        int maxFeatures = layer.getCapabilities().optInt(KEY_MAX_FEATURES, -7);
+        if (maxFeatures == -7) {
+            JSONObject typeSpecific = layer.getCapabilities().optJSONObject("typeSpecific");
+            if (typeSpecific != null) {
+                return typeSpecific.optInt(CapabilitiesConstants.KEY_MAX_FEATURES, DEFAULT_MAX_FEATURES);
+            }
+        }
+        return DEFAULT_MAX_FEATURES;
     }
     protected static Filter getWFSFilter (String id, OskariLayer layer, ReferencedEnvelope bbox, Optional<UserLayerService> processor) {
         if (processor.isPresent()) {

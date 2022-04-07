@@ -9,7 +9,6 @@ import org.oskari.capabilities.LayerCapabilities;
 import org.oskari.capabilities.ServiceConnectInfo;
 import org.oskari.capabilities.ogc.api.OGCAPIFeaturesService;
 import org.oskari.capabilities.ogc.wfs.WFSCapsParser;
-import org.oskari.ogcapi.OGCAPIException;
 
 import java.io.IOException;
 import java.util.Collections;

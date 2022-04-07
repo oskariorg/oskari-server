@@ -1,5 +1,5 @@
 {
-  "srs": [],
+  "srs": ["EPSG:3067"],
   "defaultStyle": null,
   "name": "tilastointialueet:avi4500k",
   "styles": [],

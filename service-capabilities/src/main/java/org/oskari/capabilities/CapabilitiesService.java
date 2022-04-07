@@ -200,10 +200,11 @@ public class CapabilitiesService {
         //  "urn:ogc:def:crs:EPSG:6.3:3067"
         //  "urn:ogc:def:crs:EPSG:6.18:3:3857"
         //  "urn:ogc:def:crs:EPSG::3575"
+        //  "urn:x-ogc:def:crs:EPSG:3067"
         String[] epsg = crs.toUpperCase().split("EPSG");
         if (epsg.length > 1) {
             String[] code = epsg[1].split(":");
-            if (code.length > 2) {
+            if (code.length > 1) {
                 // get the last token
                 return "EPSG:" + code[code.length - 1];
             }

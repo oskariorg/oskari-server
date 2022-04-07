@@ -1,6 +1,7 @@
 package org.oskari.capabilities.ogc.wfs;
 
 import org.oskari.capabilities.ogc.BoundingBox;
+import org.oskari.capabilities.ogc.CapabilitiesConstants;
 import org.oskari.capabilities.ogc.LayerCapabilitiesWFS;
 import org.oskari.xml.XmlHelper;
 import org.w3c.dom.Element;
@@ -62,9 +63,14 @@ public class WFSCapsParser {
 
         value.setKeywords(getKeywords(layer));
         value.setBbox(parseGeoGraphicBbox(XmlHelper.getFirstChild(layer, "WGS84BoundingBox")));
-
+        //value.setMaxFeatures( from service constraints);
         Set<String> srs = new HashSet<>(1);
-        srs.add(XmlHelper.getChildValue(layer, "DefaultSRS"));
+        if ("2.0.0".equals(version)) {
+            srs.add(XmlHelper.getChildValue(layer, "DefaultCRS"));
+        } else {
+            srs.add(XmlHelper.getChildValue(layer, "DefaultSRS"));
+        }
+
         value.setSrs(srs);
 
         value.setMetadataUrl(getMetadataUrl(layer));
