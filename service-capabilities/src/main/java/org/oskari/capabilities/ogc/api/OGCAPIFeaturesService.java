@@ -125,7 +125,7 @@ public class OGCAPIFeaturesService {
                 .orElseThrow(() -> new NoSuchElementException())
                 .getLinks()
                 .stream()
-                .filter (link -> "item".equals(link.getRel()))
+                .filter (link -> "items".equals(link.getRel()))
                 .map(item -> item.getType())
                 .filter (Objects::nonNull)
                 .collect(Collectors.toSet());

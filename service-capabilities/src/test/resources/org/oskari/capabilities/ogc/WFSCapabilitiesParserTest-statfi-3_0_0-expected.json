@@ -8,7 +8,10 @@
   "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:4326 2020",
   "url": null,
   "typeSpecific": {
-    "formats": [],
+    "formats": [
+      "text/html",
+      "application/geo+json"
+    ],
     "version": "3.0.0",
     "desc": "INSPIRE SU AreaStatisticalUnit in Finland in 4500k scale EPSG:4326 year 2020",
     "crs-uri": [
