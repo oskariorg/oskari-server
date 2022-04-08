@@ -6,16 +6,12 @@ import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.util.ViewHelper;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
-import fi.nls.oskari.service.capabilities.CapabilitiesConstants;
-import fi.nls.oskari.service.capabilities.OskariLayerCapabilitiesHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.wfs.WFSCapabilitiesService;
 import fi.nls.oskari.wms.WMSCapabilitiesService;
-import org.geotools.data.wfs.WFSDataStore;
 import org.oskari.capabilities.CapabilitiesService;
 import org.oskari.capabilities.LayerCapabilities;
 import org.oskari.capabilities.ServiceConnectInfo;
-import org.oskari.capabilities.ogc.api.OGCAPIFeaturesService;
 import org.oskari.maplayer.admin.LayerAdminJSONHelper;
 import org.oskari.maplayer.model.ServiceCapabilitiesResult;
 
@@ -107,30 +103,7 @@ public class LayerCapabilitiesHelper {
     }
 
     public static void updateCapabilities(OskariLayer ml) throws ServiceException {
-        switch (ml.getType()) {
-            case OskariLayer.TYPE_WFS:
-                updateCapabilitiesWFS(ml);
-                break;
-            case OskariLayer.TYPE_WMS:
-            case OskariLayer.TYPE_WMTS:
-                CapabilitiesService.updateCapabilities(ml, getSystemCRSs());
-                break;
-        }
-    }
-
-    private static void updateCapabilitiesWFS(OskariLayer ml) throws ServiceException {
-        if (CapabilitiesConstants.WFS3_VERSION.equals(ml.getVersion())) {
-            try {
-                Map<String, LayerCapabilities> caps = CapabilitiesService.getLayersFromService(ServiceConnectInfo.fromLayer(ml));
-                ml.setCapabilities(CapabilitiesService.toJSON(caps.get(ml.getName()), getSystemCRSs()));
-                ml.setCapabilitiesLastUpdated(new Date());
-            } catch (IOException e) {
-                throw new ServiceException("Error getting capabilities from " + ml.getUrl(), e);
-            }
-        } else {
-            WFSDataStore wfs = WFSCapabilitiesService.getDataStore(ml);
-            OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWFS(wfs, ml, getSystemCRSs());
-        }
+        CapabilitiesService.updateCapabilities(ml, getSystemCRSs());
     }
 
     private static Set<String> getSystemCRSs() throws ServiceException {

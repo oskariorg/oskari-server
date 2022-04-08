@@ -1,30 +1,20 @@
 package fi.nls.oskari.wfs;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
-import fi.nls.oskari.service.ServiceUnauthorizedException;
-import fi.nls.oskari.service.capabilities.OskariLayerCapabilitiesHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import org.geotools.data.DataStoreFinder;
-import org.geotools.data.simple.SimpleFeatureSource;
-import org.geotools.data.wfs.WFSDataStore;
-import org.geotools.data.wfs.internal.WFSGetCapabilities;
-import org.oskari.capabilities.ogc.api.OGCAPIFeaturesService;
+import org.oskari.capabilities.CapabilitiesService;
+import org.oskari.capabilities.LayerCapabilities;
+import org.oskari.capabilities.ServiceConnectInfo;
+import org.oskari.capabilities.ogc.LayerCapabilitiesWFS;
 import org.oskari.maplayer.admin.LayerAdminJSONHelper;
 import org.oskari.maplayer.model.ServiceCapabilitiesResult;
-import org.oskari.ogcapi.features.FeaturesCollectionInfo;
 import org.oskari.utils.common.Sets;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.*;
 
 public class WFSCapabilitiesService {
     private static Logger log = LogFactory.getLogger(WFSCapabilitiesService.class);
@@ -35,76 +25,14 @@ public class WFSCapabilitiesService {
                     "application/json",
                     "text/xml"));
 
-    public static List<String> getLayerNames (String url, String version,
-                                                String user, String pw) throws ServiceException {
-        WFSDataStore data = getDataStore(url, version, user, pw);
-        try {
-            return Arrays.asList(data.getTypeNames());
-        } catch (IOException e) {
-            throw new ServiceException("Failed to retrieve layer names from: " + url, e);
-        }
-    }
-    public static WFSDataStore getDataStore (OskariLayer ml) throws ServiceException {
-        String version = ml.getVersion();
-        if (version == null || version.isEmpty()) {
-            version = WFS_DEFAULT_VERSION;
-        }
-        return getDataStore(ml.getUrl(), version, ml.getUsername(), ml.getPassword());
-    }
-
-    private static WFSDataStore getDataStore (String url, String version,
-                                                String user, String pw) throws ServiceException, ServiceUnauthorizedException {
-        try {
-            Map connectionParameters = new HashMap();
-            connectionParameters.put("WFSDataStoreFactory:GET_CAPABILITIES_URL", getUrl(url, version));
-            connectionParameters.put("WFSDataStoreFactory:TIMEOUT", 30000);
-            if (user != null && !user.isEmpty()) {
-                connectionParameters.put("WFSDataStoreFactory:USERNAME", user);
-                connectionParameters.put("WFSDataStoreFactory:PASSWORD", pw);
-            }
-            //  connection
-            return (WFSDataStore) DataStoreFinder.getDataStore(connectionParameters);
-            //TODO: try to catch wrong version
-            //IllegalStateException: Unable to parse GetCapabilities document
-        } catch (IOException e) {
-			if (isUnauthorizedException(e)) {
-                // Don't attach IOException as it is detected as root cause and wrong error is sent to user
-                throw new ServiceUnauthorizedException("Unauthorized response received from url: " + url + " Message: " + e.getMessage());
-            } else if (isParseException(e)) {
-			    // Don't attach IOException as it is detected as root cause and wrong error is sent to user
-                throw new ServiceException("Error parsing response from url: " + url + " Message: " + e.getMessage());
-			} else {
-				throw new ServiceException("Couldn't read/get wfs capabilities response from url: " + url + " Message: " + e.getMessage(), e);
-			}
-		} 
-        catch (Exception ex) {
-            throw new ServiceException("Couldn't read/get wfs capabilities response from url: " + url + " Message: " + ex.getMessage(), ex);
-        }
-    }
-    
-    private static boolean isUnauthorizedException(IOException e) {
-    	return e.getMessage() != null && (
-    			e.getMessage().contains("Server returned HTTP response code: 401") ||
-    				e.getMessage().contains("Server returned HTTP response code: 403"))	;
-    }
-
-    private static boolean isParseException(IOException e) {
-        return e.getMessage() != null && e.getMessage().contains("Error parsing capabilities document");
-    }
-
-    private static String getUrl(String url, String version) throws ServiceException {
-        if (url.isEmpty()) throw new ServiceException ("Empty url");
-        String baseUrl = url.contains("?") ? url.substring(0, url.indexOf("?")) : url;
-        return baseUrl + "?service=WFS&request=GetCapabilities&version="+ version;
-    }
     public static ServiceCapabilitiesResult getCapabilitiesResults (String url, String version, String user, String pw,
                                                                     Set<String> systemCRSs)
                                                                 throws ServiceException {
         try {
-            if (WFS3_VERSION.equals(version)) {
-                return getCapabilitiesOAPIF( url, user, pw, systemCRSs);
-            }
-            return getCapabilitiesWFS( url, version, user, pw, systemCRSs);
+            ServiceConnectInfo info = new ServiceConnectInfo(url, OskariLayer.TYPE_WFS, version);
+            info.setCredentials(user, pw);
+            Map<String, LayerCapabilities> caps = CapabilitiesService.getLayersFromService(info);
+            return parseCapabilitiesResults(caps, url, user, pw, systemCRSs);
         } catch (ServiceException e) {
             throw e;
         } catch (Exception e) {
@@ -112,85 +40,44 @@ public class WFSCapabilitiesService {
         }
     }
 
-    private static ServiceCapabilitiesResult getCapabilitiesWFS (String url, String version,
-                                           String user, String pw, Set<String> systemCRSs) throws ServiceException, IOException {
-        WFSDataStore data = getDataStore(url, version, user, pw);
-        ServiceCapabilitiesResult result = new ServiceCapabilitiesResult();
-        result.setTitle(data.getInfo().getTitle());
-        result.setVersion(data.getInfo().getVersion());
-        String layerNames[] = data.getTypeNames();
-        List<OskariLayer> layers = new ArrayList<>();
-        List<String> layersWithErrors = new ArrayList<>();
-        WFSGetCapabilities capa = data.getWfsClient().getCapabilities();
-        for (String layerName : layerNames) {
-            try {
-                SimpleFeatureSource source = data.getFeatureSource(layerName);
-                String layerTitle = source.getInfo().getTitle();
-                OskariLayer ml = toOskariLayer(layerName, layerTitle, version, url, user, pw);
-                try {
-                    OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWFS(capa, source, ml, systemCRSs);
-                } catch (ServiceException e) {} //list layer even capabilities fails
-                layers.add(ml);
-            } catch (Exception e) {
-                String error = e.getMessage();
-                log.warn("Failed to parse layer:", layerName, "from url:", url);
-                layersWithErrors.add(layerName); // TODO should we use Map (layerName, error) and pass error also to frontend
-            }
-        }
-        result.setLayersWithErrors(layersWithErrors);
-        result.setLayers(layers.stream()
-                .map(l -> LayerAdminJSONHelper.toJSON(l))
-                .collect(Collectors.toList()));
+    protected static ServiceCapabilitiesResult parseCapabilitiesResults(Map<String, LayerCapabilities> caps, String url,
+                                                                           String user, String pwd, Set<String> systemCRSs) {
 
-        return result;
+        List<OskariLayer> layers = caps.values().stream()
+                .map(layer -> toOskariLayer((LayerCapabilitiesWFS) layer, url, user, pwd, systemCRSs))
+                .filter(l -> l != null)
+                .collect(Collectors.toList());
+
+        ServiceCapabilitiesResult results = new ServiceCapabilitiesResult();
+        results.setTitle("N/A");
+        if (!layers.isEmpty()) {
+            results.setVersion(layers.get(0).getVersion());
+            results.setLayers(layers.stream()
+                    .map(l -> LayerAdminJSONHelper.toJSON(l))
+                    .collect(Collectors.toList()));
+        }
+
+        return results;
     }
 
-    private static ServiceCapabilitiesResult getCapabilitiesOAPIF(String url, String user, String pw, Set<String> systemCRSs) throws ServiceException {
-        OGCAPIFeaturesService service = getCapabilitiesOAPIF(url, user, pw);
-        List<OskariLayer> layers = new ArrayList<>();
-
-        for (FeaturesCollectionInfo collection : service.getCollections()) {
-            String name = collection.getId();
-            String title = collection.getTitle();
-            OskariLayer ml = toOskariLayer(name, title, WFS3_VERSION, url, user, pw);
-            OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesOAPIF(service, ml, systemCRSs);
-            layers.add(ml);
-        }
-        ServiceCapabilitiesResult result = new ServiceCapabilitiesResult();
-        result.setVersion(WFS3_VERSION);
-        result.setLayers(layers.stream()
-                .map(l -> LayerAdminJSONHelper.toJSON(l))
-                .collect(Collectors.toList()));
-        // Do we need to parse title from FeaturesContent.links
-        return result;
-    }
-
-    public static OGCAPIFeaturesService getCapabilitiesOAPIF(String url, String user, String pw) throws ServiceException {
-        try {
-            return OGCAPIFeaturesService.fromURL(url, user, pw);
-        } catch (JsonParseException | JsonMappingException e) {
-            // Don't attach JsonParseException as its an IOException which is detected as root cause and wrong error is sent to user
-            throw new ServiceException("Error parsing response from url: " + url + " Message: " + e.getMessage());
-        } catch (Exception e) {
-            throw new ServiceException("Error occured getting OAPIF capabilities", e);
-        }
-    }
-
-    private static OskariLayer toOskariLayer(String layerName, String title, String version,
-                                             String url, String user, String pw) {
+    private static OskariLayer toOskariLayer(LayerCapabilitiesWFS layer, String url, String user, String pw, Set<String> systemCRSs) {
         final OskariLayer ml = new OskariLayer();
         ml.setType(OskariLayer.TYPE_WFS);
         ml.setUrl(url);
         ml.setMaxScale(1d);
         ml.setMinScale(1500000d);
-        ml.setName(layerName);
-        ml.setVersion(version);
+        ml.setName(layer.getName());
+        ml.setVersion(layer.getVersion());
         ml.setPassword(pw);
         ml.setUsername(user);
-        title = title == null || title.isEmpty() ? layerName : title;
+        String title = layer.getTitle();
+        if (title == null || title.isEmpty()) {
+            title = layer.getName();
+        }
         for (String lang : PropertyUtil.getSupportedLanguages()) {
             ml.setName(lang, title);
         }
+        ml.setCapabilities(CapabilitiesService.toJSON(layer, systemCRSs));
         return ml;
     }
     protected static Set<String> getFormatsToStore (Set<String> formats) {
