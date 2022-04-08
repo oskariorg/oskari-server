@@ -9,6 +9,7 @@ public class LayerCapabilitiesWFS extends LayerCapabilitiesOGC {
 
     public static final String OGC_API_CRS_URI = "crs-uri";
     public static final String MAX_FEATURES = CapabilitiesConstants.KEY_MAX_FEATURES;
+    public static final String NAMESPACE_URI = "nsUri";
 
     public LayerCapabilitiesWFS(String name, String title) {
         super(name, title);
@@ -21,6 +22,16 @@ public class LayerCapabilitiesWFS extends LayerCapabilitiesOGC {
     @JsonIgnore
     public Set<String> getSupportedCrsURIs() {
         return (Set<String>) getTypeSpecific().getOrDefault(OGC_API_CRS_URI, Collections.emptySet());
+    }
+
+    @JsonIgnore
+    public String getNamespaceUri() {
+        return (String) getTypeSpecific().getOrDefault(NAMESPACE_URI, null);
+    }
+    public void setNamespaceUri(String uri) {
+        if (uri != null) {
+            addCapabilityData(NAMESPACE_URI, uri);
+        }
     }
     public void setMaxFeatures(int count) {
         if (count < 0) {

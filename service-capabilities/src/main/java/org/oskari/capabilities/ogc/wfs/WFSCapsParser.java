@@ -51,28 +51,6 @@ public class WFSCapsParser {
                 .map(Element::getTextContent)
                 .sorted()
                 .collect(Collectors.toCollection(LinkedHashSet::new));
-        /*
-            <ows:Parameter name="outputFormat">
-                <ows:AllowedValues>
-                    <ows:Value>application/gml+xml; version=3.2</ows:Value>
-                    <ows:Value>GML2</ows:Value>
-                    <ows:Value>KML</ows:Value>
-                    <ows:Value>SHAPE-ZIP</ows:Value>
-                    <ows:Value>application/json</ows:Value>
-                    <ows:Value>application/vnd.google-earth.kml xml</ows:Value>
-                    <ows:Value>application/vnd.google-earth.kml+xml</ows:Value>
-                    <ows:Value>csv</ows:Value>
-                    <ows:Value>excel</ows:Value>
-                    <ows:Value>excel2007</ows:Value>
-                    <ows:Value>gml3</ows:Value>
-                    <ows:Value>gml32</ows:Value>
-                    <ows:Value>json</ows:Value>
-                    <ows:Value>text/xml; subtype=gml/2.1.2</ows:Value>
-                    <ows:Value>text/xml; subtype=gml/3.1.1</ows:Value>
-                    <ows:Value>text/xml; subtype=gml/3.2</ows:Value>
-                </ows:AllowedValues>
-            </ows:Parameter>
-        */
 
         Element featureTypeList = XmlHelper.getFirstChild(doc, "FeatureTypeList");
         String version = XmlHelper.getAttributeValue(doc, "version");
@@ -92,7 +70,7 @@ public class WFSCapsParser {
         LayerCapabilitiesWFS value = new LayerCapabilitiesWFS(name, title);
         value.setVersion(version);
         value.setDescription(XmlHelper.getChildValue(layer, "Abstract"));
-
+        Map<String, String> attributes = XmlHelper.getAttributesAsMap(layer);
         value.setKeywords(getKeywords(layer));
         value.setBbox(parseGeoGraphicBbox(XmlHelper.getFirstChild(layer, "WGS84BoundingBox")));
         //value.setMaxFeatures( from service constraints);
@@ -105,6 +83,11 @@ public class WFSCapsParser {
         // TODO: LayerJSONFormatterWFS.createCapabilitiesJSON()
         value.setFormats(outputFormats);
         value.setSrs(srs);
+
+        // <FeatureType xmlns:tilastointialueet="http://www.tilastointialueet.fi">
+        String bestGuessForNamespace = attributes.values()
+                .stream().filter(a -> a.startsWith("http")).findFirst().orElse(null);
+        value.setNamespaceUri(bestGuessForNamespace);
 
         value.setMetadataUrl(getMetadataUrl(layer));
         return value;
