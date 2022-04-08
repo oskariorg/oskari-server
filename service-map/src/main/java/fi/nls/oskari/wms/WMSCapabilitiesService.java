@@ -23,6 +23,7 @@ public class WMSCapabilitiesService {
                                                                final Set<String> systemCRSs) throws ServiceException {
         try {
             ServiceConnectInfo info = new ServiceConnectInfo(url, OskariLayer.TYPE_WMS, version);
+            info.setCredentials(user, pwd);
             Map<String, LayerCapabilities> caps = CapabilitiesService.getLayersFromService(info);
             return parseCapabilitiesResults(caps, url, user, pwd, systemCRSs);
         } catch (Exception ex) {
