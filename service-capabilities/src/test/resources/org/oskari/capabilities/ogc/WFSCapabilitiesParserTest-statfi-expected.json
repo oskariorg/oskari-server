@@ -1,5 +1,7 @@
 {
-  "srs": ["EPSG:3067"],
+  "srs": [
+    "EPSG:3067"
+  ],
   "defaultStyle": null,
   "name": "tilastointialueet:avi4500k",
   "styles": [],
@@ -7,6 +9,24 @@
   "url": null,
   "typeSpecific": {
     "metadataId": "b4693808-0f3b-4d5e-b366-c410b680ac19",
+    "formats": [
+      "GML2",
+      "KML",
+      "SHAPE-ZIP",
+      "application/gml+xml; version=3.2",
+      "application/json",
+      "application/vnd.google-earth.kml xml",
+      "application/vnd.google-earth.kml+xml",
+      "csv",
+      "excel",
+      "excel2007",
+      "gml3",
+      "gml32",
+      "json",
+      "text/xml; subtype=gml/2.1.2",
+      "text/xml; subtype=gml/3.1.1",
+      "text/xml; subtype=gml/3.2"
+    ],
     "metadataUrl": "http://www.paikkatietohakemisto.fi/geonetwork/srv/fi/csw?request=GetRecordById&service=CSW&id=b4693808-0f3b-4d5e-b366-c410b680ac19&elementSetName=full&outputSchema=http://www.isotc211.org/2005/gmd&version=2.0.2",
     "keywords": [
       "features",

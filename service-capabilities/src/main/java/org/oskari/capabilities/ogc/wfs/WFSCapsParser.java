@@ -1,16 +1,12 @@
 package org.oskari.capabilities.ogc.wfs;
 
 import org.oskari.capabilities.ogc.BoundingBox;
-import org.oskari.capabilities.ogc.CapabilitiesConstants;
 import org.oskari.capabilities.ogc.LayerCapabilitiesWFS;
 import org.oskari.xml.XmlHelper;
 import org.w3c.dom.Element;
 
 import javax.xml.stream.XMLStreamException;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class WFSCapsParser {
@@ -42,19 +38,55 @@ public class WFSCapsParser {
         if (getFeature == null) {
             throw new IllegalArgumentException("No GetFeature operation support");
         }
+        Element outputFormatsParam = XmlHelper.getChildElements(getFeature, "Parameter")
+                .filter(e -> "outputFormat".equals(XmlHelper.getAttributeValue(e, "name")))
+                .findFirst().orElse(null);
+        Element allowedValues = XmlHelper.getFirstChild(outputFormatsParam, "AllowedValues");
+        if (allowedValues == null) {
+            // 2.0.0 has values wrapped inside AllowedValues
+            // 1.1.0 has values directly inside outputFormatsParam
+            allowedValues = outputFormatsParam;
+        }
+        Set<String> outputFormats = XmlHelper.getChildElements(allowedValues, "Value")
+                .map(Element::getTextContent)
+                .sorted()
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        /*
+            <ows:Parameter name="outputFormat">
+                <ows:AllowedValues>
+                    <ows:Value>application/gml+xml; version=3.2</ows:Value>
+                    <ows:Value>GML2</ows:Value>
+                    <ows:Value>KML</ows:Value>
+                    <ows:Value>SHAPE-ZIP</ows:Value>
+                    <ows:Value>application/json</ows:Value>
+                    <ows:Value>application/vnd.google-earth.kml xml</ows:Value>
+                    <ows:Value>application/vnd.google-earth.kml+xml</ows:Value>
+                    <ows:Value>csv</ows:Value>
+                    <ows:Value>excel</ows:Value>
+                    <ows:Value>excel2007</ows:Value>
+                    <ows:Value>gml3</ows:Value>
+                    <ows:Value>gml32</ows:Value>
+                    <ows:Value>json</ows:Value>
+                    <ows:Value>text/xml; subtype=gml/2.1.2</ows:Value>
+                    <ows:Value>text/xml; subtype=gml/3.1.1</ows:Value>
+                    <ows:Value>text/xml; subtype=gml/3.2</ows:Value>
+                </ows:AllowedValues>
+            </ows:Parameter>
+        */
+
         Element featureTypeList = XmlHelper.getFirstChild(doc, "FeatureTypeList");
         String version = XmlHelper.getAttributeValue(doc, "version");
-        return parseLayers(featureTypeList, version);
+        return parseLayers(featureTypeList, version, outputFormats);
     }
 
 
-    private static List<LayerCapabilitiesWFS> parseLayers(Element parent, String version) {
+    private static List<LayerCapabilitiesWFS> parseLayers(Element parent, String version, Set<String> outputFormats) {
         return XmlHelper.getChildElements(parent, "FeatureType")
-                .map(e -> parseLayer(e, version))
+                .map(e -> parseLayer(e, version, outputFormats))
                 .collect(Collectors.toList());
     }
 
-    private static LayerCapabilitiesWFS parseLayer(Element layer, String version) {
+    private static LayerCapabilitiesWFS parseLayer(Element layer, String version, Set<String> outputFormats) {
         String name = XmlHelper.getChildValue(layer, "Name");
         String title = XmlHelper.getChildValue(layer, "Title");
         LayerCapabilitiesWFS value = new LayerCapabilitiesWFS(name, title);
@@ -70,7 +102,8 @@ public class WFSCapsParser {
         } else {
             srs.add(XmlHelper.getChildValue(layer, "DefaultSRS"));
         }
-
+        // TODO: LayerJSONFormatterWFS.createCapabilitiesJSON()
+        value.setFormats(outputFormats);
         value.setSrs(srs);
 
         value.setMetadataUrl(getMetadataUrl(layer));
@@ -109,6 +142,15 @@ public class WFSCapsParser {
         double minY = Double.parseDouble(lowerCorner[1]);
         double maxX = Double.parseDouble(upperCorner[0]);
         double maxY = Double.parseDouble(upperCorner[1]);
+/*
+        boolean coversWholeWorld = minX <= -180 && minY <= -90 && maxX >= 180 && maxY >= 90;
+        if (coversWholeWorld) {
+            // no need to attach coverage if it covers the whole world as it's not useful info
+            // TODO: should this be somewhere else?
+            //  We might want to see what the service declares even if we shouldn't use the info
+            return null;
+        }
+ */
         return new BoundingBox(minX, maxX, minY, maxY, "EPSG:4326");
     }
 
