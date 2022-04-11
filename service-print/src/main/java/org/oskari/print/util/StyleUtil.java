@@ -41,7 +41,7 @@ import fi.nls.oskari.util.JSONHelper;
 public class StyleUtil {
 
     private static final String SVG_MARKERS_JSON = "svg-markers.json";
-    private static final String ICON_STROKE_COLOR = "#b4b4b4";
+    private static final String ICON_STROKE_COLOR = "#000000";
     private static final float ICON_SIZE = 32f;
     private static final double ICON_OFFSET = ICON_SIZE/2.0;
 
@@ -216,29 +216,25 @@ public class StyleUtil {
         tilingPattern.setXStep(size);
         tilingPattern.setYStep(size);
         COSName patternName = resources.add(tilingPattern);
-        // thin 1 thick 2.5
-        float lineWidth = fillPattern == 0 || fillPattern == 2 ? 1.0f : 2.5f;
+        // frontend has thin 2 thick 4
+        float lineWidth = fillPattern == 0 || fillPattern == 2 ? 1.5f : 3f;
         boolean isHorizontal = fillPattern == 2 || fillPattern == 3;
-        float numberOfStripes = 9;
-        if (lineWidth > 2) {
-            numberOfStripes = isHorizontal ? 8 : 6;
-        }
-        float bandWidth = size / numberOfStripes;
+        float whiteSpace = isHorizontal ? lineWidth + 1.5f : lineWidth * 2 + 1.5f;
+        float bandWidth = lineWidth + whiteSpace;
+        float transition = size / (float) Math.floor(size / bandWidth);
         try (PDPatternContentStream pcs = new PDPatternContentStream(tilingPattern))
         {
-            // Set color, draw diagonal line + 2 more diagonals so that corners look good
             pcs.setStrokingColor(fillColor);
             pcs.setLineWidth(lineWidth);
             pcs.setLineCapStyle(LineCap.square.code);
-            float limit = isHorizontal ? numberOfStripes : numberOfStripes * 2;
-            for (int i = 0 ; i < limit; i ++) {
-                float transition = i * bandWidth+ bandWidth/2;
+            float limit = isHorizontal ? size : size * 2;
+            for (float t = transition / 2 ; t < limit; t += transition) {
                 if (isHorizontal)  {
-                    pcs.moveTo(0, transition);
-                    pcs.lineTo(size, transition );
+                    pcs.moveTo(0, t);
+                    pcs.lineTo(size, t );
                 } else {
-                    pcs.moveTo(0, size - transition);
-                    pcs.lineTo(transition, size);
+                    pcs.moveTo(0, size - t);
+                    pcs.lineTo(t, size);
                 }
                 pcs.stroke();
             }
