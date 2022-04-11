@@ -1,11 +1,8 @@
 package fi.nls.oskari.service.capabilities;
 
 import fi.nls.oskari.domain.map.wfs.WFSLayerCapabilities;
-import org.oskari.capabilities.ogc.LayerCapabilitiesWMS;
 
 public class CapabilitiesConstants {
-    public static final String WFS3_VERSION = "3.0.0";
-    public static final String WFS_DEFAULT_VERSION = "1.1.0";
 
     // OskariLayer capabilities json
     public static final String KEY_STYLES = "styles";
@@ -23,25 +20,10 @@ public class CapabilitiesConstants {
     public static final String KEY_METADATA = "metadataUuid";
     public static final String KEY_ISQUERYABLE = "isQueryable";
     public static final String KEY_KEYWORDS = "keywords";
-    public static final String KEY_CRS_URI = "crs-uri";
     public static final String KEY_TIMES = "times";
     public static final String KEY_LEGEND = "legend";
     public static final String KEY_VALUE = "value";
-    public static final String KEY_TILEMATRIXIDS = "tileMatrixIds";
-    public static final String KEY_LAYER_CAPABILITIES = "layerCapabilities";
     public static final String KEY_TYPE_SPECIFIC = "typeSpecific";
-
-    //result map/json
-    public static final String KEY_TITLE= "title";
-    public static final String KEY_LAYERS = "layers";
-    public static final String KEY_UNSUPPORTED_LAYERS = "unsupportedLayers";
-    public static final String KEY_ERROR_LAYERS = "layersWithErrors";
-    public static final String KEY_EXISTING_LAYERS = "existingLayers";
-    public static final String KEY_NO_CAPA_LAYERS = "capabilitiesFailed";
-    public static final String KEY_XML = "xml";
-    public static final String KEY_WMTS_MATRIXSET = "matrixSets";
-    public static final String KEY_WMS_STRUCTURE = "structure";
-    public static final String KEY_LAYER_NAME = "name";
 
     // both
     public static final String KEY_VERSION= "version";
