@@ -38,7 +38,7 @@ public class LayerCapabilitiesHelper {
 
         Set<String> supportedSRS = getSystemCRSs();
         List<OskariLayer> layers = caps.values().stream()
-                .map(layer -> toOskariLayer(layer, username, password, supportedSRS))
+                .map(layer -> toOskariLayer(layer, url, username, password, supportedSRS))
                 .filter(l -> l != null)
                 .collect(Collectors.toList());
 
@@ -71,10 +71,10 @@ public class LayerCapabilitiesHelper {
         return results;
     }
 
-    private static OskariLayer toOskariLayer(LayerCapabilities layer, String user, String pw, Set<String> systemCRSs) {
+    private static OskariLayer toOskariLayer(LayerCapabilities layer, String url, String user, String pw, Set<String> systemCRSs) {
         final OskariLayer ml = new OskariLayer();
         ml.setType(layer.getType());
-        ml.setUrl(layer.getUrl());
+        ml.setUrl(url);
         ml.setPassword(pw);
         ml.setUsername(user);
         ml.setName(layer.getName());
