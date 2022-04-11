@@ -1,4 +1,4 @@
-package org.oskari.service.wfs3;
+package org.oskari.capabilities.ogc.api.features;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -17,31 +17,31 @@ import java.util.stream.Stream;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.oskari.service.wfs3.model.WFS3CollectionInfo;
-import org.oskari.service.wfs3.model.WFS3Content;
-import org.oskari.service.wfs3.model.WFS3ReqClasses;
+import org.oskari.ogcapi.features.FeaturesCollectionInfo;
+import org.oskari.ogcapi.features.FeaturesContent;
+import org.oskari.ogcapi.OGCAPIReqClasses;
 
-public class WFS3ServiceTest {
+public class OGCAPIFeaturesServiceTest {
 
-    private WFS3Service service;
+    private OGCAPIFeaturesService service;
 
     @Before
     public void setup() throws Exception {
-        WFS3ReqClasses reqClasses;
-        try (InputStream in = getClass().getClassLoader().getResourceAsStream("wfs3Conformance.json")) {
-            reqClasses = WFS3Service.load(in, WFS3ReqClasses.class);
+        OGCAPIReqClasses reqClasses;
+        try (InputStream in = getClass().getResourceAsStream("OGCAPIFeatures_Conformance.json")) {
+            reqClasses = OGCAPIFeaturesService.load(in, OGCAPIReqClasses.class);
         }
-        WFS3Content content;
-        try (InputStream in = getClass().getClassLoader().getResourceAsStream("wfs3Content.json")) {
-            content = WFS3Service.load(in, WFS3Content.class);
+        FeaturesContent content;
+        try (InputStream in = getClass().getResourceAsStream("OGCAPIFeatures_Content.json")) {
+            content = OGCAPIFeaturesService.load(in, FeaturesContent.class);
         }
-        service = new WFS3Service(reqClasses, content);
+        service = new OGCAPIFeaturesService(reqClasses, content);
     }
 
     @Test
     public void testToJsonFromJson() throws IOException {
-        byte[] json = WFS3Service.toJSON(service);
-        assertEquals(service, WFS3Service.fromJSON(json));
+        byte[] json = OGCAPIFeaturesService.toJSON(service);
+        assertEquals(service, OGCAPIFeaturesService.fromJSON(json));
     }
 
     @Test
@@ -51,7 +51,7 @@ public class WFS3ServiceTest {
                 .collect(Collectors.toList());
 
         List<String> actual = service.getCollections().stream()
-                .map(WFS3CollectionInfo::getId)
+                .map(FeaturesCollectionInfo::getId)
                 .sorted()
                 .collect(Collectors.toList());
 

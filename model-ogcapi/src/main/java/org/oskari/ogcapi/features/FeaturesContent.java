@@ -1,25 +1,27 @@
-package org.oskari.service.wfs3.model;
+package org.oskari.ogcapi.features;
+
+import org.oskari.ogcapi.OpenAPILink;
 
 import java.util.List;
 
-public class WFS3Content {
+public class FeaturesContent {
 
-    private List<WFS3Link> links;
-    private List<WFS3CollectionInfo> collections;
+    private List<OpenAPILink> links;
+    private List<FeaturesCollectionInfo> collections;
 
-    public List<WFS3Link> getLinks() {
+    public List<OpenAPILink> getLinks() {
         return links;
     }
 
-    public void setLinks(List<WFS3Link> links) {
+    public void setLinks(List<OpenAPILink> links) {
         this.links = links;
     }
 
-    public List<WFS3CollectionInfo> getCollections() {
+    public List<FeaturesCollectionInfo> getCollections() {
         return collections;
     }
 
-    public void setCollections(List<WFS3CollectionInfo> collections) {
+    public void setCollections(List<FeaturesCollectionInfo> collections) {
         this.collections = collections;
     }
 
@@ -31,7 +33,7 @@ public class WFS3Content {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        WFS3Content other = (WFS3Content) obj;
+        FeaturesContent other = (FeaturesContent) obj;
         if (collections == null) {
             if (other.collections != null)
                 return false;

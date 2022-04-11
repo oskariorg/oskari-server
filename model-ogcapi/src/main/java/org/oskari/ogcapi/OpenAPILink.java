@@ -1,11 +1,11 @@
-package org.oskari.service.wfs3.model;
+package org.oskari.ogcapi;
 
 import java.util.Objects;
 
 /**
  * @see https://raw.githubusercontent.com/opengeospatial/WFS_FES/master/core/openapi/schemas/link.yaml
  */
-public class WFS3Link {
+public class OpenAPILink {
 
     private String href;
     private String rel;
@@ -13,9 +13,9 @@ public class WFS3Link {
     private String hreflang;
     private String title;
 
-    public WFS3Link() {}
+    public OpenAPILink() {}
 
-    public WFS3Link(String href, String rel, String type, String hreflang, String title) {
+    public OpenAPILink(String href, String rel, String type, String hreflang, String title) {
         Objects.requireNonNull(href);
         this.href = href;
         this.rel = rel;
@@ -72,7 +72,7 @@ public class WFS3Link {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        WFS3Link other = (WFS3Link) obj;
+        OpenAPILink other = (OpenAPILink) obj;
         if (href == null) {
             if (other.href != null)
                 return false;

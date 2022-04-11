@@ -1,8 +1,8 @@
-package org.oskari.service.wfs3.model;
+package org.oskari.ogcapi;
 
 import java.util.List;
 
-public class WFS3ReqClasses {
+public class OGCAPIReqClasses {
 
     private List<String> conformsTo;
 
@@ -22,7 +22,7 @@ public class WFS3ReqClasses {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        WFS3ReqClasses other = (WFS3ReqClasses) obj;
+        OGCAPIReqClasses other = (OGCAPIReqClasses) obj;
         if (conformsTo == null) {
             if (other.conformsTo != null)
                 return false;

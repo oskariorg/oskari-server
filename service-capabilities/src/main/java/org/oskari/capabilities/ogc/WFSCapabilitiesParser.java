@@ -14,6 +14,7 @@ public class WFSCapabilitiesParser extends OGCCapabilitiesParser {
 
     private static final String NAMESPACE_WFS = "http://www.opengis.net/wfs";
     private static final String ROOT_WFS = "WFS_Capabilities";
+    public static final String OGC_API_VERSION = "3.0.0";
 
     protected String getVersionParamName() {
         return "acceptVersions";

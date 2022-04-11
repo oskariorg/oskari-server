@@ -1,16 +1,19 @@
-package org.oskari.service.wfs3.model;
+package org.oskari.ogcapi.features;
+
+import org.oskari.ogcapi.OGCAPIExtent;
+import org.oskari.ogcapi.OpenAPILink;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class WFS3CollectionInfo {
+public class FeaturesCollectionInfo {
 
     private String id;
     private String title;
     private String description;
-    private List<WFS3Link> links;
-    private WFS3Extent extent;
+    private List<OpenAPILink> links;
+    private OGCAPIExtent extent;
     private List<String> crs = Arrays.asList("http://www.opengis.net/def/crs/OGC/1.3/CRS84");
 
     public String getId() {
@@ -42,19 +45,19 @@ public class WFS3CollectionInfo {
         this.description = description;
     }
 
-    public List<WFS3Link> getLinks() {
+    public List<OpenAPILink> getLinks() {
         return links == null ? Collections.emptyList() : links;
     }
 
-    public void setLinks(List<WFS3Link> links) {
+    public void setLinks(List<OpenAPILink> links) {
         this.links = links;
     }
 
-    public WFS3Extent getExtent() {
+    public OGCAPIExtent getExtent() {
         return extent;
     }
 
-    public void setExtent(WFS3Extent extent) {
+    public void setExtent(OGCAPIExtent extent) {
         this.extent = extent;
     }
 
@@ -74,7 +77,7 @@ public class WFS3CollectionInfo {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        WFS3CollectionInfo other = (WFS3CollectionInfo) obj;
+        FeaturesCollectionInfo other = (FeaturesCollectionInfo) obj;
         if (crs == null) {
             if (other.crs != null)
                 return false;

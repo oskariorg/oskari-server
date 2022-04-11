@@ -15,9 +15,9 @@ import org.geotools.data.wfs.WFSDataStore;
 import org.oskari.capabilities.CapabilitiesService;
 import org.oskari.capabilities.LayerCapabilities;
 import org.oskari.capabilities.ServiceConnectInfo;
+import org.oskari.capabilities.ogc.api.features.OGCAPIFeaturesService;
 import org.oskari.maplayer.admin.LayerAdminJSONHelper;
 import org.oskari.maplayer.model.ServiceCapabilitiesResult;
-import org.oskari.service.wfs3.WFS3Service;
 
 import java.io.IOException;
 import java.util.*;
@@ -120,7 +120,7 @@ public class LayerCapabilitiesHelper {
 
     private static void updateCapabilitiesWFS(OskariLayer ml) throws ServiceException {
         if (CapabilitiesConstants.WFS3_VERSION.equals(ml.getVersion())) {
-            WFS3Service service = WFSCapabilitiesService.getCapabilitiesOAPIF(ml.getUrl(), ml.getUsername(), ml.getPassword());
+            OGCAPIFeaturesService service = WFSCapabilitiesService.getCapabilitiesOAPIF(ml.getUrl(), ml.getUsername(), ml.getPassword());
             OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesOAPIF(service, ml, getSystemCRSs());
         } else {
             WFSDataStore wfs = WFSCapabilitiesService.getDataStore(ml);

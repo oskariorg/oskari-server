@@ -144,6 +144,11 @@
 
             <dependency>
                 <groupId>org.oskari</groupId>
+                <artifactId>model-ogcapi</artifactId>
+                <version>${oskari.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.oskari</groupId>
                 <artifactId>service-logging</artifactId>
                 <version>${oskari.version}</version>
             </dependency>
@@ -1208,6 +1213,7 @@
         <!-- basic oskari map requirements -->
         <module>shared-test-resources</module>
         <module>geoserver-ext/geoserver-rest-client</module>
+        <module>model-ogcapi</module>
 
         <module>service-base</module>
         <module>service-mybatis</module>
