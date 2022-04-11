@@ -43,7 +43,11 @@ public abstract class OGCCapabilitiesParser extends CapabilitiesParser {
         RawCapabilitiesResponse response = fetchCapabilities(capabilitiesUrl, src.getUser(), src.getPass(), getExpectedContentType(src.getVersion()));
         String validResponse = validateResponse(response, src.getVersion());
         Map<String, LayerCapabilities> layers = parseLayers(validResponse, src.getVersion());
-        layers.values().stream().forEach(l -> l.setUrl(response.getUrl()));
+        layers.values().stream().forEach(l -> {
+            l.setUrl(response.getUrl());
+            // parser name == layer type
+            l.setType(getName());
+        });
         return layers;
     }
 

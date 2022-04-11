@@ -6,6 +6,7 @@
   "name": "tilastointialueet:avi4500k",
   "styles": [],
   "title": "AVI-alueet (1:4 500 000)",
+  "type": "wfslayer",
   "url": null,
   "typeSpecific": {
     "metadataId": "b4693808-0f3b-4d5e-b366-c410b680ac19",

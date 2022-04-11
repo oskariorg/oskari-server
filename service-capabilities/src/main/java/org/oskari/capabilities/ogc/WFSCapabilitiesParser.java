@@ -85,6 +85,7 @@ public class WFSCapabilitiesParser extends OGCCapabilitiesParser {
         return service.getCollections().stream().map(collection -> {
                     String name = collection.getId();
                     String title = collection.getTitle();
+
                     LayerCapabilitiesWFS featureType = new LayerCapabilitiesWFS(name, title);
                     featureType.setVersion(OGC_API_VERSION);
                     featureType.setDescription(collection.getDescription());

@@ -22,6 +22,7 @@ public class ServiceCapabilitiesResult {
     private List<MapLayerAdminOutput> layers;
     private List<String> layersWithErrors;
     private Map<String, List<Integer>> existingLayers;
+    private List<MapLayerStructure> structure;
     private String version;
     private String currentSrs = PropertyUtil.get("oskari.native.srs", "EPSG:4326");
 
@@ -89,6 +90,14 @@ public class ServiceCapabilitiesResult {
                 .filter(l -> l.getCapabilities() == null || l.getCapabilities().isEmpty())
                 .map(l -> l.getName())
                 .collect(Collectors.toList());
+    }
+
+
+    public List<MapLayerStructure> getStructure() {
+        return structure;
+    }
+    public void setStructure(List<MapLayerStructure> structure) {
+        this.structure = structure;
     }
 
     public List<String> getUnsupportedLayers() {

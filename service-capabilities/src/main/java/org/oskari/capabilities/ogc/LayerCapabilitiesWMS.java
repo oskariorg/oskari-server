@@ -1,6 +1,7 @@
 package org.oskari.capabilities.ogc;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import fi.nls.oskari.domain.map.OskariLayer;
 
 import java.util.Collections;
 import java.util.List;
@@ -15,6 +16,7 @@ public class LayerCapabilitiesWMS extends LayerCapabilitiesOGC {
 
     public LayerCapabilitiesWMS(String name, String title) {
         super(name, title);
+        setType(OskariLayer.TYPE_WMS);
     }
 
     @JsonIgnore

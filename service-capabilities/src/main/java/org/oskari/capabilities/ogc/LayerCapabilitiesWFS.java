@@ -1,6 +1,7 @@
 package org.oskari.capabilities.ogc;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import fi.nls.oskari.domain.map.OskariLayer;
 
 import java.util.Collections;
 import java.util.Set;
@@ -13,6 +14,7 @@ public class LayerCapabilitiesWFS extends LayerCapabilitiesOGC {
 
     public LayerCapabilitiesWFS(String name, String title) {
         super(name, title);
+        setType(OskariLayer.TYPE_WFS);
     }
 
     public void setSupportedCrsURIs(Set<String> uris) {
