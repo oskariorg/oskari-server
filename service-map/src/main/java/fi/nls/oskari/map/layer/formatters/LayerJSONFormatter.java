@@ -12,7 +12,7 @@ import org.geotools.referencing.CRS;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.oskari.capabilities.CapabilitiesService;
+import org.oskari.capabilities.MetadataHelper;
 import org.oskari.capabilities.ogc.LayerCapabilitiesOGC;
 import org.oskari.utils.common.Sets;
 
@@ -249,7 +249,7 @@ public class LayerJSONFormatter {
     }
 
     private String getMetadataUuid (OskariLayer layer) {
-        String fixed = CapabilitiesService.getIdFromMetadataUrl(layer.getMetadataId());
+        String fixed = MetadataHelper.getIdFromMetadataUrl(layer.getMetadataId());
         if (fixed != null) {
             return fixed;
         }

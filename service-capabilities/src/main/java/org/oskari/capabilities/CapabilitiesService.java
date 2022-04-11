@@ -7,7 +7,6 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.ServiceRuntimeException;
-import fi.nls.oskari.util.IOHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -21,7 +20,23 @@ public class CapabilitiesService {
     private static final Logger LOG = LogFactory.getLogger(CapabilitiesService.class);
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
-    public static List<CapabilitiesUpdateResult> updateCapabilities(List<OskariLayer> layers, Set<String> systemCRSs) throws ServiceException {
+    public static Map<String, LayerCapabilities> getLayersFromService(ServiceConnectInfo connectInfo) throws IOException, ServiceException {
+        String layerType = connectInfo.getType();
+        CapabilitiesParser parser = getParser(layerType);
+        if (parser == null) {
+            throw new ServiceException("Unrecognized type: " + layerType);
+        }
+        return parser.getLayersFromService(connectInfo);
+    }
+
+    public static CapabilitiesUpdateResult updateCapabilities(OskariLayer layer, Set<String> systemCRSs) {
+        List<OskariLayer> layers = new ArrayList<>(1);
+        layers.add(layer);
+        List<CapabilitiesUpdateResult> results = updateCapabilities(layers, systemCRSs);
+        return results.get(0);
+    }
+
+    public static List<CapabilitiesUpdateResult> updateCapabilities(List<OskariLayer> layers, Set<String> systemCRSs) {
         List<CapabilitiesUpdateResult> results = new ArrayList<>(layers.size());
 
         Map<ServiceConnectInfo, List<OskariLayer>> layersByUTV = layers.stream()
@@ -65,47 +80,6 @@ public class CapabilitiesService {
         return results;
     }
 
-    // TODO: check if we can find some common code for single vs list of layers
-    // this is a nice way of updating single layer for the caller but for mass update it's very
-    // inefficient since the capabilities are retrieved from the service for each layer
-    public static CapabilitiesUpdateResult updateCapabilities(OskariLayer layer, Set<String> systemCRSs)
-            throws ServiceException {
-        boolean hasParser = getParser(layer.getType()) != null;
-        if (!hasParser) {
-            return CapabilitiesUpdateResult.err(layer, CapabilitiesUpdateResult.ERR_LAYER_TYPE_UNSUPPORTED);
-        }
-        ServiceConnectInfo info = ServiceConnectInfo.fromLayer(layer);
-        Map<String, LayerCapabilities> serviceCaps;
-        try {
-            serviceCaps = getLayersFromService(info);
-        } catch (IOException | ServiceException e) {
-            if (e instanceof IOException) {
-                return CapabilitiesUpdateResult.err(layer, CapabilitiesUpdateResult.ERR_FAILED_TO_FETCH_CAPABILITIES + "/" + info.getUrl());
-            } else {
-                return CapabilitiesUpdateResult.err(layer, CapabilitiesUpdateResult.ERR_FAILED_TO_PARSE_CAPABILITIES + "/" + info.getUrl());
-            }
-        }
-
-        LayerCapabilities capsForSingleLayer = serviceCaps.get(layer.getName());
-        if (capsForSingleLayer == null) {
-            LOG.warn("Error finding layer with name:", layer.getName(), "from Capabilities for service, url:", info.getUrl(),
-                    "type:", info.getType(), "version:", info.getVersion());
-            return CapabilitiesUpdateResult.err(layer, CapabilitiesUpdateResult.ERR_LAYER_NOT_FOUND_IN_CAPABILITIES + "/" + layer.getName() + " from " + info.getUrl());
-
-        }
-        layer.setCapabilities(toJSON(capsForSingleLayer, systemCRSs));
-        return CapabilitiesUpdateResult.ok(layer);
-    }
-
-    public static Map<String, LayerCapabilities> getLayersFromService(ServiceConnectInfo connectInfo) throws IOException, ServiceException {
-        String layerType = connectInfo.getType();
-        CapabilitiesParser parser = getParser(layerType);
-        if (parser == null) {
-            throw new ServiceException("Unrecognized type: " + layerType);
-        }
-        return parser.getLayersFromService(connectInfo);
-    }
-
     public static JSONObject toJSON(LayerCapabilities caps, Set<String> systemCRSs) {
         try {
             String raw = MAPPER.writeValueAsString(caps);
@@ -116,43 +90,6 @@ public class CapabilitiesService {
         } catch (Exception e) {
             throw new ServiceRuntimeException("Error serializing capabilities as JSON", e);
         }
-    }
-
-    /**
-     * For parsing metadata uuid from url.
-     * @param url
-     * @return
-     */
-    public static String getIdFromMetadataUrl(String url) {
-        if (url == null || url.isEmpty()) {
-            return null;
-        }
-        if (!url.toLowerCase().startsWith("http")) {
-            // not a url -> return as is
-            return url;
-        }
-        try {
-            Map<String, List<String>> params = IOHelper.parseQuerystring(url);
-            String idParam = params.keySet().stream()
-                    .filter(key -> "uuid".equalsIgnoreCase(key) || "id".equalsIgnoreCase(key))
-                    .findFirst()
-                    .orElse(null);
-            if (idParam == null) {
-                // param not in url
-                return null;
-            }
-            List<String> values = params.getOrDefault(idParam, Collections.emptyList());
-            if (values.isEmpty()) {
-                // param was present but has no value
-                return null;
-            }
-            return values.get(0);
-        } catch (Exception ignored) {
-            // propably just not valid URL
-            LOG.ignore("Unexpected error parsing metadataid", ignored);
-        }
-        LOG.debug("Couldn't parse uuid from metadata url:", url);
-        return null;
     }
 
     private static CapabilitiesParser getParser(String layerType) {
@@ -174,10 +111,10 @@ public class CapabilitiesService {
     }
 
     /**
-     * Return epsg short
+     * Helper for getting short EPSG-code from possible crs-uri or from longer format
      * urn:ogc:def:crs:EPSG::32635  --> EPSG:32635
      *
-     * Note!Base code copy/pasted from ProjectionHelper.shortSyntaxEpsg() for making most services work without GeoTools as dependency
+     * Note! Base code copy/pasted from ProjectionHelper.shortSyntaxEpsg() for making most services work without GeoTools as dependency
      *
      * @param crs
      * @return  epsg in short syntax

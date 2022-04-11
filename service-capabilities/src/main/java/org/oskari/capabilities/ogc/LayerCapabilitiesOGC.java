@@ -1,8 +1,8 @@
 package org.oskari.capabilities.ogc;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.oskari.capabilities.CapabilitiesService;
 import org.oskari.capabilities.LayerCapabilities;
+import org.oskari.capabilities.MetadataHelper;
 
 import java.util.Collections;
 import java.util.Set;
@@ -57,7 +57,7 @@ public class LayerCapabilitiesOGC extends LayerCapabilities {
     public void setMetadataUrl(String url) {
         if (url != null) {
             addCapabilityData(METADATA_URL, url);
-            addCapabilityData(METADATA_UUID, CapabilitiesService.getIdFromMetadataUrl(url));
+            addCapabilityData(METADATA_UUID, MetadataHelper.getIdFromMetadataUrl(url));
         }
     }
 
