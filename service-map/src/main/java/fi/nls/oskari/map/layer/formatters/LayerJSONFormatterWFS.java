@@ -45,6 +45,7 @@ public class LayerJSONFormatterWFS extends LayerJSONFormatter {
 
         return layerJson;
     }
+
     public static JSONObject createCapabilitiesJSON(final WFSGetCapabilities capa, SimpleFeatureSource source, Set<String> systemCRSs) throws ServiceException {
 
         try {
