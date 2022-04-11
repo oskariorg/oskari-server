@@ -13,7 +13,8 @@
     }
   ],
   "title": "Cadastral Boundary",
-  "url":null,
+  "type": "wmslayer",
+  "url": null,
   "typeSpecific": {
     "metadataId": "34af5151-8372-495c-a423-4f8de4bde152",
     "metadataUrl": "http://www.paikkatietohakemisto.fi/geonetwork/srv/en/csw?request=GetRecordById&service=CSW&id=34af5151-8372-495c-a423-4f8de4bde152&elementSetName=full&outputSchema=http://www.isotc211.org/2005/gmd&version=2.0.2",

@@ -13,6 +13,7 @@
     }
   ],
   "title": "Tampere virastokartta GK24",
+  "type": "wmtslayer",
   "url":null,
   "typeSpecific": {
     "tileMatrix": [

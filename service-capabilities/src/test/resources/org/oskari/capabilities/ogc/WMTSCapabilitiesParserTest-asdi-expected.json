@@ -11,6 +11,7 @@
     }
   ],
   "title": "arcticsdi_wmts",
+  "type": "wmtslayer",
   "url":null,
   "typeSpecific": {
     "tileMatrix": [

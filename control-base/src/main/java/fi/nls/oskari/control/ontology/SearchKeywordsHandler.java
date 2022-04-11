@@ -14,7 +14,6 @@ import fi.nls.oskari.ontology.domain.Keyword;
 import fi.nls.oskari.ontology.service.KeywordService;
 import fi.nls.oskari.ontology.service.KeywordServiceMybatisImpl;
 import fi.nls.oskari.util.*;
-import fi.nls.oskari.wfs.WFSCapabilitiesParser;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.oskari.service.util.ServiceFactory;
@@ -222,7 +221,6 @@ public class SearchKeywordsHandler extends ActionHandler {
      * TODO: The following methods shouldn't be here, but on some timer class populating the keywords
      */
     private static OskariLayerService layerService = ServiceFactory.getMapLayerService();
-    private static final WFSCapabilitiesParser wfsCapabilitiesparser = new WFSCapabilitiesParser();
     private GetLayerKeywords getLayerKeywords = new GetLayerKeywords();
     private final String[] EMPTY_RESULT = new String[0];
 
@@ -257,7 +255,11 @@ public class SearchKeywordsHandler extends ActionHandler {
                 layerKeywords.addAll(JSONHelper.getArrayAsList(capabilities.optJSONArray("keywords")));
             }
             else if(OskariLayer.TYPE_WFS.equals(layer.getType())) {
-                layerKeywords.addAll(Arrays.asList(wfsCapabilitiesparser.getKeywordsForLayer(layer)));
+                JSONObject capabilities = layer.getCapabilities().optJSONObject("typeSpecific");
+                if (capabilities == null) {
+                    return EMPTY_RESULT;
+                }
+                layerKeywords.addAll(JSONHelper.getArrayAsList(capabilities.optJSONArray("keywords")));
             }
             if (layer.getMetadataId() != null) {
                 getLayerKeywords.updateLayerKeywords(layer.getId(), layer.getMetadataId());

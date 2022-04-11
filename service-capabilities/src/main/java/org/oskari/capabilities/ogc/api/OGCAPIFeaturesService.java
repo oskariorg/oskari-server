@@ -1,4 +1,4 @@
-package org.oskari.capabilities.ogc.api.features;
+package org.oskari.capabilities.ogc.api;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.nls.oskari.util.IOHelper;
+import org.oskari.capabilities.CapabilitiesService;
 import org.oskari.ogcapi.OGCAPIConformanceClass;
 import org.oskari.ogcapi.OGCAPIException;
 import org.oskari.ogcapi.OGCAPIReqClasses;
@@ -68,10 +69,16 @@ public class OGCAPIFeaturesService {
         return new OGCAPIFeaturesService(reqClasses, collections);
     }
 
+    public String toJSON() throws JsonProcessingException {
+        return OM.writeValueAsString(this);
+    }
     public static byte[] toJSON(OGCAPIFeaturesService service) throws JsonProcessingException {
         return OM.writeValueAsBytes(service);
     }
 
+    public static OGCAPIFeaturesService fromJSON(String json) throws IOException {
+        return OM.readValue(json, OGCAPIFeaturesService.class);
+    }
     public static OGCAPIFeaturesService fromJSON(byte[] b) throws IOException {
         return OM.readValue(b, OGCAPIFeaturesService.class);
     }
@@ -118,7 +125,7 @@ public class OGCAPIFeaturesService {
                 .orElseThrow(() -> new NoSuchElementException())
                 .getLinks()
                 .stream()
-                .filter (link -> "item".equals(link.getRel()))
+                .filter (link -> "items".equals(link.getRel()))
                 .map(item -> item.getType())
                 .filter (Objects::nonNull)
                 .collect(Collectors.toSet());
@@ -143,8 +150,7 @@ public class OGCAPIFeaturesService {
             return "EPSG:4326"; // same projection, but axis order differs
         }
         try {
-            // FIXME: this needs to be handled "somewhere"
-            return crs; //CRS.lookupIdentifier(CRS.decode(crs), false);
+            return CapabilitiesService.shortSyntaxEpsg(crs);
         } catch (Exception e) {
             // Either failed - maybe the code is invalid
             // Only thing certain is that we can not use this

@@ -1,6 +1,7 @@
 package org.oskari.capabilities.ogc;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import fi.nls.oskari.domain.map.OskariLayer;
 import org.oskari.capabilities.ogc.wmts.ResourceUrl;
 import org.oskari.capabilities.ogc.wmts.TileMatrixLink;
 
@@ -14,6 +15,7 @@ public class LayerCapabilitiesWMTS extends LayerCapabilitiesOGC {
 
     public LayerCapabilitiesWMTS(String name, String title) {
         super(name, title);
+        setType(OskariLayer.TYPE_WMTS);
     }
     public void setResourceUrls(List<ResourceUrl> urls) {
         addCapabilityData(RESOURCE_URLS, urls);

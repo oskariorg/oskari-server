@@ -1,17 +1,13 @@
 package org.oskari.capabilities.ogc;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import fi.nls.oskari.domain.map.OskariLayer;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 public class LayerCapabilitiesWMS extends LayerCapabilitiesOGC {
 
-    public static final String VERSION = "version";
-    public static final String DESCRIPTION = "desc";
-    public static final String KEYWORDS = "keywords";
-    public static final String BBOX = "bbox";
     public static final String LAYERS = "layers";
     public static final String PARENT = "parent";
     public static final String MIN_SCALE = "minScale";
@@ -20,6 +16,7 @@ public class LayerCapabilitiesWMS extends LayerCapabilitiesOGC {
 
     public LayerCapabilitiesWMS(String name, String title) {
         super(name, title);
+        setType(OskariLayer.TYPE_WMS);
     }
 
     @JsonIgnore
@@ -33,15 +30,6 @@ public class LayerCapabilitiesWMS extends LayerCapabilitiesOGC {
         }
     }
 
-    public void setVersion(String ver) {
-        if (ver != null) {
-            addCapabilityData(VERSION, ver);
-        }
-    }
-    @JsonIgnore
-    public String getVersion() {
-        return (String) getTypeSpecific().get(VERSION);
-    }
     public void setParent(String parent) {
         if (parent != null) {
             addCapabilityData(PARENT, parent);
@@ -76,35 +64,6 @@ public class LayerCapabilitiesWMS extends LayerCapabilitiesOGC {
     @JsonIgnore
     public String getParent() {
         return (String) getTypeSpecific().get(PARENT);
-    }
-
-    public void setDescription(String description) {
-        if (description != null) {
-            addCapabilityData(DESCRIPTION, description);
-        }
-    }
-
-    @JsonIgnore
-    public String getDescription() {
-        return (String) getTypeSpecific().get(DESCRIPTION);
-    }
-    public void setKeywords(Set<String> words) {
-        addCapabilityData(KEYWORDS, words);
-    }
-
-    @JsonIgnore
-    public Set<String> getKeywords() {
-        return (Set<String>) getTypeSpecific().getOrDefault(KEYWORDS, Collections.emptySet());
-    }
-    public void setBbox(BoundingBox bbox) {
-        if (bbox != null) {
-            addCapabilityData(BBOX, bbox);
-        }
-    }
-
-    @JsonIgnore
-    public BoundingBox getBbox() {
-        return (BoundingBox) getTypeSpecific().get(BBOX);
     }
 
     public void setLayers(List<LayerCapabilitiesWMS> layers) {

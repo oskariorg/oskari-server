@@ -1,4 +1,4 @@
-package org.oskari.capabilities.ogc.api.features;
+package org.oskari.capabilities.ogc.api;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -40,8 +40,8 @@ public class OGCAPIFeaturesServiceTest {
 
     @Test
     public void testToJsonFromJson() throws IOException {
-        byte[] json = OGCAPIFeaturesService.toJSON(service);
-        assertEquals(service, OGCAPIFeaturesService.fromJSON(json));
+        assertEquals(service, OGCAPIFeaturesService.fromJSON(service.toJSON()));
+        assertEquals(service, OGCAPIFeaturesService.fromJSON(OGCAPIFeaturesService.toJSON(service)));
     }
 
     @Test

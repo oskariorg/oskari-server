@@ -18,7 +18,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.GeometryDescriptor;
-import org.oskari.capabilities.ogc.api.features.OGCAPIFeaturesService;
+import org.oskari.capabilities.ogc.api.OGCAPIFeaturesService;
 
 import java.util.Collections;
 import java.util.Set;
@@ -45,6 +45,7 @@ public class LayerJSONFormatterWFS extends LayerJSONFormatter {
 
         return layerJson;
     }
+
     public static JSONObject createCapabilitiesJSON(final WFSGetCapabilities capa, SimpleFeatureSource source, Set<String> systemCRSs) throws ServiceException {
 
         try {
@@ -96,19 +97,6 @@ public class LayerJSONFormatterWFS extends LayerJSONFormatter {
             return json;
         } catch (Exception e) {
             throw new ServiceException( "Failed to create capabilities json: " + e.getMessage());
-
         }
     }
-    public static JSONObject createCapabilitiesJSON (OGCAPIFeaturesService service, String collectionId, Set<String> systemCRSs) {
-        JSONObject capabilities = new JSONObject(); // override
-        Set<String> crsUri  = service.getSupportedCrsURIs(collectionId);
-        JSONHelper.put(capabilities, KEY_CRS_URI, new JSONArray(crsUri));
-        Set<String> capabilitiesCRSs = service.getSupportedEpsgCodes(collectionId);
-        Set<String> crss = getCRSsToStore(systemCRSs, capabilitiesCRSs);
-        JSONHelper.putValue(capabilities, KEY_SRS, new JSONArray(crss));
-        Set<String> formats = service.getSupportedFormats(collectionId);
-        JSONHelper.put(capabilities, KEY_FEATURE_OUTPUT_FORMATS, new JSONArray(formats));
-        return capabilities;
-    }
-
 }
