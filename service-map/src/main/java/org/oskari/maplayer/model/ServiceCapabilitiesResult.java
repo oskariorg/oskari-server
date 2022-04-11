@@ -92,7 +92,7 @@ public class ServiceCapabilitiesResult {
                 .collect(Collectors.toList());
     }
 
-
+    // structure is only used for wms-layers
     public List<MapLayerStructure> getStructure() {
         return structure;
     }
