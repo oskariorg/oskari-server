@@ -11,13 +11,13 @@ import org.apache.ibatis.annotations.Options;
 import org.oskari.announcements.helpers.Announcement;
 
 public interface AnnouncementsMapper {
-    @Select("SELECT id, title, content, begin_date, end_date, active"
+    @Select("SELECT id, locale, begin_date, end_date, active"
             + " FROM oskari_announcements"
             + " WHERE begin_date <= #{date} ::DATE AND end_date >= #{date} ::DATE"
             + " ORDER BY id desc")
     List<Map<String,Object>> getAnnouncements(@Param("date") final LocalDate date);
 
-    @Select("SELECT id, title, content, begin_date, end_date, active"
+    @Select("SELECT id, locale, begin_date, end_date, active"
             + " FROM oskari_announcements"
             + " ORDER BY id desc")
     List<Map<String,Object>> getAdminAnnouncements();
@@ -29,14 +29,14 @@ public interface AnnouncementsMapper {
     int deleteAnnouncement(@Param("id") final int id);
 
     @Select("INSERT INTO oskari_announcements"
-            + " (title, content, begin_date, end_date, active) VALUES"
-            + " (#{title}, #{content}, #{begin_date} ::DATE, #{end_date} ::DATE, #{active})"
+            + " (locale, begin_date, end_date, active) VALUES"
+            + " (#{locale}, #{begin_date} ::DATE, #{end_date} ::DATE, #{active})"
             + " RETURNING id")
     @Options(flushCache = Options.FlushCachePolicy.TRUE)
     int saveAnnouncement(final Announcement announcement);
 
     @Select("UPDATE oskari_announcements"
-            + " SET title = #{title}, content = #{content}, begin_date = #{begin_date} ::DATE,"
+            + " SET locale = #{locale}, begin_date = #{begin_date} ::DATE,"
             + " end_date = #{end_date} ::DATE , active = #{active}"
             + " WHERE id = #{id}"
             + " RETURNING id")

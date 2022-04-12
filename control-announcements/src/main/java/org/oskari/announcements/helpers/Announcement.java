@@ -2,18 +2,16 @@ package org.oskari.announcements.helpers;
 
 public class Announcement {
     private Integer id;
-    private String title;
-    private String content;
+    private String locale;
     private String begin_date;
     private String end_date;
     private Boolean active;
     
     public Announcement() {}
 
-    public Announcement(final Integer id, final String title, final String content, final String begin_date, final String end_date, final Boolean active) {
+    public Announcement(final Integer id, final String locale, final String begin_date, final String end_date, final Boolean active) {
         this.id = id;
-        this.title = title;
-        this.content = content;
+        this.locale = locale;
         this.begin_date = begin_date;
         this.end_date = end_date;
         this.active = active;
@@ -27,20 +25,12 @@ public class Announcement {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
+    public String getLocale() {
+        return locale;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
+    public void setLocale(String locale) {
+        this.locale = locale;
     }
 
     public String getBeginDate() {
