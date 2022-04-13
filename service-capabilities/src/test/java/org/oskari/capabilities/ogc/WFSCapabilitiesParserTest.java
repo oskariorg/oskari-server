@@ -86,12 +86,12 @@ public class WFSCapabilitiesParserTest {
 
     @Test
     public void parseStatFi3_0_0() throws Exception {
+        String version = "3.0.0";
         String serviceJSON = ResourceHelper.readStringResource("WFSCapabilitiesParserTest-statfi-3_0_0-input.json", this);
         String expected = ResourceHelper.readStringResource("WFSCapabilitiesParserTest-statfi-3_0_0-expected.json", this);
 
-        OGCAPIFeaturesService se = OGCAPIFeaturesService.fromJSON(serviceJSON);
         WFSCapabilitiesParser parser = getParser();
-        Map<String, LayerCapabilities> layers = parser.listToMap(parser.getOGCAPIFeatures(se));
+        Map<String, LayerCapabilities> layers = parser.parseLayers(serviceJSON, version, getConnectInfo(version));
         assertEquals("Should find 19 layers", 19, layers.size());
         LayerCapabilitiesWFS layerCaps = (LayerCapabilitiesWFS) layers.get("AreaStatisticalUnit_4500k_EPSG_4326_2020");
 
