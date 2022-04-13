@@ -7,6 +7,7 @@ import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.util.IOHelper;
 import org.oskari.capabilities.LayerCapabilities;
 import org.oskari.capabilities.ServiceConnectInfo;
 import org.oskari.capabilities.ogc.api.OGCAPIFeaturesService;
@@ -80,7 +81,8 @@ public class WFSCapabilitiesParser extends OGCCapabilitiesParser {
 
     protected void enhanceCapabilitiesData(LayerCapabilitiesWFS layer, ServiceConnectInfo src) {
         try {
-            String xml = featureTypeProvider.getDescribeContent(src.getUrl(), src.getUser(), src.getPass());
+            String url = contructDescribeFeatureTypeUrl(src.getUrl(), layer.getVersion(), layer.getName());
+            String xml = featureTypeProvider.getDescribeContent(url, src.getUser(), src.getPass());
             if (xml == null) {
                 LOG.info("DescribeFeatureType response not available:", src.getUrl());
                 return;
@@ -122,5 +124,29 @@ public class WFSCapabilitiesParser extends OGCCapabilitiesParser {
                     return featureType;
                 })
                 .collect(Collectors.toList());
+    }
+
+    protected String contructDescribeFeatureTypeUrl(String url, String version, String featureType) {
+        String urlLC = url.toLowerCase();
+
+        final Map<String, String> params = new HashMap<>();
+        // check existing params
+        if (!urlLC.contains("service=")) {
+            params.put("service", getType());
+        }
+        if (!urlLC.contains("request=")) {
+            params.put("request", "DescribeFeatureType");
+        }
+        if (!urlLC.contains("version=")) {
+            if (version == null || version.isEmpty()) {
+                version = getDefaultVersion();
+            }
+            params.put(getVersionParamName(), version);
+        }
+        if (!urlLC.contains("featuretype=")) {
+            params.put("featuretype", featureType);
+        }
+
+        return IOHelper.constructUrl(url, params);
     }
 }
