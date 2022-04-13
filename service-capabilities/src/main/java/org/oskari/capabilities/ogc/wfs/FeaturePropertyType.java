@@ -1,6 +1,7 @@
 package org.oskari.capabilities.ogc.wfs;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import fi.nls.oskari.util.WFSConversionHelper;
 
 public class FeaturePropertyType {
     public String name;
@@ -8,6 +9,6 @@ public class FeaturePropertyType {
 
     @JsonIgnore
     public boolean isGeometry() {
-        return "GeometryPropertyType".equals(type);
+        return WFSConversionHelper.isGeometryType(type);
     }
 }
