@@ -44,4 +44,21 @@ public class DescribeFeatureTypeParserTest {
         });
     }
 
+    @Test
+    public void parseArcgisFeatureType2_0_0() throws Exception {
+        String xml = ResourceHelper.readStringResource("WFSDescribeFeatureTypeParserTest-restrictions-2_0_0-input.xml", this);
+        List<FeaturePropertyType> props = DescribeFeatureTypeParser.parseFeatureType(xml, "tutkitut_turvealueet");
+        props.stream().forEach(p -> {
+            System.out.println(p.name + "=" + p.type);
+        });
+        /*
+TODO: Parse type and restrictions for SUON_NIMI etc
+OBJECTID=int
+SUON_ID=int
+SUON_NIMI=
+TUTKIMUSVUOSI=int
+Shape=PointPropertyType
+         */
+    }
+
 }
