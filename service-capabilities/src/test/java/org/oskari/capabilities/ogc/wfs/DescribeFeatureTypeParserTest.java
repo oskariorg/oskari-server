@@ -25,13 +25,13 @@ public class DescribeFeatureTypeParserTest {
     @Test
     public void parseFeatureType() throws Exception {
         String xml = ResourceHelper.readStringResource("WFSDescribeFeatureTypeParserTest-statfi-1_1_0-input.xml", this);
-        List<FeaturePropertyType> props = DescribeFeatureTypeParser.parseFeatureType(xml);
+        List<FeaturePropertyType> props = DescribeFeatureTypeParser.parseFeatureType(xml, "tilastointialueet:avi4500k");
         verify(props);
     }
     @Test
     public void parseFeatureType2_0_0() throws Exception {
         String xml = ResourceHelper.readStringResource("WFSDescribeFeatureTypeParserTest-statfi-2_0_0-input.xml", this);
-        List<FeaturePropertyType> props = DescribeFeatureTypeParser.parseFeatureType(xml);
+        List<FeaturePropertyType> props = DescribeFeatureTypeParser.parseFeatureType(xml, "tilastointialueet:avi4500k");
         verify(props);
     }
 
@@ -43,4 +43,5 @@ public class DescribeFeatureTypeParserTest {
             assertEquals("Prop " + p.name + " should be " + p.type, expected.get(p.name), p.type);
         });
     }
+
 }

@@ -9,22 +9,28 @@ import java.util.stream.Collectors;
 
 public class DescribeFeatureTypeParser {
 
-    public static List<FeaturePropertyType> parseFeatureType(String xml)
+    public static List<FeaturePropertyType> parseFeatureType(String xml, String featureType)
             throws IllegalArgumentException, XMLStreamException {
         Element doc = XmlHelper.parseXML(xml);
         if (doc == null) {
             throw new XMLStreamException("Failed to parse DescribeFeatureType XML");
         }
-        return parseFeatureType(doc);
+        return parseFeatureType(doc, featureType);
     }
 
-    public static List<FeaturePropertyType> parseFeatureType(Element doc)
+    public static List<FeaturePropertyType> parseFeatureType(Element doc, String featureType)
             throws IllegalArgumentException, XMLStreamException {
+        if (featureType == null) {
+            throw new IllegalArgumentException("FeatureType param missing");
+        }
         String rootEl = XmlHelper.getLocalName(doc);
         if (!"schema".equals(rootEl)) {
             throw new IllegalArgumentException(XmlHelper.generateUnexpectedElementMessage(doc));
         }
-        Element element = XmlHelper.getFirstChild(doc, "element");
+        String simpleType = getSimpleType(featureType);
+        Element element = XmlHelper.getChildElements(doc, "element")
+                .filter(e -> simpleType.equals(getSimpleType(XmlHelper.getAttributeValue(e, "name"))))
+                .findFirst().orElse(null);
         if (element == null) {
             throw new IllegalArgumentException("No 'element' tag");
         }

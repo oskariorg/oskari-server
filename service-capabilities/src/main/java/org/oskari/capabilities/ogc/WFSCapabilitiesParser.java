@@ -87,7 +87,7 @@ public class WFSCapabilitiesParser extends OGCCapabilitiesParser {
                 LOG.info("DescribeFeatureType response not available:", src.getUrl());
                 return;
             }
-            layer.setFeatureProperties(DescribeFeatureTypeParser.parseFeatureType(xml));
+            layer.setFeatureProperties(DescribeFeatureTypeParser.parseFeatureType(xml, layer.getName()));
         } catch (IOException e) {
             LOG.error("Unable to access wfs describe feature type: " + e.getMessage());
         } catch (Exception e) {
