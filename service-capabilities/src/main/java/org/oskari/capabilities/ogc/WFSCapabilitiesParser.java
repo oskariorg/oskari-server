@@ -80,9 +80,9 @@ public class WFSCapabilitiesParser extends OGCCapabilitiesParser {
 
     protected void enhanceCapabilitiesData(LayerCapabilitiesWFS layer, ServiceConnectInfo src) {
         try {
-            String xml = featureTypeProvider.getDescribeContent(layer.getUrl(), src.getUser(), src.getPass());
+            String xml = featureTypeProvider.getDescribeContent(src.getUrl(), src.getUser(), src.getPass());
             if (xml == null) {
-                LOG.info("DescribeFeatureType response not available:", layer.getUrl());
+                LOG.info("DescribeFeatureType response not available:", src.getUrl());
                 return;
             }
             layer.setFeatureProperties(DescribeFeatureTypeParser.parseFeatureType(xml));

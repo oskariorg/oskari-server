@@ -9,7 +9,6 @@ import org.junit.Test;
 import org.oskari.capabilities.CapabilitiesService;
 import org.oskari.capabilities.LayerCapabilities;
 import org.oskari.capabilities.ServiceConnectInfo;
-import org.oskari.capabilities.ogc.api.OGCAPIFeaturesService;
 import org.oskari.capabilities.ogc.wfs.DescribeFeatureTypeProvider;
 
 import java.io.IOException;
@@ -103,8 +102,7 @@ public class WFSCapabilitiesParserTest {
 
     class DescribeFeatureTypeProviderMock extends DescribeFeatureTypeProvider {
         private String content;
-        public DescribeFeatureTypeProviderMock() {
-        }
+
         public DescribeFeatureTypeProviderMock(String content) {
             this.content = content;
         }
