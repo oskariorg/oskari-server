@@ -4,10 +4,14 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
 import org.oskari.capabilities.LayerCapabilities;
 import org.oskari.capabilities.ServiceConnectInfo;
 import org.oskari.capabilities.ogc.api.OGCAPIFeaturesService;
+import org.oskari.capabilities.ogc.wfs.DescribeFeatureTypeParser;
+import org.oskari.capabilities.ogc.wfs.DescribeFeatureTypeProvider;
 import org.oskari.capabilities.ogc.wfs.WFSCapsParser;
 
 import java.io.IOException;
@@ -20,8 +24,13 @@ import java.util.stream.Collectors;
 @Oskari(OskariLayer.TYPE_WFS)
 public class WFSCapabilitiesParser extends OGCCapabilitiesParser {
 
+    private static final Logger LOG = LogFactory.getLogger(WFSCapabilitiesParser.class);
     private static final String OGC_API_VERSION = "3.0.0";
+    private DescribeFeatureTypeProvider featureTypeProvider = new DescribeFeatureTypeProvider();
 
+    public void setDescribeFeatureTypeProvider(DescribeFeatureTypeProvider provider) {
+        featureTypeProvider = provider;
+    }
     protected String getVersionParamName() {
         return "acceptVersions";
     }
@@ -49,21 +58,38 @@ public class WFSCapabilitiesParser extends OGCCapabilitiesParser {
     }
 
     public Map<String, LayerCapabilities> parseLayers(String xml) throws ServiceException {
-        return parseLayers(xml, getDefaultVersion());
+        throw new ServiceException("Not implemented");
+        //return parseLayers(xml, getDefaultVersion());
     }
 
-    public Map<String, LayerCapabilities> parseLayers(String response, String version) throws ServiceException {
+    public Map<String, LayerCapabilities> parseLayers(String response, String version, ServiceConnectInfo src) throws ServiceException {
         try {
             List<LayerCapabilitiesWFS> caps;
             if (OGC_API_VERSION.equals(version)) {
                 caps = getOGCAPIFeatures(response);
             } else {
-                // TODO: fetch describe feature type
                 caps = WFSCapsParser.parseCapabilities(response);
+                // enhance with describe feature type data
+                caps.forEach(c -> enhanceCapabilitiesData(c, src));
             }
             return listToMap(caps);
         } catch (Exception e) {
             throw new ServiceException("Unable to parse layers for WFS capabilities", e);
+        }
+    }
+
+    protected void enhanceCapabilitiesData(LayerCapabilitiesWFS layer, ServiceConnectInfo src) {
+        try {
+            String xml = featureTypeProvider.getDescribeContent(layer.getUrl(), src.getUser(), src.getPass());
+            if (xml == null) {
+                LOG.info("DescribeFeatureType response not available:", layer.getUrl());
+                return;
+            }
+            layer.setFeatureProperties(DescribeFeatureTypeParser.parseFeatureType(xml));
+        } catch (IOException e) {
+            LOG.error("Unable to access wfs describe feature type: " + e.getMessage());
+        } catch (Exception e) {
+            LOG.error("Unable to enhance wfs/parse feature type: " + e.getMessage());
         }
     }
 

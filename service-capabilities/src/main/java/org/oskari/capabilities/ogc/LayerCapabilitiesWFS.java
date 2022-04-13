@@ -2,20 +2,25 @@ package org.oskari.capabilities.ogc;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import fi.nls.oskari.domain.map.OskariLayer;
+import org.oskari.capabilities.ogc.wfs.FeaturePropertyType;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 public class LayerCapabilitiesWFS extends LayerCapabilitiesOGC {
 
     public static final String OGC_API_CRS_URI = "crs-uri";
     public static final String MAX_FEATURES = CapabilitiesConstants.KEY_MAX_FEATURES;
-    public static final String NAMESPACE_URI = "nsUri";
+    public static final String NAMESPACE_URI = "nsUri"; // previously KEY_NAMESPACE_URL = "namespaceURL";
+    public static final String FEATURE_PROPERTIES = "featureProperties";
+    public static final String GEOMETRY_FIELD = "geomName";
 
     public LayerCapabilitiesWFS(String name, String title) {
         super(name, title);
         setType(OskariLayer.TYPE_WFS);
     }
+
 
     public void setSupportedCrsURIs(Set<String> uris) {
         addCapabilityData(OGC_API_CRS_URI, uris);
@@ -26,6 +31,32 @@ public class LayerCapabilitiesWFS extends LayerCapabilitiesOGC {
         return (Set<String>) getTypeSpecific().getOrDefault(OGC_API_CRS_URI, Collections.emptySet());
     }
 
+    public void setFeatureProperties(List<FeaturePropertyType> props) {
+        if (props != null) {
+            addCapabilityData(FEATURE_PROPERTIES, props);
+            setGeometryField(props.stream()
+                    .filter(p -> p.isGeometry())
+                    .map(p -> p.name)
+                    .findFirst()
+                    .orElse(null));
+        }
+    }
+
+    @JsonIgnore
+    public List<FeaturePropertyType> getFeatureProperties() {
+        return (List<FeaturePropertyType>) getTypeSpecific().getOrDefault(FEATURE_PROPERTIES, Collections.emptyList());
+    }
+
+    public void setGeometryField(String geomName) {
+        if (geomName != null) {
+            addCapabilityData(GEOMETRY_FIELD, geomName);
+        }
+    }
+
+    @JsonIgnore
+    public String getGeometryField() {
+        return (String) getTypeSpecific().get(GEOMETRY_FIELD);
+    }
     @JsonIgnore
     public String getNamespaceUri() {
         return (String) getTypeSpecific().getOrDefault(NAMESPACE_URI, null);

@@ -42,7 +42,7 @@ public abstract class OGCCapabilitiesParser extends CapabilitiesParser {
         String capabilitiesUrl = contructCapabilitiesUrl(src.getUrl(), src.getVersion());
         RawCapabilitiesResponse response = fetchCapabilities(capabilitiesUrl, src.getUser(), src.getPass(), getExpectedContentType(src.getVersion()));
         String validResponse = validateResponse(response, src.getVersion());
-        Map<String, LayerCapabilities> layers = parseLayers(validResponse, src.getVersion());
+        Map<String, LayerCapabilities> layers = parseLayers(validResponse, src.getVersion(), src);
         layers.values().stream().forEach(l -> {
             l.setUrl(response.getUrl());
             // parser name == layer type
@@ -56,6 +56,11 @@ public abstract class OGCCapabilitiesParser extends CapabilitiesParser {
     // allow overriding for OGC API services etc
     protected Map<String, LayerCapabilities> parseLayers(String capabilities, String version) throws ServiceException {
         return parseLayers(capabilities);
+    }
+
+    // allow overriding/connect info for additional requests
+    protected Map<String, LayerCapabilities> parseLayers(String capabilities, String version, ServiceConnectInfo src) throws ServiceException {
+        return parseLayers(capabilities, version);
     }
 
     protected String contructCapabilitiesUrl(String url, String version) {
