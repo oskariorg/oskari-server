@@ -12,25 +12,18 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import fi.nls.oskari.util.PropertyUtil;
 
-public class V2_7_4__migrate_announcements extends BaseJavaMigration {
-    private static final Logger LOG = LogFactory.getLogger(V2_7_4__migrate_announcements.class);
+public class V2_7_5__migrate_announcements extends BaseJavaMigration {
+    private static final Logger LOG = LogFactory.getLogger(V2_7_5__migrate_announcements.class);
 
     @Override
     public void migrate(Context context) throws Exception {
         Connection conn = context.getConnection();
         JSONArray announcements = getAnnouncements(conn);
-        updateAnnouncementsTable(conn);
         for(int i = 0; i < announcements.length(); i++) {
             JSONObject announcement = announcements.getJSONObject(i);
             updateAnnouncements(conn, announcement);
-        }
-    }
-
-    private void updateAnnouncementsTable (Connection conn) throws SQLException {
-        final String sql = "ALTER TABLE oskari_announcements DROP COLUMN title; ALTER TABLE oskari_announcements RENAME COLUMN content TO locale;";
-        try(PreparedStatement statement = conn.prepareStatement(sql)) {
-            statement.execute();
         }
     }
 
@@ -41,7 +34,7 @@ public class V2_7_4__migrate_announcements extends BaseJavaMigration {
         try {
             lang.put("name", announcement.getString("title"));
             lang.put("content", announcement.getString("content"));
-            locale.put("fi", lang);
+            locale.put(PropertyUtil.getDefaultLanguage(), lang);
         } catch (JSONException e) {
             LOG.warn("Failed to create announcement locale ", e);
         }
