@@ -9,6 +9,7 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.IOHelper;
 import org.oskari.capabilities.LayerCapabilities;
+import org.oskari.capabilities.RawCapabilitiesResponse;
 import org.oskari.capabilities.ServiceConnectInfo;
 import org.oskari.capabilities.ogc.api.OGCAPIFeaturesService;
 import org.oskari.capabilities.ogc.wfs.DescribeFeatureTypeParser;
@@ -47,7 +48,7 @@ public class WFSCapabilitiesParser extends OGCCapabilitiesParser {
         if (OGC_API_VERSION.equals(src.getVersion())) {
             try {
                 OGCAPIFeaturesService service = OGCAPIFeaturesService.fromURL(src.getUrl(), src.getUser(), src.getPass());
-                listToMap(getOGCAPIFeatures(service));
+                return listToMap(getOGCAPIFeatures(service));
             } catch (JsonParseException | JsonMappingException e) {
                 // Don't attach JsonParseException as its an IOException which is detected as root cause and wrong error is sent to user
                 throw new ServiceException("Error parsing response from url: " + src.getUrl() + " Message: " + e.getMessage());
@@ -58,11 +59,43 @@ public class WFSCapabilitiesParser extends OGCCapabilitiesParser {
         return super.getLayersFromService(src);
     }
 
-    public Map<String, LayerCapabilities> parseLayers(String xml) throws ServiceException {
-        throw new ServiceException("Not implemented");
-        //return parseLayers(xml, getDefaultVersion());
+    /*
+     Optimization for older WFS versions that require multiple requests/layer.
+     Services that have several featureTypes in them are very slow to parse with each featureType requiring additional HTTP requests.
+     If we only need to update a single featureType this is very much faster.
+     */
+    public LayerCapabilities getLayerFromService(ServiceConnectInfo src, String featureType) throws IOException, ServiceException {
+        if (OGC_API_VERSION.equals(src.getVersion())) {
+            Map<String, LayerCapabilities> layers = getLayersFromService(src);
+            return layers.get(featureType);
+        }
+        String capabilitiesUrl = contructCapabilitiesUrl(src.getUrl(), src.getVersion());
+        RawCapabilitiesResponse response = fetchCapabilities(capabilitiesUrl, src.getUser(), src.getPass(), getExpectedContentType(src.getVersion()));
+        String validResponse = validateResponse(response, src.getVersion());
+        LayerCapabilities singleLayer = parseSingleLayer(validResponse, src, featureType);
+        singleLayer.setUrl(response.getUrl());
+        // parser name == layer type
+        singleLayer.setType(getName());
+        return singleLayer;
     }
 
+    public Map<String, LayerCapabilities> parseLayers(String xml) throws ServiceException {
+        throw new ServiceException("Not implemented");
+    }
+
+    public LayerCapabilities parseSingleLayer(String response, ServiceConnectInfo src, String featureType) throws ServiceException {
+        try {
+            List<LayerCapabilitiesWFS> caps = WFSCapsParser.parseCapabilities(response);
+            LayerCapabilitiesWFS layer = caps.stream().filter(c -> c.getName().equals(featureType)).findFirst().orElse(null);
+            if (layer == null) {
+                throw new ServiceException("Layer not found");
+            }
+            enhanceCapabilitiesData(layer, src);
+            return layer;
+        } catch (Exception e) {
+            throw new ServiceException("Unable to parse layers for WFS capabilities", e);
+        }
+    }
     public Map<String, LayerCapabilities> parseLayers(String response, String version, ServiceConnectInfo src) throws ServiceException {
         try {
             List<LayerCapabilitiesWFS> caps;
