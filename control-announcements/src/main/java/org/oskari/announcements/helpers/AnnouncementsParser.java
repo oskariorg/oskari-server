@@ -2,6 +2,8 @@ package org.oskari.announcements.helpers;
 
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
+import fi.nls.oskari.util.JSONHelper;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONArray;
@@ -12,8 +14,7 @@ import java.util.Map;
  */
 public class AnnouncementsParser {
     public static final String KEY_ID = "id";
-    public static final String KEY_TITLE = "title";
-    public static final String KEY_CONTENT = "content";
+    public static final String KEY_LOCALE = "locale";
     public static final String KEY_BEGIN_DATE = "begin_date";
     public static final String KEY_END_DATE = "end_date";
     public static final String KEY_ACTIVE = "active";
@@ -33,12 +34,8 @@ public class AnnouncementsParser {
             announcement.setId(jsonParams.getInt(KEY_ID));
         }
 
-        if (jsonParams.has(KEY_TITLE)) {
-            announcement.setTitle(jsonParams.getString(KEY_TITLE));
-        }
-
-        if (jsonParams.has(KEY_CONTENT)) {
-            announcement.setContent(jsonParams.getString(KEY_CONTENT));
+        if (jsonParams.has(KEY_LOCALE)) {
+            announcement.setLocale(jsonParams.getString(KEY_LOCALE));
         }
         
         if (jsonParams.has(KEY_BEGIN_DATE)) {
@@ -74,8 +71,7 @@ public class AnnouncementsParser {
         JSONObject obj = new JSONObject();
 
         obj.put(KEY_ID, data.get("id"));
-        obj.put(KEY_TITLE, data.get("title"));
-        obj.put(KEY_CONTENT, data.get("content"));
+        obj.put(KEY_LOCALE, JSONHelper.createJSONObject((String) data.get("locale")));
         obj.put(KEY_BEGIN_DATE, data.get("begin_date"));
         obj.put(KEY_END_DATE, data.get("end_date"));
         obj.put(KEY_ACTIVE, data.get("active"));
