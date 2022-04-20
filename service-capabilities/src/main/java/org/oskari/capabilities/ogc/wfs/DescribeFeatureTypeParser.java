@@ -2,10 +2,13 @@ package org.oskari.capabilities.ogc.wfs;
 
 import org.oskari.xml.XmlHelper;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import javax.xml.stream.XMLStreamException;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class DescribeFeatureTypeParser {
 
@@ -61,9 +64,52 @@ public class DescribeFeatureTypeParser {
                     FeaturePropertyType prop = new FeaturePropertyType();
                     Map<String, String> properties = XmlHelper.getAttributesAsMap(e);
                     prop.name = properties.get("name");
-                    prop.type = getSimpleType(properties.get("type"));
+                    String propType = properties.get("type");
+                    // prop.isNillable = properties.get("nillable");
+                    if (propType != null) {
+                        prop.type = propType;
+                    } else {
+                        parseComplexType(e, prop);
+                    }
+                    prop.type = getSimpleType(prop.type);
                     return prop;
                 }).collect(Collectors.toList());
+    }
+
+    /*
+
+        <xsd:element minOccurs="0" maxOccurs="1" name="VUOSI" nillable="true">
+            <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                    <xsd:maxLength value="2"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+        </xsd:element>
+     */
+    private static void parseComplexType(Element el, FeaturePropertyType prop) {
+        Element simpleType = XmlHelper.getFirstChild(el, "simpleType");
+        if (simpleType == null) {
+            return;
+        }
+        Element restriction = XmlHelper.getFirstChild(simpleType, "restriction");
+        if (restriction == null) {
+            return;
+        }
+        prop.type = getSimpleType(XmlHelper.getAttributeValue(restriction, "base"));
+        // Try parsing restrictions for field
+        NodeList list = restriction.getChildNodes();
+        for (int i = 0 ; i < list.getLength(); i++) {
+            Node item = list.item(i);
+            if (item.getNodeType() != Node.ELEMENT_NODE) {
+                continue;
+            }
+            Element element = (Element) item;
+            String localName = XmlHelper.getLocalName(element);
+            String value = getSimpleType(XmlHelper.getAttributeValue(element, "value"));
+            if (value != null && !value.trim().isEmpty()) {
+                prop.restrictions.put(localName, value);
+            }
+        }
     }
 
     private static String getSimpleType(String ns) {
