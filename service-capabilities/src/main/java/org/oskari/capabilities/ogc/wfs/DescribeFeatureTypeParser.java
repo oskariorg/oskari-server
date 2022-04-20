@@ -95,7 +95,7 @@ public class DescribeFeatureTypeParser {
         if (restriction == null) {
             return;
         }
-        prop.type = getSimpleType(XmlHelper.getAttributeValue(restriction, "base"));
+        prop.type = XmlHelper.getAttributeValue(restriction, "base");
         // Try parsing restrictions for field
         NodeList list = restriction.getChildNodes();
         for (int i = 0 ; i < list.getLength(); i++) {
@@ -105,7 +105,7 @@ public class DescribeFeatureTypeParser {
             }
             Element element = (Element) item;
             String localName = XmlHelper.getLocalName(element);
-            String value = getSimpleType(XmlHelper.getAttributeValue(element, "value"));
+            String value = XmlHelper.getAttributeValue(element, "value");
             if (value != null && !value.trim().isEmpty()) {
                 prop.restrictions.put(localName, value);
             }
