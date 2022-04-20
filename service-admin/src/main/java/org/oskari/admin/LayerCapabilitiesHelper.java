@@ -138,7 +138,7 @@ public class LayerCapabilitiesHelper {
         CapabilitiesService.updateCapabilities(ml, getSystemCRSs());
     }
 
-    private static Set<String> getSystemCRSs() throws ServiceException {
+    public static Set<String> getSystemCRSs() throws ServiceException {
         return ViewHelper.getSystemCRSs(getViewService());
     }
 

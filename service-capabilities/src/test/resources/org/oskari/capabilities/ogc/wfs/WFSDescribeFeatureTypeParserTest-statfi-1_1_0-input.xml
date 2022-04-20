@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:gml="http://www.opengis.net/gml" xmlns:tilastointialueet="http://www.tilastointialueet.fi" elementFormDefault="qualified" targetNamespace="http://www.tilastointialueet.fi">
+    <xsd:import namespace="http://www.opengis.net/gml" schemaLocation="https://geo.stat.fi/geoserver/schemas/gml/3.1.1/base/gml.xsd"/>
+    <xsd:complexType name="avi4500kType">
+        <xsd:complexContent>
+            <xsd:extension base="gml:AbstractFeatureType">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="avi" nillable="true" type="xsd:string"/>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="vuosi" nillable="true" type="xsd:int"/>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="nimi" nillable="true" type="xsd:string"/>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="namn" nillable="true" type="xsd:string"/>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="name" nillable="true" type="xsd:string"/>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="geom" nillable="true" type="gml:GeometryPropertyType"/>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:element name="avi4500k" substitutionGroup="gml:_Feature" type="tilastointialueet:avi4500kType"/>
+</xsd:schema>

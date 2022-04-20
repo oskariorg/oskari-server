@@ -272,7 +272,7 @@ public class LayerJSONFormatter {
      * @return null iff attributes.forcedSRS and capabilities.srs are both null
      *         otherwise a Set containing both (can be empty)
      */
-    protected static Set<String> getSRSs(JSONObject attributes, JSONObject capabilities) {
+    public static Set<String> getSRSs(JSONObject attributes, JSONObject capabilities) {
         JSONArray jsonForcedSRS = attributes != null ? attributes.optJSONArray(KEY_ATTRIBUTE_FORCED_SRS): null;
         JSONArray jsonCapabilitiesSRS = capabilities != null ? capabilities.optJSONArray(KEY_SRS): null;
         if (jsonForcedSRS == null && jsonCapabilitiesSRS == null) {

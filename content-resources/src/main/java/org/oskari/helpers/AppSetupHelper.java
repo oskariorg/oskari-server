@@ -37,9 +37,8 @@ public class AppSetupHelper {
 
             final long viewId = viewService.addView(view);
             log.info("Added view from file:", viewfile, "/viewId is:", viewId, "/uuid is:", view.getUuid());
-            // TODO: only call refreshLayerCapabilities() if we added an appsetup with NEW projection
             // update supported SRS for layers after possibly new projection on appsetup/view
-            LayerHelper.refreshLayerCapabilities();
+            LayerHelper.refreshLayerCapabilities(view.getSrsName());
             return viewId;
         } catch (Exception ex) {
             log.error( "Unable to insert appsetup! Msg: ", ex.getMessage());
