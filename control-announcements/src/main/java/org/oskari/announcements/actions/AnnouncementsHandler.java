@@ -45,8 +45,7 @@ public class AnnouncementsHandler extends RestActionHandler {
             
             AuditLog.user(params.getClientIp(), params.getUser())
             .withParam("id", announcement.getId())
-            .withParam("title", announcement.getTitle())
-            .withParam("content", announcement.getContent())
+            .withParam("locale", announcement.getLocale())
             .withParam("beginDate", announcement.getBeginDate())
             .withParam("endDate", announcement.getEndDate())
             .withParam("active", announcement.getActive());
@@ -83,8 +82,7 @@ public class AnnouncementsHandler extends RestActionHandler {
 
             AuditLog.user(params.getClientIp(), params.getUser())
             .withParam("id", announcement.getId())
-            .withParam("title", announcement.getTitle())
-            .withParam("content", announcement.getContent())
+            .withParam("locale", announcement.getLocale())
             .withParam("beginDate", announcement.getBeginDate())
             .withParam("endDate", announcement.getEndDate())
             .withParam("active", announcement.getActive());
