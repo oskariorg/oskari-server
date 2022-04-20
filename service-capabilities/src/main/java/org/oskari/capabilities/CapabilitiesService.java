@@ -30,10 +30,23 @@ public class CapabilitiesService {
     }
 
     public static CapabilitiesUpdateResult updateCapabilities(OskariLayer layer, Set<String> systemCRSs) {
-        List<OskariLayer> layers = new ArrayList<>(1);
-        layers.add(layer);
-        List<CapabilitiesUpdateResult> results = updateCapabilities(layers, systemCRSs);
-        return results.get(0);
+        ServiceConnectInfo connectInfo = ServiceConnectInfo.fromLayer(layer);
+        String layerType = connectInfo.getType();
+        CapabilitiesParser parser = getParser(layerType);
+        if (parser == null) {
+            return CapabilitiesUpdateResult.err(layer, CapabilitiesUpdateResult.ERR_LAYER_TYPE_UNSUPPORTED + "/" + layerType);
+        }
+        try {
+            LayerCapabilities capsForSingleLayer = parser.getLayerFromService(connectInfo, layer.getName());
+            layer.setCapabilities(toJSON(capsForSingleLayer, systemCRSs));
+            return CapabilitiesUpdateResult.ok(layer);
+        } catch (IOException | ServiceException e) {
+            if (e instanceof IOException) {
+                return CapabilitiesUpdateResult.err(layer, CapabilitiesUpdateResult.ERR_FAILED_TO_FETCH_CAPABILITIES + "/" + connectInfo.getUrl());
+            } else {
+                return CapabilitiesUpdateResult.err(layer, CapabilitiesUpdateResult.ERR_FAILED_TO_PARSE_CAPABILITIES + "/" + e.getMessage());
+            }
+        }
     }
 
     public static List<CapabilitiesUpdateResult> updateCapabilities(List<OskariLayer> layers, Set<String> systemCRSs) {
