@@ -36,7 +36,7 @@ public class LayerJSONFormatterWMTS extends LayerJSONFormatter {
         }
 
         Set<String> srs = getSRSs(layer.getAttributes(), layer.getCapabilities());
-        if (srs != null) {
+        if (srs != null && !srs.isEmpty()) {
             JSONHelper.putValue(layerJson, KEY_SRS, new JSONArray(srs));
         }
 

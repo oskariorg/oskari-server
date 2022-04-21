@@ -164,7 +164,7 @@ public class LayerJSONFormatter {
 
         // setup supported projections
         Set<String> srs = getSRSs(layer.getAttributes(), layer.getCapabilities());
-        if (srs != null) {
+        if (srs != null && !srs.isEmpty()) {
             JSONHelper.putValue(layerJson, KEY_SRS, new JSONArray(srs));
         }
 
@@ -277,7 +277,7 @@ public class LayerJSONFormatter {
         JSONArray jsonCapabilitiesSRS = capabilities != null ? capabilities.optJSONArray(KEY_SRS): null;
         if (jsonForcedSRS == null && jsonCapabilitiesSRS == null) {
             LOG.debug("No SRS information found from either attributes or capabilities");
-            return null;
+            return Collections.emptySet();
         }
         Set<String> srs = new HashSet<>();
         srs.addAll(JSONHelper.getArrayAsList(jsonForcedSRS));
