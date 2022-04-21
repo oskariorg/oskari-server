@@ -35,13 +35,29 @@ public class DescribeFeatureTypeParserTest {
         verify(props);
     }
 
-    private void verify(List<FeaturePropertyType> props) {
-        Map<String, String> expected = getExpected();
+    private void verify(List<FeaturePropertyType> props, Map<String, String> expected) {
         assertEquals("Should get expected amount of props", expected.size(), props.size());
 
         props.stream().forEach(p -> {
             assertEquals("Prop " + p.name + " should be " + p.type, expected.get(p.name), p.type);
         });
+    }
+    private void verify(List<FeaturePropertyType> props) {
+        verify(props, getExpected());
+    }
+
+    @Test
+    public void parseArcgisFeatureType2_0_0() throws Exception {
+        String xml = ResourceHelper.readStringResource("WFSDescribeFeatureTypeParserTest-restrictions-2_0_0-input.xml", this);
+        List<FeaturePropertyType> props = DescribeFeatureTypeParser.parseFeatureType(xml, "tutkitut_turvealueet");
+
+        Map<String, String> expected = new HashMap<>();
+        expected.put("OBJECTID", "int");
+        expected.put("SUON_ID", "int");
+        expected.put("SUON_NIMI", "string");
+        expected.put("TUTKIMUSVUOSI", "int");
+        expected.put("Shape", "PointPropertyType");
+        verify(props, expected);
     }
 
 }
