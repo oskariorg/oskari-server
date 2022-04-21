@@ -28,11 +28,8 @@ public class MetadataHelper {
             return url;
         }
 
-        ArrayList<String> allowedDomains = new ArrayList<String>(Arrays.asList(PropertyUtil.getCommaSeparatedList("service.metadata.domains")));
-        allowedDomains.add(PropertyUtil.get("service.metadata.url"));
-
         // check if allowedDomains arraylist contains the metadata url
-        if (!isDomainAllowed(url, allowedDomains)) {
+        if (!isDomainAllowed(url, getAllowedDomainsList())) {
             return null;
         }
 
@@ -60,7 +57,19 @@ public class MetadataHelper {
         return null;
     }
 
+    public static ArrayList<String> getAllowedDomainsList()  {
+        ArrayList<String> allowedDomains = new ArrayList<String>(Arrays.asList(PropertyUtil.getCommaSeparatedList("service.metadata.domains")));
+        //add property url if allowedDomains list is empty
+        if (!allowedDomains.isEmpty()) {
+            allowedDomains.add(PropertyUtil.get("service.metadata.url"));
+        }
+        return allowedDomains;  
+    }
+
     public static boolean isDomainAllowed(String url, List<String> allowedDomains) {	
+        if (allowedDomains.isEmpty()) {
+            return true;
+        }
         try {	
             URI uri = new URI(url);
             for (String a : allowedDomains) {
