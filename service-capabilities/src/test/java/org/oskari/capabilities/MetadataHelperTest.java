@@ -53,4 +53,13 @@ public class MetadataHelperTest {
         assertTrue("Url that is included in the url-array returns true", MetadataHelper.isDomainAllowed("http://www.paikkatietohakemisto.fi?uuid=key", allowedDomains));
         assertFalse("Url that is not included in the url-array returns false", MetadataHelper.isDomainAllowed("http://www.unallowed.fi?uuid=key", allowedDomains));
     }
+    
+    @Test
+    public void testGetAllowedDomainsList() {
+        ArrayList<String> expected = new ArrayList<String>();
+        expected.add("paikkatietohakemisto.fi");
+        expected.add("mydomain.org");
+        expected.add("http://propertyurl.org");
+        assertEquals("allowedDomainsList contains expected domain", expected, MetadataHelper.getAllowedDomainsList());
+    }
 }

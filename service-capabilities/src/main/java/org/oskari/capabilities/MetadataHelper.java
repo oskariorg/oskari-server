@@ -27,7 +27,6 @@ public class MetadataHelper {
             // not a url -> return as is
             return url;
         }
-
         // check if allowedDomains arraylist contains the metadata url
         if (!isDomainAllowed(url, getAllowedDomainsList())) {
             return null;
