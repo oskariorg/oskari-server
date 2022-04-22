@@ -86,7 +86,7 @@ public class LayerCapabilities {
     }
 
     public void addCapabilityData(String key, Object value) {
-        if (value != null ) {
+        if (value != null) {
             typeSpecific.put(key, value);
         }
     }
