@@ -3,7 +3,11 @@ package org.oskari.capabilities;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.PropertyUtil;
 
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +27,11 @@ public class MetadataHelper {
             // not a url -> return as is
             return url;
         }
+        // check if allowedDomains arraylist contains the metadata url
+        if (!isDomainAllowed(url, getAllowedDomainsList())) {
+            return null;
+        }
+
         try {
             Map<String, List<String>> params = IOHelper.parseQuerystring(url);
             String idParam = params.keySet().stream()
@@ -45,5 +54,31 @@ public class MetadataHelper {
         }
         LOG.debug("Couldn't parse uuid from metadata url:", url);
         return null;
+    }
+
+    public static ArrayList<String> getAllowedDomainsList()  {
+        ArrayList<String> allowedDomains = new ArrayList<String>(Arrays.asList(PropertyUtil.getCommaSeparatedList("service.metadata.domains")));
+        //add property url if allowedDomains list is empty
+        if (!allowedDomains.isEmpty()) {
+            allowedDomains.add(PropertyUtil.get("service.metadata.url"));
+        }
+        return allowedDomains;  
+    }
+
+    public static boolean isDomainAllowed(String url, List<String> allowedDomains) {	
+        if (allowedDomains.isEmpty()) {
+            return true;
+        }
+        try {	
+            URI uri = new URI(url);
+            for (String a : allowedDomains) {
+                if (uri.getHost().endsWith(a)) {
+                    return true;
+                }
+            } 
+        } catch (Exception e) {
+            LOG.debug("Unexpected error converting url-string to uri:", e);
+        }
+        return false;
     }
 }

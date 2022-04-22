@@ -1,13 +1,31 @@
 package org.oskari.capabilities;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import fi.nls.oskari.util.PropertyUtil;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.*;
 
 public class MetadataHelperTest {
+
+    @BeforeClass
+    public static void setup() throws Exception {
+        PropertyUtil.addProperty("service.metadata.domains", "paikkatietohakemisto.fi, mydomain.org", true);
+        PropertyUtil.addProperty("service.metadata.url", "http://propertyurl.org", true);
+    }
+
+    @AfterClass
+    public static void tearDown() {
+        PropertyUtil.clearProperties();
+    }
 
     @Test
     public void testGetIdFromMetadataUrl() {
@@ -27,4 +45,21 @@ public class MetadataHelperTest {
         }
     }
 
+    @Test
+    public void testIsDomainAllowed() {
+        ArrayList<String> allowedDomains = new ArrayList<String>();
+        allowedDomains.add("paikkatietohakemisto.fi");
+        allowedDomains.add("mydomain.org");
+        assertTrue("Url that is included in the url-array returns true", MetadataHelper.isDomainAllowed("http://www.paikkatietohakemisto.fi?uuid=key", allowedDomains));
+        assertFalse("Url that is not included in the url-array returns false", MetadataHelper.isDomainAllowed("http://www.unallowed.fi?uuid=key", allowedDomains));
+    }
+    
+    @Test
+    public void testGetAllowedDomainsList() {
+        ArrayList<String> expected = new ArrayList<String>();
+        expected.add("paikkatietohakemisto.fi");
+        expected.add("mydomain.org");
+        expected.add("http://propertyurl.org");
+        assertEquals("allowedDomainsList contains expected domain", expected, MetadataHelper.getAllowedDomainsList());
+    }
 }
