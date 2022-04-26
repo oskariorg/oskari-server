@@ -94,6 +94,9 @@ public class CapabilitiesService {
     }
 
     public static JSONObject toJSON(LayerCapabilities caps, Set<String> systemCRSs) {
+        if (caps == null) {
+            throw new ServiceRuntimeException("Tried serializing <null> capabilities as JSON");
+        }
         try {
             String raw = MAPPER.writeValueAsString(caps);
             JSONObject json = new JSONObject(raw);

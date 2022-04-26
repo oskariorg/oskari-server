@@ -62,6 +62,7 @@ public class CapabilitiesUpdateService {
         switch (type) {
         case OskariLayer.TYPE_WMS:
         case OskariLayer.TYPE_WMTS:
+        case OskariLayer.TYPE_WFS:
             return true;
         default:
             return false;
