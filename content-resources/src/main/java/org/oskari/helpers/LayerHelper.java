@@ -14,7 +14,6 @@ import org.oskari.admin.LayerCapabilitiesHelper;
 import org.oskari.admin.MapLayerGroupsHelper;
 import org.oskari.admin.MapLayerPermissionsHelper;
 import org.oskari.capabilities.CapabilitiesService;
-import org.oskari.capabilities.CapabilitiesUpdateResult;
 import org.oskari.maplayer.model.MapLayer;
 import org.oskari.maplayer.admin.LayerAdminJSONHelper;
 
