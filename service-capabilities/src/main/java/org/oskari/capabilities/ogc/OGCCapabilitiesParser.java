@@ -7,9 +7,6 @@ import org.oskari.capabilities.LayerCapabilities;
 import org.oskari.capabilities.RawCapabilitiesResponse;
 import org.oskari.capabilities.ServiceConnectInfo;
 
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;

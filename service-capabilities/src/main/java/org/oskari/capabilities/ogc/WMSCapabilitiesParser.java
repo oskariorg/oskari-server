@@ -5,8 +5,6 @@ import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.service.ServiceException;
 import org.oskari.capabilities.LayerCapabilities;
 import org.oskari.capabilities.ogc.wms.WMSCapsParser;
-import org.oskari.capabilities.ogc.wms.WMSCapsParser1_1_1;
-import org.oskari.capabilities.ogc.wms.WMSCapsParser1_3_0;
 
 import java.util.HashMap;
 import java.util.List;
