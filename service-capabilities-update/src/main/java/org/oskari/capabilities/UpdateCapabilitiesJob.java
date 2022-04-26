@@ -17,8 +17,6 @@ import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
 import fi.nls.oskari.map.view.util.ViewHelper;
 import fi.nls.oskari.service.ServiceException;
-import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
-import fi.nls.oskari.service.capabilities.CapabilitiesCacheServiceMybatisImpl;
 import fi.nls.oskari.worker.ScheduledJob;
 
 /**
@@ -34,7 +32,6 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
     private static final Logger LOG = LogFactory.getLogger(UpdateCapabilitiesJob.class);
 
     private final OskariLayerService layerService;
-    private final CapabilitiesUpdateService capabilitiesUpdateService;
     private final ViewService viewService;
 
     public UpdateCapabilitiesJob() {
@@ -45,7 +42,6 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
     public UpdateCapabilitiesJob(OskariLayerService layerService,
             ViewService viewService) {
         this.layerService = layerService;
-        this.capabilitiesUpdateService = new CapabilitiesUpdateService(layerService);
         this.viewService = viewService;
     }
 
@@ -65,7 +61,18 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
                 .filter(layer -> shouldUpdate(layer))
                 .collect(Collectors.toList());
 
-        capabilitiesUpdateService.updateCapabilities(layersToUpdate, systemCRSs);
+        List<CapabilitiesUpdateResult> result = CapabilitiesService.updateCapabilities(layersToUpdate, systemCRSs);
+        List<String> updatedLayers = result.stream()
+                .filter(res -> res.getErrorMessage() == null)
+                .map(l -> l.getLayerId())
+                .collect(Collectors.toList());
+
+        for (OskariLayer layer : layersToUpdate) {
+            if (!updatedLayers.contains("" + layer.getId())) {
+                continue;
+            }
+            layerService.update(layer);
+        }
     }
 
     protected static boolean shouldUpdate(OskariLayer layer) {

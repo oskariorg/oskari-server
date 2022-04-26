@@ -6,7 +6,6 @@ import org.oskari.xml.XmlHelper;
 import org.w3c.dom.Element;
 
 import javax.xml.stream.XMLStreamException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;

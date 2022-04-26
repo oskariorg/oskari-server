@@ -3,11 +3,12 @@ package fi.nls.oskari.control.admin;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.util.PropertyUtil;
+import org.oskari.capabilities.CapabilitiesService;
 import org.oskari.capabilities.CapabilitiesUpdateResult;
-import org.oskari.capabilities.CapabilitiesUpdateService;
 import org.oskari.log.AuditLog;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,7 +46,6 @@ public class UpdateCapabilitiesHandler extends RestActionHandler {
     private static final String KEY_DATAPROVIDER_ID = "dataprovider_id";
     private static final String KEY_GROUP_ID = "group_id";
     private OskariLayerService layerService;
-    private CapabilitiesUpdateService capabilitiesUpdateService;
     private ViewService viewService;
 
     public UpdateCapabilitiesHandler() {
@@ -65,9 +65,6 @@ public class UpdateCapabilitiesHandler extends RestActionHandler {
         if (layerService == null) {
             layerService = ServiceFactory.getMapLayerService();
         }
-        if (capabilitiesUpdateService == null) {
-            capabilitiesUpdateService = new CapabilitiesUpdateService(layerService);
-        }
         if (viewService == null) {
             viewService = ServiceFactory.getViewService();
         }
@@ -77,9 +74,18 @@ public class UpdateCapabilitiesHandler extends RestActionHandler {
     public void handlePost(ActionParameters params) throws ActionException {
         params.requireAdminUser();
         List<OskariLayer> layers = getLayersToUpdate(params);
-        Set<String> systemCRSs = getSystemCRSs();
+
+        List<CapabilitiesUpdateResult> result = CapabilitiesService.updateCapabilities(layers, getSystemCRSs());
+        List<String> updatedLayers = result.stream()
+                .filter(res -> res.getErrorMessage() == null)
+                .map(l -> l.getLayerId())
+                .collect(Collectors.toList());
 
         for (OskariLayer layer : layers) {
+            if (!updatedLayers.contains("" + layer.getId())) {
+                continue;
+            }
+            layerService.update(layer);
             AuditLog.user(params.getClientIp(), params.getUser())
                     .withParam("id", layer.getId())
                     .withParam("name", layer.getName(PropertyUtil.getDefaultLanguage()))
@@ -88,9 +94,6 @@ public class UpdateCapabilitiesHandler extends RestActionHandler {
                     .withMsg("Capabilities update")
                     .updated(AuditLog.ResourceType.MAPLAYER);
         }
-
-        List<CapabilitiesUpdateResult> result =
-                capabilitiesUpdateService.updateCapabilities(layers, systemCRSs);
         JSONObject response = createResponse(result, params);
         ResponseHelper.writeResponse(params, response);
     }
