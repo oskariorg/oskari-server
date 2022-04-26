@@ -20,6 +20,7 @@ import static fi.nls.oskari.control.ActionConstants.PARAM_NAME_PREFIX;
 
 /**
  * Admin insert/update of class layer or class sub layer
+ * TODO: move code to DataProviderHandler
  */
 @OskariActionRoute("SaveOrganization")
 public class SaveOrganizationHandler extends RestActionHandler {
