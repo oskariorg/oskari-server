@@ -16,9 +16,6 @@ import java.util.Collections;
 import java.util.Iterator;
 
 /**
- * Moved WFSDescribeFeature response parsing code from
- * control-base/GetWFSDescribeFeatureHandler so it can be used elsewhere.
- *
  * FIXME: Terrible code, please rewrite
  */
 public class WFSDescribeFeatureHelper {
