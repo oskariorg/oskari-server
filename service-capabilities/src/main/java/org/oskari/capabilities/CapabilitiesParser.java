@@ -49,6 +49,7 @@ public abstract class CapabilitiesParser extends OskariComponent {
             throw new ServiceException("Unexpected Content-Type: " + contentType + " from: " + capabilitiesUrl);
         }
         RawCapabilitiesResponse response = new RawCapabilitiesResponse(conn.getURL().toString());
+        response.setContentType(contentType);
         String encoding = IOHelper.getCharset(conn);
         response.setResponse(IOHelper.readBytes(conn), encoding);
         return response;

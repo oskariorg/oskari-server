@@ -37,7 +37,7 @@ public class WFSCapabilitiesParser extends OGCCapabilitiesParser {
         return "acceptVersions";
     }
     protected String getDefaultVersion() { return "1.1.0"; }
-    protected String getExpectedContentType(String version) {
+    public String getExpectedContentType(String version) {
         if (OGC_API_VERSION.equals(version)) {
             return "json";
         }
@@ -110,6 +110,13 @@ public class WFSCapabilitiesParser extends OGCCapabilitiesParser {
         } catch (Exception e) {
             throw new ServiceException("Unable to parse layers for WFS capabilities", e);
         }
+    }
+
+    public String contructCapabilitiesUrl(String url, String version) {
+        if (OGC_API_VERSION.equals(version)) {
+            return OGCAPIFeaturesService.constructUrl(url);
+        }
+        return super.contructCapabilitiesUrl(url, version);
     }
 
     protected void enhanceCapabilitiesData(LayerCapabilitiesWFS layer, ServiceConnectInfo src) {

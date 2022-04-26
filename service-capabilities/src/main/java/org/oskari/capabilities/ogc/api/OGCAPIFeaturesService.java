@@ -63,10 +63,17 @@ public class OGCAPIFeaturesService {
         String conformanceUrl = url + "/conformance";
         OGCAPIReqClasses reqClasses = load(conformanceUrl, user, pass, OGCAPIReqClasses.class);
 
-        String collectionsUrl = url + "/collections";
+        String collectionsUrl = constructUrl(url);
         FeaturesContent collections = load(collectionsUrl, user, pass, FeaturesContent.class);
 
         return new OGCAPIFeaturesService(reqClasses, collections);
+    }
+
+    public static String constructUrl(String baseUrl) {
+        while (baseUrl.endsWith("/")) {
+            baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
+        }
+        return baseUrl + "/collections";
     }
 
     public String toJSON() throws JsonProcessingException {
