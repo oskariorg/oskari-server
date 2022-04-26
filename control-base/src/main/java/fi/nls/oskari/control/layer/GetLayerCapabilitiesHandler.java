@@ -5,6 +5,7 @@ import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.service.OskariComponentManager;
+import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.capabilities.CapabilitiesConstants;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
@@ -13,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.oskari.capabilities.RawCapabilitiesHelper;
+import org.oskari.capabilities.CapabilitiesService;
 import org.oskari.capabilities.RawCapabilitiesResponse;
 import org.oskari.permissions.PermissionService;
 import org.oskari.service.util.ServiceFactory;
@@ -50,9 +51,13 @@ public class GetLayerCapabilitiesHandler extends ActionHandler {
             ResponseHelper.writeResponse(params, HttpServletResponse.SC_OK,
                     "application/json", data.getBytes(StandardCharsets.UTF_8));
         } else {
-            final RawCapabilitiesResponse data = RawCapabilitiesHelper.getCapabilities(layer);
-            ResponseHelper.writeResponse(params, HttpServletResponse.SC_OK,
-                    data.getContentType(), data.getResponse());
+            try {
+                final RawCapabilitiesResponse data = CapabilitiesService.getCapabilities(layer);
+                ResponseHelper.writeResponse(params, HttpServletResponse.SC_OK,
+                        data.getContentType(), data.getResponse());
+            } catch (ServiceException e) {
+                throw new ActionException("Unable to get capabilities", e);
+            }
         }
     }
 

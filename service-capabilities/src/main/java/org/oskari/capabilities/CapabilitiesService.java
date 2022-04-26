@@ -9,6 +9,7 @@ import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.oskari.capabilities.ogc.OGCCapabilitiesParser;
 
 import java.io.IOException;
 import java.util.*;
@@ -107,6 +108,27 @@ public class CapabilitiesService {
             return json;
         } catch (Exception e) {
             throw new ServiceRuntimeException("Error serializing capabilities as JSON", e);
+        }
+    }
+
+    public static RawCapabilitiesResponse getCapabilities(OskariLayer layer) throws ServiceException {
+        return getCapabilities(ServiceConnectInfo.fromLayer(layer));
+    }
+
+    public static RawCapabilitiesResponse getCapabilities(ServiceConnectInfo info) throws ServiceException {
+        CapabilitiesParser parser = CapabilitiesService.getParser(info.getType());
+        if (parser == null) {
+            throw new ServiceException("Unsupported layer type: " + info.getType());
+        }
+        if (!(parser instanceof OGCCapabilitiesParser)) {
+            throw new ServiceException("Only OGC layers support capabilities");
+        }
+        OGCCapabilitiesParser ogcParser = (OGCCapabilitiesParser) parser;
+        String url = ogcParser.contructCapabilitiesUrl(info.getUrl(), info.getVersion());
+        try {
+            return ogcParser.fetchCapabilities(url, info.getUser(), info.getPass(), ogcParser.getExpectedContentType(info.getVersion()));
+        } catch (IOException  ex) {
+            throw new ServiceException("Error fetching capabilities", ex);
         }
     }
 
