@@ -21,7 +21,7 @@ public abstract class OGCCapabilitiesParser extends CapabilitiesParser {
         return "xml";
     }
     // allow overriding for OGC API services etc
-    protected String getExpectedContentType(String version) {
+    public String getExpectedContentType(String version) {
         return getExpectedContentType();
     }
     protected abstract String getDefaultVersion();
@@ -60,7 +60,7 @@ public abstract class OGCCapabilitiesParser extends CapabilitiesParser {
         return parseLayers(capabilities, version);
     }
 
-    protected String contructCapabilitiesUrl(String url, String version) {
+    public String contructCapabilitiesUrl(String url, String version) {
         String urlLC = url.toLowerCase();
 
         final Map<String, String> params = new HashMap<>();

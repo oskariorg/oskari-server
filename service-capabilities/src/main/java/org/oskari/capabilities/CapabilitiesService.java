@@ -110,7 +110,7 @@ public class CapabilitiesService {
         }
     }
 
-    private static CapabilitiesParser getParser(String layerType) {
+    protected static CapabilitiesParser getParser(String layerType) {
         return (CapabilitiesParser) OskariComponentManager
                 .getComponentsOfType(CapabilitiesParser.class)
                 .get(layerType);
