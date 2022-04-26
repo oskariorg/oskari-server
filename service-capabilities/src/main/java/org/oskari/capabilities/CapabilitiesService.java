@@ -39,6 +39,7 @@ public class CapabilitiesService {
         try {
             LayerCapabilities capsForSingleLayer = parser.getLayerFromService(connectInfo, layer.getName());
             layer.setCapabilities(toJSON(capsForSingleLayer, systemCRSs));
+            layer.setCapabilitiesLastUpdated(new Date());
             return CapabilitiesUpdateResult.ok(layer);
         } catch (IOException | ServiceException e) {
             if (e instanceof IOException) {
@@ -87,6 +88,7 @@ public class CapabilitiesService {
                     return;
                 }
                 layer.setCapabilities(toJSON(capsForSingleLayer, systemCRSs));
+                layer.setCapabilitiesLastUpdated(new Date());
                 results.add(CapabilitiesUpdateResult.ok(layer));
             });
         }
