@@ -1,0 +1,1 @@
+DROP TABLE oskari_capabilities_cache;
