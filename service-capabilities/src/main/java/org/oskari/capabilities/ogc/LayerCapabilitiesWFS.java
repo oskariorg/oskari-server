@@ -1,6 +1,7 @@
 package org.oskari.capabilities.ogc;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import fi.nls.oskari.domain.map.OskariLayer;
 import org.oskari.capabilities.ogc.wfs.FeaturePropertyType;
 
@@ -17,7 +18,7 @@ public class LayerCapabilitiesWFS extends LayerCapabilitiesOGC {
     public static final String FEATURE_PROPERTIES = "featureProperties";
     public static final String GEOMETRY_FIELD = "geomName";
 
-    public LayerCapabilitiesWFS(String name, String title) {
+    public LayerCapabilitiesWFS(@JsonProperty("name") String name, @JsonProperty("title") String title) {
         super(name, title);
         setType(OskariLayer.TYPE_WFS);
     }

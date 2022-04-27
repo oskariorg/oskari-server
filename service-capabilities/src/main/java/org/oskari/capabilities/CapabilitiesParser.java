@@ -16,6 +16,9 @@ public abstract class CapabilitiesParser extends OskariComponent {
     private static final int TIMEOUT_MS = PropertyUtil.getOptional("capabilities.timeout", 30) * 1000;
 
     public abstract Map<String, LayerCapabilities> getLayersFromService(ServiceConnectInfo src) throws IOException, ServiceException;
+    public Class<? extends LayerCapabilities> getCapabilitiesClass() {
+        return LayerCapabilities.class;
+    }
     /*
      For optimization purposes to get single layer (this method can be overridden to optimize single layer, the base method is not optimized).
      For example wfs-layers require multiple requests/layer and this can be used to update single layer.

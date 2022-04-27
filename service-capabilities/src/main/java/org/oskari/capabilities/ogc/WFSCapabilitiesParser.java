@@ -36,6 +36,9 @@ public class WFSCapabilitiesParser extends OGCCapabilitiesParser {
     public void setOGCAPIFeatureItemsDescriber(OGCAPIFeatureItemsDescriber provider) {
         ogcAPIFeaturesProvider = provider;
     }
+    public Class<? extends LayerCapabilities> getCapabilitiesClass() {
+        return LayerCapabilitiesWFS.class;
+    }
     protected String getVersionParamName() {
         return "acceptVersions";
     }

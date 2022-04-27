@@ -1,6 +1,7 @@
 package org.oskari.capabilities.ogc;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import fi.nls.oskari.domain.map.OskariLayer;
 
 import java.util.Collections;
@@ -14,7 +15,7 @@ public class LayerCapabilitiesWMS extends LayerCapabilitiesOGC {
     public static final String MAX_SCALE = "maxScale";
     public static final String TIMES = "times";
 
-    public LayerCapabilitiesWMS(String name, String title) {
+    public LayerCapabilitiesWMS(@JsonProperty("name") String name, @JsonProperty("title") String title) {
         super(name, title);
         setType(OskariLayer.TYPE_WMS);
     }

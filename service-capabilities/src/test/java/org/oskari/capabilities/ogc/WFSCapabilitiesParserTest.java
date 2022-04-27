@@ -61,6 +61,9 @@ public class WFSCapabilitiesParserTest {
 
         String wkt = "POLYGON ((15.999210419254936 56.23928539106909, 15.999210419254936 73.5170461466599, 33.27697117484574 73.5170461466599, 33.27697117484574 56.23928539106909, 15.999210419254936 56.23928539106909))";
         assertEquals("Coverage should match", wkt, layerCaps.getBbox().getWKT());
+
+        LayerCapabilitiesWFS deserialized = CapabilitiesService.fromJSON(json.toString(), "wfslayer");
+        assertTrue("Typed correctly on deserialization", deserialized instanceof LayerCapabilitiesWFS);
     }
 
     @Test

@@ -14,6 +14,9 @@ import java.util.stream.Collectors;
 @Oskari(OskariLayer.TYPE_WMTS)
 public class WMTSCapabilitiesParser extends OGCCapabilitiesParser {
 
+    public Class<? extends LayerCapabilities> getCapabilitiesClass() {
+        return LayerCapabilitiesWMTS.class;
+    }
     protected String getVersionParamName() {
         return "acceptVersions";
     }
@@ -27,7 +30,6 @@ public class WMTSCapabilitiesParser extends OGCCapabilitiesParser {
                 LayerCapabilitiesWMTS l = new LayerCapabilitiesWMTS(layer.getId(), layer.getTitle());
                 l.setStyles(layer.getStyles(), layer.getDefaultStyle());
                 l.setSrs(layer.getLinks().stream()
-                        // TODO: normalize crs to short format
                         .map(link -> link.getTileMatrixSet().getCrs())
                         .collect(Collectors.toSet()));
 
