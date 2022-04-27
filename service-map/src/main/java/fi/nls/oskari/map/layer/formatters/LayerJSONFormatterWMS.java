@@ -19,7 +19,6 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
 
     public static final String KEY_GFICONTENT = "gfiContent";
     public static final String KEY_ATTRIBUTES = "attributes";
-    private static final String ISO_TIME = "ISO8601";
     private static Logger log = LogFactory.getLogger(LayerJSONFormatterWMS.class);
 
     public JSONObject getJSON(OskariLayer layer,
@@ -72,15 +71,15 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
             JSONHelper.putValue(layerJson, KEY_ISQUERYABLE, attrs.optBoolean(KEY_ISQUERYABLE));
         } else if (capabilities.has(KEY_ISQUERYABLE)) {
             JSONHelper.putValue(layerJson, KEY_ISQUERYABLE, capabilities.optBoolean(KEY_ISQUERYABLE));
-        } else if (capabilities.has("typeSpecific")) {
-            JSONHelper.putValue(layerJson, KEY_ISQUERYABLE, capabilities.optJSONObject("typeSpecific").optBoolean(KEY_ISQUERYABLE));
+        } else if (capabilities.has(KEY_TYPE_SPECIFIC)) {
+            JSONHelper.putValue(layerJson, KEY_ISQUERYABLE, capabilities.optJSONObject(KEY_TYPE_SPECIFIC).optBoolean(KEY_ISQUERYABLE));
         }
 
         // Do not override version, if already available
         if (!layerJson.has(KEY_VERSION)) {
             JSONHelper.putValue(layerJson, KEY_VERSION,
                     JSONHelper.getStringFromJSON(capabilities, KEY_VERSION,
-                            JSONHelper.getStringFromJSON(capabilities.optJSONObject("typeSpecific"), KEY_VERSION, null)));
+                            JSONHelper.getStringFromJSON(capabilities.optJSONObject(KEY_TYPE_SPECIFIC), KEY_VERSION, null)));
         }
 
         // copy time from capabilities to attributes
@@ -98,8 +97,8 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
         if (capabilities.has(KEY_TIMES)) {
             return JSONHelper.get(capabilities, KEY_TIMES);
         }
-        if (capabilities.has("typeSpecific")) {
-            return JSONHelper.get(capabilities.optJSONObject("typeSpecific"), KEY_TIMES);
+        if (capabilities.has(KEY_TYPE_SPECIFIC)) {
+            return JSONHelper.get(capabilities.optJSONObject(KEY_TYPE_SPECIFIC), KEY_TIMES);
         }
         return null;
     }
