@@ -12,8 +12,6 @@ import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkServiceMybatisImpl
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
 import fi.nls.oskari.service.OskariComponentManager;
-import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
-import fi.nls.oskari.service.capabilities.CapabilitiesCacheServiceMybatisImpl;
 import org.oskari.permissions.PermissionService;
 import org.oskari.permissions.PermissionServiceMybatisImpl;
 
@@ -26,7 +24,6 @@ public class ServiceFactory {
     private static OskariLayerGroupLinkService layerGroupLinkService;
     private static PermissionService permissionsService;
     private static SearchService searchService;
-    private static CapabilitiesCacheService capabilitiesCacheService;
 
     public static DataProviderService getDataProviderService() {
         if (dataProviderService == null) {
@@ -77,10 +74,4 @@ public class ServiceFactory {
         return searchService;
     }
 
-    public static CapabilitiesCacheService getCapabilitiesCacheService() {
-        if (capabilitiesCacheService == null) {
-            capabilitiesCacheService = new CapabilitiesCacheServiceMybatisImpl();
-        }
-        return capabilitiesCacheService;
-    }
 }

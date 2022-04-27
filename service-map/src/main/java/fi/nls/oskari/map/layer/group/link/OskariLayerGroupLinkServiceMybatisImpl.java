@@ -5,7 +5,6 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import fi.nls.oskari.annotation.Oskari;
-import fi.nls.oskari.service.OskariComponent;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -14,12 +13,11 @@ import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.mybatis.MyBatisHelper;
-import fi.nls.oskari.service.capabilities.CapabilitiesCacheServiceMybatisImpl;
 
 @Oskari("MaplayerGroupLinks")
 public class OskariLayerGroupLinkServiceMybatisImpl extends OskariLayerGroupLinkService {
 
-    private static final Logger LOG = LogFactory.getLogger(CapabilitiesCacheServiceMybatisImpl.class);
+    private static final Logger LOG = LogFactory.getLogger(OskariLayerGroupLinkServiceMybatisImpl.class);
 
     private final SqlSessionFactory factory;
 
