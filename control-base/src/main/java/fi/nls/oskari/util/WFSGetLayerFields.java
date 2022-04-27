@@ -11,11 +11,12 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.*;
 
+import static fi.nls.oskari.util.IOHelper.CONTENT_TYPE_GEOJSON;
+
 public class WFSGetLayerFields {
     private static final String KEY_TYPES = "types";
     private static final String KEY_GEOMETRY_NAME = "geometryName";
     private static final String KEY_GEOMETRY_TYPE = "geometryType";
-    private static final String CONTENT_TYPE_GEOJSON = "application/geo+json";
     /**
      * Return fields information for the WFS layer
      *
@@ -71,7 +72,7 @@ public class WFSGetLayerFields {
         final Map<String, String> headers = Collections.singletonMap("Accept", CONTENT_TYPE_GEOJSON);
         try {
             final HttpURLConnection conn = IOHelper.getConnection(path, layer.getUsername(), layer.getPassword(), queryParams, headers);
-            OskariWFS3Client.validateResponse(conn, CONTENT_TYPE_GEOJSON);
+            IOHelper.validateResponse(conn, CONTENT_TYPE_GEOJSON);
             final String rawResponse = IOHelper.readString(conn.getInputStream());
             final JSONObject response = new JSONObject(rawResponse);
             return response.getJSONArray("features");

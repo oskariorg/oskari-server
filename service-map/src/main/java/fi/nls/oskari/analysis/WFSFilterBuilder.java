@@ -1,4 +1,4 @@
-package fi.nls.oskari.wfs;
+package fi.nls.oskari.analysis;
 
 import org.locationtech.jts.geom.Geometry;
 import fi.nls.oskari.log.LogFactory;

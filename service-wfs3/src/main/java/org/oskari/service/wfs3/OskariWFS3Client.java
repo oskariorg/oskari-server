@@ -36,6 +36,8 @@ import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import org.oskari.ogcapi.OpenAPILink;
 
+import static fi.nls.oskari.util.IOHelper.CONTENT_TYPE_GEOJSON;
+
 /**
  * Client code for WFS 3 Core services
  */
@@ -53,7 +55,6 @@ public class OskariWFS3Client {
     private static final int MAX_PAGE_SIZE = 10_000;
     private static final int MAX_HARD_LIMIT = 100_000;
 
-    private static final String CONTENT_TYPE_GEOJSON = "application/geo+json";
     private static final int MAX_REDIRECTS = 5;
     private static final ObjectMapper OM = new ObjectMapper();
     private static final TypeReference<HashMap<String, Object>> TYPE_REF = new TypeReference<HashMap<String, Object>>() {};
@@ -129,7 +130,7 @@ public class OskariWFS3Client {
             HttpURLConnection conn = IOHelper.getConnection(path, user, pass, query, headers);
             conn = IOHelper.followRedirect(conn, user, pass, query, headers, MAX_REDIRECTS);
 
-            validateResponse(conn, CONTENT_TYPE_GEOJSON);
+            IOHelper.validateResponse(conn, CONTENT_TYPE_GEOJSON);
             Map<String, Object> geojson = readMap(conn);
             boolean ignoreGeometryProperties = true;
             SimpleFeatureType schema = GeoJSONSchemaDetector.getSchema(geojson, crs, ignoreGeometryProperties);
@@ -143,7 +144,7 @@ public class OskariWFS3Client {
                 conn = IOHelper.getConnection(next, user, pass, null, headers);
                 conn = IOHelper.followRedirect(conn, user, pass, null, headers, MAX_REDIRECTS);
 
-                validateResponse(conn, CONTENT_TYPE_GEOJSON);
+                IOHelper.validateResponse(conn, CONTENT_TYPE_GEOJSON);
                 geojson = readMap(conn);
                 sfc = GeoJSONReader2.toFeatureCollection(geojson, schema, transformCRS84ToTargetCRS, postFilter);
                 numFeatures += sfc.size();
@@ -238,20 +239,6 @@ public class OskariWFS3Client {
     private static Map<String, Object> readMap(HttpURLConnection conn) throws IOException {
         try (InputStream in = conn.getInputStream()) {
             return OM.readValue(in, TYPE_REF);
-        }
-    }
-
-    public static void validateResponse(HttpURLConnection conn, String expectedContentType)
-            throws ServiceRuntimeException, IOException {
-        if (conn.getResponseCode() != 200) {
-            throw new ServiceRuntimeException("Unexpected status code " + conn.getResponseCode());
-        }
-
-        if (expectedContentType != null) {
-            String contentType = conn.getContentType();
-            if (contentType != null && !expectedContentType.equals(contentType)) {
-                throw new ServiceRuntimeException("Unexpected content type " + contentType);
-            }
         }
     }
 
