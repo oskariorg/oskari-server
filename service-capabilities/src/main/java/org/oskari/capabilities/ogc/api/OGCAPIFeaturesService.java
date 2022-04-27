@@ -70,10 +70,28 @@ public class OGCAPIFeaturesService {
     }
 
     public static String constructUrl(String baseUrl) {
-        while (baseUrl.endsWith("/")) {
-            baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
+        StringBuilder path = new StringBuilder(baseUrl);
+        // Remove (all) trailing / characters
+        while (path.charAt(path.length() - 1) == '/') {
+            path.setLength(path.length() - 1);
         }
-        return baseUrl + "/collections";
+        path.append("/collections");
+        return path.toString();
+    }
+
+    private static String getCollectionsPath(String endPoint, String collectionId) {
+        StringBuilder path = new StringBuilder(constructUrl(endPoint));
+        // Remove (all) trailing / characters
+        while (path.charAt(path.length() - 1) == '/') {
+            path.setLength(path.length() - 1);
+        }
+        path.append("/");
+        path.append(collectionId);
+        return path.toString();
+    }
+
+    public static String getItemsPath(String endPoint, String collectionId) {
+        return getCollectionsPath(endPoint, collectionId) + "/items";
     }
 
     public String toJSON() throws JsonProcessingException {

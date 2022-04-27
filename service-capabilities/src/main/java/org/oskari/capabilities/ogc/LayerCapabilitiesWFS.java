@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import fi.nls.oskari.domain.map.OskariLayer;
 import org.oskari.capabilities.ogc.wfs.FeaturePropertyType;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -31,7 +32,7 @@ public class LayerCapabilitiesWFS extends LayerCapabilitiesOGC {
         return (Set<String>) getTypeSpecific().getOrDefault(OGC_API_CRS_URI, Collections.emptySet());
     }
 
-    public void setFeatureProperties(List<FeaturePropertyType> props) {
+    public void setFeatureProperties(Collection<FeaturePropertyType> props) {
         if (props != null) {
             addCapabilityData(FEATURE_PROPERTIES, props);
             setGeometryField(props.stream()
@@ -43,8 +44,8 @@ public class LayerCapabilitiesWFS extends LayerCapabilitiesOGC {
     }
 
     @JsonIgnore
-    public List<FeaturePropertyType> getFeatureProperties() {
-        return (List<FeaturePropertyType>) getTypeSpecific().getOrDefault(FEATURE_PROPERTIES, Collections.emptyList());
+    public Collection<FeaturePropertyType> getFeatureProperties() {
+        return (Collection<FeaturePropertyType>) getTypeSpecific().getOrDefault(FEATURE_PROPERTIES, Collections.emptyList());
     }
 
     public void setGeometryField(String geomName) {
