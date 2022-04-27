@@ -16,6 +16,22 @@ public abstract class CapabilitiesParser extends OskariComponent {
     private static final int TIMEOUT_MS = PropertyUtil.getOptional("capabilities.timeout", 30) * 1000;
 
     public abstract Map<String, LayerCapabilities> getLayersFromService(ServiceConnectInfo src) throws IOException, ServiceException;
+
+    /**
+     * Provice a class to deserialize to from JSON. We could do:
+     *
+         @JsonTypeInfo(
+         use = JsonTypeInfo.Id.NAME,
+         property = "type")
+         @JsonSubTypes({
+         @JsonSubTypes.Type(value = LayerCapabilitiesWFS.class, name = "wfslayer"),
+         @JsonSubTypes.Type(value = LayerCapabilitiesWMS.class, name = "wmslayer"),
+         @JsonSubTypes.Type(value = LayerCapabilitiesWMTS.class, name = "wmtslayer")
+         })
+
+     * on LayerCapabilities but we would need to hardcode the subtypes there. This is more cumbersome but extendable way.
+     * @return
+     */
     public Class<? extends LayerCapabilities> getCapabilitiesClass() {
         return LayerCapabilities.class;
     }
