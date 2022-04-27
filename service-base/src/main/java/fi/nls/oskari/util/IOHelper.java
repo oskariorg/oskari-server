@@ -42,6 +42,7 @@ public class IOHelper {
     public static final Charset DEFAULT_CHARSET_CS = StandardCharsets.UTF_8;
     public static final String CONTENTTYPE_FORM_URLENCODED = "application/x-www-form-urlencoded";
     public static final String CONTENT_TYPE_JSON = "application/json";
+    public static final String CONTENT_TYPE_GEOJSON = "application/geo+json";
     public static final String CONTENT_TYPE_XML = "application/xml";
     public static final String ENCODING_GZIP = "gzip";
     private static final Logger log = LogFactory.getLogger(IOHelper.class);
@@ -426,6 +427,19 @@ public class IOHelper {
         }
     }
 
+    public static void validateResponse(HttpURLConnection conn, String expectedContentType)
+            throws ServiceRuntimeException, IOException {
+        if (conn.getResponseCode() != 200) {
+            throw new ServiceRuntimeException("Unexpected status code " + conn.getResponseCode());
+        }
+
+        if (expectedContentType != null) {
+            String contentType = conn.getContentType();
+            if (contentType != null && !expectedContentType.equals(contentType)) {
+                throw new ServiceRuntimeException("Unexpected content type " + contentType);
+            }
+        }
+    }
     /**
      * If logger is set to debug this method reads the input stream, prints the response as text
      * and wraps it to another input stream for further consumption.
