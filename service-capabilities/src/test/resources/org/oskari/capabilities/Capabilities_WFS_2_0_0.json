@@ -7,6 +7,136 @@
   "title": "lipas_7000_huoltorakennukset",
   "type": "wfslayer",
   "url": "http://lipas.cc.jyu.fi/geoserver/lipas/ows?request=GetCapabilities&service=WFS&acceptVersions=2.0.0",
+  "featureProperties": [
+    {
+      "name": "id",
+      "type": "int"
+    },
+    {
+      "name": "nimi_fi",
+      "type": "string"
+    },
+    {
+      "name": "nimi_se",
+      "type": "string"
+    },
+    {
+      "name": "nimi_en",
+      "type": "string"
+    },
+    {
+      "name": "sahkoposti",
+      "type": "string"
+    },
+    {
+      "name": "www",
+      "type": "string"
+    },
+    {
+      "name": "puhelinnumero",
+      "type": "string"
+    },
+    {
+      "name": "koulun_liikuntapaikka",
+      "type": "boolean"
+    },
+    {
+      "name": "vapaa_kaytto",
+      "type": "boolean"
+    },
+    {
+      "name": "rakennusvuosi",
+      "type": "int"
+    },
+    {
+      "name": "peruskorjausvuodet",
+      "type": "string"
+    },
+    {
+      "name": "omistaja",
+      "type": "string"
+    },
+    {
+      "name": "yllapitaja",
+      "type": "string"
+    },
+    {
+      "name": "katuosoite",
+      "type": "string"
+    },
+    {
+      "name": "postinumero",
+      "type": "string"
+    },
+    {
+      "name": "postitoimipaikka",
+      "type": "string"
+    },
+    {
+      "name": "kunta_nimi_fi",
+      "type": "string"
+    },
+    {
+      "name": "kuntanumero",
+      "type": "int"
+    },
+    {
+      "name": "kuntaosa",
+      "type": "string"
+    },
+    {
+      "name": "tyyppikoodi",
+      "type": "int"
+    },
+    {
+      "name": "tyyppi_nimi_fi",
+      "type": "string"
+    },
+    {
+      "name": "muokattu_viimeksi",
+      "type": "dateTime"
+    },
+    {
+      "name": "the_geom",
+      "type": "PointPropertyType"
+    },
+    {
+      "name": "valinevuokraus",
+      "type": "string"
+    },
+    {
+      "name": "lisatieto_fi",
+      "type": "string"
+    },
+    {
+      "name": "kioski",
+      "type": "string"
+    },
+    {
+      "name": "sauna",
+      "type": "string"
+    },
+    {
+      "name": "yleiso_wc",
+      "type": "string"
+    },
+    {
+      "name": "pukukopit",
+      "type": "string"
+    },
+    {
+      "name": "suksihuolto",
+      "type": "string"
+    },
+    {
+      "name": "pinta_ala_m2",
+      "type": "string"
+    },
+    {
+      "name": "suihku",
+      "type": "string"
+    }
+  ],
   "typeSpecific": {
     "formats": [
       "GML2",
@@ -38,136 +168,6 @@
       "maxX": 55.61796449437093
     },
     "geomName": "the_geom",
-    "featureProperties": [
-      {
-        "name": "id",
-        "type": "int"
-      },
-      {
-        "name": "nimi_fi",
-        "type": "string"
-      },
-      {
-        "name": "nimi_se",
-        "type": "string"
-      },
-      {
-        "name": "nimi_en",
-        "type": "string"
-      },
-      {
-        "name": "sahkoposti",
-        "type": "string"
-      },
-      {
-        "name": "www",
-        "type": "string"
-      },
-      {
-        "name": "puhelinnumero",
-        "type": "string"
-      },
-      {
-        "name": "koulun_liikuntapaikka",
-        "type": "boolean"
-      },
-      {
-        "name": "vapaa_kaytto",
-        "type": "boolean"
-      },
-      {
-        "name": "rakennusvuosi",
-        "type": "int"
-      },
-      {
-        "name": "peruskorjausvuodet",
-        "type": "string"
-      },
-      {
-        "name": "omistaja",
-        "type": "string"
-      },
-      {
-        "name": "yllapitaja",
-        "type": "string"
-      },
-      {
-        "name": "katuosoite",
-        "type": "string"
-      },
-      {
-        "name": "postinumero",
-        "type": "string"
-      },
-      {
-        "name": "postitoimipaikka",
-        "type": "string"
-      },
-      {
-        "name": "kunta_nimi_fi",
-        "type": "string"
-      },
-      {
-        "name": "kuntanumero",
-        "type": "int"
-      },
-      {
-        "name": "kuntaosa",
-        "type": "string"
-      },
-      {
-        "name": "tyyppikoodi",
-        "type": "int"
-      },
-      {
-        "name": "tyyppi_nimi_fi",
-        "type": "string"
-      },
-      {
-        "name": "muokattu_viimeksi",
-        "type": "dateTime"
-      },
-      {
-        "name": "the_geom",
-        "type": "PointPropertyType"
-      },
-      {
-        "name": "valinevuokraus",
-        "type": "string"
-      },
-      {
-        "name": "lisatieto_fi",
-        "type": "string"
-      },
-      {
-        "name": "kioski",
-        "type": "string"
-      },
-      {
-        "name": "sauna",
-        "type": "string"
-      },
-      {
-        "name": "yleiso_wc",
-        "type": "string"
-      },
-      {
-        "name": "pukukopit",
-        "type": "string"
-      },
-      {
-        "name": "suksihuolto",
-        "type": "string"
-      },
-      {
-        "name": "pinta_ala_m2",
-        "type": "string"
-      },
-      {
-        "name": "suihku",
-        "type": "string"
-      }
-    ],
     "version": "2.0.0",
     "desc": ""
   }

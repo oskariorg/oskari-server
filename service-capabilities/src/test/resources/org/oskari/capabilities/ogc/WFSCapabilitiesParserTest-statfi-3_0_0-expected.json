@@ -7,6 +7,7 @@
   "styles": [],
   "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:4326 2020",
   "type": "wfslayer",
+  "featureProperties":[],
   "url": null,
   "typeSpecific": {
     "formats": [
