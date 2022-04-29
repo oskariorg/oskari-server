@@ -5,7 +5,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import fi.nls.oskari.domain.map.OskariLayer;
 import org.oskari.capabilities.ogc.wfs.FeaturePropertyType;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Set;
 
 public class LayerCapabilitiesWFS extends LayerCapabilitiesOGC {
 
@@ -20,6 +23,10 @@ public class LayerCapabilitiesWFS extends LayerCapabilitiesOGC {
         setType(OskariLayer.TYPE_WFS);
     }
 
+    public Collection<FeaturePropertyType> getFeatureProperties() {
+        return featureProperties;
+    }
+
     public void setFeatureProperties(Collection<FeaturePropertyType> props) {
         if (props != null) {
             featureProperties = props;
@@ -31,21 +38,23 @@ public class LayerCapabilitiesWFS extends LayerCapabilitiesOGC {
         }
     }
 
-    public Collection<FeaturePropertyType> getFeatureProperties() {
-        return featureProperties;
-    }
-    public void setSupportedCrsURIs(Set<String> uris) {
-        addCapabilityData(OGC_API_CRS_URI, uris);
-    }
-
     @JsonIgnore
     public Set<String> getSupportedCrsURIs() {
         return (Set<String>) getTypeSpecific().getOrDefault(OGC_API_CRS_URI, Collections.emptySet());
     }
 
+    public void setSupportedCrsURIs(Set<String> uris) {
+        addCapabilityData(OGC_API_CRS_URI, uris);
+    }
+
     @JsonIgnore
     public FeaturePropertyType getFeatureProperty(String name) {
         return getFeatureProperties().stream().filter(p -> name.equals(p.name)).findFirst().orElse(null);
+    }
+
+    @JsonIgnore
+    public String getGeometryField() {
+        return (String) getTypeSpecific().get(GEOMETRY_FIELD);
     }
 
     public void setGeometryField(String geomName) {
@@ -55,26 +64,26 @@ public class LayerCapabilitiesWFS extends LayerCapabilitiesOGC {
     }
 
     @JsonIgnore
-    public String getGeometryField() {
-        return (String) getTypeSpecific().get(GEOMETRY_FIELD);
-    }
-    @JsonIgnore
     public String getNamespaceUri() {
         return (String) getTypeSpecific().getOrDefault(NAMESPACE_URI, null);
     }
+
     public void setNamespaceUri(String uri) {
         if (uri != null) {
             addCapabilityData(NAMESPACE_URI, uri);
         }
     }
+
     public void setMaxFeatures(int count) {
         if (count < 0) {
             return;
         }
         try {
             addCapabilityData(MAX_FEATURES, count);
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
     }
+
     @JsonIgnore
     public Integer getMaxScale() {
         return (Integer) getTypeSpecific().get(MAX_FEATURES);

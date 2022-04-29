@@ -2,13 +2,9 @@
   "srs": [
     "EPSG:4326"
   ],
-  "defaultStyle": null,
   "name": "AreaStatisticalUnit_4500k_EPSG_4326_2020",
-  "styles": [],
   "title": "INSPIRE SU AreaStatisticalUnit 4500k EPSG:4326 2020",
   "type": "wfslayer",
-  "featureProperties":[],
-  "url": null,
   "typeSpecific": {
     "formats": [
       "text/html",

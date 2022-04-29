@@ -1,5 +1,7 @@
 package org.oskari.capabilities.ogc;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class BoundingBox {
 
     private double minX;
@@ -8,7 +10,11 @@ public class BoundingBox {
     private double maxY;
     private String srs;
 
-    public BoundingBox(double minX, double maxX,double minY,double maxY, String srs) {
+    public BoundingBox(@JsonProperty("minX") double minX,
+                       @JsonProperty("maxX") double maxX,
+                       @JsonProperty("minY") double minY,
+                       @JsonProperty("maxY") double maxY,
+                       @JsonProperty("srs") String srs) {
         this.minX = minX;
         this.maxX = maxX;
         this.minY = minY;

@@ -7,7 +7,6 @@ import fi.nls.oskari.util.WFSConversionHelper;
 import java.util.HashMap;
 import java.util.Map;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class FeaturePropertyType {
     public String name;
     public String type;

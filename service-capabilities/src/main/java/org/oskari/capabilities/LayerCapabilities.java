@@ -1,11 +1,13 @@
 package org.oskari.capabilities;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.oskari.capabilities.ogc.LayerStyle;
 
 import java.util.*;
 
 // Something that can be serialized to oskari_maplayer.capabilities
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class LayerCapabilities {
 
     private String name;

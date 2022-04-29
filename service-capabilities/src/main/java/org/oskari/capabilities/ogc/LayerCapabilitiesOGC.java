@@ -17,19 +17,27 @@ public class LayerCapabilitiesOGC extends LayerCapabilities {
     public static final String BBOX = "bbox";
     public static final String METADATA_URL = "metadataUrl";
     public static final String METADATA_UUID = "metadataId";
+    private BoundingBox bbox;
 
     public LayerCapabilitiesOGC(String name, String title) {
         super(name, title);
     }
 
-    public void setVersion(String ver) {
-        if (ver != null) {
-            addCapabilityData(VERSION, ver);
-        }
+    public BoundingBox getBbox() {
+        return bbox;
     }
+
+    public void setBbox(BoundingBox bbox) {
+        this.bbox = bbox;
+    }
+
     @JsonIgnore
     public String getVersion() {
         return (String) getTypeSpecific().get(VERSION);
+    }
+
+    public void setVersion(String ver) {
+        addCapabilityData(VERSION, ver);
     }
 
     public void setFormats(Set<String> formats) {
@@ -43,27 +51,10 @@ public class LayerCapabilitiesOGC extends LayerCapabilities {
         addCapabilityData(IS_QUERYABLE, !infoFormats.isEmpty());
     }
 
-    public void setBbox(BoundingBox bbox) {
-        if (bbox != null) {
-            addCapabilityData(BBOX, bbox);
-        }
-    }
-
-    @JsonIgnore
-    public BoundingBox getBbox() {
-        return (BoundingBox) getTypeSpecific().get(BBOX);
-    }
-
     public void setMetadataUrl(String url) {
+        addCapabilityData(METADATA_URL, url);
         if (url != null) {
-            addCapabilityData(METADATA_URL, url);
             addCapabilityData(METADATA_UUID, MetadataHelper.getIdFromMetadataUrl(url));
-        }
-    }
-
-    public void setDescription(String description) {
-        if (description != null) {
-            addCapabilityData(DESCRIPTION, description);
         }
     }
 
@@ -71,12 +62,17 @@ public class LayerCapabilitiesOGC extends LayerCapabilities {
     public String getDescription() {
         return (String) getTypeSpecific().get(DESCRIPTION);
     }
-    public void setKeywords(Set<String> words) {
-        addCapabilityData(KEYWORDS, words);
+
+    public void setDescription(String description) {
+        addCapabilityData(DESCRIPTION, description);
     }
 
     @JsonIgnore
     public Set<String> getKeywords() {
         return (Set<String>) getTypeSpecific().getOrDefault(KEYWORDS, Collections.emptySet());
+    }
+
+    public void setKeywords(Set<String> words) {
+        addCapabilityData(KEYWORDS, words);
     }
 }
