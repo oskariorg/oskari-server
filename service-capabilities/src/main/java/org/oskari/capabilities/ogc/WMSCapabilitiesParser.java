@@ -13,6 +13,9 @@ import java.util.Map;
 @Oskari(OskariLayer.TYPE_WMS)
 public class WMSCapabilitiesParser extends OGCCapabilitiesParser {
 
+    public Class<? extends LayerCapabilities> getCapabilitiesClass() {
+        return LayerCapabilitiesWMS.class;
+    }
     protected String getDefaultVersion() { return "1.3.0"; }
 
     public Map<String, LayerCapabilities> parseLayers(String xml) throws ServiceException {

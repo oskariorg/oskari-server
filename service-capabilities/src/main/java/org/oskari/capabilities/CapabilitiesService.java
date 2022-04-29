@@ -1,5 +1,6 @@
 package org.oskari.capabilities;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
@@ -20,6 +21,9 @@ import static java.util.stream.Collectors.groupingBy;
 public class CapabilitiesService {
     private static final Logger LOG = LogFactory.getLogger(CapabilitiesService.class);
     private static final ObjectMapper MAPPER = new ObjectMapper();
+    static {
+        MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    }
 
     public static Map<String, LayerCapabilities> getLayersFromService(ServiceConnectInfo connectInfo) throws IOException, ServiceException {
         String layerType = connectInfo.getType();
@@ -110,6 +114,27 @@ public class CapabilitiesService {
             throw new ServiceRuntimeException("Error serializing capabilities as JSON", e);
         }
     }
+
+    public static <T extends LayerCapabilities> T fromJSON(String json, String type) {
+        if (json == null) {
+            return null;
+        }
+        try {
+            CapabilitiesParser parser = getParser(type);
+            Class clazz;
+            if (parser == null) {
+                clazz = LayerCapabilities.class;
+            } else {
+                clazz = parser.getCapabilitiesClass();
+            }
+
+            return (T) MAPPER.readValue(json, clazz);
+        } catch (Exception e) {
+            throw new ServiceRuntimeException("Error serializing capabilities as JSON", e);
+        }
+    }
+
+
 
     public static RawCapabilitiesResponse getCapabilities(OskariLayer layer) throws ServiceException {
         return getCapabilities(ServiceConnectInfo.fromLayer(layer));

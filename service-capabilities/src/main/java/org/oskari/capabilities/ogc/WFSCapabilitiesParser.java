@@ -11,16 +11,14 @@ import fi.nls.oskari.util.IOHelper;
 import org.oskari.capabilities.LayerCapabilities;
 import org.oskari.capabilities.RawCapabilitiesResponse;
 import org.oskari.capabilities.ServiceConnectInfo;
+import org.oskari.capabilities.ogc.api.OGCAPIFeatureItemsDescriber;
 import org.oskari.capabilities.ogc.api.OGCAPIFeaturesService;
 import org.oskari.capabilities.ogc.wfs.DescribeFeatureTypeParser;
 import org.oskari.capabilities.ogc.wfs.DescribeFeatureTypeProvider;
 import org.oskari.capabilities.ogc.wfs.WFSCapsParser;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Oskari(OskariLayer.TYPE_WFS)
@@ -28,14 +26,20 @@ public class WFSCapabilitiesParser extends OGCCapabilitiesParser {
 
     private static final Logger LOG = LogFactory.getLogger(WFSCapabilitiesParser.class);
     private static final String OGC_API_VERSION = "3.0.0";
+    // The providers are used to make mocking for tests easier
     private DescribeFeatureTypeProvider featureTypeProvider = new DescribeFeatureTypeProvider();
+    private OGCAPIFeatureItemsDescriber ogcAPIFeaturesProvider = new OGCAPIFeatureItemsDescriber();
 
     public void setDescribeFeatureTypeProvider(DescribeFeatureTypeProvider provider) {
         featureTypeProvider = provider;
     }
-    protected String getVersionParamName() {
-        return "acceptVersions";
+    public void setOGCAPIFeatureItemsDescriber(OGCAPIFeatureItemsDescriber provider) {
+        ogcAPIFeaturesProvider = provider;
     }
+    public Class<? extends LayerCapabilities> getCapabilitiesClass() {
+        return LayerCapabilitiesWFS.class;
+    }
+
     protected String getDefaultVersion() { return "1.1.0"; }
     public String getExpectedContentType(String version) {
         if (OGC_API_VERSION.equals(version)) {
@@ -67,7 +71,9 @@ public class WFSCapabilitiesParser extends OGCCapabilitiesParser {
     public LayerCapabilities getLayerFromService(ServiceConnectInfo src, String featureType) throws IOException, ServiceException {
         if (OGC_API_VERSION.equals(src.getVersion())) {
             Map<String, LayerCapabilities> layers = getLayersFromService(src);
-            return layers.get(featureType);
+            LayerCapabilitiesWFS collection = (LayerCapabilitiesWFS) layers.get(featureType);
+            enhanceOGCAPIFeaturesCapabilitiesData(collection, src);
+            return collection;
         }
         String capabilitiesUrl = contructCapabilitiesUrl(src.getUrl(), src.getVersion());
         RawCapabilitiesResponse response = fetchCapabilities(capabilitiesUrl, src.getUser(), src.getPass(), getExpectedContentType(src.getVersion()));
@@ -101,6 +107,8 @@ public class WFSCapabilitiesParser extends OGCCapabilitiesParser {
             List<LayerCapabilitiesWFS> caps;
             if (OGC_API_VERSION.equals(version)) {
                 caps = getOGCAPIFeatures(response);
+                // enhance with describe feature type data
+                caps.forEach(c -> enhanceOGCAPIFeaturesCapabilitiesData(c, src));
             } else {
                 caps = WFSCapsParser.parseCapabilities(response);
                 // enhance with describe feature type data
@@ -134,6 +142,21 @@ public class WFSCapabilitiesParser extends OGCCapabilitiesParser {
             LOG.error("Unable to enhance wfs/parse feature type: " + e.getMessage());
         }
     }
+
+
+    protected void enhanceOGCAPIFeaturesCapabilitiesData(LayerCapabilitiesWFS layer, ServiceConnectInfo src) {
+        try {
+            String geojson = ogcAPIFeaturesProvider.getItemsSample(src, layer.getName());
+            if (geojson == null) {
+                LOG.info("OGC API Features items not available:", src.getUrl());
+                return;
+            }
+            layer.setFeatureProperties(ogcAPIFeaturesProvider.getFeatureProperties(geojson));
+        } catch (Exception e) {
+            LOG.error("Unable to enhance OGC API Features/parse feature type: " + e.getMessage());
+        }
+    }
+
 
     protected Map<String, LayerCapabilities> listToMap(List<LayerCapabilitiesWFS> caps) {
         Map<String, LayerCapabilities> layers = new HashMap<>();

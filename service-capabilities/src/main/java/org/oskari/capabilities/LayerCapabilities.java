@@ -1,5 +1,6 @@
 package org.oskari.capabilities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.oskari.capabilities.ogc.LayerStyle;
 
 import java.util.*;
@@ -17,7 +18,7 @@ public class LayerCapabilities {
 
     private Map<String, Object> typeSpecific = new HashMap<>();
 
-    public LayerCapabilities(String name, String title) {
+    public LayerCapabilities(@JsonProperty("name") String name, @JsonProperty("title") String title) {
         this.name = name;
         this.title = title;
     }

@@ -17,6 +17,9 @@ public abstract class OGCCapabilitiesParser extends CapabilitiesParser {
         return this.getName().replaceAll("layer", "").toUpperCase();
     }
 
+    public Class<? extends LayerCapabilities> getCapabilitiesClass() {
+        return LayerCapabilitiesOGC.class;
+    }
     protected String getExpectedContentType() {
         return "xml";
     }
