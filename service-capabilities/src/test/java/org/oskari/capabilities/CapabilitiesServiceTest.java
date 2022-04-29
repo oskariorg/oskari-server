@@ -1,7 +1,12 @@
 package org.oskari.capabilities;
 
+import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.test.util.ResourceHelper;
 import junit.framework.TestCase;
+import org.junit.Assert;
 import org.junit.Test;
+import org.oskari.capabilities.ogc.LayerCapabilitiesWFS;
+import org.oskari.capabilities.ogc.wfs.FeaturePropertyType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,5 +35,26 @@ public class CapabilitiesServiceTest extends TestCase {
         assertEquals("Unparseable returns as is", "urn:ogc:def:crs:EPSG3067", CapabilitiesService.shortSyntaxEpsg("urn:ogc:def:crs:EPSG3067"));
 
         assertEquals("Should parse from url", "EPSG:3067", CapabilitiesService.shortSyntaxEpsg("http://www.opengis.net/def/crs/EPSG/0/3067"));
+    }
+    @Test
+    public void testDeserializationWFS_2_0_0()  {
+        String json = ResourceHelper.readStringResource("Capabilities_WFS_2_0_0.json", this);
+        LayerCapabilitiesWFS caps = CapabilitiesService.fromJSON(json, OskariLayer.TYPE_WFS);
+        Assert.assertEquals(32, caps.getFeatureProperties().size());
+        Assert.assertEquals("the_geom", caps.getGeometryField());
+        FeaturePropertyType prop = caps.getFeatureProperty("kuntanumero");
+        assertNotNull("Should have kuntanumero", prop);
+        assertEquals("kuntanumero should be of type int","int",prop.type);
+    }
+
+    @Test
+    public void testDeserializationWFS_3_0_0()  {
+        String json = ResourceHelper.readStringResource("Capabilities_OGCAPIFeatures.json", this);
+        LayerCapabilitiesWFS caps = CapabilitiesService.fromJSON(json, OskariLayer.TYPE_WFS);
+        Assert.assertEquals(40, caps.getFeatureProperties().size());
+        Assert.assertEquals("geometry", caps.getGeometryField());
+        FeaturePropertyType prop = caps.getFeatureProperty("state");
+        assertNotNull("Should have state", prop);
+        assertEquals("state should be of type number","number",prop.type);
     }
 }

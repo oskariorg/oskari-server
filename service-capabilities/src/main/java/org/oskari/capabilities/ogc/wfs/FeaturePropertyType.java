@@ -17,4 +17,12 @@ public class FeaturePropertyType {
     public boolean isGeometry() {
         return WFSConversionHelper.isGeometryType(type);
     }
+
+    public static FeaturePropertyType fromMap(Map deserialized) {
+        FeaturePropertyType type = new FeaturePropertyType();
+        type.name = (String) deserialized.get("name");
+        type.type = (String) deserialized.get("type");
+        type.restrictions = (Map<String, String>) deserialized.get("restrictions");
+        return type;
+    }
 }

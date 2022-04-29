@@ -5,10 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import fi.nls.oskari.domain.map.OskariLayer;
 import org.oskari.capabilities.ogc.wfs.FeaturePropertyType;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class LayerCapabilitiesWFS extends LayerCapabilitiesOGC {
 
@@ -46,7 +44,26 @@ public class LayerCapabilitiesWFS extends LayerCapabilitiesOGC {
 
     @JsonIgnore
     public Collection<FeaturePropertyType> getFeatureProperties() {
-        return (Collection<FeaturePropertyType>) getTypeSpecific().getOrDefault(FEATURE_PROPERTIES, Collections.emptyList());
+        return (Collection<FeaturePropertyType>) ((Collection) getTypeSpecific().getOrDefault(FEATURE_PROPERTIES, Collections.emptyList()))
+                .stream()
+                .map(item -> {
+                    // workaround for json deserialization
+                    if (item instanceof FeaturePropertyType) {
+                        return item;
+                    } else if (item instanceof HashMap) {
+                        return FeaturePropertyType.fromMap((Map)item);
+                    } else if (item instanceof Map) {
+                        return FeaturePropertyType.fromMap((Map)item);
+                    }
+                    return null;
+                })
+                .filter(i -> i != null)
+                .collect(Collectors.toList());
+    }
+
+    @JsonIgnore
+    public FeaturePropertyType getFeatureProperty(String name) {
+        return getFeatureProperties().stream().filter(p -> name.equals(p.name)).findFirst().orElse(null);
     }
 
     public void setGeometryField(String geomName) {
