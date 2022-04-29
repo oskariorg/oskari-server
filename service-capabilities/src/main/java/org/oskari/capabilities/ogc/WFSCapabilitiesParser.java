@@ -39,9 +39,7 @@ public class WFSCapabilitiesParser extends OGCCapabilitiesParser {
     public Class<? extends LayerCapabilities> getCapabilitiesClass() {
         return LayerCapabilitiesWFS.class;
     }
-    protected String getVersionParamName() {
-        return "acceptVersions";
-    }
+
     protected String getDefaultVersion() { return "1.1.0"; }
     public String getExpectedContentType(String version) {
         if (OGC_API_VERSION.equals(version)) {
