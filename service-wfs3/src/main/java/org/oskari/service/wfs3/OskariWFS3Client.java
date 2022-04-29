@@ -205,14 +205,7 @@ public class OskariWFS3Client {
         if (capabilities == null) {
             return null;
         }
-        // support for new structure
-        JSONObject typeSpecific = capabilities.optJSONObject("typeSpecific");
-        List<String> crsURIs;
-        if (typeSpecific != null) {
-            crsURIs = JSONHelper.getArrayAsList(typeSpecific.optJSONArray("crs-uri"));;
-        } else {
-            crsURIs = JSONHelper.getArrayAsList(capabilities.optJSONArray("crs-uri"));
-        }
+        List<String> crsURIs = JSONHelper.getArrayAsList(capabilities.optJSONArray("crs-uri"));
         for (String crsURI : crsURIs) {
             CoordinateReferenceSystem tmp = safeCRSDecode(crsURI);
             if (tmp != null && CRS.equalsIgnoreMetadata(tmp, crs)) {

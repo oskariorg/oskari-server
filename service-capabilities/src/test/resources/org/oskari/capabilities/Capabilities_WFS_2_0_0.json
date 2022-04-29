@@ -137,38 +137,36 @@
       "type": "string"
     }
   ],
-  "typeSpecific": {
-    "formats": [
-      "GML2",
-      "KML",
-      "SHAPE-ZIP",
-      "application/gml+xml; version=3.2",
-      "application/json",
-      "application/vnd.google-earth.kml xml",
-      "application/vnd.google-earth.kml+xml",
-      "csv",
-      "gml3",
-      "gml32",
-      "json",
-      "text/javascript",
-      "text/xml; subtype=gml/2.1.2",
-      "text/xml; subtype=gml/3.1.1",
-      "text/xml; subtype=gml/3.2"
-    ],
-    "keywords": [
-      "features",
-      "lipas_7000_huoltorakennukset"
-    ],
-    "bbox": {
-      "wkt": "POLYGON ((-6.381538627062841 60.381538627062845, -6.381538627062841 75.58257023372553, 55.61796449437093 75.58257023372553, 55.61796449437093 60.381538627062845, -6.381538627062841 60.381538627062845))",
-      "minY": 60.381538627062845,
-      "minX": -6.381538627062841,
-      "srs": "EPSG:4326",
-      "maxY": 75.58257023372553,
-      "maxX": 55.61796449437093
-    },
-    "geomName": "the_geom",
-    "version": "2.0.0",
-    "desc": ""
-  }
+  "formats": [
+    "GML2",
+    "KML",
+    "SHAPE-ZIP",
+    "application/gml+xml; version=3.2",
+    "application/json",
+    "application/vnd.google-earth.kml xml",
+    "application/vnd.google-earth.kml+xml",
+    "csv",
+    "gml3",
+    "gml32",
+    "json",
+    "text/javascript",
+    "text/xml; subtype=gml/2.1.2",
+    "text/xml; subtype=gml/3.1.1",
+    "text/xml; subtype=gml/3.2"
+  ],
+  "keywords": [
+    "features",
+    "lipas_7000_huoltorakennukset"
+  ],
+  "bbox": {
+    "wkt": "POLYGON ((-6.381538627062841 60.381538627062845, -6.381538627062841 75.58257023372553, 55.61796449437093 75.58257023372553, 55.61796449437093 60.381538627062845, -6.381538627062841 60.381538627062845))",
+    "minY": 60.381538627062845,
+    "minX": -6.381538627062841,
+    "srs": "EPSG:4326",
+    "maxY": 75.58257023372553,
+    "maxX": 55.61796449437093
+  },
+  "geomName": "the_geom",
+  "version": "2.0.0",
+  "desc": ""
 }

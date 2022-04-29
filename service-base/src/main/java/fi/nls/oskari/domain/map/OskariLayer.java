@@ -401,8 +401,8 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
             JSONObject cap = getCapabilities();
             if (cap.has("geom")) {
                 return cap.optString("geom");
-            } else if (cap.has("typeSpecific")) {
-                return cap.optJSONObject("typeSpecific").optString("wkt");
+            } else if (cap.has("bbox")) {
+                return cap.optJSONObject("bbox").optString("wkt");
             }
         }
         return geometry;

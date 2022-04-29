@@ -4,6 +4,7 @@ import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -181,9 +182,9 @@ public class GFIRequestParams {
         if (infoFormat != null && !infoFormat.isEmpty()) {
             return infoFormat;
         }
-        JSONObject typeSpecific = layer.getCapabilities().optJSONObject("typeSpecific");
-        if (typeSpecific != null) {
-            List<String> available = JSONHelper.getArrayAsList(JSONHelper.getJSONArray(typeSpecific, "infoFormats"));
+        JSONArray infoFormats = layer.getCapabilities().optJSONArray("infoFormats");
+        if (infoFormats != null) {
+            List<String> available = JSONHelper.getArrayAsList(infoFormats);
             for (String format : SUPPORTED_GET_FEATURE_INFO_FORMATS) {
                 if (available.contains(format)) {
                     return format;

@@ -18,7 +18,6 @@ public class CapabilitiesConstants {
     public static final String KEY_TIMES = "times";
     public static final String KEY_LEGEND = "legend";
     public static final String KEY_VALUE = "value";
-    public static final String KEY_TYPE_SPECIFIC = "typeSpecific";
 
     // both
     public static final String KEY_VERSION= "version";

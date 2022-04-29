@@ -130,7 +130,7 @@ public class CapabilitiesService {
 
             return (T) MAPPER.readValue(json, clazz);
         } catch (Exception e) {
-            throw new ServiceRuntimeException("Error serializing capabilities as JSON", e);
+            throw new ServiceRuntimeException("Error deserializing capabilities from JSON", e);
         }
     }
 

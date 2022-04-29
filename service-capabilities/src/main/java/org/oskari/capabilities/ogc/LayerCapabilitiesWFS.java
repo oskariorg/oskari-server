@@ -58,10 +58,12 @@ public class LayerCapabilitiesWFS extends LayerCapabilitiesOGC {
         return getFeatureProperties().stream().filter(p -> name.equals(p.name)).findFirst().orElse(null);
     }
 
+    @JsonProperty("geomName")
     public String getGeometryField() {
         return geomName;
     }
 
+    @JsonProperty("geomName")
     public void setGeometryField(String geomName) {
         this.geomName = geomName;
     }

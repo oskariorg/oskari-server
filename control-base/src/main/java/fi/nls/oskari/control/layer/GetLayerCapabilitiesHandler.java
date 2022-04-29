@@ -75,8 +75,7 @@ public class GetLayerCapabilitiesHandler extends ActionHandler {
         try {
             JSONObject modifiedCapabilities = new JSONObject(layer.getCapabilities().toString());
             // modify and remove matrices that are not used for current projection
-            JSONObject layerTypeSpecificCaps = (JSONObject) modifiedCapabilities.remove(CapabilitiesConstants.KEY_TYPE_SPECIFIC);
-            JSONArray linkList = layerTypeSpecificCaps.optJSONArray("tileMatrix"); // -> tileMatrix
+            JSONArray linkList = (JSONArray) modifiedCapabilities.remove("tileMatrices");
             JSONObject link = null;
             for (int i = 0; i < linkList.length(); i++) {
                 link = linkList.optJSONObject(i);
@@ -98,14 +97,11 @@ public class GetLayerCapabilitiesHandler extends ActionHandler {
             if (link == null) {
                 throw new ActionParamsException("No tilematrix matching srs: " + crs);
             }
+            // add the tilematrix link/data for current projection
             JSONArray filteredLinkList = new JSONArray();
             filteredLinkList.put(link);
-            // clean up and copy rest of it
-            layerTypeSpecificCaps.remove("tileMatrix");
-            JSONObject response = JSONHelper.merge(modifiedCapabilities, layerTypeSpecificCaps);
-            // add the tilematrix link/data for current projection
-            response.put("links", filteredLinkList);
-            return response.toString();
+            modifiedCapabilities.put("links", filteredLinkList);
+            return modifiedCapabilities.toString();
         } catch (Exception e) {
             throw new ActionParamsException("Unable to parse JSON", e);
         }

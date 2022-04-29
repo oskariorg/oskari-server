@@ -167,25 +167,19 @@ public class OskariWFSClient {
 
         JSONObject capa = layer.getCapabilities();
         if (capa.has(KEY_FEATURE_OUTPUT_FORMATS)) {
+            // old capabilities (TODO: remove)
             List<String> formats = JSONHelper.getArrayAsList(JSONHelper.getJSONArray(capa, KEY_FEATURE_OUTPUT_FORMATS));
             return formats.contains(JSON_OUTPUT_FORMAT);
         }
-        JSONObject typeSpecific = capa.optJSONObject("typeSpecific");
-        if (typeSpecific != null && typeSpecific.has(CapabilitiesConstants.FORMATS)) {
-            List<String> formats = JSONHelper.getArrayAsList(JSONHelper.getJSONArray(typeSpecific, CapabilitiesConstants.FORMATS));
+        if (capa.has(CapabilitiesConstants.FORMATS)) {
+            // new capabilities
+            List<String> formats = JSONHelper.getArrayAsList(JSONHelper.getJSONArray(capa, CapabilitiesConstants.FORMATS));
             return formats.contains(JSON_OUTPUT_FORMAT);
         }
         return true;
     }
     protected static int getMaxFeatures(OskariLayer layer) {
-        int maxFeatures = layer.getCapabilities().optInt(KEY_MAX_FEATURES, -7);
-        if (maxFeatures == -7) {
-            JSONObject typeSpecific = layer.getCapabilities().optJSONObject("typeSpecific");
-            if (typeSpecific != null) {
-                return typeSpecific.optInt(CapabilitiesConstants.KEY_MAX_FEATURES, DEFAULT_MAX_FEATURES);
-            }
-        }
-        return DEFAULT_MAX_FEATURES;
+        return layer.getCapabilities().optInt(KEY_MAX_FEATURES, DEFAULT_MAX_FEATURES);
     }
     protected static Filter getWFSFilter (String id, OskariLayer layer, ReferencedEnvelope bbox, Optional<UserLayerService> processor) {
         if (processor.isPresent()) {

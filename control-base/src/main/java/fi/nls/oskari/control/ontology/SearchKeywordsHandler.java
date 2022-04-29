@@ -248,18 +248,18 @@ public class SearchKeywordsHandler extends ActionHandler {
         Set<String> layerKeywords = new HashSet<>();
         try {
             if(OskariLayer.TYPE_WMS.equals(layer.getType())) {
-                JSONObject capabilities = layer.getCapabilities().optJSONObject("typeSpecific");
-                if (capabilities == null) {
+                JSONArray keywords = layer.getCapabilities().optJSONArray("keywords");
+                if (keywords == null || keywords.length() == 0) {
                     return EMPTY_RESULT;
                 }
-                layerKeywords.addAll(JSONHelper.getArrayAsList(capabilities.optJSONArray("keywords")));
+                layerKeywords.addAll(JSONHelper.getArrayAsList(keywords));
             }
             else if(OskariLayer.TYPE_WFS.equals(layer.getType())) {
-                JSONObject capabilities = layer.getCapabilities().optJSONObject("typeSpecific");
-                if (capabilities == null) {
+                JSONArray keywords = layer.getCapabilities().optJSONArray("keywords");
+                if (keywords == null || keywords.length() == 0) {
                     return EMPTY_RESULT;
                 }
-                layerKeywords.addAll(JSONHelper.getArrayAsList(capabilities.optJSONArray("keywords")));
+                layerKeywords.addAll(JSONHelper.getArrayAsList(keywords));
             }
             if (layer.getMetadataId() != null) {
                 getLayerKeywords.updateLayerKeywords(layer.getId(), layer.getMetadataId());
