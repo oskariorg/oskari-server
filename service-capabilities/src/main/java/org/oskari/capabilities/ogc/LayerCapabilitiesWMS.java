@@ -3,9 +3,15 @@ package org.oskari.capabilities.ogc;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fi.nls.oskari.domain.map.OskariLayer;
+import org.oskari.capabilities.ogc.wfs.FeaturePropertyType;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+
+import static org.oskari.capabilities.ogc.CapabilitiesConstants.INFO_FORMATS;
+import static org.oskari.capabilities.ogc.CapabilitiesConstants.IS_QUERYABLE;
 
 public class LayerCapabilitiesWMS extends LayerCapabilitiesOGC {
 
@@ -14,6 +20,7 @@ public class LayerCapabilitiesWMS extends LayerCapabilitiesOGC {
     public static final String MAX_SCALE = "maxScale";
     public static final String TIMES = "times";
     private List<LayerCapabilitiesWMS> sublayers;
+    private Set<String> infoFormats;
 
     public LayerCapabilitiesWMS(@JsonProperty("name") String name, @JsonProperty("title") String title) {
         super(name, title);
@@ -46,6 +53,19 @@ public class LayerCapabilitiesWMS extends LayerCapabilitiesOGC {
             }
             propagateStyles(l.getLayers(), l.getStyles());
         });
+    }
+    public void setInfoFormats(Set<String> infoFormats) {
+        this.infoFormats = infoFormats;
+    }
+
+    public Set<String> getInfoFormats() {
+        if (infoFormats == null) {
+            return Collections.emptySet();
+        }
+        return infoFormats;
+    }
+    public boolean isQueryable() {
+        return !getInfoFormats().isEmpty();
     }
 
     @JsonIgnore

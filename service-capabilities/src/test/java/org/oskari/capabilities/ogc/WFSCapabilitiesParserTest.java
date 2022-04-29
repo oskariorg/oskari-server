@@ -57,7 +57,7 @@ public class WFSCapabilitiesParserTest {
         JSONObject json = CapabilitiesService.toJSON(layerCaps, SYSTEM_CRS);
         JSONObject expectedJSON = JSONHelper.createJSONObject(expected);
         // Check and remove version as it is different on expected between 1.1.0 and 2.0.0 input
-        assertEquals("Check version", version, json.optJSONObject("typeSpecific").remove("version"));
+        assertEquals("Check version", version, json.remove("version"));
         // System.out.println(json);
         assertTrue("JSON should match", JSONHelper.isEqual(json, expectedJSON));
 
@@ -80,7 +80,7 @@ public class WFSCapabilitiesParserTest {
         JSONObject json = CapabilitiesService.toJSON(layerCaps, SYSTEM_CRS);
         JSONObject expectedJSON = JSONHelper.createJSONObject(expected);
         // Check and remove version as it is different on expected between 1.1.0 and 2.0.0 input
-        assertEquals("Check version", version, json.optJSONObject("typeSpecific").remove("version"));
+        assertEquals("Check version", version, json.remove("version"));
         // System.out.println(json);
         assertTrue("JSON should match", JSONHelper.isEqual(json, expectedJSON));
 

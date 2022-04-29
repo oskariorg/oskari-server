@@ -7,11 +7,27 @@ import org.oskari.capabilities.ogc.wmts.TileMatrixLink;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 public class LayerCapabilitiesWMTS extends LayerCapabilitiesOGC {
 
     private List<ResourceUrl> resourceUrls;
     private List<TileMatrixLink> links;
+    private Set<String> infoFormats;
+
+    public void setInfoFormats(Set<String> infoFormats) {
+        this.infoFormats = infoFormats;
+    }
+
+    public Set<String> getInfoFormats() {
+        if (infoFormats == null) {
+            return Collections.emptySet();
+        }
+        return infoFormats;
+    }
+    public boolean isQueryable() {
+        return !getInfoFormats().isEmpty();
+    }
 
     public LayerCapabilitiesWMTS(@JsonProperty("name") String name, @JsonProperty("title") String title) {
         super(name, title);

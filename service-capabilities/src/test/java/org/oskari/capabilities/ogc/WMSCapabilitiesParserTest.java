@@ -60,7 +60,7 @@ public class WMSCapabilitiesParserTest {
         JSONObject json = CapabilitiesService.toJSON(layerCaps, SYSTEM_CRS);
         // Check and remove version as it is different on expected between 1.1.1 and 1.3.0 input
         assertEquals("Check version", WMSCapsParser1_3_0.VERSION, json.optJSONObject("typeSpecific").remove("version"));
-        // System.out.println(json);
+         System.out.println(json);
         assertTrue("JSON should match", JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)));
 
         String wkt = "POLYGON ((15.608220469655935 59.36205414098515, 15.608220469655935 70.09468368748001, 33.107629330539034 70.09468368748001, 33.107629330539034 59.36205414098515, 15.608220469655935 59.36205414098515))";
