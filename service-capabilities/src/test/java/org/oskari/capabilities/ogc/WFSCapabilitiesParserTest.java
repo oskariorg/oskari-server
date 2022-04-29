@@ -81,7 +81,7 @@ public class WFSCapabilitiesParserTest {
         JSONObject expectedJSON = JSONHelper.createJSONObject(expected);
         // Check and remove version as it is different on expected between 1.1.0 and 2.0.0 input
         assertEquals("Check version", version, json.remove("version"));
-        // System.out.println(json);
+         System.out.println(json);
         assertTrue("JSON should match", JSONHelper.isEqual(json, expectedJSON));
 
         String wkt = "POLYGON ((15.999210419254936 56.23928539106909, 15.999210419254936 73.5170461466599, 33.27697117484574 73.5170461466599, 33.27697117484574 56.23928539106909, 15.999210419254936 56.23928539106909))";

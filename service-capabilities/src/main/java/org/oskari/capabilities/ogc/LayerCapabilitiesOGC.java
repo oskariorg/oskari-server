@@ -1,5 +1,6 @@
 package org.oskari.capabilities.ogc;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.oskari.capabilities.LayerCapabilities;
 import org.oskari.capabilities.MetadataHelper;
 
@@ -50,10 +51,6 @@ public class LayerCapabilitiesOGC extends LayerCapabilities {
         this.formats = formats;
     }
 
-    public String getDesc() {
-        return desc;
-    }
-
     public String getMetadataUrl() {
         return metadataUrl;
     }
@@ -69,10 +66,12 @@ public class LayerCapabilitiesOGC extends LayerCapabilities {
         return metadataId;
     }
 
+    @JsonProperty("desc")
     public String getDescription() {
         return desc;
     }
 
+    @JsonProperty("desc")
     public void setDescription(String description) {
         desc = description;
     }

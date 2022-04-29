@@ -36,10 +36,10 @@ public class WMSCapabilitiesParserTest {
         JSONObject json = CapabilitiesService.toJSON(layerCaps, SYSTEM_CRS);
         JSONObject expectedJSON = JSONHelper.createJSONObject(expected);
         // Check and remove version as it is different on expected between 1.1.1 and 1.3.0 input
-        assertEquals("Check version", WMSCapsParser1_1_1.VERSION, json.optJSONObject("typeSpecific").remove("version"));
+        assertEquals("Check version", WMSCapsParser1_1_1.VERSION, json.remove("version"));
         // Note! 1.1.1 doesn't have the metadata url
-        expectedJSON.optJSONObject("typeSpecific").remove(LayerCapabilitiesOGC.METADATA_URL);
-        expectedJSON.optJSONObject("typeSpecific").remove(LayerCapabilitiesOGC.METADATA_UUID);
+        expectedJSON.remove(LayerCapabilitiesOGC.METADATA_URL);
+        expectedJSON.remove(LayerCapabilitiesOGC.METADATA_UUID);
         // System.out.println(json);
         assertTrue("JSON should match", JSONHelper.isEqual(json, expectedJSON));
 
@@ -59,8 +59,8 @@ public class WMSCapabilitiesParserTest {
         LayerCapabilitiesWMS layerCaps = (LayerCapabilitiesWMS) layers.get("CP.CadastralBoundary");
         JSONObject json = CapabilitiesService.toJSON(layerCaps, SYSTEM_CRS);
         // Check and remove version as it is different on expected between 1.1.1 and 1.3.0 input
-        assertEquals("Check version", WMSCapsParser1_3_0.VERSION, json.optJSONObject("typeSpecific").remove("version"));
-         System.out.println(json);
+        assertEquals("Check version", WMSCapsParser1_3_0.VERSION, json.remove("version"));
+        // System.out.println(json);
         assertTrue("JSON should match", JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)));
 
         String wkt = "POLYGON ((15.608220469655935 59.36205414098515, 15.608220469655935 70.09468368748001, 33.107629330539034 70.09468368748001, 33.107629330539034 59.36205414098515, 15.608220469655935 59.36205414098515))";
@@ -79,7 +79,7 @@ public class WMSCapabilitiesParserTest {
         LayerCapabilitiesWMS layerCaps = (LayerCapabilitiesWMS) layers.get("arctic_sdi:SeaSurfaceTemperature");
         JSONObject json = CapabilitiesService.toJSON(layerCaps, SYSTEM_CRS);
         // Check and remove version as it is different on expected between 1.1.1 and 1.3.0 input
-        assertEquals("Check version", WMSCapsParser1_1_1.VERSION, json.optJSONObject("typeSpecific").remove("version"));
+        assertEquals("Check version", WMSCapsParser1_1_1.VERSION, json.remove("version"));
         // System.out.println(json);
         assertTrue("JSON should match", JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)));
 
@@ -99,7 +99,7 @@ public class WMSCapabilitiesParserTest {
         LayerCapabilitiesWMS layerCaps = (LayerCapabilitiesWMS) layers.get("arctic_sdi:SeaSurfaceTemperature");
         JSONObject json = CapabilitiesService.toJSON(layerCaps, SYSTEM_CRS);
         // Check and remove version as it is different on expected between 1.1.1 and 1.3.0 input
-        assertEquals("Check version", WMSCapsParser1_3_0.VERSION, json.optJSONObject("typeSpecific").remove("version"));
+        assertEquals("Check version", WMSCapsParser1_3_0.VERSION, json.remove("version"));
         // System.out.println(json);
         assertTrue("JSON should match", JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)));
 
@@ -119,7 +119,7 @@ public class WMSCapabilitiesParserTest {
 
         JSONObject json = CapabilitiesService.toJSON(layers.get("muinaismuistot"), SYSTEM_CRS);
         // Check and remove version as it is different on expected between 1.1.1 and 1.3.0 input
-        assertEquals("Check version", WMSCapsParser1_3_0.VERSION, json.optJSONObject("typeSpecific").remove("version"));
+        assertEquals("Check version", WMSCapsParser1_3_0.VERSION, json.remove("version"));
         // System.out.println(json);
         assertTrue("JSON should match", JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)));
     }
