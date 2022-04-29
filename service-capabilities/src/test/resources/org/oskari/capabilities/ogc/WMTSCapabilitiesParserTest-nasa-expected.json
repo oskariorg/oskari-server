@@ -1,8 +1,138 @@
 {
+  "tileMatrices": [
+    {
+      "tileMatrixSet": {
+        "identifier": "GoogleMapsCompatible_Level8",
+        "matrixIds": {
+          "0": {
+            "identifier": "0",
+            "topLeftCorner": {
+              "lon": -2.003750834278925E7,
+              "lat": 2.003750834278925E7
+            },
+            "scaleDenominator": 5.590822640287178E8,
+            "matrixHeight": 1,
+            "tileWidth": 256,
+            "matrixWidth": 1,
+            "tileHeight": 256
+          },
+          "1": {
+            "identifier": "1",
+            "topLeftCorner": {
+              "lon": -2.003750834278925E7,
+              "lat": 2.003750834278925E7
+            },
+            "scaleDenominator": 2.795411320143589E8,
+            "matrixHeight": 2,
+            "tileWidth": 256,
+            "matrixWidth": 2,
+            "tileHeight": 256
+          },
+          "2": {
+            "identifier": "2",
+            "topLeftCorner": {
+              "lon": -2.003750834278925E7,
+              "lat": 2.003750834278925E7
+            },
+            "scaleDenominator": 1.397705660071794E8,
+            "matrixHeight": 4,
+            "tileWidth": 256,
+            "matrixWidth": 4,
+            "tileHeight": 256
+          },
+          "3": {
+            "identifier": "3",
+            "topLeftCorner": {
+              "lon": -2.003750834278925E7,
+              "lat": 2.003750834278925E7
+            },
+            "scaleDenominator": 6.988528300358972E7,
+            "matrixHeight": 8,
+            "tileWidth": 256,
+            "matrixWidth": 8,
+            "tileHeight": 256
+          },
+          "4": {
+            "identifier": "4",
+            "topLeftCorner": {
+              "lon": -2.003750834278925E7,
+              "lat": 2.003750834278925E7
+            },
+            "scaleDenominator": 3.494264150179486E7,
+            "matrixHeight": 16,
+            "tileWidth": 256,
+            "matrixWidth": 16,
+            "tileHeight": 256
+          },
+          "5": {
+            "identifier": "5",
+            "topLeftCorner": {
+              "lon": -2.003750834278925E7,
+              "lat": 2.003750834278925E7
+            },
+            "scaleDenominator": 1.747132075089743E7,
+            "matrixHeight": 32,
+            "tileWidth": 256,
+            "matrixWidth": 32,
+            "tileHeight": 256
+          },
+          "6": {
+            "identifier": "6",
+            "topLeftCorner": {
+              "lon": -2.003750834278925E7,
+              "lat": 2.003750834278925E7
+            },
+            "scaleDenominator": 8735660.375448715,
+            "matrixHeight": 64,
+            "tileWidth": 256,
+            "matrixWidth": 64,
+            "tileHeight": 256
+          },
+          "7": {
+            "identifier": "7",
+            "topLeftCorner": {
+              "lon": -2.003750834278925E7,
+              "lat": 2.003750834278925E7
+            },
+            "scaleDenominator": 4367830.187724357,
+            "matrixHeight": 128,
+            "tileWidth": 256,
+            "matrixWidth": 128,
+            "tileHeight": 256
+          },
+          "8": {
+            "identifier": "8",
+            "topLeftCorner": {
+              "lon": -2.003750834278925E7,
+              "lat": 2.003750834278925E7
+            },
+            "scaleDenominator": 2183915.093862179,
+            "matrixHeight": 256,
+            "tileWidth": 256,
+            "matrixWidth": 256,
+            "tileHeight": 256
+          }
+        },
+        "projection": "urn:ogc:def:crs:EPSG:6.18:3:3857"
+      },
+      "limits": null
+    }
+  ],
+  "queryable": false,
+  "formats": [
+    "image/jpeg"
+  ],
   "srs": [
     "EPSG:3857"
   ],
   "defaultStyle": "default",
+  "resourceUrls": [
+    {
+      "template": "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/BlueMarble_NextGeneration/default/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg",
+      "format": "image/jpeg",
+      "type": "tile"
+    }
+  ],
   "name": "BlueMarble_NextGeneration",
   "styles": [
     {
@@ -13,139 +143,5 @@
     }
   ],
   "title": "Blue Marble (MODIS)",
-  "type": "wmtslayer",
-  "url":null,
-  "typeSpecific": {
-    "tileMatrix": [
-      {
-        "tileMatrixSet": {
-          "identifier": "GoogleMapsCompatible_Level8",
-          "matrixIds": {
-            "0": {
-              "identifier": "0",
-              "topLeftCorner": {
-                "lon": -2.003750834278925E7,
-                "lat": 2.003750834278925E7
-              },
-              "scaleDenominator": 5.590822640287178E8,
-              "matrixHeight": 1,
-              "tileWidth": 256,
-              "matrixWidth": 1,
-              "tileHeight": 256
-            },
-            "1": {
-              "identifier": "1",
-              "topLeftCorner": {
-                "lon": -2.003750834278925E7,
-                "lat": 2.003750834278925E7
-              },
-              "scaleDenominator": 2.795411320143589E8,
-              "matrixHeight": 2,
-              "tileWidth": 256,
-              "matrixWidth": 2,
-              "tileHeight": 256
-            },
-            "2": {
-              "identifier": "2",
-              "topLeftCorner": {
-                "lon": -2.003750834278925E7,
-                "lat": 2.003750834278925E7
-              },
-              "scaleDenominator": 1.397705660071794E8,
-              "matrixHeight": 4,
-              "tileWidth": 256,
-              "matrixWidth": 4,
-              "tileHeight": 256
-            },
-            "3": {
-              "identifier": "3",
-              "topLeftCorner": {
-                "lon": -2.003750834278925E7,
-                "lat": 2.003750834278925E7
-              },
-              "scaleDenominator": 6.988528300358972E7,
-              "matrixHeight": 8,
-              "tileWidth": 256,
-              "matrixWidth": 8,
-              "tileHeight": 256
-            },
-            "4": {
-              "identifier": "4",
-              "topLeftCorner": {
-                "lon": -2.003750834278925E7,
-                "lat": 2.003750834278925E7
-              },
-              "scaleDenominator": 3.494264150179486E7,
-              "matrixHeight": 16,
-              "tileWidth": 256,
-              "matrixWidth": 16,
-              "tileHeight": 256
-            },
-            "5": {
-              "identifier": "5",
-              "topLeftCorner": {
-                "lon": -2.003750834278925E7,
-                "lat": 2.003750834278925E7
-              },
-              "scaleDenominator": 1.747132075089743E7,
-              "matrixHeight": 32,
-              "tileWidth": 256,
-              "matrixWidth": 32,
-              "tileHeight": 256
-            },
-            "6": {
-              "identifier": "6",
-              "topLeftCorner": {
-                "lon": -2.003750834278925E7,
-                "lat": 2.003750834278925E7
-              },
-              "scaleDenominator": 8735660.375448715,
-              "matrixHeight": 64,
-              "tileWidth": 256,
-              "matrixWidth": 64,
-              "tileHeight": 256
-            },
-            "7": {
-              "identifier": "7",
-              "topLeftCorner": {
-                "lon": -2.003750834278925E7,
-                "lat": 2.003750834278925E7
-              },
-              "scaleDenominator": 4367830.187724357,
-              "matrixHeight": 128,
-              "tileWidth": 256,
-              "matrixWidth": 128,
-              "tileHeight": 256
-            },
-            "8": {
-              "identifier": "8",
-              "topLeftCorner": {
-                "lon": -2.003750834278925E7,
-                "lat": 2.003750834278925E7
-              },
-              "scaleDenominator": 2183915.093862179,
-              "matrixHeight": 256,
-              "tileWidth": 256,
-              "matrixWidth": 256,
-              "tileHeight": 256
-            }
-          },
-          "projection": "urn:ogc:def:crs:EPSG:6.18:3:3857"
-        },
-        "limits": null
-      }
-    ],
-    "formats": [
-      "image/jpeg"
-    ],
-    "infoFormats": [],
-    "resourceUrls": [
-      {
-        "template": "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/BlueMarble_NextGeneration/default/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpeg",
-        "format": "image/jpeg",
-        "type": "tile"
-      }
-    ],
-    "isQueryable": false
-  }
+  "type": "wmtslayer"
 }

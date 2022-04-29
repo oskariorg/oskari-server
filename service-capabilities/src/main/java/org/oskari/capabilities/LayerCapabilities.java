@@ -18,8 +18,6 @@ public class LayerCapabilities {
     private String defaultStyle;
     private String url;
 
-    private Map<String, Object> typeSpecific = new HashMap<>();
-
     public LayerCapabilities(@JsonProperty("name") String name, @JsonProperty("title") String title) {
         this.name = name;
         this.title = title;
@@ -84,13 +82,4 @@ public class LayerCapabilities {
         return defaultStyle;
     }
 
-    public Map<String, Object> getTypeSpecific() {
-        return typeSpecific;
-    }
-
-    public void addCapabilityData(String key, Object value) {
-        if (value != null) {
-            typeSpecific.put(key, value);
-        }
-    }
 }

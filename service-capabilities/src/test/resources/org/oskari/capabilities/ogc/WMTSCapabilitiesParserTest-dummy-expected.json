@@ -1,8 +1,222 @@
 {
+  "tileMatrices": [
+    {
+      "tileMatrixSet": {
+        "identifier": "ETRS-TM35FIN",
+        "matrixIds": {
+          "11": {
+            "identifier": "11",
+            "topLeftCorner": {
+              "lon": -548576,
+              "lat": 8388608
+            },
+            "scaleDenominator": 14285.714285714286,
+            "matrixHeight": 2048,
+            "tileWidth": 256,
+            "matrixWidth": 2048,
+            "tileHeight": 256
+          },
+          "12": {
+            "identifier": "12",
+            "topLeftCorner": {
+              "lon": -548576,
+              "lat": 8388608
+            },
+            "scaleDenominator": 7142.857142857143,
+            "matrixHeight": 4096,
+            "tileWidth": 256,
+            "matrixWidth": 4096,
+            "tileHeight": 256
+          },
+          "13": {
+            "identifier": "13",
+            "topLeftCorner": {
+              "lon": -548576,
+              "lat": 8388608
+            },
+            "scaleDenominator": 3571.4285714285716,
+            "matrixHeight": 8192,
+            "tileWidth": 256,
+            "matrixWidth": 8192,
+            "tileHeight": 256
+          },
+          "14": {
+            "identifier": "14",
+            "topLeftCorner": {
+              "lon": -548576,
+              "lat": 8388608
+            },
+            "scaleDenominator": 1785.7142857142858,
+            "matrixHeight": 16384,
+            "tileWidth": 256,
+            "matrixWidth": 16384,
+            "tileHeight": 256
+          },
+          "15": {
+            "identifier": "15",
+            "topLeftCorner": {
+              "lon": -548576,
+              "lat": 8388608
+            },
+            "scaleDenominator": 892.8571428571429,
+            "matrixHeight": 32768,
+            "tileWidth": 256,
+            "matrixWidth": 32768,
+            "tileHeight": 256
+          },
+          "0": {
+            "identifier": "0",
+            "topLeftCorner": {
+              "lon": -548576,
+              "lat": 8388608
+            },
+            "scaleDenominator": 2.925714285714286E7,
+            "matrixHeight": 1,
+            "tileWidth": 256,
+            "matrixWidth": 1,
+            "tileHeight": 256
+          },
+          "1": {
+            "identifier": "1",
+            "topLeftCorner": {
+              "lon": -548576,
+              "lat": 8388608
+            },
+            "scaleDenominator": 1.462857142857143E7,
+            "matrixHeight": 2,
+            "tileWidth": 256,
+            "matrixWidth": 2,
+            "tileHeight": 256
+          },
+          "2": {
+            "identifier": "2",
+            "topLeftCorner": {
+              "lon": -548576,
+              "lat": 8388608
+            },
+            "scaleDenominator": 7314285.714285715,
+            "matrixHeight": 4,
+            "tileWidth": 256,
+            "matrixWidth": 4,
+            "tileHeight": 256
+          },
+          "3": {
+            "identifier": "3",
+            "topLeftCorner": {
+              "lon": -548576,
+              "lat": 8388608
+            },
+            "scaleDenominator": 3657142.8571428573,
+            "matrixHeight": 8,
+            "tileWidth": 256,
+            "matrixWidth": 8,
+            "tileHeight": 256
+          },
+          "4": {
+            "identifier": "4",
+            "topLeftCorner": {
+              "lon": -548576,
+              "lat": 8388608
+            },
+            "scaleDenominator": 1828571.4285714286,
+            "matrixHeight": 16,
+            "tileWidth": 256,
+            "matrixWidth": 16,
+            "tileHeight": 256
+          },
+          "5": {
+            "identifier": "5",
+            "topLeftCorner": {
+              "lon": -548576,
+              "lat": 8388608
+            },
+            "scaleDenominator": 914285.7142857143,
+            "matrixHeight": 32,
+            "tileWidth": 256,
+            "matrixWidth": 32,
+            "tileHeight": 256
+          },
+          "6": {
+            "identifier": "6",
+            "topLeftCorner": {
+              "lon": -548576,
+              "lat": 8388608
+            },
+            "scaleDenominator": 457142.85714285716,
+            "matrixHeight": 64,
+            "tileWidth": 256,
+            "matrixWidth": 64,
+            "tileHeight": 256
+          },
+          "7": {
+            "identifier": "7",
+            "topLeftCorner": {
+              "lon": -548576,
+              "lat": 8388608
+            },
+            "scaleDenominator": 228571.42857142858,
+            "matrixHeight": 128,
+            "tileWidth": 256,
+            "matrixWidth": 128,
+            "tileHeight": 256
+          },
+          "8": {
+            "identifier": "8",
+            "topLeftCorner": {
+              "lon": -548576,
+              "lat": 8388608
+            },
+            "scaleDenominator": 114285.71428571429,
+            "matrixHeight": 256,
+            "tileWidth": 256,
+            "matrixWidth": 256,
+            "tileHeight": 256
+          },
+          "9": {
+            "identifier": "9",
+            "topLeftCorner": {
+              "lon": -548576,
+              "lat": 8388608
+            },
+            "scaleDenominator": 57142.857142857145,
+            "matrixHeight": 512,
+            "tileWidth": 256,
+            "matrixWidth": 512,
+            "tileHeight": 256
+          },
+          "10": {
+            "identifier": "10",
+            "topLeftCorner": {
+              "lon": -548576,
+              "lat": 8388608
+            },
+            "scaleDenominator": 28571.428571428572,
+            "matrixHeight": 1024,
+            "tileWidth": 256,
+            "matrixWidth": 1024,
+            "tileHeight": 256
+          }
+        },
+        "projection": "urn:ogc:def:crs:EPSG:6.3:3067"
+      },
+      "limits": null
+    }
+  ],
+  "queryable": false,
+  "formats": [
+    "image/png"
+  ],
   "srs": [
     "EPSG:3067"
   ],
   "defaultStyle": "default",
+  "resourceUrls": [
+    {
+      "template": "http://foo.bar/baz/wmts/1.0.0/taustakartta/default/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png",
+      "format": "image/png",
+      "type": "tile"
+    }
+  ],
   "name": "taustakartta",
   "styles": [
     {
@@ -13,223 +227,5 @@
     }
   ],
   "title": "Taustakartta",
-  "type": "wmtslayer",
-  "url":null,
-  "typeSpecific": {
-    "tileMatrix": [
-      {
-        "tileMatrixSet": {
-          "identifier": "ETRS-TM35FIN",
-          "matrixIds": {
-            "11": {
-              "identifier": "11",
-              "topLeftCorner": {
-                "lon": -548576,
-                "lat": 8388608
-              },
-              "scaleDenominator": 14285.714285714286,
-              "matrixHeight": 2048,
-              "tileWidth": 256,
-              "matrixWidth": 2048,
-              "tileHeight": 256
-            },
-            "12": {
-              "identifier": "12",
-              "topLeftCorner": {
-                "lon": -548576,
-                "lat": 8388608
-              },
-              "scaleDenominator": 7142.857142857143,
-              "matrixHeight": 4096,
-              "tileWidth": 256,
-              "matrixWidth": 4096,
-              "tileHeight": 256
-            },
-            "13": {
-              "identifier": "13",
-              "topLeftCorner": {
-                "lon": -548576,
-                "lat": 8388608
-              },
-              "scaleDenominator": 3571.4285714285716,
-              "matrixHeight": 8192,
-              "tileWidth": 256,
-              "matrixWidth": 8192,
-              "tileHeight": 256
-            },
-            "14": {
-              "identifier": "14",
-              "topLeftCorner": {
-                "lon": -548576,
-                "lat": 8388608
-              },
-              "scaleDenominator": 1785.7142857142858,
-              "matrixHeight": 16384,
-              "tileWidth": 256,
-              "matrixWidth": 16384,
-              "tileHeight": 256
-            },
-            "15": {
-              "identifier": "15",
-              "topLeftCorner": {
-                "lon": -548576,
-                "lat": 8388608
-              },
-              "scaleDenominator": 892.8571428571429,
-              "matrixHeight": 32768,
-              "tileWidth": 256,
-              "matrixWidth": 32768,
-              "tileHeight": 256
-            },
-            "0": {
-              "identifier": "0",
-              "topLeftCorner": {
-                "lon": -548576,
-                "lat": 8388608
-              },
-              "scaleDenominator": 2.925714285714286E7,
-              "matrixHeight": 1,
-              "tileWidth": 256,
-              "matrixWidth": 1,
-              "tileHeight": 256
-            },
-            "1": {
-              "identifier": "1",
-              "topLeftCorner": {
-                "lon": -548576,
-                "lat": 8388608
-              },
-              "scaleDenominator": 1.462857142857143E7,
-              "matrixHeight": 2,
-              "tileWidth": 256,
-              "matrixWidth": 2,
-              "tileHeight": 256
-            },
-            "2": {
-              "identifier": "2",
-              "topLeftCorner": {
-                "lon": -548576,
-                "lat": 8388608
-              },
-              "scaleDenominator": 7314285.714285715,
-              "matrixHeight": 4,
-              "tileWidth": 256,
-              "matrixWidth": 4,
-              "tileHeight": 256
-            },
-            "3": {
-              "identifier": "3",
-              "topLeftCorner": {
-                "lon": -548576,
-                "lat": 8388608
-              },
-              "scaleDenominator": 3657142.8571428573,
-              "matrixHeight": 8,
-              "tileWidth": 256,
-              "matrixWidth": 8,
-              "tileHeight": 256
-            },
-            "4": {
-              "identifier": "4",
-              "topLeftCorner": {
-                "lon": -548576,
-                "lat": 8388608
-              },
-              "scaleDenominator": 1828571.4285714286,
-              "matrixHeight": 16,
-              "tileWidth": 256,
-              "matrixWidth": 16,
-              "tileHeight": 256
-            },
-            "5": {
-              "identifier": "5",
-              "topLeftCorner": {
-                "lon": -548576,
-                "lat": 8388608
-              },
-              "scaleDenominator": 914285.7142857143,
-              "matrixHeight": 32,
-              "tileWidth": 256,
-              "matrixWidth": 32,
-              "tileHeight": 256
-            },
-            "6": {
-              "identifier": "6",
-              "topLeftCorner": {
-                "lon": -548576,
-                "lat": 8388608
-              },
-              "scaleDenominator": 457142.85714285716,
-              "matrixHeight": 64,
-              "tileWidth": 256,
-              "matrixWidth": 64,
-              "tileHeight": 256
-            },
-            "7": {
-              "identifier": "7",
-              "topLeftCorner": {
-                "lon": -548576,
-                "lat": 8388608
-              },
-              "scaleDenominator": 228571.42857142858,
-              "matrixHeight": 128,
-              "tileWidth": 256,
-              "matrixWidth": 128,
-              "tileHeight": 256
-            },
-            "8": {
-              "identifier": "8",
-              "topLeftCorner": {
-                "lon": -548576,
-                "lat": 8388608
-              },
-              "scaleDenominator": 114285.71428571429,
-              "matrixHeight": 256,
-              "tileWidth": 256,
-              "matrixWidth": 256,
-              "tileHeight": 256
-            },
-            "9": {
-              "identifier": "9",
-              "topLeftCorner": {
-                "lon": -548576,
-                "lat": 8388608
-              },
-              "scaleDenominator": 57142.857142857145,
-              "matrixHeight": 512,
-              "tileWidth": 256,
-              "matrixWidth": 512,
-              "tileHeight": 256
-            },
-            "10": {
-              "identifier": "10",
-              "topLeftCorner": {
-                "lon": -548576,
-                "lat": 8388608
-              },
-              "scaleDenominator": 28571.428571428572,
-              "matrixHeight": 1024,
-              "tileWidth": 256,
-              "matrixWidth": 1024,
-              "tileHeight": 256
-            }
-          },
-          "projection": "urn:ogc:def:crs:EPSG:6.3:3067"
-        },
-        "limits": null
-      }
-    ],
-    "formats": [
-      "image/png"
-    ],
-    "infoFormats": [],
-    "resourceUrls": [
-      {
-        "template": "http://foo.bar/baz/wmts/1.0.0/taustakartta/default/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png",
-        "format": "image/png",
-        "type": "tile"
-      }
-    ],
-    "isQueryable": false
-  }
+  "type": "wmtslayer"
 }

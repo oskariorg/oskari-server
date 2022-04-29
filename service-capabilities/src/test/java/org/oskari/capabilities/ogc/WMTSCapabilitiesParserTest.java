@@ -64,7 +64,7 @@ public class WMTSCapabilitiesParserTest {
         assertEquals("Should find a layer", 1, layers.size());
 
         JSONObject json = CapabilitiesService.toJSON(layers.values().iterator().next(), SYSTEM_CRS);
-        //System.out.println(json);
+        // System.out.println(json);
         assertTrue("JSON should match", JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)));
     }
 
@@ -79,7 +79,7 @@ public class WMTSCapabilitiesParserTest {
         assertEquals("Should find 23 layers", 23, layers.size());
 
         JSONObject json = CapabilitiesService.toJSON(layers.get("LMI_Island_einfalt"), SYSTEM_CRS);
-        //System.out.println(json);
+        // System.out.println(json);
         assertTrue("JSON should match", JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)));
         // Just testing we are not throwing exception for having tilematrix reference of "EPSG:3057:0"
         /*
@@ -109,7 +109,7 @@ public class WMTSCapabilitiesParserTest {
         assertEquals("Should find 3 layers", 3, layers.size());
 
         JSONObject json = CapabilitiesService.toJSON(layers.get("taustakartta"), SYSTEM_CRS);
-        //System.out.println(json);
+        // System.out.println(json);
         assertTrue("JSON should match", JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)));
     }
 
@@ -125,7 +125,7 @@ public class WMTSCapabilitiesParserTest {
         assertEquals("Should find 18 layers", 18, layers.size());
 
         JSONObject json = CapabilitiesService.toJSON(layers.get("tampere:tampere_vkartta_gk24"), SYSTEM_CRS);
-        //System.out.println(json);
+        // System.out.println(json);
         assertTrue("JSON should match", JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)));
     }
 
@@ -141,7 +141,7 @@ public class WMTSCapabilitiesParserTest {
         assertEquals("Should find 2 layers", 2, layers.size());
 
         JSONObject json = CapabilitiesService.toJSON(layers.get("IGNBaseTodo"), SYSTEM_CRS);
-        //System.out.println(json);
+        // System.out.println(json);
         assertTrue("JSON should match", JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)));
     }
 

@@ -3,24 +3,20 @@ package org.oskari.capabilities.ogc;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fi.nls.oskari.domain.map.OskariLayer;
-import org.oskari.capabilities.ogc.wfs.FeaturePropertyType;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import static org.oskari.capabilities.ogc.CapabilitiesConstants.INFO_FORMATS;
-import static org.oskari.capabilities.ogc.CapabilitiesConstants.IS_QUERYABLE;
-
 public class LayerCapabilitiesWMS extends LayerCapabilitiesOGC {
 
-    public static final String PARENT = "parent";
-    public static final String MIN_SCALE = "minScale";
-    public static final String MAX_SCALE = "maxScale";
     public static final String TIMES = "times";
     private List<LayerCapabilitiesWMS> sublayers;
+    private String parent;
     private Set<String> infoFormats;
+    private String[] times;
+    private Double maxScale;
+    private Double minScale;
 
     public LayerCapabilitiesWMS(@JsonProperty("name") String name, @JsonProperty("title") String title) {
         super(name, title);
@@ -54,9 +50,6 @@ public class LayerCapabilitiesWMS extends LayerCapabilitiesOGC {
             propagateStyles(l.getLayers(), l.getStyles());
         });
     }
-    public void setInfoFormats(Set<String> infoFormats) {
-        this.infoFormats = infoFormats;
-    }
 
     public Set<String> getInfoFormats() {
         if (infoFormats == null) {
@@ -64,6 +57,11 @@ public class LayerCapabilitiesWMS extends LayerCapabilitiesOGC {
         }
         return infoFormats;
     }
+
+    public void setInfoFormats(Set<String> infoFormats) {
+        this.infoFormats = infoFormats;
+    }
+
     public boolean isQueryable() {
         return !getInfoFormats().isEmpty();
     }
@@ -73,47 +71,49 @@ public class LayerCapabilitiesWMS extends LayerCapabilitiesOGC {
         return this.getName() == null;
     }
 
-    public void setTimes(Object times) {
-        addCapabilityData(TIMES, times);
+    public String[] getTimes() {
+        return times;
     }
 
-    @JsonIgnore
-    public Double getMinScale() {
-        return (Double) getTypeSpecific().get(MIN_SCALE);
+    public void setTimes(String[] times) {
+        this.times = times;
     }
 
-    public void setMinScale(String scale) {
-        if (scale == null) {
-            return;
-        }
-        try {
-            addCapabilityData(MIN_SCALE, Double.parseDouble(scale));
-        } catch (Exception ignored) {
-        }
-    }
-
-    @JsonIgnore
     public Double getMaxScale() {
-        return (Double) getTypeSpecific().get(MAX_SCALE);
+        return maxScale;
     }
 
-    public void setMaxScale(String scale) {
-        if (scale == null) {
-            return;
-        }
+    public void setMaxScale(String maxScale) {
         try {
-            addCapabilityData(MAX_SCALE, Double.parseDouble(scale));
+            setMaxScale(Double.parseDouble(maxScale));
         } catch (Exception ignored) {
         }
     }
 
-    @JsonIgnore
+    public void setMaxScale(Double maxScale) {
+        this.maxScale = maxScale;
+    }
+
+    public Double getMinScale() {
+        return minScale;
+    }
+
+    public void setMinScale(String minScale) {
+        try {
+            setMinScale(Double.parseDouble(minScale));
+        } catch (Exception ignored) {
+        }
+    }
+
+    public void setMinScale(Double minScale) {
+        this.minScale = minScale;
+    }
+
     public String getParent() {
-        return (String) getTypeSpecific().get(PARENT);
+        return parent;
     }
 
     public void setParent(String parent) {
-        addCapabilityData(PARENT, parent);
+        this.parent = parent;
     }
-
 }
