@@ -24,7 +24,23 @@ public abstract class CapabilitiesParser extends OskariComponent {
         XML_CACHE.setLimit(10);
     }
 
+    /**
+     * Returns all layer capabilities for all layers found on the service.
+     * @param src connection info to the service
+     * @return
+     * @throws IOException
+     * @throws ServiceException
+     */
     public abstract Map<String, LayerCapabilities> getLayersFromService(ServiceConnectInfo src) throws IOException, ServiceException;
+
+    /**
+     * For WMS and WMTS it's more efficient to parse the layers as a group from the same service.
+     * For WFS it's more efficient to only parse layers that we are interested in/have saved on the database since
+     * a new HTTP request is made for each layer or featureType in WFS for DescribeFeatureType. If there are a
+     * lot of feature types in a service that we don't use it's wasted bandwidth to describe ones we are not using.
+     * Read: This is an optimization feature for WFS-services.
+     * @return
+     */
     public boolean isPreferSingleLayer() {
         return false;
     }
@@ -47,7 +63,7 @@ public abstract class CapabilitiesParser extends OskariComponent {
     public Class<? extends LayerCapabilities> getCapabilitiesClass() {
         return LayerCapabilities.class;
     }
-    /*
+    /**
      For optimization purposes to get single layer (this method can be overridden to optimize single layer, the base method is not optimized).
      For example wfs-layers require multiple requests/layer and this can be used to update single layer.
      Can be used to speed up update when service has multiple layers.
@@ -60,6 +76,16 @@ public abstract class CapabilitiesParser extends OskariComponent {
         return layers.get(layer);
     }
 
+    /**
+     * Returns raw capabilities from the service as is.
+     * @param capabilitiesUrl full url to the capabilties document
+     * @param user credentials to use to access url
+     * @param pass credentials to use to access url
+     * @param expectedContentType the logic checks content type for the response
+     * @return
+     * @throws IOException
+     * @throws ServiceException
+     */
     public RawCapabilitiesResponse fetchCapabilities(String capabilitiesUrl, String user, String pass, String expectedContentType) throws IOException, ServiceException {
         String cacheKey = capabilitiesUrl + "_" + user;
         RawCapabilitiesResponse response = XML_CACHE.get(cacheKey);

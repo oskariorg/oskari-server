@@ -16,7 +16,6 @@ import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import fi.nls.oskari.service.ServiceRuntimeException;
-import org.oskari.capabilities.ogc.CapabilitiesConstants;
 import org.oskari.geojson.GeoJSONReader2;
 import org.oskari.geojson.GeoJSONSchemaDetector;
 import org.oskari.service.user.UserLayerService;
@@ -31,6 +30,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.KEY_FEATURE_OUTPUT_FORMATS;
+import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.KEY_FORMATS;
 import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.KEY_MAX_FEATURES;
 
 public class OskariWFSClient {
@@ -171,9 +171,9 @@ public class OskariWFSClient {
             List<String> formats = JSONHelper.getArrayAsList(JSONHelper.getJSONArray(capa, KEY_FEATURE_OUTPUT_FORMATS));
             return formats.contains(JSON_OUTPUT_FORMAT);
         }
-        if (capa.has(CapabilitiesConstants.FORMATS)) {
+        if (capa.has(KEY_FORMATS)) {
             // new capabilities
-            List<String> formats = JSONHelper.getArrayAsList(JSONHelper.getJSONArray(capa, CapabilitiesConstants.FORMATS));
+            List<String> formats = JSONHelper.getArrayAsList(JSONHelper.getJSONArray(capa, KEY_FORMATS));
             return formats.contains(JSON_OUTPUT_FORMAT);
         }
         return true;
