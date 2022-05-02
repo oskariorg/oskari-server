@@ -179,7 +179,11 @@ public class OskariWFSClient {
         return true;
     }
     protected static int getMaxFeatures(OskariLayer layer) {
-        return layer.getCapabilities().optInt(KEY_MAX_FEATURES, DEFAULT_MAX_FEATURES);
+        int maxFeatures = layer.getCapabilities().optInt(KEY_MAX_FEATURES, -1);
+        if (maxFeatures > 0) {
+            return maxFeatures;
+        }
+        return DEFAULT_MAX_FEATURES;
     }
     protected static Filter getWFSFilter (String id, OskariLayer layer, ReferencedEnvelope bbox, Optional<UserLayerService> processor) {
         if (processor.isPresent()) {
