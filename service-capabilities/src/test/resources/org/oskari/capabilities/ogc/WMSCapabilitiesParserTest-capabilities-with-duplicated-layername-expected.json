@@ -1,6 +1,32 @@
 {
-  "srs": [],
+  "parent": "muinaismuistot",
+  "keywords": [
+    "maaseutu",
+    "muinaismuisto",
+    "kaava",
+    "kymenlaakso"
+  ],
+  "maxScale": 150000,
   "defaultStyle": "default",
+  "bbox": {
+    "wkt": "POLYGON ((25.9856 60.1681, 25.9856 61.2928, 28.0104 61.2928, 28.0104 60.1681, 25.9856 60.1681))",
+    "minY": 60.1681,
+    "minX": 25.9856,
+    "srs": "EPSG:4326",
+    "maxY": 61.2928,
+    "maxX": 28.0104
+  },
+  "title": "Muinaismuistot / Fornminnesobjekt",
+  "type": "wmslayer",
+  "metadataId": "93a384df-31da-40fa-a001-2b3bb79c955c",
+  "queryable": true,
+  "metadataUrl": "http://www.paikkatietohakemisto.fi/geonetwork/srv/fi/metadata.show.portti.metaMultiLingual?uuid=93a384df-31da-40fa-a001-2b3bb79c955c",
+  "infoFormats": [
+    "text/html",
+    "application/vnd.ogc.gml",
+    "text/plain"
+  ],
+  "srs": [],
   "name": "muinaismuistot",
   "styles": [
     {
@@ -10,36 +36,6 @@
       "title": "default"
     }
   ],
-  "title": "Muinaismuistot / Fornminnesobjekt",
-  "type": "wmslayer",
-  "url":null,
-  "typeSpecific": {
-    "parent": "muinaismuistot",
-    "metadataId":"93a384df-31da-40fa-a001-2b3bb79c955c",
-    "metadataUrl": "http://www.paikkatietohakemisto.fi/geonetwork/srv/fi/metadata.show.portti.metaMultiLingual?uuid=93a384df-31da-40fa-a001-2b3bb79c955c",
-    "infoFormats": [
-      "text/html",
-      "application/vnd.ogc.gml",
-      "text/plain"
-    ],
-    "keywords": [
-      "maaseutu",
-      "muinaismuisto",
-      "kaava",
-      "kymenlaakso"
-    ],
-    "maxScale": 150000,
-    "bbox": {
-      "wkt": "POLYGON ((25.9856 60.1681, 25.9856 61.2928, 28.0104 61.2928, 28.0104 60.1681, 25.9856 60.1681))",
-      "minY": 60.1681,
-      "minX": 25.9856,
-      "srs": "EPSG:4326",
-      "maxY": 61.2928,
-      "maxX": 28.0104
-    },
-    "isQueryable": true,
-    "layers": [],
-    "minScale": 100000,
-    "desc": "Kymenlaakson maakuntakaava, maaseutu ja luonto: Muinaismuistot"
-  }
+  "minScale": 100000,
+  "desc": "Kymenlaakson maakuntakaava, maaseutu ja luonto: Muinaismuistot"
 }

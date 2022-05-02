@@ -1,82 +1,89 @@
 package org.oskari.capabilities.ogc;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.oskari.capabilities.LayerCapabilities;
 import org.oskari.capabilities.MetadataHelper;
 
 import java.util.Collections;
 import java.util.Set;
 
-import static org.oskari.capabilities.ogc.CapabilitiesConstants.*;
-
 public class LayerCapabilitiesOGC extends LayerCapabilities {
 
-    public static final String VERSION = "version";
-    public static final String DESCRIPTION = "desc";
-    public static final String KEYWORDS = "keywords";
-    public static final String BBOX = "bbox";
+    // FIXME: remove constants
     public static final String METADATA_URL = "metadataUrl";
     public static final String METADATA_UUID = "metadataId";
+    private BoundingBox bbox;
+    private String version;
+    private String desc;
+    private String metadataUrl;
+    private String metadataId;
+    private Set<String> formats;
+    private Set<String> keywords;
 
     public LayerCapabilitiesOGC(String name, String title) {
         super(name, title);
     }
 
-    public void setVersion(String ver) {
-        if (ver != null) {
-            addCapabilityData(VERSION, ver);
-        }
-    }
-    @JsonIgnore
-    public String getVersion() {
-        return (String) getTypeSpecific().get(VERSION);
-    }
-
-    public void setFormats(Set<String> formats) {
-        addCapabilityData(FORMATS, formats);
-    }
-
-    public void setInfoFormats(Set<String> infoFormats) {
-        addCapabilityData(INFO_FORMATS, infoFormats);
-        // is there any point setting this?
-        // isqueryable is NOT used for WMTS currently
-        addCapabilityData(IS_QUERYABLE, !infoFormats.isEmpty());
+    public BoundingBox getBbox() {
+        return bbox;
     }
 
     public void setBbox(BoundingBox bbox) {
-        if (bbox != null) {
-            addCapabilityData(BBOX, bbox);
-        }
+        this.bbox = bbox;
     }
 
-    @JsonIgnore
-    public BoundingBox getBbox() {
-        return (BoundingBox) getTypeSpecific().get(BBOX);
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String ver) {
+        version = ver;
+    }
+
+    public Set<String> getFormats() {
+        if (formats == null) {
+            return Collections.emptySet();
+        }
+        return formats;
+    }
+
+    public void setFormats(Set<String> formats) {
+        this.formats = formats;
+    }
+
+    public String getMetadataUrl() {
+        return metadataUrl;
     }
 
     public void setMetadataUrl(String url) {
+        metadataUrl = url;
         if (url != null) {
-            addCapabilityData(METADATA_URL, url);
-            addCapabilityData(METADATA_UUID, MetadataHelper.getIdFromMetadataUrl(url));
+            metadataId = MetadataHelper.getIdFromMetadataUrl(url);
         }
     }
 
-    public void setDescription(String description) {
-        if (description != null) {
-            addCapabilityData(DESCRIPTION, description);
-        }
+    public String getMetadataId() {
+        return metadataId;
     }
 
-    @JsonIgnore
+    @JsonProperty("desc")
     public String getDescription() {
-        return (String) getTypeSpecific().get(DESCRIPTION);
-    }
-    public void setKeywords(Set<String> words) {
-        addCapabilityData(KEYWORDS, words);
+        return desc;
     }
 
-    @JsonIgnore
+    @JsonProperty("desc")
+    public void setDescription(String description) {
+        desc = description;
+    }
+
     public Set<String> getKeywords() {
-        return (Set<String>) getTypeSpecific().getOrDefault(KEYWORDS, Collections.emptySet());
+        if (keywords == null) {
+            return Collections.emptySet();
+        }
+        return keywords;
+    }
+
+    public void setKeywords(Set<String> words) {
+        this.keywords = words;
     }
 }

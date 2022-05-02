@@ -6,74 +6,37 @@ import fi.nls.oskari.domain.map.OskariLayer;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 public class LayerCapabilitiesWMS extends LayerCapabilitiesOGC {
 
-    public static final String LAYERS = "layers";
-    public static final String PARENT = "parent";
-    public static final String MIN_SCALE = "minScale";
-    public static final String MAX_SCALE = "maxScale";
     public static final String TIMES = "times";
+    private List<LayerCapabilitiesWMS> sublayers;
+    private String parent;
+    private Set<String> infoFormats;
+    private String[] times;
+    private Double maxScale;
+    private Double minScale;
 
     public LayerCapabilitiesWMS(@JsonProperty("name") String name, @JsonProperty("title") String title) {
         super(name, title);
         setType(OskariLayer.TYPE_WMS);
     }
 
-    @JsonIgnore
-    public boolean isGroupLayer() {
-        return this.getName() == null;
-    }
-
-    public void setTimes(Object times) {
-        if (times != null) {
-            addCapabilityData(TIMES, times);
+    public List<LayerCapabilitiesWMS> getLayers() {
+        if (sublayers == null) {
+            return Collections.emptyList();
         }
-    }
-
-    public void setParent(String parent) {
-        if (parent != null) {
-            addCapabilityData(PARENT, parent);
-        }
-    }
-    public void setMinScale(String scale) {
-        if (scale == null) {
-            return;
-        }
-        try {
-            addCapabilityData(MIN_SCALE, Double.parseDouble(scale));
-        } catch (Exception ignored) {}
-    }
-
-    @JsonIgnore
-    public Double getMinScale() {
-        return (Double) getTypeSpecific().get(MIN_SCALE);
-    }
-    public void setMaxScale(String scale) {
-        if (scale == null) {
-            return;
-        }
-        try {
-            addCapabilityData(MAX_SCALE, Double.parseDouble(scale));
-        } catch (Exception ignored) {}
-    }
-    @JsonIgnore
-    public Double getMaxScale() {
-        return (Double) getTypeSpecific().get(MAX_SCALE);
-    }
-
-    @JsonIgnore
-    public String getParent() {
-        return (String) getTypeSpecific().get(PARENT);
+        return sublayers;
     }
 
     public void setLayers(List<LayerCapabilitiesWMS> layers) {
+        sublayers = layers;
         if (layers == null) {
             return;
         }
         // make children without styles inherit parent styles
         propagateStyles(layers, getStyles());
-        addCapabilityData(LAYERS, layers);
     }
 
     private void propagateStyles(List<LayerCapabilitiesWMS> layers, List<LayerStyle> styles) {
@@ -88,8 +51,69 @@ public class LayerCapabilitiesWMS extends LayerCapabilitiesOGC {
         });
     }
 
+    public Set<String> getInfoFormats() {
+        if (infoFormats == null) {
+            return Collections.emptySet();
+        }
+        return infoFormats;
+    }
+
+    public void setInfoFormats(Set<String> infoFormats) {
+        this.infoFormats = infoFormats;
+    }
+
+    public boolean isQueryable() {
+        return !getInfoFormats().isEmpty();
+    }
+
     @JsonIgnore
-    public List<LayerCapabilitiesWMS> getLayers() {
-        return (List<LayerCapabilitiesWMS>) getTypeSpecific().getOrDefault(LAYERS, Collections.emptyList());
+    public boolean isGroupLayer() {
+        return this.getName() == null;
+    }
+
+    public String[] getTimes() {
+        return times;
+    }
+
+    public void setTimes(String[] times) {
+        this.times = times;
+    }
+
+    public Double getMaxScale() {
+        return maxScale;
+    }
+
+    public void setMaxScale(String maxScale) {
+        try {
+            setMaxScale(Double.parseDouble(maxScale));
+        } catch (Exception ignored) {
+        }
+    }
+
+    public void setMaxScale(Double maxScale) {
+        this.maxScale = maxScale;
+    }
+
+    public Double getMinScale() {
+        return minScale;
+    }
+
+    public void setMinScale(String minScale) {
+        try {
+            setMinScale(Double.parseDouble(minScale));
+        } catch (Exception ignored) {
+        }
+    }
+
+    public void setMinScale(Double minScale) {
+        this.minScale = minScale;
+    }
+
+    public String getParent() {
+        return parent;
+    }
+
+    public void setParent(String parent) {
+        this.parent = parent;
     }
 }

@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.oskari.capabilities.CapabilitiesService;
 import org.oskari.capabilities.LayerCapabilities;
 import org.oskari.capabilities.ServiceConnectInfo;
+import org.oskari.capabilities.ogc.api.OGCAPIFeatureItemsDescriber;
 import org.oskari.capabilities.ogc.wfs.DescribeFeatureTypeProvider;
 
 import java.io.IOException;
@@ -40,6 +41,7 @@ public class WFSCapabilitiesParserTest {
         // spy to just override the single method
         WFSCapabilitiesParser parser = new WFSCapabilitiesParser();
         parser.setDescribeFeatureTypeProvider(new DescribeFeatureTypeProviderMock(describeResponse));
+        parser.setOGCAPIFeatureItemsDescriber(new OGCAPIFeatureItemsDescriberMock());
         return parser;
     }
 
@@ -55,7 +57,7 @@ public class WFSCapabilitiesParserTest {
         JSONObject json = CapabilitiesService.toJSON(layerCaps, SYSTEM_CRS);
         JSONObject expectedJSON = JSONHelper.createJSONObject(expected);
         // Check and remove version as it is different on expected between 1.1.0 and 2.0.0 input
-        assertEquals("Check version", version, json.optJSONObject("typeSpecific").remove("version"));
+        assertEquals("Check version", version, json.remove("version"));
         // System.out.println(json);
         assertTrue("JSON should match", JSONHelper.isEqual(json, expectedJSON));
 
@@ -78,8 +80,8 @@ public class WFSCapabilitiesParserTest {
         JSONObject json = CapabilitiesService.toJSON(layerCaps, SYSTEM_CRS);
         JSONObject expectedJSON = JSONHelper.createJSONObject(expected);
         // Check and remove version as it is different on expected between 1.1.0 and 2.0.0 input
-        assertEquals("Check version", version, json.optJSONObject("typeSpecific").remove("version"));
-        // System.out.println(json);
+        assertEquals("Check version", version, json.remove("version"));
+         System.out.println(json);
         assertTrue("JSON should match", JSONHelper.isEqual(json, expectedJSON));
 
         String wkt = "POLYGON ((15.999210419254936 56.23928539106909, 15.999210419254936 73.5170461466599, 33.27697117484574 73.5170461466599, 33.27697117484574 56.23928539106909, 15.999210419254936 56.23928539106909))";
@@ -112,6 +114,12 @@ public class WFSCapabilitiesParserTest {
         @Override
         public String getDescribeContent(String url, String user, String pass) throws IOException {
             return content;
+        }
+    }
+    class OGCAPIFeatureItemsDescriberMock extends OGCAPIFeatureItemsDescriber {
+
+        public String getItemsSample(ServiceConnectInfo src, String featureType) throws IOException {
+            return null;
         }
     }
 }

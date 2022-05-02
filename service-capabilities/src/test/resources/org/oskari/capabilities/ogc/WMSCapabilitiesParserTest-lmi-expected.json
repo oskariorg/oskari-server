@@ -1,25 +1,19 @@
 {
+  "queryable": false,
   "srs": [
     "EPSG:3857"
   ],
-  "defaultStyle": null,
+  "bbox": {
+    "wkt": "POLYGON ((-3439772.266 8377507.565, -3439772.266 1.093975691E7, -612257.1994 1.093975691E7, -612257.1994 8377507.565, -3439772.266 8377507.565))",
+    "minY": 8377507.565,
+    "minX": -3439772.266,
+    "srs": "EPSG:4326",
+    "maxY": 1.093975691E7,
+    "maxX": -612257.1994
+  },
   "name": "LMI_Island_einfalt",
-  "styles": [],
   "title": "LMÍ, Ísland, einfalt",
   "type": "wmslayer",
-  "url":null,
-  "typeSpecific": {
-    "keywords": [],
-    "bbox": {
-      "wkt": "POLYGON ((-3439772.266 8377507.565, -3439772.266 1.093975691E7, -612257.1994 1.093975691E7, -612257.1994 8377507.565, -3439772.266 8377507.565))",
-      "minY": 8377507.565,
-      "minX": -3439772.266,
-      "srs": "EPSG:4326",
-      "maxY": 1.093975691E7,
-      "maxX": -612257.1994
-    },
-    "layers": [],
-    "version": "1.1.1",
-    "desc": "Einfalt bakgrunnskort fyrir Landupplýsingagátt.\n                    Um er að ræða strandlínu og helstu jökla úr IS 50V.\n                "
-  }
+  "version": "1.1.1",
+  "desc": "Einfalt bakgrunnskort fyrir Landupplýsingagátt.\n                    Um er að ræða strandlínu og helstu jökla úr IS 50V.\n                "
 }

@@ -25,6 +25,13 @@ public class CapabilitiesService {
         MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
+    /**
+     * Returns all layer capabilities for all layers found on the service.
+     * @param connectInfo
+     * @return
+     * @throws IOException
+     * @throws ServiceException
+     */
     public static Map<String, LayerCapabilities> getLayersFromService(ServiceConnectInfo connectInfo) throws IOException, ServiceException {
         String layerType = connectInfo.getType();
         CapabilitiesParser parser = getParser(layerType);
@@ -34,6 +41,29 @@ public class CapabilitiesService {
         return parser.getLayersFromService(connectInfo);
     }
 
+    /**
+     * Returns a single layer capabilities from the service.
+     * @param connectInfo
+     * @return
+     * @throws IOException
+     * @throws ServiceException
+     */
+    public static LayerCapabilities getLayerFromService(ServiceConnectInfo connectInfo, String layer) throws IOException, ServiceException {
+        String layerType = connectInfo.getType();
+        CapabilitiesParser parser = getParser(layerType);
+        if (parser == null) {
+            throw new ServiceException("Unrecognized type: " + layerType);
+        }
+        return parser.getLayerFromService(connectInfo, layer);
+    }
+
+    /**
+     * Updates capabilities JSON for the layer given as parameter.
+     * Only modifies the object. Saving the modified layer to database is not done by this method.
+     * @param layer
+     * @param systemCRSs
+     * @return
+     */
     public static CapabilitiesUpdateResult updateCapabilities(OskariLayer layer, Set<String> systemCRSs) {
         ServiceConnectInfo connectInfo = ServiceConnectInfo.fromLayer(layer);
         String layerType = connectInfo.getType();
@@ -55,6 +85,13 @@ public class CapabilitiesService {
         }
     }
 
+    /**
+     * Updates capabilities for a collection of layers. This is optimized for mass update so we don't query the same
+     * capabilities for each layer.
+     * @param layers
+     * @param systemCRSs
+     * @return
+     */
     public static List<CapabilitiesUpdateResult> updateCapabilities(List<OskariLayer> layers, Set<String> systemCRSs) {
         List<CapabilitiesUpdateResult> results = new ArrayList<>(layers.size());
 
@@ -72,7 +109,16 @@ public class CapabilitiesService {
             List<OskariLayer> layersFromOneService = layersByUTV.get(utv);
             Map<String, LayerCapabilities> serviceCaps;
             try {
-                serviceCaps = getLayersFromService(utv);
+                if (getParser(utv.getType()).isPreferSingleLayer()) {
+                    // WFS-layers are faster to update per layer since they make additional requests per featuretype
+                    serviceCaps = new HashMap<>(layersFromOneService.size());
+                    for (OskariLayer layer : layersFromOneService) {
+                        String name = layer.getName();
+                        serviceCaps.put(name, getLayerFromService(utv, name));
+                    }
+                } else {
+                    serviceCaps = getLayersFromService(utv);
+                }
             } catch (IOException | ServiceException e) {
                 layersFromOneService.stream().forEach(layer -> {
                     if (e instanceof IOException) {
@@ -100,6 +146,12 @@ public class CapabilitiesService {
         return results;
     }
 
+    /**
+     * Serializes LayerCapabilities to JSON that can be saved in oskari_maplayer.capabilities.
+     * @param caps
+     * @param systemCRSs
+     * @return
+     */
     public static JSONObject toJSON(LayerCapabilities caps, Set<String> systemCRSs) {
         if (caps == null) {
             throw new ServiceRuntimeException("Tried serializing <null> capabilities as JSON");
@@ -115,6 +167,15 @@ public class CapabilitiesService {
         }
     }
 
+    /**
+     * Deserializes JSON string (oskari_maplayer.capabilities) to a LayerCapabilities object based on layer type.
+     * This allows using the functionalities use the capabilities classes to easily get
+     * capability info with getters at runtime from prepopulated data instead of using the data as unstructured JSON.
+     * @param json
+     * @param type
+     * @param <T>
+     * @return
+     */
     public static <T extends LayerCapabilities> T fromJSON(String json, String type) {
         if (json == null) {
             return null;
@@ -130,16 +191,26 @@ public class CapabilitiesService {
 
             return (T) MAPPER.readValue(json, clazz);
         } catch (Exception e) {
-            throw new ServiceRuntimeException("Error serializing capabilities as JSON", e);
+            throw new ServiceRuntimeException("Error deserializing capabilities from JSON", e);
         }
     }
 
-
-
+    /**
+     * Returns the raw capabilities document for the layer.
+     * @param layer
+     * @return
+     * @throws ServiceException
+     */
     public static RawCapabilitiesResponse getCapabilities(OskariLayer layer) throws ServiceException {
         return getCapabilities(ServiceConnectInfo.fromLayer(layer));
     }
 
+    /**
+     * Returns the raw capabilities document for the service (uses base url).
+     * @param info
+     * @return
+     * @throws ServiceException
+     */
     public static RawCapabilitiesResponse getCapabilities(ServiceConnectInfo info) throws ServiceException {
         CapabilitiesParser parser = CapabilitiesService.getParser(info.getType());
         if (parser == null) {
@@ -157,6 +228,11 @@ public class CapabilitiesService {
         }
     }
 
+    /**
+     * Returns a parser implementation based on layer type. For internal usage mostly.
+     * @param layerType
+     * @return
+     */
     protected static CapabilitiesParser getParser(String layerType) {
         return (CapabilitiesParser) OskariComponentManager
                 .getComponentsOfType(CapabilitiesParser.class)

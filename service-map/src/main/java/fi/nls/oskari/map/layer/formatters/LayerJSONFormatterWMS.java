@@ -71,15 +71,14 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
             JSONHelper.putValue(layerJson, KEY_ISQUERYABLE, attrs.optBoolean(KEY_ISQUERYABLE));
         } else if (capabilities.has(KEY_ISQUERYABLE)) {
             JSONHelper.putValue(layerJson, KEY_ISQUERYABLE, capabilities.optBoolean(KEY_ISQUERYABLE));
-        } else if (capabilities.has(KEY_TYPE_SPECIFIC)) {
-            JSONHelper.putValue(layerJson, KEY_ISQUERYABLE, capabilities.optJSONObject(KEY_TYPE_SPECIFIC).optBoolean(KEY_ISQUERYABLE));
+        } else if (capabilities.has("queryable")) {
+            JSONHelper.putValue(layerJson, KEY_ISQUERYABLE, capabilities.optBoolean("queryable"));
         }
 
         // Do not override version, if already available
         if (!layerJson.has(KEY_VERSION)) {
             JSONHelper.putValue(layerJson, KEY_VERSION,
-                    JSONHelper.getStringFromJSON(capabilities, KEY_VERSION,
-                            JSONHelper.getStringFromJSON(capabilities.optJSONObject(KEY_TYPE_SPECIFIC), KEY_VERSION, null)));
+                    JSONHelper.getStringFromJSON(capabilities, KEY_VERSION, null));
         }
 
         // copy time from capabilities to attributes
@@ -96,9 +95,6 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
     private Object getTimesFromCapabilities(JSONObject capabilities) {
         if (capabilities.has(KEY_TIMES)) {
             return JSONHelper.get(capabilities, KEY_TIMES);
-        }
-        if (capabilities.has(KEY_TYPE_SPECIFIC)) {
-            return JSONHelper.get(capabilities.optJSONObject(KEY_TYPE_SPECIFIC), KEY_TIMES);
         }
         return null;
     }

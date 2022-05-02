@@ -77,8 +77,14 @@ public class WFSCapsParser {
         Set<String> srs = new HashSet<>(1);
         if ("2.0.0".equals(version)) {
             srs.add(XmlHelper.getChildValue(layer, "DefaultCRS"));
+            XmlHelper.getChildElements(layer, "OtherCRS")
+                    .map(Element::getTextContent)
+                    .forEach(crs -> srs.add(crs));
         } else {
             srs.add(XmlHelper.getChildValue(layer, "DefaultSRS"));
+            XmlHelper.getChildElements(layer, "OtherSRS")
+                    .map(Element::getTextContent)
+                    .forEach(crs -> srs.add(crs));
         }
         // TODO: LayerJSONFormatterWFS.createCapabilitiesJSON()
         value.setFormats(outputFormats);

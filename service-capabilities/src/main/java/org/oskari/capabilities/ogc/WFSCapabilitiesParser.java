@@ -40,6 +40,9 @@ public class WFSCapabilitiesParser extends OGCCapabilitiesParser {
         return LayerCapabilitiesWFS.class;
     }
 
+    public boolean isPreferSingleLayer() {
+        return true;
+    }
     protected String getDefaultVersion() { return "1.1.0"; }
     public String getExpectedContentType(String version) {
         if (OGC_API_VERSION.equals(version)) {
@@ -206,8 +209,8 @@ public class WFSCapabilitiesParser extends OGCCapabilitiesParser {
             }
             params.put(getVersionParamName(), version);
         }
-        if (!urlLC.contains("featuretype=")) {
-            params.put("featuretype", featureType);
+        if (!urlLC.contains("typename=")) {
+            params.put("typename", featureType);
         }
 
         return IOHelper.constructUrl(url, params);

@@ -1,11 +1,13 @@
 package org.oskari.capabilities;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.oskari.capabilities.ogc.LayerStyle;
 
 import java.util.*;
 
 // Something that can be serialized to oskari_maplayer.capabilities
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class LayerCapabilities {
 
     private String name;
@@ -15,8 +17,6 @@ public class LayerCapabilities {
     private Set<String> srs;
     private String defaultStyle;
     private String url;
-
-    private Map<String, Object> typeSpecific = new HashMap<>();
 
     public LayerCapabilities(@JsonProperty("name") String name, @JsonProperty("title") String title) {
         this.name = name;
@@ -82,13 +82,4 @@ public class LayerCapabilities {
         return defaultStyle;
     }
 
-    public Map<String, Object> getTypeSpecific() {
-        return typeSpecific;
-    }
-
-    public void addCapabilityData(String key, Object value) {
-        if (value != null) {
-            typeSpecific.put(key, value);
-        }
-    }
 }
