@@ -34,6 +34,15 @@ public class CapabilitiesService {
         return parser.getLayersFromService(connectInfo);
     }
 
+    public static LayerCapabilities getLayerFromService(ServiceConnectInfo connectInfo, String layer) throws IOException, ServiceException {
+        String layerType = connectInfo.getType();
+        CapabilitiesParser parser = getParser(layerType);
+        if (parser == null) {
+            throw new ServiceException("Unrecognized type: " + layerType);
+        }
+        return parser.getLayerFromService(connectInfo, layer);
+    }
+
     public static CapabilitiesUpdateResult updateCapabilities(OskariLayer layer, Set<String> systemCRSs) {
         ServiceConnectInfo connectInfo = ServiceConnectInfo.fromLayer(layer);
         String layerType = connectInfo.getType();
@@ -72,7 +81,16 @@ public class CapabilitiesService {
             List<OskariLayer> layersFromOneService = layersByUTV.get(utv);
             Map<String, LayerCapabilities> serviceCaps;
             try {
-                serviceCaps = getLayersFromService(utv);
+                if (getParser(utv.getType()).isPreferSingleLayer()) {
+                    // WFS-layers are faster to update per layer since they make additional requests per featuretype
+                    serviceCaps = new HashMap<>(layersFromOneService.size());
+                    for (OskariLayer layer : layersFromOneService) {
+                        String name = layer.getName();
+                        serviceCaps.put(name, getLayerFromService(utv, name));
+                    }
+                } else {
+                    serviceCaps = getLayersFromService(utv);
+                }
             } catch (IOException | ServiceException e) {
                 layersFromOneService.stream().forEach(layer -> {
                     if (e instanceof IOException) {

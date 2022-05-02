@@ -1,5 +1,7 @@
 package org.oskari.capabilities;
 
+import fi.nls.oskari.cache.Cache;
+import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.service.OskariComponent;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.ServiceUnauthorizedException;
@@ -14,8 +16,18 @@ public abstract class CapabilitiesParser extends OskariComponent {
 
     // timeout capabilities request after 30 seconds (configurable)
     private static final int TIMEOUT_MS = PropertyUtil.getOptional("capabilities.timeout", 30) * 1000;
+    private static final Cache<RawCapabilitiesResponse> XML_CACHE = CacheManager.getCache(CapabilitiesParser.class.getName());
+    static {
+        // 10minutes
+        XML_CACHE.setExpiration(10L * 60L * 1000L);
+        // we don't need to have a large cache since the layers from same domain _should_ be queried sequentially/in a row.
+        XML_CACHE.setLimit(10);
+    }
 
     public abstract Map<String, LayerCapabilities> getLayersFromService(ServiceConnectInfo src) throws IOException, ServiceException;
+    public boolean isPreferSingleLayer() {
+        return false;
+    }
 
     /**
      * Provice a class to deserialize to from JSON. We could do:
@@ -49,6 +61,11 @@ public abstract class CapabilitiesParser extends OskariComponent {
     }
 
     public RawCapabilitiesResponse fetchCapabilities(String capabilitiesUrl, String user, String pass, String expectedContentType) throws IOException, ServiceException {
+        String cacheKey = capabilitiesUrl + "_" + user;
+        RawCapabilitiesResponse response = XML_CACHE.get(cacheKey);
+        if (response != null) {
+            return response;
+        }
         HttpURLConnection conn = IOHelper.getConnection(capabilitiesUrl, user, pass);
         IOHelper.addIdentifierHeaders(conn);
         conn = IOHelper.followRedirect(conn, user, pass, 5);
@@ -67,10 +84,11 @@ public abstract class CapabilitiesParser extends OskariComponent {
         if (contentType != null && expectedContentType != null && contentType.toLowerCase().indexOf(expectedContentType) == -1) {
             throw new ServiceException("Unexpected Content-Type: " + contentType + " from: " + capabilitiesUrl);
         }
-        RawCapabilitiesResponse response = new RawCapabilitiesResponse(conn.getURL().toString());
+        response = new RawCapabilitiesResponse(conn.getURL().toString());
         response.setContentType(contentType);
         String encoding = IOHelper.getCharset(conn);
         response.setResponse(IOHelper.readBytes(conn), encoding);
+        XML_CACHE.put(cacheKey, response);
         return response;
     }
 }

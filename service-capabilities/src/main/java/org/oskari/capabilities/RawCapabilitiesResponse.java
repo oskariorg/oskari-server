@@ -1,6 +1,8 @@
 package org.oskari.capabilities;
 
-public class RawCapabilitiesResponse {
+import java.io.Serializable;
+
+public class RawCapabilitiesResponse implements Serializable {
 
     private final String url;
     private byte[] response;
