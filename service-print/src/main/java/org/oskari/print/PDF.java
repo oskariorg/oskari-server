@@ -60,7 +60,6 @@ import org.oskari.print.request.PrintVectorRule;
 import org.oskari.print.util.PDFBoxUtil;
 import org.oskari.print.util.StyleUtil;
 import org.oskari.print.util.Units;
-import org.oskari.print.wmts.WMTSCapabilitiesCache;
 import org.oskari.service.wfs.client.OskariFeatureClient;
 
 import org.locationtech.jts.geom.Coordinate;
@@ -170,7 +169,6 @@ public class PDF {
      * This method should be called (only) via PrintService
      */
     protected static void getPDF(PrintRequest request,
-            WMTSCapabilitiesCache wmtsCapsCache,
             OskariFeatureClient featureClient,
             PDDocument doc) throws IOException, ServiceException {
         int mapWidthPx = request.getWidth();
@@ -186,7 +184,7 @@ public class PDF {
         float mapHeight = pixelsToPoints(mapHeightPx);
 
         // Init requests to run in the background
-        Map<Integer, Future<BufferedImage>> layerImages = AsyncImageLoader.initLayers(request, wmtsCapsCache);
+        Map<Integer, Future<BufferedImage>> layerImages = AsyncImageLoader.initLayers(request);
         Map<Integer, Future<SimpleFeatureCollection>> featureCollections = AsyncFeatureLoader.initLayers(request, featureClient);
 
         PDPage page = new PDPage(pageSize);

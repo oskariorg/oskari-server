@@ -18,7 +18,6 @@ import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.oskari.print.request.PrintFormat;
 import org.oskari.print.request.PrintLayer;
 import org.oskari.print.request.PrintRequest;
-import org.oskari.print.wmts.WMTSCapabilitiesCache;
 
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
@@ -80,8 +79,7 @@ public class PrintServiceTest {
 
         request.setLayers(Arrays.asList(bg, fg, fg2));
 
-        WMTSCapabilitiesCache cache = new WMTSCapabilitiesCache();
-        PrintService service = new PrintService(cache);
+        PrintService service = new PrintService();
 
         BufferedImage img = service.getPNG(request);
         File file = File.createTempFile("print-test", ".png");
@@ -134,8 +132,7 @@ public class PrintServiceTest {
 
         request.setLayers(Arrays.asList(bg, fg));
 
-        WMTSCapabilitiesCache cache = new WMTSCapabilitiesCache();
-        PrintService service = new PrintService(cache);
+        PrintService service = new PrintService();
 
         PDDocument doc = new PDDocument();
         service.getPDF(request, doc);
@@ -219,8 +216,7 @@ public class PrintServiceTest {
 
         request.setLayers(Arrays.asList(bg, fg, fg2));
 
-        WMTSCapabilitiesCache cache = new WMTSCapabilitiesCache();
-        PrintService service = new PrintService(cache);
+        PrintService service = new PrintService();
 
         PDDocument doc = new PDDocument();
         service.getPDF(request, doc);
