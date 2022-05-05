@@ -74,7 +74,5 @@ public class CapabilitiesServiceTest extends TestCase {
         ResourceUrl url = caps.getResourceUrl("tile");
         assertNotNull("Should have tile url", url);
         Assert.assertEquals("https://karttamoottori.maanmittauslaitos.fi/maasto/wmts/1.0.0/taustakartta/default/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png", url.getTemplate());
-        //assertNotNull("Should have state", prop);
-        //assertEquals("state should be of type number","number",prop.type);
     }
 }
