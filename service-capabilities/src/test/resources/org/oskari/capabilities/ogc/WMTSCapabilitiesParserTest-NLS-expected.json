@@ -1,11 +1,11 @@
 {
-  "tileMatrices": [
+  "tileMatrixLinks": [
     {
       "tileMatrixSet": {
-        "identifier": "ETRS-TM35FIN",
+        "id": "ETRS-TM35FIN",
         "matrixIds": {
           "11": {
-            "identifier": "11",
+            "id": "11",
             "topLeftCorner": {
               "lon": -548576,
               "lat": 8388608
@@ -17,7 +17,7 @@
             "tileHeight": 256
           },
           "12": {
-            "identifier": "12",
+            "id": "12",
             "topLeftCorner": {
               "lon": -548576,
               "lat": 8388608
@@ -29,7 +29,7 @@
             "tileHeight": 256
           },
           "13": {
-            "identifier": "13",
+            "id": "13",
             "topLeftCorner": {
               "lon": -548576,
               "lat": 8388608
@@ -41,7 +41,7 @@
             "tileHeight": 256
           },
           "14": {
-            "identifier": "14",
+            "id": "14",
             "topLeftCorner": {
               "lon": -548576,
               "lat": 8388608
@@ -53,7 +53,7 @@
             "tileHeight": 256
           },
           "0": {
-            "identifier": "0",
+            "id": "0",
             "topLeftCorner": {
               "lon": -548576,
               "lat": 8388608
@@ -65,7 +65,7 @@
             "tileHeight": 256
           },
           "1": {
-            "identifier": "1",
+            "id": "1",
             "topLeftCorner": {
               "lon": -548576,
               "lat": 8388608
@@ -77,7 +77,7 @@
             "tileHeight": 256
           },
           "2": {
-            "identifier": "2",
+            "id": "2",
             "topLeftCorner": {
               "lon": -548576,
               "lat": 8388608
@@ -89,7 +89,7 @@
             "tileHeight": 256
           },
           "3": {
-            "identifier": "3",
+            "id": "3",
             "topLeftCorner": {
               "lon": -548576,
               "lat": 8388608
@@ -101,7 +101,7 @@
             "tileHeight": 256
           },
           "4": {
-            "identifier": "4",
+            "id": "4",
             "topLeftCorner": {
               "lon": -548576,
               "lat": 8388608
@@ -113,7 +113,7 @@
             "tileHeight": 256
           },
           "5": {
-            "identifier": "5",
+            "id": "5",
             "topLeftCorner": {
               "lon": -548576,
               "lat": 8388608
@@ -125,7 +125,7 @@
             "tileHeight": 256
           },
           "6": {
-            "identifier": "6",
+            "id": "6",
             "topLeftCorner": {
               "lon": -548576,
               "lat": 8388608
@@ -137,7 +137,7 @@
             "tileHeight": 256
           },
           "7": {
-            "identifier": "7",
+            "id": "7",
             "topLeftCorner": {
               "lon": -548576,
               "lat": 8388608
@@ -149,7 +149,7 @@
             "tileHeight": 256
           },
           "8": {
-            "identifier": "8",
+            "id": "8",
             "topLeftCorner": {
               "lon": -548576,
               "lat": 8388608
@@ -161,7 +161,7 @@
             "tileHeight": 256
           },
           "9": {
-            "identifier": "9",
+            "id": "9",
             "topLeftCorner": {
               "lon": -548576,
               "lat": 8388608
@@ -173,7 +173,7 @@
             "tileHeight": 256
           },
           "10": {
-            "identifier": "10",
+            "id": "10",
             "topLeftCorner": {
               "lon": -548576,
               "lat": 8388608
@@ -185,7 +185,7 @@
             "tileHeight": 256
           }
         },
-        "projection": "urn:ogc:def:crs:EPSG:6.3:3067"
+        "crs": "urn:ogc:def:crs:EPSG:6.3:3067"
       },
       "limits": null
     }

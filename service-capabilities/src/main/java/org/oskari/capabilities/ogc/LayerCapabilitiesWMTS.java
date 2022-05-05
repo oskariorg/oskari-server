@@ -51,14 +51,14 @@ public class LayerCapabilitiesWMTS extends LayerCapabilitiesOGC {
                 .findFirst().orElse(null);
     }
 
-    public List<TileMatrixLink> getTileMatrices() {
+    public List<TileMatrixLink> getTileMatrixLinks() {
         if (links == null) {
             return Collections.emptyList();
         }
         return links;
     }
 
-    public void setTileMatrices(List<TileMatrixLink> links) {
+    public void setTileMatrixLinks(List<TileMatrixLink> links) {
         this.links = links;
     }
 }

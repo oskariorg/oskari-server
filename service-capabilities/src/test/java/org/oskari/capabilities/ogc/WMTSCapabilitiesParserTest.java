@@ -1,5 +1,6 @@
 package org.oskari.capabilities.ogc;
 
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.test.util.ResourceHelper;
 import org.json.JSONObject;
@@ -111,6 +112,10 @@ public class WMTSCapabilitiesParserTest {
         JSONObject json = CapabilitiesService.toJSON(layers.get("taustakartta"), SYSTEM_CRS);
         // System.out.println(json);
         assertTrue("JSON should match", JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)));
+
+        LayerCapabilitiesWMTS caps = CapabilitiesService.fromJSON(json.toString(), OskariLayer.TYPE_WMTS);
+        // Deserialization back to objects succeeded \o/
+        assertEquals("Only one tilematrix after filtering against CRS list for system", 1, caps.getTileMatrixLinks().size());
     }
 
     @Test
