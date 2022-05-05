@@ -64,11 +64,11 @@ public class CapabilitiesServiceTest extends TestCase {
     public void testDeserializationWMTS()  {
         String json = ResourceHelper.readStringResource("Capabilities_WMTS.json", this);
         LayerCapabilitiesWMTS caps = CapabilitiesService.fromJSON(json, OskariLayer.TYPE_WMTS);
-        Assert.assertEquals(15, caps.getTileMatrices().size());
-        Assert.assertEquals("urn:ogc:def:crs:EPSG:6.3:3067",
-                caps.getTileMatrices().stream()
-                    .map(l -> l.getTileMatrixSet().getCrs())
-                    .filter(srs -> srs.equals("urn:ogc:def:crs:EPSG:6.3:3067"))
+        Assert.assertEquals(15, caps.getTileMatrixLinks().size());
+        Assert.assertEquals("EPSG:3067",
+                caps.getTileMatrixLinks().stream()
+                    .map(l -> l.getTileMatrixSet().getShortCrs())
+                    .filter(srs -> srs.equals("EPSG:3067"))
                     .findFirst()
                     .orElse(null));
         ResourceUrl url = caps.getResourceUrl("tile");

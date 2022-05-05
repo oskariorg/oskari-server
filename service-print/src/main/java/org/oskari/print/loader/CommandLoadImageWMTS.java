@@ -67,7 +67,7 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
     @Override
     public BufferedImage run() throws Exception {
         LayerCapabilitiesWMTS caps = getLayerCapabilities();
-        TileMatrixSet tms = getTileMatrixSet(caps.getTileMatrices());
+        TileMatrixSet tms = getTileMatrixSet(caps.getTileMatrixLinks());
         TileMatrix tm = getTileMatrix(tms);
 
         int tileWidth = tm.getTileWidth();

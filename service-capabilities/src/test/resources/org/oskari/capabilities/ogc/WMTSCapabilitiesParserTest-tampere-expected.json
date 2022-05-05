@@ -1,11 +1,11 @@
 {
-  "tileMatrices": [
+  "tileMatrixLinks": [
     {
       "tileMatrixSet": {
-        "identifier": "JHS",
+        "id": "JHS",
         "matrixIds": {
           "JHS:9": {
-            "identifier": "JHS:9",
+            "id": "JHS:9",
             "topLeftCorner": {
               "lon": 50199.48138252203,
               "lat": 7795411.870622758
@@ -17,7 +17,7 @@
             "tileHeight": 256
           },
           "JHS:5": {
-            "identifier": "JHS:5",
+            "id": "JHS:5",
             "topLeftCorner": {
               "lon": 50199.48138252203,
               "lat": 7795411.870622758
@@ -29,7 +29,7 @@
             "tileHeight": 256
           },
           "JHS:13": {
-            "identifier": "JHS:13",
+            "id": "JHS:13",
             "topLeftCorner": {
               "lon": 50199.48138252203,
               "lat": 7795411.870622758
@@ -41,7 +41,7 @@
             "tileHeight": 256
           },
           "JHS:6": {
-            "identifier": "JHS:6",
+            "id": "JHS:6",
             "topLeftCorner": {
               "lon": 50199.48138252203,
               "lat": 7795411.870622758
@@ -53,7 +53,7 @@
             "tileHeight": 256
           },
           "JHS:12": {
-            "identifier": "JHS:12",
+            "id": "JHS:12",
             "topLeftCorner": {
               "lon": 50199.48138252203,
               "lat": 7795411.870622758
@@ -65,7 +65,7 @@
             "tileHeight": 256
           },
           "JHS:7": {
-            "identifier": "JHS:7",
+            "id": "JHS:7",
             "topLeftCorner": {
               "lon": 50199.48138252203,
               "lat": 7795411.870622758
@@ -77,7 +77,7 @@
             "tileHeight": 256
           },
           "JHS:11": {
-            "identifier": "JHS:11",
+            "id": "JHS:11",
             "topLeftCorner": {
               "lon": 50199.48138252203,
               "lat": 7795411.870622758
@@ -89,7 +89,7 @@
             "tileHeight": 256
           },
           "JSH:15": {
-            "identifier": "JSH:15",
+            "id": "JSH:15",
             "topLeftCorner": {
               "lon": 50199.48138252203,
               "lat": 7795411.870622758
@@ -101,7 +101,7 @@
             "tileHeight": 256
           },
           "JHS:8": {
-            "identifier": "JHS:8",
+            "id": "JHS:8",
             "topLeftCorner": {
               "lon": 50199.48138252203,
               "lat": 7795411.870622758
@@ -113,7 +113,7 @@
             "tileHeight": 256
           },
           "JHS:10": {
-            "identifier": "JHS:10",
+            "id": "JHS:10",
             "topLeftCorner": {
               "lon": 50199.48138252203,
               "lat": 7795411.870622758
@@ -125,7 +125,7 @@
             "tileHeight": 256
           },
           "JHS:14": {
-            "identifier": "JHS:14",
+            "id": "JHS:14",
             "topLeftCorner": {
               "lon": 50199.48138252203,
               "lat": 7795411.870622758
@@ -137,7 +137,7 @@
             "tileHeight": 256
           },
           "JHS:1": {
-            "identifier": "JHS:1",
+            "id": "JHS:1",
             "topLeftCorner": {
               "lon": 50199.48138252203,
               "lat": 7795411.870622758
@@ -149,7 +149,7 @@
             "tileHeight": 256
           },
           "JHS:2": {
-            "identifier": "JHS:2",
+            "id": "JHS:2",
             "topLeftCorner": {
               "lon": 50199.48138252203,
               "lat": 7795411.870622758
@@ -161,7 +161,7 @@
             "tileHeight": 256
           },
           "JHS:3": {
-            "identifier": "JHS:3",
+            "id": "JHS:3",
             "topLeftCorner": {
               "lon": 50199.48138252203,
               "lat": 7795411.870622758
@@ -173,7 +173,7 @@
             "tileHeight": 256
           },
           "JHS:4": {
-            "identifier": "JHS:4",
+            "id": "JHS:4",
             "topLeftCorner": {
               "lon": 50199.48138252203,
               "lat": 7795411.870622758
@@ -185,7 +185,7 @@
             "tileHeight": 256
           },
           "JHS:0": {
-            "identifier": "JHS:0",
+            "id": "JHS:0",
             "topLeftCorner": {
               "lon": 50199.48138252203,
               "lat": 7795411.870622758
@@ -197,12 +197,12 @@
             "tileHeight": 256
           }
         },
-        "projection": "urn:ogc:def:crs:EPSG::3067"
+        "crs": "urn:ogc:def:crs:EPSG::3067"
       },
       "limits": [
         {
           "tileMatrix": {
-            "identifier": "JHS:0",
+            "id": "JHS:0",
             "topLeftCorner": {
               "lon": 50199.48138252203,
               "lat": 7795411.870622758
@@ -220,7 +220,7 @@
         },
         {
           "tileMatrix": {
-            "identifier": "JHS:1",
+            "id": "JHS:1",
             "topLeftCorner": {
               "lon": 50199.48138252203,
               "lat": 7795411.870622758
@@ -238,7 +238,7 @@
         },
         {
           "tileMatrix": {
-            "identifier": "JHS:2",
+            "id": "JHS:2",
             "topLeftCorner": {
               "lon": 50199.48138252203,
               "lat": 7795411.870622758
@@ -256,7 +256,7 @@
         },
         {
           "tileMatrix": {
-            "identifier": "JHS:3",
+            "id": "JHS:3",
             "topLeftCorner": {
               "lon": 50199.48138252203,
               "lat": 7795411.870622758
@@ -274,7 +274,7 @@
         },
         {
           "tileMatrix": {
-            "identifier": "JHS:4",
+            "id": "JHS:4",
             "topLeftCorner": {
               "lon": 50199.48138252203,
               "lat": 7795411.870622758
@@ -292,7 +292,7 @@
         },
         {
           "tileMatrix": {
-            "identifier": "JHS:5",
+            "id": "JHS:5",
             "topLeftCorner": {
               "lon": 50199.48138252203,
               "lat": 7795411.870622758
@@ -310,7 +310,7 @@
         },
         {
           "tileMatrix": {
-            "identifier": "JHS:6",
+            "id": "JHS:6",
             "topLeftCorner": {
               "lon": 50199.48138252203,
               "lat": 7795411.870622758
@@ -328,7 +328,7 @@
         },
         {
           "tileMatrix": {
-            "identifier": "JHS:7",
+            "id": "JHS:7",
             "topLeftCorner": {
               "lon": 50199.48138252203,
               "lat": 7795411.870622758
@@ -346,7 +346,7 @@
         },
         {
           "tileMatrix": {
-            "identifier": "JHS:8",
+            "id": "JHS:8",
             "topLeftCorner": {
               "lon": 50199.48138252203,
               "lat": 7795411.870622758
@@ -364,7 +364,7 @@
         },
         {
           "tileMatrix": {
-            "identifier": "JHS:9",
+            "id": "JHS:9",
             "topLeftCorner": {
               "lon": 50199.48138252203,
               "lat": 7795411.870622758
@@ -382,7 +382,7 @@
         },
         {
           "tileMatrix": {
-            "identifier": "JHS:10",
+            "id": "JHS:10",
             "topLeftCorner": {
               "lon": 50199.48138252203,
               "lat": 7795411.870622758
@@ -400,7 +400,7 @@
         },
         {
           "tileMatrix": {
-            "identifier": "JHS:11",
+            "id": "JHS:11",
             "topLeftCorner": {
               "lon": 50199.48138252203,
               "lat": 7795411.870622758
@@ -418,7 +418,7 @@
         },
         {
           "tileMatrix": {
-            "identifier": "JHS:12",
+            "id": "JHS:12",
             "topLeftCorner": {
               "lon": 50199.48138252203,
               "lat": 7795411.870622758
@@ -436,7 +436,7 @@
         },
         {
           "tileMatrix": {
-            "identifier": "JHS:13",
+            "id": "JHS:13",
             "topLeftCorner": {
               "lon": 50199.48138252203,
               "lat": 7795411.870622758
@@ -454,7 +454,7 @@
         },
         {
           "tileMatrix": {
-            "identifier": "JHS:14",
+            "id": "JHS:14",
             "topLeftCorner": {
               "lon": 50199.48138252203,
               "lat": 7795411.870622758
@@ -472,7 +472,7 @@
         },
         {
           "tileMatrix": {
-            "identifier": "JSH:15",
+            "id": "JSH:15",
             "topLeftCorner": {
               "lon": 50199.48138252203,
               "lat": 7795411.870622758

@@ -1,11 +1,11 @@
 {
-  "tileMatrices": [
+  "tileMatrixLinks": [
     {
       "tileMatrixSet": {
-        "identifier": "InspireCRS84Quad",
+        "id": "InspireCRS84Quad",
         "matrixIds": {
           "11": {
-            "identifier": "11",
+            "id": "11",
             "topLeftCorner": {
               "lon": -180,
               "lat": 90
@@ -17,7 +17,7 @@
             "tileHeight": 256
           },
           "12": {
-            "identifier": "12",
+            "id": "12",
             "topLeftCorner": {
               "lon": -180,
               "lat": 90
@@ -29,7 +29,7 @@
             "tileHeight": 256
           },
           "13": {
-            "identifier": "13",
+            "id": "13",
             "topLeftCorner": {
               "lon": -180,
               "lat": 90
@@ -41,7 +41,7 @@
             "tileHeight": 256
           },
           "14": {
-            "identifier": "14",
+            "id": "14",
             "topLeftCorner": {
               "lon": -180,
               "lat": 90
@@ -53,7 +53,7 @@
             "tileHeight": 256
           },
           "15": {
-            "identifier": "15",
+            "id": "15",
             "topLeftCorner": {
               "lon": -180,
               "lat": 90
@@ -65,7 +65,7 @@
             "tileHeight": 256
           },
           "16": {
-            "identifier": "16",
+            "id": "16",
             "topLeftCorner": {
               "lon": -180,
               "lat": 90
@@ -77,7 +77,7 @@
             "tileHeight": 256
           },
           "17": {
-            "identifier": "17",
+            "id": "17",
             "topLeftCorner": {
               "lon": -180,
               "lat": 90
@@ -89,7 +89,7 @@
             "tileHeight": 256
           },
           "0": {
-            "identifier": "0",
+            "id": "0",
             "topLeftCorner": {
               "lon": -180,
               "lat": 90
@@ -101,7 +101,7 @@
             "tileHeight": 256
           },
           "1": {
-            "identifier": "1",
+            "id": "1",
             "topLeftCorner": {
               "lon": -180,
               "lat": 90
@@ -113,7 +113,7 @@
             "tileHeight": 256
           },
           "2": {
-            "identifier": "2",
+            "id": "2",
             "topLeftCorner": {
               "lon": -180,
               "lat": 90
@@ -125,7 +125,7 @@
             "tileHeight": 256
           },
           "3": {
-            "identifier": "3",
+            "id": "3",
             "topLeftCorner": {
               "lon": -180,
               "lat": 90
@@ -137,7 +137,7 @@
             "tileHeight": 256
           },
           "4": {
-            "identifier": "4",
+            "id": "4",
             "topLeftCorner": {
               "lon": -180,
               "lat": 90
@@ -149,7 +149,7 @@
             "tileHeight": 256
           },
           "5": {
-            "identifier": "5",
+            "id": "5",
             "topLeftCorner": {
               "lon": -180,
               "lat": 90
@@ -161,7 +161,7 @@
             "tileHeight": 256
           },
           "6": {
-            "identifier": "6",
+            "id": "6",
             "topLeftCorner": {
               "lon": -180,
               "lat": 90
@@ -173,7 +173,7 @@
             "tileHeight": 256
           },
           "7": {
-            "identifier": "7",
+            "id": "7",
             "topLeftCorner": {
               "lon": -180,
               "lat": 90
@@ -185,7 +185,7 @@
             "tileHeight": 256
           },
           "8": {
-            "identifier": "8",
+            "id": "8",
             "topLeftCorner": {
               "lon": -180,
               "lat": 90
@@ -197,7 +197,7 @@
             "tileHeight": 256
           },
           "9": {
-            "identifier": "9",
+            "id": "9",
             "topLeftCorner": {
               "lon": -180,
               "lat": 90
@@ -209,7 +209,7 @@
             "tileHeight": 256
           },
           "10": {
-            "identifier": "10",
+            "id": "10",
             "topLeftCorner": {
               "lon": -180,
               "lat": 90
@@ -221,16 +221,16 @@
             "tileHeight": 256
           }
         },
-        "projection": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+        "crs": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
       },
       "limits": null
     },
     {
       "tileMatrixSet": {
-        "identifier": "EPSG:4326",
+        "id": "EPSG:4326",
         "matrixIds": {
           "EPSG:4326:19": {
-            "identifier": "EPSG:4326:19",
+            "id": "EPSG:4326:19",
             "topLeftCorner": {
               "lon": 90,
               "lat": -180
@@ -242,7 +242,7 @@
             "tileHeight": 256
           },
           "EPSG:4326:16": {
-            "identifier": "EPSG:4326:16",
+            "id": "EPSG:4326:16",
             "topLeftCorner": {
               "lon": 90,
               "lat": -180
@@ -254,7 +254,7 @@
             "tileHeight": 256
           },
           "EPSG:4326:15": {
-            "identifier": "EPSG:4326:15",
+            "id": "EPSG:4326:15",
             "topLeftCorner": {
               "lon": 90,
               "lat": -180
@@ -266,7 +266,7 @@
             "tileHeight": 256
           },
           "EPSG:4326:18": {
-            "identifier": "EPSG:4326:18",
+            "id": "EPSG:4326:18",
             "topLeftCorner": {
               "lon": 90,
               "lat": -180
@@ -278,7 +278,7 @@
             "tileHeight": 256
           },
           "EPSG:4326:17": {
-            "identifier": "EPSG:4326:17",
+            "id": "EPSG:4326:17",
             "topLeftCorner": {
               "lon": 90,
               "lat": -180
@@ -290,7 +290,7 @@
             "tileHeight": 256
           },
           "EPSG:4326:2": {
-            "identifier": "EPSG:4326:2",
+            "id": "EPSG:4326:2",
             "topLeftCorner": {
               "lon": 90,
               "lat": -180
@@ -302,7 +302,7 @@
             "tileHeight": 256
           },
           "EPSG:4326:12": {
-            "identifier": "EPSG:4326:12",
+            "id": "EPSG:4326:12",
             "topLeftCorner": {
               "lon": 90,
               "lat": -180
@@ -314,7 +314,7 @@
             "tileHeight": 256
           },
           "EPSG:4326:3": {
-            "identifier": "EPSG:4326:3",
+            "id": "EPSG:4326:3",
             "topLeftCorner": {
               "lon": 90,
               "lat": -180
@@ -326,7 +326,7 @@
             "tileHeight": 256
           },
           "EPSG:4326:11": {
-            "identifier": "EPSG:4326:11",
+            "id": "EPSG:4326:11",
             "topLeftCorner": {
               "lon": 90,
               "lat": -180
@@ -338,7 +338,7 @@
             "tileHeight": 256
           },
           "EPSG:4326:0": {
-            "identifier": "EPSG:4326:0",
+            "id": "EPSG:4326:0",
             "topLeftCorner": {
               "lon": 90,
               "lat": -180
@@ -350,7 +350,7 @@
             "tileHeight": 256
           },
           "EPSG:4326:14": {
-            "identifier": "EPSG:4326:14",
+            "id": "EPSG:4326:14",
             "topLeftCorner": {
               "lon": 90,
               "lat": -180
@@ -362,7 +362,7 @@
             "tileHeight": 256
           },
           "EPSG:4326:1": {
-            "identifier": "EPSG:4326:1",
+            "id": "EPSG:4326:1",
             "topLeftCorner": {
               "lon": 90,
               "lat": -180
@@ -374,7 +374,7 @@
             "tileHeight": 256
           },
           "EPSG:4326:13": {
-            "identifier": "EPSG:4326:13",
+            "id": "EPSG:4326:13",
             "topLeftCorner": {
               "lon": 90,
               "lat": -180
@@ -386,7 +386,7 @@
             "tileHeight": 256
           },
           "EPSG:4326:10": {
-            "identifier": "EPSG:4326:10",
+            "id": "EPSG:4326:10",
             "topLeftCorner": {
               "lon": 90,
               "lat": -180
@@ -398,7 +398,7 @@
             "tileHeight": 256
           },
           "EPSG:4326:8": {
-            "identifier": "EPSG:4326:8",
+            "id": "EPSG:4326:8",
             "topLeftCorner": {
               "lon": 90,
               "lat": -180
@@ -410,7 +410,7 @@
             "tileHeight": 256
           },
           "EPSG:4326:9": {
-            "identifier": "EPSG:4326:9",
+            "id": "EPSG:4326:9",
             "topLeftCorner": {
               "lon": 90,
               "lat": -180
@@ -422,7 +422,7 @@
             "tileHeight": 256
           },
           "EPSG:4326:6": {
-            "identifier": "EPSG:4326:6",
+            "id": "EPSG:4326:6",
             "topLeftCorner": {
               "lon": 90,
               "lat": -180
@@ -434,7 +434,7 @@
             "tileHeight": 256
           },
           "EPSG:4326:7": {
-            "identifier": "EPSG:4326:7",
+            "id": "EPSG:4326:7",
             "topLeftCorner": {
               "lon": 90,
               "lat": -180
@@ -446,7 +446,7 @@
             "tileHeight": 256
           },
           "EPSG:4326:4": {
-            "identifier": "EPSG:4326:4",
+            "id": "EPSG:4326:4",
             "topLeftCorner": {
               "lon": 90,
               "lat": -180
@@ -458,7 +458,7 @@
             "tileHeight": 256
           },
           "EPSG:4326:5": {
-            "identifier": "EPSG:4326:5",
+            "id": "EPSG:4326:5",
             "topLeftCorner": {
               "lon": 90,
               "lat": -180
@@ -470,16 +470,16 @@
             "tileHeight": 256
           }
         },
-        "projection": "EPSG:4326"
+        "crs": "EPSG:4326"
       },
       "limits": null
     },
     {
       "tileMatrixSet": {
-        "identifier": "EPSG:4258",
+        "id": "EPSG:4258",
         "matrixIds": {
           "11": {
-            "identifier": "11",
+            "id": "11",
             "topLeftCorner": {
               "lon": 90,
               "lat": -180
@@ -491,7 +491,7 @@
             "tileHeight": 256
           },
           "12": {
-            "identifier": "12",
+            "id": "12",
             "topLeftCorner": {
               "lon": 90,
               "lat": -180
@@ -503,7 +503,7 @@
             "tileHeight": 256
           },
           "13": {
-            "identifier": "13",
+            "id": "13",
             "topLeftCorner": {
               "lon": 90,
               "lat": -180
@@ -515,7 +515,7 @@
             "tileHeight": 256
           },
           "14": {
-            "identifier": "14",
+            "id": "14",
             "topLeftCorner": {
               "lon": 90,
               "lat": -180
@@ -527,7 +527,7 @@
             "tileHeight": 256
           },
           "15": {
-            "identifier": "15",
+            "id": "15",
             "topLeftCorner": {
               "lon": 90,
               "lat": -180
@@ -539,7 +539,7 @@
             "tileHeight": 256
           },
           "16": {
-            "identifier": "16",
+            "id": "16",
             "topLeftCorner": {
               "lon": 90,
               "lat": -180
@@ -551,7 +551,7 @@
             "tileHeight": 256
           },
           "17": {
-            "identifier": "17",
+            "id": "17",
             "topLeftCorner": {
               "lon": 90,
               "lat": -180
@@ -563,7 +563,7 @@
             "tileHeight": 256
           },
           "18": {
-            "identifier": "18",
+            "id": "18",
             "topLeftCorner": {
               "lon": 90,
               "lat": -180
@@ -575,7 +575,7 @@
             "tileHeight": 256
           },
           "19": {
-            "identifier": "19",
+            "id": "19",
             "topLeftCorner": {
               "lon": 90,
               "lat": -180
@@ -587,7 +587,7 @@
             "tileHeight": 256
           },
           "0": {
-            "identifier": "0",
+            "id": "0",
             "topLeftCorner": {
               "lon": 90,
               "lat": -180
@@ -599,7 +599,7 @@
             "tileHeight": 256
           },
           "1": {
-            "identifier": "1",
+            "id": "1",
             "topLeftCorner": {
               "lon": 90,
               "lat": -180
@@ -611,7 +611,7 @@
             "tileHeight": 256
           },
           "2": {
-            "identifier": "2",
+            "id": "2",
             "topLeftCorner": {
               "lon": 90,
               "lat": -180
@@ -623,7 +623,7 @@
             "tileHeight": 256
           },
           "3": {
-            "identifier": "3",
+            "id": "3",
             "topLeftCorner": {
               "lon": 90,
               "lat": -180
@@ -635,7 +635,7 @@
             "tileHeight": 256
           },
           "4": {
-            "identifier": "4",
+            "id": "4",
             "topLeftCorner": {
               "lon": 90,
               "lat": -180
@@ -647,7 +647,7 @@
             "tileHeight": 256
           },
           "5": {
-            "identifier": "5",
+            "id": "5",
             "topLeftCorner": {
               "lon": 90,
               "lat": -180
@@ -659,7 +659,7 @@
             "tileHeight": 256
           },
           "6": {
-            "identifier": "6",
+            "id": "6",
             "topLeftCorner": {
               "lon": 90,
               "lat": -180
@@ -671,7 +671,7 @@
             "tileHeight": 256
           },
           "7": {
-            "identifier": "7",
+            "id": "7",
             "topLeftCorner": {
               "lon": 90,
               "lat": -180
@@ -683,7 +683,7 @@
             "tileHeight": 256
           },
           "8": {
-            "identifier": "8",
+            "id": "8",
             "topLeftCorner": {
               "lon": 90,
               "lat": -180
@@ -695,7 +695,7 @@
             "tileHeight": 256
           },
           "9": {
-            "identifier": "9",
+            "id": "9",
             "topLeftCorner": {
               "lon": 90,
               "lat": -180
@@ -707,7 +707,7 @@
             "tileHeight": 256
           },
           "10": {
-            "identifier": "10",
+            "id": "10",
             "topLeftCorner": {
               "lon": 90,
               "lat": -180
@@ -719,16 +719,16 @@
             "tileHeight": 256
           }
         },
-        "projection": "EPSG:4258"
+        "crs": "EPSG:4258"
       },
       "limits": null
     },
     {
       "tileMatrixSet": {
-        "identifier": "EPSG:25830",
+        "id": "EPSG:25830",
         "matrixIds": {
           "11": {
-            "identifier": "11",
+            "id": "11",
             "topLeftCorner": {
               "lon": -1099673.71,
               "lat": 4909412
@@ -740,7 +740,7 @@
             "tileHeight": 256
           },
           "12": {
-            "identifier": "12",
+            "id": "12",
             "topLeftCorner": {
               "lon": -1099673.71,
               "lat": 4904520
@@ -752,7 +752,7 @@
             "tileHeight": 256
           },
           "13": {
-            "identifier": "13",
+            "id": "13",
             "topLeftCorner": {
               "lon": -1099673.71,
               "lat": 4904520
@@ -764,7 +764,7 @@
             "tileHeight": 256
           },
           "14": {
-            "identifier": "14",
+            "id": "14",
             "topLeftCorner": {
               "lon": -1099673.71,
               "lat": 4903297
@@ -776,7 +776,7 @@
             "tileHeight": 256
           },
           "15": {
-            "identifier": "15",
+            "id": "15",
             "topLeftCorner": {
               "lon": -1099673.71,
               "lat": 4903297
@@ -788,7 +788,7 @@
             "tileHeight": 256
           },
           "16": {
-            "identifier": "16",
+            "id": "16",
             "topLeftCorner": {
               "lon": -1099673.71,
               "lat": 4903297
@@ -800,7 +800,7 @@
             "tileHeight": 256
           },
           "17": {
-            "identifier": "17",
+            "id": "17",
             "topLeftCorner": {
               "lon": -1099673.71,
               "lat": 4903144
@@ -812,7 +812,7 @@
             "tileHeight": 256
           },
           "18": {
-            "identifier": "18",
+            "id": "18",
             "topLeftCorner": {
               "lon": -1099673.71,
               "lat": 4903144
@@ -824,7 +824,7 @@
             "tileHeight": 256
           },
           "19": {
-            "identifier": "19",
+            "id": "19",
             "topLeftCorner": {
               "lon": -1099673.71,
               "lat": 4903144
@@ -836,7 +836,7 @@
             "tileHeight": 256
           },
           "0": {
-            "identifier": "0",
+            "id": "0",
             "topLeftCorner": {
               "lon": -1099673.71,
               "lat": 2.3127107E7
@@ -848,7 +848,7 @@
             "tileHeight": 256
           },
           "1": {
-            "identifier": "1",
+            "id": "1",
             "topLeftCorner": {
               "lon": -1099673.71,
               "lat": 1.3108353E7
@@ -860,7 +860,7 @@
             "tileHeight": 256
           },
           "2": {
-            "identifier": "2",
+            "id": "2",
             "topLeftCorner": {
               "lon": -1099673.71,
               "lat": 8098976
@@ -872,7 +872,7 @@
             "tileHeight": 256
           },
           "3": {
-            "identifier": "3",
+            "id": "3",
             "topLeftCorner": {
               "lon": -1099673.71,
               "lat": 5594287
@@ -884,7 +884,7 @@
             "tileHeight": 256
           },
           "4": {
-            "identifier": "4",
+            "id": "4",
             "topLeftCorner": {
               "lon": -1099673.71,
               "lat": 5594287
@@ -896,7 +896,7 @@
             "tileHeight": 256
           },
           "5": {
-            "identifier": "5",
+            "id": "5",
             "topLeftCorner": {
               "lon": -1099673.71,
               "lat": 4968115
@@ -908,7 +908,7 @@
             "tileHeight": 256
           },
           "6": {
-            "identifier": "6",
+            "id": "6",
             "topLeftCorner": {
               "lon": -1099673.71,
               "lat": 4968115
@@ -920,7 +920,7 @@
             "tileHeight": 256
           },
           "7": {
-            "identifier": "7",
+            "id": "7",
             "topLeftCorner": {
               "lon": -1099673.71,
               "lat": 4968115
@@ -932,7 +932,7 @@
             "tileHeight": 256
           },
           "8": {
-            "identifier": "8",
+            "id": "8",
             "topLeftCorner": {
               "lon": -1099673.71,
               "lat": 4968115
@@ -944,7 +944,7 @@
             "tileHeight": 256
           },
           "9": {
-            "identifier": "9",
+            "id": "9",
             "topLeftCorner": {
               "lon": -1099673.71,
               "lat": 4928979
@@ -956,7 +956,7 @@
             "tileHeight": 256
           },
           "10": {
-            "identifier": "10",
+            "id": "10",
             "topLeftCorner": {
               "lon": -1099673.71,
               "lat": 4909412
@@ -968,16 +968,16 @@
             "tileHeight": 256
           }
         },
-        "projection": "EPSG:25830"
+        "crs": "EPSG:25830"
       },
       "limits": null
     },
     {
       "tileMatrixSet": {
-        "identifier": "EPSG:25828",
+        "id": "EPSG:25828",
         "matrixIds": {
           "11": {
-            "identifier": "11",
+            "id": "11",
             "topLeftCorner": {
               "lon": 189142,
               "lat": 3246077
@@ -989,7 +989,7 @@
             "tileHeight": 256
           },
           "12": {
-            "identifier": "12",
+            "id": "12",
             "topLeftCorner": {
               "lon": 189142,
               "lat": 3246077
@@ -1001,7 +1001,7 @@
             "tileHeight": 256
           },
           "13": {
-            "identifier": "13",
+            "id": "13",
             "topLeftCorner": {
               "lon": 189142,
               "lat": 3246077
@@ -1013,7 +1013,7 @@
             "tileHeight": 256
           },
           "14": {
-            "identifier": "14",
+            "id": "14",
             "topLeftCorner": {
               "lon": 189142,
               "lat": 3244854
@@ -1025,7 +1025,7 @@
             "tileHeight": 256
           },
           "15": {
-            "identifier": "15",
+            "id": "15",
             "topLeftCorner": {
               "lon": 189142,
               "lat": 3244242
@@ -1037,7 +1037,7 @@
             "tileHeight": 256
           },
           "16": {
-            "identifier": "16",
+            "id": "16",
             "topLeftCorner": {
               "lon": 189142,
               "lat": 3243937
@@ -1049,7 +1049,7 @@
             "tileHeight": 256
           },
           "10": {
-            "identifier": "10",
+            "id": "10",
             "topLeftCorner": {
               "lon": 189142,
               "lat": 3255861
@@ -1061,16 +1061,16 @@
             "tileHeight": 256
           }
         },
-        "projection": "EPSG:25828"
+        "crs": "EPSG:25828"
       },
       "limits": null
     },
     {
       "tileMatrixSet": {
-        "identifier": "GoogleMapsCompatible",
+        "id": "GoogleMapsCompatible",
         "matrixIds": {
           "11": {
-            "identifier": "11",
+            "id": "11",
             "topLeftCorner": {
               "lon": -2.003750834E7,
               "lat": 2.0037508E7
@@ -1082,7 +1082,7 @@
             "tileHeight": 256
           },
           "12": {
-            "identifier": "12",
+            "id": "12",
             "topLeftCorner": {
               "lon": -2.003750834E7,
               "lat": 2.0037508E7
@@ -1094,7 +1094,7 @@
             "tileHeight": 256
           },
           "13": {
-            "identifier": "13",
+            "id": "13",
             "topLeftCorner": {
               "lon": -2.003750834E7,
               "lat": 2.0037508E7
@@ -1106,7 +1106,7 @@
             "tileHeight": 256
           },
           "14": {
-            "identifier": "14",
+            "id": "14",
             "topLeftCorner": {
               "lon": -2.003750834E7,
               "lat": 2.0037508E7
@@ -1118,7 +1118,7 @@
             "tileHeight": 256
           },
           "15": {
-            "identifier": "15",
+            "id": "15",
             "topLeftCorner": {
               "lon": -2.003750834E7,
               "lat": 2.0037508E7
@@ -1130,7 +1130,7 @@
             "tileHeight": 256
           },
           "16": {
-            "identifier": "16",
+            "id": "16",
             "topLeftCorner": {
               "lon": -2.003750834E7,
               "lat": 2.0037508E7
@@ -1142,7 +1142,7 @@
             "tileHeight": 256
           },
           "17": {
-            "identifier": "17",
+            "id": "17",
             "topLeftCorner": {
               "lon": -2.003750834E7,
               "lat": 2.0037508E7
@@ -1154,7 +1154,7 @@
             "tileHeight": 256
           },
           "18": {
-            "identifier": "18",
+            "id": "18",
             "topLeftCorner": {
               "lon": -2.003750834E7,
               "lat": 2.0037508E7
@@ -1166,7 +1166,7 @@
             "tileHeight": 256
           },
           "19": {
-            "identifier": "19",
+            "id": "19",
             "topLeftCorner": {
               "lon": -2.003750834E7,
               "lat": 2.0037508E7
@@ -1178,7 +1178,7 @@
             "tileHeight": 256
           },
           "0": {
-            "identifier": "0",
+            "id": "0",
             "topLeftCorner": {
               "lon": -2.003750834E7,
               "lat": 2.0037508E7
@@ -1190,7 +1190,7 @@
             "tileHeight": 256
           },
           "1": {
-            "identifier": "1",
+            "id": "1",
             "topLeftCorner": {
               "lon": -2.003750834E7,
               "lat": 2.0037508E7
@@ -1202,7 +1202,7 @@
             "tileHeight": 256
           },
           "2": {
-            "identifier": "2",
+            "id": "2",
             "topLeftCorner": {
               "lon": -2.003750834E7,
               "lat": 2.0037508E7
@@ -1214,7 +1214,7 @@
             "tileHeight": 256
           },
           "3": {
-            "identifier": "3",
+            "id": "3",
             "topLeftCorner": {
               "lon": -2.003750834E7,
               "lat": 2.0037508E7
@@ -1226,7 +1226,7 @@
             "tileHeight": 256
           },
           "4": {
-            "identifier": "4",
+            "id": "4",
             "topLeftCorner": {
               "lon": -2.003750834E7,
               "lat": 2.0037508E7
@@ -1238,7 +1238,7 @@
             "tileHeight": 256
           },
           "5": {
-            "identifier": "5",
+            "id": "5",
             "topLeftCorner": {
               "lon": -2.003750834E7,
               "lat": 2.0037508E7
@@ -1250,7 +1250,7 @@
             "tileHeight": 256
           },
           "6": {
-            "identifier": "6",
+            "id": "6",
             "topLeftCorner": {
               "lon": -2.003750834E7,
               "lat": 2.0037508E7
@@ -1262,7 +1262,7 @@
             "tileHeight": 256
           },
           "7": {
-            "identifier": "7",
+            "id": "7",
             "topLeftCorner": {
               "lon": -2.003750834E7,
               "lat": 2.0037508E7
@@ -1274,7 +1274,7 @@
             "tileHeight": 256
           },
           "8": {
-            "identifier": "8",
+            "id": "8",
             "topLeftCorner": {
               "lon": -2.003750834E7,
               "lat": 2.0037508E7
@@ -1286,7 +1286,7 @@
             "tileHeight": 256
           },
           "9": {
-            "identifier": "9",
+            "id": "9",
             "topLeftCorner": {
               "lon": -2.003750834E7,
               "lat": 2.0037508E7
@@ -1298,7 +1298,7 @@
             "tileHeight": 256
           },
           "20": {
-            "identifier": "20",
+            "id": "20",
             "topLeftCorner": {
               "lon": -2.003750834E7,
               "lat": 2.0037508E7
@@ -1310,7 +1310,7 @@
             "tileHeight": 256
           },
           "10": {
-            "identifier": "10",
+            "id": "10",
             "topLeftCorner": {
               "lon": -2.003750834E7,
               "lat": 2.0037508E7
@@ -1322,7 +1322,7 @@
             "tileHeight": 256
           }
         },
-        "projection": "EPSG:3857"
+        "crs": "EPSG:3857"
       },
       "limits": null
     }

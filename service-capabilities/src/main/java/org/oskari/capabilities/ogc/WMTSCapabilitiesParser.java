@@ -38,7 +38,7 @@ public class WMTSCapabilitiesParser extends OGCCapabilitiesParser {
                 // GFI is not handled for WMTS at all in GetGeoPointDataHandler
                 l.setInfoFormats(layer.getInfoFormats());
                 l.setResourceUrls(layer.getResourceUrls());
-                l.setTileMatrices(layer.getLinks());
+                l.setTileMatrixLinks(layer.getLinks());
                 return l;
             }).forEach(l -> layers.put(l.getName(), l));
             return layers;

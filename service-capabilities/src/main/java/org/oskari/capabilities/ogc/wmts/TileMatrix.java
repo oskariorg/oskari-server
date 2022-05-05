@@ -34,7 +34,7 @@ public class TileMatrix {
     }
 
     // For deserializing from JSON
-    public TileMatrix(@JsonProperty("identifier") String id,
+    public TileMatrix(@JsonProperty("id") String id,
                       @JsonProperty("scaleDenominator") double scaleDenominator,
                       @JsonProperty("topLeftCorner") Map<String, Double> topLeftCorner,
                       @JsonProperty("tileWidth") int tileWidth,
@@ -75,7 +75,7 @@ public class TileMatrix {
         }
     }
 
-    @JsonProperty("identifier")
+    @JsonProperty("id")
     public String getId() {
         return id;
     }
