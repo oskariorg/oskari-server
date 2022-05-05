@@ -29,6 +29,16 @@ public class TileMatrixSet {
                 .collect(Collectors.toMap(TileMatrix::getId, tm -> tm));
         validate();
     }
+    // For deserializing from JSON
+    public TileMatrixSet(@JsonProperty("identifier") String id,
+                         @JsonProperty("projection") String crs,
+                         @JsonProperty("matrixIds") Map<String, TileMatrix> tileMatrices)
+            throws IllegalArgumentException {
+        this.id = id;
+        this.crs = crs;
+        this.tileMatrixMap = tileMatrices;
+        validate();
+    }
 
     private void validate() throws IllegalArgumentException {
         if (this.id == null || id.isEmpty()) {

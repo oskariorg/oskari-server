@@ -1,12 +1,16 @@
 package org.oskari.capabilities.ogc.wmts;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class ResourceUrl {
 
     private final String format;
     private final String type;
     private final String template;
 
-    public ResourceUrl(String format, String type, String template) {
+    public ResourceUrl(@JsonProperty("format") String format,
+                       @JsonProperty("type") String type,
+                       @JsonProperty("template") String template) {
         this.format = format;
         this.type = type;
         this.template = template;

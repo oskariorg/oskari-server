@@ -6,7 +6,9 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 import org.junit.Test;
 import org.oskari.capabilities.ogc.LayerCapabilitiesWFS;
+import org.oskari.capabilities.ogc.LayerCapabilitiesWMTS;
 import org.oskari.capabilities.ogc.wfs.FeaturePropertyType;
+import org.oskari.capabilities.ogc.wmts.ResourceUrl;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -57,5 +59,22 @@ public class CapabilitiesServiceTest extends TestCase {
         FeaturePropertyType prop = caps.getFeatureProperty("state");
         assertNotNull("Should have state", prop);
         assertEquals("state should be of type number","number",prop.type);
+    }
+    @Test
+    public void testDeserializationWMTS()  {
+        String json = ResourceHelper.readStringResource("Capabilities_WMTS.json", this);
+        LayerCapabilitiesWMTS caps = CapabilitiesService.fromJSON(json, OskariLayer.TYPE_WMTS);
+        Assert.assertEquals(15, caps.getTileMatrices().size());
+        Assert.assertEquals("urn:ogc:def:crs:EPSG:6.3:3067",
+                caps.getTileMatrices().stream()
+                    .map(l -> l.getTileMatrixSet().getCrs())
+                    .filter(srs -> srs.equals("urn:ogc:def:crs:EPSG:6.3:3067"))
+                    .findFirst()
+                    .orElse(null));
+        ResourceUrl url = caps.getResourceUrl("tile");
+        assertNotNull("Should have tile url", url);
+        Assert.assertEquals("https://karttamoottori.maanmittauslaitos.fi/maasto/wmts/1.0.0/taustakartta/default/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png", url.getTemplate());
+        //assertNotNull("Should have state", prop);
+        //assertEquals("state should be of type number","number",prop.type);
     }
 }
