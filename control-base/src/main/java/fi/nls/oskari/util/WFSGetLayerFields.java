@@ -6,6 +6,8 @@ import org.json.JSONObject;
 import org.oskari.capabilities.CapabilitiesService;
 import org.oskari.capabilities.ogc.LayerCapabilitiesWFS;
 
+// TODO: move this code to the handler (not used anywhere else)
+// consider changing the format to be more aligned with layer.capabilities AND moving this logic to DescribeLayer route?
 public class WFSGetLayerFields {
     private static final String KEY_TYPES = "types";
     private static final String KEY_GEOMETRY_NAME = "geometryName";
