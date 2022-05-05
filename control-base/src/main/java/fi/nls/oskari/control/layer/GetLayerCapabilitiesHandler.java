@@ -79,11 +79,7 @@ public class GetLayerCapabilitiesHandler extends ActionHandler {
             String capsJSON = layer.getCapabilities().toString();
             LayerCapabilitiesWMTS caps = CapabilitiesService.fromJSON(layer.getCapabilities().toString(), OskariLayer.TYPE_WMTS);
             TileMatrixLink link = caps.getTileMatrixLinks().stream()
-                    .filter(l -> {
-                        String projection = l.getTileMatrixSet().getCrs();
-                        String shortProj = ProjectionHelper.shortSyntaxEpsg(projection);
-                        return crs.equals(shortProj);
-                    })
+                    .filter(l -> crs.equals(l.getTileMatrixSet().getShortCrs()))
                     .findFirst()
                     .orElseThrow(() -> new ActionParamsException("No tilematrix matching srs: " + crs));
 
