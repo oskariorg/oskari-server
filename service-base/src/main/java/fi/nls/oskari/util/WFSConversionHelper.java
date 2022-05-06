@@ -16,6 +16,7 @@ public class WFSConversionHelper {
                 "byte",
                 "decimal",
                 "int",
+                "number",
                 "integer",
                 "long",
                 "negativeInteger",
