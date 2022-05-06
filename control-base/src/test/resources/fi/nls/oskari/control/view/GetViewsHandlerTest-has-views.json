@@ -5,6 +5,7 @@
         "pubDomain":"paikkis.fi",
         "description":"test view",
         "name":"test",
+        "created": "2021-11-12T10:56Z",
         "metadata": {},
         "state":{
             "mapfull": {

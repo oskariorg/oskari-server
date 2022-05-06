@@ -32,6 +32,7 @@ public class GetViewsHandler extends ActionHandler {
     public static final String KEY_VIEWS = "views";
     public static final String KEY_METADATA = "metadata";
     public static final String KEY_SRSNAME = "srsName";
+    public static final String KEY_CREATED = "created";
 
     private static final Logger log = LogFactory.getLogger(GetViewsHandler.class);
 
@@ -85,6 +86,7 @@ public class GetViewsHandler extends ActionHandler {
             viewJson.put(KEY_URL, view.getUrl());
             viewJson.put(KEY_METADATA, view.getMetadata());
             viewJson.put(KEY_SRSNAME, view.getSrsName());
+            JSONHelper.putValue(viewJson, KEY_CREATED, view.getCreated());
             viewJson.put(KEY_STATE, bundlesToJSONObject(view.getBundles()));
             return Optional.of(viewJson);
         } catch (Exception ex) {

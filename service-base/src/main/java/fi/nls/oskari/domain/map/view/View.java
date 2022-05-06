@@ -7,6 +7,7 @@ import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ public class View implements Serializable {
     private String uuid = null;
     private boolean onlyForUuId = true;
     private JSONObject metadata = null;
+    private Date created = null;
     private List<Bundle> bundles = new ArrayList<Bundle>();
 
     public String getUrl() {
@@ -124,6 +126,9 @@ public class View implements Serializable {
 
     public String getType() { return this.type; }
     public void setType(String type) { this.type = type; }
+
+    public Date getCreated() { return this.created; }
+    public void setCreated(Date created) { this.created = created; }
 
     public String toString() {
         StringBuffer sb = new StringBuffer();

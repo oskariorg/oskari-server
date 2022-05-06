@@ -14,6 +14,9 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -96,6 +99,12 @@ public class ViewHelperTest {
         view1.setOnlyForUuId(false);
         view1.setApplication("foo");
         view1.setPage("bar");
+        try {
+            view1.setCreated(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").parse("2021-11-12T08:56:21.983Z"));
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         view1.addBundle(randomBundle);
 
         JSONObject viewJSON = ViewHelper.viewToJson(bundleService, view1);

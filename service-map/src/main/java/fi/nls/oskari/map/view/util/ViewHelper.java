@@ -8,15 +8,24 @@ import fi.nls.oskari.map.view.BundleService;
 import fi.nls.oskari.map.view.ViewException;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Date;
 
 public class ViewHelper {
 
@@ -147,6 +156,7 @@ public class ViewHelper {
         viewJSON.put("metadata", view.getMetadata());
         viewJSON.put("application", view.getApplication());
         viewJSON.put("page", view.getPage());
+        JSONHelper.putValue(viewJSON, "created", view.getCreated());
         viewJSON.put("bundles", createBundles(bundleService, view.getBundles()));
         return viewJSON;
     }
@@ -186,6 +196,13 @@ public class ViewHelper {
         view.setIsPublic(viewJSON.optBoolean("public", false));
         view.setOnlyForUuId(viewJSON.optBoolean("onlyUuid", true));
         view.setMetadata(viewJSON.optJSONObject("metadata"));
+        try {
+            view.setCreated(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").parse(viewJSON.getString("created")));
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
 
         if (viewJSON.has("oskari")) {
             // Support "old" format

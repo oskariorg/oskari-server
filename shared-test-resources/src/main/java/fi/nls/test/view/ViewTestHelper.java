@@ -1,5 +1,14 @@
 package fi.nls.test.view;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+
 import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.View;
 
@@ -25,6 +34,13 @@ public class ViewTestHelper {
         view.setIsPublic(true);
         view.setIsDefault(false);
         view.setPubDomain("paikkis.fi");
+        view.setCreated(Date.from(Instant.parse("2021-11-12T08:56:21.983Z")));
+        /* try {
+            //view.setCreated(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse("2021-11-12T08:56:21.983Z"));
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } */
         try {
             for(String bundle : bundles) {
                 Bundle b = BundleTestHelper.loadBundle(bundle);
