@@ -1,7 +1,6 @@
 package fi.nls.oskari.domain.map;
 
 import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
-import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONObject;
 
 /**

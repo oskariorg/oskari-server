@@ -14,7 +14,6 @@ import java.util.UUID;
 
 /**
  * Common interface for managing users.
- * TODO: this interface is still under development and new methods will propably be added when needed.
  */
 public abstract class UserService {
 
