@@ -33,6 +33,24 @@ public class TileMatrix {
         validate();
     }
 
+    // For deserializing from JSON
+    public TileMatrix(@JsonProperty("id") String id,
+                      @JsonProperty("scaleDenominator") double scaleDenominator,
+                      @JsonProperty("topLeftCorner") Map<String, Double> topLeftCorner,
+                      @JsonProperty("tileWidth") int tileWidth,
+                      @JsonProperty("tileHeight") int tileHeight,
+                      @JsonProperty("matrixWidth") int matrixWidth,
+                      @JsonProperty("matrixHeight") int matrixHeight) {
+        this.id = id;
+        this.scaleDenominator = scaleDenominator;
+        this.topLeftCorner = new double[] { topLeftCorner.get("lon"), topLeftCorner.get("lat") };
+        this.tileWidth = tileWidth;
+        this.tileHeight = tileHeight;
+        this.matrixWidth = matrixWidth;
+        this.matrixHeight = matrixHeight;
+        validate();
+    }
+
     private void validate() throws IllegalArgumentException {
         if (id == null || id.isEmpty()) {
             throw new IllegalArgumentException("Missing id");
@@ -57,7 +75,7 @@ public class TileMatrix {
         }
     }
 
-    @JsonProperty("identifier")
+    @JsonProperty("id")
     public String getId() {
         return id;
     }

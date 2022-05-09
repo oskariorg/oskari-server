@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.oskari.capabilities.CapabilitiesService;
 
 import java.util.List;
 import java.util.Map;
@@ -12,7 +13,7 @@ import java.util.stream.Collectors;
 
 /**
  * Immutable Java POJO presentation of <element name="TileMatrixSet">
- * @see http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd
+ * @see <a href="http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd">http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd</a>
  * Does not support BoundingBox and WellKnownScaleSet elements
  */
 public class TileMatrixSet {
@@ -29,6 +30,16 @@ public class TileMatrixSet {
                 .collect(Collectors.toMap(TileMatrix::getId, tm -> tm));
         validate();
     }
+    // For deserializing from JSON
+    public TileMatrixSet(@JsonProperty("id") String id,
+                         @JsonProperty("crs") String crs,
+                         @JsonProperty("matrixIds") Map<String, TileMatrix> tileMatrices)
+            throws IllegalArgumentException {
+        this.id = id;
+        this.crs = crs;
+        this.tileMatrixMap = tileMatrices;
+        validate();
+    }
 
     private void validate() throws IllegalArgumentException {
         if (this.id == null || id.isEmpty()) {
@@ -42,14 +53,16 @@ public class TileMatrixSet {
         }
     }
 
-    @JsonProperty("identifier")
     public String getId() {
         return id;
     }
 
-    @JsonProperty("projection")
     public String getCrs() {
         return crs;
+    }
+    @JsonIgnore
+    public String getShortCrs() {
+        return CapabilitiesService.shortSyntaxEpsg(crs);
     }
 
     @JsonProperty("matrixIds")
@@ -61,7 +74,7 @@ public class TileMatrixSet {
     public JSONObject getAsJSON() {
         final JSONObject obj = new JSONObject();
         JSONHelper.putValue(obj, "identifier", getId());
-        JSONHelper.putValue(obj, "projection", getCrs());
+        JSONHelper.putValue(obj, "projection", getShortCrs());
 
         final JSONArray matrixIds = new JSONArray();
         for(TileMatrix matrix : getTileMatrixMap().values()) {

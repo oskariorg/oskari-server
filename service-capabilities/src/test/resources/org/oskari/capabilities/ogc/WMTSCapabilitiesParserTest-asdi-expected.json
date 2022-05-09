@@ -1,11 +1,11 @@
 {
-  "tileMatrices": [
+  "tileMatrixLinks": [
     {
       "tileMatrixSet": {
-        "identifier": "EPSG:3575_arcticsdi",
+        "id": "EPSG:3575_arcticsdi",
         "matrixIds": {
           "EPSG:3575_arcticsdi:1": {
-            "identifier": "EPSG:3575_arcticsdi:1",
+            "id": "EPSG:3575_arcticsdi:1",
             "topLeftCorner": {
               "lon": -1.8133594E7,
               "lat": 1.07763E7
@@ -17,7 +17,7 @@
             "tileHeight": 256
           },
           "EPSG:3575_arcticsdi:0": {
-            "identifier": "EPSG:3575_arcticsdi:0",
+            "id": "EPSG:3575_arcticsdi:0",
             "topLeftCorner": {
               "lon": -1.8133594E7,
               "lat": 1.07763E7
@@ -29,7 +29,7 @@
             "tileHeight": 256
           },
           "EPSG:3575_arcticsdi:3": {
-            "identifier": "EPSG:3575_arcticsdi:3",
+            "id": "EPSG:3575_arcticsdi:3",
             "topLeftCorner": {
               "lon": -1.8133594E7,
               "lat": 1.07763E7
@@ -41,7 +41,7 @@
             "tileHeight": 256
           },
           "EPSG:3575_arcticsdi:2": {
-            "identifier": "EPSG:3575_arcticsdi:2",
+            "id": "EPSG:3575_arcticsdi:2",
             "topLeftCorner": {
               "lon": -1.8133594E7,
               "lat": 1.07763E7
@@ -53,7 +53,7 @@
             "tileHeight": 256
           },
           "EPSG:3575_arcticsdi:5": {
-            "identifier": "EPSG:3575_arcticsdi:5",
+            "id": "EPSG:3575_arcticsdi:5",
             "topLeftCorner": {
               "lon": -1.8133594E7,
               "lat": 1.07763E7
@@ -65,7 +65,7 @@
             "tileHeight": 256
           },
           "EPSG:3575_arcticsdi:4": {
-            "identifier": "EPSG:3575_arcticsdi:4",
+            "id": "EPSG:3575_arcticsdi:4",
             "topLeftCorner": {
               "lon": -1.8133594E7,
               "lat": 1.07763E7
@@ -77,7 +77,7 @@
             "tileHeight": 256
           },
           "EPSG:3575_arcticsdi:10": {
-            "identifier": "EPSG:3575_arcticsdi:10",
+            "id": "EPSG:3575_arcticsdi:10",
             "topLeftCorner": {
               "lon": -1.8133594E7,
               "lat": 1.07763E7
@@ -89,7 +89,7 @@
             "tileHeight": 256
           },
           "EPSG:3575_arcticsdi:7": {
-            "identifier": "EPSG:3575_arcticsdi:7",
+            "id": "EPSG:3575_arcticsdi:7",
             "topLeftCorner": {
               "lon": -1.8133594E7,
               "lat": 1.07763E7
@@ -101,7 +101,7 @@
             "tileHeight": 256
           },
           "EPSG:3575_arcticsdi:6": {
-            "identifier": "EPSG:3575_arcticsdi:6",
+            "id": "EPSG:3575_arcticsdi:6",
             "topLeftCorner": {
               "lon": -1.8133594E7,
               "lat": 1.07763E7
@@ -113,7 +113,7 @@
             "tileHeight": 256
           },
           "EPSG:3575_arcticsdi:9": {
-            "identifier": "EPSG:3575_arcticsdi:9",
+            "id": "EPSG:3575_arcticsdi:9",
             "topLeftCorner": {
               "lon": -1.8133594E7,
               "lat": 1.07763E7
@@ -125,7 +125,7 @@
             "tileHeight": 256
           },
           "EPSG:3575_arcticsdi:8": {
-            "identifier": "EPSG:3575_arcticsdi:8",
+            "id": "EPSG:3575_arcticsdi:8",
             "topLeftCorner": {
               "lon": -1.8133594E7,
               "lat": 1.07763E7
@@ -137,16 +137,16 @@
             "tileHeight": 256
           }
         },
-        "projection": "urn:ogc:def:crs:EPSG::3575"
+        "crs": "urn:ogc:def:crs:EPSG::3575"
       },
       "limits": null
     },
     {
       "tileMatrixSet": {
-        "identifier": "EPSG:3573",
+        "id": "EPSG:3573",
         "matrixIds": {
           "EPSG:3573:1": {
-            "identifier": "EPSG:3573:1",
+            "id": "EPSG:3573:1",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -158,7 +158,7 @@
             "tileHeight": 256
           },
           "EPSG:3573:2": {
-            "identifier": "EPSG:3573:2",
+            "id": "EPSG:3573:2",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -170,7 +170,7 @@
             "tileHeight": 256
           },
           "EPSG:3573:3": {
-            "identifier": "EPSG:3573:3",
+            "id": "EPSG:3573:3",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -182,7 +182,7 @@
             "tileHeight": 256
           },
           "EPSG:3573:4": {
-            "identifier": "EPSG:3573:4",
+            "id": "EPSG:3573:4",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -194,7 +194,7 @@
             "tileHeight": 256
           },
           "EPSG:3573:5": {
-            "identifier": "EPSG:3573:5",
+            "id": "EPSG:3573:5",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -206,7 +206,7 @@
             "tileHeight": 256
           },
           "EPSG:3573:6": {
-            "identifier": "EPSG:3573:6",
+            "id": "EPSG:3573:6",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -218,7 +218,7 @@
             "tileHeight": 256
           },
           "EPSG:3573:7": {
-            "identifier": "EPSG:3573:7",
+            "id": "EPSG:3573:7",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -230,7 +230,7 @@
             "tileHeight": 256
           },
           "EPSG:3573:8": {
-            "identifier": "EPSG:3573:8",
+            "id": "EPSG:3573:8",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -242,7 +242,7 @@
             "tileHeight": 256
           },
           "EPSG:3573:9": {
-            "identifier": "EPSG:3573:9",
+            "id": "EPSG:3573:9",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -254,7 +254,7 @@
             "tileHeight": 256
           },
           "EPSG:3573:15": {
-            "identifier": "EPSG:3573:15",
+            "id": "EPSG:3573:15",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -266,7 +266,7 @@
             "tileHeight": 256
           },
           "EPSG:3573:14": {
-            "identifier": "EPSG:3573:14",
+            "id": "EPSG:3573:14",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -278,7 +278,7 @@
             "tileHeight": 256
           },
           "EPSG:3573:17": {
-            "identifier": "EPSG:3573:17",
+            "id": "EPSG:3573:17",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -290,7 +290,7 @@
             "tileHeight": 256
           },
           "EPSG:3573:16": {
-            "identifier": "EPSG:3573:16",
+            "id": "EPSG:3573:16",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -302,7 +302,7 @@
             "tileHeight": 256
           },
           "EPSG:3573:11": {
-            "identifier": "EPSG:3573:11",
+            "id": "EPSG:3573:11",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -314,7 +314,7 @@
             "tileHeight": 256
           },
           "EPSG:3573:10": {
-            "identifier": "EPSG:3573:10",
+            "id": "EPSG:3573:10",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -326,7 +326,7 @@
             "tileHeight": 256
           },
           "EPSG:3573:13": {
-            "identifier": "EPSG:3573:13",
+            "id": "EPSG:3573:13",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -338,7 +338,7 @@
             "tileHeight": 256
           },
           "EPSG:3573:12": {
-            "identifier": "EPSG:3573:12",
+            "id": "EPSG:3573:12",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -350,7 +350,7 @@
             "tileHeight": 256
           },
           "EPSG:3573:0": {
-            "identifier": "EPSG:3573:0",
+            "id": "EPSG:3573:0",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -362,16 +362,16 @@
             "tileHeight": 256
           }
         },
-        "projection": "urn:ogc:def:crs:EPSG::3573"
+        "crs": "urn:ogc:def:crs:EPSG::3573"
       },
       "limits": null
     },
     {
       "tileMatrixSet": {
-        "identifier": "EPSG:3572",
+        "id": "EPSG:3572",
         "matrixIds": {
           "EPSG:3572:2": {
-            "identifier": "EPSG:3572:2",
+            "id": "EPSG:3572:2",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -383,7 +383,7 @@
             "tileHeight": 256
           },
           "EPSG:3572:3": {
-            "identifier": "EPSG:3572:3",
+            "id": "EPSG:3572:3",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -395,7 +395,7 @@
             "tileHeight": 256
           },
           "EPSG:3572:4": {
-            "identifier": "EPSG:3572:4",
+            "id": "EPSG:3572:4",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -407,7 +407,7 @@
             "tileHeight": 256
           },
           "EPSG:3572:5": {
-            "identifier": "EPSG:3572:5",
+            "id": "EPSG:3572:5",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -419,7 +419,7 @@
             "tileHeight": 256
           },
           "EPSG:3572:6": {
-            "identifier": "EPSG:3572:6",
+            "id": "EPSG:3572:6",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -431,7 +431,7 @@
             "tileHeight": 256
           },
           "EPSG:3572:7": {
-            "identifier": "EPSG:3572:7",
+            "id": "EPSG:3572:7",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -443,7 +443,7 @@
             "tileHeight": 256
           },
           "EPSG:3572:8": {
-            "identifier": "EPSG:3572:8",
+            "id": "EPSG:3572:8",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -455,7 +455,7 @@
             "tileHeight": 256
           },
           "EPSG:3572:9": {
-            "identifier": "EPSG:3572:9",
+            "id": "EPSG:3572:9",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -467,7 +467,7 @@
             "tileHeight": 256
           },
           "EPSG:3572:14": {
-            "identifier": "EPSG:3572:14",
+            "id": "EPSG:3572:14",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -479,7 +479,7 @@
             "tileHeight": 256
           },
           "EPSG:3572:13": {
-            "identifier": "EPSG:3572:13",
+            "id": "EPSG:3572:13",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -491,7 +491,7 @@
             "tileHeight": 256
           },
           "EPSG:3572:16": {
-            "identifier": "EPSG:3572:16",
+            "id": "EPSG:3572:16",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -503,7 +503,7 @@
             "tileHeight": 256
           },
           "EPSG:3572:15": {
-            "identifier": "EPSG:3572:15",
+            "id": "EPSG:3572:15",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -515,7 +515,7 @@
             "tileHeight": 256
           },
           "EPSG:3572:10": {
-            "identifier": "EPSG:3572:10",
+            "id": "EPSG:3572:10",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -527,7 +527,7 @@
             "tileHeight": 256
           },
           "EPSG:3572:12": {
-            "identifier": "EPSG:3572:12",
+            "id": "EPSG:3572:12",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -539,7 +539,7 @@
             "tileHeight": 256
           },
           "EPSG:3572:11": {
-            "identifier": "EPSG:3572:11",
+            "id": "EPSG:3572:11",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -551,7 +551,7 @@
             "tileHeight": 256
           },
           "EPSG:3572:17": {
-            "identifier": "EPSG:3572:17",
+            "id": "EPSG:3572:17",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -563,7 +563,7 @@
             "tileHeight": 256
           },
           "EPSG:3572:0": {
-            "identifier": "EPSG:3572:0",
+            "id": "EPSG:3572:0",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -575,7 +575,7 @@
             "tileHeight": 256
           },
           "EPSG:3572:1": {
-            "identifier": "EPSG:3572:1",
+            "id": "EPSG:3572:1",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -587,16 +587,16 @@
             "tileHeight": 256
           }
         },
-        "projection": "urn:ogc:def:crs:EPSG::3572"
+        "crs": "urn:ogc:def:crs:EPSG::3572"
       },
       "limits": null
     },
     {
       "tileMatrixSet": {
-        "identifier": "EPSG:3575",
+        "id": "EPSG:3575",
         "matrixIds": {
           "EPSG:3575:0": {
-            "identifier": "EPSG:3575:0",
+            "id": "EPSG:3575:0",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -608,7 +608,7 @@
             "tileHeight": 256
           },
           "EPSG:3575:1": {
-            "identifier": "EPSG:3575:1",
+            "id": "EPSG:3575:1",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -620,7 +620,7 @@
             "tileHeight": 256
           },
           "EPSG:3575:2": {
-            "identifier": "EPSG:3575:2",
+            "id": "EPSG:3575:2",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -632,7 +632,7 @@
             "tileHeight": 256
           },
           "EPSG:3575:3": {
-            "identifier": "EPSG:3575:3",
+            "id": "EPSG:3575:3",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -644,7 +644,7 @@
             "tileHeight": 256
           },
           "EPSG:3575:4": {
-            "identifier": "EPSG:3575:4",
+            "id": "EPSG:3575:4",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -656,7 +656,7 @@
             "tileHeight": 256
           },
           "EPSG:3575:5": {
-            "identifier": "EPSG:3575:5",
+            "id": "EPSG:3575:5",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -668,7 +668,7 @@
             "tileHeight": 256
           },
           "EPSG:3575:6": {
-            "identifier": "EPSG:3575:6",
+            "id": "EPSG:3575:6",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -680,7 +680,7 @@
             "tileHeight": 256
           },
           "EPSG:3575:7": {
-            "identifier": "EPSG:3575:7",
+            "id": "EPSG:3575:7",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -692,7 +692,7 @@
             "tileHeight": 256
           },
           "EPSG:3575:10": {
-            "identifier": "EPSG:3575:10",
+            "id": "EPSG:3575:10",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -704,7 +704,7 @@
             "tileHeight": 256
           },
           "EPSG:3575:8": {
-            "identifier": "EPSG:3575:8",
+            "id": "EPSG:3575:8",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -716,7 +716,7 @@
             "tileHeight": 256
           },
           "EPSG:3575:11": {
-            "identifier": "EPSG:3575:11",
+            "id": "EPSG:3575:11",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -728,7 +728,7 @@
             "tileHeight": 256
           },
           "EPSG:3575:9": {
-            "identifier": "EPSG:3575:9",
+            "id": "EPSG:3575:9",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -740,7 +740,7 @@
             "tileHeight": 256
           },
           "EPSG:3575:16": {
-            "identifier": "EPSG:3575:16",
+            "id": "EPSG:3575:16",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -752,7 +752,7 @@
             "tileHeight": 256
           },
           "EPSG:3575:17": {
-            "identifier": "EPSG:3575:17",
+            "id": "EPSG:3575:17",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -764,7 +764,7 @@
             "tileHeight": 256
           },
           "EPSG:3575:14": {
-            "identifier": "EPSG:3575:14",
+            "id": "EPSG:3575:14",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -776,7 +776,7 @@
             "tileHeight": 256
           },
           "EPSG:3575:15": {
-            "identifier": "EPSG:3575:15",
+            "id": "EPSG:3575:15",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -788,7 +788,7 @@
             "tileHeight": 256
           },
           "EPSG:3575:12": {
-            "identifier": "EPSG:3575:12",
+            "id": "EPSG:3575:12",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -800,7 +800,7 @@
             "tileHeight": 256
           },
           "EPSG:3575:13": {
-            "identifier": "EPSG:3575:13",
+            "id": "EPSG:3575:13",
             "topLeftCorner": {
               "lon": -4889334.802954878,
               "lat": 4889334.802954878
@@ -812,7 +812,7 @@
             "tileHeight": 256
           }
         },
-        "projection": "urn:ogc:def:crs:EPSG::3575"
+        "crs": "urn:ogc:def:crs:EPSG::3575"
       },
       "limits": null
     }

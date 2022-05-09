@@ -3,19 +3,17 @@ package fi.nls.oskari.control.layer;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
-import fi.nls.oskari.service.capabilities.CapabilitiesConstants;
-import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.oskari.capabilities.CapabilitiesService;
 import org.oskari.capabilities.RawCapabilitiesResponse;
+import org.oskari.capabilities.ogc.LayerCapabilitiesWMTS;
+import org.oskari.capabilities.ogc.wmts.TileMatrixLink;
 import org.oskari.permissions.PermissionService;
 import org.oskari.service.util.ServiceFactory;
 
@@ -62,45 +60,33 @@ public class GetLayerCapabilitiesHandler extends ActionHandler {
     }
 
 /*
-
-  "layerSpecific": {
-    "tileMatrix": [
-      {
-        "limits": null,
+    Filters matrices for WMTS layers to only include one for current projection:
+    {
         "tileMatrixSet": {
           "identifier": "ETRS-TM35FIN",
           "projection":
+          ...
+        },
+        ...
+    }
  */
     private String getCapabilitiesJSON(OskariLayer layer, String crs) throws ActionException {
+        if (!OskariLayer.TYPE_WMTS.equals(layer.getType())) {
+            return layer.getCapabilities().toString();
+        }
         try {
-            JSONObject modifiedCapabilities = new JSONObject(layer.getCapabilities().toString());
-            // modify and remove matrices that are not used for current projection
-            JSONArray linkList = (JSONArray) modifiedCapabilities.remove("tileMatrices");
-            JSONObject link = null;
-            for (int i = 0; i < linkList.length(); i++) {
-                link = linkList.optJSONObject(i);
-                JSONObject tileMatrixSet = link.optJSONObject("tileMatrixSet");
-                String projection = tileMatrixSet.optString("projection");
-                String shortProj = ProjectionHelper.shortSyntaxEpsg(projection);
-                if (crs.equals(shortProj)) {
-                    // use the first tilematrix matching the projection that is used
-                    // clone it so we don't accidentally modify cached object
-                    JSONObject matrix = new JSONObject(tileMatrixSet.toString());
-                    matrix.put("projection", shortProj);
-                    break;
-                } else {
-                    // make sure we don't end up with non-null link after we have
-                    //  searched for the correct projection and not found it
-                    link = null;
-                }
-            }
-            if (link == null) {
-                throw new ActionParamsException("No tilematrix matching srs: " + crs);
-            }
-            // add the tilematrix link/data for current projection
-            JSONArray filteredLinkList = new JSONArray();
-            filteredLinkList.put(link);
-            modifiedCapabilities.put("links", filteredLinkList);
+            String capsJSON = layer.getCapabilities().toString();
+            LayerCapabilitiesWMTS caps = CapabilitiesService.fromJSON(layer.getCapabilities().toString(), OskariLayer.TYPE_WMTS);
+            TileMatrixLink link = caps.getTileMatrixLinks().stream()
+                    .filter(l -> crs.equals(l.getTileMatrixSet().getShortCrs()))
+                    .findFirst()
+                    .orElseThrow(() -> new ActionParamsException("No tilematrix matching srs: " + crs));
+
+            // Make a copy so we don't mutate layer in cache
+            JSONObject modifiedCapabilities = new JSONObject(capsJSON);
+            // remove "tileMatrixLinks" (with all matrices) that is replaced with "tileMatrixSet" (just for current projection)
+            modifiedCapabilities.remove("tileMatrixLinks");
+            modifiedCapabilities.put("tileMatrixSet", link.getTileMatrixSet().getAsJSON());
             return modifiedCapabilities.toString();
         } catch (Exception e) {
             throw new ActionParamsException("Unable to parse JSON", e);

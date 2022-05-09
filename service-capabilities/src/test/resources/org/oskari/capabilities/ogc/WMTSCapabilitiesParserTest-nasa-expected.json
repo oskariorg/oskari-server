@@ -1,11 +1,11 @@
 {
-  "tileMatrices": [
+  "tileMatrixLinks": [
     {
       "tileMatrixSet": {
-        "identifier": "GoogleMapsCompatible_Level8",
+        "id": "GoogleMapsCompatible_Level8",
         "matrixIds": {
           "0": {
-            "identifier": "0",
+            "id": "0",
             "topLeftCorner": {
               "lon": -2.003750834278925E7,
               "lat": 2.003750834278925E7
@@ -17,7 +17,7 @@
             "tileHeight": 256
           },
           "1": {
-            "identifier": "1",
+            "id": "1",
             "topLeftCorner": {
               "lon": -2.003750834278925E7,
               "lat": 2.003750834278925E7
@@ -29,7 +29,7 @@
             "tileHeight": 256
           },
           "2": {
-            "identifier": "2",
+            "id": "2",
             "topLeftCorner": {
               "lon": -2.003750834278925E7,
               "lat": 2.003750834278925E7
@@ -41,7 +41,7 @@
             "tileHeight": 256
           },
           "3": {
-            "identifier": "3",
+            "id": "3",
             "topLeftCorner": {
               "lon": -2.003750834278925E7,
               "lat": 2.003750834278925E7
@@ -53,7 +53,7 @@
             "tileHeight": 256
           },
           "4": {
-            "identifier": "4",
+            "id": "4",
             "topLeftCorner": {
               "lon": -2.003750834278925E7,
               "lat": 2.003750834278925E7
@@ -65,7 +65,7 @@
             "tileHeight": 256
           },
           "5": {
-            "identifier": "5",
+            "id": "5",
             "topLeftCorner": {
               "lon": -2.003750834278925E7,
               "lat": 2.003750834278925E7
@@ -77,7 +77,7 @@
             "tileHeight": 256
           },
           "6": {
-            "identifier": "6",
+            "id": "6",
             "topLeftCorner": {
               "lon": -2.003750834278925E7,
               "lat": 2.003750834278925E7
@@ -89,7 +89,7 @@
             "tileHeight": 256
           },
           "7": {
-            "identifier": "7",
+            "id": "7",
             "topLeftCorner": {
               "lon": -2.003750834278925E7,
               "lat": 2.003750834278925E7
@@ -101,7 +101,7 @@
             "tileHeight": 256
           },
           "8": {
-            "identifier": "8",
+            "id": "8",
             "topLeftCorner": {
               "lon": -2.003750834278925E7,
               "lat": 2.003750834278925E7
@@ -113,7 +113,7 @@
             "tileHeight": 256
           }
         },
-        "projection": "urn:ogc:def:crs:EPSG:6.18:3:3857"
+        "crs": "urn:ogc:def:crs:EPSG:6.18:3:3857"
       },
       "limits": null
     }

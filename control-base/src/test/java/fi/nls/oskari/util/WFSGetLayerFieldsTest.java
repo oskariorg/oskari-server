@@ -1,40 +1,27 @@
 package fi.nls.oskari.util;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.service.ServiceException;
-import fi.nls.test.util.ResourceHelper;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.oskari.service.wfs3.OskariWFS3Client;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.oskari.capabilities.ogc.LayerCapabilitiesWFS;
+import org.oskari.capabilities.ogc.wfs.FeaturePropertyType;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
 
-@RunWith(PowerMockRunner.class)
-@PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.dom.*"})
-@PrepareForTest({OskariWFS3Client.class, IOHelper.class, WFSDescribeFeatureHelper.class})
 public class WFSGetLayerFieldsTest {
     private final String LAYER_NAME = "layer-name";
     private final String LAYER_URL = "https://example.com/";
-    private final String COLLECTION_ITEMS_URL = LAYER_URL + "collections/layer-name/items";
     private final String USERNAME = "username";
     private final String PASSWORD = "pwd";
 
     @Test
     public void getLayerFieldsForWFS3Collections() throws Exception {
-        mockOskariWFS3Client();
-        mockIOHelper();
         final OskariLayer layer = getWFSLayer("3.0.0");
         final JSONObject fields = WFSGetLayerFields.getLayerFields(layer);
         assertEquals(fields.getString("geometryName"), "geometry");
@@ -49,7 +36,6 @@ public class WFSGetLayerFieldsTest {
     @Test
     public void getLayerFieldsForWFSDescribeFeatureType() throws Exception {
         OskariLayer layer = getWFSLayer("2.0.0");
-        mockWFSDescribeFeatureHelper(layer);
         final JSONObject fields = WFSGetLayerFields.getLayerFields(layer);
         assertEquals(fields.get("geometryName"), "geom");
         final JSONObject attributes = fields.getJSONObject("types");
@@ -60,34 +46,39 @@ public class WFSGetLayerFieldsTest {
         assertEquals(attributes.getString("attr-5"), "unknown");
     }
 
-    private void mockOskariWFS3Client() {
-        PowerMockito.mockStatic(OskariWFS3Client.class);
-        when(OskariWFS3Client.getItemsPath(eq(LAYER_URL), eq(LAYER_NAME))).thenReturn(COLLECTION_ITEMS_URL);
+    private List<FeaturePropertyType> getOGCProps() {
+        Map<String, String> props = new HashMap<>();
+        props.put("geometry", "Polygon");
+        props.put("fid", "number");
+        props.put("attr-1", "string");
+        props.put("attr-2", "number");
+        props.put("attr-3", "boolean");
+        props.put("attr-4", "unknown");
+        return props.keySet().stream().map(key -> {
+            FeaturePropertyType prop = new FeaturePropertyType();
+            prop.name = key;
+            prop.type = props.get(key);
+            return prop;
+        }).collect(Collectors.toList());
     }
 
-    private void mockIOHelper() throws IOException {
-        PowerMockito.mockStatic(IOHelper.class);
-        String rawResponse = ResourceHelper.readStringResource("WFSGetLayerFieldsTest-WFS3CollectionItemsResponse.json", WFSGetLayerFieldsTest.class);
-        final HttpURLConnection conn = mock(HttpURLConnection.class);
-        when(IOHelper.getConnection(eq(COLLECTION_ITEMS_URL), eq(USERNAME), eq(PASSWORD), any(Map.class), any(Map.class))).thenReturn(conn);
-        when(IOHelper.readString(eq(conn.getInputStream()))).thenReturn(rawResponse);
+    private List<FeaturePropertyType> getWFSProps() {
+        Map<String, String> props = new HashMap<>();
+        props.put("geom", "GeometryPropertyType");
+        props.put("attr-1", "int");
+        props.put("attr-2", "string");
+        props.put("attr-3", "double");
+        props.put("attr-4", "date");
+        props.put("attr-5", "complex");
+        return props.keySet().stream().map(key -> {
+            FeaturePropertyType prop = new FeaturePropertyType();
+            prop.name = key;
+            prop.type = props.get(key);
+            return prop;
+        }).collect(Collectors.toList());
     }
 
-    private void mockWFSDescribeFeatureHelper(OskariLayer layer) throws ServiceException, JSONException {
-        PowerMockito.mockStatic(WFSDescribeFeatureHelper.class);
-        final JSONObject propertyTypes = new JSONObject();
-        propertyTypes.put("attr-1", "xs:int");
-        propertyTypes.put("attr-2", "xs:string");
-        propertyTypes.put("attr-3", "xs:double");
-        propertyTypes.put("attr-4", "xs:date");
-        propertyTypes.put("attr-5", "prefix:complex");
-        propertyTypes.put("geom", "gml:GeometryPropertyType");
-        final JSONObject propertyTypesResponse = new JSONObject();
-        propertyTypesResponse.put("propertyTypes", propertyTypes);
-        when(WFSDescribeFeatureHelper.getWFSFeaturePropertyTypes(layer, String.valueOf(layer.getId()))).thenReturn(propertyTypesResponse);
-    }
-
-    private OskariLayer getWFSLayer(String version) {
+    private OskariLayer getWFSLayer(String version) throws Exception {
         OskariLayer layer = new OskariLayer();
         layer.setType(OskariLayer.TYPE_WFS);
         layer.setId(1);
@@ -96,6 +87,15 @@ public class WFSGetLayerFieldsTest {
         layer.setUsername(USERNAME);
         layer.setPassword(PASSWORD);
         layer.setVersion(version);
+        LayerCapabilitiesWFS caps = new LayerCapabilitiesWFS(LAYER_NAME, LAYER_NAME);
+        if (version.equals("3.0.0")) {
+            caps.setFeatureProperties(getOGCProps());
+        } else {
+            caps.setFeatureProperties(getWFSProps());
+        }
+        // CapabilitiesService.toJSON(caps, Collections.emptySet())
+        String json = new ObjectMapper().writeValueAsString(caps);
+        layer.setCapabilities(new JSONObject(json));
         return layer;
     }
 }
