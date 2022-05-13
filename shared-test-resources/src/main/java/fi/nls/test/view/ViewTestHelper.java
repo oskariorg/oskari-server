@@ -1,12 +1,6 @@
 package fi.nls.test.view;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 import fi.nls.oskari.domain.map.view.Bundle;
