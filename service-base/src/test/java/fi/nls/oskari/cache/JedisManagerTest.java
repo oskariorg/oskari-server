@@ -57,15 +57,6 @@ public class JedisManagerTest {
     }
 
     @Test
-    public void testPubSub() {
-        final JedisSubscriber sub = new JedisSubscriber();
-        JedisManager.subscribe(sub, "test");
-
-        Long res = JedisManager.publish("test", "test message");
-        assertTrue(res == 1);
-    }
-
-    @Test
     public void testCluster() {
         assertFalse("Null input returns false ", JedisManager.hasClusterProfile(null));
         assertFalse("Empty profile list returns false", JedisManager.hasClusterProfile(new String[]{}));

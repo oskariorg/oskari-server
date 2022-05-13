@@ -5,7 +5,7 @@ import fi.nls.oskari.csw.domain.CSWIsoRecord.DataQuality;
 import fi.nls.oskari.csw.domain.CSWIsoRecord.DataQualityConformanceResult;
 import fi.nls.oskari.csw.domain.CSWIsoRecord.DataQualityObject;
 import fi.nls.oskari.csw.domain.CSWIsoRecord.DataQualityQuantitativeResult;
-import fi.nls.oskari.util.XmlHelper;
+import org.oskari.xml.XmlHelper;
 import org.geotools.referencing.CRS;
 import org.json.JSONArray;
 import org.json.JSONObject;

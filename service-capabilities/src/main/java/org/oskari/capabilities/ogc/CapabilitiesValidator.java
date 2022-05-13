@@ -4,8 +4,8 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.IOHelper;
-import fi.nls.oskari.util.XmlHelper;
 import org.oskari.capabilities.RawCapabilitiesResponse;
+import org.oskari.xml.XmlHelper;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;

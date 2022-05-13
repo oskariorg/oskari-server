@@ -1,7 +1,7 @@
 package fi.nls.oskari.map.analysis.domain;
 
 import fi.nls.oskari.map.analysis.service.AnalysisWPSNamespaceContext;
-import fi.nls.oskari.util.XmlHelper;
+import org.oskari.xml.XmlHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
