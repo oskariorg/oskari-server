@@ -157,6 +157,7 @@ public class ViewHelper {
         viewJSON.put("application", view.getApplication());
         viewJSON.put("page", view.getPage());
         JSONHelper.putValue(viewJSON, "created", view.getCreated());
+        JSONHelper.putValue(viewJSON, "updated", view.getUpdated());
         viewJSON.put("bundles", createBundles(bundleService, view.getBundles()));
         return viewJSON;
     }
@@ -199,8 +200,10 @@ public class ViewHelper {
         try {
             view.setCreated(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").parse(viewJSON.getString("created")));
         } catch (ParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        }
+        try {
+            view.setUpdated(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").parse(viewJSON.getString("updated")));
+        } catch (ParseException e) {
         }
 
 

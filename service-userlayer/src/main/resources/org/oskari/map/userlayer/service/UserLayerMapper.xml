@@ -17,6 +17,7 @@
         <result property="wkt" column = "wkt" />
         <result property="options" column = "options" />
         <result property="locale" column = "locale" />
+        <result property="created" column="created" jdbcType="TIMESTAMP" />
     </resultMap>
 	<!-- UserLayer related -->
 	<insert id="insertUserLayer" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
@@ -68,7 +69,8 @@
         publisher_name,
         wkt,
         options,
-        locale
+        locale,
+        created
         from
         user_layer
         where id = #{id}  
@@ -85,7 +87,8 @@
         publisher_name,
         wkt,
         options,
-        locale
+        locale,
+        created
         from
          user_layer
         where uuid = #{uuid} 

@@ -1,5 +1,7 @@
 package org.oskari.statistics.user;
 
+import java.util.Date;
+
 public class UserIndicatorDataRow {
 
     long id;
@@ -13,4 +15,5 @@ public class UserIndicatorDataRow {
     String data;
 
     boolean published;
+    Date created;
 }

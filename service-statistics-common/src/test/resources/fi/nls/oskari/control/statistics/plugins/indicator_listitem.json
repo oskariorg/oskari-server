@@ -16,5 +16,6 @@
     "sv": "Patienter som kommit till specialiserad sjukvärd som jourfall, % av alla avslutade värdperioder med specialiserad sjukvärd",
     "en": "Patients admitted to specialised health care as an emergency case, as % of all completed periods of care in specialised health care"
   },
-  "public": true
+  "public": true,
+  "created": 1650386212829
 }

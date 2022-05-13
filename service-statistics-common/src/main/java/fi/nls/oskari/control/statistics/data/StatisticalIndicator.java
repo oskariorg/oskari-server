@@ -26,6 +26,7 @@ public class StatisticalIndicator {
     private Map<String, String> desc = new HashMap<>();
     private StatisticalIndicatorDataModel dataModel;
     private Map<String, Object> metadata;
+    private Date created;
 
     public void setId(String id) {
         this.id = id;
@@ -160,4 +161,7 @@ public class StatisticalIndicator {
             metadata.put(key, value);
         }
     }
+
+    public Date getCreated() { return this.created; }
+    public void setCreated(Date created) { this.created = created; }
 }

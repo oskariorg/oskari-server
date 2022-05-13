@@ -5,6 +5,7 @@
     "public" : true,
     "onlyUuid" : false,
     "created" : "2021-11-12T08:56:21.983Z",
+    "updated" : "2021-11-12T08:56:21.983Z",
     "oskari" : {
         "application" : "servlet",
         "page" : "index",

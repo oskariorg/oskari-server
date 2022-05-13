@@ -35,12 +35,7 @@ public class ViewTestHelper {
         view.setIsDefault(false);
         view.setPubDomain("paikkis.fi");
         view.setCreated(Date.from(Instant.parse("2021-11-12T08:56:21.983Z")));
-        /* try {
-            //view.setCreated(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse("2021-11-12T08:56:21.983Z"));
-        } catch (ParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } */
+        view.setUpdated(Date.from(Instant.parse("2021-11-12T08:56:21.983Z")));
         try {
             for(String bundle : bundles) {
                 Bundle b = BundleTestHelper.loadBundle(bundle);

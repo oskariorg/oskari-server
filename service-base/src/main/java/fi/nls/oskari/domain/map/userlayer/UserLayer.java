@@ -3,6 +3,9 @@ package fi.nls.oskari.domain.map.userlayer;
 import fi.nls.oskari.domain.map.JSONLocalizedName;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.UserDataLayer;
+
+import java.util.Date;
+
 import org.json.JSONArray;
 
 public class UserLayer extends UserDataLayer {
@@ -15,6 +18,7 @@ public class UserLayer extends UserDataLayer {
     private int features_count;
     private int features_skipped; //if geojson feature doesn't have geometry object or it's null, feature is skipped
     private String wkt;
+    private Date created;
 
     @Override
     public final String getType() {
@@ -94,5 +98,7 @@ public class UserLayer extends UserDataLayer {
     }
     public void setSource(final String language, final String source) { setLocalizedValue(language, LOCALE_SOURCE, source); }
 
+    public Date getCreated() { return this.created; }
+    public void setCreated(Date created) { this.created = created; }
 
 }

@@ -102,8 +102,10 @@ public class ViewHelperTest {
         try {
             view1.setCreated(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").parse("2021-11-12T08:56:21.983Z"));
         } catch (ParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        }
+        try {
+            view1.setUpdated(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").parse("2021-11-12T08:56:21.983Z"));
+        } catch (ParseException e) {
         }
         view1.addBundle(randomBundle);
 

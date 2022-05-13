@@ -40,7 +40,7 @@
             resultMap="viewWithConf">
         SELECT   id, name, description, type, uuid, only_uuid,
         application, page, creator,
-        is_public, is_default, domain, lang, metadata, created
+        is_public, is_default, domain, lang, metadata, created, updated
         FROM   oskari_appsetup
         ORDER BY created ASC
         OFFSET ${offset} limit ${limit}
@@ -51,7 +51,7 @@
             resultMap="viewWithConf">
         SELECT   id, name, description, type, uuid, only_uuid,
         application, page, creator,
-        is_public, is_default, domain, lang, metadata, created
+        is_public, is_default, domain, lang, metadata, created, updated
         FROM   oskari_appsetup
         WHERE   id = #{id}
     </select>
@@ -61,7 +61,7 @@
             resultMap="viewWithConf">
         SELECT   id, name, description, type, uuid, only_uuid,
         application, page, creator,
-        is_public, is_default, domain, lang, metadata, created
+        is_public, is_default, domain, lang, metadata, created, updated
         FROM   oskari_appsetup
         WHERE   uuid::text = #{uuId}
     </select>
@@ -71,7 +71,7 @@
             resultMap="viewWithConf">
         SELECT   id, name, description, type, uuid, only_uuid,
         application, page, creator,
-        is_public, is_default, domain, lang, metadata, created
+        is_public, is_default, domain, lang, metadata, created, updated
         FROM   oskari_appsetup
         WHERE   name = #{name}
     </select>
@@ -80,7 +80,7 @@
             resultMap="viewWithConf">
         SELECT   id, name, description, type, uuid, only_uuid,
         application, page, creator,
-        is_public, is_default, domain, lang, metadata, created
+        is_public, is_default, domain, lang, metadata, created, updated
         FROM   oskari_appsetup
         WHERE   creator = #{user_id}
         ORDER BY   name ASC

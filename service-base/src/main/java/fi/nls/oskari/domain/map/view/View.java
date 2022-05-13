@@ -21,6 +21,7 @@ public class View implements Serializable {
     private boolean onlyForUuId = true;
     private JSONObject metadata = null;
     private Date created = null;
+    private Date updated = null;
     private List<Bundle> bundles = new ArrayList<Bundle>();
 
     public String getUrl() {
@@ -129,6 +130,9 @@ public class View implements Serializable {
 
     public Date getCreated() { return this.created; }
     public void setCreated(Date created) { this.created = created; }
+
+    public Date getUpdated() { return this.updated; }
+    public void setUpdated(Date updated) { this.updated = updated; }
 
     public String toString() {
         StringBuffer sb = new StringBuffer();
