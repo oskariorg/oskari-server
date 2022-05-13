@@ -1,5 +1,6 @@
 package org.oskari.announcements.helpers;
 
+@Deprecated
 public class Announcement {
     private Integer id;
     private String locale;

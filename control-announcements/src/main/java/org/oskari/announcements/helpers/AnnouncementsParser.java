@@ -12,6 +12,7 @@ import java.util.Map;
 /**
  * Announcements parser
  */
+@Deprecated
 public class AnnouncementsParser {
     public static final String KEY_ID = "id";
     public static final String KEY_LOCALE = "locale";

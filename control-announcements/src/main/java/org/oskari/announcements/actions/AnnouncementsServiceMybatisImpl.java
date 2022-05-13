@@ -10,14 +10,13 @@ import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.db.DatasourceHelper;
-import org.oskari.announcements.helpers.Announcement;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceRuntimeException;
-import org.json.JSONObject;
-import org.oskari.announcements.helpers.AnnouncementsParser;
 import org.oskari.announcements.mappers.AnnouncementsMapper;
+import org.oskari.announcements.model.Announcement;
 import java.time.LocalDate;
+import java.util.List;
 
 @Oskari
 public class AnnouncementsServiceMybatisImpl extends AnnouncementsService{
@@ -25,7 +24,6 @@ public class AnnouncementsServiceMybatisImpl extends AnnouncementsService{
     private static final Logger LOG = LogFactory.getLogger(AnnouncementsServiceMybatisImpl.class);
 
     private SqlSessionFactory factory = null;
-    private AnnouncementsParser parser = new AnnouncementsParser();
 
     public AnnouncementsServiceMybatisImpl() {
         final DatasourceHelper helper = DatasourceHelper.getInstance();
@@ -51,19 +49,19 @@ public class AnnouncementsServiceMybatisImpl extends AnnouncementsService{
         return new SqlSessionFactoryBuilder().build(configuration);
     }
 
-    public JSONObject getAdminAnnouncements() {
+    public List<Announcement> getAnnouncements() {
         try (final SqlSession session = factory.openSession()) {
             final AnnouncementsMapper mapper = session.getMapper(AnnouncementsMapper.class);
-            return parser.parseAnnouncementsMap(mapper.getAdminAnnouncements());
+            return mapper.getAnnouncements();
         } catch (Exception e) {
             throw new ServiceRuntimeException("Failed to get admin announcements", e);
         }
     }
 
-    public JSONObject getAnnouncements() {
+    public List<Announcement> getActiveAnnouncements() {
         try (final SqlSession session = factory.openSession()) {
             final AnnouncementsMapper mapper = session.getMapper(AnnouncementsMapper.class);
-            return parser.parseAnnouncementsMap(mapper.getAnnouncements(LocalDate.now()));
+            return mapper.getActiveAnnouncements(LocalDate.now());
         } catch (Exception e) {
             throw new ServiceRuntimeException("Failed to get announcements", e);
         }
