@@ -378,8 +378,10 @@ public class CreateUserLayerHandler extends RestActionHandler {
                 }
             }
             return mainFile;
+        } catch (EOFException e) {
+            throw new ServiceException("File too large. " + e.getMessage());
         } catch (IOException e) {
-            throw new ServiceException("Failed to unzip file: " + zipFile.getName() + ": " + e.getMessage());
+            throw new ServiceException("Failed to unzip file: " + zipFile.getName());
         }
     }
 
