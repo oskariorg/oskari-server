@@ -35,7 +35,7 @@ public class Announcement  {
 
     @JsonSetter("beginDate")
     public void setBeginDate(String beginDate) {
-        this.beginDate = OffsetDateTime.from(FORMATTER.parse(beginDate));
+        this.beginDate = OffsetDateTime.parse(beginDate, FORMATTER);
     }
 
     public OffsetDateTime getEndDate() {
@@ -48,7 +48,7 @@ public class Announcement  {
 
     @JsonSetter("endDate")
     public void setEndDate(String endDate) {
-        this.endDate = OffsetDateTime.from(FORMATTER.parse(endDate));
+        this.endDate = OffsetDateTime.parse(endDate, FORMATTER);
     }
 
     public String getLocale() {
@@ -68,7 +68,7 @@ public class Announcement  {
     }
 
     @JsonIgnore
-    public JSONObject asJSON() throws JSONException {
+    public JSONObject asJSON() {
         JSONObject response = new JSONObject();
         JSONHelper.putValue(response, "id", getId());
         JSONHelper.putValue(response, "beginDate", getBeginDate().format(FORMATTER));

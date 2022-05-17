@@ -18,9 +18,9 @@ public interface AnnouncementsMapper {
     })
     @Select("SELECT id, locale, begin_date, end_date, options"
             + " FROM oskari_announcements"
-            + " WHERE begin_date <= #{date} AND end_date >= #{date}"
+            + " WHERE begin_date <= now() AND end_date >= now()"
             + " ORDER BY id desc")
-    List<Announcement> getActiveAnnouncements(@Param("date") final LocalDate date);
+    List<Announcement> getActiveAnnouncements();
 
     @ResultMap("AnnouncementResult")
     @Select("SELECT id, locale, begin_date, end_date, options"

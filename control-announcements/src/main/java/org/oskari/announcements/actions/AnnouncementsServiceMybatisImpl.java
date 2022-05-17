@@ -61,7 +61,7 @@ public class AnnouncementsServiceMybatisImpl extends AnnouncementsService{
     public List<Announcement> getActiveAnnouncements() {
         try (final SqlSession session = factory.openSession()) {
             final AnnouncementsMapper mapper = session.getMapper(AnnouncementsMapper.class);
-            return mapper.getActiveAnnouncements(LocalDate.now());
+            return mapper.getActiveAnnouncements();
         } catch (Exception e) {
             throw new ServiceRuntimeException("Failed to get announcements", e);
         }
