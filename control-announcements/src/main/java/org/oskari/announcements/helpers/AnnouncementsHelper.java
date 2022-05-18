@@ -7,6 +7,8 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import org.oskari.announcements.model.Announcement;
 
+import java.util.List;
+
 
 public class AnnouncementsHelper {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -23,7 +25,7 @@ public class AnnouncementsHelper {
         }
     }
 
-    public static String writeJSON(Announcement announcement) {
+    public static String writeJSON(List<Announcement> announcement) {
         try {
             return OBJECT_MAPPER.writeValueAsString(announcement);
         } catch (Exception ex) {

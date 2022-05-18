@@ -29,12 +29,7 @@ public class AnnouncementsHandler extends RestActionHandler {
             } else {
                 announcements = service.getActiveAnnouncements();
             }
-            JSONArray result = new JSONArray();
-            for (Announcement announcement : announcements) {
-                result.put(announcement.asJSON());
-            }
-            ResponseHelper.writeResponse(params, 200, JSONHelper.createJSONObject("announcements", result));
-        
+            ResponseHelper.writeResponse(params, AnnouncementsHelper.writeJSON(announcements));
         } catch (Exception e) {
             throw new ActionException("Cannot get announcements", e);
         }
