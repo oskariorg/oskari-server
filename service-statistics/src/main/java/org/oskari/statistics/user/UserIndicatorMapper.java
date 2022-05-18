@@ -19,6 +19,7 @@ public interface UserIndicatorMapper {
             "    i.source," +
             "    i.description," +
             "    i.published," +
+            "    i.created," +
             "    d.year," +
             "    d.regionset_id " +
             "FROM" +
@@ -42,6 +43,7 @@ public interface UserIndicatorMapper {
             "    i.source," +
             "    i.description," +
             "    i.published," +
+            "    i.created," +
             "    d.year," +
             "    d.regionset_id " +
             "FROM" +
