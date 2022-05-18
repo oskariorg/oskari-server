@@ -1,6 +1,8 @@
 package org.oskari.announcements.actions;
 
 import javax.sql.DataSource;
+
+import fi.nls.oskari.mybatis.JSONObjectMybatisTypeHandler;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
@@ -15,7 +17,6 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import org.oskari.announcements.mappers.AnnouncementsMapper;
 import org.oskari.announcements.model.Announcement;
-import java.time.LocalDate;
 import java.util.List;
 
 @Oskari
@@ -44,6 +45,7 @@ public class AnnouncementsServiceMybatisImpl extends AnnouncementsService{
         final Configuration configuration = new Configuration(environment);
         configuration.getTypeAliasRegistry().registerAlias(AnnouncementsService.class);
         configuration.setLazyLoadingEnabled(true);
+        configuration.getTypeHandlerRegistry().register(JSONObjectMybatisTypeHandler.class);
         configuration.addMapper(AnnouncementsMapper.class);
 
         return new SqlSessionFactoryBuilder().build(configuration);

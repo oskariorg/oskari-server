@@ -2,11 +2,11 @@ package org.oskari.announcements.model;
 
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import fi.nls.oskari.util.JSONHelper;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Announcement  {
@@ -14,8 +14,8 @@ public class Announcement  {
     private int id;
     private OffsetDateTime beginDate;
     private OffsetDateTime endDate;
-    private String locale;
-    private String options;
+    private JSONObject locale;
+    private JSONObject options;
 
     public int getId() {
         return id;
@@ -27,6 +27,11 @@ public class Announcement  {
 
     public OffsetDateTime getBeginDate() {
         return beginDate;
+    }
+
+    @JsonGetter("beginDate")
+    public String getFormattedBeginDate () {
+        return beginDate.format(FORMATTER);
     }
 
     public void setBeginDate(OffsetDateTime beginDate) {
@@ -42,6 +47,11 @@ public class Announcement  {
         return endDate;
     }
 
+    @JsonGetter("endDate")
+    public String getFormattedEndDate () {
+        return endDate.format(FORMATTER);
+    }
+
     public void setEndDate(OffsetDateTime endDate) {
         this.endDate = endDate;
     }
@@ -51,30 +61,38 @@ public class Announcement  {
         this.endDate = OffsetDateTime.parse(endDate, FORMATTER);
     }
 
-    public String getLocale() {
+    public JSONObject getLocale() {
         return locale;
     }
 
-    public void setLocale(String locale) {
-        this.locale = locale;
+    @JsonGetter("locale")
+    public Map <String, Object> getLocaleMap() {
+        return JSONHelper.getObjectAsMap(locale);
     }
 
-    public String getOptions() {
+    public void setLocale(JSONObject locale) {
+        this.locale = locale;
+    }
+    @JsonSetter("locale")
+    public void setLocaleMap(Map<String, Object> locale) {
+        this.locale = new JSONObject(locale);
+    }
+
+    public JSONObject getOptions() {
         return options;
     }
 
-    public void setOptions(String options) {
+    @JsonGetter("options")
+    public Map getOptionsMap() {
+        return JSONHelper.getObjectAsMap(options);
+    }
+
+    public void setOptions(JSONObject options) {
         this.options = options;
     }
 
-    @JsonIgnore
-    public JSONObject asJSON() {
-        JSONObject response = new JSONObject();
-        JSONHelper.putValue(response, "id", getId());
-        JSONHelper.putValue(response, "beginDate", getBeginDate().format(FORMATTER));
-        JSONHelper.putValue(response, "endDate", getEndDate().format(FORMATTER));
-        JSONHelper.putValue(response, "locale", JSONHelper.createJSONObject(getLocale()));
-        JSONHelper.putValue(response, "options", JSONHelper.createJSONObject(getOptions()));
-        return response;
+    @JsonSetter("options")
+    public void setOptionsMap(Map<String, Object> options) {
+        this.options = new JSONObject(options);
     }
 }
