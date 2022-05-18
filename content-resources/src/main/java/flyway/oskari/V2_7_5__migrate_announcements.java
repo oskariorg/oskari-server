@@ -32,7 +32,7 @@ public class V2_7_5__migrate_announcements extends BaseJavaMigration {
         JSONObject lang = new JSONObject();
 
         try {
-            lang.put("name", announcement.getString("title"));
+            lang.put("title", announcement.getString("title"));
             lang.put("content", announcement.getString("content"));
             locale.put(PropertyUtil.getDefaultLanguage(), lang);
         } catch (JSONException e) {
