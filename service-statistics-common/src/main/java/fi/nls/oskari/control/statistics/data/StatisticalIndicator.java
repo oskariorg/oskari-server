@@ -172,6 +172,9 @@ public class StatisticalIndicator {
 
     @JsonGetter("created")
     public String getFormattedCreated() {
+        if (created == null) {
+            return null;
+        }
         return created.format(FORMATTER);
     }
 
@@ -181,6 +184,9 @@ public class StatisticalIndicator {
 
     @JsonSetter("created")
     public void setCreated(String created) {
+        if (created == null) {
+            this.created = null;
+        }
         this.created = OffsetDateTime.parse(created, FORMATTER);
     }
 
