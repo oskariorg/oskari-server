@@ -14,6 +14,8 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 
@@ -96,6 +98,8 @@ public class ViewHelperTest {
         view1.setOnlyForUuId(false);
         view1.setApplication("foo");
         view1.setPage("bar");
+        view1.setCreated(OffsetDateTime.parse("2022-05-18T12:00:00.00Z", DateTimeFormatter.ISO_DATE_TIME));
+        view1.setUpdated(OffsetDateTime.parse("2022-05-18T12:00:00.00Z", DateTimeFormatter.ISO_DATE_TIME));
         view1.addBundle(randomBundle);
 
         JSONObject viewJSON = ViewHelper.viewToJson(bundleService, view1);
