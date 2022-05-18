@@ -184,10 +184,11 @@ public class StatisticalIndicator {
 
     @JsonSetter("created")
     public void setCreated(String created) {
-        if (created == null) {
+        if (created != null) {
+            this.created = OffsetDateTime.parse(created, FORMATTER);
+        } else {
             this.created = null;
         }
-        this.created = OffsetDateTime.parse(created, FORMATTER);
     }
 
     public void setCreated(OffsetDateTime created) {
