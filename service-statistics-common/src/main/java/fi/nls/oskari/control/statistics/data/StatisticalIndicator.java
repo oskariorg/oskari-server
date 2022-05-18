@@ -1,10 +1,15 @@
 package fi.nls.oskari.control.statistics.data;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
+
 import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
 import fi.nls.oskari.util.PropertyUtil;
 
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -16,6 +21,9 @@ import java.util.*;
  *   These could be for example: "Gender": "Male", "Female", "Other", "All", or "Year": "2010", "2011", ....
  */
 public class StatisticalIndicator {
+
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_DATE_TIME;
+
     private String id;
     @JsonProperty("public")
     private boolean isPublic = true;
@@ -26,6 +34,7 @@ public class StatisticalIndicator {
     private Map<String, String> desc = new HashMap<>();
     private StatisticalIndicatorDataModel dataModel;
     private Map<String, Object> metadata;
+    private OffsetDateTime created;
 
     public void setId(String id) {
         this.id = id;
@@ -159,5 +168,30 @@ public class StatisticalIndicator {
         if (value != null) {
             metadata.put(key, value);
         }
+    }
+
+    @JsonGetter("created")
+    public String getFormattedCreated() {
+        if (created == null) {
+            return null;
+        }
+        return created.format(FORMATTER);
+    }
+
+    public OffsetDateTime getCreated() {
+        return this.created;
+    }
+
+    @JsonSetter("created")
+    public void setCreated(String created) {
+        if (created != null) {
+            this.created = OffsetDateTime.parse(created, FORMATTER);
+        } else {
+            this.created = null;
+        }
+    }
+
+    public void setCreated(OffsetDateTime created) {
+        this.created = created;
     }
 }
