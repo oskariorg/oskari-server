@@ -25,6 +25,7 @@ import org.json.JSONObject;
 import org.oskari.map.userlayer.service.UserLayerDbService;
 import org.oskari.permissions.PermissionService;
 
+import java.time.OffsetDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -272,6 +273,9 @@ public class AppSetupHandler extends RestActionHandler {
                 .withParam("name", view.getName())
                 .withParam("domain", view.getPubDomain());
 
+        if (!isNew) {
+            view.setUpdated(OffsetDateTime.now());
+        }
         View savedView = saveView(view);
         // we might not have uuid before saving
         audit.withParam("uuid", view.getUuid());
