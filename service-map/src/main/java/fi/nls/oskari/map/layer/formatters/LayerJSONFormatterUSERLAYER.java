@@ -26,6 +26,7 @@ public class LayerJSONFormatterUSERLAYER extends LayerJSONFormatterUSERDATA {
         JSONObject layerAttributes = parseAttributes(ulayer.getFields());
         // baseAttributes comes from baseLayer merge layer attributes
         JSONHelper.putValue(layerJson, "attributes", JSONHelper.merge(baseAttributes, layerAttributes));
+        JSONHelper.putValue(layerJson, "created", ulayer.getCreated());
         return layerJson;
     }
     // parse fields like WFSLayerAttributes
