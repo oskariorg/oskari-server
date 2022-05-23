@@ -275,13 +275,17 @@ public class MapLayerGroupsHandler extends RestActionHandler {
 			maplayerGroup.setParentId(mapLayerGroupJSON.optInt(KEY_PARENT_ID, -1));
 			maplayerGroup.setSelectable(mapLayerGroupJSON.optBoolean(KEY_SELECTABLE, true));
 			maplayerGroup.setOrderNumber(mapLayerGroupJSON.optInt(KEY_ORDER, -1));
-			Iterator<?> keys = locales.keys();
-
-			while (keys.hasNext()) {
-				String locale = (String) keys.next();
-				String name = locales.getString(locale);
-				maplayerGroup.setName(locale, name);
+			
+			JSONObject defaultLang = locales.optJSONObject(PropertyUtil.getDefaultLanguage());
+			if (defaultLang == null) {
+				throw new ActionParamsException("No locale for default lang: " + PropertyUtil.getDefaultLanguage());
 			}
+			String name = defaultLang.optString("name");
+			if (name == null || name.trim().isEmpty()) {
+				throw new ActionParamsException("No name for default lang: " + PropertyUtil.getDefaultLanguage());
+			}
+
+			maplayerGroup.setLocale(locales);
 		} catch (JSONException ex) {
 			throw new ActionException("Cannot populate maplayer group from request", ex);
 		}
