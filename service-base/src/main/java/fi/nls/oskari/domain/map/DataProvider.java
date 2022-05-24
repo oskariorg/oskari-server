@@ -28,6 +28,7 @@ public class DataProvider extends JSONLocalizedName {
             JSONHelper.putValue(names, localization.getKey(), localization.getValue());
         }
         JSONHelper.putValue(me, "name", names);
+        JSONHelper.putValue(me, "locale", getLocale());
 
         return me;
     }
