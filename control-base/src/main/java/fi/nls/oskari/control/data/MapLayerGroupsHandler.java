@@ -28,6 +28,8 @@ import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
+import fi.nls.oskari.cache.CacheManager;
+import fi.nls.oskari.control.layer.GetMapLayerGroupsHandler;
 
 /**
  * CRUD for Maplayer groups. Get is callable by anyone, other methods require
@@ -64,6 +66,10 @@ public class MapLayerGroupsHandler extends RestActionHandler {
 			setLinkService(new OskariLayerGroupLinkServiceMybatisImpl());
 		}
 	}
+
+	private void flushLayerListCache() {
+        CacheManager.getCache(GetMapLayerGroupsHandler.CACHE_NAME).flush(true);
+    }
 
 	/**
 	 * Handles listing and single maplayer group find
@@ -109,6 +115,7 @@ public class MapLayerGroupsHandler extends RestActionHandler {
 		final int id = oskariMapLayerGroupService.insert(maplayerGroup);
 		// check insert by loading from DB
 		final MaplayerGroup savedMapLayerGroup = oskariMapLayerGroupService.find(id);
+		flushLayerListCache();
 		AuditLog.user(params.getClientIp(), params.getUser()).withParam("id", id)
 				.withParam("name", maplayerGroup.getName(PropertyUtil.getDefaultLanguage()))
 				.added(AuditLog.ResourceType.MAPLAYER_GROUP);
@@ -132,7 +139,7 @@ public class MapLayerGroupsHandler extends RestActionHandler {
 		maplayerGroup.setOrderNumber(getEnsuredOrderNumber(maplayerGroup));
 
 		oskariMapLayerGroupService.update(maplayerGroup);
-
+		flushLayerListCache();
 		AuditLog.user(params.getClientIp(), params.getUser()).withParam("id", maplayerGroup.getId())
 				.withParam("name", maplayerGroup.getName(PropertyUtil.getDefaultLanguage()))
 				.updated(AuditLog.ResourceType.MAPLAYER_GROUP);
@@ -205,6 +212,7 @@ public class MapLayerGroupsHandler extends RestActionHandler {
 		}
 
 		oskariMapLayerGroupService.delete(maplayerGroup);
+		flushLayerListCache();
 		AuditLog.user(params.getClientIp(), params.getUser()).withParam("id", maplayerGroup.getId())
 				.withParam("name", maplayerGroup.getName(PropertyUtil.getDefaultLanguage()))
 				.withMsg("map layers " + layerNamesToBeDeleted + " deleted with map layer group")
@@ -228,7 +236,7 @@ public class MapLayerGroupsHandler extends RestActionHandler {
 					JSONHelper.createJSONObject("code", "not_empty"));
 		}
 		oskariMapLayerGroupService.delete(maplayerGroup);
-
+		flushLayerListCache();
 		AuditLog.user(params.getClientIp(), params.getUser()).withParam("id", maplayerGroup.getId())
 				.withParam("name", maplayerGroup.getName(PropertyUtil.getDefaultLanguage()))
 				.deleted(AuditLog.ResourceType.MAPLAYER_GROUP);
