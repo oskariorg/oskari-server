@@ -3,7 +3,6 @@ package fi.nls.oskari.control.data;
 import static fi.nls.oskari.control.ActionConstants.PARAM_ID;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
