@@ -252,8 +252,7 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
                     }
                     JSONObject json = new JSONObject();
                     JSONHelper.putValue(json, "name", provider.getName(language));
-                    JSONHelper.putValue(json, "locale", provider.getLocale());
-                    // TODO: provider description will be added here in the future
+                    JSONHelper.putValue(json, "description", provider.getDescription(language));
                     JSONHelper.putValue(result, Integer.toString(id), json);
                 });
         return result;
