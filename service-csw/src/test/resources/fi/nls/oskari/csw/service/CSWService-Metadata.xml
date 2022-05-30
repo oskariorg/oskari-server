@@ -1,0 +1,461 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csw:GetRecordByIdResponse xmlns:csw="http://www.opengis.net/cat/csw/2.0.2">
+    <gmd:MD_Metadata xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:srv="http://www.isotc211.org/2005/srv"
+                     xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:geonet="http://www.fao.org/geonetwork"
+                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.isotc211.org/2005/gmd http://www.isotc211.org/2005/gmd/gmd.xsd
+                     http://www.isotc211.org/2005/gmx http://www.isotc211.org/2005/gmx/gmx.xsd http://www.isotc211.org/2005/srv http://schemas.opengis.net/iso/19139/20060504/srv/srv.xsd">
+        <gmd:fileIdentifier>
+            <gco:CharacterString>821b33a7-35b3-489c-93ab-9ef8f4422f2a</gco:CharacterString>
+        </gmd:fileIdentifier>
+        <gmd:language>
+            <gmd:LanguageCode codeList="http://www.loc.gov/standards/iso639-2/" codeListValue="eng" />
+        </gmd:language>
+        <gmd:hierarchyLevel>
+            <gmd:MD_ScopeCode codeSpace="ISOTC211/19115" codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/ML_gmxCodelists.xml#MD_ScopeCode" codeListValue="dataset" />
+        </gmd:hierarchyLevel>
+        <gmd:contact>
+            <gmd:CI_ResponsibleParty xmlns:gts="http://www.isotc211.org/2005/gts">
+                <gmd:individualName>
+                    <gco:CharacterString>Joni Kaitaranta</gco:CharacterString>
+                </gmd:individualName>
+                <gmd:organisationName>
+                    <gco:CharacterString>HELCOM</gco:CharacterString>
+                </gmd:organisationName>
+                <gmd:positionName>
+                    <gco:CharacterString>Data Coordinator</gco:CharacterString>
+                </gmd:positionName>
+                <gmd:contactInfo>
+                    <gmd:CI_Contact>
+                        <gmd:phone>
+                            <gmd:CI_Telephone>
+                                <gmd:voice>
+                                    <gco:CharacterString>+358 46 850 9206</gco:CharacterString>
+                                </gmd:voice>
+                                <gmd:voice>
+                                    <gco:CharacterString>+358 20 741 2649</gco:CharacterString>
+                                </gmd:voice>
+                            </gmd:CI_Telephone>
+                        </gmd:phone>
+                        <gmd:address>
+                            <gmd:CI_Address>
+                                <gmd:deliveryPoint>
+                                    <gco:CharacterString>Katajanokanlaituri 6 B, 3rd floor</gco:CharacterString>
+                                </gmd:deliveryPoint>
+                                <gmd:city>
+                                    <gco:CharacterString>Helsinki</gco:CharacterString>
+                                </gmd:city>
+                                <gmd:postalCode>
+                                    <gco:CharacterString>FI-00160</gco:CharacterString>
+                                </gmd:postalCode>
+                                <gmd:country>
+                                    <gco:CharacterString>Finland</gco:CharacterString>
+                                </gmd:country>
+                                <gmd:electronicMailAddress>
+                                    <gco:CharacterString>joni.kaitaranta@helcom.fi</gco:CharacterString>
+                                </gmd:electronicMailAddress>
+                            </gmd:CI_Address>
+                        </gmd:address>
+                        <gmd:onlineResource>
+                            <gmd:CI_OnlineResource>
+                                <gmd:linkage>
+                                    <gmd:URL>http://helcom.fi/</gmd:URL>
+                                </gmd:linkage>
+                                <gmd:protocol gco:nilReason="missing">
+                                    <gco:CharacterString />
+                                </gmd:protocol>
+                                <gmd:name gco:nilReason="missing">
+                                    <gco:CharacterString />
+                                </gmd:name>
+                                <gmd:description gco:nilReason="missing">
+                                    <gco:CharacterString />
+                                </gmd:description>
+                            </gmd:CI_OnlineResource>
+                        </gmd:onlineResource>
+                    </gmd:CI_Contact>
+                </gmd:contactInfo>
+                <gmd:role>
+                    <gmd:CI_RoleCode codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/ML_gmxCodelists.xml#CI_RoleCode" codeListValue="pointOfContact" />
+                </gmd:role>
+            </gmd:CI_ResponsibleParty>
+        </gmd:contact>
+        <gmd:dateStamp>
+            <gco:DateTime>2021-09-09T11:58:48</gco:DateTime>
+        </gmd:dateStamp>
+        <gmd:metadataStandardName>
+            <gco:CharacterString>INSPIRE Metadata Implementing Rules</gco:CharacterString>
+        </gmd:metadataStandardName>
+        <gmd:metadataStandardVersion>
+            <gco:CharacterString>Technical Guidelines based on EN ISO 19115 and EN ISO 19119 (Version 1.2)</gco:CharacterString>
+        </gmd:metadataStandardVersion>
+        <gmd:referenceSystemInfo>
+            <gmd:MD_ReferenceSystem>
+                <gmd:referenceSystemIdentifier>
+                    <gmd:RS_Identifier>
+                        <gmd:code>
+                            <gco:CharacterString>http://www.opengis.net/def/crs/EPSG/0/3035</gco:CharacterString>
+                        </gmd:code>
+                        <gmd:codeSpace>
+                            <gco:CharacterString>EPSG</gco:CharacterString>
+                        </gmd:codeSpace>
+                    </gmd:RS_Identifier>
+                </gmd:referenceSystemIdentifier>
+            </gmd:MD_ReferenceSystem>
+        </gmd:referenceSystemInfo>
+        <gmd:identificationInfo>
+            <gmd:MD_DataIdentification>
+                <gmd:citation>
+                    <gmd:CI_Citation>
+                        <gmd:title>
+                            <gco:CharacterString>Integrated biodiversity status assessment - pelagic habitats 2018</gco:CharacterString>
+                        </gmd:title>
+                        <gmd:date>
+                            <gmd:CI_Date>
+                                <gmd:date>
+                                    <gco:Date>2018-06-28</gco:Date>
+                                </gmd:date>
+                                <gmd:dateType>
+                                    <gmd:CI_DateTypeCode codeSpace="ISOTC211/19115" codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/ML_gmxCodelists.xml#CI_DateTypeCode" codeListValue="publication" />
+                                </gmd:dateType>
+                            </gmd:CI_Date>
+                        </gmd:date>
+                        <gmd:identifier>
+                            <gmd:MD_Identifier>
+                                <gmd:code>
+                                    <gco:CharacterString>http://metadata.helcom.fi/geonetwork/srv/eng/catalog.search#/metadata/821b33a7-35b3-489c-93ab-9ef8f4422f2a</gco:CharacterString>
+                                </gmd:code>
+                            </gmd:MD_Identifier>
+                        </gmd:identifier>
+                    </gmd:CI_Citation>
+                </gmd:citation>
+                <gmd:abstract>
+                    <gco:CharacterString>This dataset represents the Integrated biodiversity status assessment for pelagic habitats using the BEAT tool. Status is shown in five categories based on the integrated assessment scores obtained in the tool. Biological Quality Ratios (BQR) above 0.6 correspond to good status. Open sea areas were assessed based on the core indicators ‘Zooplankton mean size and total stock’ and ‘Chlorophyll-a’, as well as the pre-core indicator ‘Cyanobacterial bloom index’ . Coastal areas were assessed by national indicators.
+
+                        This dataset displays the result of the integrated biodiversity status in HELCOM Assessment unit Scale 4 (Division of the Baltic Sea into 17 sub-basins and further division into coastal and off-shore areas and division of the coastal areas by WFD water types or water bodies).
+
+                        Attribute information:
+                        "BQR" = Biological Quality Ratio
+                        "Confidence" = Confidence of the assessment
+                        "HELCOM_ID" = Code of the HELCOM assessment unit
+                        "Country" = Country of coastal assessment unit/ open sea
+                        "Level2" = HELCOM sub-basins (name of the scale 2 assessment unit)
+                        "Name" = Name of the HELCOM scale 4 assessment unit
+                        "Area_km2" = Area of assessment unit
+                        "AULEVEL" = scale of the assessment unit
+                        "HID" = assessment unit ID by country
+                        "SAUID" =  ID number for the spatial assessment unit
+                        "EcosystemC" = Ecosystem component assessed
+                        "Confiden_1" = Confidence of the assessment (0-1, higher values mean higher confidence)
+                        "Total_numb" = Number of indicators used in assessment
+                        "STATUS" = Integrated status category (0-0.2 = not good (lowest score), 0.2-0.4 = not good (lower score), 0.4-0.6 = not good (low score), 0.6-0.8 = good (high score, 0.8-1.0 = good (highest score))</gco:CharacterString>
+                </gmd:abstract>
+                <gmd:pointOfContact>
+                    <gmd:CI_ResponsibleParty xmlns:gts="http://www.isotc211.org/2005/gts">
+                        <gmd:individualName>
+                            <gco:CharacterString>Joni Kaitaranta</gco:CharacterString>
+                        </gmd:individualName>
+                        <gmd:organisationName>
+                            <gco:CharacterString>HELCOM</gco:CharacterString>
+                        </gmd:organisationName>
+                        <gmd:positionName>
+                            <gco:CharacterString>Data Coordinator</gco:CharacterString>
+                        </gmd:positionName>
+                        <gmd:contactInfo>
+                            <gmd:CI_Contact>
+                                <gmd:phone>
+                                    <gmd:CI_Telephone>
+                                        <gmd:voice>
+                                            <gco:CharacterString>+358 46 850 9206</gco:CharacterString>
+                                        </gmd:voice>
+                                        <gmd:voice>
+                                            <gco:CharacterString>+358 20 741 2649</gco:CharacterString>
+                                        </gmd:voice>
+                                    </gmd:CI_Telephone>
+                                </gmd:phone>
+                                <gmd:address>
+                                    <gmd:CI_Address>
+                                        <gmd:deliveryPoint>
+                                            <gco:CharacterString>Katajanokanlaituri 6 B, 3rd floor</gco:CharacterString>
+                                        </gmd:deliveryPoint>
+                                        <gmd:city>
+                                            <gco:CharacterString>Helsinki</gco:CharacterString>
+                                        </gmd:city>
+                                        <gmd:postalCode>
+                                            <gco:CharacterString>FI-00160</gco:CharacterString>
+                                        </gmd:postalCode>
+                                        <gmd:country>
+                                            <gco:CharacterString>Finland</gco:CharacterString>
+                                        </gmd:country>
+                                        <gmd:electronicMailAddress>
+                                            <gco:CharacterString>joni.kaitaranta@helcom.fi</gco:CharacterString>
+                                        </gmd:electronicMailAddress>
+                                    </gmd:CI_Address>
+                                </gmd:address>
+                                <gmd:onlineResource>
+                                    <gmd:CI_OnlineResource>
+                                        <gmd:linkage>
+                                            <gmd:URL>http://helcom.fi/</gmd:URL>
+                                        </gmd:linkage>
+                                        <gmd:protocol gco:nilReason="missing">
+                                            <gco:CharacterString />
+                                        </gmd:protocol>
+                                        <gmd:name gco:nilReason="missing">
+                                            <gco:CharacterString />
+                                        </gmd:name>
+                                        <gmd:description gco:nilReason="missing">
+                                            <gco:CharacterString />
+                                        </gmd:description>
+                                    </gmd:CI_OnlineResource>
+                                </gmd:onlineResource>
+                            </gmd:CI_Contact>
+                        </gmd:contactInfo>
+                        <gmd:role>
+                            <gmd:CI_RoleCode codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/ML_gmxCodelists.xml#CI_RoleCode" codeListValue="pointOfContact" />
+                        </gmd:role>
+                    </gmd:CI_ResponsibleParty>
+                </gmd:pointOfContact>
+                <gmd:descriptiveKeywords>
+                    <gmd:MD_Keywords>
+                        <gmd:keyword gco:nilReason="missing">
+                            <gco:CharacterString />
+                        </gmd:keyword>
+                        <gmd:type>
+                            <gmd:MD_KeywordTypeCode codeList="http://www.isotc211.org/2005/resources/codeList.xml#MD_KeywordTypeCode" codeListValue="theme" />
+                        </gmd:type>
+                        <gmd:thesaurusName>
+                            <gmd:CI_Citation>
+                                <gmd:title>
+                                    <gco:CharacterString>GEMET - INSPIRE themes, version 1.0</gco:CharacterString>
+                                </gmd:title>
+                                <gmd:date>
+                                    <gmd:CI_Date>
+                                        <gmd:date>
+                                            <gco:Date>2008-06-01</gco:Date>
+                                        </gmd:date>
+                                        <gmd:dateType>
+                                            <gmd:CI_DateTypeCode codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/ML_gmxCodelists.xml#CI_DateTypeCode" codeListValue="publication" />
+                                        </gmd:dateType>
+                                    </gmd:CI_Date>
+                                </gmd:date>
+                                <gmd:identifier>
+                                    <gmd:MD_Identifier>
+                                        <gmd:code>
+                                            <gmx:Anchor xmlns:gmx="http://www.isotc211.org/2005/gmx" xlink:href="http://metadata.helcom.fi/geonetwork/srv/eng/thesaurus.download?ref=external.theme.inspire-theme">geonetwork.thesaurus.external.theme.inspire-theme</gmx:Anchor>
+                                        </gmd:code>
+                                    </gmd:MD_Identifier>
+                                </gmd:identifier>
+                            </gmd:CI_Citation>
+                        </gmd:thesaurusName>
+                    </gmd:MD_Keywords>
+                </gmd:descriptiveKeywords>
+                <gmd:descriptiveKeywords>
+                    <gmd:MD_Keywords>
+                        <gmd:keyword gco:nilReason="missing">
+                            <gco:CharacterString />
+                        </gmd:keyword>
+                        <gmd:type>
+                            <gmd:MD_KeywordTypeCode codeList="http://www.isotc211.org/2005/resources/codeList.xml#MD_KeywordTypeCode" codeListValue="discipline" />
+                        </gmd:type>
+                        <gmd:thesaurusName>
+                            <gmd:CI_Citation>
+                                <gmd:title>
+                                    <gco:CharacterString>GEMET</gco:CharacterString>
+                                </gmd:title>
+                                <gmd:date>
+                                    <gmd:CI_Date>
+                                        <gmd:date>
+                                            <gco:Date>2012-07-20</gco:Date>
+                                        </gmd:date>
+                                        <gmd:dateType>
+                                            <gmd:CI_DateTypeCode codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/ML_gmxCodelists.xml#CI_DateTypeCode" codeListValue="publication" />
+                                        </gmd:dateType>
+                                    </gmd:CI_Date>
+                                </gmd:date>
+                                <gmd:identifier>
+                                    <gmd:MD_Identifier>
+                                        <gmd:code>
+                                            <gmx:Anchor xmlns:gmx="http://www.isotc211.org/2005/gmx" xlink:href="http://metadata.helcom.fi/geonetwork/srv/eng/thesaurus.download?ref=external.discipline.gemet-en">geonetwork.thesaurus.external.discipline.gemet-en</gmx:Anchor>
+                                        </gmd:code>
+                                    </gmd:MD_Identifier>
+                                </gmd:identifier>
+                            </gmd:CI_Citation>
+                        </gmd:thesaurusName>
+                    </gmd:MD_Keywords>
+                </gmd:descriptiveKeywords>
+                <gmd:descriptiveKeywords>
+                    <gmd:MD_Keywords>
+                        <gmd:keyword>
+                            <gco:CharacterString>HOLAS2 2018 Core indicator</gco:CharacterString>
+                        </gmd:keyword>
+                        <gmd:keyword>
+                            <gco:CharacterString>Core indicator</gco:CharacterString>
+                        </gmd:keyword>
+                        <gmd:type>
+                            <gmd:MD_KeywordTypeCode codeList="" codeListValue="" />
+                        </gmd:type>
+                    </gmd:MD_Keywords>
+                </gmd:descriptiveKeywords>
+                <gmd:resourceConstraints>
+                    <gmd:MD_Constraints>
+                        <gmd:useLimitation>
+                            <gco:CharacterString>Data can be used freely given that the source (HELCOM) is cited.</gco:CharacterString>
+                        </gmd:useLimitation>
+                    </gmd:MD_Constraints>
+                </gmd:resourceConstraints>
+                <gmd:resourceConstraints>
+                    <gmd:MD_LegalConstraints>
+                        <gmd:accessConstraints>
+                            <gmd:MD_RestrictionCode codeSpace="ISOTC211/19115" codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/ML_gmxCodelists.xml#MD_RestrictionCode" codeListValue="otherRestrictions" />
+                        </gmd:accessConstraints>
+                        <gmd:otherConstraints>
+                            <gco:CharacterString>Data can be used freely given that the source (HELCOM) is cited.</gco:CharacterString>
+                        </gmd:otherConstraints>
+                    </gmd:MD_LegalConstraints>
+                </gmd:resourceConstraints>
+                <gmd:spatialRepresentationType>
+                    <gmd:MD_SpatialRepresentationTypeCode codeSpace="ISOTC211/19115" codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/ML_gmxCodelists.xml#MD_SpatialRepresentationTypeCode" codeListValue="vector" />
+                </gmd:spatialRepresentationType>
+                <gmd:language>
+                    <gmd:LanguageCode codeList="http://www.loc.gov/standards/iso639-2/" codeListValue="eng" />
+                </gmd:language>
+                <gmd:topicCategory>
+                    <gmd:MD_TopicCategoryCode>environment</gmd:MD_TopicCategoryCode>
+                </gmd:topicCategory>
+                <gmd:extent>
+                    <gmd:EX_Extent>
+                        <gmd:geographicElement>
+                            <gmd:EX_GeographicBoundingBox>
+                                <gmd:westBoundLongitude>
+                                    <gco:Decimal>8.186121</gco:Decimal>
+                                </gmd:westBoundLongitude>
+                                <gmd:eastBoundLongitude>
+                                    <gco:Decimal>30.251959</gco:Decimal>
+                                </gmd:eastBoundLongitude>
+                                <gmd:southBoundLatitude>
+                                    <gco:Decimal>53.605476</gco:Decimal>
+                                </gmd:southBoundLatitude>
+                                <gmd:northBoundLatitude>
+                                    <gco:Decimal>65.908764</gco:Decimal>
+                                </gmd:northBoundLatitude>
+                            </gmd:EX_GeographicBoundingBox>
+                        </gmd:geographicElement>
+                        <gmd:temporalElement>
+                            <gmd:EX_TemporalExtent>
+                                <gmd:extent>
+                                    <gml:TimePeriod gml:id="Temporal">
+                                        <gml:beginPosition>2011-01-01</gml:beginPosition>
+                                        <gml:endPosition>2016-12-31</gml:endPosition>
+                                    </gml:TimePeriod>
+                                </gmd:extent>
+                            </gmd:EX_TemporalExtent>
+                        </gmd:temporalElement>
+                    </gmd:EX_Extent>
+                </gmd:extent>
+            </gmd:MD_DataIdentification>
+        </gmd:identificationInfo>
+        <gmd:distributionInfo xmlns:date="http://exslt.org/dates-and-times" xmlns:gts="http://www.isotc211.org/2005/gts">
+            <gmd:MD_Distribution>
+                <gmd:distributionFormat>
+                    <gmd:MD_Format>
+                        <gmd:name>
+                            <gco:CharacterString>ESRI Shapefile</gco:CharacterString>
+                        </gmd:name>
+                        <gmd:version>
+                            <gco:CharacterString>1.0</gco:CharacterString>
+                        </gmd:version>
+                    </gmd:MD_Format>
+                </gmd:distributionFormat>
+                <gmd:transferOptions>
+                    <gmd:MD_DigitalTransferOptions>
+                        <gmd:onLine>
+                            <gmd:CI_OnlineResource>
+                                <gmd:linkage>
+                                    <gmd:URL>https://maps.helcom.fi/website/mapservice/?datasetID=821b33a7-35b3-489c-93ab-9ef8f4422f2a</gmd:URL>
+                                </gmd:linkage>
+                                <gmd:protocol>
+                                    <gco:CharacterString>WWW:LINK-1.0-http--link</gco:CharacterString>
+                                </gmd:protocol>
+                                <gmd:description>
+                                    <gco:CharacterString>Open in Map Viewer</gco:CharacterString>
+                                </gmd:description>
+                            </gmd:CI_OnlineResource>
+                        </gmd:onLine>
+                        <gmd:onLine>
+                            <gmd:CI_OnlineResource>
+                                <gmd:linkage>
+                                    <gmd:URL>http://metadata.helcom.fi/geonetwork/srv/eng/resources.get?uuid=821b33a7-35b3-489c-93ab-9ef8f4422f2a&amp;fname=pelagic_habitatComplete2018.zip&amp;access=public</gmd:URL>
+                                </gmd:linkage>
+                                <gmd:protocol>
+                                    <gco:CharacterString>WWW:DOWNLOAD-1.0-http--download</gco:CharacterString>
+                                </gmd:protocol>
+                                <gmd:name>
+                                    <gmx:MimeFileType xmlns:gmx="http://www.isotc211.org/2005/gmx" type="application/zip">pelagic_habitatComplete2018.zip</gmx:MimeFileType>
+                                </gmd:name>
+                                <gmd:description>
+                                    <gco:CharacterString>Download</gco:CharacterString>
+                                </gmd:description>
+                            </gmd:CI_OnlineResource>
+                        </gmd:onLine>
+                    </gmd:MD_DigitalTransferOptions>
+                </gmd:transferOptions>
+            </gmd:MD_Distribution>
+        </gmd:distributionInfo>
+        <gmd:dataQualityInfo>
+            <gmd:DQ_DataQuality>
+                <gmd:scope>
+                    <gmd:DQ_Scope>
+                        <gmd:level>
+                            <gmd:MD_ScopeCode codeSpace="ISOTC211/19115" codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/ML_gmxCodelists.xml#MD_ScopeCode" codeListValue="dataset" />
+                        </gmd:level>
+                    </gmd:DQ_Scope>
+                </gmd:scope>
+                <gmd:report>
+                    <gmd:DQ_DomainConsistency>
+                        <gmd:result>
+                            <gmd:DQ_ConformanceResult>
+                                <gmd:specification>
+                                    <gmd:CI_Citation>
+                                        <gmd:title>
+                                            <gco:CharacterString>Commission Regulation (EU) No 1089/2010 of 23 November 2010 implementing Directive 2007/2/EC of the European Parliament and of the Council as regards interoperability of spatial data sets and services</gco:CharacterString>
+                                        </gmd:title>
+                                        <gmd:date>
+                                            <gmd:CI_Date>
+                                                <gmd:date>
+                                                    <gco:Date>2010-12-08</gco:Date>
+                                                </gmd:date>
+                                                <gmd:dateType>
+                                                    <gmd:CI_DateTypeCode codeSpace="ISOTC211/19115" codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/ML_gmxCodelists.xml#CI_DateTypeCode" codeListValue="publication" />
+                                                </gmd:dateType>
+                                            </gmd:CI_Date>
+                                        </gmd:date>
+                                    </gmd:CI_Citation>
+                                </gmd:specification>
+                                <gmd:explanation gco:nilReason="missing">
+                                    <gco:CharacterString />
+                                </gmd:explanation>
+                                <gmd:pass>
+                                    <gco:Boolean>true</gco:Boolean>
+                                </gmd:pass>
+                            </gmd:DQ_ConformanceResult>
+                        </gmd:result>
+                    </gmd:DQ_DomainConsistency>
+                </gmd:report>
+                <gmd:lineage>
+                    <gmd:LI_Lineage>
+                        <gmd:statement>
+                            <gco:CharacterString>Core and pre-core indicators that were used to calculate the integrated biodiversity status assessment - pelagic habitats (open sea areas):
+
+                                - &lt;a href="http://metadata.helcom.fi/geonetwork/srv/eng/catalog.search#/metadata/70380178-28fd-4b10-abf7-fb2c07707917" target="_blank"&gt;Zooplankton mean size and total stock (MSTS) 2018&lt;/a&gt;
+                                - &lt;a href="http://metadata.helcom.fi/geonetwork/srv/eng/catalog.search#/metadata/a6f20ce1-8cef-482b-a4e4-aff52cb60f8e" target="_blank"&gt;Cyanobacterial bloom index 2018&lt;/a&gt;
+                                - &lt;a href="http://metadata.helcom.fi/geonetwork/srv/eng/catalog.search#/metadata/efaf6c9b-1f57-4c4d-b268-dfed0b3907e4" target="_blank"&gt;Chlorophyll-a 2018&lt;/a&gt;
+
+                                Coastal areas were assessed by national indicators.
+
+                                Additional information in "State of the Baltic Sea report" and on the &lt;a href="http://stateofthebalticsea.helcom.fi/" target="_blank"&gt;State of the Baltic Sea website&lt;/a&gt;</gco:CharacterString>
+                        </gmd:statement>
+                    </gmd:LI_Lineage>
+                </gmd:lineage>
+            </gmd:DQ_DataQuality>
+        </gmd:dataQualityInfo>
+    </gmd:MD_Metadata>
+</csw:GetRecordByIdResponse>
+

@@ -1,0 +1,198 @@
+{
+  "dataQualities": [
+    {
+      "conformanceResultList": [{
+        "explanation": "Tietotuotemäärittelyä ei vielä julkaistu.",
+        "pass": false,
+        "specification": "KOMISSION ASETUS (EU) N:o 1089/2010, annettu 23 päivänä marraskuuta 2010, Euroopan parlamentin ja neuvoston direktiivin 2007/2/EY täytäntöönpanosta paikkatietoaineistojen ja -palvelujen yhteentoimivuuden osalta"
+      }],
+      "dateTime": [],
+      "evaluationMethodDescription": null,
+      "evaluationMethodType": null,
+      "evaluationProcecdure": null,
+      "measureDescription": null,
+      "measureIdentificationAuthorization": null,
+      "measureIdentificationCode": null,
+      "nameOfMeasure": null,
+      "nodeName": "domainConsistency",
+      "quantitativeResultList": []
+    },
+    {
+      "conformanceResultList": [{
+        "explanation": "INSPIRE related dataset",
+        "pass": false,
+        "specification": "INSPIRE"
+      }],
+      "dateTime": [],
+      "evaluationMethodDescription": null,
+      "evaluationMethodType": null,
+      "evaluationProcecdure": null,
+      "measureDescription": null,
+      "measureIdentificationAuthorization": null,
+      "measureIdentificationCode": null,
+      "nameOfMeasure": null,
+      "nodeName": "domainConsistency",
+      "quantitativeResultList": []
+    },
+    {
+      "conformanceResultList": [{
+        "explanation": "-- more information on the test --",
+        "pass": false,
+        "specification": "INSPIRE Implementing rules"
+      }],
+      "dateTime": [],
+      "evaluationMethodDescription": null,
+      "evaluationMethodType": null,
+      "evaluationProcecdure": null,
+      "measureDescription": null,
+      "measureIdentificationAuthorization": null,
+      "measureIdentificationCode": null,
+      "nameOfMeasure": null,
+      "nodeName": "domainConsistency",
+      "quantitativeResultList": []
+    },
+    {
+      "conformanceResultList": [{
+        "explanation": "Dataset does not fulfill this ELF quality requirement",
+        "pass": false,
+        "specification": "ELF Master LoD1"
+      }],
+      "dateTime": [],
+      "evaluationMethodDescription": "Each edge of a AdministrativeUnit feature F must be covered by one AdministrativeBoundary  if F and the AdministrativeBoundary feature have the same nationalLevel",
+      "evaluationMethodType": null,
+      "evaluationProcecdure": null,
+      "measureDescription": "Boundary of admin area must cover the boundary lines",
+      "measureIdentificationAuthorization": null,
+      "measureIdentificationCode": null,
+      "nameOfMeasure": "ELF_ADM06",
+      "nodeName": "topologicalConsistency",
+      "quantitativeResultList": [
+        {
+          "errorStatistic": null,
+          "value": ["54"],
+          "valueType": "Number of errors",
+          "valueUnit": null
+        },
+        {
+          "errorStatistic": null,
+          "value": ["7.96460177%"],
+          "valueType": "Percentage of errors",
+          "valueUnit": null
+        }
+      ]
+    }
+  ],
+  "distributionFormats": [
+    {
+      "name": "GML",
+      "version": ""
+    },
+    {
+      "name": "MIF",
+      "version": ""
+    },
+    {
+      "name": "shape",
+      "version": ""
+    },
+    {
+      "name": "MAAGIS/XL",
+      "version": ""
+    }
+  ],
+  "fileIdentifier": "cfe54093-aa87-46e2-bfa2-a20def7b036f",
+  "identifications": [{
+    "abstractText": "Maanmittauslaitoksen Maastotietokanta on koko Suomen kattava maastoa kuvaava aineisto. Sen tärkeimpiä kohderyhmiä ovat liikenneväyläverkosto, rakennukset ja rakenteet, hallintorajat, nimistö, maankäyttö, vedet ja korkeussuhteet. Maastotietokannan sijaintitietojen tarkkuus vastaa mittakaavaa 1:5 000 - 1:10 000.\n\nTiestöä ja nimistöä päivitetään jatkuvasti, rakennuksia ja hallintorajoja vuosittain sekä muita elementtejä noin 5 - 10 vuoden välein. Maastotietokannan voi hankkia koko maan kattavana tai alueeltaan tai tietosisällöltään rajatuissa osissa. Tuote on vektoriaineistoa.\n\nMaastotietokanta ei ole saatavissa palvelurajapinnalta.\n\nTuote on avointa aineistoa. Lisätietoa Avoimien aineistojen hankinta -sivustolta http://www.maanmittauslaitos.fi/kartat-ja-paikkatieto/asiantuntevalle-kayttajalle/maastotiedot-ja-niiden-hankinta.",
+    "accessConstraints": ["copyright"],
+    "browseGraphics": [{
+      "fileDescription": "thumbnail",
+      "fileName": "maastotietokanta_s.png",
+      "fileType": "png"
+    }],
+    "characterSets": [],
+    "citation": {
+      "date": {
+        "date": "2010-04-01",
+        "dateType": "revision"
+      },
+      "resourceIdentifiers": [{
+        "code": "1000007",
+        "codeSpace": "FI"
+      }],
+      "title": "Maastotietokanta"
+    },
+    "classifications": ["unclassified"],
+    "descriptiveKeywords": [
+      "Korkeus",
+      "Johtoverkot",
+      "Tieliikenneverkko",
+      "Rakennukset",
+      "Taajamat",
+      "Hallinnolliset rajat",
+      "Rataverkko",
+      "Osoitteet",
+      "Vesirakentaminen",
+      "Vesistöt",
+      "Ympäristö",
+      "Suojelukohteet",
+      "Kiintopisteet",
+      "Paikannimet",
+      "Maanpeite",
+      "Väylät",
+      "Maankäyttö",
+      "Korkeussijainti",
+      "Rakennukset",
+      "Maanpeite",
+      "Maankäyttö",
+      "Liikenneverkot",
+      "Hydrografia",
+      "Tuotanto- ja teollisuuslaitokset",
+      "Yleishyödylliset ja muut julkiset palvelut",
+      "avoindata.fi"
+    ],
+    "envelopes": [{
+      "eastBoundLongitude": 31.58672881,
+      "northBoundLatitude": 70.09229553,
+      "southBoundLatitude": 59.45414258,
+      "westBoundLongitude": 19.08317359
+    }],
+    "languages": [],
+    "otherConstraints": ["Maanmittauslaitoksella on tekijänoikeus ja muut immateriaalioikeudet Maastotietokantaan. Tuotteen ylläpidossa on käytetty kuntien aineistoja. Suomen ympäristökeskuksella ja Liikennevirastolla on tekijänoikeus Maastotietokannan laadinnassa käytettyihin väylätietoihin. Lisäksi Suomen ympäristökeskuksella on tekijänoikeus Maastotietokannan laadinnassa käytettyihin syvyystietoihin. Tietoaineisto ei ole salassa pidettävä. Julkista saatavuutta ei ole rajoitettu INSPIRE-direktiivin nojalla."],
+    "responsibleParties": [{
+      "electronicMailAddresses": ["asiakaspalvelu@maanmittauslaitos.fi"],
+      "organisationName": "Maanmittauslaitos"
+    }],
+    "spatialRepresentationTypes": ["vector"],
+    "spatialResolutions": [10000],
+    "temporalExtents": [{"begin": ""}],
+    "topicCategories": [
+      "imageryBaseMapsEarthCover",
+      "location",
+      "structure",
+      "transportation",
+      "elevation",
+      "boundaries",
+      "farming",
+      "inlandWaters",
+      "environment"
+    ],
+    "type": "data",
+    "useLimitations": ["Tuote on avointa aineistoa. Avoimen tietoaineiston lisenssi http://www.maanmittauslaitos.fi/maanmittauslaitoksen-avoimen-tietoaineiston-cc-40-lisenssi . Lisätietoa Avoimien aineistojen hankinta -sivustolta http://www.maanmittauslaitos.fi/avoindata/hankinta . Maastotietokannan voi hankkia koko maan kattavana tai alueeltaan rajatuissa osissa. Alueellinen rajaus tapahtuu karttalehtien tai hallinnollisten rajojen perusteella tai asiakkaan omalla rajauksella erikseen tilattaessa. Tiestö osoitteilla on erillinen osaelementti. Maastotietokannan ja Tiestö osoitteilla osaelementin voi ladata Tiedostopalvelusta tai tilata maksullisena toimituksena asiakaspalvelusta.  VAROITUS: Ei navigointikäyttöön. Liikennevirasto ei ole tarkistanut tämän tuotteen tietoja, eikä se ota vastuuta tietojen oikeellisuudesta tai valmistuksen jälkeisistä muutoksista."]
+  }],
+  "lineageStatements": ["Maastotietokanta on Maanmittauslaitoksen sijainniltaan tarkin valtakunnallinen maastoa kuvaava aineisto. Sen sijaintitietojen tarkkuus vastaa mittakaavaa 1:5 000 - 1:10 000.\n\nMaastotietojen laatumallissa kerrotaan, mistä tekijöistä numeeristen maastotietojen laatu muodostuu ja miten eri laatutekijöitä mitataan. Lisäksi laatumallissa annetaan laatuvaatimukset mm. maastotietojen sijaintitarkkuudelle, ajantasaisuudelle, kuvailevalle ominaisuustiedolle ja kattavuudelle. Laatuvaatimuksia ei aseteta geometria- ja topologiatiedoille. \n\nMaastotietokannan eri kohteilla on erilaiset sijaintitarkkuusvaatimukset, useimmilla rakennetuilla kohteilla tarkkuusvaatimus on 3 m. Maastotietokannan kohteiden sijaintitarkkuus on 95 %:n todennäköisyydellä laatumallissa määritellyn minimitarkkuuden mukainen.\n\nMaastotietokannassa ajantasaisuus vaihtelee kohteittain (ks. ylläpitotiedot). \n\nKuvailevan tiedon (ominaisuustietojen) tarkkuus vaihtelee kohteittain. Kts. tarkemmat tiedot teemottaisista kuvauksista.\n\nKattavuuden suuruudella tarkoitetaan sellaisten kohteiden osuutta, jotka puuttuvat tietokannasta tai jotka ovat tietokannassa mutta niitä ei ole maastossa. Eri kohteilla on erilaiset kattavuusvaatimukset.\n\nLaatumalli on osoitteessa:\nhttp://www.maanmittauslaitos.fi/sites/default/files/Maastotietojen_laatumalli.pdf"],
+  "metadataCharacterSet": "8859part10",
+  "metadataDateStamp": "2017-04-21T11:24Z",
+  "metadataLanguage": "fi",
+  "metadataResponsibleParties": [{
+    "electronicMailAddresses": ["asiakaspalvelu@maanmittauslaitos.fi"],
+    "organisationName": "Maanmittauslaitos"
+  }],
+  "metadataStandardName": "ISO 19115:2003/19139",
+  "metadataStandardVersion": "1.0",
+  "onlineResources": [{
+    "name": "",
+    "url": "http://www.maanmittauslaitos.fi/digituotteet/maastotietokanta"
+  }],
+  "referenceSystems": ["3067"],
+  "scopeCodes": ["dataset"]
+}
