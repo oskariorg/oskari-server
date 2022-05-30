@@ -429,7 +429,7 @@ public class IOHelper {
 
     public static void validateResponse(HttpURLConnection conn, String expectedContentType)
             throws ServiceRuntimeException, IOException {
-        if (conn.getResponseCode() != 200) {
+        if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
             throw new ServiceRuntimeException("Unexpected status code " + conn.getResponseCode());
         }
 

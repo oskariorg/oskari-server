@@ -27,7 +27,7 @@ public class XmlHelper {
         if (xml == null) {
             return null;
         }
-        // Note! Tries to forced removal of doctypes because:
+        // Note! Tries forced removal of doctypes because:
         // factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
         byte[] bytes = removeDocType(xml.trim()).getBytes(StandardCharsets.UTF_8);
         try (InputStream s = new ByteArrayInputStream(bytes)) {
@@ -39,11 +39,16 @@ public class XmlHelper {
         }
         return null;
     }
-    public static Element parseXML(final InputStream xml) throws Exception {
+
+    public static Element parseXML(final InputStream xml, boolean nsAware) throws Exception {
         if (xml == null) {
             return null;
         }
-        return newDocumentBuilderFactory().newDocumentBuilder().parse(xml).getDocumentElement();
+        return newDocumentBuilderFactory(nsAware).newDocumentBuilder().parse(xml).getDocumentElement();
+    }
+
+    public static Element parseXML(final InputStream xml) throws Exception {
+        return parseXML(xml, false);
     }
 
     public static Stream<Element> getChildElements(final Element elem, final String localName) {
@@ -193,7 +198,20 @@ public class XmlHelper {
         String start = input.substring(0, index);
         return start + input.substring(endIndex);
     }
-
+    /**
+     * Obtain a new instance of a DocumentBuilderFactory with security features enables.
+     * This static method creates a new factory instance.
+     *
+     * @param nsAware enable namespace aware parsing
+     * @return New instance of a DocumentBuilderFactory
+     * @throws FactoryConfigurationError - in case of service configuration error or if
+     * the implementation is not available or cannot be instantiated.
+     */
+    public static DocumentBuilderFactory newDocumentBuilderFactory(boolean nsAware) throws FactoryConfigurationError {
+        DocumentBuilderFactory f = newDocumentBuilderFactory();
+        f.setNamespaceAware(nsAware);
+        return f;
+    }
     /**
      * Obtain a new instance of a DocumentBuilderFactory with security features enables.
      * This static method creates a new factory instance.
@@ -204,26 +222,34 @@ public class XmlHelper {
      */
     public static DocumentBuilderFactory newDocumentBuilderFactory() throws FactoryConfigurationError {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        try {
-            // Note that these settings are XML parser implementation specific
-            // and may require adjustment in some environments. These are for Xerces 2
-            factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-            factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-            factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
-            factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
 
-            factory.setFeature("http://xml.org/sax/features/namespaces", false);
-            factory.setFeature("http://xml.org/sax/features/validation", false);
-            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
-            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-        } catch (ParserConfigurationException ex) {
-            LOGGER.warn("Unable to enable security features for DocumentBuilderFactory", ex.getMessage());
-        }
+        // Note that these settings are XML parser implementation specific
+        // and may require adjustment in some environments. These are for Xerces 2
+        toggleFeature(factory,XMLConstants.FEATURE_SECURE_PROCESSING, true);
+        toggleFeature(factory,"http://apache.org/xml/features/disallow-doctype-decl", true);
+        toggleFeature(factory,"http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+        toggleFeature(factory,"http://xml.org/sax/features/external-general-entities", false);
+        toggleFeature(factory,"http://xml.org/sax/features/external-parameter-entities", false);
+
+        toggleFeature(factory,"http://xml.org/sax/features/namespaces", false);
+        toggleFeature(factory,"http://xml.org/sax/features/validation", false);
+        toggleFeature(factory,"http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
+        toggleFeature(factory,"http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+
         factory.setValidating(false);
         factory.setXIncludeAware(false);
         factory.setExpandEntityReferences(false);
         return factory;
+    }
+
+    private static void toggleFeature(DocumentBuilderFactory factory, String name, boolean value) {
+        try {
+            // Note that these settings are XML parser implementation specific
+            // and may require adjustment in some environments. These are for Xerces 2
+            factory.setFeature(name, value);
+        } catch (ParserConfigurationException ex) {
+            LOGGER.warn("Unable to set security features for XML-parsing:", name, ":", value, ex.getMessage());
+        }
     }
 
     public static String generateUnexpectedElementMessage(Element doc) {

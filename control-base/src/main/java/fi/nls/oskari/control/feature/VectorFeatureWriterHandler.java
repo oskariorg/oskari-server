@@ -11,10 +11,10 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
+import fi.nls.oskari.util.XmlHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.referencing.FactoryException;
-import org.oskari.xml.XmlHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -151,7 +151,7 @@ public class VectorFeatureWriterHandler extends AbstractFeatureHandler {
             throws ActionException {
 
         if (response == null || response.indexOf("Exception") > -1) {
-            LOG.error("Exception from WFS-T insert operation", response);
+            LOG.info("Exception from WFS-T insert operation", response);
             throw new ActionParamsException("WFS-T operation failed");
         }
 
