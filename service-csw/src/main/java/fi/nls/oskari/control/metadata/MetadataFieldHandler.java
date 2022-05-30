@@ -17,6 +17,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import java.io.DataInputStream;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.util.Collections;
 import java.util.List;
@@ -130,20 +131,29 @@ public class MetadataFieldHandler {
         try {
             final HttpURLConnection con = IOHelper.followRedirect(IOHelper.getConnection(url), 5);
             dis = new DataInputStream(IOHelper.debugResponse(con.getInputStream()));
-            Element root = XmlHelper.parseXML(dis);
-            Element domValues = XmlHelper.getFirstChild(root, "DomainValues");
-            Element valueList = XmlHelper.getFirstChild(domValues, "ListOfValues");
-            return XmlHelper.getChildElements(valueList, "Value")
-                    .map(el -> el.getTextContent())
-                    .collect(Collectors.toList());
-
+            return parseTags(dis);
         } catch (Exception e) {
             log.error("Error parsing tags (Value) from response at", url, ". Message:", e.getMessage());
         }
         finally {
             IOHelper.close(dis);
         }
-        // default to empty NodeList
+        // default to empty list
+        return Collections.emptyList();
+    }
+
+    protected static List<String> parseTags(InputStream in) {
+        try {
+            Element root = XmlHelper.parseXML(in);
+            Element domValues = XmlHelper.getFirstChild(root, "DomainValues");
+            Element valueList = XmlHelper.getFirstChild(domValues, "ListOfValues");
+            return XmlHelper.getChildElements(valueList, "Value")
+                    .map(el -> el.getTextContent())
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            log.error("Error parsing Value-tags from response. Message:", e.getMessage());
+        }
+        // default to empty list
         return Collections.emptyList();
     }
 }
