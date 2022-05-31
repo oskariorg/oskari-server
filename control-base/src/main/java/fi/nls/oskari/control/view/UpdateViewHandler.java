@@ -12,6 +12,9 @@ import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.RequestHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import org.oskari.log.AuditLog;
+
+import java.time.OffsetDateTime;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -46,6 +49,7 @@ public class UpdateViewHandler extends RestActionHandler {
             view.setName(name);
             view.setDescription(description);
             view.setIsDefault(isDefault);
+            view.setUpdated(OffsetDateTime.now());
             //set is_default to false for all other this user's views.
             if (isDefault) {
                 LOG.debug("Reset the user's default views: " + user.getId());

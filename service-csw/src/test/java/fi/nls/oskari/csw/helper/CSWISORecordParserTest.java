@@ -1,7 +1,7 @@
 package fi.nls.oskari.csw.helper;
 
 import fi.nls.oskari.csw.domain.CSWIsoRecord;
-import org.oskari.xml.XmlHelper;
+import fi.nls.oskari.util.XmlHelper;
 import org.geotools.referencing.CRS;
 import org.json.JSONObject;
 import org.junit.Test;

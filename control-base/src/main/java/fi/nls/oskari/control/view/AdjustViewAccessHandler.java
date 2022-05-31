@@ -11,6 +11,9 @@ import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import org.oskari.log.AuditLog;
+
+import java.time.OffsetDateTime;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,6 +38,7 @@ public class AdjustViewAccessHandler extends RestActionHandler {
                     params.getHttpParam("isPublic"), false);
 
             view.setIsPublic(isPublic);
+            view.setUpdated(OffsetDateTime.now());
             
             if(isPublic) {
                 log.debug("Making view public:", view);

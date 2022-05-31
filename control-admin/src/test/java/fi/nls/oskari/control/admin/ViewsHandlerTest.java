@@ -15,6 +15,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -103,6 +105,8 @@ public class ViewsHandlerTest extends JSONActionRouteTest {
         View foo = new View();
         foo.setName("bazqux");
         foo.setType("RANDOM");
+        foo.setCreated(OffsetDateTime.parse("2022-05-18T12:15:15.15Z", DateTimeFormatter.ISO_DATE_TIME));
+        foo.setUpdated(OffsetDateTime.parse("2022-05-18T12:15:15.15Z", DateTimeFormatter.ISO_DATE_TIME));
         viewService.addView(foo);
 
         // Query for the View
@@ -179,6 +183,9 @@ public class ViewsHandlerTest extends JSONActionRouteTest {
         view.setOnlyForUuId(false);
         view.setApplication("foo");
         view.setPage("bar");
+        view.setCreated(OffsetDateTime.parse("2022-05-18T12:15:15.15Z", DateTimeFormatter.ISO_DATE_TIME));
+        view.setUpdated(OffsetDateTime.parse("2022-05-18T12:15:15.15Z", DateTimeFormatter.ISO_DATE_TIME));
+
         return view;
     }
 

@@ -13,15 +13,16 @@ import fi.nls.oskari.util.PropertyUtil;
 import org.oskari.xml.XmlHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import javax.xml.parsers.DocumentBuilder;
 import java.io.DataInputStream;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 /**
  * Handler for metadata catalogue search field. Responsible for querying the service for valid options using GetDomain query (#getOptions) and
@@ -110,42 +111,49 @@ public class MetadataFieldHandler {
 
     private Set<SelectItem> getProperties(final String propertyName) {
         Set<SelectItem> response = cache.get(propertyName);
-        if(response != null) {
+        if (response != null) {
             return response;
         }
 
-        response = new TreeSet<SelectItem>();
-
         final String url = getSearchURL() + propertyName;
-        final NodeList valueList = getTags(url, "csw:Value");
+        final List<String> valueList = getTags(url);
         List<String> blacklist = field.getBlacklist();
-        for (int i = 0; i < valueList.getLength(); i++) {
-            String value = valueList.item(i).getChildNodes().item(0).getTextContent();
-            if (blacklist.contains(value)) {
-                continue;
-            }
-            response.add(new SelectItem(null, value));
-        }
+        response = valueList.stream()
+                .filter(it -> !blacklist.contains(it))
+                .map(it -> new SelectItem(null, it))
+                .collect(Collectors.toSet());
         cache.put(propertyName, response);
         return response;
     }
 
-    private static NodeList getTags(final String url, final String tagName) {
+    private static List<String> getTags(String url) {
         DataInputStream dis = null;
         try {
-            final HttpURLConnection con = IOHelper.getConnection(url);
+            final HttpURLConnection con = IOHelper.followRedirect(IOHelper.getConnection(url), 5);
             dis = new DataInputStream(IOHelper.debugResponse(con.getInputStream()));
-            final DocumentBuilder dBuilder = XmlHelper.newDocumentBuilderFactory().newDocumentBuilder();
-            final Document doc = dBuilder.parse(dis);
-            doc.getDocumentElement().normalize();
-            return doc.getElementsByTagName(tagName);
+            return parseTags(dis);
         } catch (Exception e) {
-            log.error("Error parsing tags (", tagName, ") from response at", url, ". Message:", e.getMessage());
+            log.error("Error parsing tags (Value) from response at", url, ". Message:", e.getMessage());
         }
         finally {
             IOHelper.close(dis);
         }
-        // default to empty NodeList
-        return EMPTY_NODELIST;
+        // default to empty list
+        return Collections.emptyList();
+    }
+
+    protected static List<String> parseTags(InputStream in) {
+        try {
+            Element root = XmlHelper.parseXML(in);
+            Element domValues = XmlHelper.getFirstChild(root, "DomainValues");
+            Element valueList = XmlHelper.getFirstChild(domValues, "ListOfValues");
+            return XmlHelper.getChildElements(valueList, "Value")
+                    .map(el -> el.getTextContent())
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            log.error("Error parsing Value-tags from response. Message:", e.getMessage());
+        }
+        // default to empty list
+        return Collections.emptyList();
     }
 }

@@ -6,6 +6,7 @@ import org.apache.commons.text.StringSubstitutor;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +20,8 @@ public class View implements Serializable {
     private String uuid = null;
     private boolean onlyForUuId = true;
     private JSONObject metadata = null;
+    private OffsetDateTime created;
+    private OffsetDateTime updated;
     private List<Bundle> bundles = new ArrayList<Bundle>();
 
     public String getUrl() {
@@ -279,4 +282,19 @@ public class View implements Serializable {
         return JSONHelper.getStringFromJSON(mapOptions, "srsName", null);
     }
 
+    public OffsetDateTime getCreated() {
+        return this.created;
+    }
+
+    public void setCreated(OffsetDateTime created) {
+        this.created = created;
+    }
+
+    public OffsetDateTime getUpdated() {
+        return this.updated;
+    }
+
+    public void setUpdated(OffsetDateTime updated) {
+        this.updated = updated;
+    }
 }

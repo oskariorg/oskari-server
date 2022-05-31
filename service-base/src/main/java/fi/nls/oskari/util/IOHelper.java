@@ -270,7 +270,7 @@ public class IOHelper {
         int read = 0;
         while ((read = in.read(buffer, 0, BUFFER_SIZE)) != -1) {
             if (sizeLimit > -1 && total + read > sizeLimit) {
-                throw new IOException("Size limit reached: " + humanReadableByteCount(sizeLimit));
+                throw new EOFException("Size limit reached: " + humanReadableByteCount(sizeLimit));
             }
             out.write(buffer, 0, read);
             total += read;
@@ -429,7 +429,7 @@ public class IOHelper {
 
     public static void validateResponse(HttpURLConnection conn, String expectedContentType)
             throws ServiceRuntimeException, IOException {
-        if (conn.getResponseCode() != 200) {
+        if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
             throw new ServiceRuntimeException("Unexpected status code " + conn.getResponseCode());
         }
 
