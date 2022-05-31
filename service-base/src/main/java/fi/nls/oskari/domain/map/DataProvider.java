@@ -21,25 +21,11 @@ public class DataProvider extends JSONLocalizedName {
         if(id > 0) {
             JSONHelper.putValue(me, "id", id);
         }
-
         JSONHelper.putValue(me, "locale", getLocale());
-
-        return me;
-    }
-
-    public JSONObject getAsJSON(String language) {
-        final JSONObject me = new JSONObject();
-        if(id > 0) {
-            JSONHelper.putValue(me, "id", id);
-        }
-        
-        JSONHelper.putValue(me, "name", getLocalizedValue(language, "name"));
-        JSONHelper.putValue(me, "description", getLocalizedValue(language, "description"));
-
         return me;
     }
 
     public String getDescription(String language) {
-        return getLocalizedValue(language, "description");
+        return getLocalizedValue(language, LOCALE_DESCRIPTION);
     }
 }
