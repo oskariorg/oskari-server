@@ -4,8 +4,6 @@ import fi.nls.oskari.util.JSONHelper;
 
 import org.json.JSONObject;
 
-import java.util.Map;
-
 public class MaplayerGroup extends JSONLocalizedName {
     private int id;
     private int parentId;
@@ -34,11 +32,6 @@ public class MaplayerGroup extends JSONLocalizedName {
             JSONHelper.putValue(me, "id", id);
         }
 
-        final JSONObject names = new JSONObject();
-        for (Map.Entry<String, String> localization : getNames().entrySet()) {
-            JSONHelper.putValue(names, localization.getKey(), localization.getValue());
-        }
-        JSONHelper.putValue(me, "name", names);
         JSONHelper.putValue(me, "locale", getLocale());
         JSONHelper.putValue(me, "selectable", this.isSelectable());
         JSONHelper.putValue(me, "parentId", this.getParentId());
@@ -51,11 +44,8 @@ public class MaplayerGroup extends JSONLocalizedName {
         if (id > 0) {
             JSONHelper.putValue(me, "id", id);
         }
-
-        final JSONObject locale = getLocale().optJSONObject(language);
-
-        JSONHelper.putValue(me, "name", locale.optString("name"));
-        JSONHelper.putValue(me, "description", locale.optString("description"));
+        JSONHelper.putValue(me, "name", getName(language));
+        JSONHelper.putValue(me, "desc", getLocalizedValue(language, LOCALE_DESCRIPTION));
         JSONHelper.putValue(me, "selectable", this.isSelectable());
         JSONHelper.putValue(me, "parentId", this.getParentId());
         JSONHelper.putValue(me, "orderNumber", this.getOrderNumber());

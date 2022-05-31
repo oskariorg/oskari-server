@@ -1,5 +1,6 @@
 package fi.nls.oskari.control.data;
 
+import static fi.nls.oskari.control.ActionConstants.KEY_NAME;
 import static fi.nls.oskari.control.ActionConstants.PARAM_ID;
 
 import java.util.ArrayList;
@@ -7,7 +8,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.oskari.log.AuditLog;
 import org.oskari.service.util.ServiceFactory;
@@ -23,7 +23,6 @@ import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkService;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkServiceMybatisImpl;
-import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
@@ -80,8 +79,7 @@ public class MapLayerGroupsHandler extends RestActionHandler {
 		final int id = params.getHttpParam(PARAM_ID, -1);
 		if (id != -1) {
 			// find single group
-			final MaplayerGroup maplayerGroup = oskariMapLayerGroupService.find(id);
-			ResponseHelper.writeResponse(params, maplayerGroup.getAsJSON());
+			ResponseHelper.writeResponse(params, getById(id).getAsJSON());
 			return;
 		}
 
@@ -96,65 +94,58 @@ public class MapLayerGroupsHandler extends RestActionHandler {
 		ResponseHelper.writeResponse(params, result);
 	}
 
-	/**
-	 * Handles insert
-	 * 
-	 * @param params
-	 * @throws ActionException
-	 */
-	public void handlePut(ActionParameters params) throws ActionException {
-		params.requireAdminUser();
-		MaplayerGroup maplayerGroup = populateFromRequest(params.getPayLoadJSON());
-
-		// Check at group depth is maximum 3
-		if (!isAllowedGroupDepth(maplayerGroup)) {
-			throw new ActionParamsException("Maximum subgroup depth is " + PARAM_LAYERLIST_HIERARCHY_MAXDEPTH);
+	private MaplayerGroup getById(int id) throws ActionParamsException {
+		MaplayerGroup d = oskariMapLayerGroupService.find(id);
+		if (d == null) {
+			throw new ActionParamsException("No group for id=" + id);
 		}
-
-		final int id = oskariMapLayerGroupService.insert(maplayerGroup);
-		// check insert by loading from DB
-		final MaplayerGroup savedMapLayerGroup = oskariMapLayerGroupService.find(id);
-		flushLayerListCache();
-		AuditLog.user(params.getClientIp(), params.getUser()).withParam("id", id)
-				.withParam("name", maplayerGroup.getName(PropertyUtil.getDefaultLanguage()))
-				.added(AuditLog.ResourceType.MAPLAYER_GROUP);
-		ResponseHelper.writeResponse(params, savedMapLayerGroup.getAsJSON());
+		return d;
 	}
-
 	/**
 	 * Handles update
 	 * 
 	 * @param params
 	 * @throws ActionException
 	 */
-	public void handlePost(ActionParameters params) throws ActionException {
+	public void handlePut(ActionParameters params) throws ActionException {
+		int id = params.getRequiredParamInt(PARAM_ID);
 		params.requireAdminUser();
-		MaplayerGroup maplayerGroup = populateFromRequest(params.getPayLoadJSON());
-		if (maplayerGroup.getId() == -1) {
-			// hierarchical admin apparently sends id as separate param
-			maplayerGroup.setId(params.getRequiredParamInt(PARAM_ID));
-		}
-		// bit hacky but the frontend doesn't send order number as param so it is lost if it doesn't get copied...
-		maplayerGroup.setOrderNumber(getEnsuredOrderNumber(maplayerGroup));
+		MaplayerGroup group = getById(id);
 
-		oskariMapLayerGroupService.update(maplayerGroup);
-		flushLayerListCache();
-		AuditLog.user(params.getClientIp(), params.getUser()).withParam("id", maplayerGroup.getId())
-				.withParam("name", maplayerGroup.getName(PropertyUtil.getDefaultLanguage()))
+		populateFromRequest(group, params.getPayLoadJSON());
+
+		// Check at group depth is maximum 3
+		if (!isAllowedGroupDepth(group)) {
+			throw new ActionParamsException("Maximum subgroup depth is " + PARAM_LAYERLIST_HIERARCHY_MAXDEPTH);
+		}
+		oskariMapLayerGroupService.update(group);
+		AuditLog.user(params.getClientIp(), params.getUser()).withParam("id", group.getId())
+				.withParam("name", group.getName(PropertyUtil.getDefaultLanguage()))
 				.updated(AuditLog.ResourceType.MAPLAYER_GROUP);
 
-		ResponseHelper.writeResponse(params, maplayerGroup.getAsJSON());
+		flushLayerListCache();
+		ResponseHelper.writeResponse(params, getById(id).getAsJSON());
 	}
 
-	private int getEnsuredOrderNumber(MaplayerGroup maplayerGroup) {
-		if (maplayerGroup.getOrderNumber() == -1) {
-			// bit hacky but the frontend doesn't send order number as param so it is lost if it doesn't get copied...
-			final MaplayerGroup savedMapLayerGroup = oskariMapLayerGroupService.find(maplayerGroup.getId());
-			if (savedMapLayerGroup.getOrderNumber() != -1) {
-				return savedMapLayerGroup.getOrderNumber();
-			}
-		}
-		return -1;
+	/**
+	 * Handles insert
+	 * 
+	 * @param params
+	 * @throws ActionException
+	 */
+	public void handlePost(ActionParameters params) throws ActionException {
+		params.requireAdminUser();
+		MaplayerGroup group = new MaplayerGroup();
+		populateFromRequest(group, params.getPayLoadJSON());
+
+		final int id = oskariMapLayerGroupService.insert(group);
+		AuditLog.user(params.getClientIp(), params.getUser()).withParam("id", id)
+				.withParam("name", group.getName(PropertyUtil.getDefaultLanguage()))
+				.added(AuditLog.ResourceType.MAPLAYER_GROUP);
+
+		flushLayerListCache();
+
+		ResponseHelper.writeResponse(params, getById(id).getAsJSON());
 	}
 
 	/**
@@ -168,7 +159,7 @@ public class MapLayerGroupsHandler extends RestActionHandler {
 		final int groupId = params.getRequiredParamInt(PARAM_ID);
 		final Object deleteLayers = params.getHttpParam(PARAM_DELETE_LAYERS);
 
-		final MaplayerGroup maplayerGroup = oskariMapLayerGroupService.find(groupId);
+		final MaplayerGroup maplayerGroup = getById(groupId);
 
 		if (deleteLayers != null) {
 			handleDelete(params, maplayerGroup, deleteLayers);
@@ -272,31 +263,29 @@ public class MapLayerGroupsHandler extends RestActionHandler {
 		return true;
 	}
 
-	private MaplayerGroup populateFromRequest(JSONObject mapLayerGroupJSON) throws ActionException {
-		MaplayerGroup maplayerGroup = new MaplayerGroup();
-		try {
-			JSONObject locales = mapLayerGroupJSON.getJSONObject(KEY_LOCALES);
-			// The classic admin sends id as part of the JSON payload (as string, but with
-			// number value...)
-			maplayerGroup.setId(ConversionHelper.getInt(mapLayerGroupJSON.optString("id"), -1));
-			maplayerGroup.setParentId(mapLayerGroupJSON.optInt(KEY_PARENT_ID, -1));
-			maplayerGroup.setSelectable(mapLayerGroupJSON.optBoolean(KEY_SELECTABLE, true));
-			maplayerGroup.setOrderNumber(mapLayerGroupJSON.optInt(KEY_ORDER, -1));
-			
-			JSONObject defaultLang = locales.optJSONObject(PropertyUtil.getDefaultLanguage());
-			if (defaultLang == null) {
-				throw new ActionParamsException("No locale for default lang: " + PropertyUtil.getDefaultLanguage());
-			}
-			String name = defaultLang.optString("name");
-			if (name == null || name.trim().isEmpty()) {
-				throw new ActionParamsException("No name for default lang: " + PropertyUtil.getDefaultLanguage());
-			}
-
-			maplayerGroup.setLocale(locales);
-		} catch (JSONException ex) {
-			throw new ActionException("Cannot populate maplayer group from request", ex);
+	private void populateFromRequest(MaplayerGroup group, JSONObject payload) throws ActionException {
+		if (payload == null) {
+			throw new ActionParamsException("No payload for group");
 		}
+		JSONObject locales = payload.optJSONObject(KEY_LOCALES);
+		validateLocales(locales);
+		group.setLocale(locales);
+		group.setParentId(payload.optInt(KEY_PARENT_ID, group.getParentId()));
+		group.setSelectable(payload.optBoolean(KEY_SELECTABLE, group.isSelectable()));
+		group.setOrderNumber(payload.optInt(KEY_ORDER, group.getOrderNumber()));
+	}
 
-		return maplayerGroup;
+	private void validateLocales(JSONObject locales) throws ActionParamsException {
+		if (locales == null) {
+			throw new ActionParamsException("No locales for group");
+		}
+		JSONObject defaultLang = locales.optJSONObject(PropertyUtil.getDefaultLanguage());
+		if (defaultLang == null) {
+			throw new ActionParamsException("No locale for default lang: " + PropertyUtil.getDefaultLanguage());
+		}
+		String name = defaultLang.optString(KEY_NAME);
+		if (name == null || name.trim().isEmpty()) {
+			throw new ActionParamsException("No name for default lang: " + PropertyUtil.getDefaultLanguage());
+		}
 	}
 }
