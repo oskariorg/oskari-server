@@ -22,7 +22,6 @@ import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.map.layer.DataProviderService;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.util.PropertyUtil;
-import fi.nls.oskari.util.RequestHelper;
 import fi.nls.oskari.util.ResponseHelper;
 
 import static fi.nls.oskari.control.ActionConstants.*;
