@@ -20,6 +20,7 @@ public interface UserIndicatorMapper {
             "    i.description," +
             "    i.published," +
             "    i.created," +
+            "    i.updated," +
             "    d.year," +
             "    d.regionset_id " +
             "FROM" +
@@ -44,6 +45,7 @@ public interface UserIndicatorMapper {
             "    i.description," +
             "    i.published," +
             "    i.created," +
+            "    i.updated," +
             "    d.year," +
             "    d.regionset_id " +
             "FROM" +
@@ -90,7 +92,8 @@ public interface UserIndicatorMapper {
             "    title = #{title}," +
             "    source = #{source}," +
             "    description = #{description}," +
-            "    published = #{published}" +
+            "    published = #{published}," +
+            "    updated = #{updated}" +
             "    where id = #{id} AND user_id = #{userId}")
     int updateIndicator(UserIndicatorDataRow row);
 }

@@ -40,6 +40,7 @@ public class GetIndicatorListHandler extends ActionHandler {
     private static final String KEY_INDICATORS = "indicators";
     private static final String KEY_REGIONSETS = "regionsets";
     private static final String KEY_CREATED = "created";
+    private static final String KEY_UPDATED = "updated";
     /**
      * For now, this uses pretty much static global store for the plugins.
      * In the future it might make sense to inject the pluginManager references to different controllers using DI.
@@ -85,6 +86,7 @@ public class GetIndicatorListHandler extends ActionHandler {
             JSONHelper.putValue(json, KEY_ID, indicator.getId());
             JSONHelper.putValue(json, KEY_NAME, indicator.getName(language));
             JSONHelper.putValue(json, KEY_CREATED, indicator.getCreated());
+            JSONHelper.putValue(json, KEY_UPDATED, indicator.getUpdated());
             // add layer ids as available regionsets for the indicator
             JSONHelper.putValue(json, KEY_REGIONSETS, new JSONArray(indicator
                     .getLayers()

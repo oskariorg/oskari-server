@@ -16,4 +16,5 @@ public class UserIndicatorDataRow {
 
     boolean published;
     OffsetDateTime created;
+    OffsetDateTime updated;
 }

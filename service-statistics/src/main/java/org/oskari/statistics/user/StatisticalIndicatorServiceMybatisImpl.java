@@ -15,6 +15,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.sql.DataSource;
+
+import java.time.OffsetDateTime;
 import java.util.*;
 
 @Oskari
@@ -140,6 +142,7 @@ public class StatisticalIndicatorServiceMybatisImpl extends StatisticalIndicator
         }
         ind.setPublic(userIndicator.published);
         ind.setCreated(userIndicator.created);
+        ind.setUpdated(userIndicator.updated);
 
         // Initialize the year dimension as the only one and flag it as time variable to be used in time-series ops.
         ind.getDataModel().setTimeVariable("year");
@@ -176,6 +179,7 @@ public class StatisticalIndicatorServiceMybatisImpl extends StatisticalIndicator
         try (final SqlSession session = factory.openSession()) {
             if (id != -1) {
                 // update (userId check is in the where clause)
+                row.updated = OffsetDateTime.now();
                 int updated = getMapper(session).updateIndicator(row);
                 if(updated != 1) {
                     throw new ServiceRuntimeException("Indicator '" + id + "' not found for user: " + userId);

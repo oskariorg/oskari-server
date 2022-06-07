@@ -35,6 +35,7 @@ public class StatisticalIndicator {
     private StatisticalIndicatorDataModel dataModel;
     private Map<String, Object> metadata;
     private OffsetDateTime created;
+    private OffsetDateTime updated;
 
     public void setId(String id) {
         this.id = id;
@@ -193,5 +194,30 @@ public class StatisticalIndicator {
 
     public void setCreated(OffsetDateTime created) {
         this.created = created;
+    }
+
+    @JsonGetter("updated")
+    public String getFormattedUpdated() {
+        if (updated == null) {
+            return null;
+        }
+        return updated.format(FORMATTER);
+    }
+
+    public OffsetDateTime getUpdated() {
+        return this.updated;
+    }
+
+    @JsonSetter("updated")
+    public void setUpdated(String updated) {
+        if (updated != null) {
+            this.updated = OffsetDateTime.parse(updated, FORMATTER);
+        } else {
+            this.updated = null;
+        }
+    }
+
+    public void setUpdated(OffsetDateTime updated) {
+        this.updated = updated;
     }
 }
