@@ -36,7 +36,7 @@ public interface AppSetupMapper {
     @Delete("DELETE FROM oskari_appsetup WHERE creator = #{userId}")
     void deleteViewByUser(long userId);
 
-    @Update("UPDATE oskari_appsetup SET is_default = FALSE, updated = #{updated} WHERE creator = #{userId} AND type = 'USER'")
+    @Update("UPDATE oskari_appsetup SET is_default = FALSE, updated = NOW() WHERE creator = #{userId} AND is_default = TRUE AND type = 'USER'")
     void resetUsersDefaultViews(long userId);
     void update(View view);
     void updateUsage(View view);
