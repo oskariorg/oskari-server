@@ -1,5 +1,54 @@
 # Release Notes
 
+## 2.8.0
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/40?closed=1
+
+### My data frontend implementation changed
+
+A new bundle `mydata` has been added as (in most cases) drop-in replacement for `personaldata`. See [MigrationGuide](https://github.com/oskariorg/oskari-server/blob/master/MigrationGuide.md#280) for details.
+
+### Map layer capabilities rewrite
+
+All capabilities parsing have now been fully migrated to the rewritten implementation for all layer types that previously used layer capabilities parsing. The `oskari_capabilities_cache` database table has been dropped and all capabilities data is now stored per layer on `oskari_maplayer` table capabilities column as JSON. The `service-capabilities` Maven module now holds the logic for parsing capabilities and all functionalities use it when querying a service for its capabilities data.
+
+`org.oskari.capabilities.CapabilitiesService` has methods to query a service for layers including their capabilities per layer, update a single layer capabilities from the service, serialize the capabilities to JSON for `oskari_maplayer` and deserialize it from `oskari_maplayer` to get for example WMTS-layer matrix sets for printing.
+
+WFS/OGC API Features layers now also have the properties described in DescribeFeatureType included in the capabilities JSON.
+
+### Layer listing changes
+
+Data providers are now included in the layer list response similar to layer groups. Most if not all localizable values are now only returned in the current users language. All current admin tools can query a single editable item separately to get the localized values so this simplifies the code and makes admins use the same code for normal layer operations as other users.
+
+### Date handling
+
+Initial steps have been taken to make date handling more consistent on the database and server-side. For now the decisions for these have been documented in [oskari.org FAQ](https://oskari.org/documentation/faq) under "Handling dates and timestamps". In short this means using timestamps with time zone in database, java.time package in server code and ISO strings in JSON.
+
+Timestamp columns in database and server-side code have been updated for these for app setups and user generated content.
+
+### Metadata service integration
+
+When parsing capabilities for layers it is assumed that the metadata url/id referenced in capabilities is a link to the same service that the Oskari instance uses as metadata service (like GeoNetwork or other CSW-compliant service). This is not always the case and we added a new config for `oskari-ext.properties`. You can configure a comma-separated list that you want to enable metadata ids to be used from capabilities:
+
+```
+service.metadata.domains=paikkatietohakemisto.fi, geonetwork.nls.fi
+```
+
+If the url referenced in capabilities doesn't match the domain the metadata id parsing is skipped for that layer. If not configured this functions the same as before. If the list is configure, the value of `service.metadata.url` property is automatically added to the list.
+
+### Hiding mydata views/account info tab
+
+These can be configured in `oskari-ext.properties` with:
+```
+mydata.tabs.showUser=false
+mydata.tabs.showViews=false
+```
+
+### Other changes
+
+- Removed deprecated routes: `DeleteFeature`, `InsertFeature`, `SaveFeature` (replaced by `VectorFeatureWriter`)
+- Printing vector features with fill pattern is now visually closer to what is shown on the browser
+
 ## 2.7.1
 
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/41?closed=1

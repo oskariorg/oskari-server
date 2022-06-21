@@ -1,5 +1,21 @@
 # Migration guide
 
+## 2.8.0
+
+### My data frontend implementation changed
+
+A new bundle `mydata` has been added as (in most cases) drop-in replacement for `personaldata`. If you don't use any customized tabs in My data in your app (only using the ones included in oskari-frontend) you can safely update from personaldata to mydata. If you do have application specific tabs on personaldata see [frontend notes](https://github.com/oskariorg/oskari-frontend/blob/master/ReleaseNotes.md#280) for more details.
+
+For most apps you can and should add this migration for your app:
+```
+UPDATE oskari_appsetup_bundles
+ SET bundle_id = (select id from oskari_bundle where name='mydata'),
+     bundleinstance = 'mydata'
+ WHERE bundle_id = (select id from oskari_bundle where name='personaldata');
+```
+
+We might do a forced update on the next release when `personaldata` is removed.
+
 ## 2.5.0
 
 ### Userstyle bundle
