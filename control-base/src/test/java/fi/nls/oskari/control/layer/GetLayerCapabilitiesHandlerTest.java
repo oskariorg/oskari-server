@@ -21,9 +21,11 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -105,7 +107,7 @@ public class GetLayerCapabilitiesHandlerTest extends JSONActionRouteTest {
         p.setExternalType(PermissionExternalType.ROLE);
         p.setExternalId("" + getLoggedInUser().getRoles().iterator().next().getId());
         res.addPermission(p);
-        doReturn(res).when(service).findResource(ResourceType.maplayer, any(String.class));
+        doReturn(Optional.of(res)).when(service).findResource(eq(ResourceType.maplayer), any(String.class));
         return service;
     }
 
@@ -113,5 +115,4 @@ public class GetLayerCapabilitiesHandlerTest extends JSONActionRouteTest {
     public static void delete() {
         PropertyUtil.clearProperties();
     }
-
 }
