@@ -75,4 +75,19 @@ public class CapabilitiesServiceTest extends TestCase {
         assertNotNull("Should have tile url", url);
         Assert.assertEquals("https://karttamoottori.maanmittauslaitos.fi/maasto/wmts/1.0.0/taustakartta/default/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png", url.getTemplate());
     }
+    @Test
+    public void testDeserializationWMTSWithLimits()  {
+        String json = ResourceHelper.readStringResource("ogc/WMTSCapabilitiesParserTest-Vayla-expected.json", this);
+        LayerCapabilitiesWMTS caps = CapabilitiesService.fromJSON(json, OskariLayer.TYPE_WMTS);
+        Assert.assertEquals(3, caps.getTileMatrixLinks().size());
+        Assert.assertEquals("EPSG:3067",
+                caps.getTileMatrixLinks().stream()
+                        .map(l -> l.getTileMatrixSet().getShortCrs())
+                        .filter(srs -> srs.equals("EPSG:3067"))
+                        .findFirst()
+                        .orElse(null));
+        ResourceUrl url = caps.getResourceUrl("tile");
+        assertNotNull("Should have tile url", url);
+        Assert.assertEquals("https://julkinen.traficom.fi/rasteripalvelu/wmts/rest/Traficom:Merikarttasarja B erikoiskartat/{style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}?format=image/png", url.getTemplate());
+    }
 }
