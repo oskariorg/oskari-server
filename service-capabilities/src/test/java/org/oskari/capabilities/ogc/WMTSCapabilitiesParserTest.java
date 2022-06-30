@@ -68,6 +68,20 @@ public class WMTSCapabilitiesParserTest {
         // System.out.println(json);
         assertTrue("JSON should match", JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)));
     }
+    @Test
+    public void testVaylaParsing() throws Exception {
+        String xml = ResourceHelper.readStringResource("WMTSCapabilitiesParserTest-Vayla-input.xml", this);
+        String expected = ResourceHelper.readStringResource("WMTSCapabilitiesParserTest-Vayla-expected.json", this);
+
+        WMTSCapabilitiesParser parser = new WMTSCapabilitiesParser();
+        parser.init();
+        Map<String, LayerCapabilities> layers = parser.parseLayers(xml);
+        assertEquals("Should find a layer", 44, layers.size());
+
+        JSONObject json = CapabilitiesService.toJSON(layers.values().iterator().next(), SYSTEM_CRS);
+        // System.out.println(json);
+        assertTrue("JSON should match", JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)));
+    }
 
     @Test
     public void testParsingMapServerMultiColonTileMatrix_LMI() throws Exception {
@@ -149,5 +163,6 @@ public class WMTSCapabilitiesParserTest {
         // System.out.println(json);
         assertTrue("JSON should match", JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)));
     }
+
 
 }

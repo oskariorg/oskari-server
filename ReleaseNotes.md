@@ -1,5 +1,11 @@
 # Release Notes
 
+## 2.8.1
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/43?closed=1
+
+Fixed an issue with WMTS-layers that define limits on capabilities
+
 ## 2.8.0
 
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/40?closed=1

@@ -1,5 +1,6 @@
 package org.oskari.capabilities.ogc.wmts;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 
@@ -19,8 +20,11 @@ public class TileMatrixLimits {
     private final int minTileCol;
     private final int maxTileCol;
 
-    public TileMatrixLimits(TileMatrix tm, int minTileRow, int maxTileRow,
-            int minTileCol, int maxTileCol) {
+    public TileMatrixLimits(@JsonProperty("tileMatrix") TileMatrix tm,
+                            @JsonProperty("minTileRow") int minTileRow,
+                            @JsonProperty("maxTileRow") int maxTileRow,
+                            @JsonProperty("minTileCol") int minTileCol,
+                            @JsonProperty("maxTileCol") int maxTileCol) {
         this.tm = tm;
         this.minTileRow = minTileRow;
         this.maxTileRow = maxTileRow;
