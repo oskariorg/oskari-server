@@ -68,7 +68,7 @@ public class AppSetupHandler extends RestActionHandler {
 
     // Bundles that require divmanazer to be loaded for them to work
     private static final Set<String> BUNDLE_REQUIRES_DIVMANAZER =
-            ConversionHelper.asSet(ViewModifier.BUNDLE_FEATUREDATA2, ViewModifier.BUNDLE_COORDINATETOOL, ViewModifier.BUNDLE_STATSGRID);
+            ConversionHelper.asSet(ViewModifier.BUNDLE_FEATUREDATA2, ViewModifier.BUNDLE_COORDINATETOOL, ViewModifier.BUNDLE_STATSGRID, ViewModifier.BUNDLE_METADATAFLYOUT);
 
     private static final Set<String> BUNDLE_WHITELIST = new LinkedHashSet();
 
@@ -141,7 +141,7 @@ public class AppSetupHandler extends RestActionHandler {
                 ViewModifier.BUNDLE_PUBLISHEDGRID, ViewModifier.BUNDLE_FEATUREDATA2,
                 ViewModifier.BUNDLE_COORDINATETOOL, ViewModifier.BUNDLE_STATSGRID,
                 ViewModifier.BUNDLE_FEEDBACKSERVICE, ViewModifier.BUNDLE_CAMERA_CONTROLS_3D,
-                ViewModifier.BUNDLE_METADATACATALOGUE));
+                ViewModifier.BUNDLE_METADATACATALOGUE, ViewModifier.BUNDLE_METADATAFLYOUT));
         for(String bundleId : configBundles) {
             SIMPLE_BUNDLES.add(bundleId);
         }
