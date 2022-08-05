@@ -78,7 +78,7 @@ public class GetIndicatorListHandler extends ActionHandler {
     }
 
     private Optional<JSONObject> toJSON(StatisticalIndicator indicator, String language) {
-        if(indicator == null || indicator.getLayers() == null || indicator.getLayers().isEmpty()) {
+        if(indicator == null) {
             return Optional.empty();
         }
         try {
