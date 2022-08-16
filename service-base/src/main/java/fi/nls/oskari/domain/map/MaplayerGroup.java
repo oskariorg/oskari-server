@@ -6,7 +6,7 @@ import org.json.JSONObject;
 
 public class MaplayerGroup extends JSONLocalizedName {
     private int id;
-    private int parentId;
+    private int parentId = -1;
     private boolean selectable;
     private int orderNumber = -1;
 
