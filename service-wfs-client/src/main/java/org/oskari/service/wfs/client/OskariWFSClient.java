@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.domain.map.wfs.WFSLayerAttributes;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.IOHelper;
@@ -179,7 +180,11 @@ public class OskariWFSClient {
         return true;
     }
     protected static int getMaxFeatures(OskariLayer layer) {
-        int maxFeatures = layer.getCapabilities().optInt(KEY_MAX_FEATURES, -1);
+        int maxFeatures = layer.getAttributes().optInt(WFSLayerAttributes.KEY_MAXFEATURES, -1);
+        if (maxFeatures > 0) {
+            return maxFeatures;
+        }
+        maxFeatures = layer.getCapabilities().optInt(KEY_MAX_FEATURES, -1);
         if (maxFeatures > 0) {
             return maxFeatures;
         }
