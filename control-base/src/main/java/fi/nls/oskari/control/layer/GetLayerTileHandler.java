@@ -84,7 +84,7 @@ public class GetLayerTileHandler extends ActionHandler {
         } else {
             url = getURL(params, layer);
         }
-        if (url == null || url.trim().isEmpty()) {
+        if (url == null || url.trim().isEmpty() || url.startsWith("/")) {
             // For example legend url for proxied layers can be empty
             // -> not an error really, but we don't want to go any further either
             ResponseHelper.writeError(params, "No URL configured", HttpServletResponse.SC_NOT_FOUND);
@@ -146,6 +146,7 @@ public class GetLayerTileHandler extends ActionHandler {
             // just throw it as is if we already handled it
             throw e;
         } catch (Exception e) {
+            LOG.info("Url in proxy error was:", url);
             throw new ActionParamsException("Couldn't proxy request to actual service", e.getMessage(), e);
         } finally {
             if(actionTimer != null) {
