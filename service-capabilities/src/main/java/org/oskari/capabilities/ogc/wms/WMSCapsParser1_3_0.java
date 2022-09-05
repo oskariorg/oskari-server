@@ -85,7 +85,8 @@ public class WMSCapsParser1_3_0 extends WMSCapsParser {
         if (dimension == null) {
             return null;
         }
-        if (!"time".equals(XmlHelper.getAttributeValue(dimension, "name"))) {
+        // All parameter names are case-insensitive
+        if (!"time".equalsIgnoreCase(XmlHelper.getAttributeValue(dimension, "name"))) {
             return null;
         }
         if (!"ISO8601".equals(XmlHelper.getAttributeValue(dimension, "units"))) {

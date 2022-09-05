@@ -4,6 +4,7 @@ import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.*;
@@ -84,7 +85,7 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
         // copy time from capabilities to attributes
         // timedata is merged into attributes  (times:{start:,end:,interval:}  or times: []
         // frontend uses this to detect if layer is a timeseries and construct the UI based on this
-        Object times = getTimesFromCapabilities(capabilities);
+        JSONArray times = getTimesFromCapabilities(capabilities);
         if (times != null && isTimeseriesLayer(layer)) {
             JSONHelper.putValue(layerJson, KEY_ATTRIBUTES, JSONHelper.merge(
                     JSONHelper.getJSONObject(layerJson, KEY_ATTRIBUTES),
@@ -92,11 +93,35 @@ public class LayerJSONFormatterWMS extends LayerJSONFormatter {
         }
     }
 
-    private Object getTimesFromCapabilities(JSONObject capabilities) {
-        if (capabilities.has(KEY_TIMES)) {
-            return JSONHelper.get(capabilities, KEY_TIMES);
+    protected static JSONArray getTimesFromCapabilities(JSONObject capabilities) {
+        if (!capabilities.has(KEY_TIMES)) {
+            return null;
         }
-        return null;
+        JSONArray times = JSONHelper.getJSONArray(capabilities, KEY_TIMES);
+        if (times == null || times.length() == 0) {
+            return null;
+        }
+        if (times.length() > 1) {
+            return times;
+        }
+        // https://cite.opengeospatial.org/teamengine/about/wms11/1.1.1/site/OGCTestData/wms/1.1.1/spec/wms1.1.1.html#table.dim_values
+        // handle as not having timeseries if there is only single value present to prevent frontend from breaking
+        String singleValue = times.optString(0);
+        String[] parts = singleValue.split("/");
+        if (parts.length < 3) {
+            // should be start/end/resolution
+            return null;
+        }
+/*
+B.3. Period Format
+
+Example 1. 1 year: P1Y
+Example 2. 1 month plus 10 days: P1M10D
+Example 3. 2 hours:  PT2H
+Example 4. 1.5 seconds: PT1.5S
+ */
+// TODO: calculate array of times, now returns as is
+        return times;
     }
 
     private Boolean isTimeseriesLayer(final OskariLayer layer) {
