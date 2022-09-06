@@ -90,7 +90,8 @@ public class WMSCapsParser1_1_1 extends WMSCapsParser {
         if (dimension == null || extent == null) {
             return null;
         }
-        if (!"time".equals(XmlHelper.getAttributeValue(extent, "name"))) {
+        // All parameter names are case-insensitive
+        if (!"time".equalsIgnoreCase(XmlHelper.getAttributeValue(extent, "name"))) {
             return null;
         }
         if (!"ISO8601".equals(XmlHelper.getAttributeValue(dimension, "units"))) {
@@ -100,6 +101,10 @@ public class WMSCapsParser1_1_1 extends WMSCapsParser {
         if (content.trim().isEmpty()) {
             return null;
         }
+        /* For the TIME parameter, the special keyword 'current' may be used if advertised by the server as in Annex C.3,
+        Specifying Dimensional Extents. The expression "TIME=current" means "send the most current data available."
+        The expression "TIME=start_time/current" means "send data from start_time up to the most current data available."
+         */
         return content.split("\\s*,\\s*");
     }
 }
