@@ -466,6 +466,9 @@ public class IOHelper {
 
     public static String getCharset(final HttpURLConnection con, final String defaultCharset) {
         final String contentType = con.getContentType();
+        if (contentType == null) {
+            return defaultCharset;
+        }
         final String[] values = contentType.split(";");
 
         for (String value : values) {
