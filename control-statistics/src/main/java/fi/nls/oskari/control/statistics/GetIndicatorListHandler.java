@@ -88,11 +88,7 @@ public class GetIndicatorListHandler extends ActionHandler {
             JSONHelper.putValue(json, KEY_CREATED, indicator.getCreated());
             JSONHelper.putValue(json, KEY_UPDATED, indicator.getUpdated());
             // add layer ids as available regionsets for the indicator
-            JSONHelper.putValue(json, KEY_REGIONSETS, new JSONArray(indicator
-                    .getLayers()
-                    .stream()
-                    .map(StatisticalIndicatorLayer::getOskariLayerId)
-                    .collect(Collectors.toSet())));
+            JSONHelper.putValue(json, KEY_REGIONSETS, StatisticsHelper.toJSON(indicator.getLayers()));
             return Optional.of(json);
         } catch (NoSuchElementException e) {
             return Optional.empty();
