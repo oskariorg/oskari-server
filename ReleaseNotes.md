@@ -1,5 +1,21 @@
 # Release Notes
 
+## 2.9.0
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/42?closed=1
+
+- Allow users to include metadata flyout in embedded maps.
+- Allow admins to override capabilities based max features limit for vector sources with layer attributes.
+- Handle missing legend url for proxied layer to reduce noise in server logs.
+- Handle timeseries layer with single time value and no resolution part as normal layer.
+- Library updates:
+  - GeoTools: 25.1 => 27.1
+  - JTS: 1.18.1 => 1.18.2
+  - MVT (no.ecc.vectortile): 1.3.15 => 1.3.16
+  - JSoup 1.14.2 -> 1.15.3
+  - postgres JDBC 42.3.3 -> 42.5.0
+  - Jetty 9.4.44.v20210927 -> 9.4.48.v20220622
+
 ## 2.8.1
 
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/43?closed=1
