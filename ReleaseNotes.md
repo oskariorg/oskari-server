@@ -8,6 +8,7 @@ For a full list of changes see: https://github.com/oskariorg/oskari-server/miles
 - Allow admins to override capabilities based max features limit for vector sources with layer attributes.
 - Handle missing legend url for proxied layer to reduce noise in server logs.
 - Handle timeseries layer with single time value and no resolution part as normal layer.
+- Pass user generated statistical indicators for frontend even when they don't have data (since user can add data for them later).
 - Library updates:
   - GeoTools: 25.1 => 27.1
   - JTS: 1.18.1 => 1.18.2
