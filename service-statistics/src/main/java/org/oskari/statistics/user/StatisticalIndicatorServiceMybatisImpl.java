@@ -105,9 +105,9 @@ public class StatisticalIndicatorServiceMybatisImpl extends StatisticalIndicator
 
     private Collection<StatisticalIndicator> mapToStatisticalIndicator(List<UserIndicatorDataRow> rows) {
         Map<Long, StatisticalIndicator> result = new HashMap<>();
-        for(UserIndicatorDataRow row: rows) {
+        for (UserIndicatorDataRow row: rows) {
             StatisticalIndicator ind = result.get(row.id);
-            if(ind == null) {
+            if (ind == null) {
                 ind = createStatisticalIndicator(row);
                 result.put(row.id, ind);
             }
@@ -161,14 +161,22 @@ public class StatisticalIndicatorServiceMybatisImpl extends StatisticalIndicator
     }
 
     private void addDimension(StatisticalIndicator ind, UserIndicatorDataRow row) {
-        if(row.regionsetId == 0) {
-            // no data for indicator
-            return;
+        long regionset = row.regionsetId;
+        if (regionset == 0) {
+            // no data for indicator, but we still want to let it through for it to be listed as user indicator on the UI
+            // The frontend handles -1 regionset by removing it from responses
+            // We need to have some layer on the indicator to have it passed to the frontend and user indicators are a
+            // special case where we can have just metadata/name for an indicator without it having any data (user can modify it to add data)
+            regionset = -1;
         }
-        if(ind.getLayer(row.regionsetId) == null) {
-            ind.addLayer(new StatisticalIndicatorLayer(row.regionsetId, ind.getId()));
+        if (ind.getLayer(regionset) == null) {
+            ind.addLayer(new StatisticalIndicatorLayer(regionset, ind.getId()));
         }
-        ind.getDataModel().getDimension("year").addAllowedValue(String.valueOf(row.year));
+        if (regionset != -1) {
+            // only attach year if we had a regionset, if we didn't we don't actually have any data for it
+            // so adding a dummy year would just show as 0 for users and result to confusion
+            ind.getDataModel().getDimension("year").addAllowedValue(String.valueOf(row.year));
+        }
     }
 
     public StatisticalIndicator saveIndicator(StatisticalIndicator ind, long userId) {
