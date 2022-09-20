@@ -227,30 +227,37 @@ public class GetLayerTileHandler extends ActionHandler {
         // Get overridden legends
         Map<String,String> legends = JSONHelper.getObjectAsMap(layer.getOptions().optJSONObject(KEY_LEGENDS));
         String lurl = legends.getOrDefault(KEY_GLOBAL_LEGEND, "");
-        if (styleName != null) {
-            if (legends.containsKey(styleName)) {
-                return legends.get(styleName);
-            }
-            if (!lurl.isEmpty()) {
-                // use global legend url
-                return lurl;
-            }
-            // Get Capabilities style url
-            JSONObject json = layer.getCapabilities();
-            if (json.has(CapabilitiesConstants.KEY_STYLES)) {
+        if (styleName == null) {
+            return lurl;
+        }
+        if (legends.containsKey(styleName)) {
+            // override for legend added by admin
+            return legends.get(styleName);
+        }
+        if (!lurl.isEmpty()) {
+            // use global legend url
+            return lurl;
+        }
+        // Get Capabilities style url
+        JSONObject json = layer.getCapabilities();
+        if (!json.has(CapabilitiesConstants.KEY_STYLES)) {
+            return lurl;
+        }
 
-                JSONArray styles = JSONHelper.getJSONArray(json, CapabilitiesConstants.KEY_STYLES);
-                for (int i = 0; i < styles.length(); i++) {
-                    final JSONObject style = JSONHelper.getJSONObject(styles, i);
-                    if (JSONHelper.getStringFromJSON(style, NAME, "").equals(styleName)) {
-                        return style.optString(LEGEND);
-                    }
-                }
-
+        JSONArray styles = JSONHelper.getJSONArray(json, CapabilitiesConstants.KEY_STYLES);
+        for (int i = 0; i < styles.length(); i++) {
+            final JSONObject style = JSONHelper.getJSONObject(styles, i);
+            if (!JSONHelper.getStringFromJSON(style, NAME, "").equals(styleName)) {
+                continue;
+            }
+            // found the style in question
+            if (!style.isNull(LEGEND)) {
+                // without null check optString() returns null value as string "null"
+                // if the value is missing completely it returns empty string as default value
+                return style.optString(LEGEND);
             }
         }
         return lurl;
-
     }
     /**
      * Creates connection
