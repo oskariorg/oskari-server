@@ -47,6 +47,8 @@ public class WFSSearchChannel extends SearchChannel {
     public static final String GT_GEOM_MULTILINESTRING = "MULTILINESTRING";
     public static final String GT_GEOM_MULTIPOLYGON = "MULTIPOLYGON";
 
+    static final String CONFIG_REGION_PROPERTY = "region-property";
+
 	private WFSSearchChannelsConfiguration config;
     private PermissionService permissionsService;
 
@@ -112,6 +114,17 @@ public class WFSSearchChannel extends SearchChannel {
         item.setRegion(JSONHelper.getStringFromJSON(defaults, "region", ""));
         item.setDescription(JSONHelper.getStringFromJSON(defaults, "desc", ""));
         item.setLocationTypeCode(JSONHelper.getStringFromJSON(defaults, "locationType", ""));
+    }
+
+    /**
+     * From database oskari_wfs_search_channels-table config-column:
+     * {
+     *     "region-property": "foobar",
+     *     ...
+     * }
+     */
+    private String getRegionProperty() {
+        return config.getConfig().optString(CONFIG_REGION_PROPERTY, null);
     }
 
     public String getId() {
@@ -205,63 +218,93 @@ public class WFSSearchChannel extends SearchChannel {
 
             log.debug("[WFSSEARCH] Response from server: " + resp);
 
-            JSONArray featuresArr = resp.getJSONArray("features");
-
-            for (int i = 0; i < featuresArr.length(); i++) {
-                SearchResultItem item = new SearchResultItem();
-                JSONObject featureJSON = featuresArr.getJSONObject(i);
-
-                item.setType(config.getName(searchCriteria.getLocale()));
-
-                setupDefaults(item);
-                item.setTitle(getTitle(featureJSON));
-
-                if (featureJSON.has("geometry")) {
-                    JSONObject featuresObj_geometry = featureJSON.getJSONObject("geometry");
-
-                    String geomType = featuresObj_geometry.getString("type").toUpperCase();
-                    GeometryJSON geom = new GeometryJSON(3);
-                    if (geomType.equals(GT_GEOM_POLYGON)) {
-                        Polygon polygon = geom.readPolygon(featuresObj_geometry.toString());
-                        item.addValue(PARAM_GEOMETRY, WKTHelper.getWKT(polygon));
-                        item.setLat(polygon.getCentroid().getCoordinate().y);
-                        item.setLon(polygon.getCentroid().getCoordinate().x);
-                    } else if (geomType.equals(GT_GEOM_LINESTRING)) {
-                        LineString lineGeom = geom.readLine(featuresObj_geometry.toString());
-                        item.addValue(PARAM_GEOMETRY, WKTHelper.getWKT(lineGeom));
-                        item.setLat(lineGeom.getCentroid().getCoordinate().y);
-                        item.setLon(lineGeom.getCentroid().getCoordinate().x);
-                    } else if (geomType.equals(GT_GEOM_POINT)) {
-                        org.locationtech.jts.geom.Point pointGeom = geom.readPoint(featuresObj_geometry.toString());
-                        item.addValue(PARAM_GEOMETRY, WKTHelper.getWKT(pointGeom));
-                        item.setLat(pointGeom.getCentroid().getCoordinate().y);
-                        item.setLon(pointGeom.getCentroid().getCoordinate().x);
-                    } else if (geomType.equals(GT_GEOM_MULTIPOLYGON)) {
-                        MultiPolygon polygon = geom.readMultiPolygon(featuresObj_geometry.toString());
-                        item.addValue(PARAM_GEOMETRY, WKTHelper.getWKT(polygon));
-                        item.setLat(polygon.getCentroid().getCoordinate().y);
-                        item.setLon(polygon.getCentroid().getCoordinate().x);
-                    } else if (geomType.equals(GT_GEOM_MULTILINESTRING)) {
-                        MultiLineString lineGeom = geom.readMultiLine(featuresObj_geometry.toString());
-                        item.addValue(PARAM_GEOMETRY, WKTHelper.getWKT(lineGeom));
-                        item.setLat(lineGeom.getCentroid().getCoordinate().y);
-                        item.setLon(lineGeom.getCentroid().getCoordinate().x);
-                    } else if (geomType.equals(GT_GEOM_MULTIPOINT)) {
-                        MultiPoint pointGeom = geom.readMultiPoint(featuresObj_geometry.toString());
-                        item.addValue(PARAM_GEOMETRY, WKTHelper.getWKT(pointGeom));
-                        item.setLat(pointGeom.getCentroid().getCoordinate().y);
-                        item.setLon(pointGeom.getCentroid().getCoordinate().x);
-                    }
-                }
-                searchResultList.addItem(item);
-            }
-        
+            parseResponse(searchCriteria, resp, searchResultList);
         } catch (Exception e) {
             log.error(e, "[WFSSEARCH] Failed to search locations from register of WFSSearchChannel");
         }
         return searchResultList;
     }
     
+    protected void parseResponse(SearchCriteria sc, JSONObject resp, ChannelSearchResult result)
+            throws Exception {
+        String type = config.getName(sc.getLocale());
+
+        JSONArray featuresArr = resp.getJSONArray("features");
+        for (int i = 0; i < featuresArr.length(); i++) {
+            JSONObject featureJSON = featuresArr.getJSONObject(i);
+            SearchResultItem item = parseResultItem(featureJSON);
+            item.setType(type);
+            result.addItem(item);
+        }
+    }
+
+    protected SearchResultItem parseResultItem(JSONObject feature) throws Exception {
+        SearchResultItem item = new SearchResultItem();
+
+        setupDefaults(item);
+        item.setTitle(getTitle(feature));
+
+        if (feature.has("geometry")) {
+            JSONObject featuresObj_geometry = feature.getJSONObject("geometry");
+
+            String geomType = featuresObj_geometry.getString("type").toUpperCase();
+            GeometryJSON geom = new GeometryJSON(3);
+            if (geomType.equals(GT_GEOM_POLYGON)) {
+                Polygon polygon = geom.readPolygon(featuresObj_geometry.toString());
+                item.addValue(PARAM_GEOMETRY, WKTHelper.getWKT(polygon));
+                item.setLat(polygon.getCentroid().getCoordinate().y);
+                item.setLon(polygon.getCentroid().getCoordinate().x);
+            } else if (geomType.equals(GT_GEOM_LINESTRING)) {
+                LineString lineGeom = geom.readLine(featuresObj_geometry.toString());
+                item.addValue(PARAM_GEOMETRY, WKTHelper.getWKT(lineGeom));
+                item.setLat(lineGeom.getCentroid().getCoordinate().y);
+                item.setLon(lineGeom.getCentroid().getCoordinate().x);
+            } else if (geomType.equals(GT_GEOM_POINT)) {
+                org.locationtech.jts.geom.Point pointGeom = geom.readPoint(featuresObj_geometry.toString());
+                item.addValue(PARAM_GEOMETRY, WKTHelper.getWKT(pointGeom));
+                item.setLat(pointGeom.getCentroid().getCoordinate().y);
+                item.setLon(pointGeom.getCentroid().getCoordinate().x);
+            } else if (geomType.equals(GT_GEOM_MULTIPOLYGON)) {
+                MultiPolygon polygon = geom.readMultiPolygon(featuresObj_geometry.toString());
+                item.addValue(PARAM_GEOMETRY, WKTHelper.getWKT(polygon));
+                item.setLat(polygon.getCentroid().getCoordinate().y);
+                item.setLon(polygon.getCentroid().getCoordinate().x);
+            } else if (geomType.equals(GT_GEOM_MULTILINESTRING)) {
+                MultiLineString lineGeom = geom.readMultiLine(featuresObj_geometry.toString());
+                item.addValue(PARAM_GEOMETRY, WKTHelper.getWKT(lineGeom));
+                item.setLat(lineGeom.getCentroid().getCoordinate().y);
+                item.setLon(lineGeom.getCentroid().getCoordinate().x);
+            } else if (geomType.equals(GT_GEOM_MULTIPOINT)) {
+                MultiPoint pointGeom = geom.readMultiPoint(featuresObj_geometry.toString());
+                item.addValue(PARAM_GEOMETRY, WKTHelper.getWKT(pointGeom));
+                item.setLat(pointGeom.getCentroid().getCoordinate().y);
+                item.setLon(pointGeom.getCentroid().getCoordinate().x);
+            }
+        }
+
+        String region = getRegion(feature);
+        if (region != null) {
+            item.setRegion(region);
+        }
+
+        return item;
+    }
+
+    protected String getRegion(JSONObject featureJSON) throws Exception {
+        String regionProperty = getRegionProperty();
+        if (regionProperty == null) {
+            return null;
+        }
+
+        JSONObject properties = featureJSON.optJSONObject("properties");
+        if (properties == null) {
+            return null;
+        }
+
+        Object value = properties.opt(regionProperty);
+        return value == null ? null : value.toString();
+    }
+
     /**
      * Get title from feature
      * @param featureJSON
