@@ -7,6 +7,7 @@ For a full list of changes see: https://github.com/oskariorg/oskari-server/miles
 - Allow users to include metadata flyout in embedded maps.
 - Allow admins to override capabilities based max features limit for vector sources with layer attributes.
 - Handle missing legend url for proxied layer to reduce noise in server logs.
+- Enable region mapping for search results in WFS search channels: https://github.com/oskariorg/oskari-server/pull/883
 - Handle timeseries layer with single time value and no resolution part as normal layer.
 - Pass user generated statistical indicators for frontend even when they don't have data (since user can add data for them later).
 - Library updates:
