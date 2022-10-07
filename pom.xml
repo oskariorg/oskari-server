@@ -80,8 +80,8 @@
         <woodstox.version>5.1.0</woodstox.version>
         <xmlbeans.version>3.1.0</xmlbeans.version>
 
-        <jackson.version>2.13.2</jackson.version>
-        <jackson-databind.version>2.13.2.2</jackson-databind.version>
+        <jackson.version>2.13.4</jackson.version>
+        <jackson-databind.version>2.13.4</jackson-databind.version>
 
         <fi.mml.nameregister.version>1.0</fi.mml.nameregister.version>
 
