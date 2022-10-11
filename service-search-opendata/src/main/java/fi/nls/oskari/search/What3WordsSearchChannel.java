@@ -9,6 +9,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.search.channel.SearchChannel;
+import fi.nls.oskari.service.ComponentSkippedRuntimeException;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
@@ -56,8 +57,7 @@ public class What3WordsSearchChannel extends SearchChannel {
                     "key", PropertyUtil.getNecessary(PROPERTY_SERVICE_APIKEY));
         } catch (RuntimeException ex) {
             // thrown if apikey is not defined - add user-friendly log message
-            LOG.warn("Apikey missing for What3Words.com search - Skipping it. Define", PROPERTY_SERVICE_APIKEY, "to use the channel.");
-            throw ex;
+            throw new ComponentSkippedRuntimeException("Apikey missing for What3Words.com search - Skipping it. Define", PROPERTY_SERVICE_APIKEY, "to use the channel.");
         }
         availableLangs = getAvailableLanguages();
         forcedLanguage = PropertyUtil.getOptional(PROPERTY_FORCED_LANG);
