@@ -7,6 +7,7 @@ import org.apache.commons.dbcp2.BasicDataSource;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.naming.OperationNotSupportedException;
 import javax.sql.DataSource;
 import java.io.StringWriter;
 import java.sql.SQLException;
@@ -178,6 +179,10 @@ public class DatasourceHelper {
         try {
             constructContext(ctx, "comp", "env", "jdbc");
             ctx.bind(JNDI_PREFIX + name, ds);
+        } catch (OperationNotSupportedException ex) {
+            // in Tomcat the context is (at least by default) read-only so we can't inject the context to it
+            // the datasource must be provided with context.xml or similar as JNDI resource.
+            LOGGER.error("Pool could not be created. You need to provide datasource with JNDI name '" + name +"' from servlet container: ", ex.getMessage());
         } catch (Exception ex) {
             LOGGER.error(ex, "Couldn't add pool with name '" + name +"': ", ex.getMessage());
         }
