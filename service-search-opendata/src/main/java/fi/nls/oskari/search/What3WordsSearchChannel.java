@@ -57,7 +57,7 @@ public class What3WordsSearchChannel extends SearchChannel {
                     "key", PropertyUtil.getNecessary(PROPERTY_SERVICE_APIKEY));
         } catch (RuntimeException ex) {
             // thrown if apikey is not defined - add user-friendly log message
-            throw new ComponentSkippedRuntimeException("Apikey missing for What3Words.com search - Skipping it. Define", PROPERTY_SERVICE_APIKEY, "to use the channel.");
+            throw new ComponentSkippedRuntimeException("Apikey missing for What3Words.com search. Define " + PROPERTY_SERVICE_APIKEY + " to use the channel.");
         }
         availableLangs = getAvailableLanguages();
         forcedLanguage = PropertyUtil.getOptional(PROPERTY_FORCED_LANG);
