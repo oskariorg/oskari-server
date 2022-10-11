@@ -19,10 +19,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Support for what3words API v2
@@ -55,7 +52,7 @@ public class What3WordsSearchChannel extends SearchChannel {
             reverseServiceURL = IOHelper.addUrlParam(
                     PropertyUtil.get(PROPERTY_REVERSE_URL, "https://api.what3words.com/v2/reverse?display=minimal"),
                     "key", PropertyUtil.getNecessary(PROPERTY_SERVICE_APIKEY));
-        } catch (RuntimeException ex) {
+        } catch (NoSuchElementException ex) {
             // thrown if apikey is not defined - add user-friendly log message
             throw new ComponentSkippedRuntimeException("Apikey missing for What3Words.com search. Define " + PROPERTY_SERVICE_APIKEY + " to use the channel.");
         }
