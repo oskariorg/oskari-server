@@ -64,6 +64,7 @@ public class JedisManager {
         poolConfig.setTestWhileIdle(true);
         poolConfig.setMaxIdle(poolSize / 2);
         poolConfig.setMinIdle(1);
+        poolConfig.setMaxTotal(poolSize);
         poolConfig.setTimeBetweenEvictionRunsMillis(-1);
         poolConfig.setTestOnBorrow(true);
         final JedisPool oldPool = pool;
