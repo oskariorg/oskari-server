@@ -1,4 +1,6 @@
-package fi.nls.oskari.service;
+package org.oskari.component;
+
+import fi.nls.oskari.service.ServiceRuntimeException;
 
 public class ComponentSkippedRuntimeException extends ServiceRuntimeException {
 

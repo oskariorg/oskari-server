@@ -2,6 +2,7 @@ package fi.nls.oskari.service;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import org.oskari.component.ComponentSkippedRuntimeException;
 
 import java.util.*;
 
