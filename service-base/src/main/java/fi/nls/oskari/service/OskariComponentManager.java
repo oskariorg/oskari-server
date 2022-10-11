@@ -36,6 +36,10 @@ public class OskariComponentManager {
             COMPONENTS.add(handler);
             LOG.debug("OskariComponent added:", handler.getClass().getCanonicalName());
         }
+        catch (ComponentSkippedRuntimeException ex) {
+            LOG.warn("OskariComponent skipped:", handler.getClass().getCanonicalName(), "Msg:", ex.getMessage());
+            LOG.debug(ex);
+        }
         catch (Exception ex) {
             LOG.error("OskariComponent init failed! Skipping", handler.getClass().getCanonicalName(), "Msg:", ex.getMessage());
             LOG.debug(ex);
