@@ -49,15 +49,15 @@
         <!-- Value comes from profile when needed -->
         <module.build.config></module.build.config>
 
-        <spring.version>5.3.18</spring.version>
-        <spring-security.version>5.6.2</spring-security.version>
+        <spring.version>5.3.20</spring.version>
+        <spring-security.version>5.7.0</spring-security.version>
         <!--
-        session-bom 2021.1.2 uses 2.6.2 from session
-        which is aligned with core 5.3.16 and security 5.6.2 versions
-        Note! Bumped core to unaligned version 5.3.18 for CVE fix
-        https://github.com/spring-projects/spring-session/releases/tag/2.6.2
-        https://search.maven.org/artifact/org.springframework.session/spring-session-bom/2021.1.2/pom -->
-        <spring.session.version>2021.1.2</spring.session.version>
+        session-bom 2021.2.0 uses 2.7.0 from session
+        https://github.com/spring-projects/spring-session/blob/2.7.0/gradle/dependency-management.gradle
+        which is aligned with core 5.3.20 and security 5.7.0 versions
+        https://github.com/spring-projects/spring-session/releases/tag/2.7.0
+        https://search.maven.org/artifact/org.springframework.session/spring-session-bom/2021.2.0/pom -->
+        <spring.session.version>2021.2.0</spring.session.version>
 
         <javax.servlet.version>3.1.0</javax.servlet.version>
         <javax.servlet.jsp.version>2.3.3</javax.servlet.jsp.version>
@@ -89,6 +89,7 @@
         <mybatis.version>3.5.11</mybatis.version>
         <flyway.version>6.5.7</flyway.version>
         <postgresql.version>42.5.0</postgresql.version>
+        <!-- https://github.com/spring-projects/spring-data-redis/blob/2.7.x/pom.xml#L28 -->
         <jedis.version>3.8.0</jedis.version>
         <quartz-scheduler.version>2.3.2</quartz-scheduler.version>
 
