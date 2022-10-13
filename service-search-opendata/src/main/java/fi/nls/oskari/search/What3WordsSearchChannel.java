@@ -9,7 +9,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.search.channel.SearchChannel;
-import fi.nls.oskari.util.ConversionHelper;
+import org.oskari.component.ComponentSkippedRuntimeException;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
@@ -18,10 +18,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Support for what3words API v2
@@ -54,10 +51,9 @@ public class What3WordsSearchChannel extends SearchChannel {
             reverseServiceURL = IOHelper.addUrlParam(
                     PropertyUtil.get(PROPERTY_REVERSE_URL, "https://api.what3words.com/v2/reverse?display=minimal"),
                     "key", PropertyUtil.getNecessary(PROPERTY_SERVICE_APIKEY));
-        } catch (RuntimeException ex) {
+        } catch (NoSuchElementException ex) {
             // thrown if apikey is not defined - add user-friendly log message
-            LOG.warn("Apikey missing for What3Words.com search - Skipping it. Define", PROPERTY_SERVICE_APIKEY, "to use the channel.");
-            throw ex;
+            throw new ComponentSkippedRuntimeException("Apikey missing for What3Words.com search. Define " + PROPERTY_SERVICE_APIKEY + " to use the channel.");
         }
         availableLangs = getAvailableLanguages();
         forcedLanguage = PropertyUtil.getOptional(PROPERTY_FORCED_LANG);
