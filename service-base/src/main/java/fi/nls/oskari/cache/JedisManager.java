@@ -54,6 +54,9 @@ public class JedisManager {
     private static boolean getUseSSL() {
         return PropertyUtil.getOptional("redis.ssl", false);
     }
+    private static boolean getBlockWhenExhausted() {
+        return PropertyUtil.getOptional("redis.blockExhausted", false);
+    }
 
     public static void connect() {
         JedisManager.connect(getPoolSize(), getHost(), getPort());
@@ -75,7 +78,7 @@ public class JedisManager {
         poolConfig.setMaxTotal(poolSize);
         poolConfig.setTimeBetweenEvictionRunsMillis(-1);
         poolConfig.setTestOnBorrow(true);
-        poolConfig.setBlockWhenExhausted(true);
+        poolConfig.setBlockWhenExhausted(getBlockWhenExhausted());
         final JedisPool oldPool = pool;
         pool = new JedisPool(poolConfig, host, port, getConnectionTimeoutMs(), getPassword(), getUseSSL());
         // Should we use the long format to have an option to pass "client name" to Redis to help debugging issues with shared Redis instances?
