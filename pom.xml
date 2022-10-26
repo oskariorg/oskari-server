@@ -77,7 +77,6 @@
 
         <axiom.version>1.2.22</axiom.version>
         <stax-api.version>1.0-2</stax-api.version>
-        <xmlbeans.version>3.1.0</xmlbeans.version>
 
         <jackson.version>2.13.4</jackson.version>
         <jackson-databind.version>2.13.4</jackson-databind.version>
@@ -478,21 +477,6 @@
                 <version>${spring.session.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.xmlbeans</groupId>
-                <artifactId>xmlbeans</artifactId>
-                <version>${xmlbeans.version}</version>
-                <exclusions>
-                    <!-- exclude stax-api
-                    	Reason: xml-apis lib provide newer version of classes which are used (causing conflict if we have both)
-                    -->
-                    <exclusion>
-                        <groupId>stax</groupId>
-                        <artifactId>stax-api</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
             <dependency>
