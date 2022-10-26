@@ -77,9 +77,6 @@
 
         <axiom.version>1.2.22</axiom.version>
         <stax-api.version>1.0-2</stax-api.version>
-        <stax2-api.version>3.1.4</stax2-api.version>
-        <woodstox.version>5.1.0</woodstox.version>
-        <xmlbeans.version>3.1.0</xmlbeans.version>
 
         <jackson.version>2.13.4</jackson.version>
         <jackson-databind.version>2.13.4.2</jackson-databind.version>
@@ -483,21 +480,6 @@
             </dependency>
 
             <dependency>
-                <groupId>org.apache.xmlbeans</groupId>
-                <artifactId>xmlbeans</artifactId>
-                <version>${xmlbeans.version}</version>
-                <exclusions>
-                    <!-- exclude stax-api
-                    	Reason: xml-apis lib provide newer version of classes which are used (causing conflict if we have both)
-                    -->
-                    <exclusion>
-                        <groupId>stax</groupId>
-                        <artifactId>stax-api</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-            <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>javax.servlet-api</artifactId>
                 <version>${javax.servlet.version}</version>
@@ -608,17 +590,6 @@
                 <groupId>javax.xml.stream</groupId>
                 <artifactId>stax-api</artifactId>
                 <version>${stax-api.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.codehaus.woodstox</groupId>
-                <artifactId>stax2-api</artifactId>
-                <version>${stax2-api.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.fasterxml.woodstox</groupId>
-                <artifactId>woodstox-core</artifactId>
-                <version>${woodstox.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.jsoup</groupId>
