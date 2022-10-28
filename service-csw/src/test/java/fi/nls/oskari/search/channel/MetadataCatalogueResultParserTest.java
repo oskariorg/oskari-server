@@ -1,9 +1,9 @@
 package fi.nls.oskari.search.channel;
 
 import fi.mml.portti.service.search.SearchResultItem;
-import fi.nls.oskari.util.IOHelper;
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.impl.builder.StAXOMBuilder;
+import org.apache.axiom.om.OMXMLBuilderFactory;
+import org.apache.axiom.om.OMXMLParserWrapper;
 import org.junit.Test;
 
 import java.util.Iterator;
@@ -14,19 +14,18 @@ public class MetadataCatalogueResultParserTest {
 
     @Test
     public void parseResult() throws Exception {
-        final StAXOMBuilder stAXOMBuilder = new StAXOMBuilder(getClass().getResourceAsStream("GetRecords-response.xml"));
+        final OMXMLParserWrapper stAXOMBuilder = OMXMLBuilderFactory.createOMBuilder(getClass().getResourceAsStream("GetRecords-response.xml"));
         MetadataCatalogueResultParser RESULT_PARSER = new MetadataCatalogueResultParser();
 
         final Iterator<OMElement> results = getResultsElement(stAXOMBuilder).getChildrenWithLocalName("MD_Metadata");
-        final long start = System.currentTimeMillis();
         while(results.hasNext()) {
             final SearchResultItem item = RESULT_PARSER.parseResult(results.next(), "fi");
-            //System.out.println(item.getTitle());
+            // System.out.println(item.getTitle());
         }
         assertTrue("Didn't get exception", true);
     }
 
-    private OMElement getResultsElement(final StAXOMBuilder builder) {
+    private OMElement getResultsElement(final OMXMLParserWrapper builder) {
         final Iterator<OMElement> resultIt = builder.getDocumentElement().getChildrenWithLocalName("SearchResults");
         if(resultIt.hasNext()) {
             return resultIt.next();
