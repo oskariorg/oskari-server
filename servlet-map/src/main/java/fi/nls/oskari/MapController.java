@@ -37,6 +37,8 @@ public class MapController {
     private final static Logger log = LogFactory.getLogger(MapController.class);
 
     private final static String PROPERTY_VERSION = "oskari.client.version";
+    private final static String PROPERTY_VERSION_REQUEST = "oskari.client.version.request";
+    private final static String PROPERTY_CLIENT_DOMAIN = "oskari.client.domain";
     private final static String KEY_PRELOADED = "preloaded";
     private final static String KEY_PATH = "path";
 
@@ -46,7 +48,9 @@ public class MapController {
     private final static String KEY_RESPONSE_HEADER_PREFIX = "oskari.page.header.";
 
     private final ViewService viewService = new AppSetupServiceMybatisImpl();
+    private String clientDomain = "";
     private String version = null;
+    private boolean allowVersionRequest = false;
     private final Set<String> paramHandlers = new HashSet<>();
 
     @Autowired
@@ -55,6 +59,8 @@ public class MapController {
     public MapController() {
         // Get version from properties
         version = PropertyUtil.get(PROPERTY_VERSION);
+        allowVersionRequest = PropertyUtil.getOptional(PROPERTY_VERSION_REQUEST, false);
+        clientDomain = PropertyUtil.get(PROPERTY_CLIENT_DOMAIN, "");
     }
 
     @RequestMapping("/")
@@ -204,8 +210,13 @@ public class MapController {
         model.addAttribute(KEY_PRELOADED, true);
 
         // for figuring out paths for frontend files
-        model.addAttribute("version", version);
-        model.addAttribute(KEY_PATH, "/" + version + "/" + view.getApplication());
+        model.addAttribute("clientDomain", clientDomain);
+        String clientVersion = version;
+        if (allowVersionRequest) {
+            clientVersion = params.getHttpParam("v", version);
+        }
+        model.addAttribute("version", clientVersion);
+        model.addAttribute(KEY_PATH, "/" + clientVersion + "/" + view.getApplication());
         model.addAttribute("application", view.getApplication());
 
         // title of the page
