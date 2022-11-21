@@ -128,7 +128,6 @@ public class PDF {
     private static final float OFFSET_LOGO_BOTTOM = PDFBoxUtil.mmToPt(5);
     private static final float LOGO_HEIGHT = PDFBoxUtil.mmToPt(9);
 
-//    private static final float OFFSET_SCALE_LEFT = PDFBoxUtil.mmToPt(40);
     private static final float OFFSET_SCALE_BOTTOM = PDFBoxUtil.mmToPt(5);
 
     private static final float OFFSET_TIMESERIES_RIGHT = PDFBoxUtil.mmToPt(50);
@@ -352,7 +351,7 @@ public class PDF {
                 x, OFFSET_TIME_IN_TIMESERIES_BOTTOM);
     }
 
-    private static void drawScale(PDPageContentStream stream, PrintRequest request, float LOGO_WIDTH)
+    private static void drawScale(PDPageContentStream stream, PrintRequest request, float logoWidth)
             throws IOException {
         if (!request.isShowScale()) {
             return;
@@ -392,7 +391,7 @@ public class PDF {
         double pt = distance / mppt;
 
         // create an offset point for the scalebar
-        float OFFSET_SCALE_LEFT = OFFSET_LOGO_LEFT + LOGO_WIDTH + 10;
+        float OFFSET_SCALE_LEFT = OFFSET_LOGO_LEFT + logoWidth + 10;
 
         // PDF (and PDFBox) uses single precision floating point numbers
         float x1 = (float) OFFSET_SCALE_LEFT;
