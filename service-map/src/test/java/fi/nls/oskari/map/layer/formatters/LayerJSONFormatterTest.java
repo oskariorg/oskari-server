@@ -76,6 +76,21 @@ public class LayerJSONFormatterTest {
 
     }
     @Test
+    public void legendWMTS() throws Exception {
+        OskariLayer layer = new OskariLayer();
+        layer.setType(OskariLayer.TYPE_WMTS);
+        JSONArray styles = new JSONArray("[{\"default\": true, \"legend\": null, \"name\": \"default\", \"title\": \"default\"}]");
+        JSONHelper.putValue(layer.getCapabilities(), CapabilitiesConstants.KEY_STYLES, styles);
+
+        JSONObject layerJSON = FORMATTER.getJSON(layer, LANG, true, CRS);
+        JSONArray stylesJSON = layerJSON.getJSONArray("styles");
+        Assert.assertEquals(1, stylesJSON.length());
+        JSONObject styleJSON = stylesJSON.getJSONObject(0);
+        Assert.assertEquals("Style should have name",  "default", styleJSON.getString("name"));
+        Assert.assertEquals("Style should have title",  "default", styleJSON.getString("title"));
+        Assert.assertTrue("Style shouldn't have legend url", styleJSON.getString("legend").isEmpty());
+    }
+    @Test
     public void proxyLegend() throws Exception {
         String proxyLegend = "action?action_route=GetLayerTile&legend=true&style=%s&id=-1";
 
