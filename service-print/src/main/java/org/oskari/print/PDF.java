@@ -3,6 +3,7 @@ package org.oskari.print;
 import java.awt.Color;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -72,7 +73,6 @@ import org.locationtech.jts.geom.util.AffineTransformation;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
-import fi.nls.oskari.util.PropertyUtil;
 import org.oskari.util.Customization;
 
 public class PDF {
@@ -270,7 +270,7 @@ public class PDF {
         }
 
         BufferedImage logo;
-        try (InputStream in = Customization.getLogo()) {
+        try (InputStream in = new ByteArrayInputStream(Customization.getLogo("print"))) {
             logo = ImageIO.read(in);
         } catch (IOException e) {
             LOG.warn(e, "Failed to read logo from file");

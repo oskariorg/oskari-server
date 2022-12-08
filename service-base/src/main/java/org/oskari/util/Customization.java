@@ -9,7 +9,6 @@ import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -50,26 +49,47 @@ public class Customization {
         }
     }
 
+    public static String getLogoPath() {
+        return getLogoPath(null);
+    }
+    public static String getLogoPath(String qualifier) {
+        String defaultLogoPath = PropertyUtil.get("logo.path", LOGO_PATH_DEFAULT);
+        if (qualifier == null) {
+            return defaultLogoPath;
+        }
+        // try:
+        // 1) logo.path.[qualifier]
+        // 2) fallback to previous config type for print with [qualifier].logo.path
+        // 3) default to logo.path
+        // 4) default to "logo.png"
+        return PropertyUtil.get("logo.path." + qualifier,
+                PropertyUtil.get(qualifier + ".logo.path",
+                        defaultLogoPath));
+    }
 
-    public static InputStream getLogo() throws IOException {
+    public static byte[] getLogo() throws IOException {
+        return getLogo(null);
+    }
+    public static byte[] getLogo(String qualifier) throws IOException {
+        String logoPath = getLogoPath(qualifier);
         // Try file
-        Path pathToLogo = Paths.get(LOGO_PATH);
+        Path pathToLogo = Paths.get(logoPath);
         try (InputStream in = Files.newInputStream(pathToLogo)) {
-            return new BufferedInputStream(in);
+            return IOHelper.readBytes(in);
         } catch (NoSuchFileException e) {
             // print out absolute path so it's easier to debug proper value in config
-            getLogger().debug("Logo file " + pathToLogo.toAbsolutePath() + " does not exist. Trying from classpath.");
+            getLogger().debug("Logo file", pathToLogo.toAbsolutePath(), " does not exist. Trying from classpath.");
         } catch (IOException e) {
             getLogger().warn(e, "Failed to read logo from file");
         }
         // File didn't work, try resources file
-        try (InputStream in = Customization.class.getResourceAsStream(LOGO_PATH)) {
+        try (InputStream in = Customization.class.getResourceAsStream(logoPath)) {
             if (in == null) {
-                getLogger().debug("Resource file " + LOGO_PATH + " does not exist");
+                getLogger().debug("Resource file", logoPath, "does not exist");
             }
-            return new BufferedInputStream(in);
+            return IOHelper.readBytes(in);
         } catch (IOException e) {
-            getLogger().warn("Failed to read logo from resource " + LOGO_PATH);
+            getLogger().warn("Failed to read logo from resource", logoPath);
             throw e;
         }
     }
