@@ -109,7 +109,7 @@ public class EnvHelper {
         // setup markers SVG info
         try {
             JSONArray svgMarkers = Customization.getMarkers();
-            if (svgMarkers != null || svgMarkers.length() > 0) {
+            if (svgMarkers.length() > 0) {
                 JSONHelper.putValue(env, KEY_SVG_MARKERS, svgMarkers);
             }
         } catch (IOException e) {
