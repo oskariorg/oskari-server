@@ -107,15 +107,29 @@ public class EnvHelper {
         JSONHelper.putValue(env, KEY_DEFAULT_VIEWS, new JSONArray(DEFAULT_VIEWS));
 
         // setup markers SVG info
+        JSONArray svgMarkers = getMarkers();
+        if (svgMarkers != null && svgMarkers.length() > 0) {
+            JSONHelper.putValue(env, KEY_SVG_MARKERS, svgMarkers);
+        }
+        return env;
+    }
+
+    private static JSONArray getMarkers() {
         try {
             JSONArray svgMarkers = Customization.getMarkers();
-            if (svgMarkers.length() > 0) {
-                JSONHelper.putValue(env, KEY_SVG_MARKERS, svgMarkers);
+            for (int i = 0; i < svgMarkers.length(); i++) {
+                JSONObject marker = svgMarkers.optJSONObject(i);
+                String svg = marker.optString("data");
+                String updated = svg
+                        .replace("'$fill'", "'#000000'")
+                        .replace("'$stroke'", "'#000000'");
+                JSONHelper.putValue(marker, "data", updated);
             }
+            return svgMarkers;
         } catch (IOException e) {
             LOGGER.info("No setup for svg markers found", e);
         }
-        return env;
+        return null;
     }
 
     public static String getAPIurl(final ActionParameters params) {
