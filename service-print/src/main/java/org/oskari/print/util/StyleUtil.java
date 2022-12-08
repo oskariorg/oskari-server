@@ -5,7 +5,6 @@ import java.awt.geom.AffineTransform;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,18 +28,16 @@ import org.apache.pdfbox.pdmodel.graphics.pattern.PDTilingPattern;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.oskari.print.PDF;
+import org.oskari.util.Customization;
 import org.oskari.print.request.PDPrintStyle;
 import org.oskari.print.request.PDPrintStyle.LineCap;
 import org.oskari.print.request.PDPrintStyle.LineJoin;
 import org.oskari.print.request.PDPrintStyle.LinePattern;
 
-import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 
 public class StyleUtil {
 
-    private static final String SVG_MARKERS_JSON = "svg-markers.json";
     private static final String ICON_STROKE_COLOR = "#000000";
     private static final float ICON_SIZE = 32f;
     private static final double ICON_OFFSET = ICON_SIZE/2.0;
@@ -167,18 +164,12 @@ public class StyleUtil {
         }
     }
 
-    // TODO: get marker data from EnvHelper
     public static JSONObject getMarker (int index) throws IOException {
-        try (InputStream is = PDF.class.getResourceAsStream(SVG_MARKERS_JSON)) {
-            if (is == null) {
-                throw new IOException("Resource file " + SVG_MARKERS_JSON + " does not exist");
-            }
-            JSONArray svgMarkers = JSONHelper.createJSONArray(IOHelper.readString(is));
-            if (index >= svgMarkers.length()) {
-                throw new IOException("SVG marker:" + index + " does not exist");
-            }
-            return JSONHelper.getJSONObject(svgMarkers, index);
+        JSONArray svgMarkers = Customization.getMarkers();
+        if (index < 0 || index >= svgMarkers.length()) {
+            throw new IOException("SVG marker:" + index + " does not exist");
         }
+        return JSONHelper.getJSONObject(svgMarkers, index);
     }
 
     private static PDFormXObject createIcon (PDDocument doc, JSONObject marker, String fillColor, int size) throws JSONException, IOException, TranscoderException {
