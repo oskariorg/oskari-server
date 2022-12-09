@@ -3,21 +3,19 @@
 <html>
 <head>
     <title>${viewName}</title>
-    <link rel="shortcut icon" href="/Oskari${path}/logo.png" type="image/png" />
+    <link rel="shortcut icon" href="${clientDomain}/Oskari${path}/logo.png" type="image/png" />
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-    <!-- IE 9 polyfill for openlayers 3 - https://github.com/openlayers/ol3/issues/4865 -->
-    <!--[if lte IE 9]> <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=fetch,requestAnimationFrame,Element.prototype.classList"></script> <![endif]-->
 
     <!-- ############# css ################# -->
     <link
             rel="stylesheet"
             type="text/css"
-            href="/Oskari${path}/icons.css"/>
+            href="${clientDomain}/Oskari${path}/icons.css"/>
 
     <link
             rel="stylesheet"
             type="text/css"
-            href="/Oskari${path}/oskari.min.css"/>
+            href="${clientDomain}/Oskari${path}/oskari.min.css"/>
 
     <link href="https://fonts.googleapis.com/css?family=Noto+Sans" rel="stylesheet">
     <style type="text/css">
@@ -60,16 +58,16 @@
 </script>
 <%-- Pre-compiled application JS, empty unless created by build job --%>
 <script type="text/javascript"
-        src="/Oskari${path}/oskari.min.js">
+        src="${clientDomain}/Oskari${path}/oskari.min.js">
 </script>
 
 <%-- language files --%>
 <script type="text/javascript"
-        src="/Oskari${path}/oskari_lang_${language}.js">
+        src="${clientDomain}/Oskari${path}/oskari_lang_${language}.js">
 </script>
 
 <script type="text/javascript"
-        src="/Oskari${path}/index.js">
+        src="${clientDomain}/Oskari${path}/index.js">
 </script>
 
 

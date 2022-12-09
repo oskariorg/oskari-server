@@ -3,14 +3,10 @@ package org.oskari.print;
 import java.awt.Color;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -77,7 +73,7 @@ import org.locationtech.jts.geom.util.AffineTransformation;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
-import fi.nls.oskari.util.PropertyUtil;
+import org.oskari.util.Customization;
 
 public class PDF {
 
@@ -128,7 +124,6 @@ public class PDF {
     private static final float OFFSET_LOGO_BOTTOM = PDFBoxUtil.mmToPt(5);
     private static final float LOGO_HEIGHT = PDFBoxUtil.mmToPt(9);
 
-    private static final float OFFSET_SCALE_LEFT = PDFBoxUtil.mmToPt(40);
     private static final float OFFSET_SCALE_BOTTOM = PDFBoxUtil.mmToPt(5);
 
     private static final float OFFSET_TIMESERIES_RIGHT = PDFBoxUtil.mmToPt(50);
@@ -136,9 +131,6 @@ public class PDF {
     private static final float OFFSET_TIME_IN_TIMESERIES_BOTTOM = PDFBoxUtil.mmToPt(5);
 
     private static final double[] SCALE_LINE_DISTANCES_METRES = new double[24];
-
-    private static final String LOGO_PATH_DEFAULT = "logo.png";
-    private static final String LOGO_PATH = PropertyUtil.get("print.logo.path", LOGO_PATH_DEFAULT);
 
     private static final String MARKER_FIELD_SEPARATOR = "\\|";
     private static final String MARKER_SEPARATOR= "___";
@@ -196,8 +188,8 @@ public class PDF {
 
         try (PDPageContentStream stream = new PDPageContentStream(doc, page, AppendMode.APPEND, false)) {
             drawTitle(stream, request, pageSize, mapHeight);
-            drawLogo(doc, stream, request);
-            drawScale(stream, request);
+            float logoWidth = drawLogoAndGetWidth(doc, stream, request);
+            drawScale(stream, request, logoWidth);
             drawDate(stream, request, pageSize);
             drawTimeseriesTexts(stream, request, pageSize);
             drawLayers(doc, stream, request, layerImages, featureCollections,
@@ -269,41 +261,20 @@ public class PDF {
         PDFBoxUtil.drawTextCentered(stream, title, PDPrintStyle.FONT, PDPrintStyle.FONT_SIZE, x, y);
     }
 
-    private static void drawLogo(PDDocument doc, PDPageContentStream stream,
+    private static float drawLogoAndGetWidth(PDDocument doc, PDPageContentStream stream,
             PrintRequest request) throws IOException {
-        if (!request.isShowLogo() || LOGO_PATH == null || LOGO_PATH.isEmpty()) {
-            return;
+        float logoWidth = 0;
+
+        if (!request.isShowLogo()) {
+            return logoWidth;
         }
 
-        BufferedImage logo = null;
-
-        // Try file
-        Path pathToLogo = Paths.get(LOGO_PATH);
-        try (InputStream in = Files.newInputStream(pathToLogo)) {
-            logo = ImageIO.read(new BufferedInputStream(in));
-        } catch (NoSuchFileException e) {
-            // print out absolute path so it's easier to debug proper value in config
-            LOG.debug("Logo file " + pathToLogo.toAbsolutePath() + " does not exist. Trying from classpath.");
+        BufferedImage logo;
+        try (InputStream in = new ByteArrayInputStream(Customization.getLogo("print"))) {
+            logo = ImageIO.read(in);
         } catch (IOException e) {
             LOG.warn(e, "Failed to read logo from file");
-        }
-
-        // File didn't work, try resources file
-        if (logo == null) {
-            try (InputStream in = PDF.class.getResourceAsStream(LOGO_PATH)) {
-                if (in == null) {
-                    LOG.debug("Resource file " + LOGO_PATH + " does not exist");
-                    return;
-                }
-                logo = ImageIO.read(new BufferedInputStream(in));
-            } catch (IOException e) {
-                LOG.warn(e, "Failed to read logo from resource " + LOGO_PATH);
-                return;
-            }
-            if (logo == null) {
-                LOG.info("Couldn't read logo with ImageIO");
-                return;
-            }
+            return logoWidth;
         }
 
         try {
@@ -312,13 +283,14 @@ public class PDF {
             float y = OFFSET_LOGO_BOTTOM;
             // Maintain the aspect ratio of the image
             float f = LOGO_HEIGHT / img.getHeight();
-            // TODO: return w and calculate OFFSET_SCALE_LEFT based on it
             float w = img.getWidth() * f;
+            logoWidth = w;
             float h = LOGO_HEIGHT;
             stream.drawImage(img, x, y, w, h);
         } catch (IOException e) {
             LOG.warn(e, "Failed to draw logo");
         }
+        return logoWidth;
     }
 
     private static void drawDate(PDPageContentStream stream,
@@ -349,7 +321,7 @@ public class PDF {
                 x, OFFSET_TIME_IN_TIMESERIES_BOTTOM);
     }
 
-    private static void drawScale(PDPageContentStream stream, PrintRequest request)
+    private static void drawScale(PDPageContentStream stream, PrintRequest request, float logoWidth)
             throws IOException {
         if (!request.isShowScale()) {
             return;
@@ -388,6 +360,8 @@ public class PDF {
 
         double pt = distance / mppt;
 
+        // create an offset point for the scalebar
+        float OFFSET_SCALE_LEFT = OFFSET_LOGO_LEFT + logoWidth + 10;
 
         // PDF (and PDFBox) uses single precision floating point numbers
         float x1 = (float) OFFSET_SCALE_LEFT;

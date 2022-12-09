@@ -5,9 +5,7 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
+import redis.clients.jedis.*;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 
 import java.util.Collections;
@@ -22,6 +20,7 @@ public class JedisManager {
     public static String ERROR_REDIS_COMMUNICATION_FAILURE = "redis_communication_failure";
     public static String PUBSUB_CHANNEL_PREFIX = "oskari_";
     public static final int EXPIRY_TIME_DAY = 86400;
+    private static final int REDIS_DEFAULT_TIMEOUT_MS = 2000;
 
     private final static Logger log = LogFactory.getLogger(JedisManager.class);
     private static final JedisManager instance = new JedisManager();
@@ -46,6 +45,18 @@ public class JedisManager {
     public static int getPoolSize() {
         return ConversionHelper.getInt(PropertyUtil.get(KEY_REDIS_POOL_SIZE), 30);
     }
+    private static int getConnectionTimeoutMs() {
+        return PropertyUtil.getOptional("redis.timeout.connect", REDIS_DEFAULT_TIMEOUT_MS);
+    }
+    private static String getPassword() {
+        return PropertyUtil.get("redis.password", null);
+    }
+    private static boolean getUseSSL() {
+        return PropertyUtil.getOptional("redis.ssl", false);
+    }
+    private static boolean getBlockWhenExhausted() {
+        return PropertyUtil.getOptional("redis.blockExhausted", false);
+    }
 
     public static void connect() {
         JedisManager.connect(getPoolSize(), getHost(), getPort());
@@ -64,10 +75,25 @@ public class JedisManager {
         poolConfig.setTestWhileIdle(true);
         poolConfig.setMaxIdle(poolSize / 2);
         poolConfig.setMinIdle(1);
+        poolConfig.setMaxTotal(poolSize);
         poolConfig.setTimeBetweenEvictionRunsMillis(-1);
         poolConfig.setTestOnBorrow(true);
+        poolConfig.setBlockWhenExhausted(getBlockWhenExhausted());
         final JedisPool oldPool = pool;
-        pool = new JedisPool(poolConfig, host, port);
+        pool = new JedisPool(poolConfig, host, port, getConnectionTimeoutMs(), getPassword(), getUseSSL());
+        // Should we use the long format to have an option to pass "client name" to Redis to help debugging issues with shared Redis instances?
+        // pool = new JedisPool(poolConfig, host, port, getConnectionTimeoutMs(), getSocketReadTimeoutMs(), getPassword(), Protocol.DEFAULT_DATABASE, getClientName());
+
+/*
+        // after Jedis 4.0 we could use JedisPooled that shares an interface with JedisCluster and use that as the common "pool" variable
+        JedisPooled jedis = new JedisPooled(host, port);
+
+        // For clusters we should use JedisCluster instead (easier after 4.x upgrade, but current Spring version doesn't support it yet)
+        Set<HostAndPort> jedisClusterNodes = new HashSet<>();
+        jedisClusterNodes.add(new HostAndPort(host, port));
+        // jedisClusterNodes.add(new HostAndPort(host, port));
+        JedisCluster jedis = new JedisCluster(jedisClusterNodes, poolConfig);
+*/
         log.debug("Created Redis connection pool with host", host, "port", port);
         if (null != oldPool) {
             log.debug("Closing old Jedis pool");

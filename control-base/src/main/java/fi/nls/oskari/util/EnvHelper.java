@@ -8,8 +8,9 @@ import fi.nls.oskari.log.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.oskari.util.Customization;
 
-import java.io.InputStream;
+import java.io.IOException;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +35,6 @@ public class EnvHelper {
 
     // markers
     private static final String KEY_SVG_MARKERS = "svgMarkers";
-    private static final String SVG_MARKERS_JSON = "svg-markers.json";
 
     // urls
     private static final String KEY_URLS = "urls";
@@ -107,18 +107,29 @@ public class EnvHelper {
         JSONHelper.putValue(env, KEY_DEFAULT_VIEWS, new JSONArray(DEFAULT_VIEWS));
 
         // setup markers SVG info
-        try {
-            InputStream inp = EnvHelper.class.getResourceAsStream(SVG_MARKERS_JSON);
-            if (inp != null) {
-                JSONArray svgMarkers = JSONHelper.createJSONArray(IOHelper.readString(inp));
-                if(svgMarkers != null || svgMarkers.length() > 0) {
-                    JSONHelper.putValue(env, KEY_SVG_MARKERS, svgMarkers);
-                }
-            }
-        } catch (Exception e) {
-            LOGGER.info("No setup for svg markers found", e);
+        JSONArray svgMarkers = getMarkers();
+        if (svgMarkers != null && svgMarkers.length() > 0) {
+            JSONHelper.putValue(env, KEY_SVG_MARKERS, svgMarkers);
         }
         return env;
+    }
+
+    private static JSONArray getMarkers() {
+        try {
+            JSONArray svgMarkers = Customization.getMarkers();
+            for (int i = 0; i < svgMarkers.length(); i++) {
+                JSONObject marker = svgMarkers.optJSONObject(i);
+                String svg = marker.optString("data");
+                String updated = svg
+                        .replace("'$fill'", "'#000000'")
+                        .replace("'$stroke'", "'#000000'");
+                JSONHelper.putValue(marker, "data", updated);
+            }
+            return svgMarkers;
+        } catch (IOException e) {
+            LOGGER.info("No setup for svg markers found", e);
+        }
+        return null;
     }
 
     public static String getAPIurl(final ActionParameters params) {

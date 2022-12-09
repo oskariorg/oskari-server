@@ -213,9 +213,9 @@ public class LayerJSONFormatter {
         }
         for(int i = 0; i < styleList.length(); i++) {
             JSONObject style = styleList.optJSONObject(i);
-            String legend = style.optString(KEY_LEGEND);
-            String name = style.optString(KEY_STYLE_NAME);
-            String title = style.optString(KEY_STYLE_TITLE);
+            String legend = JSONHelper.optString(style, KEY_LEGEND);
+            String name = JSONHelper.optString(style, KEY_STYLE_NAME);
+            String title = JSONHelper.optString(style, KEY_STYLE_TITLE);
             if (legends.containsKey(name)) {
                 legend = legends.get(name);
             } else if (!globalLegend.isEmpty()) {

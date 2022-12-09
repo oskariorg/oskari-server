@@ -1,5 +1,7 @@
 package fi.nls.oskari.search.channel;
 
+import org.apache.axiom.om.OMXMLBuilderFactory;
+import org.apache.axiom.om.OMXMLParserWrapper;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Polygon;
 import org.geotools.geometry.jts.JTS;
@@ -25,7 +27,6 @@ import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 
 import java.net.HttpURLConnection;
 import java.util.*;
@@ -173,8 +174,8 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
 
     private ChannelSearchResult readQueryData(SearchCriteria searchCriteria) {
 
-        ChannelSearchResult channelSearchResult = null;
-        StAXOMBuilder builder = null;
+        ChannelSearchResult channelSearchResult;
+        OMXMLParserWrapper builder = null;
         try {
             builder = makeQuery(searchCriteria);
             channelSearchResult = parseResults(builder, searchCriteria);
@@ -192,7 +193,7 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
         return channelSearchResult;
     }
 
-    public ChannelSearchResult parseResults(final StAXOMBuilder builder, final SearchCriteria searchCriteria) {
+    public ChannelSearchResult parseResults(final OMXMLParserWrapper builder, final SearchCriteria searchCriteria) {
     	
         ChannelSearchResult channelSearchResult = new ChannelSearchResult();
         log.debug("parseResults");
@@ -297,7 +298,7 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
     }
 
 
-    private OMElement getResultsElement(final StAXOMBuilder builder) {
+    private OMElement getResultsElement(final OMXMLParserWrapper builder) {
         final Iterator<OMElement> resultIt = builder.getDocumentElement().getChildrenWithLocalName("SearchResults");
         if(resultIt.hasNext()) {
             return resultIt.next();
@@ -305,7 +306,7 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
         return null;
     }
 
-    private StAXOMBuilder makeQuery(SearchCriteria searchCriteria) throws Exception {
+    private OMXMLParserWrapper makeQuery(SearchCriteria searchCriteria) throws Exception {
         final long start = System.currentTimeMillis();
         final String payload = QUERY_HELPER.getQueryPayload(searchCriteria);
         if(payload == null) {
@@ -318,10 +319,10 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
         HttpURLConnection conn = getConnection(queryURL);
         conn.setUseCaches(false);
         IOHelper.post(conn, "application/xml;charset=UTF-8", payload);
+        log.debug(payload);
 
         final long end =  System.currentTimeMillis();
-
-        final StAXOMBuilder stAXOMBuilder = new StAXOMBuilder(IOHelper.debugResponse(conn.getInputStream()));
+        final OMXMLParserWrapper stAXOMBuilder = OMXMLBuilderFactory.createOMBuilder(IOHelper.debugResponse(conn.getInputStream()));
         log.debug("Querying metadata service took", (end-start), "ms");
         return stAXOMBuilder;
     }

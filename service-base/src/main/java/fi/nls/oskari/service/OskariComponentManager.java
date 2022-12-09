@@ -2,6 +2,7 @@ package fi.nls.oskari.service;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import org.oskari.component.ComponentSkippedRuntimeException;
 
 import java.util.*;
 
@@ -35,6 +36,9 @@ public class OskariComponentManager {
             handler.init();
             COMPONENTS.add(handler);
             LOG.debug("OskariComponent added:", handler.getClass().getCanonicalName());
+        }
+        catch (ComponentSkippedRuntimeException ex) {
+            LOG.warn("OskariComponent skipped:", handler.getClass().getCanonicalName(), "Msg:", ex.getMessage());
         }
         catch (Exception ex) {
             LOG.error("OskariComponent init failed! Skipping", handler.getClass().getCanonicalName(), "Msg:", ex.getMessage());
