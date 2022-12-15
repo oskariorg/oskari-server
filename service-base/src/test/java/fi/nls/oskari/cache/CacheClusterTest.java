@@ -28,7 +28,9 @@ public class CacheClusterTest {
         // another cache instance
         cache.handleClusterMsg(Cache.CLUSTER_CMD_FLUSH);
         // message from OTHER should trigger call
-        Mockito.verify(cache).flush(true);
+        Mockito.verify(cache).flushSilent(true);
+        // but not trigger another notify for cluster
+        Mockito.verify(cache, never()).flush(true);
     }
 
     @Test

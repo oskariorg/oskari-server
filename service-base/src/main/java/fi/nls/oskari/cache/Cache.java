@@ -168,6 +168,11 @@ public class Cache<T> {
     }
 
     public boolean flush(final boolean force) {
+        notifyFlush();
+        return flushSilent(force);
+    }
+
+    protected boolean flushSilent(final boolean force) {
         final long now = currentTime();
         if(force || isTimeToFlush(now)) {
             // flushCache
@@ -203,7 +208,7 @@ public class Cache<T> {
             return;
         }
         if (CLUSTER_CMD_FLUSH.equals(data)) {
-            flush(true);
+            flushSilent(true);
             return;
         }
         if (data.startsWith(CLUSTER_CMD_REMOVE_PREFIX)) {
@@ -216,6 +221,9 @@ public class Cache<T> {
 
     private void notifyRemoval(String key) {
         notifyCluster(CLUSTER_CMD_REMOVE_PREFIX + key);
+    }
+    private void notifyFlush() {
+        notifyCluster(CLUSTER_CMD_FLUSH);
     }
 
     private void notifyCluster(String msg) {
