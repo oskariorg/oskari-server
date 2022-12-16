@@ -353,7 +353,7 @@ public class GetAppSetupHandler extends ActionHandler {
         if (myview == null) {
             return;
         }
-        log.info("[GetAppSetupHandler] Fetching View from cookie", myview);
+        log.debug("[GetAppSetupHandler] Fetching View from cookie", myview);
         // merge cookie state for mapfull
         try {
             JSONObject viewdata = myview.optJSONObject(VIEW_DATA);

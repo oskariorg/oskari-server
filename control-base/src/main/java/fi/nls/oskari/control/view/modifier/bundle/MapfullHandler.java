@@ -158,7 +158,7 @@ public class MapfullHandler extends BundleHandler {
         }
 
         if (params.isLocationModified()) {
-            LOGGER.info("locationModifiedByParams -> disabling GeoLocationPlugin");
+            LOGGER.debug("locationModifiedByParams -> disabling GeoLocationPlugin");
             removePlugin(PLUGIN_GEOLOCATION, mapfullConfig);
             removeMyLocationPluginAutoCenter(mapfullConfig);
         }

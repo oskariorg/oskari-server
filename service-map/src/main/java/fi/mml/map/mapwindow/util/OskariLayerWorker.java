@@ -133,8 +133,8 @@ public class OskariLayerWorker {
                 LOG.error(ex);
             }
         }
-        LOG.info("Created JSON in", System.currentTimeMillis() - start, "ms");
-        LOG.info("Returning", layersList.length(), "/", layers.size(),"layers");
+        LOG.debug("Created JSON in", System.currentTimeMillis() - start, "ms");
+        LOG.info("Returning", layersList.length(), "/", layers.size(), "layers");
 
         final JSONObject result = new JSONObject();
         JSONHelper.putValue(result, KEY_LAYERS, layersList);

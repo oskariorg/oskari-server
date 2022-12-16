@@ -136,7 +136,7 @@ public class GetGeoPointDataService {
             HttpURLConnection conn = IOHelper.getConnection(url, user, pw);
             IOHelper.addIdentifierHeaders(conn);
             if (conn.getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND) {
-                log.info("Nothing found on:", url);
+                log.debug("Nothing found on:", url);
                 return null;
             }
             String gfiResponse = IOHelper.getURL(conn, Collections.EMPTY_MAP, IOHelper.DEFAULT_CHARSET);
