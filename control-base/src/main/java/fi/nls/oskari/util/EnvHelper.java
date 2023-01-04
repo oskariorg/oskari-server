@@ -101,7 +101,7 @@ public class EnvHelper {
         // for other functionality it might be interesting to check if we are in a published map or a geoportal view
         JSONHelper.putValue(viewConfig, KEY_TYPE, view.getType().toLowerCase());
         JSONHelper.putValue(viewConfig, KEY_ISPUBLIC, view.isPublic());
-        JSONObject theme = view.getMetadata().optJSONObject("theme");
+        JSONObject theme = view.getMetadata().optJSONObject(KEY_THEME);
         if (theme != null) {
             JSONHelper.putValue(viewConfig, KEY_THEME, theme);
         }
