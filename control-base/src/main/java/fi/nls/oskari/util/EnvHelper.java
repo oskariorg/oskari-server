@@ -44,8 +44,8 @@ public class EnvHelper {
     private static final String KEY_LOGOUT = "logout";
     private static final String KEY_PROFILE = "profile";
 
-    // user
-    private static final String KEY_USER = "user";
+    // theme
+    private static final String KEY_THEME = "theme";
     private static final String KEY_APIKEY = "apikey";
 
     // appsetups
@@ -101,6 +101,10 @@ public class EnvHelper {
         // for other functionality it might be interesting to check if we are in a published map or a geoportal view
         JSONHelper.putValue(viewConfig, KEY_TYPE, view.getType().toLowerCase());
         JSONHelper.putValue(viewConfig, KEY_ISPUBLIC, view.isPublic());
+        JSONObject theme = view.getMetadata().optJSONObject("theme");
+        if (theme != null) {
+            JSONHelper.putValue(viewConfig, KEY_THEME, theme);
+        }
         JSONHelper.putValue(env, KEY_APPSETUP, viewConfig);
 
         // setup additional default views info
