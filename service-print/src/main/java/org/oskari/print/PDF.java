@@ -147,7 +147,7 @@ public class PDF {
 
     private static final FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
     
-    static final ResourceBundle rb = ResourceBundle.getBundle("messages");
+    private static final ResourceBundle rb = ResourceBundle.getBundle("messages");
 
     static {
         PAGESIZES_LANDSCAPE = new PDRectangle[PAGESIZES.length];
