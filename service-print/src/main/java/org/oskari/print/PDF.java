@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.stream.DoubleStream;
 
 import javax.imageio.ImageIO;
 
