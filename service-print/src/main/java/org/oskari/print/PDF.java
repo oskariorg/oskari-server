@@ -14,8 +14,10 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.stream.DoubleStream;
 
 import javax.imageio.ImageIO;
 
@@ -129,6 +131,14 @@ public class PDF {
     private static final float OFFSET_TIMESERIES_RIGHT = PDFBoxUtil.mmToPt(50);
     private static final float OFFSET_TIMESERIES_LABEL_BOTTOM = PDFBoxUtil.mmToPt(10);
     private static final float OFFSET_TIME_IN_TIMESERIES_BOTTOM = PDFBoxUtil.mmToPt(5);
+    
+    private static final float OFFSET_CROSS_UPPER = PDFBoxUtil.mmToPt(7);
+    private static final float OFFSET_CROSS_LOWER = PDFBoxUtil.mmToPt(7);
+    
+    private static final float OFFSET_TEXT_LOWER_X = PDFBoxUtil.mmToPt(60);
+    private static final float OFFSET_TEXT_LOWER_Y = PDFBoxUtil.mmToPt(1);
+    private static final float OFFSET_TEXT_UPPER = PDFBoxUtil.mmToPt(2);
+    private static final float OFFSET_TEXT_Y = PDFBoxUtil.mmToPt(4);
 
     private static final double[] SCALE_LINE_DISTANCES_METRES = new double[24];
 
@@ -137,6 +147,9 @@ public class PDF {
     private static final String MARKER_COORD_SEPARATOR= "_";
 
     private static final FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
+    
+    static final ResourceBundle rb = ResourceBundle.getBundle("messages");
+
     static {
         PAGESIZES_LANDSCAPE = new PDRectangle[PAGESIZES.length];
         for (int i = 0; i < PAGESIZES.length; i++) {
@@ -185,6 +198,9 @@ public class PDF {
         // Center map
         float x = (pageSize.getWidth() - mapWidth) / 2;
         float y = (pageSize.getHeight() - mapHeight) / 2;
+        
+        // y-axis for drawCoords
+        float y2 = y + mapHeight;
 
         try (PDPageContentStream stream = new PDPageContentStream(doc, page, AppendMode.APPEND, false)) {
             drawTitle(stream, request, pageSize, mapHeight);
@@ -195,6 +211,8 @@ public class PDF {
             drawLayers(doc, stream, request, layerImages, featureCollections,
                     x, y, mapWidth, mapHeight);
             drawBorder(stream, x, y, mapWidth, mapHeight);
+            drawCornerCoords(stream, request, x, y, mapHeight, mapWidth, pageSize);
+            
         }
     }
     protected static BufferedImage getVectorLayerImage (PrintLayer layer, Future<SimpleFeatureCollection> ffc, double [] bbox, int w, int h )
@@ -258,7 +276,7 @@ public class PDF {
         float marginBottomPx = (pageSize.getHeight() - mapHeight) / 2;
         float y = marginBottomPx + mapHeight + 5;
 
-        PDFBoxUtil.drawTextCentered(stream, title, PDPrintStyle.FONT, PDPrintStyle.FONT_SIZE, x, y);
+        PDFBoxUtil.drawTextCentered(stream, "TESTI", PDPrintStyle.FONT, PDPrintStyle.FONT_SIZE, x, y);
     }
 
     private static float drawLogoAndGetWidth(PDDocument doc, PDPageContentStream stream,
@@ -321,6 +339,79 @@ public class PDF {
                 x, OFFSET_TIME_IN_TIMESERIES_BOTTOM);
     }
 
+    private static void drawCornerCoords(PDPageContentStream stream, PrintRequest request, float x, float y, float mapHeight, float mapWidth, PDRectangle pageSize)
+            throws IOException {
+
+        // get coordinates from bounding box
+        int[] coords = getCornerCoords(request);
+        
+        int upperLon = coords[0];
+        int upperLat = coords[3];
+        int lowerLat = coords[1];
+        int lowerLon = coords[2];
+        
+        drawUpperCoords(stream, upperLat, upperLon, x, y, mapHeight, mapWidth);
+        drawLowerCoords(stream, lowerLat, lowerLon, x, y, mapHeight, mapWidth); 
+    }
+    
+    private static void drawUpperCoords(PDPageContentStream stream, int upperLat, int upperLon, float x, float y, float mapHeight, float mapWidth)
+            throws IOException {
+        float x1 = x;
+        float y2 = mapHeight + y;
+        float x2 = x1 - OFFSET_CROSS_UPPER;
+        float y1 = y2 + OFFSET_CROSS_UPPER;
+        
+        drawCross(stream, x1, x2, y1, y2);
+        
+        float textX = x1 + OFFSET_TEXT_UPPER;
+        float textY = y1 - OFFSET_TEXT_UPPER;
+        float textY2 = textY - OFFSET_TEXT_Y;
+        
+        String coords = rb.getString("coordinates.upper") + ": " + upperLat + ", " + upperLon;
+        String projection = "ETRS-TM35FIN" + " " + rb.getString("coordinates");
+
+        PDFBoxUtil.drawText(stream, coords, PDPrintStyle.FONT, PDPrintStyle.FONT_SIZE_SCALE, textX, textY);
+        PDFBoxUtil.drawText(stream, projection, PDPrintStyle.FONT, PDPrintStyle.FONT_SIZE_SCALE, textX, textY2);
+    }
+    
+    private static void drawLowerCoords(PDPageContentStream stream, int lowerLat, int lowerLon, float x, float y, float mapHeight, float mapWidth)
+            throws IOException {
+        float x1 = mapWidth + x;
+        float y2 = y;
+        float x2 = x1 + OFFSET_CROSS_LOWER;
+        float y1 = y2 - OFFSET_CROSS_LOWER;
+        
+        drawCross(stream, x1, x2, y1, y2);
+        
+        float textX = x1 - OFFSET_TEXT_LOWER_X;
+        float textY = y1 + OFFSET_TEXT_LOWER_Y;
+        float textY2 = textY - OFFSET_TEXT_Y;
+        
+        String coords = rb.getString("coordinates.lower") + ": " + lowerLat + ", " + lowerLon;
+        String projection = "ETRS-TM35FIN" + " " + rb.getString("coordinates");
+                
+        PDFBoxUtil.drawText(stream, coords, PDPrintStyle.FONT, PDPrintStyle.FONT_SIZE_SCALE, textX, textY);
+        PDFBoxUtil.drawText(stream, projection, PDPrintStyle.FONT, PDPrintStyle.FONT_SIZE_SCALE, textX, textY2);  
+    }
+
+    private static void drawCross(PDPageContentStream stream, float x1, float x2, float y1, float y2) throws IOException {
+        stream.moveTo(x1, y1);
+        stream.lineTo(x1, y2);
+        stream.lineTo(x2, y2);
+        stream.stroke();
+    }
+    
+    private static int[] getCornerCoords(PrintRequest request) {
+        double[] doubleCornerCoords = request.getBoundingBox();
+        int[] intCornerCoords = new int[doubleCornerCoords.length];
+        
+        for (int i = 0; i < intCornerCoords.length; ++i) {
+            intCornerCoords[i] = (int) doubleCornerCoords[i];
+        }
+        
+        return intCornerCoords;
+    }
+    
     private static void drawScale(PDPageContentStream stream, PrintRequest request, float logoWidth)
             throws IOException {
         if (!request.isShowScale()) {
@@ -362,6 +453,8 @@ public class PDF {
 
         // create an offset point for the scalebar
         float OFFSET_SCALE_LEFT = OFFSET_LOGO_LEFT + logoWidth + 10;
+        
+        System.out.println("OFFSET_SCALE_LEFT: " + OFFSET_SCALE_LEFT);
 
         // PDF (and PDFBox) uses single precision floating point numbers
         float x1 = (float) OFFSET_SCALE_LEFT;
@@ -389,7 +482,7 @@ public class PDF {
             stream.lineTo(x2, y1);
             stream.lineTo(x2, y2);
             stream.stroke();
-
+            
             float cx = x1 + ((x2 - x1) / 2);
             PDFBoxUtil.drawTextCentered(stream, distanceStr,
                     PDPrintStyle.FONT, PDPrintStyle.FONT_SIZE_SCALE, cx, y1 + 5);
