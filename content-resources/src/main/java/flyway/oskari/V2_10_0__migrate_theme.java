@@ -57,7 +57,7 @@ public class V2_10_0__migrate_theme extends BaseJavaMigration {
 
             if (style != null) {
                 // transform toolStyle/font to theme and add it to metadata
-                JSONObject theme = generateTheme(style.optString("toolStyle"), style.optString("font"));
+                JSONObject theme = generateTheme(style.optString("toolStyle", null), style.optString("font", null));
                 JSONHelper.putValue(metadata, "theme", theme);
             }
             // remove unused style (replaced by theme)
