@@ -442,6 +442,7 @@ public class AppSetupHelper {
             final JSONObject oskari = JSONHelper.getJSONObject(viewJSON, "oskari");
             view.setPage(oskari.getString("page"));
             view.setApplication(oskari.getString("application"));
+            view.setMetadata(oskari.optJSONObject("metadata"));
         } catch (Exception ex) {
             log.error( "Unable to construct view (metadata missing)! Msg:", ex.getMessage());
             throw ex;
