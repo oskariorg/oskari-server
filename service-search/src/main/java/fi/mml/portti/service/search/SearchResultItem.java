@@ -227,6 +227,9 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
 		return description;
 	}
 	public void setDescription(String description) {
+		if (description == null) {
+			return;
+		}
 		
 		if (description.length() > TRUNCATE_DESCRIPTION_LENGTH) {
 			this.trunkateDescription = description.substring(0,TRUNCATE_DESCRIPTION_LENGTH-3) + "...";
