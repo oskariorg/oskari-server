@@ -23,7 +23,7 @@ import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import static fi.nls.oskari.csw.Constants.PROP_SERVICE_URL;
+import static fi.nls.oskari.csw.service.CSWService.PROP_SERVICE_URL;
 
 
 /**
@@ -36,7 +36,6 @@ public class GetCSWDataHandler extends ActionHandler {
     private static final String LANG_PARAM = "lang";
     private static final String UUID_PARAM = "uuid";
     private final String baseUrl = PropertyUtil.getOptional(PROP_SERVICE_URL);
-    private final String imgUrl = PropertyUtil.getOptional("service.metadata.imgurl");
     private final String metadataRatingType = PropertyUtil.getOptional("service.metadata.rating");
     private final String licenseUrlPrefix = PropertyUtil.getOptional("search.channel.METADATA_CATALOGUE_CHANNEL.licenseUrlPrefix");
     public static final String KEY_LICENSE = "license";

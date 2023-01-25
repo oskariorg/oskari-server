@@ -31,7 +31,7 @@ import org.apache.axiom.om.OMElement;
 import java.net.HttpURLConnection;
 import java.util.*;
 
-import static fi.nls.oskari.csw.Constants.PROP_SERVICE_URL;
+import static fi.nls.oskari.csw.service.CSWService.PROP_SERVICE_URL;
 
 /**
  * Search channel for making CSW queries.

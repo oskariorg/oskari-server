@@ -39,6 +39,7 @@ import java.util.Locale;
  */
 public class CSWService {
 
+    public static final String PROP_SERVICE_URL = "service.metadata.url";
     private static final Logger log = LogFactory
             .getLogger(CSWService.class);
 

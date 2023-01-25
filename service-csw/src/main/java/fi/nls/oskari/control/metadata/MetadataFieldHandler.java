@@ -32,11 +32,8 @@ public class MetadataFieldHandler {
 
     private static final Logger log = LogFactory.getLogger(MetadataFieldHandler.class);
 
-    private final static NodeList EMPTY_NODELIST = new EmptyNodeList();
-
     private MetadataField field = null;
     private String serverURL = MetadataCatalogueChannelSearchService.getServerURL();
-    private String queryParams = "?" + PropertyUtil.get("search.channel.METADATA_CATALOGUE_CHANNEL.metadata.catalogue.queryParams", "SERVICE=CSW&VERSION=2.0.2&request=GetDomain&PropertyName=");
     private Cache<Set<SelectItem>> cache = CacheManager.getCache(MetadataFieldHandler.class.getCanonicalName());
 
     public String getPropertyName() {
@@ -51,8 +48,8 @@ public class MetadataFieldHandler {
         return field;
     }
 
-    public String getSearchURL() {
-        return serverURL + queryParams;
+    public String getSearchURL(String propertyName) {
+        return IOHelper.addQueryString(serverURL, "SERVICE=CSW&VERSION=2.0.2&request=GetDomain&PropertyName=" + propertyName);
     }
 
     public JSONArray getOptions(final String language) {
@@ -114,7 +111,7 @@ public class MetadataFieldHandler {
             return response;
         }
 
-        final String url = getSearchURL() + propertyName;
+        final String url = getSearchURL(propertyName);
         final List<String> valueList = getTags(url);
         List<String> blacklist = field.getBlacklist();
         response = valueList.stream()
