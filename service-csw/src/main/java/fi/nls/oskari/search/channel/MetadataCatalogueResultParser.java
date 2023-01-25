@@ -147,12 +147,11 @@ setResourceNameSpace(serverURL)
         identification.put(KEY_MAINTENANCE_AND_UPDATE_FREQUENCY_CODELIST, getAttributeValue(maintenanceAndUpdateFrequencyNode, QName.valueOf("codeListValue")));
         item.addValue(KEY_IDENTIFICATION, identification);
 
-
-        log.debug("==1");
         final OMElement codeListValue = (OMElement) XPATH_CODELISTVALUE.selectSingleNode(elem);
-        log.debug("====: " + codeListValue.getAttributeValue(QNAME_CODELISTVALUE));
-        item.setNatureOfTarget(codeListValue.getAttributeValue(QNAME_CODELISTVALUE));
-        item.addValue(KEY_NATUREOFTHETARGET, item.getNatureOfTarget());
+        if (codeListValue != null) {
+            item.setNatureOfTarget(codeListValue.getAttributeValue(QNAME_CODELISTVALUE));
+            item.addValue(KEY_NATUREOFTHETARGET, item.getNatureOfTarget());
+        }
 
         for(OMElement operatesOnNode  : operatesOnNodes){
             if(operatesOnNode != null){
