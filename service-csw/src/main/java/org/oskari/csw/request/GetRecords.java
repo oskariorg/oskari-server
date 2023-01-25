@@ -89,7 +89,8 @@ public class GetRecords {
             // this might lead to complications. Just using "full" for now, it's more XML to transfer and
             // parse but it's safe.
             xsw.writeStartElement(CSW_URI, "ElementSetName");
-            xsw.writeCharacters("full");
+            // changes from full to summary for performance reasons. "brief" would be even faster but doesn't include dates
+            xsw.writeCharacters("summary");
             xsw.writeEndElement(); // ElementSetName
 
 
