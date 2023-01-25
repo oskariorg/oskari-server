@@ -31,12 +31,13 @@ import org.apache.axiom.om.OMElement;
 import java.net.HttpURLConnection;
 import java.util.*;
 
+import static fi.nls.oskari.csw.Constants.PROP_SERVICE_URL;
+
 /**
  * Search channel for making CSW queries.
  *
  * Configurable by properties:
- * - Server: search.channel.METADATA_CATALOGUE_CHANNEL.metadata.catalogue.server (defaults to "http://geonetwork.nls.fi")
- * - QueryPath: search.channel.METADATA_CATALOGUE_CHANNEL.metadata.catalogue.path (defaults to "/geonetwork/srv/en/csw")
+ * - Server: service.metadata.url (for example "https://www.paikkatietohakemisto.fi/geonetwork/srv/fin/csw")
  * - localized urls for images: search.channel.METADATA_CATALOGUE_CHANNEL.image.url.[lang code] (as contentURL in conjunction with resourceId)
  * - localized urls for service: search.channel.METADATA_CATALOGUE_CHANNEL.fetchpage.url.[lang code] (as actionURL in conjunction with resourceId)
  * - advanced filter fields (dropdowns) that are available on form based on the service:
@@ -59,42 +60,22 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
     private final Logger log = LogFactory.getLogger(this.getClass());
 
     public static final String ID = "METADATA_CATALOGUE_CHANNEL";
-    private static String serverURL = PropertyUtil.get("search.channel.METADATA_CATALOGUE_CHANNEL.metadata.catalogue.server", "http://geonetwork.nls.fi");
-    private static String queryPath = PropertyUtil.get("search.channel.METADATA_CATALOGUE_CHANNEL.metadata.catalogue.path", "/geonetwork/srv/en/csw");
+    private static String serverURL = PropertyUtil.get(PROP_SERVICE_URL);
 
-    private final Map<String, String> imageURLs = new HashMap<String, String>();
-    private final Map<String, String> fetchPageURLs = new HashMap<String, String>();
-
-    private final static List<MetadataField> fields = new ArrayList<MetadataField>();
+    private final static List<MetadataField> fields = new ArrayList<>();
 
     private MetadataCatalogueResultParser RESULT_PARSER = null;
     private final MetadataCatalogueQueryHelper QUERY_HELPER = new MetadataCatalogueQueryHelper();
 
     private OskariLayerService mapLayerService = OskariComponentManager.getComponentOfType(OskariLayerService.class);
-
-    private static final String PROPERTY_IMAGE_PREFIX = "search.channel.METADATA_CATALOGUE_CHANNEL.image.url.";
-    private static final String PROPERTY_FETCHURL_PREFIX = "search.channel.METADATA_CATALOGUE_CHANNEL.fetchpage.url.";
     private static final String PROPERTY_RESULTPARSER = "search.channel.METADATA_CATALOGUE_CHANNEL.resultparser";
 
     @Override
     public void init() {
         super.init();
-        final List<String> imageKeys = PropertyUtil.getPropertyNamesStartingWith(PROPERTY_IMAGE_PREFIX);
-        final int imgPrefixLen = PROPERTY_IMAGE_PREFIX.length();
-        for(String key : imageKeys) {
-            final String langCode = key.substring(imgPrefixLen);
-            imageURLs.put(langCode, PropertyUtil.get(key));
-        }
-        final List<String> urlKeys = PropertyUtil.getPropertyNamesStartingWith(PROPERTY_FETCHURL_PREFIX);
-        final int urlPrefixLen = PROPERTY_FETCHURL_PREFIX.length();
-        for(String key : urlKeys) {
-            final String langCode = key.substring(urlPrefixLen);
-            fetchPageURLs.put(langCode, PropertyUtil.get(key));
-        }
-
         // hook for customized parsing
         final String customResultParser = PropertyUtil.getOptional(PROPERTY_RESULTPARSER);
-        if(customResultParser != null) {
+        if (customResultParser != null) {
             try {
                 final Class clazz = Class.forName(customResultParser);
                 RESULT_PARSER = (MetadataCatalogueResultParser) clazz.newInstance();
@@ -102,7 +83,7 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
                 log.error(e, "Error instantiating custom metadata result parser:", customResultParser);
             }
         }
-        if(RESULT_PARSER == null) {
+        if (RESULT_PARSER == null) {
             RESULT_PARSER = new MetadataCatalogueResultParser();
         }
     }
@@ -119,9 +100,6 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
         return serverURL;
     }
 
-    public static String getServerPath() {
-        return queryPath;
-    }
 
     public static List<MetadataField> getFields() {
         if(!fields.isEmpty()) {
@@ -143,16 +121,6 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
             fields.add(field);
         }
         return fields;
-    }
-
-    /**
-     * Reset #getServerURL, #getServerPath and #getFields. Fields will be reconstructed based on properties on
-     * next #getFields() call.
-     */
-    public static void resetProperties() {
-        serverURL = PropertyUtil.get("search.channel.METADATA_CATALOGUE_CHANNEL.metadata.catalogue.server", "http://geonetwork.nls.fi");
-        queryPath = PropertyUtil.get("search.channel.METADATA_CATALOGUE_CHANNEL.metadata.catalogue.path", "/geonetwork/srv/en/csw");
-        fields.clear();
     }
 
     public static MetadataField getField(String name) {
@@ -206,7 +174,6 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
             final long start = System.currentTimeMillis();
             while(results.hasNext()) {
                 final SearchResultItem item = RESULT_PARSER.parseResult(results.next(), locale);
-                setupResultItemURLs(item, locale);
 
                 final List<OskariLayer> oskariLayers =  getOskariLayerWithUuid(item);
                 for(OskariLayer oskariLayer : oskariLayers){
@@ -274,29 +241,6 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
         }
         return list;
     }
-    
-    
-    private void setupResultItemURLs(final SearchResultItem item, final String locale) {
-        final String uuid = item.getResourceId();
-
-        if (uuid != null) {
-            // uuid = getLocalizedString(xpath, uuidNode, locales);
-            item.setActionURL(fetchPageURLs.get(locale) + uuid);
-
-            final boolean replaceImageURL = item.getContentURL() != null &&
-                    !item.getContentURL().isEmpty() &&
-                    !item.getContentURL().startsWith("http://") ;
-
-            if (replaceImageURL) {
-                // This only works for GN2 for paikkatietohakemisto.fi
-                // GN2-style: http://geonetwork.nls.fi/geonetwork/srv/fi/resources.get.uuid?access=public&uuid=7ac131b9-a307-4aa1-b27a-009e91f6bd45&fname=Pohjak_Ylihrm_s.png
-                // GN3-style: http://www.paikkatietohakemisto.fi/geonetwork/srv/api/records/7ac131b9-a307-4aa1-b27a-009e91f6bd45/attachments/Pohjak_Ylihrm_s.png
-                item.setContentURL(imageURLs.get(locale) + "uuid=" + uuid + "&fname=" + item.getContentURL());
-            }
-        }
-        item.setResourceNameSpace(getServerURL());
-    }
-
 
     private OMElement getResultsElement(final OMXMLParserWrapper builder) {
         final Iterator<OMElement> resultIt = builder.getDocumentElement().getChildrenWithLocalName("SearchResults");
@@ -309,14 +253,13 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
     private OMXMLParserWrapper makeQuery(SearchCriteria searchCriteria) throws Exception {
         final long start = System.currentTimeMillis();
         final String payload = QUERY_HELPER.getQueryPayload(searchCriteria);
-        if(payload == null) {
+        if (payload == null) {
             // no point in making the query without payload
             return null;
         }
 
         // POSTing GetRecords request
-        final String queryURL = serverURL + queryPath;
-        HttpURLConnection conn = getConnection(queryURL);
+        HttpURLConnection conn = getConnection(getServerURL());
         conn.setUseCaches(false);
         IOHelper.post(conn, "application/xml;charset=UTF-8", payload);
         log.debug(payload);

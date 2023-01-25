@@ -36,7 +36,6 @@ public class MetadataFieldHandler {
 
     private MetadataField field = null;
     private String serverURL = MetadataCatalogueChannelSearchService.getServerURL();
-    private String serverPath = MetadataCatalogueChannelSearchService.getServerPath();
     private String queryParams = "?" + PropertyUtil.get("search.channel.METADATA_CATALOGUE_CHANNEL.metadata.catalogue.queryParams", "SERVICE=CSW&VERSION=2.0.2&request=GetDomain&PropertyName=");
     private Cache<Set<SelectItem>> cache = CacheManager.getCache(MetadataFieldHandler.class.getCanonicalName());
 
@@ -53,7 +52,7 @@ public class MetadataFieldHandler {
     }
 
     public String getSearchURL() {
-        return serverURL + serverPath + queryParams;
+        return serverURL + queryParams;
     }
 
     public JSONArray getOptions(final String language) {
