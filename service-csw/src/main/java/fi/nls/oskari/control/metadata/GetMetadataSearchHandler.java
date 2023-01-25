@@ -64,7 +64,7 @@ public class GetMetadataSearchHandler extends RestActionHandler {
 
         log.debug("done search... now creating json objects");
 
-        for(SearchResultItem item : searchResult.getSearchResultItems()) {
+        for (SearchResultItem item : searchResult.getSearchResultItems()) {
             results.put(item.toJSON());
         }
 

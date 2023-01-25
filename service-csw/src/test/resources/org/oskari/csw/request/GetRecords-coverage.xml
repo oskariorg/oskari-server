@@ -5,7 +5,7 @@
                 service="CSW" version="2.0.2" maxRecords="10000" startPosition="1" resultType="results"
                 outputFormat="application/xml" outputSchema="http://www.isotc211.org/2005/gmd">
     <csw:Query typeNames="gmd:MD_Metadata">
-        <csw:ElementSetName>full</csw:ElementSetName>
+        <csw:ElementSetName>summary</csw:ElementSetName>
         <csw:Constraint version="1.0.0">
             <ogc:Filter
                     xmlns:gml="http://www.opengis.net/gml" xmlns:ogc="http://www.opengis.net/ogc">

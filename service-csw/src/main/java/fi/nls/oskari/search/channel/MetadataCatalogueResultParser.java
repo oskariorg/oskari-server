@@ -51,7 +51,7 @@ public class MetadataCatalogueResultParser {
     public static final String KEY_MAINTENANCE_AND_UPDATE_FREQUENCY_CODELIST = "updateFrequency";
     public static final String KEY_NATUREOFTHETARGET = "natureofthetarget";
     // we need to map languages from 3-letter codes to 2-letter codes so initialize a global codeMapping property
-    private final static Map<String, String> ISO3letterOskariLangMapping = new HashMap<String, String>();
+    private final static Map<String, String> ISO3letterOskariLangMapping = new HashMap<>();
 
     public MetadataCatalogueResultParser() {
         NAMESPACE_CTX = new SimpleNamespaceContext();
@@ -147,12 +147,11 @@ setResourceNameSpace(serverURL)
         identification.put(KEY_MAINTENANCE_AND_UPDATE_FREQUENCY_CODELIST, getAttributeValue(maintenanceAndUpdateFrequencyNode, QName.valueOf("codeListValue")));
         item.addValue(KEY_IDENTIFICATION, identification);
 
-
-        log.debug("==1");
         final OMElement codeListValue = (OMElement) XPATH_CODELISTVALUE.selectSingleNode(elem);
-        log.debug("====: " + codeListValue.getAttributeValue(QNAME_CODELISTVALUE));
-        item.setNatureOfTarget(codeListValue.getAttributeValue(QNAME_CODELISTVALUE));
-        item.addValue(KEY_NATUREOFTHETARGET, item.getNatureOfTarget());
+        if (codeListValue != null) {
+            item.setNatureOfTarget(codeListValue.getAttributeValue(QNAME_CODELISTVALUE));
+            item.addValue(KEY_NATUREOFTHETARGET, item.getNatureOfTarget());
+        }
 
         for(OMElement operatesOnNode  : operatesOnNodes){
             if(operatesOnNode != null){
@@ -240,7 +239,7 @@ setResourceNameSpace(serverURL)
   </gmd:locale>
      */
     private Map<String, String> getLocaleMap(final OMElement elem) {
-        final Map<String, String> locales = new HashMap<String, String>();
+        final Map<String, String> locales = new HashMap<>();
         try {
             final List<OMElement> localeNodes = (List<OMElement>) XPATH_LOCALE_MAP.selectNodes(elem);
             for(OMElement loc : localeNodes) {
