@@ -89,7 +89,8 @@ public class MetadataCatalogueResultParser {
                 "Date");
         // publication
         String dateType = XmlHelper.getAttributeValue(
-                XmlHelper.getFirstChild(CI_Date, "dateType"),
+                XmlHelper.getFirstChild(
+                        XmlHelper.getFirstChild(CI_Date, "dateType"), "CI_DateTypeCode"),
                 "codeListValue");
 
         JSONObject identification = new JSONObject();
