@@ -1,7 +1,6 @@
 package fi.nls.oskari.search.channel;
 
-import org.apache.axiom.om.OMXMLBuilderFactory;
-import org.apache.axiom.om.OMXMLParserWrapper;
+import fi.nls.oskari.service.ServiceRuntimeException;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Polygon;
 import org.geotools.geometry.jts.JTS;
@@ -17,7 +16,6 @@ import fi.mml.portti.service.search.SearchCriteria;
 import fi.mml.portti.service.search.SearchResultItem;
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.control.metadata.MetadataField;
-import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.GeometryHelper;
@@ -26,10 +24,12 @@ import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import org.apache.axiom.om.OMElement;
+import org.oskari.xml.XmlHelper;
+import org.w3c.dom.Element;
 
 import java.net.HttpURLConnection;
 import java.util.*;
+import java.util.stream.Stream;
 
 import static fi.nls.oskari.csw.service.CSWService.PROP_SERVICE_URL;
 
@@ -74,6 +74,7 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
     public void init() {
         super.init();
         // hook for customized parsing
+        // TODO: this was only used for ELF to inject rating for metadata. We can probably remove it now
         final String customResultParser = PropertyUtil.getOptional(PROPERTY_RESULTPARSER);
         if (customResultParser != null) {
             try {
@@ -124,8 +125,8 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
     }
 
     public static MetadataField getField(String name) {
-        for(MetadataField field: getFields()) {
-            if(field.getName().equals(name)) {
+        for (MetadataField field: getFields()) {
+            if (field.getName().equals(name)) {
                 return field;
             }
         }
@@ -136,55 +137,61 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
             throws IllegalSearchCriteriaException {
         ChannelSearchResult searchResultList = readQueryData(searchCriteria);
         searchResultList.setChannelId(getId());
-
         return searchResultList;
     }
 
     private ChannelSearchResult readQueryData(SearchCriteria searchCriteria) {
 
         ChannelSearchResult channelSearchResult;
-        OMXMLParserWrapper builder = null;
         try {
-            builder = makeQuery(searchCriteria);
-            channelSearchResult = parseResults(builder, searchCriteria);
+            Element root = makeQuery(searchCriteria);
+            channelSearchResult = parseResults(root, searchCriteria);
         } catch (Exception x) {
             log.error(x, "Failed to search");
             channelSearchResult = new ChannelSearchResult();
             channelSearchResult.setException(x);
             channelSearchResult.setQueryFailed(true);
         }
-        finally {
-            try {
-                builder.close();
-            } catch (Exception ignored) {}
-        }
         return channelSearchResult;
     }
 
-    public ChannelSearchResult parseResults(final OMXMLParserWrapper builder, final SearchCriteria searchCriteria) {
-    	
+    private Stream<Element> getResults(Element root) {
+        if (!"GetRecordsResponse".equals(XmlHelper.getLocalName(root))) {
+            throw new ServiceRuntimeException("Unexpected response. Expected root element 'GetRecordsResponse'");
+        }
+        Element results = XmlHelper.getFirstChild(root, "SearchResults");
+        if (results == null) {
+            throw new ServiceRuntimeException(XmlHelper.generateUnexpectedElementMessage(root));
+        }
+        return XmlHelper.getChildElements(results, "MD_Metadata");
+    }
+
+    public ChannelSearchResult parseResults(Element root, SearchCriteria searchCriteria) {
+
         ChannelSearchResult channelSearchResult = new ChannelSearchResult();
         log.debug("parseResults");
+        final String srs = searchCriteria.getSRS();
         try {
-            final OMElement resultsWrapper = getResultsElement(builder);
-            final String locale = searchCriteria.getLocale();
-            final String srs = searchCriteria.getSRS();
-            // resultsWrapper == null -> no search results
-            final Iterator<OMElement> results = resultsWrapper.getChildrenWithLocalName("MD_Metadata");
             final long start = System.currentTimeMillis();
-            while(results.hasNext()) {
-                final SearchResultItem item = RESULT_PARSER.parseResult(results.next(), locale);
+            getResults(root).forEach(metadata -> {
+                try {
+                    final SearchResultItem item = RESULT_PARSER.parseResult(metadata);
+/*
+// done in frontend now?
+                    final List<OskariLayer> oskariLayers = getOskariLayerWithUuid(item);
+                    for(OskariLayer oskariLayer : oskariLayers){
+                        log.debug("METAID: " + oskariLayer.getMetadataId());
+                        item.addUuId(oskariLayer.getMetadataId());
+                    }
+ */
 
-                final List<OskariLayer> oskariLayers =  getOskariLayerWithUuid(item);
-                for(OskariLayer oskariLayer : oskariLayers){
-                    log.debug("METAID: " + oskariLayer.getMetadataId());
-                    item.addUuId(oskariLayer.getMetadataId());
+                    item.addValue("geom", getWKT(item, WKTHelper.PROJ_EPSG_4326, srs));
+                    channelSearchResult.addItem(item);
+                } catch (Exception e) {
+                    log.warn(e);
                 }
+            });
 
-                item.addValue("geom", getWKT(item, WKTHelper.PROJ_EPSG_4326, srs));
-                channelSearchResult.addItem(item);
-            }
-            
             final long end =  System.currentTimeMillis();
             log.debug("Parsing metadata results took", (end-start), "ms");
             channelSearchResult.setQueryFailed(false);
@@ -229,28 +236,7 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
         return null;
     }
 
-    private List<OskariLayer> getOskariLayerWithUuid(SearchResultItem item){
-    	
-    	log.debug("in getOskariLayerWithUuid");
-    	if(mapLayerService == null ||item.getUuId() == null || item.getUuId().isEmpty()){
-    		return Collections.emptyList();
-    	}
-        final List<OskariLayer> list = mapLayerService.findByMetadataId(item.getUuId().get(0));
-        if(list == null) {
-            return Collections.emptyList();
-        }
-        return list;
-    }
-
-    private OMElement getResultsElement(final OMXMLParserWrapper builder) {
-        final Iterator<OMElement> resultIt = builder.getDocumentElement().getChildrenWithLocalName("SearchResults");
-        if(resultIt.hasNext()) {
-            return resultIt.next();
-        }
-        return null;
-    }
-
-    private OMXMLParserWrapper makeQuery(SearchCriteria searchCriteria) throws Exception {
+    private Element makeQuery(SearchCriteria searchCriteria) throws Exception {
         final long start = System.currentTimeMillis();
         final String payload = QUERY_HELPER.getQueryPayload(searchCriteria);
         if (payload == null) {
@@ -265,8 +251,9 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
         log.debug(payload);
 
         final long end =  System.currentTimeMillis();
-        final OMXMLParserWrapper stAXOMBuilder = OMXMLBuilderFactory.createOMBuilder(IOHelper.debugResponse(conn.getInputStream()));
         log.debug("Querying metadata service took", (end-start), "ms");
-        return stAXOMBuilder;
+        Element root = XmlHelper.parseXML(IOHelper.debugResponse(conn.getInputStream()));
+        log.debug("Parsing metadata service took", (System.currentTimeMillis()-end), "ms");
+        return root;
     }
 }
