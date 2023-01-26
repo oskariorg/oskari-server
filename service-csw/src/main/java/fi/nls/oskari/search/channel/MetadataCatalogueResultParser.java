@@ -42,7 +42,6 @@ public class MetadataCatalogueResultParser {
                 XmlHelper.getFirstChild(elem, "fileIdentifier"),
                 "CharacterString");
         item.setResourceId(uuid);
-        //item.addUuId(uuid);
         // lang
         Element languageCode = XmlHelper.getFirstChild(
                 XmlHelper.getFirstChild(elem, "language"),

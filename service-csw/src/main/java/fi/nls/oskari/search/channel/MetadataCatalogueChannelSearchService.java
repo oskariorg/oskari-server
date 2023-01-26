@@ -176,19 +176,10 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
             getResults(root).forEach(metadata -> {
                 try {
                     final SearchResultItem item = RESULT_PARSER.parseResult(metadata);
-/*
-// done in frontend now?
-                    final List<OskariLayer> oskariLayers = getOskariLayerWithUuid(item);
-                    for(OskariLayer oskariLayer : oskariLayers){
-                        log.debug("METAID: " + oskariLayer.getMetadataId());
-                        item.addUuId(oskariLayer.getMetadataId());
-                    }
- */
-
                     item.addValue("geom", getWKT(item, WKTHelper.PROJ_EPSG_4326, srs));
                     channelSearchResult.addItem(item);
                 } catch (Exception e) {
-                    log.warn(e);
+                    log.info("Error parsing metadata search result item", e);
                 }
             });
 
