@@ -66,9 +66,12 @@ public class MetadataCatalogueResultParser {
                 XmlHelper.getFirstChild(elem, "dateStamp"),
                 "DateTime");
   */
-        Element dataIdentity = XmlHelper.getFirstChild(
-                XmlHelper.getFirstChild(elem, "identificationInfo"),
-                "MD_DataIdentification");
+        Element idInfo = XmlHelper.getFirstChild(elem, "identificationInfo");
+        Element dataIdentity = XmlHelper.getFirstChild(idInfo,"MD_DataIdentification");
+        if (dataIdentity == null) {
+            dataIdentity = XmlHelper.getFirstChild(idInfo, "SV_ServiceIdentification");
+        }
+        //
         Element citation = XmlHelper.getFirstChild(
                 XmlHelper.getFirstChild(dataIdentity, "citation"),
                 "CI_Citation");
