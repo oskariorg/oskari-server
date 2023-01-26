@@ -49,6 +49,28 @@ public class GetRecordsTest {
     }
 
     @Test
+    public void testRequestType() {
+        // build filter
+        Filter filter = createEqualsFilter("csw:Any", "testing");
+        String request = org.oskari.csw.request.GetRecords.createRequest(filter);
+
+        assertTrue("Should get 'summary' as request type", request.contains("<csw:ElementSetName>summary</csw:ElementSetName>"));
+
+        request = org.oskari.csw.request.GetRecords.createRequest(filter, "brief");
+        assertTrue("Should get 'brief' as request type", request.contains("<csw:ElementSetName>brief</csw:ElementSetName>"));
+
+        request = org.oskari.csw.request.GetRecords.createRequest(filter, "full");
+        assertTrue("Should get 'full' as request type", request.contains("<csw:ElementSetName>full</csw:ElementSetName>"));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testRequestTypeInvalid() {
+        // build filter
+        Filter filter = createEqualsFilter("csw:Any", "testing");
+        org.oskari.csw.request.GetRecords.createRequest(filter, "dummy");
+    }
+
+    @Test
     public void testSimpleFilter() throws IOException, SAXException {
         // build filter
         Filter filter = createEqualsFilter("my value", "myprop");

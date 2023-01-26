@@ -96,8 +96,11 @@ public class GetRecords {
             // changes from full to summary for performance reasons. "brief" would be even faster but doesn't include dates
             String type = queryType;
             // these are the valid values
-            if (!"summary".equals(type) || !"brief".equals(type) || !"full".equals(type)) {
+            if (type == null) {
                 type = "summary";
+            }
+            if (!("summary".equals(type) || "brief".equals(type) || "full".equals(type))) {
+                throw new IllegalArgumentException("Type needs to be one of: summary, brief, full. Was: " + type);
             }
             xsw.writeCharacters(type);
             xsw.writeEndElement(); // ElementSetName
