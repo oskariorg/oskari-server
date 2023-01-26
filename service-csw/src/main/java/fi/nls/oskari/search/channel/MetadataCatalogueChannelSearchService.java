@@ -38,8 +38,8 @@ import static fi.nls.oskari.csw.service.CSWService.PROP_SERVICE_URL;
  *
  * Configurable by properties:
  * - Server: service.metadata.url (for example "https://www.paikkatietohakemisto.fi/geonetwork/srv/fin/csw")
- * - localized urls for images: search.channel.METADATA_CATALOGUE_CHANNEL.image.url.[lang code] (as contentURL in conjunction with resourceId)
- * - localized urls for service: search.channel.METADATA_CATALOGUE_CHANNEL.fetchpage.url.[lang code] (as actionURL in conjunction with resourceId)
+ * - Query type: search.channel.METADATA_CATALOGUE_CHANNEL.queryType (defaults to "summary")
+ * - Query fields: search.channel.METADATA_CATALOGUE_CHANNEL.queryFields (comma-separted list like "Title, Abstract" - defaults to "csw:anyText")
  * - advanced filter fields (dropdowns) that are available on form based on the service:
  *      search.channel.METADATA_CATALOGUE_CHANNEL.fields (Note! Uses GetDomain Operation on CSW to populate values for fields)
  * - per field processing definitions (each property prefixed with "search.channel.METADATA_CATALOGUE_CHANNEL.field.[field name]."):
@@ -61,6 +61,8 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
 
     public static final String ID = "METADATA_CATALOGUE_CHANNEL";
     private static String serverURL = PropertyUtil.get(PROP_SERVICE_URL);
+    private String queryType;
+    private String[] queryFields;
 
     private final static List<MetadataField> fields = new ArrayList<>();
 
@@ -68,25 +70,13 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
     private final MetadataCatalogueQueryHelper QUERY_HELPER = new MetadataCatalogueQueryHelper();
 
     private OskariLayerService mapLayerService = OskariComponentManager.getComponentOfType(OskariLayerService.class);
-    private static final String PROPERTY_RESULTPARSER = "search.channel.METADATA_CATALOGUE_CHANNEL.resultparser";
 
     @Override
     public void init() {
         super.init();
-        // hook for customized parsing
-        // TODO: this was only used for ELF to inject rating for metadata. We can probably remove it now
-        final String customResultParser = PropertyUtil.getOptional(PROPERTY_RESULTPARSER);
-        if (customResultParser != null) {
-            try {
-                final Class clazz = Class.forName(customResultParser);
-                RESULT_PARSER = (MetadataCatalogueResultParser) clazz.newInstance();
-            } catch (Exception e) {
-                log.error(e, "Error instantiating custom metadata result parser:", customResultParser);
-            }
-        }
-        if (RESULT_PARSER == null) {
-            RESULT_PARSER = new MetadataCatalogueResultParser();
-        }
+        queryType = getProperty("queryType", "summary");
+        queryFields = getProperty("queryFields", "csw:anyText").split("\\s*,\\s*");
+        RESULT_PARSER = new MetadataCatalogueResultParser();
     }
 
     /**
@@ -229,7 +219,7 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
 
     private Element makeQuery(SearchCriteria searchCriteria) throws Exception {
         final long start = System.currentTimeMillis();
-        final String payload = QUERY_HELPER.getQueryPayload(searchCriteria);
+        final String payload = QUERY_HELPER.getQueryPayload(searchCriteria, queryType, queryFields);
         if (payload == null) {
             // no point in making the query without payload
             return null;
