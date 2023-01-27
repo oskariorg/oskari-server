@@ -26,7 +26,7 @@ public class DatasourceHelper {
     private static final DatasourceHelper INSTANCE = new DatasourceHelper();
     private static final String KEY_MODULE_LIST = "db.additional.modules";
 
-    private List<BasicDataSource> localDataSources = new ArrayList<BasicDataSource>();
+    private List<BasicDataSource> localDataSources = new ArrayList<>();
     private final static String JNDI_PREFIX = "java:comp/env/";
     private Context context;
 
@@ -84,8 +84,17 @@ public class DatasourceHelper {
      * @param name for example jdbc/OskariPool
      */
     public DataSource getDataSource(final Context ctx, final String name) {
-        if(ctx == null) {
-            return null;
+        if (ctx == null) {
+            String jmxName;
+            if (name == null) {
+                jmxName = DEFAULT_DATASOURCE_NAME;
+            } else {
+                jmxName = name;
+            }
+            return localDataSources.stream()
+                    .filter(ds -> jmxName.equals(ds.getJmxName()))
+                    .findFirst()
+                    .orElse(null);
         }
         try {
             return (DataSource) ctx.lookup(JNDI_PREFIX + name);
@@ -114,7 +123,7 @@ public class DatasourceHelper {
         LOGGER.info(String.format(MSG_CHECKING_POOL, poolName));
         final DataSource ds = getDataSource(ctx, poolName);
         boolean success = ds != null;
-        if(success) {
+        if (success) {
             // using container provided datasource rather than one created by us
             LOGGER.info("Found JNDI dataSource with name: " + poolName +
                     ". Using it instead of properties configuration db." + poolToken + "url");
@@ -149,7 +158,8 @@ public class DatasourceHelper {
         dataSource.setTestOnBorrow(true);
         dataSource.setValidationQuery("SELECT 1");
         dataSource.setValidationQueryTimeout(100);
-
+        // Just for querying from local datasources when context can't be created (for example in Tomcat by default)
+        dataSource.setJmxName(getOskariDataSourceName(prefix));
         localDataSources.add(dataSource);
         return dataSource;
     }
@@ -210,7 +220,7 @@ public class DatasourceHelper {
      * Creates an InitialContext if not created yet.
      */
     public Context getContext() {
-        if(context == null) {
+        if (context == null) {
             try {
                 context = new InitialContext();
             } catch (Exception ex) {
