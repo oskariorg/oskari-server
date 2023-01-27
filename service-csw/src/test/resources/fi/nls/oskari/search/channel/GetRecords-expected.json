@@ -1,937 +1,970 @@
 [
   {
-    "bbox": {
-      "bottom": 59.7,
-      "left": 19.1,
-      "right": 31.7,
-      "top": 70.1
-    },
-    "id": "3e304408-7e89-4713-b53f-84a83e30e481",
+    "natureofthetarget": "series",
     "identification": {
-      "code": "creation",
-      "date": "2015-12-01"
+      "date": "2015-12-01",
+      "code": "creation"
     },
-    "lang": "fi",
+    "bbox": {
+      "top": 70.1,
+      "left": 19.1,
+      "bottom": 59.7,
+      "right": 31.7
+    },
+    "organization": "Ilmatieteen laitos",
     "name": "Ilman radioaktiivisuusvalvonta",
-    "natureofthetarget": "series",
-    "organization": "Ilmatieteen laitos",
     "rank": -1,
-    "region": "",
-    "type": "Tietoaineisto"
-  },
-  {
-    "bbox": {
-      "bottom": 59.7,
-      "left": 19.1,
-      "right": 31.7,
-      "top": 70.1
-    },
-    "id": "68cd1f8d-6438-41e1-b2ac-9dd251dfcdc5",
-    "identification": {
-      "code": "creation",
-      "date": "2015-12-01"
-    },
+    "id": "3e304408-7e89-4713-b53f-84a83e30e481",
     "lang": "fi",
-    "name": "Ulkoisen säteilyn valvonta",
-    "natureofthetarget": "series",
-    "organization": "Ilmatieteen laitos",
-    "rank": -1,
-    "region": "",
-    "type": "Tietoaineisto"
-  },
-  {
-    "id": "97a6010f-5b2d-493c-92d9-a1c2c78649b9",
-    "identification": {
-      "code": "creation",
-      "date": "2016-11-01"
-    },
-    "name": "Yhdyskuntien biojätteet",
-    "natureofthetarget": "dataset",
-    "organization": "Suomen ympäristökeskus",
-    "rank": -1,
-    "region": "",
-    "type": "Aineisto"
-  },
-  {
-    "id": "07dca2e6-681f-4ce4-b548-211e80b6d19c",
-    "identification": {
-      "code": "creation",
-      "date": "2016-11-28"
-    },
-    "name": "Peltokasvien sivuvirrat 2015",
-    "natureofthetarget": "dataset",
-    "organization": "Luonnonvarakeskus",
-    "rank": -1,
-    "region": "",
-    "type": "Aineisto"
-  },
-  {
-    "id": "0910fbf5-3f56-4f25-99e6-567f17d3bd14",
-    "identification": {
-      "code": "creation",
-      "date": "2016-11-28"
-    },
-    "name": "Peltobiomassat",
-    "natureofthetarget": "dataset",
-    "organization": "Luonnonvarakeskus",
-    "rank": -1,
-    "region": "",
-    "type": "Aineisto"
-  },
-  {
-    "id": "9fec2667-ccdd-431b-99e0-fd2ed5de4ca1",
-    "identification": {},
-    "lang": "fi",
-    "natureofthetarget": "service",
-    "rank": -1,
-    "region": "",
-    "type": "Rajapintapalvelu"
-  },
-  {
-    "bbox": {
-      "bottom": 60.0067,
-      "left": 24.3512,
-      "right": 25.4674,
-      "top": 60.378
-    },
-    "id": "10a5c5dd-dabc-4893-8dfd-ec6dffd1ea18",
-    "identification": {
-      "code": "publication",
-      "date": "2009-05-22"
-    },
-    "name": "Voimaan tulleet asemakaavat 2016-2017",
-    "natureofthetarget": "dataset",
-    "organization": "Helsingin seudun ympäristöpalvelut HSY",
-    "rank": -1,
-    "region": "",
-    "type": "Aineisto"
-  },
-  {
-    "bbox": {
-      "bottom": 60.0385,
-      "left": 24.4297,
-      "right": 25.3262,
-      "top": 60.3487
-    },
-    "id": "118be106-91ad-4eab-817d-50f7ab5c8cf6",
-    "identification": {
-      "code": "publication",
-      "date": "2017-05-22"
-    },
-    "name": "Hyväksytyt asemakaavat 2016-2017",
-    "natureofthetarget": "dataset",
-    "organization": "Helsingin seudun ympäristöpalvelut HSY",
-    "rank": -1,
-    "region": "",
-    "type": "Aineisto"
-  },
-  {
-    "bbox": {
-      "bottom": 59.9852,
-      "left": 24.3756,
-      "right": 25.3051,
-      "top": 60.3242
-    },
-    "id": "cb80490f-6a42-4f5b-b685-fbe7b4bf934d",
-    "identification": {
-      "code": "publication",
-      "date": "2017-05-22"
-    },
-    "name": "Valmistuneet asunnot 2016-2017",
-    "natureofthetarget": "dataset",
-    "organization": "Helsingin seudun ympäristöpalvelut HSY",
-    "rank": -1,
-    "region": "",
-    "type": "Aineisto"
-  },
-  {
-    "id": "42c9311a-180d-4f57-b6fb-8af9291325db",
-    "identification": {
-      "code": "creation",
-      "date": "2016-11-01"
-    },
-    "name": "Yhdyskuntien biojätteet",
-    "natureofthetarget": "dataset",
-    "organization": "Suomen ympäristökeskus",
-    "rank": -1,
-    "region": "",
-    "type": "Aineisto"
-  },
-  {
-    "id": "b05b877c-565e-48b6-85dc-8a619cbd18f1",
-    "identification": {},
-    "lang": "fi",
-    "natureofthetarget": "service",
-    "rank": -1,
-    "region": "",
-    "type": "Rajapintapalvelu"
-  },
-  {
-    "bbox": {
-      "bottom": 53.63,
-      "left": 9,
-      "right": 30.75,
-      "top": 66
-    },
-    "id": "525be328-1392-4d21-89f6-8b74baea8aef",
-    "identification": {
-      "code": "creation",
-      "date": "2013-01-01"
-    },
-    "lang": "fi",
-    "name": "Aaltoennustedata WAM",
-    "natureofthetarget": "dataset",
-    "organization": "Ilmatieteen laitos",
-    "rank": -1,
-    "region": "",
-    "type": "Tietoaineisto"
-  },
-  {
-    "bbox": {
-      "bottom": 59.9224853515625,
-      "left": 24.782794952392578,
-      "right": 25.254486083984375,
-      "top": 60.2978401184082
-    },
-    "id": "f3276117-0ca3-466e-a18e-2dab446cfb19",
-    "identification": {
-      "code": "publication",
-      "date": "2015-10-14"
-    },
-    "name": "Helsingin kattojen lämpösäteily",
-    "natureofthetarget": "dataset",
-    "organization": "Helsingin seudun ympäristöpalvelut HSY",
-    "rank": -1,
-    "region": "",
-    "type": "Aineisto"
-  },
-  {
-    "id": "5db8b2fd-3a05-422f-b008-0d86bda2d17a",
-    "identification": {},
-    "natureofthetarget": "service",
-    "rank": -1,
+    "type": "Tietoaineisto",
     "region": ""
   },
   {
-    "bbox": {
-      "bottom": 59.5,
-      "left": 20,
-      "right": 29,
-      "top": 66
-    },
-    "id": "4ef7fe0e-2741-4942-b75a-91050e326c34",
+    "natureofthetarget": "series",
     "identification": {
-      "code": "creation",
-      "date": "2013-01-01"
+      "date": "2015-12-01",
+      "code": "creation"
     },
+    "bbox": {
+      "top": 70.1,
+      "left": 19.1,
+      "bottom": 59.7,
+      "right": 31.7
+    },
+    "organization": "Ilmatieteen laitos",
+    "name": "Ulkoisen säteilyn valvonta",
+    "rank": -1,
+    "id": "68cd1f8d-6438-41e1-b2ac-9dd251dfcdc5",
     "lang": "fi",
+    "type": "Tietoaineisto",
+    "region": ""
+  },
+  {
+    "natureofthetarget": "dataset",
+    "identification": {
+      "date": "2016-11-01",
+      "code": "creation"
+    },
+    "organization": "Suomen ympäristökeskus",
+    "name": "Yhdyskuntien biojätteet",
+    "rank": -1,
+    "id": "97a6010f-5b2d-493c-92d9-a1c2c78649b9",
+    "type": "Aineisto",
+    "region": ""
+  },
+  {
+    "natureofthetarget": "dataset",
+    "identification": {
+      "date": "2016-11-28",
+      "code": "creation"
+    },
+    "organization": "Luonnonvarakeskus",
+    "name": "Peltokasvien sivuvirrat 2015",
+    "rank": -1,
+    "id": "07dca2e6-681f-4ce4-b548-211e80b6d19c",
+    "type": "Aineisto",
+    "region": ""
+  },
+  {
+    "natureofthetarget": "dataset",
+    "identification": {
+      "date": "2016-11-28",
+      "code": "creation"
+    },
+    "organization": "Luonnonvarakeskus",
+    "name": "Peltobiomassat",
+    "rank": -1,
+    "id": "0910fbf5-3f56-4f25-99e6-567f17d3bd14",
+    "type": "Aineisto",
+    "region": ""
+  },
+  {
+    "natureofthetarget": "service",
+    "identification": {
+      "date": "2013-01-01",
+      "code": "publication"
+    },
+    "bbox": {
+      "top": 70.1,
+      "left": 19.1,
+      "bottom": 59.7,
+      "right": 31.7
+    },
+    "organization": "Ilmatieteen laitos",
+    "name": "INSPIRE latauspalvelu; sää-, säteily-, merihavaintoaineistot sekä ennusteet ja säätutkahavainnot",
+    "rank": -1,
+    "id": "9fec2667-ccdd-431b-99e0-fd2ed5de4ca1",
+    "lang": "fi",
+    "type": "Rajapintapalvelu",
+    "region": ""
+  },
+  {
+    "natureofthetarget": "dataset",
+    "identification": {
+      "date": "2009-05-22",
+      "code": "publication"
+    },
+    "bbox": {
+      "top": 60.378,
+      "left": 24.3512,
+      "bottom": 60.0067,
+      "right": 25.4674
+    },
+    "organization": "Helsingin seudun ympäristöpalvelut HSY",
+    "name": "Voimaan tulleet asemakaavat 2016-2017",
+    "rank": -1,
+    "id": "10a5c5dd-dabc-4893-8dfd-ec6dffd1ea18",
+    "type": "Aineisto",
+    "region": ""
+  },
+  {
+    "natureofthetarget": "dataset",
+    "identification": {
+      "date": "2017-05-22",
+      "code": "publication"
+    },
+    "bbox": {
+      "top": 60.3487,
+      "left": 24.4297,
+      "bottom": 60.0385,
+      "right": 25.3262
+    },
+    "organization": "Helsingin seudun ympäristöpalvelut HSY",
+    "name": "Hyväksytyt asemakaavat 2016-2017",
+    "rank": -1,
+    "id": "118be106-91ad-4eab-817d-50f7ab5c8cf6",
+    "type": "Aineisto",
+    "region": ""
+  },
+  {
+    "natureofthetarget": "dataset",
+    "identification": {
+      "date": "2017-05-22",
+      "code": "publication"
+    },
+    "bbox": {
+      "top": 60.3242,
+      "left": 24.3756,
+      "bottom": 59.9852,
+      "right": 25.3051
+    },
+    "organization": "Helsingin seudun ympäristöpalvelut HSY",
+    "name": "Valmistuneet asunnot 2016-2017",
+    "rank": -1,
+    "id": "cb80490f-6a42-4f5b-b685-fbe7b4bf934d",
+    "type": "Aineisto",
+    "region": ""
+  },
+  {
+    "natureofthetarget": "dataset",
+    "identification": {
+      "date": "2016-11-01",
+      "code": "creation"
+    },
+    "organization": "Suomen ympäristökeskus",
+    "name": "Yhdyskuntien biojätteet",
+    "rank": -1,
+    "id": "42c9311a-180d-4f57-b6fb-8af9291325db",
+    "type": "Aineisto",
+    "region": ""
+  },
+  {
+    "natureofthetarget": "service",
+    "identification": {
+      "date": "2013-03-21",
+      "code": "publication"
+    },
+    "bbox": {
+      "top": 70.1,
+      "left": 19.1,
+      "bottom": 59.7,
+      "right": 31.7
+    },
+    "organization": "Ilmatieteen laitos",
+    "name": "INSPIRE katselupalvelu; sää- ja säteilyhavaintoaineistot sekä sääennusteet",
+    "rank": -1,
+    "id": "b05b877c-565e-48b6-85dc-8a619cbd18f1",
+    "lang": "fi",
+    "type": "Rajapintapalvelu",
+    "region": ""
+  },
+  {
+    "natureofthetarget": "dataset",
+    "identification": {
+      "date": "2013-01-01",
+      "code": "creation"
+    },
+    "bbox": {
+      "top": 66,
+      "left": 9,
+      "bottom": 53.63,
+      "right": 30.75
+    },
+    "organization": "Ilmatieteen laitos",
+    "name": "Aaltoennustedata WAM",
+    "rank": -1,
+    "id": "525be328-1392-4d21-89f6-8b74baea8aef",
+    "lang": "fi",
+    "type": "Tietoaineisto",
+    "region": ""
+  },
+  {
+    "natureofthetarget": "dataset",
+    "identification": {
+      "date": "2015-10-14",
+      "code": "publication"
+    },
+    "bbox": {
+      "top": 60.2978401184082,
+      "left": 24.782794952392578,
+      "bottom": 59.9224853515625,
+      "right": 25.254486083984375
+    },
+    "organization": "Helsingin seudun ympäristöpalvelut HSY",
+    "name": "Helsingin kattojen lämpösäteily",
+    "rank": -1,
+    "id": "f3276117-0ca3-466e-a18e-2dab446cfb19",
+    "type": "Aineisto",
+    "region": ""
+  },
+  {
+    "natureofthetarget": "service",
+    "identification": {
+      "date": "2016-06-01",
+      "code": "publication"
+    },
+    "bbox": {
+      "top": 60.2978,
+      "left": 24.7828,
+      "bottom": 59.9225,
+      "right": 25.2545
+    },
+    "organization": "Helsingin kaupunki, kaupunkimittauspalvelut",
+    "name": "Helsingin kaupungin WMS-palvelu",
+    "rank": -1,
+    "id": "5db8b2fd-3a05-422f-b008-0d86bda2d17a",
+    "region": ""
+  },
+  {
+    "natureofthetarget": "series",
+    "identification": {
+      "date": "2013-01-01",
+      "code": "creation"
+    },
+    "bbox": {
+      "top": 66,
+      "left": 20,
+      "bottom": 59.5,
+      "right": 29
+    },
+    "organization": "Ilmatieteen laitos",
     "name": "Meriveden korkeushavainnot",
-    "natureofthetarget": "series",
-    "organization": "Ilmatieteen laitos",
     "rank": -1,
-    "region": "",
-    "type": "Tietoaineisto"
+    "id": "4ef7fe0e-2741-4942-b75a-91050e326c34",
+    "lang": "fi",
+    "type": "Tietoaineisto",
+    "region": ""
   },
   {
+    "natureofthetarget": "series",
+    "identification": {
+      "date": "2013-02-25",
+      "code": "creation"
+    },
     "bbox": {
-      "bottom": 59.61,
+      "top": 69.98,
       "left": 19.47,
-      "right": 33.06,
-      "top": 69.98
+      "bottom": 59.61,
+      "right": 33.06
     },
-    "id": "b058c28e-59b8-430a-9435-0143ff304d1d",
-    "identification": {
-      "code": "creation",
-      "date": "2013-02-25"
-    },
-    "lang": "fi",
+    "organization": "Ilmatieteen laitos",
     "name": "Säähavaintojen hilamuotoiset kuukausiarvot",
-    "natureofthetarget": "series",
-    "organization": "Ilmatieteen laitos",
     "rank": -1,
-    "region": "",
-    "type": "Tietoaineisto"
+    "id": "b058c28e-59b8-430a-9435-0143ff304d1d",
+    "lang": "fi",
+    "type": "Tietoaineisto",
+    "region": ""
   },
   {
-    "id": "63d10385-3aee-4bf3-8741-d3ee9b43d741",
+    "natureofthetarget": "dataset",
     "identification": {
-      "code": "publication",
-      "date": "2015-09-10"
+      "date": "2015-09-10",
+      "code": "publication"
     },
+    "organization": "Helsingin seudun ympäristöpalvelut HSY",
     "name": "Pääkaupunkiseudun aurinkosähköpotentiaali",
-    "natureofthetarget": "dataset",
-    "organization": "Helsingin seudun ympäristöpalvelut HSY",
     "rank": -1,
-    "region": "",
-    "type": "Aineisto"
+    "id": "63d10385-3aee-4bf3-8741-d3ee9b43d741",
+    "type": "Aineisto",
+    "region": ""
   },
   {
-    "bbox": {
-      "bottom": 59.7,
-      "left": 19.1,
-      "right": 31.7,
-      "top": 70.1
-    },
-    "id": "06dafa9c-03a0-46d3-8d13-e08d1e624dd8",
+    "natureofthetarget": "series",
     "identification": {
-      "code": "creation",
-      "date": "2013-01-01"
+      "date": "2013-01-01",
+      "code": "creation"
     },
-    "lang": "fi",
+    "bbox": {
+      "top": 70.1,
+      "left": 19.1,
+      "bottom": 59.7,
+      "right": 31.7
+    },
+    "organization": "Ilmatieteen laitos",
     "name": "Salamahavainnot",
-    "natureofthetarget": "series",
-    "organization": "Ilmatieteen laitos",
     "rank": -1,
-    "region": "",
-    "type": "Tietoaineisto"
+    "id": "06dafa9c-03a0-46d3-8d13-e08d1e624dd8",
+    "lang": "fi",
+    "type": "Tietoaineisto",
+    "region": ""
   },
   {
-    "bbox": {
-      "bottom": 59.7,
-      "left": 19.1,
-      "right": 31.7,
-      "top": 70.1
-    },
-    "id": "046838a1-ae82-4bf0-8024-197dba390385",
+    "natureofthetarget": "series",
     "identification": {
-      "code": "creation",
-      "date": "2013-01-01"
+      "date": "2013-01-01",
+      "code": "creation"
     },
-    "lang": "fi",
+    "bbox": {
+      "top": 70.1,
+      "left": 19.1,
+      "bottom": 59.7,
+      "right": 31.7
+    },
+    "organization": "Ilmatieteen laitos",
     "name": "Säähavaintojen kuukausiarvot",
-    "natureofthetarget": "series",
-    "organization": "Ilmatieteen laitos",
     "rank": -1,
-    "region": "",
-    "type": "Tietoaineisto"
+    "id": "046838a1-ae82-4bf0-8024-197dba390385",
+    "lang": "fi",
+    "type": "Tietoaineisto",
+    "region": ""
   },
   {
-    "bbox": {
-      "bottom": 59.7,
-      "left": 19.1,
-      "right": 31.7,
-      "top": 70.1
-    },
-    "id": "c6574939-675a-499b-a632-ba5667bb5a50",
+    "natureofthetarget": "series",
     "identification": {
-      "code": "creation",
-      "date": "2013-01-01"
+      "date": "2013-01-01",
+      "code": "creation"
     },
-    "lang": "fi",
+    "bbox": {
+      "top": 70.1,
+      "left": 19.1,
+      "bottom": 59.7,
+      "right": 31.7
+    },
+    "organization": "Ilmatieteen laitos",
     "name": "Ilmastonmuutosskenaariot",
-    "natureofthetarget": "series",
-    "organization": "Ilmatieteen laitos",
     "rank": -1,
-    "region": "",
-    "type": "Tietoaineisto"
+    "id": "c6574939-675a-499b-a632-ba5667bb5a50",
+    "lang": "fi",
+    "type": "Tietoaineisto",
+    "region": ""
   },
   {
+    "natureofthetarget": "dataset",
+    "identification": {
+      "date": "2013-01-01",
+      "code": "creation"
+    },
     "bbox": {
-      "bottom": 53.025,
+      "top": 65.875,
       "left": 9.041,
-      "right": 30.291,
-      "top": 65.875
+      "bottom": 53.025,
+      "right": 30.291
     },
-    "id": "7cbf7db4-455a-4c64-b5f6-bb903e3387ce",
-    "identification": {
-      "code": "creation",
-      "date": "2013-01-01"
-    },
-    "lang": "fi",
+    "organization": "Ilmatieteen laitos",
     "name": "Merijääennustedata HELMI",
-    "natureofthetarget": "dataset",
-    "organization": "Ilmatieteen laitos",
     "rank": -1,
-    "region": "",
-    "type": "Tietoaineisto"
+    "id": "7cbf7db4-455a-4c64-b5f6-bb903e3387ce",
+    "lang": "fi",
+    "type": "Tietoaineisto",
+    "region": ""
   },
   {
-    "bbox": {
-      "bottom": 59.7,
-      "left": 19.1,
-      "right": 31.7,
-      "top": 70.1
-    },
-    "id": "8b92e113-caec-4ef2-9b60-d02aad4eca95",
+    "natureofthetarget": "series",
     "identification": {
-      "code": "creation",
-      "date": "2013-04-02"
+      "date": "2013-04-02",
+      "code": "creation"
     },
-    "lang": "fi",
+    "bbox": {
+      "top": 70.1,
+      "left": 19.1,
+      "bottom": 59.7,
+      "right": 31.7
+    },
+    "organization": "Ilmatieteen laitos",
     "name": "Tuuliatlas 2500m",
-    "natureofthetarget": "series",
-    "organization": "Ilmatieteen laitos",
     "rank": -1,
-    "region": "",
-    "type": "Tietoaineisto"
+    "id": "8b92e113-caec-4ef2-9b60-d02aad4eca95",
+    "lang": "fi",
+    "type": "Tietoaineisto",
+    "region": ""
   },
   {
-    "bbox": {
-      "bottom": 25.65,
-      "left": -99,
-      "right": 101,
-      "top": 88.5
-    },
-    "id": "e611f050-91e4-400b-bc97-f41f07c0d923",
+    "natureofthetarget": "dataset",
     "identification": {
-      "code": "creation",
-      "date": "2014-04-04"
+      "date": "2014-04-04",
+      "code": "creation"
     },
-    "lang": "fi",
+    "bbox": {
+      "top": 88.5,
+      "left": -99,
+      "bottom": 25.65,
+      "right": 101
+    },
+    "organization": "Ilmatieteen laitos",
     "name": "Sääennustedata RCR Hirlam - painepinnat",
-    "natureofthetarget": "dataset",
-    "organization": "Ilmatieteen laitos",
     "rank": -1,
-    "region": "",
-    "type": "Tietoaineisto"
+    "id": "e611f050-91e4-400b-bc97-f41f07c0d923",
+    "lang": "fi",
+    "type": "Tietoaineisto",
+    "region": ""
   },
   {
-    "bbox": {
-      "bottom": 59.7,
-      "left": 19.1,
-      "right": 31.7,
-      "top": 70.1
-    },
-    "id": "88a51dd6-7490-4d0b-aa30-75c49743b06a",
+    "natureofthetarget": "series",
     "identification": {
-      "code": "creation",
-      "date": "2013-01-01"
+      "date": "2013-01-01",
+      "code": "creation"
     },
-    "lang": "fi",
+    "bbox": {
+      "top": 70.1,
+      "left": 19.1,
+      "bottom": 59.7,
+      "right": 31.7
+    },
+    "organization": "Ilmatieteen laitos",
     "name": "Taustailmanlaadun havainnot",
-    "natureofthetarget": "series",
-    "organization": "Ilmatieteen laitos",
     "rank": -1,
-    "region": "",
-    "type": "Tietoaineisto"
+    "id": "88a51dd6-7490-4d0b-aa30-75c49743b06a",
+    "lang": "fi",
+    "type": "Tietoaineisto",
+    "region": ""
   },
   {
-    "id": "7021b3b8-f6f6-40b4-9346-ca0bfb69405f",
+    "natureofthetarget": "dataset",
     "identification": {
-      "code": "revision",
-      "date": "2018-03-19"
+      "date": "2018-03-19",
+      "code": "revision"
     },
+    "organization": "Suomen ympäristökeskus",
     "name": "Yhdyskuntien biohajoavat jätteet 2015 ja 2016",
-    "natureofthetarget": "dataset",
-    "organization": "Suomen ympäristökeskus",
     "rank": -1,
-    "region": "",
-    "type": "Aineisto"
+    "id": "7021b3b8-f6f6-40b4-9346-ca0bfb69405f",
+    "type": "Aineisto",
+    "region": ""
   },
   {
+    "natureofthetarget": "series",
+    "identification": {
+      "date": "2013-01-01",
+      "code": "creation"
+    },
     "bbox": {
-      "bottom": 59.78339,
+      "top": 69.75637,
       "left": 21.36783,
-      "right": 31.05921,
-      "top": 69.75637
+      "bottom": 59.78339,
+      "right": 31.05921
     },
-    "id": "f34f4d55-3138-4e94-90dd-c49a6e28aef9",
-    "identification": {
-      "code": "creation",
-      "date": "2013-01-01"
-    },
-    "lang": "fi",
+    "organization": "Ilmatieteen laitos",
     "name": "Säähavaintojen vuorokausiarvot",
-    "natureofthetarget": "series",
-    "organization": "Ilmatieteen laitos",
     "rank": -1,
-    "region": "",
-    "type": "Tietoaineisto"
+    "id": "f34f4d55-3138-4e94-90dd-c49a6e28aef9",
+    "lang": "fi",
+    "type": "Tietoaineisto",
+    "region": ""
   },
   {
-    "bbox": {
-      "bottom": 59.7,
-      "left": 19.1,
-      "right": 31.7,
-      "top": 70.1
-    },
-    "id": "b7e3db4e-7cb1-40a7-9a68-fb5a73a8c270",
+    "natureofthetarget": "series",
     "identification": {
-      "code": "creation",
-      "date": "2013-03-21"
+      "date": "2013-03-21",
+      "code": "creation"
     },
-    "lang": "fi",
+    "bbox": {
+      "top": 70.1,
+      "left": 19.1,
+      "bottom": 59.7,
+      "right": 31.7
+    },
+    "organization": "Ilmatieteen laitos",
     "name": "Auringon säteilyhavainnot",
-    "natureofthetarget": "series",
-    "organization": "Ilmatieteen laitos",
     "rank": -1,
-    "region": "",
-    "type": "Tietoaineisto"
+    "id": "b7e3db4e-7cb1-40a7-9a68-fb5a73a8c270",
+    "lang": "fi",
+    "type": "Tietoaineisto",
+    "region": ""
   },
   {
+    "natureofthetarget": "series",
+    "identification": {
+      "date": "2013-01-01",
+      "code": "creation"
+    },
     "bbox": {
-      "bottom": 59.25,
+      "top": 64.68,
       "left": 20.23,
-      "right": 25.23,
-      "top": 64.68
+      "bottom": 59.25,
+      "right": 25.23
     },
-    "id": "26259eec-b437-4f10-86bd-8045b39a82d3",
-    "identification": {
-      "code": "creation",
-      "date": "2013-01-01"
-    },
-    "lang": "fi",
+    "organization": "Ilmatieteen laitos",
     "name": "Aaltohavainnot",
-    "natureofthetarget": "series",
-    "organization": "Ilmatieteen laitos",
     "rank": -1,
-    "region": "",
-    "type": "Tietoaineisto"
+    "id": "26259eec-b437-4f10-86bd-8045b39a82d3",
+    "lang": "fi",
+    "type": "Tietoaineisto",
+    "region": ""
   },
   {
+    "natureofthetarget": "dataset",
+    "identification": {
+      "date": "2013-01-01",
+      "code": "creation"
+    },
     "bbox": {
-      "bottom": 59.5,
+      "top": 66,
       "left": 20,
-      "right": 29,
-      "top": 66
+      "bottom": 59.5,
+      "right": 29
     },
-    "id": "cd87e82c-ff10-4ddb-a8e0-4d900531c2a8",
-    "identification": {
-      "code": "creation",
-      "date": "2013-01-01"
-    },
-    "lang": "fi",
+    "organization": "Ilmatieteen laitos",
     "name": "Meriveden korkeusennuste",
-    "natureofthetarget": "dataset",
-    "organization": "Ilmatieteen laitos",
     "rank": -1,
-    "region": "",
-    "type": "Tietoaineisto"
+    "id": "cd87e82c-ff10-4ddb-a8e0-4d900531c2a8",
+    "lang": "fi",
+    "type": "Tietoaineisto",
+    "region": ""
   },
   {
-    "bbox": {
-      "bottom": 59.9224853515625,
-      "left": 24.782794952392578,
-      "right": 25.254486083984375,
-      "top": 60.2978401184082
-    },
-    "id": "8ac450d3-4569-4c85-aeef-ba3913df20d0",
+    "natureofthetarget": "dataset",
     "identification": {
-      "code": "publication",
-      "date": "2014-08-01"
+      "date": "2014-08-01",
+      "code": "publication"
     },
+    "bbox": {
+      "top": 60.2978401184082,
+      "left": 24.782794952392578,
+      "bottom": 59.9224853515625,
+      "right": 25.254486083984375
+    },
+    "organization": "Helsingin kaupungin kaupunkiympäristön toimiala",
     "name": "Helsingin kaupungin yleisten alueiden tapahtuma- ja maankäyttölupajärjestelmä (Winkki)",
-    "natureofthetarget": "dataset",
-    "organization": "Helsingin kaupungin kaupunkiympäristön toimiala",
     "rank": -1,
-    "region": "",
-    "type": "Aineisto"
+    "id": "8ac450d3-4569-4c85-aeef-ba3913df20d0",
+    "type": "Aineisto",
+    "region": ""
   },
   {
-    "bbox": {
-      "bottom": 59.7,
-      "left": 19.1,
-      "right": 31.7,
-      "top": 70.1
-    },
-    "id": "cf1b68b2-78d8-481c-9c2c-2b950214d477",
+    "natureofthetarget": "series",
     "identification": {
-      "code": "creation",
-      "date": "2015-10-06"
+      "date": "2015-10-06",
+      "code": "creation"
     },
-    "lang": "fi",
+    "bbox": {
+      "top": 70.1,
+      "left": 19.1,
+      "bottom": 59.7,
+      "right": 31.7
+    },
+    "organization": "Ilmatieteen laitos",
     "name": "Kaupunkien ja teollisuuden ilmanlaatuhavainnot",
-    "natureofthetarget": "series",
-    "organization": "Ilmatieteen laitos",
     "rank": -1,
-    "region": "",
-    "type": "Tietoaineisto"
+    "id": "cf1b68b2-78d8-481c-9c2c-2b950214d477",
+    "lang": "fi",
+    "type": "Tietoaineisto",
+    "region": ""
   },
   {
-    "bbox": {
-      "bottom": 59.7,
-      "left": 19.1,
-      "right": 31.7,
-      "top": 70.1
-    },
-    "id": "bf238561-eb04-4c0b-b9dc-113fb5c6b3c4",
+    "natureofthetarget": "series",
     "identification": {
-      "code": "creation",
-      "date": "2013-01-01"
+      "date": "2013-01-01",
+      "code": "creation"
     },
-    "lang": "fi",
+    "bbox": {
+      "top": 70.1,
+      "left": 19.1,
+      "bottom": 59.7,
+      "right": 31.7
+    },
+    "organization": "Ilmatieteen laitos",
     "name": "Säähavainnot",
-    "natureofthetarget": "series",
-    "organization": "Ilmatieteen laitos",
     "rank": -1,
-    "region": "",
-    "type": "Tietoaineisto"
+    "id": "bf238561-eb04-4c0b-b9dc-113fb5c6b3c4",
+    "lang": "fi",
+    "type": "Tietoaineisto",
+    "region": ""
   },
   {
+    "natureofthetarget": "dataset",
+    "identification": {
+      "date": "2016-09-20",
+      "code": "publication"
+    },
     "bbox": {
-      "bottom": 59.4635,
+      "top": 60.562129999999996,
       "left": 23.37891,
-      "right": 26.17493,
-      "top": 60.562129999999996
+      "bottom": 59.4635,
+      "right": 26.17493
     },
-    "id": "ab747c77-f538-4e16-b87b-ec2433d8aa12",
-    "identification": {
-      "code": "publication",
-      "date": "2016-09-20"
-    },
+    "organization": "Helsingin seudun ympäristöpalvelut HSY",
     "name": "Asumisen kerrosala uusissa asemakaavoissa Helsingin seudulla vuosina 2012-2015",
-    "natureofthetarget": "dataset",
-    "organization": "Helsingin seudun ympäristöpalvelut HSY",
     "rank": -1,
-    "region": "",
-    "type": "Aineisto"
+    "id": "ab747c77-f538-4e16-b87b-ec2433d8aa12",
+    "type": "Aineisto",
+    "region": ""
   },
   {
-    "bbox": {
-      "bottom": 59.7,
-      "left": 19.1,
-      "right": 31.7,
-      "top": 70.1
-    },
-    "id": "aa6914b0-b6f2-4e70-9fe1-66655bbb36a0",
+    "natureofthetarget": "series",
     "identification": {
-      "code": "creation",
-      "date": "2013-04-02"
+      "date": "2013-04-02",
+      "code": "creation"
     },
-    "lang": "fi",
+    "bbox": {
+      "top": 70.1,
+      "left": 19.1,
+      "bottom": 59.7,
+      "right": 31.7
+    },
+    "organization": "Ilmatieteen laitos",
     "name": "Tuuliatlas 250m",
-    "natureofthetarget": "series",
-    "organization": "Ilmatieteen laitos",
     "rank": -1,
-    "region": "",
-    "type": "Tietoaineisto"
+    "id": "aa6914b0-b6f2-4e70-9fe1-66655bbb36a0",
+    "lang": "fi",
+    "type": "Tietoaineisto",
+    "region": ""
   },
   {
+    "natureofthetarget": "series",
+    "identification": {
+      "date": "2013-02-25",
+      "code": "creation"
+    },
     "bbox": {
-      "bottom": 59.7,
+      "top": 70.1,
       "left": 19.1,
-      "right": 31.7,
-      "top": 70.1
+      "bottom": 59.7,
+      "right": 31.7
     },
-    "id": "a122f1b0-c65d-4d9f-a7c6-b0d02da518dc",
-    "identification": {
-      "code": "creation",
-      "date": "2013-02-25"
-    },
-    "lang": "fi",
+    "organization": "Ilmatieteen laitos",
     "name": "Säähavaintojen ilmastolliset vertailuarvot",
-    "natureofthetarget": "series",
-    "organization": "Ilmatieteen laitos",
     "rank": -1,
-    "region": "",
-    "type": "Tietoaineisto"
+    "id": "a122f1b0-c65d-4d9f-a7c6-b0d02da518dc",
+    "lang": "fi",
+    "type": "Tietoaineisto",
+    "region": ""
   },
   {
+    "natureofthetarget": "dataset",
+    "identification": {
+      "date": "2009-05-22",
+      "code": "publication"
+    },
     "bbox": {
-      "bottom": 59.8271,
+      "top": 60.656,
       "left": 23.792,
-      "right": 26.0771,
-      "top": 60.656
+      "bottom": 59.8271,
+      "right": 26.0771
     },
-    "id": "e7c72b03-bcc8-4691-80fd-dadec60416a0",
-    "identification": {
-      "code": "publication",
-      "date": "2009-05-22"
-    },
+    "organization": "Helsingin seudun ympäristöpalvelut HSY",
     "name": "Aloitetut asunnot 2016-2017",
-    "natureofthetarget": "dataset",
-    "organization": "Helsingin seudun ympäristöpalvelut HSY",
     "rank": -1,
-    "region": "",
-    "type": "Aineisto"
+    "id": "e7c72b03-bcc8-4691-80fd-dadec60416a0",
+    "type": "Aineisto",
+    "region": ""
   },
   {
+    "natureofthetarget": "dataset",
+    "identification": {
+      "date": "2017-12-01",
+      "code": "publication"
+    },
     "bbox": {
-      "bottom": 60.0969,
+      "top": 60.312,
       "left": 24.5014,
-      "right": 25.2573,
-      "top": 60.312
+      "bottom": 60.0969,
+      "right": 25.2573
     },
-    "id": "16f78112-691b-4bb7-99dc-5e345fa462f6",
-    "identification": {
-      "code": "publication",
-      "date": "2017-12-01"
-    },
-    "name": "SeutuRAMAVA kortteleittain",
-    "natureofthetarget": "dataset",
     "organization": "Helsingin seudun ympäristöpalvelut HSY",
+    "name": "SeutuRAMAVA kortteleittain",
     "rank": -1,
-    "region": "",
-    "type": "Aineisto"
+    "id": "16f78112-691b-4bb7-99dc-5e345fa462f6",
+    "type": "Aineisto",
+    "region": ""
   },
   {
-    "id": "13141e71-4bad-4445-a491-ecc5e25f26ca",
+    "natureofthetarget": "dataset",
     "identification": {
-      "code": "creation",
-      "date": "2016-11-01"
+      "date": "2016-11-01",
+      "code": "creation"
     },
+    "organization": "Suomen ympäristökeskus",
     "name": "Polttolaitosten tuhkat",
-    "natureofthetarget": "dataset",
-    "organization": "Suomen ympäristökeskus",
     "rank": -1,
-    "region": "",
-    "type": "Aineisto"
+    "id": "13141e71-4bad-4445-a491-ecc5e25f26ca",
+    "type": "Aineisto",
+    "region": ""
   },
   {
-    "bbox": {
-      "bottom": 57.8,
-      "left": 17,
-      "right": 32.7,
-      "top": 69.5
-    },
-    "id": "b8105f88-fa49-4d26-9b92-eb269d2c8e18",
-    "identification": {
-      "code": "creation",
-      "date": "2013-01-01"
-    },
-    "lang": "fi",
-    "name": "Säätutkahavainnot",
     "natureofthetarget": "series",
+    "identification": {
+      "date": "2013-01-01",
+      "code": "creation"
+    },
+    "bbox": {
+      "top": 69.5,
+      "left": 17,
+      "bottom": 57.8,
+      "right": 32.7
+    },
     "organization": "Ilmatieteen laitos",
+    "name": "Säätutkahavainnot",
     "rank": -1,
-    "region": "",
-    "type": "Tietoaineisto"
+    "id": "b8105f88-fa49-4d26-9b92-eb269d2c8e18",
+    "lang": "fi",
+    "type": "Tietoaineisto",
+    "region": ""
   },
   {
-    "bbox": {
-      "bottom": 51.5,
-      "left": -15.3,
-      "right": 49.7,
-      "top": 71.9
-    },
-    "id": "e9b4191e-8fa2-4c27-a20f-c408a5c11702",
+    "natureofthetarget": "dataset",
     "identification": {
-      "code": "creation",
-      "date": "2017-06-08"
+      "date": "2017-06-08",
+      "code": "creation"
     },
-    "lang": "fi",
+    "bbox": {
+      "top": 71.9,
+      "left": -15.3,
+      "bottom": 51.5,
+      "right": 49.7
+    },
+    "organization": "Ilmatieteen laitos",
     "name": "Sääennustedata HARMONIE-AROME - painepinnat",
-    "natureofthetarget": "dataset",
-    "organization": "Ilmatieteen laitos",
     "rank": -1,
-    "region": "",
-    "type": "Tietoaineisto"
+    "id": "e9b4191e-8fa2-4c27-a20f-c408a5c11702",
+    "lang": "fi",
+    "type": "Tietoaineisto",
+    "region": ""
   },
   {
+    "natureofthetarget": "dataset",
+    "identification": {
+      "date": "2014-08-01",
+      "code": "publication"
+    },
     "bbox": {
-      "bottom": 59.9224853515625,
+      "top": 60.2978401184082,
       "left": 24.782794952392578,
-      "right": 25.254486083984375,
-      "top": 60.2978401184082
+      "bottom": 59.9224853515625,
+      "right": 25.254486083984375
     },
-    "id": "235ae3a0-a90d-4b46-945a-9574f07bea11",
-    "identification": {
-      "code": "publication",
-      "date": "2014-08-01"
-    },
-    "name": "Helsingin kaupungin yleisten alueiden rekisteri",
-    "natureofthetarget": "dataset",
     "organization": "Helsingin kaupungin kaupunkiympäristön toimiala",
+    "name": "Helsingin kaupungin yleisten alueiden rekisteri",
     "rank": -1,
-    "region": "",
-    "type": "Aineisto"
+    "id": "235ae3a0-a90d-4b46-945a-9574f07bea11",
+    "type": "Aineisto",
+    "region": ""
   },
   {
+    "natureofthetarget": "dataset",
+    "identification": {
+      "date": "2017-06-08",
+      "code": "creation"
+    },
     "bbox": {
-      "bottom": 35,
+      "top": 90,
       "left": -34,
-      "right": 40,
-      "top": 90
+      "bottom": 35,
+      "right": 40
     },
-    "id": "476080ab-15f8-469d-8c27-e35dad5449c0",
-    "identification": {
-      "code": "creation",
-      "date": "2017-06-08"
-    },
-    "lang": "fi",
+    "organization": "Ilmatieteen laitos",
     "name": "Sääennustedata HARMONIE-AROME - mallipinnat",
-    "natureofthetarget": "dataset",
-    "organization": "Ilmatieteen laitos",
     "rank": -1,
-    "region": "",
-    "type": "Tietoaineisto"
+    "id": "476080ab-15f8-469d-8c27-e35dad5449c0",
+    "lang": "fi",
+    "type": "Tietoaineisto",
+    "region": ""
   },
   {
-    "id": "3514fde7-bd5c-4585-bddb-11f3bc61aadc",
+    "natureofthetarget": "dataset",
     "identification": {
-      "code": "revision",
-      "date": "2018-03-22"
+      "date": "2018-03-22",
+      "code": "revision"
     },
+    "organization": "Suomen ympäristökeskus",
     "name": "Jätteenkäsittelyn biohajoavat jätteet 2016",
-    "natureofthetarget": "dataset",
-    "organization": "Suomen ympäristökeskus",
     "rank": -1,
-    "region": "",
-    "type": "Aineisto"
+    "id": "3514fde7-bd5c-4585-bddb-11f3bc61aadc",
+    "type": "Aineisto",
+    "region": ""
   },
   {
-    "id": "71341068-4813-4e48-9471-82ac534a6a8e",
+    "natureofthetarget": "dataset",
     "identification": {
-      "code": "revision",
-      "date": "2018-02-21"
+      "date": "2018-02-21",
+      "code": "revision"
     },
+    "organization": "Luonnonvarakeskus",
     "name": "Peltokasvien sivuvirrat",
-    "natureofthetarget": "dataset",
-    "organization": "Luonnonvarakeskus",
     "rank": -1,
-    "region": "",
-    "type": "Aineisto"
+    "id": "71341068-4813-4e48-9471-82ac534a6a8e",
+    "type": "Aineisto",
+    "region": ""
   },
   {
+    "natureofthetarget": "dataset",
+    "identification": {
+      "date": "2013-01-01",
+      "code": "creation"
+    },
     "bbox": {
-      "bottom": 25.65,
+      "top": 88.5,
       "left": -99,
-      "right": 101,
-      "top": 88.5
+      "bottom": 25.65,
+      "right": 101
     },
-    "id": "43282657-3329-4c82-bd31-2631f41357f5",
-    "identification": {
-      "code": "creation",
-      "date": "2013-01-01"
-    },
-    "lang": "fi",
+    "organization": "Ilmatieteen laitos",
     "name": "Sääennustedata RCR Hirlam",
-    "natureofthetarget": "dataset",
-    "organization": "Ilmatieteen laitos",
     "rank": -1,
-    "region": "",
-    "type": "Tietoaineisto"
-  },
-  {
-    "bbox": {
-      "bottom": 51.5,
-      "left": -15.3,
-      "right": 49.7,
-      "top": 71.9
-    },
-    "id": "56eac114-43e9-4cae-922d-d4f486728fb1",
-    "identification": {
-      "code": "creation",
-      "date": "2017-06-08"
-    },
+    "id": "43282657-3329-4c82-bd31-2631f41357f5",
     "lang": "fi",
-    "name": "Sääennustedata HARMONIE-AROME",
+    "type": "Tietoaineisto",
+    "region": ""
+  },
+  {
     "natureofthetarget": "dataset",
+    "identification": {
+      "date": "2017-06-08",
+      "code": "creation"
+    },
+    "bbox": {
+      "top": 71.9,
+      "left": -15.3,
+      "bottom": 51.5,
+      "right": 49.7
+    },
     "organization": "Ilmatieteen laitos",
+    "name": "Sääennustedata HARMONIE-AROME",
     "rank": -1,
-    "region": "",
-    "type": "Tietoaineisto"
+    "id": "56eac114-43e9-4cae-922d-d4f486728fb1",
+    "lang": "fi",
+    "type": "Tietoaineisto",
+    "region": ""
   },
   {
-    "id": "0931a5c0-b6e4-4956-ba83-8004334bfa59",
+    "natureofthetarget": "dataset",
     "identification": {
-      "code": "revision",
-      "date": "2017-10-19"
+      "date": "2017-10-19",
+      "code": "revision"
     },
+    "organization": "Suomen ympäristökeskus",
     "name": "Yritystoiminnan biohajoavat jätteet 2015",
-    "natureofthetarget": "dataset",
-    "organization": "Suomen ympäristökeskus",
     "rank": -1,
-    "region": "",
-    "type": "Aineisto"
+    "id": "0931a5c0-b6e4-4956-ba83-8004334bfa59",
+    "type": "Aineisto",
+    "region": ""
   },
   {
-    "id": "e42f0f04-c01c-44fc-8f72-b7a445678643",
+    "natureofthetarget": "dataset",
     "identification": {
-      "code": "creation",
-      "date": "2018-03-22"
+      "date": "2018-03-22",
+      "code": "creation"
     },
+    "organization": "Suomen ympäristökeskus",
     "name": "Yritystoiminnan biohajoavat jätteet 2016",
-    "natureofthetarget": "dataset",
-    "organization": "Suomen ympäristökeskus",
     "rank": -1,
-    "region": "",
-    "type": "Aineisto"
+    "id": "e42f0f04-c01c-44fc-8f72-b7a445678643",
+    "type": "Aineisto",
+    "region": ""
   },
   {
+    "natureofthetarget": "dataset",
+    "identification": {
+      "date": "2013-03-11",
+      "code": "revision"
+    },
     "bbox": {
-      "bottom": 59.45414258,
+      "top": 70.09229553,
       "left": 19.08317359,
-      "right": 31.58672881,
-      "top": 70.09229553
+      "bottom": 59.45414258,
+      "right": 31.58672881
     },
-    "id": "e2248b3a-9795-4a9a-8b00-59c48e7ea08c",
-    "identification": {
-      "code": "revision",
-      "date": "2013-03-11"
-    },
-    "name": "Kaivos- ja mineraalirekisterin kartta-aineisto",
-    "natureofthetarget": "dataset",
     "organization": "Turvallisuus- ja kemikaalivirasto (Tukes)",
+    "name": "Kaivos- ja mineraalirekisterin kartta-aineisto",
     "rank": -1,
-    "region": "",
-    "type": ""
+    "id": "e2248b3a-9795-4a9a-8b00-59c48e7ea08c",
+    "type": "",
+    "region": ""
   },
   {
-    "id": "42140a1a-da1e-4cd5-bc58-3246f9dd6f48",
+    "natureofthetarget": "dataset",
     "identification": {
-      "code": "creation",
-      "date": "2016-02-17"
+      "date": "2016-02-17",
+      "code": "creation"
     },
+    "organization": "Luonnonvarakeskus",
     "name": "Peltokasvien pinta-alat 2015",
-    "natureofthetarget": "dataset",
-    "organization": "Luonnonvarakeskus",
     "rank": -1,
-    "region": "",
-    "type": "Aineisto"
+    "id": "42140a1a-da1e-4cd5-bc58-3246f9dd6f48",
+    "type": "Aineisto",
+    "region": ""
   },
   {
-    "id": "48430c98-e372-4a4a-b707-d3feeb484dd1",
+    "natureofthetarget": "dataset",
     "identification": {
-      "code": "creation",
-      "date": "2018-02-20"
+      "date": "2018-02-20",
+      "code": "creation"
     },
+    "organization": "Luonnonvarakeskus",
     "name": "Peltokasvien pinta-alat",
-    "natureofthetarget": "dataset",
-    "organization": "Luonnonvarakeskus",
     "rank": -1,
-    "region": "",
-    "type": "Aineisto"
+    "id": "48430c98-e372-4a4a-b707-d3feeb484dd1",
+    "type": "Aineisto",
+    "region": ""
   },
   {
-    "id": "2f083a3f-bc0d-4e97-b0ec-aeef9af55fb2",
-    "identification": {
-      "code": "revision",
-      "date": "2017-10-19"
-    },
-    "name": "Jätteenkäsittelyn biohajoavat jätteet 2015",
     "natureofthetarget": "dataset",
+    "identification": {
+      "date": "2017-10-19",
+      "code": "revision"
+    },
     "organization": "Suomen ympäristökeskus",
+    "name": "Jätteenkäsittelyn biohajoavat jätteet 2015",
     "rank": -1,
-    "region": "",
-    "type": "Aineisto"
+    "id": "2f083a3f-bc0d-4e97-b0ec-aeef9af55fb2",
+    "type": "Aineisto",
+    "region": ""
   },
   {
-    "bbox": {
-      "bottom": 59.45414258,
-      "left": 19.08886999,
-      "right": 31.58671339,
-      "top": 70.09229321
-    },
-    "id": "129ac41c-1322-475f-bb9b-1c75877ea4cd",
+    "natureofthetarget": "dataset",
     "identification": {
-      "code": "creation",
-      "date": "2014-11-14"
+      "date": "2014-11-14",
+      "code": "creation"
     },
+    "bbox": {
+      "top": 70.09229321,
+      "left": 19.08886999,
+      "bottom": 59.45414258,
+      "right": 31.58671339
+    },
+    "organization": "Luonnonvarakeskus",
     "name": "Latvusmassan ja kantojen korjuupotentiaali",
-    "natureofthetarget": "dataset",
-    "organization": "Luonnonvarakeskus",
     "rank": -1,
-    "region": "",
-    "type": "Aineisto"
+    "id": "129ac41c-1322-475f-bb9b-1c75877ea4cd",
+    "type": "Aineisto",
+    "region": ""
   },
   {
-    "bbox": {
-      "bottom": 59.45414258,
-      "left": 19.08886999,
-      "right": 31.58671339,
-      "top": 70.09229321
-    },
-    "id": "44c4b160-2d5c-4acb-8d6a-38712592db30",
-    "identification": {
-      "code": "creation",
-      "date": "2017-02-02"
-    },
-    "name": "Pienpuun korjuupotentiaali",
     "natureofthetarget": "dataset",
+    "identification": {
+      "date": "2017-02-02",
+      "code": "creation"
+    },
+    "bbox": {
+      "top": 70.09229321,
+      "left": 19.08886999,
+      "bottom": 59.45414258,
+      "right": 31.58671339
+    },
     "organization": "Luonnonvarakeskus",
+    "name": "Pienpuun korjuupotentiaali",
     "rank": -1,
-    "region": "",
-    "type": "Aineisto"
+    "id": "44c4b160-2d5c-4acb-8d6a-38712592db30",
+    "type": "Aineisto",
+    "region": ""
   }
 ]

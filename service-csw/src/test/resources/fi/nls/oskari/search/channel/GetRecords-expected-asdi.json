@@ -1,0 +1,1819 @@
+[
+  {
+    "bbox": {
+      "bottom": 59.447012132130276,
+      "left": 15.689591415207499,
+      "right": 33.16367054907382,
+      "top": 70.0971980136418
+    },
+    "id": "f57390f0-654b-4190-8b9c-9facd970e493",
+    "identification": {
+      "code": "revision",
+      "date": "2017-02-17T12:31:11Z"
+    },
+    "name": "Finland INSPIRE View Service for HY-theme",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 58.607456529397204,
+      "left": 15.053785270822845,
+      "right": 33.993537468175056,
+      "top": 70.2641566223461
+    },
+    "id": "27155a5f-0532-4d3f-9c76-2315eec96342",
+    "identification": {
+      "code": "revision",
+      "date": "2017-02-17T13:15:07Z"
+    },
+    "name": "Finland INSPIRE View Service for Buildngs",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 59.44715165911181,
+      "left": 15.677572489707678,
+      "right": 33.09986748984633,
+      "top": 70.09282711863985
+    },
+    "id": "b5573860-875b-453c-a181-508b51ebe08d",
+    "identification": {
+      "code": "revision",
+      "date": "2017-01-16T11:24:53Z"
+    },
+    "name": "Finland INSPIRE View Service for Geographical Names",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 59.3620541692909,
+      "left": 15.608220469655935,
+      "right": 33.107629330539034,
+      "top": 70.09468369851041
+    },
+    "id": "8a16705a-766f-4556-bfa1-4586bf7fe377",
+    "identification": {
+      "code": "revision",
+      "date": "2017-01-16T11:23:34Z"
+    },
+    "name": "Finland INSPIRE View Service for Cadastral Parcel",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 59.37375062326474,
+      "left": 14.782319702073826,
+      "right": 36.74745410999551,
+      "top": 70.10788599346147
+    },
+    "id": "3ef0edaa-0ccc-40bb-8c6b-cbd57f0a2873",
+    "identification": {
+      "code": "revision",
+      "date": "2017-01-16T11:17:57Z"
+    },
+    "name": "Finland INSPIRE View Service for Adresses",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 58.785514825280565,
+      "left": 15.608220469655935,
+      "right": 33.107629330539034,
+      "top": 70.09468369851041
+    },
+    "id": "08eae898-ae7e-443a-860a-26390cb99e34",
+    "identification": {
+      "code": "revision",
+      "date": "2017-01-16T11:14:54Z"
+    },
+    "name": "Finland INSPIRE View Service for Administrative Units",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 59.447012132158264,
+      "left": 15.689591415207499,
+      "right": 33.16367054907382,
+      "top": 70.12674910082552
+    },
+    "id": "84e740e3-161e-4212-9a56-1399aebd7049",
+    "identification": {
+      "code": "revision",
+      "date": "2021-02-19T07:46:58Z"
+    },
+    "name": "Finland INSPIRE View Service for HY-theme",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 58.607456529429875,
+      "left": 15.053785270822848,
+      "right": 33.993537468175056,
+      "top": 70.2641566223461
+    },
+    "id": "c1e6f2fb-227e-4c59-bb15-82b4cdda76ec",
+    "identification": {
+      "code": "revision",
+      "date": "2021-02-19T07:58:17Z"
+    },
+    "name": "Finland INSPIRE View Service for Buildngs",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 58.516313,
+      "left": 16.165896,
+      "right": 34.919471,
+      "top": 70.229473
+    },
+    "id": "a213c832-fb5b-4d4b-8298-c8b370f77e1a",
+    "identification": {
+      "code": "revision",
+      "date": "2017-01-31T00:26:11Z"
+    },
+    "name": "GTK_Bedrock_and_Superficial_Geology",
+    "natureofthetarget": "service",
+    "organization": "Geological Survey of Finland GTK",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "id": "34b8eb70-bd76-4873-98ab-073787d543b6",
+    "identification": {
+      "code": "revision",
+      "date": "2019-04-18T15:12:03Z"
+    },
+    "name": "GeoServer Web Feature Service",
+    "natureofthetarget": "service",
+    "organization": "CGI Finland Oy",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 58.99838140972159,
+      "left": 14.327949614824453,
+      "right": 33.433758062597185,
+      "top": 70.47891766035414
+    },
+    "id": "a9479d60-39d0-4577-aa1d-02c4490e2a6e",
+    "identification": {
+      "code": "revision",
+      "date": "2020-10-30T19:24:20Z"
+    },
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 59.574192,
+      "left": 15.710976,
+      "right": 33.100985,
+      "top": 70.095295
+    },
+    "id": "79e9e604-9181-412c-9d12-df0c730a6954",
+    "identification": {
+      "code": "revision",
+      "date": "2021-02-16T14:17:06Z"
+    },
+    "name": "nls.fi - ELF Buildings LoD0",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": -90,
+      "left": -180,
+      "right": 180,
+      "top": 90
+    },
+    "id": "faf1f1e8-280c-443e-b367-cd72a95b2f2f",
+    "identification": {
+      "code": "revision",
+      "date": "2021-02-16T14:14:05Z"
+    },
+    "name": "nls.fi - ELF Addresses LoD0",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 58.607456529429896,
+      "left": 19.132981398764862,
+      "right": 33.993537468175056,
+      "top": 70.12882572728256
+    },
+    "id": "518c85dd-c887-4dfb-bb5a-26447815b7d2",
+    "identification": {
+      "code": "revision",
+      "date": "2018-11-06T11:28:48Z"
+    },
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 55.7708921719426,
+      "left": 15.924838896819342,
+      "right": 37.51739909824661,
+      "top": 73.03762587697791
+    },
+    "id": "d18d9c7e-ecef-4b33-b961-90ba4e82960d",
+    "identification": {
+      "code": "revision",
+      "date": "2018-11-06T11:30:05Z"
+    },
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "id": "1700fd8e-129d-491e-be31-3b7025fce1e9",
+    "identification": {
+      "code": "revision",
+      "date": "2013-01-03T14:07:19Z"
+    },
+    "name": "karttatiili.fi/dataset/taustakarttasarja",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 59.37375062331667,
+      "left": 18.70516628332159,
+      "right": 36.747454109995516,
+      "top": 69.84422920606727
+    },
+    "id": "fd862376-56e4-4aaa-bd30-151786fbba5e",
+    "identification": {
+      "code": "revision",
+      "date": "2017-01-16T11:21:07Z"
+    },
+    "name": "View Service for BU-theme (point)",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 60.14735312170369,
+      "left": 22.134301080505377,
+      "right": 25.062896379179513,
+      "top": 60.5139582205503
+    },
+    "id": "689d87f8-2531-4cde-919a-0c2be1310338",
+    "identification": {
+      "code": "revision",
+      "date": "2017-11-09T07:23:22Z"
+    },
+    "name": "GTK PANGEO Finland",
+    "natureofthetarget": "service",
+    "organization": "GTK",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "id": "a15fe3c1-973d-4510-a43e-58e26cfb8652",
+    "identification": {
+      "code": "revision",
+      "date": "2012-11-01T13:51:15Z"
+    },
+    "name": "karttatiili.fi/dataset/taustakarttasarja",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "id": "38e8e3fa-62ba-4a03-97c3-4c0cd1004958",
+    "identification": {
+      "code": "revision",
+      "date": "2019-01-29T11:21:55Z"
+    },
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 59.373750623316674,
+      "left": 14.782319702073826,
+      "right": 36.747454109995516,
+      "top": 70.10788599346147
+    },
+    "id": "bccc14c4-46c2-4588-beb5-99988b336d64",
+    "identification": {
+      "code": "revision",
+      "date": "2021-02-19T07:44:39Z"
+    },
+    "name": "Finland INSPIRE View Service for Adresses",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": -90,
+      "left": -180,
+      "right": 180,
+      "top": 90
+    },
+    "id": "4054f774-747d-4a04-beac-48911d4ad2de",
+    "identification": {
+      "code": "revision",
+      "date": "2021-02-19T07:45:10Z"
+    },
+    "lang": "en",
+    "name": "Finland INSPIRE Download Service for HY Theme",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 58.785514825280565,
+      "left": 15.608220469655935,
+      "right": 33.107629330539034,
+      "top": 70.09468369851041
+    },
+    "id": "c3652eed-38f3-4671-b637-5ebbd7685981",
+    "identification": {
+      "code": "revision",
+      "date": "2020-08-23T09:14:11Z"
+    },
+    "lang": "en",
+    "name": "Finland INSPIRE View Service for Administrative Units",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 59.723,
+      "left": 19.113,
+      "right": 31.6,
+      "top": 70.092
+    },
+    "id": "bdc52398-b786-4dc1-b833-cf7ccebe239b",
+    "identification": {
+      "code": "revision",
+      "date": "2021-02-16T19:36:10Z"
+    },
+    "lang": "en",
+    "name": "Natural Resources Institute Finland (LUKE) Map Server",
+    "natureofthetarget": "service",
+    "organization": "Natural Resources Institute Finland (LUKE)",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 6.17716260796283,
+      "left": -28.5195312460299,
+      "right": 33.21012344219015,
+      "top": 70.10994869347958
+    },
+    "id": "d4d582a6-3a65-429d-987d-acd28c2dbfb5",
+    "identification": {
+      "code": "revision",
+      "date": "2020-04-14T15:05:20Z"
+    },
+    "name": "Natural Resources Institute Finland (LUKE) Map Server",
+    "natureofthetarget": "service",
+    "organization": "Natural Resources Institute Finland (LUKE)",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 58.99838140972159,
+      "left": 14.327949614824453,
+      "right": 33.433758062597185,
+      "top": 70.47891766035414
+    },
+    "id": "31731b24-5ad0-4471-8f9e-d07526941937",
+    "identification": {
+      "code": "revision",
+      "date": "2021-02-19T07:45:12Z"
+    },
+    "name": "Finland INSPIRE Download Service for AU Theme",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 59.3620541692909,
+      "left": 15.608220469655935,
+      "right": 33.107629330539034,
+      "top": 70.09468369851041
+    },
+    "id": "fb808177-d2cd-4bd2-9f5a-30ca23ac7668",
+    "identification": {
+      "code": "revision",
+      "date": "2020-08-23T09:14:14Z"
+    },
+    "lang": "en",
+    "name": "Finland INSPIRE View Service for Cadastral Parcel",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 60.116068,
+      "left": 24.83253,
+      "right": 25.272504,
+      "top": 60.228405
+    },
+    "id": "262b03e3-cc44-4cd4-a73a-ad66bc3a99a4",
+    "identification": {
+      "code": "revision",
+      "date": "2021-02-19T07:58:19Z"
+    },
+    "lang": "en",
+    "name": "Finland INSPIRE Download Service for BU Theme",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 59.447151659140054,
+      "left": 15.677572489707678,
+      "right": 33.09986748984633,
+      "top": 70.09282711863985
+    },
+    "id": "8d05028e-6dda-4a41-b206-6ccf8cc95c7c",
+    "identification": {
+      "code": "revision",
+      "date": "2021-02-19T07:45:19Z"
+    },
+    "name": "Finland INSPIRE View Service for Geographical Names",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 59.447152,
+      "left": 15.677572,
+      "right": 33.099867,
+      "top": 70.090689
+    },
+    "id": "da115441-b3dd-4805-bf4c-58a9ad19446d",
+    "identification": {
+      "code": "revision",
+      "date": "2021-02-19T07:45:15Z"
+    },
+    "lang": "en",
+    "name": "Finland INSPIRE Download Service for GN Theme",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": -90,
+      "left": -180,
+      "right": 180,
+      "top": 90
+    },
+    "id": "7ecbe8d0-a6d4-4641-a08c-52a35381a3eb",
+    "identification": {
+      "code": "revision",
+      "date": "2021-02-19T07:45:11Z"
+    },
+    "lang": "en",
+    "name": "Finland INSPIRE Download Service for AD Theme",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": -42.85110181689001,
+      "left": 4.7,
+      "right": 147.2911004483,
+      "top": 71
+    },
+    "id": "fe097a4f-24b3-47f4-a7db-33512d7f5e6e",
+    "identification": {
+      "code": "revision",
+      "date": "2016-01-27T08:26:30Z"
+    },
+    "lang": "en",
+    "name": "MTT Map Server",
+    "natureofthetarget": "service",
+    "organization": "Natural Resources Instiute Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 58.99838140972159,
+      "left": 14.327949614824453,
+      "right": 33.433758062597185,
+      "top": 70.47891766035414
+    },
+    "id": "eb401103-f880-46fd-a098-2897e6b64654",
+    "identification": {
+      "code": "revision",
+      "date": "2021-02-19T07:45:14Z"
+    },
+    "name": "Finland INSPIRE Download Service for CP Theme",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 60.116068,
+      "left": 24.83253,
+      "right": 25.272504,
+      "top": 60.228405
+    },
+    "id": "dcc3cc3e-2483-411e-9325-d05f8ee19241",
+    "identification": {
+      "code": "revision",
+      "date": "2021-02-19T07:58:20Z"
+    },
+    "lang": "en",
+    "name": "Finland INSPIRE Download Service for BU Theme",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 55.61796449437093,
+      "left": -6.381538627062841,
+      "right": 60.381538627062845,
+      "top": 75.58257023372553
+    },
+    "id": "fe7e5273-5787-4e74-81b6-126a3ac04b58",
+    "identification": {
+      "code": "revision",
+      "date": "2018-10-23T19:49:04Z"
+    },
+    "lang": "en",
+    "name": "INSPIRE Hydrography  Hydro Network Finland WFS",
+    "natureofthetarget": "service",
+    "organization": "Finnish Geospatial Research Institute",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 60.116068,
+      "left": 24.83253,
+      "right": 25.272504,
+      "top": 60.228405
+    },
+    "id": "85c9d842-0670-4f9b-aeb7-563e4e300408",
+    "identification": {
+      "code": "revision",
+      "date": "2021-02-19T07:58:16Z"
+    },
+    "lang": "en",
+    "name": "Finland INSPIRE Download Service for BU Theme",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 59.43784057988264,
+      "left": -180,
+      "right": 180,
+      "top": 70.29559197440392
+    },
+    "id": "d947fb36-5600-4a3e-b753-3f2f55890b8b",
+    "identification": {
+      "code": "revision",
+      "date": "2014-09-05T02:16:08Z"
+    },
+    "lang": "en",
+    "natureofthetarget": "service",
+    "organization": "Liikennevirasto",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 58.845965,
+      "left": 19.086456,
+      "right": 31.586788,
+      "top": 70.094006
+    },
+    "id": "4e9dd666-7787-4bf2-bf66-44962e7583b3",
+    "identification": {
+      "code": "revision",
+      "date": "2017-01-31T00:52:43Z"
+    },
+    "name": "GTK Bedrock and Superficial Geology",
+    "natureofthetarget": "service",
+    "organization": "Geological Survey of Finland GTK",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 58.516313,
+      "left": 16.165896,
+      "right": 34.919471,
+      "top": 70.229473
+    },
+    "id": "d126fb89-c69c-4c9b-a15c-faf0edf2da31",
+    "identification": {
+      "code": "revision",
+      "date": "2021-02-17T10:30:57Z"
+    },
+    "name": "GTK_Bedrock_and_Superficial_Geology",
+    "natureofthetarget": "service",
+    "organization": "Geological Survey of Finland GTK",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 58.845965,
+      "left": 19.086456,
+      "right": 31.586788,
+      "top": 70.094006
+    },
+    "id": "b374e4bf-7631-4087-a0ec-915e7c14612a",
+    "identification": {
+      "code": "revision",
+      "date": "2017-01-30T23:12:15Z"
+    },
+    "name": "GTK Bedrock and Superficial Geology",
+    "natureofthetarget": "service",
+    "organization": "Geological Survey of Finland GTK",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 58.845965,
+      "left": 19.086456,
+      "right": 31.586788,
+      "top": 70.094006
+    },
+    "id": "803ae7dc-3296-436d-909d-964c201441bf",
+    "identification": {
+      "code": "revision",
+      "date": "2021-02-16T17:29:26Z"
+    },
+    "name": "GTK Bedrock and Superficial Geology",
+    "natureofthetarget": "service",
+    "organization": "Geological Survey of Finland GTK",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": -90,
+      "left": -180,
+      "right": 180,
+      "top": 90
+    },
+    "id": "fc7cc9ef-b9aa-4f99-bbc6-2e121a18256c",
+    "identification": {
+      "code": "revision",
+      "date": "2018-10-23T07:48:23Z"
+    },
+    "lang": "en",
+    "name": "Download Service for ELF Road Transport Networks",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": -90,
+      "left": -180,
+      "right": 180,
+      "top": 90
+    },
+    "id": "5a04fadf-f5bf-4759-be45-72814b1edf48",
+    "identification": {
+      "code": "revision",
+      "date": "2018-10-23T07:48:22Z"
+    },
+    "lang": "en",
+    "name": "Download Service for ELF Rail Transport Networks",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 59.441875,
+      "left": 18.483297,
+      "right": 30.180517,
+      "top": 62.804496
+    },
+    "id": "37561088-8652-49a7-a2ec-f96834bbc9a0",
+    "identification": {
+      "code": "revision",
+      "date": "2018-10-23T19:49:01Z"
+    },
+    "lang": "en",
+    "name": "Download Service for ELF Elevation Vector Elements",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 55.130442567894136,
+      "left": 14.437417908196998,
+      "right": 38.069986763641815,
+      "top": 73.30470657974993
+    },
+    "id": "7954d286-f6bb-49d1-bc71-490487b177bb",
+    "identification": {
+      "code": "revision",
+      "date": "2020-12-26T09:40:16Z"
+    },
+    "name": "CSC Open Street Map WMS service in ETRS-TM35FIN",
+    "natureofthetarget": "service",
+    "organization": "CSC",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 60.113182,
+      "left": 21.30882,
+      "right": 21.882438,
+      "top": 60.254585
+    },
+    "id": "36224c19-caa8-418c-ba47-db7af5ec5d91",
+    "identification": {
+      "code": "revision",
+      "date": "2018-10-23T20:40:28Z"
+    },
+    "lang": "en",
+    "name": "Download Service for ELF Water Transport Networks",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 59.362054,
+      "left": 15.60822,
+      "right": 33.107629,
+      "top": 70.092395
+    },
+    "id": "4f12a994-ffd3-4d82-bd86-27b326e6b897",
+    "identification": {
+      "code": "revision",
+      "date": "2018-12-20T08:11:33Z"
+    },
+    "lang": "en",
+    "name": "Download Service for ELF Administrative Units",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 59.356651,
+      "left": 18.951384,
+      "right": 26.820001,
+      "top": 60.917598
+    },
+    "id": "539130dc-1d3e-4d01-9155-c90bb53cfba4",
+    "identification": {
+      "code": "revision",
+      "date": "2018-12-20T08:31:45Z"
+    },
+    "lang": "en",
+    "name": "Download Service for ELF Sea Regions",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 59.656916,
+      "left": 16.423894,
+      "right": 31.690809,
+      "top": 69.119538
+    },
+    "id": "cd3a0c22-a710-4f71-ae83-a32478d3a93f",
+    "identification": {
+      "code": "revision",
+      "date": "2018-12-20T08:34:16Z"
+    },
+    "lang": "en",
+    "name": "Download Service for ELF Air Transport Networks",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": -90,
+      "left": -180,
+      "right": 180,
+      "top": 90
+    },
+    "id": "6322322c-ac1d-4126-b0b4-ea41756cfa0e",
+    "identification": {
+      "code": "revision",
+      "date": "2018-12-20T08:16:36Z"
+    },
+    "lang": "en",
+    "name": "Download Service for ELF Cadastral Parcels",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": -90,
+      "left": -180,
+      "right": 180,
+      "top": 90
+    },
+    "id": "3e912f72-6f49-4d1c-b27c-3049c3cc862a",
+    "identification": {
+      "code": "revision",
+      "date": "2018-12-20T08:36:48Z"
+    },
+    "lang": "en",
+    "name": "Download Service for ELF Rail Transport Networks",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 59.362054,
+      "left": 15.60822,
+      "right": 33.107629,
+      "top": 70.092395
+    },
+    "id": "851749db-f30e-4026-aa5e-c2e70524c3b2",
+    "identification": {
+      "code": "revision",
+      "date": "2016-06-06T17:25:59Z"
+    },
+    "lang": "en",
+    "name": "Download Service for ELF Administrative Units",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": -90,
+      "left": -180,
+      "right": 180,
+      "top": 90
+    },
+    "id": "f14510e0-7e8f-4626-a017-d02561393638",
+    "identification": {
+      "code": "revision",
+      "date": "2016-06-06T17:26:00Z"
+    },
+    "lang": "en",
+    "name": "Download Service for ELF Cadastral Parcels",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 59.601867,
+      "left": 15.942233,
+      "right": 33.120636,
+      "top": 70.094548
+    },
+    "id": "a74ae46f-f870-4275-889a-f92ca012e95e",
+    "identification": {
+      "code": "revision",
+      "date": "2016-06-06T17:26:04Z"
+    },
+    "lang": "en",
+    "name": "Download Service for ELF Hydrography Physical Waters",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": -90,
+      "left": -180,
+      "right": 180,
+      "top": 90
+    },
+    "id": "9e5ba546-be37-447d-98e3-6054253735bf",
+    "identification": {
+      "code": "revision",
+      "date": "2016-06-06T17:26:13Z"
+    },
+    "lang": "en",
+    "name": "Download Service for ELF Road Transport Networks",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": -90,
+      "left": -180,
+      "right": 180,
+      "top": 90
+    },
+    "id": "80dd71aa-2426-4aee-bdbc-655d592ddd5a",
+    "identification": {
+      "code": "revision",
+      "date": "2016-06-06T17:26:12Z"
+    },
+    "lang": "en",
+    "name": "Download Service for ELF Rail Transport Networks",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 59.447152,
+      "left": 15.677572,
+      "right": 33.099867,
+      "top": 70.090689
+    },
+    "id": "4f381d9d-5b58-438e-a1b7-dd796af2e93c",
+    "identification": {
+      "code": "revision",
+      "date": "2016-06-06T17:26:03Z"
+    },
+    "lang": "en",
+    "name": "Download Service for ELF Geographical Names",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 60.116068,
+      "left": 24.83253,
+      "right": 25.272504,
+      "top": 60.228405
+    },
+    "id": "37428f83-22b2-450a-902b-8059d6b18df3",
+    "identification": {
+      "code": "revision",
+      "date": "2016-06-06T17:25:59Z"
+    },
+    "lang": "en",
+    "name": "Download Service for ELF Buildings 2D Core",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": -90,
+      "left": -180,
+      "right": 180,
+      "top": 90
+    },
+    "id": "ac91b607-a1ac-4b1a-9fbf-6e936aa3c75a",
+    "identification": {
+      "code": "revision",
+      "date": "2016-06-06T17:25:58Z"
+    },
+    "lang": "en",
+    "name": "Download Service for ELF Addresses",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 55.130442567894136,
+      "left": 14.437417908196998,
+      "right": 34.09292919139797,
+      "top": 73.30470657974993
+    },
+    "id": "3ae76db9-a0a3-406f-adeb-c5d44720a40b",
+    "identification": {
+      "code": "revision",
+      "date": "2020-12-26T00:17:59Z"
+    },
+    "name": "AVAA Open Street Map WFS service",
+    "natureofthetarget": "service",
+    "organization": "CSC",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 59.723,
+      "left": 19.113,
+      "right": 31.6,
+      "top": 70.092
+    },
+    "id": "a7fc787f-2e7e-4d61-9ba5-1a6b423f6fee",
+    "identification": {
+      "code": "revision",
+      "date": "2021-02-16T19:36:32Z"
+    },
+    "lang": "en",
+    "name": "GeoServer Web Feature Service",
+    "natureofthetarget": "service",
+    "organization": "Natural Resources Institute Finland (LUKE)",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 60.20189,
+      "left": 24.854611,
+      "right": 25.268111,
+      "top": 60.354845
+    },
+    "id": "914aba32-ba11-4237-ba3b-81933c71e511",
+    "identification": {
+      "code": "revision",
+      "date": "2018-10-23T07:48:21Z"
+    },
+    "lang": "en",
+    "name": "Download Service for ELF Protected Sites",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 57.51779906756578,
+      "left": 14.47425088115045,
+      "right": 37.43667449631056,
+      "top": 71.51524651565843
+    },
+    "id": "265f4664-73fc-4658-a106-327c75fdac01",
+    "identification": {
+      "code": "revision",
+      "date": "2016-11-11T15:38:05Z"
+    },
+    "name": "GeoServer Web Feature Service",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 59.826006,
+      "left": 19.836603,
+      "right": 20.034518,
+      "top": 59.914416
+    },
+    "id": "09bdc3e2-dbf0-40a4-b63a-65ac709dbe2e",
+    "identification": {
+      "code": "revision",
+      "date": "2018-10-23T07:48:19Z"
+    },
+    "lang": "en",
+    "name": "Download Service for ELF Land Cover",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 57.51779906756578,
+      "left": 14.47425088115045,
+      "right": 37.43667449631056,
+      "top": 71.51524651565843
+    },
+    "id": "58ab931d-c629-4c05-b860-23726d50d36c",
+    "identification": {
+      "code": "revision",
+      "date": "2016-11-11T15:38:05Z"
+    },
+    "name": "GeoServer Web Map Service",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 59.601867,
+      "left": 16.100589,
+      "right": 32.775999,
+      "top": 69.840105
+    },
+    "id": "04a43036-fdaf-467c-b25c-8964b77e516c",
+    "identification": {
+      "code": "revision",
+      "date": "2018-10-23T07:47:49Z"
+    },
+    "lang": "en",
+    "name": "Download Service for ELF Hydrography Physical Waters",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 59.441875,
+      "left": 18.483297,
+      "right": 30.180517,
+      "top": 62.804496
+    },
+    "id": "001cd0df-a292-4a51-b8e9-0d267733be53",
+    "identification": {
+      "code": "revision",
+      "date": "2018-12-20T08:19:09Z"
+    },
+    "lang": "en",
+    "name": "Download Service for ELF Elevation Vector Elements",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 59.447152,
+      "left": 15.677572,
+      "right": 33.099867,
+      "top": 70.090689
+    },
+    "id": "13eb0c8d-eb14-4630-b14d-5ea1c3cd5743",
+    "identification": {
+      "code": "revision",
+      "date": "2018-12-20T08:21:40Z"
+    },
+    "lang": "en",
+    "name": "Download Service for ELF Geographical Names",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 59.362054,
+      "left": 15.60822,
+      "right": 33.107629,
+      "top": 70.092395
+    },
+    "id": "39803894-3466-403f-b8fb-9461a7566e0b",
+    "identification": {
+      "code": "revision",
+      "date": "2018-10-23T07:48:14Z"
+    },
+    "lang": "en",
+    "name": "Download Service for ELF Administrative Units",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 48.125,
+      "left": 2.625,
+      "right": 37.875,
+      "top": 74.375
+    },
+    "id": "23438718-a70f-4ba7-9d1e-ad2a2f8213fe",
+    "identification": {
+      "code": "revision",
+      "date": "2021-02-16T01:34:44Z"
+    },
+    "name": "Finnish Climate Maps",
+    "natureofthetarget": "service",
+    "organization": "Finnish Meteorological Institute",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": -90,
+      "left": -180,
+      "right": 180,
+      "top": 90
+    },
+    "id": "a618b748-a20f-4ceb-b20f-8ef9814be072",
+    "identification": {
+      "code": "revision",
+      "date": "2016-06-06T17:26:06Z"
+    },
+    "lang": "en",
+    "name": "Download Service for ELF Land Cover",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": -90,
+      "left": -180,
+      "right": 180,
+      "top": 90
+    },
+    "id": "5ef6afe6-47af-4903-a4bd-28c4b314df55",
+    "identification": {
+      "code": "revision",
+      "date": "2018-12-20T08:09:02Z"
+    },
+    "lang": "en",
+    "name": "Download Service for ELF Addresses",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 53.82794367328524,
+      "left": 9.96527604794366,
+      "right": 48.56732565927926,
+      "top": 72.74833069098817
+    },
+    "id": "17cba7c2-70a2-4dfb-9fcb-34df07b231dc",
+    "identification": {
+      "code": "revision",
+      "date": "2019-04-18T12:40:36Z"
+    },
+    "name": "GeoServer Web Map Service",
+    "natureofthetarget": "service",
+    "organization": "CGI Finland Oy",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 59.826006,
+      "left": 19.836603,
+      "right": 20.034518,
+      "top": 59.914416
+    },
+    "id": "006228c8-7918-44ae-9198-bebe883ba8b4",
+    "identification": {
+      "code": "revision",
+      "date": "2018-12-20T08:26:43Z"
+    },
+    "lang": "en",
+    "name": "Download Service for ELF Land Cover",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": -90,
+      "left": -180,
+      "right": 180,
+      "top": 90
+    },
+    "id": "21442487-3818-48b2-9cd0-ad4e2dd10491",
+    "identification": {
+      "code": "revision",
+      "date": "2018-10-23T07:48:13Z"
+    },
+    "lang": "en",
+    "name": "Download Service for ELF Addresses",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 6.17716260796283,
+      "left": -28.5195312460299,
+      "right": 33.17192220175016,
+      "top": 70.21617822876271
+    },
+    "id": "f5644070-aed1-4b13-ba22-2e8ae7ec6d89",
+    "identification": {
+      "code": "revision",
+      "date": "2021-02-16T18:47:38Z"
+    },
+    "lang": "en",
+    "name": "GeoServer Web Feature Service",
+    "natureofthetarget": "service",
+    "organization": "Natural Resources Institute Finland (LUKE)",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 60.116068,
+      "left": 24.83253,
+      "right": 25.272504,
+      "top": 60.228405
+    },
+    "id": "2ebe4307-ccbb-4152-ac32-0013c373bded",
+    "identification": {
+      "code": "revision",
+      "date": "2018-10-23T07:48:16Z"
+    },
+    "lang": "en",
+    "name": "Download Service for ELF Buildings 2D Core",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": -90,
+      "left": -180,
+      "right": 180,
+      "top": 90
+    },
+    "id": "deef9b18-6333-4671-bf72-64c3bb1c95eb",
+    "identification": {
+      "code": "revision",
+      "date": "2018-12-20T08:39:19Z"
+    },
+    "lang": "en",
+    "name": "Download Service for ELF Road Transport Networks",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 59.356651,
+      "left": 18.951384,
+      "right": 26.820001,
+      "top": 60.917598
+    },
+    "id": "7d5a7736-eb59-416c-b5c6-058853d0877b",
+    "identification": {
+      "code": "revision",
+      "date": "2018-10-25T00:13:43Z"
+    },
+    "lang": "en",
+    "name": "Download Service for ELF Sea Regions",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 59.447152,
+      "left": 15.677572,
+      "right": 33.099867,
+      "top": 70.090689
+    },
+    "id": "2052dc23-28da-4bb6-a0c9-09037e199580",
+    "identification": {
+      "code": "revision",
+      "date": "2018-10-23T07:48:18Z"
+    },
+    "lang": "en",
+    "name": "Download Service for ELF Geographical Names",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 59.656916,
+      "left": 16.423894,
+      "right": 31.690809,
+      "top": 69.119538
+    },
+    "id": "b860a809-2773-435f-afce-f4543d3fa401",
+    "identification": {
+      "code": "revision",
+      "date": "2018-10-23T19:49:05Z"
+    },
+    "lang": "en",
+    "name": "Download Service for ELF Air Transport Networks",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": -90,
+      "left": -180,
+      "right": 180,
+      "top": 90
+    },
+    "id": "c2857956-1114-4ef3-b0e7-982fcfc86e67",
+    "identification": {
+      "code": "revision",
+      "date": "2018-10-23T07:48:17Z"
+    },
+    "lang": "en",
+    "name": "Download Service for ELF Cadastral Parcels",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 59.37375059497793,
+      "left": 14.782319702073826,
+      "right": 36.747454109995516,
+      "top": 70.10788598244933
+    },
+    "id": "0758ff1f-26fa-4329-9c38-297c4052c433",
+    "identification": {
+      "code": "revision",
+      "date": "2021-02-19T07:45:17Z"
+    },
+    "name": "View Service for BU-theme (point)",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 60.20189,
+      "left": 24.854611,
+      "right": 25.268111,
+      "top": 60.354845
+    },
+    "id": "671d3d1a-2475-4f3d-88d0-be7a630439bd",
+    "identification": {
+      "code": "revision",
+      "date": "2018-12-20T08:29:14Z"
+    },
+    "lang": "en",
+    "name": "Download Service for ELF Protected Sites",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 60.116068,
+      "left": 24.83253,
+      "right": 25.272504,
+      "top": 60.228405
+    },
+    "id": "165b9ac6-0c20-4575-a749-c9f4a4eac737",
+    "identification": {
+      "code": "revision",
+      "date": "2018-12-20T08:14:05Z"
+    },
+    "lang": "en",
+    "name": "Download Service for ELF Buildings 2D Core",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 60.113182,
+      "left": 21.30882,
+      "right": 21.882438,
+      "top": 60.254585
+    },
+    "id": "0ef2df9d-835f-456d-a7ac-958fa319b6f7",
+    "identification": {
+      "code": "revision",
+      "date": "2018-12-20T08:41:50Z"
+    },
+    "lang": "en",
+    "name": "Download Service for ELF Water Transport Networks",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "id": "4fc343ec-0fea-4f5e-bbfa-4f249cc05c0a",
+    "identification": {
+      "code": "revision",
+      "date": "2014-11-29T10:50:14Z"
+    },
+    "name": "karttatiili.fi/dataset/taustakarttasarja",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 59.601867,
+      "left": 16.100589,
+      "right": 32.775999,
+      "top": 69.840105
+    },
+    "id": "5b859963-e248-4572-8fbc-10958b679688",
+    "identification": {
+      "code": "revision",
+      "date": "2018-12-20T08:24:11Z"
+    },
+    "lang": "en",
+    "name": "Download Service for ELF Hydrography Physical Waters",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 60.115596,
+      "left": 24.806442,
+      "right": 25.242943,
+      "top": 60.230427
+    },
+    "id": "9bbc773b-2392-4ebb-a54c-e69ee7b74f4c",
+    "identification": {
+      "code": "revision",
+      "date": "2016-06-06T17:26:10Z"
+    },
+    "lang": "en",
+    "name": "Download Service for ELF Protected Sites",
+    "natureofthetarget": "service",
+    "organization": "National Land Survey of Finland",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 59.29684411577229,
+      "left": 15.505974438197567,
+      "right": 33.935610927708964,
+      "top": 70.47606778195585
+    },
+    "id": "9289b4d3-2093-405e-aebb-d9ce8886ac8e",
+    "identification": {
+      "code": "revision",
+      "date": "2016-11-11T15:38:16Z"
+    },
+    "name": "Sito WMS",
+    "natureofthetarget": "service",
+    "organization": "Sito Oy",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 59.28611934695727,
+      "left": 15.489989776930269,
+      "right": 33.20866087811784,
+      "top": 70.14047125271428
+    },
+    "id": "1ee74c95-c36f-47de-854b-82e1f41d8c31",
+    "identification": {
+      "code": "revision",
+      "date": "2018-10-23T20:09:35Z"
+    },
+    "name": "elf-wms",
+    "natureofthetarget": "service",
+    "organization": "www.nls.fi",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 58.9983806670008,
+      "left": 18.63160066209313,
+      "right": 33.43371996961116,
+      "top": 70.36452630302504
+    },
+    "id": "355095a1-ee36-4bbe-9576-3d78e5dcd1c2",
+    "identification": {
+      "code": "revision",
+      "date": "2021-02-17T10:16:53Z"
+    },
+    "name": "C:\\ProjectTemplates\\Map\\Map.aprx",
+    "natureofthetarget": "service",
+    "organization": "",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 49.24533754424696,
+      "left": -123.16828586808234,
+      "right": 60.381538627062845,
+      "top": 75.58257023372553
+    },
+    "id": "253bb740-82ee-4603-99bd-eca951234869",
+    "identification": {
+      "code": "revision",
+      "date": "2015-07-08T10:51:39Z"
+    },
+    "lang": "en",
+    "name": "GeoServer Web Map Service",
+    "natureofthetarget": "service",
+    "organization": "Finnish Geodetic Institute",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": -0.001,
+      "left": -2.961,
+      "right": 33.359,
+      "top": 73.488
+    },
+    "id": "5bebf1fe-6c5e-46f1-8dc0-724e3deb7db0",
+    "identification": {
+      "code": "revision",
+      "date": "2021-02-19T10:56:47Z"
+    },
+    "natureofthetarget": "service",
+    "organization": "Finnish Environment Institute",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 58.546110054981455,
+      "left": 15.788701258749237,
+      "right": 38.5405275206897,
+      "top": 70.1
+    },
+    "id": "b785c477-437d-4f5a-8bbe-42775ad03dfc",
+    "identification": {
+      "code": "revision",
+      "date": "2015-03-09T15:25:36Z"
+    },
+    "lang": "en",
+    "natureofthetarget": "service",
+    "organization": "Liikennevirasto",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 59.46517255398247,
+      "left": 16.87956562003199,
+      "right": 42.63868940329498,
+      "top": 70.0583838712747
+    },
+    "id": "bc9fec69-9c8d-4266-b98b-66628cd01f6b",
+    "identification": {
+      "code": "revision",
+      "date": "2014-10-07T07:38:53Z"
+    },
+    "name": "Liikenneviraston maaliikenne WMS",
+    "natureofthetarget": "service",
+    "organization": "Liikennevirasto",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 58.5194793308324,
+      "left": 17.71853950743854,
+      "right": 42.168698627443604,
+      "top": 69.44516789737006
+    },
+    "id": "65497e3f-4428-484a-8b3c-eaffc60c0ef0",
+    "identification": {
+      "code": "revision",
+      "date": "2014-10-14T09:09:08Z"
+    },
+    "name": "Liikenneviraston WMS",
+    "natureofthetarget": "service",
+    "organization": "Liikennevirasto",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 58.60745650071967,
+      "left": 15.053785270822843,
+      "right": 33.993537468175056,
+      "top": 70.26415661214813
+    },
+    "id": "658e1227-c557-43d0-8dbb-bbc02f842741",
+    "identification": {
+      "code": "revision",
+      "date": "2018-05-10T11:23:53Z"
+    },
+    "name": "GeoServer Web Feature Service",
+    "natureofthetarget": "service",
+    "organization": "Suomen metsäkeskus",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 59.67740863548274,
+      "left": 19.66455712118085,
+      "right": 32.81616216254422,
+      "top": 69.989407956919
+    },
+    "id": "49a56c4c-57ff-48a7-98ef-618326a7da15",
+    "identification": {
+      "code": "revision",
+      "date": "2014-05-20T11:41:37Z"
+    },
+    "name": "Lipas_WMS",
+    "natureofthetarget": "service",
+    "organization": "Jyväskylän yliopisto",
+    "rank": -1,
+    "region": ""
+  },
+  {
+    "bbox": {
+      "bottom": 58.54611008467206,
+      "left": 18.244125756300125,
+      "right": 41.32501435322335,
+      "top": 69.54651666436382
+    },
+    "id": "c74605e5-19de-48e7-8a5e-5dec1ff52be7",
+    "identification": {
+      "code": "revision",
+      "date": "2014-10-14T09:08:54Z"
+    },
+    "name": "Liikenneviraston meriliikenne WMS",
+    "natureofthetarget": "service",
+    "organization": "Liikennevirasto",
+    "rank": -1,
+    "region": ""
+  }
+]

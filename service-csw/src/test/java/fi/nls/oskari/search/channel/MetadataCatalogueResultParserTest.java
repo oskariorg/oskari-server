@@ -32,7 +32,21 @@ public class MetadataCatalogueResultParserTest {
                 response.put(item.toJSON());
             } catch (Exception ignored) {}
         });
+        assertTrue("JSON should match", JSONHelper.isEqual(new JSONArray(json), response));
+    }
+    @Test
+    public void parseResultASDI() throws Exception {
+        String json = ResourceHelper.readStringResource("GetRecords-expected-asdi.json", this);
+        Element root = XmlHelper.parseXML(getClass().getResourceAsStream("GetRecords-response-asdi.xml"));
+        MetadataCatalogueResultParser RESULT_PARSER = new MetadataCatalogueResultParser();
 
+        JSONArray response = new JSONArray();
+        getResults(root).forEach(metadata -> {
+            try {
+                final SearchResultItem item = RESULT_PARSER.parseResult(metadata);
+                response.put(item.toJSON());
+            } catch (Exception ignored) {}
+        });
         assertTrue("JSON should match", JSONHelper.isEqual(new JSONArray(json), response));
     }
     protected Stream<Element> getResults(Element root) {
