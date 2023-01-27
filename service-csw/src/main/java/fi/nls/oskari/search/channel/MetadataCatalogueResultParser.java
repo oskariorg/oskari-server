@@ -16,8 +16,6 @@ import java.util.*;
  */
 public class MetadataCatalogueResultParser {
 
-    private static final Logger log = LogFactory.getLogger(MetadataCatalogueResultParser.class);
-
     public static final String KEY_IDENTIFICATION = "identification";
     public static final String KEY_IDENTIFICATION_DATE = "date";
     public static final String KEY_IDENTIFICATION_CODELIST = "code";
@@ -42,7 +40,6 @@ public class MetadataCatalogueResultParser {
                 XmlHelper.getFirstChild(elem, "fileIdentifier"),
                 "CharacterString");
         item.setResourceId(uuid);
-        //item.addUuId(uuid);
         // lang
         Element languageCode = XmlHelper.getFirstChild(
                 XmlHelper.getFirstChild(elem, "language"),
