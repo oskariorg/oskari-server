@@ -32,7 +32,6 @@ public class MetadataCatalogueResultParserTest {
                 response.put(item.toJSON());
             } catch (Exception ignored) {}
         });
-
         assertTrue("JSON should match", JSONHelper.isEqual(new JSONArray(json), response));
     }
     @Test
