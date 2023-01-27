@@ -159,17 +159,19 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
     public ChannelSearchResult parseResults(Element root, SearchCriteria searchCriteria) {
 
         ChannelSearchResult channelSearchResult = new ChannelSearchResult();
-        log.debug("parseResults");
         final String srs = searchCriteria.getSRS();
         try {
             final long start = System.currentTimeMillis();
             getResults(root).forEach(metadata -> {
                 try {
-                    final SearchResultItem item = RESULT_PARSER.parseResult(metadata);
-                    item.addValue("geom", getWKT(item, WKTHelper.PROJ_EPSG_4326, srs));
+                    SearchResultItem item = RESULT_PARSER.parseResult(metadata);
                     channelSearchResult.addItem(item);
+                    // add coverage area if we can transform it
+                    item.addValue("geom", getWKT(item, WKTHelper.PROJ_EPSG_4326, srs));
                 } catch (Exception e) {
-                    log.info("Error parsing metadata search result item", e);
+                    String msg = "Error parsing metadata search result item or transform coverage area";
+                    log.info(msg, ":", e.getMessage());
+                    log.debug(e, msg);
                 }
             });
 
@@ -193,11 +195,11 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
             return null;
         }
         // transform points to map projection and create a WKT bbox
+        double x1 = item.getWestBoundLongitude();
+        double y1 = item.getSouthBoundLatitude();
+        double x2 = item.getEastBoundLongitude();
+        double y2 = item.getNorthBoundLatitude();
         try {
-            double x1 = item.getWestBoundLongitude();
-            double y1 = item.getSouthBoundLatitude();
-            double x2 = item.getEastBoundLongitude();
-            double y2 = item.getNorthBoundLatitude();
 
             GeometryFactory gf = new GeometryFactory();
             CoordinateSequence cs = GeometryHelper.createLinearRing(gf, x1, y1, x2, y2);
@@ -211,8 +213,11 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
             Geometry projected = JTS.transform(polygon, mt);
 
             return WKTHelper.getWKT(projected);
-        } catch(Exception e){
+        } catch(Exception e) {
             log.error("Unable to transform BBOX WKT:", e.getMessage());
+        } catch (OutOfMemoryError oom) {
+            log.warn("OutOfMemoryError with bbox:",
+                "w:", x1, "s:", y1, "e:", x2, "n:", y2);
         }
         return null;
     }
