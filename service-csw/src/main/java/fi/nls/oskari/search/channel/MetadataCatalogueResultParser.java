@@ -156,22 +156,41 @@ public class MetadataCatalogueResultParser {
     }
 /*
 
-     Some services might have wacky values though so let's filter them out
+     Some services might have wacky values though so let's filter them out.
+     Missing values:
+    <gmd:geographicElement>
+        <gmd:EX_GeographicBoundingBox>
+            <gmd:westBoundLongitude>
+                <gco:Decimal />
+            </gmd:westBoundLongitude>
+            <gmd:eastBoundLongitude>
+                <gco:Decimal />
+            </gmd:eastBoundLongitude>
+            <gmd:southBoundLatitude>
+                <gco:Decimal />
+            </gmd:southBoundLatitude>
+            <gmd:northBoundLatitude>
+                <gco:Decimal />
+            </gmd:northBoundLatitude>
+        </gmd:EX_GeographicBoundingBox>
+    </gmd:geographicElement>
+
+     These will make interpolated WKT for OutOfMemory:
      <gmd:geographicElement>
-     <gmd:EX_GeographicBoundingBox>
-     <gmd:westBoundLongitude>
-     <gco:Decimal>-340282346638529000000000000000000000000</gco:Decimal>
-     </gmd:westBoundLongitude>
-     <gmd:eastBoundLongitude>
-     <gco:Decimal>340282346638529000000000000000000000000</gco:Decimal>
-     </gmd:eastBoundLongitude>
-     <gmd:southBoundLatitude>
-     <gco:Decimal>-340282346638529000000000000000000000000</gco:Decimal>
-     </gmd:southBoundLatitude>
-     <gmd:northBoundLatitude>
-     <gco:Decimal>340282346638529000000000000000000000000</gco:Decimal>
-     </gmd:northBoundLatitude>
-     </gmd:EX_GeographicBoundingBox>
+         <gmd:EX_GeographicBoundingBox>
+             <gmd:westBoundLongitude>
+                <gco:Decimal>-340282346638529000000000000000000000000</gco:Decimal>
+             </gmd:westBoundLongitude>
+             <gmd:eastBoundLongitude>
+                <gco:Decimal>340282346638529000000000000000000000000</gco:Decimal>
+             </gmd:eastBoundLongitude>
+             <gmd:southBoundLatitude>
+                <gco:Decimal>-340282346638529000000000000000000000000</gco:Decimal>
+             </gmd:southBoundLatitude>
+             <gmd:northBoundLatitude>
+                <gco:Decimal>340282346638529000000000000000000000000</gco:Decimal>
+             </gmd:northBoundLatitude>
+         </gmd:EX_GeographicBoundingBox>
      </gmd:geographicElement>
  */
     private Double getSanitizedValue(String decimal, int max) {

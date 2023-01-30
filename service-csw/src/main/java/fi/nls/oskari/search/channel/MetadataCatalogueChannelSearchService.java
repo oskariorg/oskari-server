@@ -211,6 +211,7 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
         } catch (OutOfMemoryError oom) {
             log.warn("OutOfMemoryError with bbox:",
                 "w:", x1, "s:", y1, "e:", x2, "n:", y2);
+            throw oom;
         }
         return null;
     }
