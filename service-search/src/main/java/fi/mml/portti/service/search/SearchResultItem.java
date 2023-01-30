@@ -308,7 +308,7 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
 			this.westBoundLongitude = null;
 		}
 	}
-	public void setWestBoundLongitude(double westBoundLongitude) {
+	public void setWestBoundLongitude(Double westBoundLongitude) {
 		this.westBoundLongitude = westBoundLongitude;
 	}
 	public Double getSouthBoundLatitude() {
@@ -325,7 +325,7 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
 			this.southBoundLatitude = null;
 		}
 	}
-	public void setSouthBoundLatitude(double southBoundLatitude) {
+	public void setSouthBoundLatitude(Double southBoundLatitude) {
 		this.southBoundLatitude = southBoundLatitude;
 	}
 	public Double getEastBoundLongitude() {
@@ -342,7 +342,7 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
 			this.eastBoundLongitude = null;
 		}
 	}
-	public void setEastBoundLongitude(double eastBoundLongitude) {
+	public void setEastBoundLongitude(Double eastBoundLongitude) {
 		this.eastBoundLongitude = eastBoundLongitude;
 	}
 	public Double getNorthBoundLatitude() {
@@ -359,7 +359,7 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
 			this.northBoundLatitude = null;
 		}
 	}
-	public void setNorthBoundLatitude(double northBoundLatitude) {
+	public void setNorthBoundLatitude(Double northBoundLatitude) {
 		this.northBoundLatitude = northBoundLatitude;
 	}
 

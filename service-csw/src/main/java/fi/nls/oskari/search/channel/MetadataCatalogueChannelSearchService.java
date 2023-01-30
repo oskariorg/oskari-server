@@ -29,6 +29,7 @@ import org.w3c.dom.Element;
 
 import java.net.HttpURLConnection;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static fi.nls.oskari.csw.service.CSWService.PROP_SERVICE_URL;
@@ -157,24 +158,16 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
     }
 
     public ChannelSearchResult parseResults(Element root, SearchCriteria searchCriteria) {
-
         ChannelSearchResult channelSearchResult = new ChannelSearchResult();
         final String srs = searchCriteria.getSRS();
         try {
             final long start = System.currentTimeMillis();
-            getResults(root).forEach(metadata -> {
-                try {
-                    SearchResultItem item = RESULT_PARSER.parseResult(metadata);
-                    channelSearchResult.addItem(item);
-                    // add coverage area if we can transform it
-                    item.addValue("geom", getWKT(item, WKTHelper.PROJ_EPSG_4326, srs));
-                } catch (Exception e) {
-                    String msg = "Error parsing metadata search result item or transform coverage area";
-                    log.info(msg, ":", e.getMessage());
-                    log.debug(e, msg);
-                }
-            });
-
+            List<SearchResultItem> results = getResults(root)
+                    .map(metadata -> RESULT_PARSER.parseResult(metadata))
+                    .collect(Collectors.toList());
+            channelSearchResult.getSearchResultItems().addAll(results);
+            // enhance results with coverage geometry
+            results.forEach(item -> item.addValue("geom", getWKT(item, WKTHelper.PROJ_EPSG_4326, srs)));
             final long end =  System.currentTimeMillis();
             log.debug("Parsing metadata results took", (end-start), "ms");
             channelSearchResult.setQueryFailed(false);
@@ -213,11 +206,12 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
             Geometry projected = JTS.transform(polygon, mt);
 
             return WKTHelper.getWKT(projected);
-        } catch(Exception e) {
+        } catch (Exception e) {
             log.error("Unable to transform BBOX WKT:", e.getMessage());
         } catch (OutOfMemoryError oom) {
             log.warn("OutOfMemoryError with bbox:",
                 "w:", x1, "s:", y1, "e:", x2, "n:", y2);
+            throw oom;
         }
         return null;
     }

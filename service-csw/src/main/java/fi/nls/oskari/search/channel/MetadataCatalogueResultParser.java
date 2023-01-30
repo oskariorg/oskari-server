@@ -2,8 +2,7 @@ package fi.nls.oskari.search.channel;
 
 import fi.mml.portti.service.search.SearchResultItem;
 import fi.nls.oskari.control.metadata.MetadataField;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.JSONHelper;
 import org.oskari.xml.XmlHelper;
 import org.json.JSONObject;
 import org.w3c.dom.Element;
@@ -20,6 +19,8 @@ public class MetadataCatalogueResultParser {
     public static final String KEY_IDENTIFICATION_DATE = "date";
     public static final String KEY_IDENTIFICATION_CODELIST = "code";
     public static final String KEY_NATUREOFTHETARGET = "natureofthetarget";
+    private static final int MAX_LONGITUDE = 180;
+    private static final int MAX_LATITUDE = 90;
     // we need to map languages from 3-letter codes to 2-letter codes so initialize a global codeMapping property
     private final static Map<String, String> ISO3letterOskariLangMapping = new HashMap<>();
 
@@ -33,7 +34,7 @@ public class MetadataCatalogueResultParser {
         }
     }
 
-    public SearchResultItem parseResult(final Element elem) throws Exception {
+    public SearchResultItem parseResult(final Element elem) {
         final SearchResultItem item = new SearchResultItem();
         // id / uuid
         String uuid = XmlHelper.getChildValue(
@@ -94,8 +95,8 @@ public class MetadataCatalogueResultParser {
                 "codeListValue");
 
         JSONObject identification = new JSONObject();
-        identification.put(KEY_IDENTIFICATION_CODELIST, dateType);
-        identification.put(KEY_IDENTIFICATION_DATE, date);
+        JSONHelper.putValue(identification, KEY_IDENTIFICATION_CODELIST, dateType);
+        JSONHelper.putValue(identification, KEY_IDENTIFICATION_DATE, date);
         item.addValue(KEY_IDENTIFICATION, identification);
 
         item.setDescription(XmlHelper.getChildValue(
@@ -137,24 +138,70 @@ public class MetadataCatalogueResultParser {
             <gmd:northBoundLatitude>
                 <gco:Decimal>60.29783894</gco:Decimal>
             </gmd:northBoundLatitude>
+
      */
     private void setupBBox(final SearchResultItem item, final Element bbox) {
         if (bbox == null) {
             return;
         }
-        item.setWestBoundLongitude(XmlHelper.getChildValue(
-                XmlHelper.getFirstChild(bbox, "westBoundLongitude"),
-                "Decimal"));
-        item.setEastBoundLongitude(XmlHelper.getChildValue(
-                XmlHelper.getFirstChild(bbox, "eastBoundLongitude"),
-                "Decimal"));
+        item.setWestBoundLongitude(getSanitizedValue(getBboxValue(bbox, "westBoundLongitude"), MAX_LONGITUDE));
+        item.setEastBoundLongitude(getSanitizedValue(getBboxValue(bbox, "eastBoundLongitude"), MAX_LONGITUDE));
+        item.setSouthBoundLatitude(getSanitizedValue(getBboxValue(bbox, "southBoundLatitude"), MAX_LATITUDE));
+        item.setNorthBoundLatitude(getSanitizedValue(getBboxValue(bbox, "northBoundLatitude"), MAX_LATITUDE));
+    }
+    private String getBboxValue(Element bbox, String coord) {
+        return XmlHelper.getChildValue(
+                XmlHelper.getFirstChild(bbox, coord),
+                "Decimal");
+    }
+/*
 
-        item.setSouthBoundLatitude(XmlHelper.getChildValue(
-                XmlHelper.getFirstChild(bbox, "southBoundLatitude"),
-                "Decimal"));
+     Some services might have wacky values though so let's filter them out.
+     Missing values:
+    <gmd:geographicElement>
+        <gmd:EX_GeographicBoundingBox>
+            <gmd:westBoundLongitude>
+                <gco:Decimal />
+            </gmd:westBoundLongitude>
+            <gmd:eastBoundLongitude>
+                <gco:Decimal />
+            </gmd:eastBoundLongitude>
+            <gmd:southBoundLatitude>
+                <gco:Decimal />
+            </gmd:southBoundLatitude>
+            <gmd:northBoundLatitude>
+                <gco:Decimal />
+            </gmd:northBoundLatitude>
+        </gmd:EX_GeographicBoundingBox>
+    </gmd:geographicElement>
 
-        item.setNorthBoundLatitude(XmlHelper.getChildValue(
-                XmlHelper.getFirstChild(bbox, "northBoundLatitude"),
-                "Decimal"));
+     These will make interpolated WKT for OutOfMemory:
+     <gmd:geographicElement>
+         <gmd:EX_GeographicBoundingBox>
+             <gmd:westBoundLongitude>
+                <gco:Decimal>-340282346638529000000000000000000000000</gco:Decimal>
+             </gmd:westBoundLongitude>
+             <gmd:eastBoundLongitude>
+                <gco:Decimal>340282346638529000000000000000000000000</gco:Decimal>
+             </gmd:eastBoundLongitude>
+             <gmd:southBoundLatitude>
+                <gco:Decimal>-340282346638529000000000000000000000000</gco:Decimal>
+             </gmd:southBoundLatitude>
+             <gmd:northBoundLatitude>
+                <gco:Decimal>340282346638529000000000000000000000000</gco:Decimal>
+             </gmd:northBoundLatitude>
+         </gmd:EX_GeographicBoundingBox>
+     </gmd:geographicElement>
+ */
+    private Double getSanitizedValue(String decimal, int max) {
+        Double value = null;
+        try {
+            value = Double.parseDouble(decimal);
+        } catch (Exception ignored) {}
+        if (value != null && Math.abs(value) > max) {
+            value = null;
+        }
+        return value;
+
     }
 }
