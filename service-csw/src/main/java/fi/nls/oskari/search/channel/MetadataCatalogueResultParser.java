@@ -19,6 +19,8 @@ public class MetadataCatalogueResultParser {
     public static final String KEY_IDENTIFICATION_DATE = "date";
     public static final String KEY_IDENTIFICATION_CODELIST = "code";
     public static final String KEY_NATUREOFTHETARGET = "natureofthetarget";
+    private static final int MAX_LONGITUDE = 180;
+    private static final int MAX_LATITUDE = 90;
     // we need to map languages from 3-letter codes to 2-letter codes so initialize a global codeMapping property
     private final static Map<String, String> ISO3letterOskariLangMapping = new HashMap<>();
 
@@ -142,12 +144,10 @@ public class MetadataCatalogueResultParser {
         if (bbox == null) {
             return;
         }
-        int maxLongitude = 180;
-        int maxLatitude = 90;
-        item.setWestBoundLongitude(getSanitizedValue(getBboxValue(bbox, "westBoundLongitude"), maxLongitude));
-        item.setEastBoundLongitude(getSanitizedValue(getBboxValue(bbox, "eastBoundLongitude"), maxLongitude));
-        item.setSouthBoundLatitude(getSanitizedValue(getBboxValue(bbox, "southBoundLatitude"), maxLatitude));
-        item.setNorthBoundLatitude(getSanitizedValue(getBboxValue(bbox, "northBoundLatitude"), maxLatitude));
+        item.setWestBoundLongitude(getSanitizedValue(getBboxValue(bbox, "westBoundLongitude"), MAX_LONGITUDE));
+        item.setEastBoundLongitude(getSanitizedValue(getBboxValue(bbox, "eastBoundLongitude"), MAX_LONGITUDE));
+        item.setSouthBoundLatitude(getSanitizedValue(getBboxValue(bbox, "southBoundLatitude"), MAX_LATITUDE));
+        item.setNorthBoundLatitude(getSanitizedValue(getBboxValue(bbox, "northBoundLatitude"), MAX_LATITUDE));
     }
     private String getBboxValue(Element bbox, String coord) {
         return XmlHelper.getChildValue(
