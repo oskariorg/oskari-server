@@ -17,7 +17,6 @@ import java.util.List;
  */
 public class DatasourceHelper {
 
-    private static final Logger LOGGER = LogFactory.getLogger(DatasourceHelper.class);
     private static final String DEFAULT_DATASOURCE_NAME = "jdbc/OskariPool";
     private static final String MSG_CHECKING_POOL = "Checking existance of database pool: %s";
     private static final String PREFIX_DB = "db.";
@@ -34,6 +33,10 @@ public class DatasourceHelper {
 
     public static DatasourceHelper getInstance() {
         return INSTANCE;
+    }
+
+    private Logger getLogger() {
+        return LogFactory.getLogger(DatasourceHelper.class);
     }
 
     public static String[] getAdditionalModules() {
@@ -98,10 +101,10 @@ public class DatasourceHelper {
             return dataSrc;
         }
         try {
-            LOGGER.info("Trying JNDI dataSource with name: " + dsName);
+            getLogger().info("Trying JNDI dataSource with name: " + dsName);
             return (DataSource) ctx.lookup(JNDI_PREFIX + dsName);
         } catch (Exception ex) {
-            LOGGER.info("Couldn't find pool with name '" + dsName + "': " + ex.getMessage());
+            getLogger().info("Couldn't find pool with name '" + dsName + "': " + ex.getMessage());
         }
         return null;
     }
@@ -120,14 +123,14 @@ public class DatasourceHelper {
      */
     public boolean checkDataSource(final Context ctx, final String prefix) {
         final String poolName = getOskariDataSourceName(prefix);
-        LOGGER.info(String.format(MSG_CHECKING_POOL, poolName));
+        getLogger().info(String.format(MSG_CHECKING_POOL, poolName));
         final DataSource ds = getDataSource(ctx, poolName);
         if (ds != null) {
             // using container provided datasource rather than one created by us
-            LOGGER.debug("Found dataSource for name: " + poolName);
+            getLogger().debug("Found dataSource for name: " + poolName);
             return true;
         }
-        LOGGER.info("Creating a DB DataSource based on configured properties");
+        getLogger().info("Creating a DB DataSource based on configured properties");
         return createDataSource(prefix) != null;
     }
 
@@ -164,7 +167,7 @@ public class DatasourceHelper {
             // try getting connection. If it fails we can tell the admin that the config is not good and try JNDI instead
             dataSource.getConnection();
         } catch (SQLException e) {
-            LOGGER.error(e, "Couldn't create database connection using:", info.url);
+            getLogger().error(e, "Couldn't create database connection using:", info.url);
             // return null so we don't add a non-functioning datasource to localDataSources
             // AND this makes the code always try to get a connection using JNDI instead
             return null;
@@ -199,7 +202,7 @@ public class DatasourceHelper {
             try {
                 context = new InitialContext();
             } catch (Exception ex) {
-                LOGGER.error("Couldn't get context: ", ex.getMessage());
+                getLogger().error("Couldn't get context: ", ex.getMessage());
             }
         }
         return context;
@@ -213,9 +216,9 @@ public class DatasourceHelper {
         for (BasicDataSource ds : localDataSources) {
             try {
                 ds.close();
-                LOGGER.debug("Closed locally created data source");
+                getLogger().debug("Closed locally created data source");
             } catch (final SQLException e) {
-                LOGGER.error(e, "Failed to close locally created data source");
+                getLogger().error(e, "Failed to close locally created data source");
             }
         }
     }
