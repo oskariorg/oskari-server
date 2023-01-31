@@ -11,6 +11,15 @@ public class UserContentMyPlacesService extends UserContentService {
 
     private MyPlacesServiceMybatisImpl myPlacesService = null;
 
+    /**
+     * Cache key for my places place
+     * This was in MyPlacesServiceMybatisImpl, but it requires too much mocking for static variable services in tests...
+     * @param id
+     * @return
+     */
+    public static String getPlaceCacheKey(long id) {
+        return Long.toString(id);
+    }
     @Override
     public void init() {
         super.init();
