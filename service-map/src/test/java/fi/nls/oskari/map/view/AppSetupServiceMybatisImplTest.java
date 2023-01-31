@@ -4,9 +4,12 @@ import fi.nls.oskari.domain.GuestUser;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.service.DummyUserService;
 import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.test.util.TestHelper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import javax.sql.DataSource;
 
 import static org.junit.Assert.assertEquals;
 
@@ -27,8 +30,9 @@ public class AppSetupServiceMybatisImplTest {
         PropertyUtil.addProperty("view.default.Guest", "4");
         PropertyUtil.addProperty("view.default.roles", "Admin, User, Guest");
         PropertyUtil.addProperty("oskari.user.service", DummyUserService.class.getCanonicalName(), true);
+        DataSource ds = TestHelper.createMemDBforUnitTest();
 
-        service = new AppSetupServiceMybatisImpl();
+        service = new AppSetupServiceMybatisImpl(ds);
     }
 
     @Test

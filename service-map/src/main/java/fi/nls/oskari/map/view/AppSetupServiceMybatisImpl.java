@@ -39,14 +39,18 @@ public class AppSetupServiceMybatisImpl extends ViewService {
     private SqlSessionFactory factory = null;
 
     public AppSetupServiceMybatisImpl() {
-
-        final DatasourceHelper helper = DatasourceHelper.getInstance();
-        DataSource dataSource = helper.getDataSource();
+        this(null);
+    }
+    public AppSetupServiceMybatisImpl(DataSource dataSource) {
         if (dataSource == null) {
-            dataSource = helper.createDataSource();
-        }
-        if (dataSource == null) {
-            LOG.error("Couldn't get datasource for app setup service");
+            final DatasourceHelper helper = DatasourceHelper.getInstance();
+            dataSource = helper.getDataSource();
+            if (dataSource == null) {
+                dataSource = helper.createDataSource();
+            }
+            if (dataSource == null) {
+                LOG.error("Couldn't get datasource for app setup service");
+            }
         }
         factory = initializeMyBatis(dataSource);
 
