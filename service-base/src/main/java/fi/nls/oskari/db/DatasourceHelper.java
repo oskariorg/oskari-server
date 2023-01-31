@@ -9,8 +9,8 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by SMAKINEN on 11.6.2015.
@@ -23,7 +23,7 @@ public class DatasourceHelper {
     private static final DatasourceHelper INSTANCE = new DatasourceHelper();
     private static final String KEY_MODULE_LIST = "db.additional.modules";
 
-    private List<BasicDataSource> localDataSources = new ArrayList<>();
+    private Map<String, BasicDataSource> localDataSources = new HashMap<>();
     private final static String JNDI_PREFIX = "java:comp/env/";
     private Context context;
 
@@ -87,24 +87,18 @@ public class DatasourceHelper {
      * @param name for example jdbc/OskariPool
      */
     public DataSource getDataSource(final Context ctx, final String name) {
-        String dsName;
+        String poolName = name;
         if (name == null) {
-            dsName = DEFAULT_DATASOURCE_NAME;
-        } else {
-            dsName = name;
+            poolName = DEFAULT_DATASOURCE_NAME;
         }
-        DataSource dataSrc = localDataSources.stream()
-                .filter(ds -> dsName.equals(ds.getJmxName()))
-                .findFirst()
-                .orElse(null);
+        DataSource dataSrc = localDataSources.get(poolName);
         if (dataSrc != null) {
             return dataSrc;
         }
         try {
-            getLogger().info("Trying JNDI dataSource with name: " + dsName);
-            return (DataSource) ctx.lookup(JNDI_PREFIX + dsName);
+            return (DataSource) ctx.lookup(JNDI_PREFIX + poolName);
         } catch (Exception ex) {
-            getLogger().info("Couldn't find pool with name '" + dsName + "': " + ex.getMessage());
+            getLogger().error("Couldn't find pool with name '" + poolName + "': " + ex.getMessage());
         }
         return null;
     }
@@ -145,7 +139,8 @@ public class DatasourceHelper {
      */
     public BasicDataSource createDataSource(final String prefix) {
         // check if we have the named connection already
-        BasicDataSource ds = (BasicDataSource) getDataSource(null, getOskariDataSourceName(prefix));
+        String poolName = getOskariDataSourceName(prefix);
+        BasicDataSource ds = (BasicDataSource) getDataSource(null, poolName);
         if (ds != null) {
             return ds;
         }
@@ -161,18 +156,17 @@ public class DatasourceHelper {
         dataSource.setTestOnBorrow(true);
         dataSource.setValidationQuery("SELECT 1");
         dataSource.setValidationQueryTimeout(100);
-        // Just for querying from local datasources when context can't be created (for example in Tomcat by default)
-        dataSource.setJmxName(getOskariDataSourceName(prefix));
         try {
-            // try getting connection. If it fails we can tell the admin that the config is not good and try JNDI instead
-            dataSource.getConnection();
+            // Try getting connection:
+            // If it fails we can tell the admin that the config is not good and try JNDI instead
+            dataSource.getConnection().close();
         } catch (SQLException e) {
             getLogger().error(e, "Couldn't create database connection using:", info.url);
             // return null so we don't add a non-functioning datasource to localDataSources
             // AND this makes the code always try to get a connection using JNDI instead
             return null;
         }
-        localDataSources.add(dataSource);
+        localDataSources.put(poolName, dataSource);
         return dataSource;
     }
 
@@ -213,7 +207,7 @@ public class DatasourceHelper {
      */
     public void teardown() {
         // clean up created datasources
-        for (BasicDataSource ds : localDataSources) {
+        for (BasicDataSource ds : localDataSources.values()) {
             try {
                 ds.close();
                 getLogger().debug("Closed locally created data source");
@@ -221,6 +215,7 @@ public class DatasourceHelper {
                 getLogger().error(e, "Failed to close locally created data source");
             }
         }
+        localDataSources.clear();
     }
 
 }
