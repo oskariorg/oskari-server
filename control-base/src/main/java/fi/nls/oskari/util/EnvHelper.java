@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static fi.nls.oskari.control.ActionConstants.*;
+import static org.oskari.util.Customization.PLACEHOLDER_STROKE;
+import static org.oskari.util.Customization.PLACEHOLDER_FILL;
 
 /**
  * Describes the environment the appsetup is used in:
@@ -125,8 +127,10 @@ public class EnvHelper {
                 JSONObject marker = svgMarkers.optJSONObject(i);
                 String svg = marker.optString("data");
                 String updated = svg
-                        .replace("'$fill'", "'#000000'")
-                        .replace("'$stroke'", "'#000000'");
+                        .replace(PLACEHOLDER_FILL, "#000000")
+                        .replace(PLACEHOLDER_STROKE, "#000000")
+                        // TODO: GetAppSetupHandlerTest fails with xmlns. Should we update json resources??
+                        .replace("xmlns='http://www.w3.org/2000/svg' ", "");
                 JSONHelper.putValue(marker, "data", updated);
             }
             return svgMarkers;

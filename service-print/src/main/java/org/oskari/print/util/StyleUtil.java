@@ -35,6 +35,8 @@ import org.oskari.print.request.PDPrintStyle.LineJoin;
 import org.oskari.print.request.PDPrintStyle.LinePattern;
 
 import fi.nls.oskari.util.JSONHelper;
+import static org.oskari.util.Customization.PLACEHOLDER_STROKE;
+import static org.oskari.util.Customization.PLACEHOLDER_FILL;
 
 public class StyleUtil {
 
@@ -173,7 +175,9 @@ public class StyleUtil {
     }
 
     private static PDFormXObject createIcon (PDDocument doc, JSONObject marker, String fillColor, int size) throws JSONException, IOException, TranscoderException {
-        String markerData = JSONHelper.getString(marker, "data").replace("$fill", fillColor).replace("$stroke", ICON_STROKE_COLOR);
+        String markerData = JSONHelper.getString(marker, "data")
+                .replace(PLACEHOLDER_FILL, fillColor)
+                .replace(PLACEHOLDER_STROKE, ICON_STROKE_COLOR);
         double scale = size < 1 || size > 5 ? 1 : 0.6 +  size /10.0;
         double x =  marker.optDouble("offsetX", ICON_OFFSET) * scale;
         double y = marker.optDouble("offsetY", ICON_OFFSET) * scale;
