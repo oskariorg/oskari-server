@@ -6,10 +6,15 @@ import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.PropertyUtil;
 import org.h2.jdbcx.JdbcDataSource;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.naming.OperationNotSupportedException;
 import javax.sql.DataSource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Connection;
@@ -25,6 +30,7 @@ import java.util.Properties;
 public class TestHelper {
 
     public static final String DB_PROPS_KEY = "oskari_db_test_props";
+
     public static final String TEST_URL = "http://httpbin.org/ip";
     private static enum STATUS {
         NONE,
@@ -124,6 +130,26 @@ public class TestHelper {
         // deal with first to get this running
         return ds;
     }
+
+
+    public static void registerTestDataSource() throws SQLException {
+        registerTestDataSource(createMemDBforUnitTest());
+    }
+
+    public static void registerTestDataSource(final DataSource ds) {
+        try {
+            DatasourceHelper.getInstance()
+                    .registerDataSource(
+                            DatasourceHelper.DEFAULT_DATASOURCE_NAME, ds);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public static void teardown() {
+        DatasourceHelper.getInstance().teardown();
+    }
+
 
     public static DataSource createMemDBforUnitTest(List<String> sqlStatementsForInit) throws SQLException {
         DataSource ds = createMemDBforUnitTest();

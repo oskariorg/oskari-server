@@ -2,9 +2,13 @@ package fi.nls.oskari.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.service.OskariComponentManager;
 import org.json.JSONObject;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.oskari.capabilities.ogc.LayerCapabilitiesWFS;
+import org.oskari.capabilities.ogc.WFSCapabilitiesParser;
 import org.oskari.capabilities.ogc.wfs.FeaturePropertyType;
 
 import java.util.HashMap;
@@ -19,6 +23,16 @@ public class WFSGetLayerFieldsTest {
     private final String LAYER_URL = "https://example.com/";
     private final String USERNAME = "username";
     private final String PASSWORD = "pwd";
+
+    @BeforeClass
+    public static void setup() throws Exception {
+        // prevent call to OskariComponentManager.addDefaultComponents() that adds components requiring db-connections
+        OskariComponentManager.addComponent(new WFSCapabilitiesParser());
+    }
+    @AfterClass
+    public static void teardown() throws Exception {
+        OskariComponentManager.teardown();
+    }
 
     @Test
     public void getLayerFieldsForWFS3Collections() throws Exception {

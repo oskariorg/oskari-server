@@ -43,9 +43,8 @@ public class SystemViewsHandler extends RestActionHandler {
     private final static String DEFAULT_SRS = PropertyUtil.get("oskari.native.srs", "EPSG:4326");
 
     public void init() {
-        viewService = ServiceFactory.getViewService();
-
-        layerService = ServiceFactory.getMapLayerService();
+        viewService = OskariComponentManager.getComponentOfType(ViewService.class);
+        layerService = OskariComponentManager.getComponentOfType(OskariLayerService.class);
         permissionsService = OskariComponentManager.getComponentOfType(PermissionService.class);
     }
 

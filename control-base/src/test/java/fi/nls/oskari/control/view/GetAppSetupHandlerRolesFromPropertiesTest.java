@@ -21,6 +21,7 @@ import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.view.modifier.ViewModifier;
 import fi.nls.test.control.JSONActionRouteTest;
 import fi.nls.test.util.ResourceHelper;
+import fi.nls.test.util.TestHelper;
 import fi.nls.test.view.BundleTestHelper;
 import fi.nls.test.view.ViewTestHelper;
 import org.junit.Before;
@@ -69,6 +70,7 @@ public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTe
 
     @BeforeClass
     public static void addLocales() throws Exception {
+        TestHelper.registerTestDataSource();
         Properties properties = new Properties();
         try {
             properties.load(GetAppSetupHandlerRolesFromPropertiesTest.class.getResourceAsStream("test.properties"));
@@ -108,6 +110,7 @@ public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTe
         PropertyUtil.clearProperties();
         // To get fresh start for components
         OskariComponentManager.teardown();
+        TestHelper.teardown();
     }
 
     @Test

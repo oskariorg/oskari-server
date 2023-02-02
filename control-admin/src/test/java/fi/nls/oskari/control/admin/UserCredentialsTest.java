@@ -4,9 +4,12 @@ import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.service.DummyUserService;
+import fi.nls.oskari.service.OskariComponent;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.control.JSONActionRouteTest;
+import fi.nls.test.util.TestHelper;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -32,11 +35,14 @@ public class UserCredentialsTest extends JSONActionRouteTest {
 
     @BeforeClass
     public static void setup() throws Exception {
+        TestHelper.registerTestDataSource();
         PropertyUtil.addProperty("oskari.user.service", DummyUserService.class.getCanonicalName(), true);
     }
     @AfterClass
     public static void tearDown() {
         PropertyUtil.clearProperties();
+        OskariComponentManager.teardown();
+        TestHelper.teardown();
     }
 
     @Parameterized.Parameters

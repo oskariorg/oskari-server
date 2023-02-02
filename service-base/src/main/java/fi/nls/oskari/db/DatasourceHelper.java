@@ -8,6 +8,7 @@ import org.apache.commons.dbcp2.BasicDataSource;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
+import java.io.Closeable;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,14 +18,14 @@ import java.util.Map;
  */
 public class DatasourceHelper {
 
-    private static final String DEFAULT_DATASOURCE_NAME = "jdbc/OskariPool";
+    public static final String DEFAULT_DATASOURCE_NAME = "jdbc/OskariPool";
     private static final String MSG_CHECKING_POOL = "Checking existance of database pool: %s";
     private static final String PREFIX_DB = "db.";
     private static final DatasourceHelper INSTANCE = new DatasourceHelper();
     private static final String KEY_MODULE_LIST = "db.additional.modules";
 
-    private Map<String, BasicDataSource> localDataSources = new HashMap<>();
-    private final static String JNDI_PREFIX = "java:comp/env/";
+    private Map<String, DataSource> localDataSources = new HashMap<>();
+    public final static String JNDI_PREFIX = "java:comp/env/";
     private Context context;
 
     protected DatasourceHelper() {
@@ -128,7 +129,7 @@ public class DatasourceHelper {
         return createDataSource(prefix) != null;
     }
 
-    public BasicDataSource createDataSource() {
+    public DataSource createDataSource() {
         return createDataSource(null);
     }
 
@@ -137,7 +138,7 @@ public class DatasourceHelper {
      * @param prefix for example myplaces, analysis
      * @return
      */
-    public BasicDataSource createDataSource(final String prefix) {
+    public DataSource createDataSource(final String prefix) {
         // check if we have the named connection already
         String poolName = getOskariDataSourceName(prefix);
         BasicDataSource ds = (BasicDataSource) getDataSource(null, poolName);
@@ -168,6 +169,14 @@ public class DatasourceHelper {
         }
         localDataSources.put(poolName, dataSource);
         return dataSource;
+    }
+
+    public void registerDataSource(String poolName, DataSource dataSource) throws SQLException {
+        // Try getting connection:
+        // If it fails we can tell the admin that the config is not good and try JNDI instead
+        dataSource.getConnection().close();
+        // if it works, register it
+        localDataSources.put(poolName, dataSource);
     }
 
     /**
@@ -207,11 +216,18 @@ public class DatasourceHelper {
      */
     public void teardown() {
         // clean up created datasources
-        for (BasicDataSource ds : localDataSources.values()) {
+        for (DataSource ds : localDataSources.values()) {
             try {
-                ds.close();
+                // try to close it
+                if (ds instanceof BasicDataSource) {
+                    ((BasicDataSource)ds).close();
+                } else if (ds instanceof Closeable) {
+                    ((AutoCloseable) ds).close();
+                } else if (ds instanceof AutoCloseable) {
+                    ((AutoCloseable) ds).close();
+                }
                 getLogger().debug("Closed locally created data source");
-            } catch (final SQLException e) {
+            } catch (final Exception e) {
                 getLogger().error(e, "Failed to close locally created data source");
             }
         }

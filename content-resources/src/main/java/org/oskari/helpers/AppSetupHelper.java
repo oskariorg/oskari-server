@@ -7,6 +7,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.*;
 import org.json.JSONArray;
@@ -22,8 +23,11 @@ import java.util.*;
  */
 public class AppSetupHelper {
 
-    private static final ViewService viewService = new AppSetupServiceMybatisImpl();
     private static Logger log = LogFactory.getLogger(AppSetupHelper.class);
+
+    private static ViewService getViewService() {
+        return OskariComponentManager.getComponentOfType(ViewService.class);
+    }
 
     public static long create(Connection conn, final String viewfile)
             throws IOException, SQLException {
@@ -35,7 +39,7 @@ public class AppSetupHelper {
             Bundle bundle = view.getBundleByName("mapfull");
             replaceSelectedLayers(bundle, selectedLayerIds);
 
-            final long viewId = viewService.addView(view);
+            final long viewId = getViewService().addView(view);
             log.info("Added view from file:", viewfile, "/viewId is:", viewId, "/uuid is:", view.getUuid());
             // update supported SRS for layers after possibly new projection on appsetup/view
             LayerHelper.refreshLayerCapabilities(view.getSrsName());
