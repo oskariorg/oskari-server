@@ -6,6 +6,7 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.view.modifier.bundle.MapfullHandler;
 import fi.nls.oskari.control.view.modifier.param.CoordinateParamHandler;
 import fi.nls.oskari.control.view.modifier.param.WFSHighlightParamHandler;
+import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.domain.map.view.View;
@@ -18,6 +19,7 @@ import fi.nls.oskari.map.view.BundleService;
 import fi.nls.oskari.map.view.BundleServiceMybatisImpl;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
+import fi.nls.oskari.service.OskariComponent;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.DuplicateException;
 import fi.nls.oskari.util.PropertyUtil;
@@ -26,6 +28,7 @@ import fi.nls.oskari.wfs.WFSSearchChannelsService;
 import fi.nls.oskari.wfs.WFSSearchChannelsServiceMybatisImpl;
 import fi.nls.test.control.JSONActionRouteTest;
 import fi.nls.test.util.ResourceHelper;
+import fi.nls.test.util.TestHelper;
 import fi.nls.test.view.BundleTestHelper;
 import fi.nls.test.view.ViewTestHelper;
 import org.json.JSONObject;
@@ -78,6 +81,7 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
 
     @BeforeClass
     public static void addLocales() throws Exception {
+        TestHelper.registerTestDataSource();
         Properties properties = new Properties();
         try {
             properties.load(GetAppSetupHandlerTest.class.getResourceAsStream("test.properties"));
@@ -108,6 +112,7 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
         PropertyUtil.clearProperties();
         // To get fresh start for components
         OskariComponentManager.teardown();
+        TestHelper.teardown();
     }
 
     @Test

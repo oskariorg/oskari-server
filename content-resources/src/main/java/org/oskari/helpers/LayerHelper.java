@@ -7,6 +7,7 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatter;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.OskariRuntimeException;
@@ -28,11 +29,15 @@ import java.util.stream.Collectors;
 public class LayerHelper {
 
     private static final Logger log = LogFactory.getLogger(LayerHelper.class);
-    private static final OskariLayerService layerService = new OskariLayerServiceMybatisImpl();
+
+    private static OskariLayerService getLayerService() {
+        return OskariComponentManager.getComponentOfType(OskariLayerService.class);
+    }
 
     public static int setupLayer(final String layerfile) throws IOException {
         final String jsonStr = readLayerFile(layerfile);
         MapLayer layer = LayerAdminJSONHelper.readJSON(jsonStr);
+        OskariLayerService layerService = getLayerService();
         final List<OskariLayer> dbLayers = layerService.findByUrlAndName(layer.getUrl(), layer.getName());
         if(!dbLayers.isEmpty()) {
             if(dbLayers.size() > 1) {
@@ -84,6 +89,7 @@ public class LayerHelper {
         } catch (Exception e) {
             throw new OskariRuntimeException("Couldn't get system crs list");
         }
+        OskariLayerService layerService = getLayerService();
         List<OskariLayer> layers = layerService.findAll().stream()
                 // skip localhost servers as the service is starting when this is called and geoserver will not answer
                 .filter(l -> !l.getUrl().startsWith("http://localhost:"))

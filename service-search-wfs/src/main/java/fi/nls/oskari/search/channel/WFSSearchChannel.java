@@ -92,7 +92,7 @@ public class WFSSearchChannel extends SearchChannel {
 
     public WFSChannelHandler getHandler() {
         Map<String, WFSChannelHandler> handlers = OskariComponentManager.getComponentsOfType(WFSChannelHandler.class);
-        if(handlers.containsKey(config.getHandler())) {
+        if (handlers.containsKey(config.getHandler())) {
             return handlers.get(config.getHandler());
         }
         return handlers.get(WFSChannelHandler.ID);

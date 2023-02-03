@@ -62,7 +62,7 @@ public class MyPlacesServiceMybatisImpl extends MyPlacesService {
     }
 
     public static String getCacheKey(long id) {
-        return Long.toString(id);
+        return UserContentMyPlacesService.getPlaceCacheKey(id);
     }
 
     private MyPlaceCategory cache(MyPlaceCategory layer) {

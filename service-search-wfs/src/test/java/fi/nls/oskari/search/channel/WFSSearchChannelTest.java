@@ -3,7 +3,9 @@ package fi.nls.oskari.search.channel;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import fi.nls.oskari.service.OskariComponentManager;
 import org.json.JSONObject;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -46,6 +48,12 @@ public class WFSSearchChannelTest {
                 + "}";
         point.replace('\'', '"');
         pointFeature = new JSONObject(point);
+        // prevent call to OskariComponentManager.addDefaultComponents() that adds components requiring db-connections
+        OskariComponentManager.addComponent(new WFSChannelHandler());
+    }
+    @AfterClass
+    public static void teardown() throws Exception {
+        OskariComponentManager.teardown();
     }
 
     @Test

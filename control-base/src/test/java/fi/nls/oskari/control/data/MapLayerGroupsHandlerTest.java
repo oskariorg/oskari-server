@@ -1,5 +1,7 @@
 package fi.nls.oskari.control.data;
 
+import fi.nls.oskari.service.OskariComponentManager;
+import org.junit.BeforeClass;
 import org.oskari.service.maplayer.OskariMapLayerGroupService;
 import fi.nls.oskari.control.ActionConstants;
 import fi.nls.oskari.control.ActionDeniedException;
@@ -36,10 +38,17 @@ public class MapLayerGroupsHandlerTest extends JSONActionRouteTest {
 
     private OskariMapLayerGroupService oskariMapLayerGroupService;
     private MapLayerGroupsHandler handler = new MapLayerGroupsHandler();
-
+    @BeforeClass
+    public static void setup() throws Exception {
+        TestHelper.registerTestDataSource();
+        assumeTrue(TestHelper.dbAvailable());
+    }
+    @AfterClass
+    public static void teardown() {
+        TestHelper.teardown();
+    }
     @Before
     public void setUp() throws Exception {
-        assumeTrue(TestHelper.dbAvailable());
         oskariMapLayerGroupService = mock(OskariMapLayerGroupServiceMybatisImpl.class);
         MaplayerGroup theme1 = new MaplayerGroup();
         theme1.setId(1);
