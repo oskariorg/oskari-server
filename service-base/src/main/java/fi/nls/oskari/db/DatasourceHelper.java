@@ -13,9 +13,6 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by SMAKINEN on 11.6.2015.
- */
 public class DatasourceHelper {
 
     public static final String DEFAULT_DATASOURCE_NAME = "jdbc/OskariPool";
@@ -158,19 +155,22 @@ public class DatasourceHelper {
         dataSource.setValidationQuery("SELECT 1");
         dataSource.setValidationQueryTimeout(100);
         try {
-            // Try getting connection:
-            // If it fails we can tell the admin that the config is not good and try JNDI instead
-            dataSource.getConnection().close();
+            registerDataSource(poolName, dataSource);
         } catch (SQLException e) {
             getLogger().error(e, "Couldn't create database connection using:", info.url);
             // return null so we don't add a non-functioning datasource to localDataSources
             // AND this makes the code always try to get a connection using JNDI instead
             return null;
         }
-        localDataSources.put(poolName, dataSource);
         return dataSource;
     }
 
+    /**
+     * Tests a connection from datasource and registers the datasource to local registry if its functional
+     * @param poolName name to use like "jdbc/OskariPool"
+     * @param dataSource the datasource to test and register
+     * @throws SQLException if connection can't be opened/ds is broken
+     */
     public void registerDataSource(String poolName, DataSource dataSource) throws SQLException {
         // Try getting connection:
         // If it fails we can tell the admin that the config is not good and try JNDI instead
