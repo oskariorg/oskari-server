@@ -22,7 +22,10 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
+
+import org.geotools.referencing.CRS;
 import org.json.JSONObject;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 /**
  * HystrixCommand that loads tiles from a WMTS service and combines them to a
@@ -76,6 +79,15 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
         double[] topLeft = tm.getTopLeftCorner();
         double minX = topLeft[0];
         double maxY = topLeft[1];
+        if (isAxisOrderNE(tms.getCrs())) {
+            // From the WMTS spec, topLeftCorner:
+            // Position in CRS coordinates of the top-left corner of this tile matrix
+            // Ordered sequence of double values
+            // CRS shall be inherited from the supportedCRS parameter of the parent TileMatrixSet
+            // The order of these axes, shall be as specified by the supportedCRS
+            minX = topLeft[1];
+            maxY = topLeft[0];
+        }
 
         // Round to the nearest px
         long minXPx = Math.round((bbox[0] - minX) / resolution);
@@ -165,6 +177,17 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
 
         g2d.dispose();
         return bi;
+    }
+
+    private static boolean isAxisOrderNE(String srs) {
+        try {
+            CoordinateReferenceSystem crs = CRS.decode(srs);
+            return ProjectionHelper.isFirstAxisNorth(crs);
+            // return CRS.getAxisOrder(crs) == CRS.AxisOrder.NORTH_EAST;
+        } catch (Exception e) {
+            LOG.info("Failed to decode crs from: " + srs);
+            return false;
+        }
     }
 
     private LayerCapabilitiesWMTS getLayerCapabilities() throws IllegalArgumentException {
