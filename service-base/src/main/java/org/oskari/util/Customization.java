@@ -21,6 +21,8 @@ public class Customization {
     private static Cache<String> CUSTOMIZATION = CacheManager.getCache("Customization");
     private static final String CACHE_KEY_MARKERS = "markers";
     private static final String LOGO_PATH_DEFAULT = "logo.png";
+    public static final String PLACEHOLDER_FILL = "$fill";
+    public static final String PLACEHOLDER_STROKE = "$stroke";
 
     private static Logger getLogger() {
         return LogFactory.getLogger(Customization.class);
