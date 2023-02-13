@@ -141,7 +141,8 @@ public class AppSetupHandler extends RestActionHandler {
                 ViewModifier.BUNDLE_PUBLISHEDGRID, ViewModifier.BUNDLE_FEATUREDATA2,
                 ViewModifier.BUNDLE_COORDINATETOOL, ViewModifier.BUNDLE_STATSGRID,
                 ViewModifier.BUNDLE_FEEDBACKSERVICE, ViewModifier.BUNDLE_CAMERA_CONTROLS_3D,
-                ViewModifier.BUNDLE_METADATACATALOGUE, ViewModifier.BUNDLE_METADATAFLYOUT));
+                ViewModifier.BUNDLE_METADATACATALOGUE, ViewModifier.BUNDLE_METADATAFLYOUT,
+                ViewModifier.BUNDLE_MAPROTATOR, ViewModifier.BUNDLE_MAPLEGEND));
         for(String bundleId : configBundles) {
             SIMPLE_BUNDLES.add(bundleId);
         }
