@@ -20,6 +20,7 @@ public class LogoPluginHandler implements PluginHandler {
     public static final String KEY_CONFIG = "config";
     public static final String KEY_MAP_URL = "mapUrlPrefix";
     public static final String KEY_TERMS_URL = "termsUrl";
+    public static final String KEY_GEOPORTAL_LINK = "geoportalLink";
 
     @Override
     public boolean modifyPlugin(final JSONObject plugin,
@@ -41,6 +42,9 @@ public class LogoPluginHandler implements PluginHandler {
         JSONObject config = getConfig(originalPlugin);
         setupMapUrl(config);
         setupTerms(config);
+        if (!PropertyUtil.getOptional("plugin.logo.geoportalLink", true)) {
+            JSONHelper.putValue(config, KEY_GEOPORTAL_LINK, false);
+        }
 
         return true;
     }
