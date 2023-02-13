@@ -10,7 +10,6 @@ import org.json.JSONObject;
 @OskariViewModifier("layerlist")
 public class LayerlistHandler extends BundleHandler {
 
-    private static final String BACKEND_STATUS_BUNDLE = "backendstatus";
     private static final String LAYER_GROUP_TOGGLE_LIMIT = "layerGroupToggleLimit";
     private static final String BACKEND_STATUS_AVAILABLE = "backendStatusAvailable";
 
@@ -20,7 +19,7 @@ public class LayerlistHandler extends BundleHandler {
         if(!config.has(LAYER_GROUP_TOGGLE_LIMIT) && toggleLimit != 0) {
             JSONHelper.putValue(config, LAYER_GROUP_TOGGLE_LIMIT, toggleLimit);
         }
-        boolean backendstatus = params.getView().getBundleByName(BACKEND_STATUS_BUNDLE) != null;
+        boolean backendstatus = params.getView().getBundleByName(BUNDLE_BACKEND_STATUS) != null;
         JSONHelper.putValue(config, BACKEND_STATUS_AVAILABLE, backendstatus);
         return false;
     }
