@@ -23,7 +23,7 @@ public class RegistrationUtil {
     }
 
     public static boolean isValidEmail(String email) {
-        String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
+        String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.\\-)+[\\w]+[\\w]$";
         return email != null && !email.isEmpty() && email.matches(regex);
     }
 
