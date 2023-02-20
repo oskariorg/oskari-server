@@ -6,15 +6,14 @@ For a full list of changes see: https://github.com/oskariorg/oskari-server/miles
 
 ### Service customization
 
-Appsetups can now have a `theme JSON` in the database table `oskari_maplayer.metadata` under the key `theme` that is passed for frontend. This enables themed embedded maps.
-Map tools no longer have "toolStyle" or "font" config and the previous selections made in publisher for embedded maps have been migrated to theme JSON in the database.
+Appsetups can now have a `theme JSON` in the database table `oskari_maplayer.metadata` under the key `theme`. This enables embedded maps with user defined theme and it can also be used to customize the geoportal views. On the same note, the map tools no longer have "toolStyle" or "font" config and the previous selections made in publisher for embedded maps have been migrated to theme JSON in the database.
 
-Theme can now be provided as part of an initial appsetup JSON: https://github.com/oskariorg/oskari-server/pull/909 
+The theme can now be provided as part of an initial appsetup JSON when initializing an Oskari-based application programmatically: https://github.com/oskariorg/oskari-server/pull/909 
 (See sample-server-extension https://github.com/oskariorg/sample-server-extension/blob/7f499fc51147be981108ef2536788c5cc811417c/app-resources/src/main/resources/json/apps/geoportal-3067.json#L12-L50).
 
-See migration notes for more information about theming.
+See migration notes for more information about theming changes.
 
-Added `org.oskari.util.Customization` as a centralized helper class for getting markers and service logo.
+A centralized helper class `org.oskari.util.Customization` was added for getting markers and service logo and make customization easier.
 The logo can be customized for Oskari instance using `oskari-ext.properties` and we could enable overriding the markers in a similar way in the future.
 Previously markers were duplicated on the server code for frontend and printouts and service logo was also usually duplicated in frontend code as well.
 Added a new action route `Logo` that is used by frontend to get the service logo from server so customizing it doesn't require frontend modifications and CSS overrides.
@@ -34,7 +33,7 @@ The link back to geoportal on the embedded map logo can now be disabled by confi
 # Metadata search improvements
 
 The search is now requesting the result (`ElementSetName`) as `summary` instead of `full` so it contains less data to parse (and for the CSW-service to respond with).
-Also the query fields can now be configured to make the queries even lighter for the CSW-service (anyText seems to be very heavy if there is a lot of data on the service):
+Also the query fields can now be configured to make the queries even lighter for the CSW-service (`csw:anyText` seems to be very heavy if there is a lot of data on the service):
 https://github.com/oskariorg/oskari-server/pull/912
 ```
 # Valid values: summary, brief, full (defaults to "summary")
@@ -42,9 +41,11 @@ search.channel.METADATA_CATALOGUE_CHANNEL.queryType=summary
 # comma-separated list - defaults to csw:anyText
 search.channel.METADATA_CATALOGUE_CHANNEL.queryFields=Title, Abstract
 ```
+The `brief` setting is even lighter, but by using it the search results won't include the date or organization on them as it's not included in that data set.
+Setting the query fields seems to be more effective way of getting more performance if it is an issue for the search.
 
-The search configuration is now more streamlined with just `service.metadata.url` in `oskari-ext.properties` used to configure the CSW endpoint.
-Many of the duplicated properties can be removed from `oskari-ext.properties` as listed in https://github.com/oskariorg/oskari-server/pull/910
+The search configuration has been streamlined with just `service.metadata.url` in `oskari-ext.properties` used to configure the CSW endpoint.
+Many of the duplicated properties can be cleaned up/removed from `oskari-ext.properties` as listed in https://github.com/oskariorg/oskari-server/pull/910
 
 The search result parsing code has been rewritten to reduce dependencies and improve maintainability.
 Sanity checks have been added for data as some services might have invalid data for example on the bounding boxes:
@@ -87,7 +88,7 @@ Also moved some common/spammy informational logging from log level `info` to `de
 - Fixed an issue with map legends for proxied map layers without legends
 - Fixed an issue with WTMS coordinate order: https://github.com/oskariorg/oskari-server/pull/920
 - Allow hyphen/dash in email domain name https://github.com/oskariorg/oskari-server/pull/924
-- Automatically disable the "no status available" tooltip for layers when the statuses are not available at all on the instance:
+- Automatically disable the "no status available" tooltip for layers when the statuses are not available at all on an instance:
 https://github.com/oskariorg/oskari-server/pull/922
 
 - Allow list of bundles that can be part of an embedded map is now fully on server-side code. This makes it easier to enable custom bundles as part of publisher options:

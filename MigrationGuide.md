@@ -5,14 +5,12 @@
 Sample-server-extension now includes JSTL dependency by default so the web app works out-of-the-box in for example Tomcat environment:
 https://github.com/oskariorg/sample-server-extension/pull/39
 
-Added a placeholder for favicon on the sample-server-extension so it's easier to override by replacing the file with a custom one:
+A placeholder for favicon have been added on the sample-server-extension so it's easier to override by replacing the file with a custom one:
 https://github.com/oskariorg/sample-server-extension/pull/36
 
 ### Base HTML changes!
 
-Unncessary elements and CSS have been removed from the base HTML templates. The HTML that has been previously used _should_ still work as before with one minor adjustment:
-Removing `margin-left: 170px;` from `#contentMap` element on the page:
-https://github.com/oskariorg/sample-server-extension/pull/35
+Unncessary elements and CSS have been removed from the base HTML templates. The HTML that has been previously used _should_ still work as before with one minor adjustment. The `margin-left: 170px;` on `#contentMap` element should be removed from the JSP: https://github.com/oskariorg/sample-server-extension/pull/35
 
 The frontend code now creates necessary elements for the map on it's own. The navigation block is still declared on the server side JSP but it will be moved to frontend in a future release.
 You can take a look at the new samples in here:
@@ -23,7 +21,7 @@ The `geoportal_stylized.jsp` provides an example for adding additional elements 
 
 ### Theme-related updates
 
-The navigation bar background can now be configured in the theme JSON for application in the database (default color is the same as before). Navigation bar background-color CSS can be removed from JSP:
+The navigation bar background color can now be configured in the theme JSON for application in the database (default color is the same as before). Navigation bar background-color CSS can be removed from JSP:
 https://github.com/oskariorg/sample-server-extension/pull/38
 
 
