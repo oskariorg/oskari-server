@@ -82,7 +82,7 @@ OskariComponent subclasses can now use `org.oskari.component.ComponentSkippedRun
 
 Also moved some common/spammy informational logging from log level `info` to `debug`.
 
-### Other imporvements
+### Other improvements
 
 - Service logo configured for printouts can now be non-square. The scalebar in printout makes space for logo when required.
 - Fixed an issue with map legends for proxied map layers without legends
