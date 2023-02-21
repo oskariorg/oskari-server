@@ -107,7 +107,7 @@ https://github.com/oskariorg/oskari-server/pull/921
     - Jackson 2.13.2 -> 2.13.4
     - Jackson databind 2.13.4 -> 2.13.4.2 
 
-Removed unused dependencies from managed dependencies (code using these have been removed/rewritten):
+- Removed unused dependencies from managed dependencies (code using these have been removed/rewritten):
     - org.apache.xmlbeans.xmlbeans
     - org.codehaus.woodstox.stax2-api
     - com.fasterxml.woodstox.woodstox-core
