@@ -19,7 +19,7 @@ Previously markers were duplicated on the server code for frontend and printouts
 Added a new action route `Logo` that is used by frontend to get the service logo from server so customizing it doesn't require frontend modifications and CSS overrides.
 See details: https://github.com/oskariorg/oskari-server/pull/901
 
-Added initial implementation for frontend code versioning for RPC.
+Added initial implementation for frontend code versioning. The main audience for this are maintainers of RPC-based applications, but it can be used on geoportal as well.
 This allows the maintainer of an Oskari instance to provide parallel frontend code support on an Oskari instance that can be toggled with url-parameter.
 This could be used to provide more flexible update schedule for RPC-based applications.
 See: https://github.com/oskariorg/oskari-docs/issues/32 & https://github.com/oskariorg/oskari-server/pull/897
