@@ -1,5 +1,117 @@
 # Release Notes
 
+## 2.10.0
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/44?closed=1
+
+### Service customization
+
+Appsetups can now have a `theme JSON` in the database table `oskari_maplayer.metadata` under the key `theme`. This enables embedded maps with user defined theme and it can also be used to customize the geoportal views. On the same note, the map tools no longer have "toolStyle" or "font" config and the previous selections made in publisher for embedded maps have been migrated to theme JSON in the database.
+
+The theme can now be provided as part of an initial appsetup JSON when initializing an Oskari-based application programmatically: https://github.com/oskariorg/oskari-server/pull/909 
+(See sample-server-extension https://github.com/oskariorg/sample-server-extension/blob/7f499fc51147be981108ef2536788c5cc811417c/app-resources/src/main/resources/json/apps/geoportal-3067.json#L12-L50).
+
+See migration notes for more information about theming changes.
+
+A centralized helper class `org.oskari.util.Customization` was added for getting markers and service logo and make customization easier.
+The logo can be customized for Oskari instance using `oskari-ext.properties` and we could enable overriding the markers in a similar way in the future.
+Previously markers were duplicated on the server code for frontend and printouts and service logo was also usually duplicated in frontend code as well.
+Added a new action route `Logo` that is used by frontend to get the service logo from server so customizing it doesn't require frontend modifications and CSS overrides.
+See details: https://github.com/oskariorg/oskari-server/pull/901
+
+Added initial implementation for frontend code versioning. The main audience for this are maintainers of RPC-based applications, but it can be used on geoportal as well.
+This allows the maintainer of an Oskari instance to provide parallel frontend code support on an Oskari instance that can be toggled with url-parameter.
+This could be used to provide more flexible update schedule for RPC-based applications.
+See: https://github.com/oskariorg/oskari-docs/issues/32 & https://github.com/oskariorg/oskari-server/pull/897
+
+The domain (/cdn where static code is hosted) for client code can be configured using `oskari-ext.properties`. 
+This enables running the same server-side code in environments using frontend code from a CDN/another domain and for example local dev environment:
+https://github.com/oskariorg/sample-server-extension/pull/33
+
+The link back to geoportal on the embedded map logo can now be disabled by configuring `plugin.logo.geoportalLink=false` in `oskari-ext.properties`.
+
+# Metadata search improvements
+
+The search is now requesting the result (`ElementSetName`) as `summary` instead of `full` so it contains less data to parse (and for the CSW-service to respond with).
+Also the query fields can now be configured to make the queries even lighter for the CSW-service (`csw:anyText` seems to be very heavy if there is a lot of data on the service):
+https://github.com/oskariorg/oskari-server/pull/912
+```
+# Valid values: summary, brief, full (defaults to "summary")
+search.channel.METADATA_CATALOGUE_CHANNEL.queryType=summary
+# comma-separated list - defaults to csw:anyText
+search.channel.METADATA_CATALOGUE_CHANNEL.queryFields=Title, Abstract
+```
+The `brief` setting is even lighter, but by using it the search results won't include the date or organization on them as it's not included in that data set.
+Setting the query fields seems to be more effective way of getting more performance if it is an issue for the search.
+
+The search configuration has been streamlined with just `service.metadata.url` in `oskari-ext.properties` used to configure the CSW endpoint.
+Many of the duplicated properties can be cleaned up/removed from `oskari-ext.properties` as listed in https://github.com/oskariorg/oskari-server/pull/910
+
+The search result parsing code has been rewritten to reduce dependencies and improve maintainability.
+Sanity checks have been added for data as some services might have invalid data for example on the bounding boxes:
+https://github.com/oskariorg/oskari-server/pull/917
+
+### Cloud compatibility improvements
+
+The database connection/pool is no longer using JNDI by default. Connection pool can still be passed through JNDI, but the code doesn't try creating a context if it's not available.
+Previously Oskari tried adding the database JNDI config to the context if it was not there to begin with. This led to problems with for example Tomcat environments where the JNDI-context is read-only.
+This forced using JNDI configuration on environments using Tomcat. Using JNDI in context required the JDBC driver to be on Tomcat classpath and the driver could not be bundled inside the webapp war-file
+which makes cloud deployment in for example Azure App Service more painful than it needs to be.
+
+Now the JDBC driver can be bundled in the war-file and the database configuration passed in `oskari-ext.properties` can be used to connect to the database even on Tomcat:
+https://github.com/oskariorg/oskari-server/pull/916
+
+New Redis integration configuration options have been added for `oskari-ext.properties`:
+```
+# Can be used to set password if connection requires one
+redis.password={your password or remove config to leave empty}
+# When using SSL-connections (defaults to false like previously)
+redis.ssl=true
+# Timeout for connection (2000ms is the default timeout in Jedis)
+redis.timeout.connect=2000
+```
+
+Redis-config `redis.pool.size` is now passed to connection pool `max-total` as expected. Previously it was only used to calculate and set the `max-idle`.
+
+Caching in clustered environment has been improved by implementing the "flush all" command for cluster cache communication: https://github.com/oskariorg/oskari-server/pull/902. 
+This fixes an issue where updates to map layers were not always reflected on all the nodes of a cluster until reboot.
+
+### Reduced noise on logs
+
+OskariComponent subclasses can now use `org.oskari.component.ComponentSkippedRuntimeException` (in `service-base` module) on the init method instead of using some other exception to signal that they are not configured properly to work/need to be skipped based on the instance config. This is used in `What3WordsSearchChannel` (in `service-search-opendata` module) as most instances don't use the channel (or don't have an apikey for it) it's unnecessary to log the stack trace for the channel just so we can disable it based on missing configuration. Now the startup of oskari-server has less misleading stack traces that the admin doesn't need to care about. See https://github.com/oskariorg/oskari-server/pull/888 for details.
+
+Also moved some common/spammy informational logging from log level `info` to `debug`.
+
+### Other improvements
+
+- Service logo configured for printouts can now be non-square. The scalebar in printout makes space for logo when required.
+- Fixed an issue with map legends for proxied map layers without legends
+- Fixed an issue with WTMS coordinate order: https://github.com/oskariorg/oskari-server/pull/920
+- Allow hyphen/dash in email domain name https://github.com/oskariorg/oskari-server/pull/924
+- Automatically disable the "no status available" tooltip for layers when the statuses are not available at all on an instance:
+https://github.com/oskariorg/oskari-server/pull/922
+
+- Allow list of bundles that can be part of an embedded map is now fully on server-side code. This makes it easier to enable custom bundles as part of publisher options:
+https://github.com/oskariorg/oskari-server/pull/921
+
+- Library updates:
+    - Spring 5.3.18 -> 5.3.20
+    - Spring security 5.6.2 -> 5.7.0
+    - Spring session BOM 2021.1.2 -> 2021.2.0
+    - commons-lang3 3.11 -> 3.12.0
+    - commons-text 1.9 -> 1.10.0
+    - commons-code 1.7 -> 1.15
+    - commons-dbcp2 2.8.0 -> 2.9.0
+    - PostgreSQL JDBC 42.5.0 -> 42.5.1
+    - MyBatis 3.5.7 -> 3.5.11
+    - Jackson 2.13.2 -> 2.13.4
+    - Jackson databind 2.13.4 -> 2.13.4.2 
+
+- Removed unused dependencies from managed dependencies (code using these have been removed/rewritten):
+    - org.apache.xmlbeans.xmlbeans
+    - org.codehaus.woodstox.stax2-api
+    - com.fasterxml.woodstox.woodstox-core
+
 ## 2.9.0
 
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/42?closed=1
