@@ -1,5 +1,13 @@
 # Release Notes
 
+# 2.10.1
+
+For a full list of changes see: 
+https://github.com/oskariorg/oskari-server/milestone/46?closed=1
+
+- An issue with caching in clustered environment was fixed.
+- Updated commons-fileupload dependency 1.4 -> 1.5
+
 ## 2.10.0
 
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/44?closed=1
