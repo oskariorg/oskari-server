@@ -70,7 +70,7 @@
         <!-- could be removed? -->
         <commons-collections.version>3.2.2</commons-collections.version>
         <commons-codec.version>1.15</commons-codec.version>
-        <commons-fileupload.version>1.4</commons-fileupload.version>
+        <commons-fileupload.version>1.5</commons-fileupload.version>
         <commons-dbcp2.version>2.9.0</commons-dbcp2.version>
 
         <jsoup.version>1.15.3</jsoup.version>
