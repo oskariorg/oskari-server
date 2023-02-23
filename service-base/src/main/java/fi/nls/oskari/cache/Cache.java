@@ -45,7 +45,7 @@ public class Cache<T> {
         this.name = name;
         // setName is called after constructor by CacheManager so get the limit from properties in here
         int configuredLimit = PropertyUtil.getOptional(getLimitPropertyName(), -1);
-        if(configuredLimit != -1) {
+        if (configuredLimit != -1) {
             cacheSizeConfigured = true;
             limit = configuredLimit;
         }
@@ -131,7 +131,12 @@ public class Cache<T> {
     }
 
     protected T removeSilent(final String name) {
-        flush(false);
+        // check expiration for whole cache even if we just remove one
+        boolean flushed = flush(false);
+        if (flushed) {
+            // the whole cache had expired
+            return null;
+        }
         T value = items.remove(name);
         keys.remove(name);
         LOG.debug("Removed cached item:", name, getName());
@@ -140,13 +145,13 @@ public class Cache<T> {
 
     public boolean put(final String name, final T item) {
         flush(false);
-        if(item == null) {
+        if (item == null) {
             // can't save null value -> handle as removal
             remove(name);
             return false;
         }
         final boolean overflowing = (items.size() >= limit);
-        if(overflowing) {
+        if (overflowing) {
             // limit reached - remove oldest object
             LOG.warn("Cache", getName(), "overflowing! Limit is", limit);
             LOG.info("Configure larger limit for cache by setting the property:", getLimitPropertyName());
@@ -168,13 +173,19 @@ public class Cache<T> {
     }
 
     public boolean flush(final boolean force) {
-        notifyFlush();
-        return flushSilent(force);
+        boolean flushed = flushSilent(force);
+        if (force) {
+            // only notify cluster if the flush was forced == we really want it empty for a reason (like data updated)
+            // we could use flushed to make the caches expire in sync but I don't know why we would
+            // want to do that as it increases load on db when multiple servers refill caches at the same time
+            notifyFlush();
+        }
+        return flushed;
     }
 
     protected boolean flushSilent(final boolean force) {
         final long now = currentTime();
-        if(force || isTimeToFlush(now)) {
+        if (force || isTimeToFlush(now)) {
             // flushCache
             LOG.info("Flushing cache! Cache:", getName(), "Forced: ", force, getName());
             items.clear();

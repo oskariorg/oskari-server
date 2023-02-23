@@ -1,5 +1,14 @@
 # Release Notes
 
+## 2.10.1
+
+For a full list of changes see: 
+https://github.com/oskariorg/oskari-server/milestone/46?closed=1
+
+- An issue with caching in clustered environment was fixed.
+- Updated commons-fileupload dependency 1.4 -> 1.5
+- Updated java-vector-tile 1.3.16 -> 1.3.22
+
 ## 2.10.0
 
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/44?closed=1
@@ -30,7 +39,7 @@ https://github.com/oskariorg/sample-server-extension/pull/33
 
 The link back to geoportal on the embedded map logo can now be disabled by configuring `plugin.logo.geoportalLink=false` in `oskari-ext.properties`.
 
-# Metadata search improvements
+### Metadata search improvements
 
 The search is now requesting the result (`ElementSetName`) as `summary` instead of `full` so it contains less data to parse (and for the CSW-service to respond with).
 Also the query fields can now be configured to make the queries even lighter for the CSW-service (`csw:anyText` seems to be very heavy if there is a lot of data on the service):
