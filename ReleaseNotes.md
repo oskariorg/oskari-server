@@ -7,6 +7,7 @@ https://github.com/oskariorg/oskari-server/milestone/46?closed=1
 
 - An issue with caching in clustered environment was fixed.
 - Updated commons-fileupload dependency 1.4 -> 1.5
+- Updated java-vector-tile 1.3.16 -> 1.3.22
 
 ## 2.10.0
 
