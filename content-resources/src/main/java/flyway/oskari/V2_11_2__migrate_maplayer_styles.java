@@ -112,10 +112,15 @@ public class V2_11_2__migrate_maplayer_styles extends BaseJavaMigration  {
         // Bypass possible layer definitions
         if (!style.has("featureStyle") && !style.has("optionalStyles")) {
             String key = style.keys().next().toString();
+            // TODO: npe??
             return parseOskari(layerId, name, JSONHelper.getJSONObject(style, key));
         }
+        String title = JSONHelper.optString(style, "title");
+        style.remove("title");
+
         StyleConfig conf = new StyleConfig(layerId, VectorStyle.TYPE_OSKARI, name, style);
-        conf.title = JSONHelper.optString(style, "title");
+        conf.title = title;
+
         return conf;
     }
     private boolean isFeatureStyleDef(JSONObject styleLike) {
