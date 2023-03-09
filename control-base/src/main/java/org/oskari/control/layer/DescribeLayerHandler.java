@@ -13,6 +13,7 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.WKTHelper;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatter;
+import fi.nls.oskari.map.style.VectorStyleService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.ResponseHelper;
@@ -52,12 +53,16 @@ public class DescribeLayerHandler extends RestActionHandler {
         permissionHelper = helper;
     }
 
+    private VectorStyleService getVectorStyleService() {
+        return OskariComponentManager.getComponentOfType(VectorStyleService.class);
+    }
+
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
         final int layerId = params.getRequiredParamInt(PARAM_ID);
         final OskariLayer layer = permissionHelper.getLayer(layerId, params.getUser());
-        final String crs = params.getHttpParam(PARAM_SRS);
-        LayerExtendedOutput output = getLayerDetails(layer, params.getLocale().getLanguage(), crs);
+
+        LayerExtendedOutput output = getLayerDetails(params, layer);
 
         writeResponse(params, output);
     }
@@ -70,14 +75,20 @@ public class DescribeLayerHandler extends RestActionHandler {
         }
     }
 
-    private LayerExtendedOutput getLayerDetails(OskariLayer layer, String lang, String crs) {
+    private LayerExtendedOutput getLayerDetails(ActionParameters params, OskariLayer layer) {
+        final String lang = params.getLocale().getLanguage();
+        final String crs = params.getHttpParam(PARAM_SRS);
+        final long userId = params.getUser().getId();
+        final int layerId = layer.getId();
+
         LayerExtendedOutput output = new LayerExtendedOutput();
-        output.id = layer.getId();
+        output.id = layerId;
         output.name = layer.getName(lang);
         JSONObject attributes = layer.getAttributes();
         if (!attributes.optBoolean(LayerJSONFormatter.KEY_ATTRIBUTE_IGNORE_COVERAGE, false)) {
             output.coverage = getCoverageWKT(layer.getGeometry(), crs);
         }
+        output.styles = getVectorStyleService().getStyles(userId,layerId);
         return output;
     }
 
