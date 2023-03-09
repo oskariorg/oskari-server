@@ -5,6 +5,7 @@ import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.domain.map.style.VectorStyle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.mybatis.JSONObjectMybatisTypeHandler;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
@@ -40,6 +41,7 @@ public class VectorStyleServiceMybatisImpl extends VectorStyleService {
         final Configuration configuration = new Configuration(environment);
         configuration.getTypeAliasRegistry().registerAlias(VectorStyle.class);
         configuration.setLazyLoadingEnabled(true);
+        configuration.getTypeHandlerRegistry().register(JSONObjectMybatisTypeHandler.class);
         configuration.addMapper(VectorStyleMapper.class);
 
         return new SqlSessionFactoryBuilder().build(configuration);
