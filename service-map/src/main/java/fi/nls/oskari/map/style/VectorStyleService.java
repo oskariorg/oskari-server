@@ -1,9 +1,8 @@
 package fi.nls.oskari.map.style;
 
+import java.util.List;
 import fi.nls.oskari.domain.map.style.VectorStyle;
 import fi.nls.oskari.service.OskariComponent;
-
-import java.util.List;
 
 public abstract class VectorStyleService extends OskariComponent  {
     public abstract VectorStyle getStyleById(final long id);

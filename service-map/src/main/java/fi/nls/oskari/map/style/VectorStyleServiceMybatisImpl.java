@@ -65,7 +65,7 @@ public class VectorStyleServiceMybatisImpl extends VectorStyleService {
     public List<VectorStyle> getStylesByLayerId(final int layerId) {
         try (final SqlSession session = factory.openSession()) {
             final VectorStyleMapper mapper = session.getMapper(VectorStyleMapper.class);
-            return mapper.getStylesByLayerId(Integer.toString(layerId));
+            return mapper.getStylesByLayerId(layerId);
         } catch (Exception e) {
             throw new ServiceRuntimeException("Failed to get vector styles for layer: " + layerId, e);
         }
@@ -73,7 +73,7 @@ public class VectorStyleServiceMybatisImpl extends VectorStyleService {
     public List<VectorStyle> getStyles(final long userId, final int layerId) {
         try (final SqlSession session = factory.openSession()) {
             final VectorStyleMapper mapper = session.getMapper(VectorStyleMapper.class);
-            return mapper.getStyles(userId, Integer.toString(layerId));
+            return mapper.getStyles(userId, layerId);
         } catch (Exception e) {
             throw new ServiceRuntimeException("Failed to get vector styles for layer: " + layerId, e);
         }
