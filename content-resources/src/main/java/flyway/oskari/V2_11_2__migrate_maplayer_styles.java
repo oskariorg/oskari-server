@@ -174,10 +174,10 @@ public class V2_11_2__migrate_maplayer_styles extends BaseJavaMigration  {
     protected void insertStyle (Connection conn, StyleConfig style) throws SQLException {
         String name = style.title.isEmpty() ? style.name : style.title;
         final String sql = "INSERT INTO oskari_maplayer_style"
-                + " (layer, type, name, style) VALUES"
+                + " (layer_id, type, name, style) VALUES"
                 + " (?, ?, ?, ?)";
         try (PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            statement.setString(1, Integer.toString(style.layerId));
+            statement.setInt(1, style.layerId);
             statement.setString(2, style.type);
             statement.setString(3, name);
             statement.setString(4, style.def.toString());
