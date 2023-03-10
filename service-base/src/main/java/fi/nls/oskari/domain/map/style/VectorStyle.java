@@ -20,7 +20,7 @@ public class VectorStyle implements Serializable {
     public static final String TYPE_3D = "cesium";
 
     private long id;
-    private String layer;
+    private int layerId;
     private String type;
     private long creator;
     private String name;
@@ -37,12 +37,12 @@ public class VectorStyle implements Serializable {
     }
 
     @JsonIgnore
-    public String getLayer() {
-        return layer;
+    public int getLayerId() {
+        return layerId;
     }
 
-    public void setLayer(String layer) {
-        this.layer = layer;
+    public void setLayer(int layerId) {
+        this.layerId = layerId;
     }
 
     public String getType() {
