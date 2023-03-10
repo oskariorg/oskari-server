@@ -41,7 +41,7 @@ public class VectorStyle implements Serializable {
         return layerId;
     }
 
-    public void setLayer(int layerId) {
+    public void setLayerId(int layerId) {
         this.layerId = layerId;
     }
 
