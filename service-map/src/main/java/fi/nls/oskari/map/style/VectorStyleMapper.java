@@ -37,6 +37,7 @@ public interface VectorStyleMapper {
     List<VectorStyle> getStyles(@Param("user") long user, @Param("layerId") int layerId);
 
     @Delete("DELETE FROM oskari_maplayer_style WHERE id = #{id} RETURNING id")
+    @Options(flushCache = Options.FlushCachePolicy.TRUE)
     long deleteStyle(@Param("id") long id);
 
     @Select("INSERT INTO oskari_maplayer_style"
