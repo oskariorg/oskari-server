@@ -16,6 +16,7 @@ import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 
 import javax.sql.DataSource;
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 @Oskari
@@ -46,6 +47,14 @@ public class VectorStyleServiceMybatisImpl extends VectorStyleService {
 
         return new SqlSessionFactoryBuilder().build(configuration);
     }
+    public VectorStyle getDefaultStyle() {
+        try (final SqlSession session = factory.openSession()) {
+            final VectorStyleMapper mapper = session.getMapper(VectorStyleMapper.class);
+            return mapper.getDefaultStyle();
+        } catch (Exception e) {
+            throw new ServiceRuntimeException("Failed to get instance default vector style");
+        }
+    }
     public VectorStyle getStyleById(final long id) {
         try (final SqlSession session = factory.openSession()) {
             final VectorStyleMapper mapper = session.getMapper(VectorStyleMapper.class);
@@ -60,14 +69,6 @@ public class VectorStyleServiceMybatisImpl extends VectorStyleService {
             return mapper.getStylesByUser(user);
         } catch (Exception e) {
             throw new ServiceRuntimeException("Failed to get vector styles for user: " + user, e);
-        }
-    }
-    public List<VectorStyle> getStylesByLayerId(final int layerId) {
-        try (final SqlSession session = factory.openSession()) {
-            final VectorStyleMapper mapper = session.getMapper(VectorStyleMapper.class);
-            return mapper.getStylesByLayerId(layerId);
-        } catch (Exception e) {
-            throw new ServiceRuntimeException("Failed to get vector styles for layer: " + layerId, e);
         }
     }
     public List<VectorStyle> getStyles(final long userId, final int layerId) {
@@ -96,6 +97,50 @@ public class VectorStyleServiceMybatisImpl extends VectorStyleService {
     }
     public long updateStyle(final VectorStyle style) {
         try (final SqlSession session = factory.openSession()) {
+            final VectorStyleMapper mapper = session.getMapper(VectorStyleMapper.class);
+            return mapper.updateStyle(style);
+        } catch (Exception e) {
+            throw new ServiceRuntimeException("Failed to update vector style", e);
+        }
+    }
+    public List<VectorStyle> getAdminStyles(final int layerId) {
+        try (final SqlSession session = factory.openSession()) {
+            final VectorStyleMapper mapper = session.getMapper(VectorStyleMapper.class);
+            return mapper.getAdminStyles(layerId);
+        } catch (Exception e) {
+            throw new ServiceRuntimeException("Failed to get vector styles for layer: " + layerId, e);
+        }
+    }
+    public long deleteAdminStyle(final long id) {
+        try (final SqlSession session = factory.openSession()) {
+            final VectorStyleMapper mapper = session.getMapper(VectorStyleMapper.class);
+            VectorStyle found = getStyleById(id);
+            if (found != null && found.getCreator() != null) {
+                throw new AccessDeniedException("Tried to delete non-admin style");
+            }
+            return mapper.deleteStyle(id);
+        } catch (Exception e) {
+            throw new ServiceRuntimeException("Failed to delete vector style: " + id, e);
+        }
+    }
+    public long saveAdminStyle(final VectorStyle style) {
+        try (final SqlSession session = factory.openSession()) {
+            if (style.getCreator() != null) {
+                log.warn("Tried to add admin style with userId: " + style.getCreator() + ". Updated to null.");
+                style.setCreator(null);
+            }
+            final VectorStyleMapper mapper = session.getMapper(VectorStyleMapper.class);
+            return mapper.saveStyle(style);
+        } catch (Exception e) {
+            throw new ServiceRuntimeException("Failed to save vector style", e);
+        }
+    }
+    public long updateAdminStyle(final VectorStyle style) {
+        try (final SqlSession session = factory.openSession()) {
+            if (style.getCreator() != null) {
+                log.warn("Tried to update admin style with userId: " + style.getCreator() + ". Updated to null.");
+                style.setCreator(null);
+            }
             final VectorStyleMapper mapper = session.getMapper(VectorStyleMapper.class);
             return mapper.updateStyle(style);
         } catch (Exception e) {

@@ -10,10 +10,13 @@ import fi.nls.oskari.control.layer.GetMapLayerGroupsHandler;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.domain.map.style.VectorStyle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.DataProviderService;
 import fi.nls.oskari.map.layer.OskariLayerService;
+import fi.nls.oskari.map.style.VectorStyleHelper;
+import fi.nls.oskari.map.style.VectorStyleService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.GetLayerKeywords;
@@ -27,6 +30,7 @@ import org.oskari.admin.MapLayerGroupsHelper;
 import org.oskari.admin.MapLayerPermissionsHelper;
 import org.oskari.maplayer.admin.LayerValidator;
 import org.oskari.maplayer.model.MapLayer;
+import org.oskari.maplayer.model.MapLayerAdminInput;
 import org.oskari.maplayer.model.MapLayerAdminOutput;
 import org.oskari.log.AuditLog;
 
@@ -65,6 +69,9 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
         CacheManager.getCache(GetMapLayerGroupsHandler.CACHE_NAME).flush(true);
     }
 
+    private VectorStyleService getVectorStyleService() {
+        return OskariComponentManager.getComponentOfType(VectorStyleService.class);
+    }
     /**
      * Get layer for edit (admin)
      *
@@ -85,7 +92,7 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
 
     @Override
     public void handlePost(ActionParameters params) throws ActionException {
-        MapLayer layer = LayerAdminJSONHelper.readJSON(params.getPayLoad());
+        MapLayerAdminInput layer = LayerAdminJSONHelper.inputFromJSON(params.getPayLoad());
         boolean isExisting = layer.getId() != null && layer.getId() > 0;
         Result result;
         if (isExisting) {
@@ -179,7 +186,12 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
 
     private MapLayerAdminOutput getLayerForEdit(User user, final OskariLayer ml) {
         MapLayerAdminOutput layer = LayerAdminJSONHelper.toJSON(ml);
+
         layer.setGroup_ids(MapLayerGroupsHelper.findGroupIdsForLayer(ml.getId()));
+        if (VectorStyleHelper.isVectorLayer(ml)) {
+            VectorStyleService vss = getVectorStyleService();
+            layer.setVectorStyles(vss.getAdminStyles(ml.getId()));
+        }
         try {
             Map<String, Set<String>> rolePermissions = new HashMap<>();
             getPermissionsGroupByRole(user, ml).entrySet()
@@ -199,7 +211,7 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
      * @throws ActionException
      * @throws JSONException   if mandatory field is missing or invalid type
      */
-    private Result updateLayer(final ActionParameters params, final MapLayer layer) throws ActionException {
+    private Result updateLayer(final ActionParameters params, final MapLayerAdminInput layer) throws ActionException {
         // also checks that user has permission to update
         OskariLayer ml = getMapLayer(params.getUser(), layer.getId());
 
@@ -211,7 +223,41 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
 
         mapLayerService.update(ml);
 
+        if (VectorStyleHelper.isVectorLayer(ml)) {
+            updateVectorStyles(layer);
+        }
+
         return result;
+    }
+    private void updateVectorStyles(MapLayerAdminInput layer) {
+        List<VectorStyle> styles = layer.getVectorStyles();
+        if (styles == null) {
+            return;
+        }
+        VectorStyleService vss = getVectorStyleService();
+        Map<Long, MapLayerAdminInput.Status> status = layer.getVectorStyleStatus();
+
+        styles.forEach(style -> {
+            long id = style.getId();
+            LOG.debug("Updating vector style with id:", id);
+            switch (status.getOrDefault(id, MapLayerAdminInput.Status.NOOP)) {
+                case NEW:
+                    style.setLayerId(layer.getId());
+                    LOG.debug("NEW");
+                    vss.saveAdminStyle(style);
+                    break;
+                case UPDATED:
+                    LOG.debug("UPDATED");
+                    vss.updateAdminStyle(style);
+                    break;
+                case DELETED:
+                    LOG.debug("DELETED");
+                    vss.deleteAdminStyle(id);
+                    break;
+                default:
+                    LOG.debug("NOOP");
+            }
+        });
     }
 
     /**
@@ -236,6 +282,17 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
 
         final int layerId = mapLayerService.insert(ml);
         ml.setId(layerId);
+
+        if (VectorStyleHelper.isVectorLayer(ml)) {
+            VectorStyleService vss = getVectorStyleService();
+            List<VectorStyle> styles = layer.getVectorStyles();
+            if (styles != null) {
+                styles.forEach(style -> {
+                    style.setLayerId(layerId);
+                    vss.saveAdminStyle(style);
+                });
+            }
+        }
 
 
         if (ml.isCollection()) {
