@@ -48,8 +48,8 @@ public interface VectorStyleMapper {
     long saveStyle(final VectorStyle style);
 
     @Select("UPDATE oskari_maplayer_style"
-            + " SET layer_id = #{layerId}, type = #{type},"
-            + " name = #{name} , style = #{style}"
+            + " SET updated = #{updated},"
+            + " name = #{name}, style = #{style}"
             + " WHERE id = #{id}"
             + " RETURNING id")
     @Options(flushCache = Options.FlushCachePolicy.TRUE)
