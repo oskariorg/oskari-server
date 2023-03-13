@@ -36,7 +36,6 @@ public class VectorStyle implements Serializable {
         this.id = id;
     }
 
-    @JsonIgnore
     public Integer getLayerId() {
         return layerId;
     }
@@ -88,7 +87,6 @@ public class VectorStyle implements Serializable {
         this.style = new JSONObject(style);
     }
 
-    @JsonIgnore
     public OffsetDateTime getCreated() {
         return created;
     }
@@ -97,7 +95,6 @@ public class VectorStyle implements Serializable {
         this.created = created;
     }
 
-    @JsonIgnore
     public OffsetDateTime getUpdated() {
         return updated;
     }
