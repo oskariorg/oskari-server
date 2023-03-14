@@ -17,7 +17,7 @@ public interface VectorStyleMapper {
             @Result(property="created", column="created", javaType=OffsetDateTime.class),
             @Result(property="updated", column="updated", javaType= OffsetDateTime.class)
     })
-    @Select("SELECT * FROM oskari_maplayer_style WHERE layer_id IS NULL AND creator IS NULL")
+    @Select("SELECT * FROM oskari_maplayer_style WHERE layer_id IS NULL AND creator IS NULL and type = 'default' limit 1")
     VectorStyle getDefaultStyle();
 
     @ResultMap("VectorStyle")
