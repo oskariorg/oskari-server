@@ -19,7 +19,7 @@ public class VectorStyle implements Serializable {
     public static final String TYPE_OSKARI = "oskari";
     public static final String TYPE_MAPBOX = "mapbox";
     public static final String TYPE_3D = "cesium";
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_DATE_TIME;
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_INSTANT;
 
     private long id;
     private Integer layerId; // null for default instance style

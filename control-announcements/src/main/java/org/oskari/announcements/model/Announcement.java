@@ -10,7 +10,7 @@ import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONObject;
 
 public class Announcement  {
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_DATE_TIME;
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_INSTANT;
     private int id;
     private OffsetDateTime beginDate;
     private OffsetDateTime endDate;
