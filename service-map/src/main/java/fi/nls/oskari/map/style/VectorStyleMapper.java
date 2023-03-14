@@ -17,7 +17,7 @@ public interface VectorStyleMapper {
             @Result(property="created", column="created", javaType=OffsetDateTime.class),
             @Result(property="updated", column="updated", javaType= OffsetDateTime.class)
     })
-    @Select("SELECT * FROM oskari_maplayer_style WHERE layer_id IS NULL AND creator IS NULL")
+    @Select("SELECT * FROM oskari_maplayer_style WHERE layer_id IS NULL AND creator IS NULL and type = 'default' limit 1")
     VectorStyle getDefaultStyle();
 
     @ResultMap("VectorStyle")
@@ -48,8 +48,8 @@ public interface VectorStyleMapper {
     long saveStyle(final VectorStyle style);
 
     @Select("UPDATE oskari_maplayer_style"
-            + " SET layer_id = #{layerId}, type = #{type},"
-            + " name = #{name} , style = #{style}"
+            + " SET updated = #{updated},"
+            + " name = #{name}, style = #{style}"
             + " WHERE id = #{id}"
             + " RETURNING id")
     @Options(flushCache = Options.FlushCachePolicy.TRUE)

@@ -3,6 +3,7 @@ package fi.nls.oskari.domain.map.style;
 
 import java.io.Serializable;
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
@@ -18,6 +19,7 @@ public class VectorStyle implements Serializable {
     public static final String TYPE_OSKARI = "oskari";
     public static final String TYPE_MAPBOX = "mapbox";
     public static final String TYPE_3D = "cesium";
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_INSTANT;
 
     private long id;
     private Integer layerId; // null for default instance style
@@ -36,7 +38,6 @@ public class VectorStyle implements Serializable {
         this.id = id;
     }
 
-    @JsonIgnore
     public Integer getLayerId() {
         return layerId;
     }
@@ -88,7 +89,10 @@ public class VectorStyle implements Serializable {
         this.style = new JSONObject(style);
     }
 
-    @JsonIgnore
+    @JsonGetter("created")
+    public String getFormattedCreated () {
+        return created != null ? created.format(FORMATTER) : null;
+    }
     public OffsetDateTime getCreated() {
         return created;
     }
@@ -97,7 +101,10 @@ public class VectorStyle implements Serializable {
         this.created = created;
     }
 
-    @JsonIgnore
+    @JsonGetter("updated")
+    public String getFormattedUpdated () {
+        return updated != null ? updated.format(FORMATTER) : null;
+    }
     public OffsetDateTime getUpdated() {
         return updated;
     }

@@ -11,6 +11,7 @@ import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.ResponseHelper;
 import org.oskari.log.AuditLog;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @OskariActionRoute("VectorStyle")
@@ -64,6 +65,7 @@ public class VectorStyleHandler extends RestActionHandler {
             if (userId != old.getCreator() || style.getLayerId() != old.getLayerId()) {
                 throw new ActionDeniedException("User or layerId doesn't match");
             }
+            style.setUpdated(OffsetDateTime.now());
             // creator isn't updated so no need to set it here
             long id = getService().updateStyle(style);
             AuditLog.user(params.getClientIp(), params.getUser())

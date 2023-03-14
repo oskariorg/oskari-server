@@ -89,6 +89,10 @@ public class VectorStyleServiceMybatisImpl extends VectorStyleService {
     }
     public long saveStyle(final VectorStyle style) {
         try (final SqlSession session = factory.openSession()) {
+            if (style.getLayerId() == null) {
+                // layer_id column is nullable because instance default style doesn't have layerId
+                throw new IllegalArgumentException("Tried to add vector style without layerId");
+            }
             final VectorStyleMapper mapper = session.getMapper(VectorStyleMapper.class);
             return mapper.saveStyle(style);
         } catch (Exception e) {
@@ -125,6 +129,10 @@ public class VectorStyleServiceMybatisImpl extends VectorStyleService {
     }
     public long saveAdminStyle(final VectorStyle style) {
         try (final SqlSession session = factory.openSession()) {
+            if (style.getLayerId() == null) {
+                // layer_id column is nullable because instance default style doesn't have layerId
+                throw new IllegalArgumentException("Tried to add vector style without layerId");
+            }
             if (style.getCreator() != null) {
                 log.warn("Tried to add admin style with userId: " + style.getCreator() + ". Updated to null.");
                 style.setCreator(null);

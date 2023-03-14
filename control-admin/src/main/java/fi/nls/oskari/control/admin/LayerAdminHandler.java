@@ -34,6 +34,7 @@ import org.oskari.maplayer.model.MapLayerAdminInput;
 import org.oskari.maplayer.model.MapLayerAdminOutput;
 import org.oskari.log.AuditLog;
 
+import java.time.OffsetDateTime;
 import java.util.*;
 
 @OskariActionRoute("LayerAdmin")
@@ -231,11 +232,12 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
     }
     private void updateVectorStyles(MapLayerAdminInput layer) {
         List<VectorStyle> styles = layer.getVectorStyles();
-        if (styles == null) {
+        Map<Long, MapLayerAdminInput.Status> status = layer.getVectorStyleStatus();
+        if (styles == null || status == null) {
+            // no styles or no changes
             return;
         }
         VectorStyleService vss = getVectorStyleService();
-        Map<Long, MapLayerAdminInput.Status> status = layer.getVectorStyleStatus();
 
         styles.forEach(style -> {
             long id = style.getId();
@@ -248,6 +250,7 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
                     break;
                 case UPDATED:
                     LOG.debug("UPDATED");
+                    style.setUpdated(OffsetDateTime.now());
                     vss.updateAdminStyle(style);
                     break;
                 case DELETED:
