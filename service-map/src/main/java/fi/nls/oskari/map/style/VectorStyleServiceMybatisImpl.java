@@ -2,6 +2,7 @@ package fi.nls.oskari.map.style;
 
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.db.DatasourceHelper;
+import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.style.VectorStyle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -77,6 +78,15 @@ public class VectorStyleServiceMybatisImpl extends VectorStyleService {
             return mapper.getStyles(userId, layerId);
         } catch (Exception e) {
             throw new ServiceRuntimeException("Failed to get vector styles for layer: " + layerId, e);
+        }
+    }
+    public boolean hasPermissionToUpdate(final long id, final User user) {
+        try (final SqlSession session = factory.openSession()) {
+            final VectorStyleMapper mapper = session.getMapper(VectorStyleMapper.class);
+            long userId = mapper.getUserId(id);
+            return user.getId() == userId;
+        } catch (Exception e) {
+            throw new ServiceRuntimeException("Failed to delete vector style: " + id, e);
         }
     }
     public long deleteStyle(final long id) {

@@ -54,4 +54,7 @@ public interface VectorStyleMapper {
             + " RETURNING id")
     @Options(flushCache = Options.FlushCachePolicy.TRUE)
     long updateStyle(final VectorStyle style);
+
+    @Select("SELECT creator FROM oskari_maplayer_style WHERE id = #{id}")
+    long getUserId(@Param("id") long id);
 }
