@@ -56,8 +56,9 @@ public class V2_11_2__migrate_maplayer_styles extends BaseJavaMigration  {
         int count = 0;
         // update appsetup styles
         long mapfullId = getMapfullId(conn);
-        Map<Long, JSONObject> states = getAppsetupStates(conn, mapfullId);
-        for (Long appId : states.keySet()) {
+        // Use String as key
+        Map<String, JSONObject> states = getAppsetupStates(conn, mapfullId);
+        for (String appId : states.keySet()) {
             boolean update = false;
             JSONObject state = states.get(appId);
             JSONArray stateLayers = JSONHelper.getEmptyIfNull(JSONHelper.getJSONArray(state, "selectedLayers"));
@@ -74,14 +75,14 @@ public class V2_11_2__migrate_maplayer_styles extends BaseJavaMigration  {
             if (update) {
                 try {
                     count++;
-                    updateAppsetupState(conn, mapfullId, appId, state);
+                    updateAppsetupState(conn, mapfullId, Long.parseLong(appId), state);
                 } catch (SQLException e) {
                     log.error(e, "Error updating mapfull bundle state for appsetup: " + appId);
                     throw e;
                 }
             }
         }
-        log.info("Updated style id/name for: + " + count + " appsetups");
+        log.info("Updated style id/name for:", count, "appsetups");
     }
 
     protected List<StyleConfig> getOskariStyleDefs(OskariLayer layer) {
@@ -234,8 +235,8 @@ public class V2_11_2__migrate_maplayer_styles extends BaseJavaMigration  {
         }
         return layers;
     }
-    protected Map<Long, JSONObject> getAppsetupStates(Connection conn, long mapfullId) throws SQLException {
-        Map<Long, JSONObject> states = new HashMap();
+    protected Map<String, JSONObject> getAppsetupStates(Connection conn, long mapfullId) throws SQLException {
+        Map<String, JSONObject> states = new HashMap();
         final String sql = "SELECT appsetup_id, state from oskari_appsetup_bundles where bundle_id = ?";
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setLong(1, mapfullId);
@@ -243,7 +244,7 @@ public class V2_11_2__migrate_maplayer_styles extends BaseJavaMigration  {
                 while (rs.next()) {
                     long id = rs.getLong("appsetup_id");
                     JSONObject state = JSONHelper.createJSONObject(rs.getString("state"));
-                    states.put(id, state);
+                    states.put(Long.toString(id), state);
                 }
             }
         }
