@@ -78,16 +78,24 @@ public class LayerJSONFormatter {
     protected void addVectorStylesToOptions(int layerId, JSONObject layer) {
         VectorStyleService service = OskariComponentManager.getComponentOfType(VectorStyleService.class);
         JSONObject styles = new JSONObject();
+        JSONObject external = new JSONObject();
         service.getAdminStyles(layerId).forEach(vs -> {
             LOG.debug("setting style for:" , layerId, "with name", vs.getName());
             JSONObject style = vs.getStyle();
-            String name = Long.toString(vs.getId());
-            JSONHelper.putValue(style, "title", vs.getName());
-            JSONHelper.putValue(styles, name, style);
+            String id = Long.toString(vs.getId());
+            String name = vs.getName();
+            if (vs.getType().equals(VectorStyle.TYPE_OSKARI)) {
+                JSONHelper.putValue(style, "title", name);
+                JSONHelper.putValue(styles, id, style);
+            } else {
+                JSONHelper.putValue(external, name, style);
+            }
+
         });
 
         JSONObject options = JSONHelper.getJSONObject(layer, "options");
         JSONHelper.putValue(options, "styles", styles);
+        JSONHelper.putValue(options, "externalStyles", external);
     }
 
     /**
