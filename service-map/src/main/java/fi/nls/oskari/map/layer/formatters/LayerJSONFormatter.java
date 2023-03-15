@@ -1,9 +1,12 @@
 package fi.nls.oskari.map.layer.formatters;
 
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.domain.map.style.VectorStyle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.WKTHelper;
+import fi.nls.oskari.map.style.VectorStyleService;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
@@ -69,6 +72,22 @@ public class LayerJSONFormatter {
             return formatter;
         }
         return null;
+    }
+    // This is temporal solution to add styles to options
+    // For now styles are migrated to new table and frontend doesn't handle async DescribeLayer response properly
+    protected void addVectorStylesToOptions(int layerId, JSONObject layer) {
+        VectorStyleService service = OskariComponentManager.getComponentOfType(VectorStyleService.class);
+        JSONObject styles = new JSONObject();
+        service.getAdminStyles(layerId).forEach(vs -> {
+            LOG.debug("setting style for:" , layerId, "with name", vs.getName());
+            JSONObject style = vs.getStyle();
+            String name = Long.toString(vs.getId());
+            JSONHelper.putValue(style, "title", vs.getName());
+            JSONHelper.putValue(styles, name, style);
+        });
+
+        JSONObject options = JSONHelper.getJSONObject(layer, "options");
+        JSONHelper.putValue(options, "styles", styles);
     }
 
     /**
