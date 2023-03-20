@@ -37,11 +37,11 @@ public abstract class VectorStyleService extends OskariComponent  {
             long styleId = Long.parseLong(name);
             return getOskariFeatureStyle(styleId);
         } catch (NumberFormatException ignored) {}
-        return getOskariFeatureStyle(-1L);
+        return getDefaultFeatureStyle();
     }
     public JSONObject getOskariFeatureStyle(final long styleId) {
         VectorStyle style = getStyleById(styleId);
-        if (style == null || style.getType() != VectorStyle.TYPE_OSKARI) {
+        if (style == null || !VectorStyle.TYPE_OSKARI.equals(style.getType())) {
             return getDefaultFeatureStyle();
         }
         JSONObject featureStyle = JSONHelper.getJSONObject(style.getStyle(), KEY_FEATURE_STYLE);
