@@ -13,6 +13,9 @@ import java.util.Calendar;
  */
 public class RegistrationUtil {
 
+    // From: https://owasp.org/www-community/OWASP_Validation_Regex_Repository
+    private static final String EMAIL_REGEXP = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,}$";
+
     public static final String getServerAddress(ActionParameters params) {
         final String domain = PropertyUtil.get("oskari.domain", null);
         if(domain != null) {
@@ -23,8 +26,7 @@ public class RegistrationUtil {
     }
 
     public static boolean isValidEmail(String email) {
-        String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.\\-)+[\\w]+[\\w]$";
-        return email != null && !email.isEmpty() && email.matches(regex);
+        return email != null && !email.isEmpty() && email.matches(EMAIL_REGEXP);
     }
 
     public static boolean isPasswordOk(String passwd) {
