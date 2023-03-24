@@ -49,6 +49,22 @@
         select id, first_name, last_name, user_name, email, uuid, attributes from oskari_users order by user_name
     </select>
 
+    <select id="findAllPaginated" resultMap="UsersResult" parameterType="java.util.HashMap">
+        select id, first_name, last_name, user_name, email, uuid, attributes from oskari_users order by user_name limit #{limit} offset #{offset}
+    </select>
+
+    <select id="findAllPaginatedSearch" resultMap="UsersResult" parameterType="java.util.HashMap">
+        select id, first_name, last_name, user_name, email, uuid, attributes from oskari_users where user_name ilike #{search} || '%' OR first_name ilike #{search} || '%' OR last_name ilike #{search} || '%' order by user_name limit #{limit} offset #{offset} 
+    </select>
+
+    <select id="findUserCount" resultType="java.lang.Long">
+        select count(*) from oskari_users;
+    </select>
+
+    <select id="findUserSearchCount" resultType="java.lang.Long" parameterType="String">
+        select count(*) from oskari_users where user_name ilike #{search} || '%' OR first_name ilike #{search} || '%' OR last_name ilike #{search} || '%';
+    </select>
+
     <select id="find" parameterType="Long" resultMap="UsersResult">
         select id, first_name, last_name, user_name, email, uuid, attributes from oskari_users where id = #{id}
     </select>

@@ -13,6 +13,8 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import java.util.*;
 
+import javax.xml.bind.ValidationException;
+
 public class DatabaseUserService extends UserService {
     private MybatisRoleService roleService = new MybatisRoleService();
     private MybatisUserService userService = new MybatisUserService();
@@ -108,6 +110,34 @@ public class DatabaseUserService extends UserService {
         }
         
         return newUserList;
+    }
+
+    @Override
+    public List<User> getUsersWithRoles(long limit, long offset, String search) throws ServiceException {
+        log.info("getUsersWithRoles");
+        List<User> users = userService.findAll(limit, offset, search);
+        
+        List<User> newUserList = new ArrayList<User>();
+        
+        for(User user : users){
+        	log.debug("userid: " + user.getId());
+        	List<Role> roles = roleService.findByUserId(user.getId());
+        	Set<Role> hashsetRoles = new HashSet<Role>(roles);
+        	user.setRoles(hashsetRoles);
+        	newUserList.add(user);
+        }
+        
+        return newUserList;
+    }
+
+    @Override
+    public Long getUserCount() throws ServiceException {
+        return userService.findUserCount();
+    }
+
+    @Override
+    public Long getUserSearchCount(String search) throws ServiceException {
+        return userService.findUserSearchCount(search);
     }
 
     @Override
