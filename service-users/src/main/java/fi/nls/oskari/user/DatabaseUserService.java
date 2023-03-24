@@ -13,7 +13,6 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import java.util.*;
 
-import javax.xml.bind.ValidationException;
 
 public class DatabaseUserService extends UserService {
     private MybatisRoleService roleService = new MybatisRoleService();
