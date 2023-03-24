@@ -46,7 +46,7 @@ public class UsersHandler extends RestActionHandler {
     public void handleGet(ActionParameters params) throws ActionException {
         final JSONObject response;
         long id = getId(params);
-        long limit = params.getHttpParam(PARAM_LIMIT, 10);
+        long limit = params.getHttpParam(PARAM_LIMIT, 0);
         long offset = params.getHttpParam(PARAM_OFFSET, 0);
         String search = params.getHttpParam(PARAM_SEARCH);
         try {
