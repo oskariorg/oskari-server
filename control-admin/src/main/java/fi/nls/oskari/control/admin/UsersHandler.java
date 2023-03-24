@@ -98,9 +98,10 @@ public class UsersHandler extends RestActionHandler {
                 if (password != null && !password.trim().isEmpty()) {
                     if (!isPasswordOk(password)) {
                         throw new ActionParamsException("Password too weak");
+                    } else {
+                        userService.updateUserPassword(retUser.getScreenname(), password);
                     }
                 }
-                userService.updateUserPassword(retUser.getScreenname(), password);
                 audit.updated(AuditLog.ResourceType.USER);
             } else {
                 LOG.debug("NOW IN POST and creating a new user!!!!!!!!!!!!!");
