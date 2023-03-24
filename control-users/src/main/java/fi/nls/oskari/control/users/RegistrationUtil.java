@@ -7,6 +7,7 @@ import fi.nls.oskari.util.PropertyUtil;
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.regex.Pattern;
 
 /**
  * Created by SMAKINEN on 1.9.2016.
@@ -15,7 +16,7 @@ public class RegistrationUtil {
 
     // From: https://owasp.org/www-community/OWASP_Validation_Regex_Repository
     private static final String EMAIL_REGEXP = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,}$";
-    private static final String EMAIL_PATTERN = Pattern.compile(EMAIL_REGEXP);
+    private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEXP);
     public static final String getServerAddress(ActionParameters params) {
         final String domain = PropertyUtil.get("oskari.domain", null);
         if(domain != null) {
@@ -30,13 +31,13 @@ public class RegistrationUtil {
     }
 
     public static boolean isPasswordOk(String passwd) {
-        if(passwd == null) {
+        if (passwd == null) {
             return false;
         }
-        if(passwd.length() < PasswordRules.getMinLength()) {
+        if (passwd.length() < PasswordRules.getMinLength()) {
             return false;
         }
-        if(PasswordRules.getRequireCase() &&
+        if (PasswordRules.getRequireCase() &&
                 (passwd.toLowerCase().equals(passwd) || passwd.toUpperCase().equals(passwd))) {
             return false;
         }
