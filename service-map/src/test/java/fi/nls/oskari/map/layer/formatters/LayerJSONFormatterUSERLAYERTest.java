@@ -40,6 +40,7 @@ public class LayerJSONFormatterUSERLAYERTest {
     @Test
     public void parseFields() throws JSONException {
         OskariLayer baseLayer = new OskariLayer();
+        baseLayer.setInternal(true);
         baseLayer.getAttributes().put("namespaceURL", NAMESPACE);
         UserLayer ulayer = new UserLayer();
         ulayer.setFields(new JSONArray(FIELDS));
@@ -71,6 +72,7 @@ public class LayerJSONFormatterUSERLAYERTest {
     @Test
     public void parseAttributes() throws JSONException {
         OskariLayer baseLayer = new OskariLayer();
+        baseLayer.setInternal(true);
         baseLayer.getAttributes().put("namespaceURL", NAMESPACE);
         UserLayer ulayer = new UserLayer();
         JSONArray fields = new JSONArray(FIELDS);

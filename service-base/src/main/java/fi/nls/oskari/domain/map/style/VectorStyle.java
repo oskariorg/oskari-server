@@ -97,6 +97,7 @@ public class VectorStyle implements Serializable {
         return created;
     }
 
+    @JsonIgnore
     public void setCreated(OffsetDateTime created) {
         this.created = created;
     }
@@ -109,6 +110,7 @@ public class VectorStyle implements Serializable {
         return updated;
     }
 
+    @JsonIgnore
     public void setUpdated(OffsetDateTime updated) {
         this.updated = updated;
     }

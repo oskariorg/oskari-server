@@ -2,6 +2,7 @@ package fi.nls.oskari.control.style;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
+import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.style.VectorStyle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -54,20 +55,21 @@ public class VectorStyleHandler extends RestActionHandler {
         ResponseHelper.writeResponse(params, true);
     }
     public void handlePut(final ActionParameters params) throws ActionException {
-        if (params.getUser().isGuest()) {
+        User user = params.getUser();
+        if (user.isGuest()) {
             throw new ActionDeniedException("Session expired");
         }
         final long userId = params.getUser().getId();
 
         try {
+            VectorStyleService service = getService();
             final VectorStyle style = VectorStyleHelper.readJSON(params.getPayLoad());
-            final VectorStyle old = getService().getStyleById(style.getId());
-            if (userId != old.getCreator() || style.getLayerId() != old.getLayerId()) {
-                throw new ActionDeniedException("User or layerId doesn't match");
+            if (!service.hasPermissionToUpdate(style.getId(), user)) {
+                throw new ActionDeniedException("Not allowed to update vector style with id: " + style.getId());
             }
             style.setUpdated(OffsetDateTime.now());
             // creator isn't updated so no need to set it here
-            long id = getService().updateStyle(style);
+            long id = service.updateStyle(style);
             AuditLog.user(params.getClientIp(), params.getUser())
                     .withParam("id", id)
                     .withParam("name", style.getName())
