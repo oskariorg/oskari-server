@@ -14,7 +14,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.oskari.log.AuditLog;
-import org.oskari.user.util.PasswordRules;
+import org.oskari.user.util.UserHelper;
 
 import java.util.List;
 
@@ -97,7 +97,7 @@ public class UsersHandler extends RestActionHandler {
                 retUser = userService.modifyUserwithRoles(user, roles);
                 LOG.debug("done modifying user");
                 if (password != null && !password.trim().isEmpty()) {
-                    if (!PasswordRules.isPasswordOk(password)) {
+                    if (!UserHelper.isPasswordOk(password)) {
                         throw new ActionParamsException("Password too weak");
                     } else {
                         userService.updateUserPassword(retUser.getScreenname(), password);
@@ -109,7 +109,7 @@ public class UsersHandler extends RestActionHandler {
                 if (password == null || password.trim().isEmpty()) {
                     throw new ActionException("Parameter 'password' not found.");
                 }
-                if (!PasswordRules.isPasswordOk(password)) {
+                if (!UserHelper.isPasswordOk(password)) {
                     throw new ActionParamsException("Password too weak");
                 }
                 retUser = userService.createUser(user);
@@ -138,7 +138,7 @@ public class UsersHandler extends RestActionHandler {
         String[] roles = params.getRequest().getParameterValues("roles");
         User retUser = null;
 
-        if (!PasswordRules.isPasswordOk(password)) {
+        if (!UserHelper.isPasswordOk(password)) {
             throw new ActionParamsException("Password too weak");
         }
 

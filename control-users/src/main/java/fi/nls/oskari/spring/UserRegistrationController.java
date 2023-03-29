@@ -3,7 +3,7 @@ package fi.nls.oskari.spring;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.users.RegistrationUtil;
 import fi.nls.oskari.control.users.model.EmailToken;
-import org.oskari.user.util.PasswordRules;
+import org.oskari.user.util.UserHelper;
 import fi.nls.oskari.control.users.service.MailSenderService;
 import fi.nls.oskari.control.users.service.UserRegistrationService;
 import fi.nls.oskari.domain.User;
@@ -132,7 +132,7 @@ public class UserRegistrationController {
             return index(model, params);
         }
         model.addAttribute("uuid", uuid);
-        model.addAttribute("requirements", PasswordRules.asMap());
+        model.addAttribute("requirements", UserHelper.getPasswordRequirements());
         model.addAttribute("email", emailToken.getEmail());
         return "new_user";
     }
@@ -179,7 +179,7 @@ public class UserRegistrationController {
         String username = emailService.findUsernameForEmail(emailToken.getEmail());
         model.addAttribute("username", username);
         model.addAttribute("uuid", emailToken.getUuid());
-        model.addAttribute("requirements", PasswordRules.asMap());
+        model.addAttribute("requirements", UserHelper.getPasswordRequirements());
         return "passwordReset";
 
     }

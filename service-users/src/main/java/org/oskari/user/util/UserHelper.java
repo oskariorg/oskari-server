@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * Created by SMAKINEN on 12.6.2017.
  */
-public class PasswordRules {
+public class UserHelper {
 
     public static boolean isPasswordOk(String passwd) {
         if (passwd == null) {
@@ -31,7 +31,7 @@ public class PasswordRules {
         return PropertyUtil.getOptional("user.passwd.case", true);
     }
 
-    public static Map asMap() {
+    public static Map getPasswordRequirements() {
         Map value = new HashMap();
         value.put("length", getMinLength());
         value.put("case", getRequireCase());

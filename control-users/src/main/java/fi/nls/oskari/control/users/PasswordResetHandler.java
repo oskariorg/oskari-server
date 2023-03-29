@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.control.users.model.EmailToken;
-import org.oskari.user.util.PasswordRules;
+import org.oskari.user.util.UserHelper;
 import fi.nls.oskari.control.users.service.MailSenderService;
 import fi.nls.oskari.control.users.service.UserRegistrationService;
 import fi.nls.oskari.log.LogFactory;
@@ -76,7 +76,7 @@ public class PasswordResetHandler extends RestActionHandler {
     @Override
     public void handleGet(ActionParameters params) throws ActionException {
         try {
-            ResponseHelper.writeResponse(params, mapper.writeValueAsString(PasswordRules.asMap()));
+            ResponseHelper.writeResponse(params, mapper.writeValueAsString(UserHelper.getPasswordRequirements()));
         } catch (JsonProcessingException e) {
             ResponseHelper.writeError(params, "Couldn't serialize requirements");
         }
@@ -123,7 +123,7 @@ public class PasswordResetHandler extends RestActionHandler {
         final EmailToken token = parseContentForEmailUpdate(params);
         String username = registerTokenService.findUsernameForEmail(token.getEmail());
 
-        if(!PasswordRules.isPasswordOk(token.getPassword())) {
+        if(!UserHelper.isPasswordOk(token.getPassword())) {
             throw new ActionParamsException("Password too weak");
         }
         if (username == null) {
