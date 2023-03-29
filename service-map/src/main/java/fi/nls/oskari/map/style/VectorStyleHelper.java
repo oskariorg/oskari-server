@@ -34,6 +34,13 @@ public class VectorStyleHelper {
         try {
             return OBJECT_MAPPER.writeValueAsString(style);
         } catch (Exception ex) {
+            throw new ServiceRuntimeException("Coudn't write vector styles to JSON", ex);
+        }
+    }
+    public static String writeJSON(VectorStyle style) {
+        try {
+            return OBJECT_MAPPER.writeValueAsString(style);
+        } catch (Exception ex) {
             throw new ServiceRuntimeException("Coudn't write vector style to JSON", ex);
         }
     }
