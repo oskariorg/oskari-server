@@ -3,7 +3,7 @@ package fi.nls.oskari.spring;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.users.RegistrationUtil;
 import fi.nls.oskari.control.users.model.EmailToken;
-import fi.nls.oskari.control.users.model.PasswordRules;
+import org.oskari.user.util.PasswordRules;
 import fi.nls.oskari.control.users.service.MailSenderService;
 import fi.nls.oskari.control.users.service.UserRegistrationService;
 import fi.nls.oskari.domain.User;

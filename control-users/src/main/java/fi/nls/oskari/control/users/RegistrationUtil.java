@@ -1,7 +1,7 @@
 package fi.nls.oskari.control.users;
 
 import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.control.users.model.PasswordRules;
+import org.oskari.user.util.PasswordRules;
 import fi.nls.oskari.util.PropertyUtil;
 
 import javax.servlet.http.HttpServletRequest;

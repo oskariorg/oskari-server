@@ -1,4 +1,4 @@
-package fi.nls.oskari.control.users.model;
+package org.oskari.user.util;
 
 import fi.nls.oskari.util.PropertyUtil;
 

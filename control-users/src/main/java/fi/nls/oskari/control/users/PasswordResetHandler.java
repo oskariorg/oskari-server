@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.control.users.model.EmailToken;
-import fi.nls.oskari.control.users.model.PasswordRules;
+import org.oskari.user.util.PasswordRules;
 import fi.nls.oskari.control.users.service.MailSenderService;
 import fi.nls.oskari.control.users.service.UserRegistrationService;
 import fi.nls.oskari.log.LogFactory;
