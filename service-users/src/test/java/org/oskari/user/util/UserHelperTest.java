@@ -1,14 +1,13 @@
-package fi.nls.oskari.control.users;
+package org.oskari.user.util;
 
 import org.junit.Test;
-import org.oskari.user.util.UserHelper;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class RegistrationUtilTest {
+public class UserHelperTest {
     @Test
     public void isValidEmail() {
         List<String> goodEmails = Arrays.asList(
