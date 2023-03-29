@@ -163,18 +163,14 @@ public class UsersHandler extends RestActionHandler {
     @Override
     public void handleDelete(ActionParameters params) throws ActionException {
         LOG.debug("handleDelete");
-        long id = getId(params);
-        if (id > -1) {
-            try {
-                userService.deleteUser(id);
-                AuditLog.user(params.getClientIp(), params.getUser())
-                        .withParam("id", id)
-                        .deleted(AuditLog.ResourceType.USER);
-            } catch (ServiceException se) {
-                throw new ActionException(se.getMessage(), se);
-            }
-        } else {
-            throw new ActionException("Parameter 'id' not found.");
+        long id = params.getRequiredParamLong(PARAM_ID);
+        try {
+            userService.deleteUser(id);
+            AuditLog.user(params.getClientIp(), params.getUser())
+                    .withParam("id", id)
+                    .deleted(AuditLog.ResourceType.USER);
+        } catch (ServiceException se) {
+            throw new ActionException(se.getMessage(), se);
         }
     }
 
