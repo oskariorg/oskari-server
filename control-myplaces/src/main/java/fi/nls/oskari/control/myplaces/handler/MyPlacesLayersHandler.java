@@ -158,7 +158,7 @@ public class MyPlacesLayersHandler extends RestActionHandler {
     private MyPlaceCategory insertDefaultCategory(String uuid)
             throws ActionException {
         try {
-            MyPlaceCategory category = createDefaultCategory();
+            MyPlaceCategory category = MyPlacesService.createDefaultCategory();
             category.setUuid(uuid);
             layerService.insert(Collections.singletonList(category));
             return category;
@@ -166,15 +166,6 @@ public class MyPlacesLayersHandler extends RestActionHandler {
             LOG.warn(e);
             throw new ActionException("Failed to insert default category");
         }
-    }
-
-    private MyPlaceCategory createDefaultCategory() {
-        MyPlaceCategory category = new MyPlaceCategory();
-        category.setName("");
-        category.setDefault(true);
-        category.setLocale(new JSONObject());
-        category.getWFSLayerOptions().setDefaultFeatureStyle(WFSLayerOptions.getDefaultOskariStyle());
-        return category;
     }
 
     private JSONObject toLayerJSON (MyPlaceCategory category) {

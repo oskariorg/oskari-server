@@ -3,12 +3,15 @@ package fi.nls.oskari.myplaces;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterMYPLACES;
+import fi.nls.oskari.map.style.VectorStyleService;
 import fi.nls.oskari.service.OskariComponent;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONObject;
 import org.oskari.permissions.model.Resource;
@@ -69,6 +72,15 @@ public abstract class MyPlacesService extends OskariComponent {
         }
         return mapLayerService.find(BASE_WFS_LAYER_ID);
     }
+    public static MyPlaceCategory createDefaultCategory() {
+        MyPlaceCategory category = new MyPlaceCategory();
+        category.setName("");
+        category.setDefault(true);
+        category.setLocale(new JSONObject());
+        VectorStyleService vss = OskariComponentManager.getComponentOfType(VectorStyleService.class);
+        //category.getWFSLayerOptions().setDefaultFeatureStyle(vss.getDefaultFeatureStyle());
+        return category;
+    }
 
     public String getClientWMSUrl() {
         return MYPLACES_CLIENT_WMS_URL;
@@ -93,5 +105,6 @@ public abstract class MyPlacesService extends OskariComponent {
     public static JSONObject parseLayerToJSON (final MyPlaceCategory mpLayer, final String srs, final String lang) {
         return FORMATTER.getJSON(getBaseLayer(), mpLayer, srs, lang);
     }
+
 
 }
