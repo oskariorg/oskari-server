@@ -91,7 +91,7 @@ public class PasswordResetHandler extends RestActionHandler {
             email = params.getRequiredParam(PARAM_EMAIL);
         }
         // validate email
-        if(!RegistrationUtil.isValidEmail(email)) {
+        if(!UserHelper.isValidEmail(email)) {
             throw new ActionParamsException(getMessage("user.registration.error.invalidEmail", params.getLocale().getLanguage()));
         }
         // add or update token

@@ -4,11 +4,17 @@ import fi.nls.oskari.util.PropertyUtil;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
-/**
- * Created by SMAKINEN on 12.6.2017.
- */
 public class UserHelper {
+
+    // From: https://owasp.org/www-community/OWASP_Validation_Regex_Repository
+    private static final String EMAIL_REGEXP = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,}$";
+    private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEXP);
+
+    public static boolean isValidEmail(String email) {
+        return email != null && !email.isEmpty() && EMAIL_PATTERN.matcher(email).matches();
+    }
 
     public static boolean isPasswordOk(String passwd) {
         if (passwd == null) {

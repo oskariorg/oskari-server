@@ -71,7 +71,7 @@ public class UserRegistrationController {
         User user = new User();
         user.setScreenname("");
         user.setEmail(params.getHttpParam("email"));
-        if(!RegistrationUtil.isValidEmail(user.getEmail())) {
+        if(!UserHelper.isValidEmail(user.getEmail())) {
             model.addAttribute("error", "user.registration.error.invalidEmail");
             return "init_registration";
         }
