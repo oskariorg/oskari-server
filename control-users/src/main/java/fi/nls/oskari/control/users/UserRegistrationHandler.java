@@ -15,6 +15,7 @@ import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import org.oskari.log.AuditLog;
 import org.json.JSONObject;
+import org.oskari.user.util.PasswordRules;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -69,7 +70,7 @@ public class UserRegistrationHandler extends RestActionHandler {
 		}
         final String uuid = params.getRequiredParam("uuid");
         final String password = params.getRequiredParam("password");
-        if(!RegistrationUtil.isPasswordOk(password)) {
+        if(!PasswordRules.isPasswordOk(password)) {
             throw new ActionParamsException("Password too weak");
         }
 

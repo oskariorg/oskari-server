@@ -97,7 +97,7 @@ public class UsersHandler extends RestActionHandler {
                 retUser = userService.modifyUserwithRoles(user, roles);
                 LOG.debug("done modifying user");
                 if (password != null && !password.trim().isEmpty()) {
-                    if (!isPasswordOk(password)) {
+                    if (!PasswordRules.isPasswordOk(password)) {
                         throw new ActionParamsException("Password too weak");
                     } else {
                         userService.updateUserPassword(retUser.getScreenname(), password);
@@ -109,7 +109,7 @@ public class UsersHandler extends RestActionHandler {
                 if (password == null || password.trim().isEmpty()) {
                     throw new ActionException("Parameter 'password' not found.");
                 }
-                if (!isPasswordOk(password)) {
+                if (!PasswordRules.isPasswordOk(password)) {
                     throw new ActionParamsException("Password too weak");
                 }
                 retUser = userService.createUser(user);
@@ -138,7 +138,7 @@ public class UsersHandler extends RestActionHandler {
         String[] roles = params.getRequest().getParameterValues("roles");
         User retUser = null;
 
-        if (!isPasswordOk(password)) {
+        if (!PasswordRules.isPasswordOk(password)) {
             throw new ActionParamsException("Password too weak");
         }
 
@@ -211,18 +211,5 @@ public class UsersHandler extends RestActionHandler {
 
         return uo;
     }
-    
-    private boolean isPasswordOk(String password) {
-        if (password == null) {
-            return false;
-        }
-        if (password.length() < PasswordRules.getMinLength()) {
-            return false;
-        }
-        if (PasswordRules.getRequireCase() &&
-                (password.toLowerCase().equals(password) || password.toUpperCase().equals(password))) {
-            return false;
-        }
-        return true;
-    }
+
 }

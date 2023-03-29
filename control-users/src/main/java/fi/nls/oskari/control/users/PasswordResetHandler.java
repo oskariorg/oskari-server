@@ -123,7 +123,7 @@ public class PasswordResetHandler extends RestActionHandler {
         final EmailToken token = parseContentForEmailUpdate(params);
         String username = registerTokenService.findUsernameForEmail(token.getEmail());
 
-        if(!RegistrationUtil.isPasswordOk(token.getPassword())) {
+        if(!PasswordRules.isPasswordOk(token.getPassword())) {
             throw new ActionParamsException("Password too weak");
         }
         if (username == null) {

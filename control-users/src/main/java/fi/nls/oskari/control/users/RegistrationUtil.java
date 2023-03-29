@@ -30,19 +30,6 @@ public class RegistrationUtil {
         return email != null && !email.isEmpty() && EMAIL_PATTERN.matcher(email).matches();
     }
 
-    public static boolean isPasswordOk(String passwd) {
-        if (passwd == null) {
-            return false;
-        }
-        if (passwd.length() < PasswordRules.getMinLength()) {
-            return false;
-        }
-        if (PasswordRules.getRequireCase() &&
-                (passwd.toLowerCase().equals(passwd) || passwd.toUpperCase().equals(passwd))) {
-            return false;
-        }
-        return true;
-    }
     /**
      * Create timestamp for 2 days as expirytime.
      * @return

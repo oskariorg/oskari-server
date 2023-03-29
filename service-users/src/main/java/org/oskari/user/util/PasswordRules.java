@@ -10,6 +10,19 @@ import java.util.Map;
  */
 public class PasswordRules {
 
+    public static boolean isPasswordOk(String passwd) {
+        if (passwd == null) {
+            return false;
+        }
+        if (passwd.length() < getMinLength()) {
+            return false;
+        }
+        if (getRequireCase() &&
+                (passwd.toLowerCase().equals(passwd) || passwd.toUpperCase().equals(passwd))) {
+            return false;
+        }
+        return true;
+    }
     public static int getMinLength() {
         return PropertyUtil.getOptional("user.passwd.length", 8);
     }
