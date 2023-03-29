@@ -80,7 +80,7 @@ public class VectorStyleServiceMybatisImpl extends VectorStyleService {
             throw new ServiceRuntimeException("Failed to get vector styles for layer: " + layerId, e);
         }
     }
-    public boolean hasPermissionToUpdate(final long id, final User user) {
+    public boolean hasPermissionToAlter(final long id, final User user) {
         try (final SqlSession session = factory.openSession()) {
             final VectorStyleMapper mapper = session.getMapper(VectorStyleMapper.class);
             long userId = mapper.getUserId(id);

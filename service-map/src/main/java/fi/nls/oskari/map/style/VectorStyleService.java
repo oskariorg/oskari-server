@@ -11,7 +11,7 @@ public abstract class VectorStyleService extends OskariComponent  {
     public abstract VectorStyle getStyleById(final long id);
     public abstract List<VectorStyle> getStylesByUser (final long user);
     public abstract List<VectorStyle> getStyles (final long userId, final int layerId);
-    public abstract boolean hasPermissionToUpdate(final long id, final User user);
+    public abstract boolean hasPermissionToAlter(final long id, final User user);
     public abstract long deleteStyle(final long id);
     public abstract long saveStyle(final VectorStyle style);
     public abstract long updateStyle(final VectorStyle style);
