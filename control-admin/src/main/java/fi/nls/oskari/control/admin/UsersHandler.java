@@ -134,6 +134,9 @@ public class UsersHandler extends RestActionHandler {
     @Override
     public void handlePut(ActionParameters params) throws ActionException {
         LOG.debug("handlePut");
+        if (UsersBundleHandler.isUsersFromExternalSource()) {
+            throw new ActionParamsException("Users from external source, adding is disabled");
+        }
         User user = new User();
         getUserParams(user, params);
         String password = params.getRequiredParam(PARAM_PASSWORD);
