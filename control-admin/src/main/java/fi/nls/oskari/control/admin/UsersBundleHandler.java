@@ -31,6 +31,11 @@ public class UsersBundleHandler extends BundleHandler {
         return false;
     }
 
+    /**
+     * If users are managed in external source any changes to them are usually overwritten when they login.
+     * So we can disable the fields that are and updates that can happen to users to make the admin UI more user-friendly.
+     * @return
+     */
     public static boolean isUsersFromExternalSource() {
         return PropertyUtil.getOptional("oskari.user.external", false);
     }
