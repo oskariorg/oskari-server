@@ -41,27 +41,27 @@ public class VectorStyleHandler extends RestActionHandler {
         final long userId = params.getUser().getId();
         final VectorStyle style = VectorStyleHelper.readJSON(params.getPayLoad());
         try {
+            VectorStyleService service = getService();
             style.setCreator(userId);
-            long id = getService().saveStyle(style);
-            style.setId(id);
+            long id = service.saveStyle(style);
             AuditLog.user(params.getClientIp(), params.getUser())
                     .withParam("id", id)
                     .withParam("name", style.getName())
                     .withParam("layerId", style.getLayerId())
                     .added(AuditLog.ResourceType.VECTOR_STYLE);
 
+            final VectorStyle inserted = service.getStyleById(id);
+            ResponseHelper.writeResponse(params, VectorStyleHelper.writeJSON(inserted));
         } catch (Exception e) {
             throw new ActionException("Error when trying add vector style", e);
         }
-        ResponseHelper.writeResponse(params, VectorStyleHelper.writeJSON(style));
+
     }
     public void handlePut(final ActionParameters params) throws ActionException {
         User user = params.getUser();
         if (user.isGuest()) {
             throw new ActionDeniedException("Session expired");
         }
-        final long userId = params.getUser().getId();
-
         try {
             VectorStyleService service = getService();
             final VectorStyle style = VectorStyleHelper.readJSON(params.getPayLoad());
@@ -76,8 +76,8 @@ public class VectorStyleHandler extends RestActionHandler {
                     .withParam("name", style.getName())
                     .withParam("layerId", style.getLayerId())
                     .updated(AuditLog.ResourceType.VECTOR_STYLE);
-            // TODO: get updated from db?
-            ResponseHelper.writeResponse(params, VectorStyleHelper.writeJSON(style));
+            final VectorStyle updated = service.getStyleById(id);
+            ResponseHelper.writeResponse(params, VectorStyleHelper.writeJSON(updated));
         } catch (Exception e) {
             throw new ActionException("Error when trying update vector style", e);
         }
