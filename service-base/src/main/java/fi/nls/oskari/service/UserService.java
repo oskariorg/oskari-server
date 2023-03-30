@@ -231,7 +231,7 @@ public abstract class UserService {
      * @return List<User> users
      * @throws ServiceException
      */
-    public List<User> getUsersWithRoles(long limit, long offset, String search) throws ServiceException {
+    public List<User> getUsersWithRoles(int limit, int offset, String query) throws ServiceException {
         return Collections.emptyList();
     }
 
