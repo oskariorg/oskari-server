@@ -208,6 +208,34 @@ public abstract class UserService {
     }
 
     /**
+     * Return count of all users
+     * @return
+     * @throws ServiceException
+     */
+    public Long getUserCount() throws ServiceException {
+        return 0L;
+    }
+
+    /**
+     * Return count of all users when using search
+     * @return
+     * @throws ServiceException
+     */
+    public Long getUserSearchCount(String search) throws ServiceException {
+        return 0L;
+    }
+
+    /**
+     * Return all users using pagination & search. This method should be overridden in concrete implementation. The
+     * default implementation always throws an exception.
+     * @return List<User> users
+     * @throws ServiceException
+     */
+    public List<User> getUsersWithRoles(long limit, long offset, String search) throws ServiceException {
+        return Collections.emptyList();
+    }
+
+    /**
      * Create a new user. This method should be overridden in concrete implementation. The
      * default implementation always throws an exception.
      * @param user User to be created

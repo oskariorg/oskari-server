@@ -65,6 +65,58 @@ public class MybatisUserService {
         return userList;
     }
 
+    public List<User> findAll(long limit, long offset, String search){
+        final SqlSession session = factory.openSession();
+        List<User> userList = null;
+        try {
+            log.debug("Find all users with limit, offset & search");
+            final UsersMapper mapper = session.getMapper(UsersMapper.class);
+            Map<String, Object> params = new HashMap<>();
+            params.put("limit", limit);
+            params.put("offset", offset);
+            if (search != null) {
+                params.put("search", search);
+                userList = mapper.findAllPaginatedSearch(params);
+            } else {
+                userList = mapper.findAllPaginated(params);
+            }
+        } catch (Exception e) {
+            log.warn(e, "Exception when trying to find all users");
+        } finally {
+            session.close();
+        }
+        log.debug("Finished finding all users");
+        return userList;
+    }
+
+    public Long findUserCount() {
+        final SqlSession session = factory.openSession();
+        Long count = 0L;
+        try {
+            final UsersMapper mapper = session.getMapper(UsersMapper.class);
+            count = mapper.findUserCount();
+        } catch (Exception e) {
+            log.warn(e, "Exception when trying to count users");
+        } finally {
+            session.close();
+        }
+        return count;
+    }
+
+    public Long findUserSearchCount(String search) {
+        final SqlSession session = factory.openSession();
+        Long count = 0L;
+        try {
+            final UsersMapper mapper = session.getMapper(UsersMapper.class);
+            count =  mapper.findUserSearchCount(search);
+        } catch (Exception e) {
+            log.warn(e, "Exception when trying to count users");
+        } finally {
+            session.close();
+        }
+        return count;
+    }
+
     public Long addUser(User user) {
         final SqlSession session = factory.openSession();
         try {

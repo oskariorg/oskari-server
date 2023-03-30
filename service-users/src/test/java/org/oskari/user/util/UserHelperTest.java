@@ -1,4 +1,4 @@
-package fi.nls.oskari.control.users;
+package org.oskari.user.util;
 
 import org.junit.Test;
 
@@ -7,7 +7,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class RegistrationUtilTest {
+public class UserHelperTest {
     @Test
     public void isValidEmail() {
         List<String> goodEmails = Arrays.asList(
@@ -17,7 +17,7 @@ public class RegistrationUtilTest {
             "user-name@domain-test.com",
             "username@domain.co.in",
             "user_name@domain.com");
-        goodEmails.forEach(email -> assertTrue(email, RegistrationUtil.isValidEmail(email)));
+        goodEmails.forEach(email -> assertTrue(email, UserHelper.isValidEmail(email)));
     }
     @Test
     public void isNotValidEmail() {
@@ -26,6 +26,6 @@ public class RegistrationUtilTest {
                 ".user.name@domain.com",
                 "user-name@domain.com.",
                 "username@.com");
-        badEmails.forEach(email -> assertFalse(email, RegistrationUtil.isValidEmail(email)));
+        badEmails.forEach(email -> assertFalse(email, UserHelper.isValidEmail(email)));
     }
 }

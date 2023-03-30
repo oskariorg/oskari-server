@@ -7,6 +7,10 @@ import java.util.Map;
 
 public interface UsersMapper {
     List<User> findAll();
+    List<User> findAllPaginated(Map<String, Object> params);
+    List<User> findAllPaginatedSearch(Map<String, Object> params);
+    Long findUserCount();
+    Long findUserSearchCount(String search);
     Long addUser(User user);
     void updateUser(User user);
     User find(long id);
