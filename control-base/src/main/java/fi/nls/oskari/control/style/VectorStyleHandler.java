@@ -93,6 +93,7 @@ public class VectorStyleHandler extends RestActionHandler {
             if (!service.hasPermissionToAlter(id, user)) {
                 throw new ActionDeniedException("Not allowed to delete vector style with id: " + id);
             }
+            service.deleteStyle(id);
             AuditLog.user(params.getClientIp(), params.getUser())
                     .withParam("id", id)
                     .deleted(AuditLog.ResourceType.VECTOR_STYLE);
