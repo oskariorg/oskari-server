@@ -86,7 +86,7 @@ public class VectorStyleServiceMybatisImpl extends VectorStyleService {
             long userId = mapper.getUserId(id);
             return user.getId() == userId;
         } catch (Exception e) {
-            throw new ServiceRuntimeException("Failed to delete vector style: " + id, e);
+            throw new ServiceRuntimeException("Failed to check vector style permission for id: " + id, e);
         }
     }
     public long deleteStyle(final long id) {
