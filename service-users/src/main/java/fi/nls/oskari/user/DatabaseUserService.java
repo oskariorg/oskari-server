@@ -127,12 +127,12 @@ public class DatabaseUserService extends UserService {
     }
 
     @Override
-    public Long getUserCount() throws ServiceException {
+    public int getUserCount() throws ServiceException {
         return userService.findUserCount();
     }
 
     @Override
-    public Long getUserSearchCount(String search) throws ServiceException {
+    public int getUserSearchCount(String search) throws ServiceException {
         return userService.findUserSearchCount(search);
     }
 

@@ -212,8 +212,8 @@ public abstract class UserService {
      * @return
      * @throws ServiceException
      */
-    public Long getUserCount() throws ServiceException {
-        return 0L;
+    public int getUserCount() throws ServiceException {
+        return -1;
     }
 
     /**
@@ -221,8 +221,8 @@ public abstract class UserService {
      * @return
      * @throws ServiceException
      */
-    public Long getUserSearchCount(String search) throws ServiceException {
-        return 0L;
+    public int getUserSearchCount(String search) throws ServiceException {
+        return -1;
     }
 
     /**
