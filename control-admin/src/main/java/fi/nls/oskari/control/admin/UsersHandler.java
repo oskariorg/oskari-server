@@ -81,47 +81,54 @@ public class UsersHandler extends RestActionHandler {
 
     @Override
     public void handlePost(ActionParameters params) throws ActionException {
-        User user = new User();
-        getUserParams(user, params);
-        String[] roles = params.getRequest().getParameterValues("roles");
-        String password = params.getRequiredParam(PARAM_PASSWORD);
-        User retUser = null;
-
-        AuditLog audit = AuditLog.user(params.getClientIp(), params.getUser())
-                .withParam("email", user.getEmail());
-
-        try {
-            if (user.getId() > -1) {
-                //retUser = userService.modifyUser(user);
-                LOG.debug("roles size: " + roles.length);
-                retUser = userService.modifyUserwithRoles(user, roles);
-                LOG.debug("done modifying user");
-                if (!UserHelper.isPasswordOk(password)) {
-                    throw new ActionParamsException("Password too weak");
-                } else {
-                    userService.updateUserPassword(retUser.getScreenname(), password);
-                }
-                audit.updated(AuditLog.ResourceType.USER);
-            } else {
-                LOG.debug("NOW IN POST and creating a new user!!!!!!!!!!!!!");
-                if (!UserHelper.isPasswordOk(password)) {
-                    throw new ActionParamsException("Password too weak");
-                }
-                retUser = userService.createUser(user);
-                userService.setUserPassword(retUser.getScreenname(), password);
-                audit.added(AuditLog.ResourceType.USER);
+        // modify existing user
+        boolean extUsers = UsersBundleHandler.isUsersFromExternalSource();
+        long userId = params.getRequiredParamLong(PARAM_ID);
+        User user;
+        String password = null;
+        if (extUsers) {
+            user = findExistingUser(userId);
+        } else {
+            user = getUserFromParams(params);
+            password = params.getRequiredParam(PARAM_PASSWORD);
+            if (!UserHelper.isPasswordOk(password)) {
+                throw new ActionParamsException("Password too weak");
             }
+        }
+        String[] roles = params.getRequest().getParameterValues("roles");
 
+        User retUser;
+        try {
+            retUser = userService.modifyUserwithRoles(user, roles);
+            LOG.debug("done modifying user");
+            if (!extUsers) {
+                userService.updateUserPassword(retUser.getScreenname(), password);
+            }
         } catch (ServiceException se) {
             throw new ActionException(se.getMessage(), se);
         }
-        JSONObject response = null;
+
+        AuditLog.user(params.getClientIp(), params.getUser())
+                .withParam("email", user.getEmail())
+                .updated(AuditLog.ResourceType.USER);
         try {
-            response = user2Json(retUser);
+            ResponseHelper.writeResponse(params, user2Json(retUser));
         } catch (JSONException je) {
             throw new ActionException(je.getMessage(), je);
         }
-        ResponseHelper.writeResponse(params, response);
+    }
+
+    private User findExistingUser(long id) throws ActionParamsException {
+        try {
+            return userService.getUser(id);
+        } catch (ServiceException e) {
+            throw new ActionParamsException("Error loading user with id: " + id);
+        }
+    }
+    private User getUserFromParams(ActionParameters params) throws ActionParamsException {
+        User user = new User();
+        getUserParams(user, params);
+        return user;
     }
 
     @Override
@@ -131,12 +138,12 @@ public class UsersHandler extends RestActionHandler {
         getUserParams(user, params);
         String password = params.getRequiredParam(PARAM_PASSWORD);
         String[] roles = params.getRequest().getParameterValues("roles");
-        User retUser = null;
 
         if (!UserHelper.isPasswordOk(password)) {
             throw new ActionParamsException("Password too weak");
         }
 
+        User retUser = null;
         try {
             retUser = userService.createUser(user, roles);
             userService.setUserPassword(retUser.getScreenname(), password);

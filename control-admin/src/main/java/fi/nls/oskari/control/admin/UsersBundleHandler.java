@@ -27,7 +27,11 @@ public class UsersBundleHandler extends BundleHandler {
     public boolean modifyBundle(final ModifierParams params) throws ModifierException {
         final JSONObject config = getBundleConfig(params.getConfig());
         JSONHelper.putValue(config, "requirements", UserHelper.getPasswordRequirements());
-        JSONHelper.putValue(config, "isExternal", PropertyUtil.getOptional("oskari.user.external", false));
+        JSONHelper.putValue(config, "isExternal", isUsersFromExternalSource());
         return false;
+    }
+
+    public static boolean isUsersFromExternalSource() {
+        return PropertyUtil.getOptional("oskari.user.external", false);
     }
 }
