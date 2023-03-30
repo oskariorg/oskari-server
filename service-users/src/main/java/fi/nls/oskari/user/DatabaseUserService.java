@@ -186,7 +186,7 @@ public class DatabaseUserService extends UserService {
         userService.updateUser(user);
         User retUser = userService.find(user.getId());
         List<Role> roles = roleService.findByUserId(user.getId());
-        retUser.setRoles(new HashSet<Role>(roles));
+        retUser.setRoles(new HashSet<>(roles));
         return retUser;
     }
 
@@ -310,7 +310,7 @@ public class DatabaseUserService extends UserService {
 
     private Set<Role> ensureRolesInDB(final Set<Role> userRoles) throws ServiceException {
         final Role[] systemRoles = getRoles();
-        final Set<Role> rolesToInsert = new HashSet<Role>(userRoles.size());
+        final Set<Role> rolesToInsert = new HashSet<>(userRoles.size());
         for (Role userRole : userRoles) {
             boolean found = false;
             for (Role role : systemRoles) {

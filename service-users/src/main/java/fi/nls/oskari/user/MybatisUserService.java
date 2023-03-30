@@ -133,6 +133,7 @@ public class MybatisUserService {
         } catch (Exception e) {
             log.warn(e, "Exception when trying to find user: ", user);
         }
+        loadRoles(user);
         log.debug("Found user: " + user);
         return user;
     }

@@ -84,7 +84,7 @@ public class UsersHandler extends RestActionHandler {
         User user = new User();
         getUserParams(user, params);
         String[] roles = params.getRequest().getParameterValues("roles");
-        String password = params.getHttpParam(PARAM_PASSWORD);
+        String password = params.getRequiredParam(PARAM_PASSWORD);
         User retUser = null;
 
         AuditLog audit = AuditLog.user(params.getClientIp(), params.getUser())
@@ -96,19 +96,14 @@ public class UsersHandler extends RestActionHandler {
                 LOG.debug("roles size: " + roles.length);
                 retUser = userService.modifyUserwithRoles(user, roles);
                 LOG.debug("done modifying user");
-                if (password != null && !password.trim().isEmpty()) {
-                    if (!UserHelper.isPasswordOk(password)) {
-                        throw new ActionParamsException("Password too weak");
-                    } else {
-                        userService.updateUserPassword(retUser.getScreenname(), password);
-                    }
+                if (!UserHelper.isPasswordOk(password)) {
+                    throw new ActionParamsException("Password too weak");
+                } else {
+                    userService.updateUserPassword(retUser.getScreenname(), password);
                 }
                 audit.updated(AuditLog.ResourceType.USER);
             } else {
                 LOG.debug("NOW IN POST and creating a new user!!!!!!!!!!!!!");
-                if (password == null || password.trim().isEmpty()) {
-                    throw new ActionException("Parameter 'password' not found.");
-                }
                 if (!UserHelper.isPasswordOk(password)) {
                     throw new ActionParamsException("Password too weak");
                 }
