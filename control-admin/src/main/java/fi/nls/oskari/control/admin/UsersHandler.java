@@ -47,8 +47,8 @@ public class UsersHandler extends RestActionHandler {
     public void handleGet(ActionParameters params) throws ActionException {
         final JSONObject response;
         long id = getId(params);
-        long limit = params.getHttpParam(PARAM_LIMIT, 0);
-        long offset = params.getHttpParam(PARAM_OFFSET, 0);
+        int limit = params.getHttpParam(PARAM_LIMIT, 0);
+        int offset = params.getHttpParam(PARAM_OFFSET, 0);
         String search = params.getHttpParam(PARAM_SEARCH);
         try {
             if (id > -1) {
@@ -81,67 +81,72 @@ public class UsersHandler extends RestActionHandler {
 
     @Override
     public void handlePost(ActionParameters params) throws ActionException {
-        User user = new User();
-        getUserParams(user, params);
-        String[] roles = params.getRequest().getParameterValues("roles");
-        String password = params.getHttpParam(PARAM_PASSWORD);
-        User retUser = null;
-
-        AuditLog audit = AuditLog.user(params.getClientIp(), params.getUser())
-                .withParam("email", user.getEmail());
-
-        try {
-            if (user.getId() > -1) {
-                //retUser = userService.modifyUser(user);
-                LOG.debug("roles size: " + roles.length);
-                retUser = userService.modifyUserwithRoles(user, roles);
-                LOG.debug("done modifying user");
-                if (password != null && !password.trim().isEmpty()) {
-                    if (!UserHelper.isPasswordOk(password)) {
-                        throw new ActionParamsException("Password too weak");
-                    } else {
-                        userService.updateUserPassword(retUser.getScreenname(), password);
-                    }
-                }
-                audit.updated(AuditLog.ResourceType.USER);
-            } else {
-                LOG.debug("NOW IN POST and creating a new user!!!!!!!!!!!!!");
-                if (password == null || password.trim().isEmpty()) {
-                    throw new ActionException("Parameter 'password' not found.");
-                }
-                if (!UserHelper.isPasswordOk(password)) {
-                    throw new ActionParamsException("Password too weak");
-                }
-                retUser = userService.createUser(user);
-                userService.setUserPassword(retUser.getScreenname(), password);
-                audit.added(AuditLog.ResourceType.USER);
+        // modify existing user
+        boolean extUsers = UsersBundleHandler.isUsersFromExternalSource();
+        long userId = params.getRequiredParamLong(PARAM_ID);
+        User user;
+        String password = null;
+        if (extUsers) {
+            user = findExistingUser(userId);
+        } else {
+            user = getUserFromParams(params);
+            password = params.getRequiredParam(PARAM_PASSWORD);
+            if (!UserHelper.isPasswordOk(password)) {
+                throw new ActionParamsException("Password too weak");
             }
+        }
+        String[] roles = params.getRequest().getParameterValues("roles");
 
+        User retUser;
+        try {
+            retUser = userService.modifyUserwithRoles(user, roles);
+            LOG.debug("done modifying user");
+            if (!extUsers) {
+                userService.updateUserPassword(retUser.getScreenname(), password);
+            }
         } catch (ServiceException se) {
             throw new ActionException(se.getMessage(), se);
         }
-        JSONObject response = null;
+
+        AuditLog.user(params.getClientIp(), params.getUser())
+                .withParam("email", user.getEmail())
+                .updated(AuditLog.ResourceType.USER);
         try {
-            response = user2Json(retUser);
+            ResponseHelper.writeResponse(params, user2Json(retUser));
         } catch (JSONException je) {
             throw new ActionException(je.getMessage(), je);
         }
-        ResponseHelper.writeResponse(params, response);
+    }
+
+    private User findExistingUser(long id) throws ActionParamsException {
+        try {
+            return userService.getUser(id);
+        } catch (ServiceException e) {
+            throw new ActionParamsException("Error loading user with id: " + id);
+        }
+    }
+    private User getUserFromParams(ActionParameters params) throws ActionParamsException {
+        User user = new User();
+        getUserParams(user, params);
+        return user;
     }
 
     @Override
     public void handlePut(ActionParameters params) throws ActionException {
         LOG.debug("handlePut");
+        if (UsersBundleHandler.isUsersFromExternalSource()) {
+            throw new ActionParamsException("Users from external source, adding is disabled");
+        }
         User user = new User();
         getUserParams(user, params);
         String password = params.getRequiredParam(PARAM_PASSWORD);
         String[] roles = params.getRequest().getParameterValues("roles");
-        User retUser = null;
 
         if (!UserHelper.isPasswordOk(password)) {
             throw new ActionParamsException("Password too weak");
         }
 
+        User retUser = null;
         try {
             retUser = userService.createUser(user, roles);
             userService.setUserPassword(retUser.getScreenname(), password);
