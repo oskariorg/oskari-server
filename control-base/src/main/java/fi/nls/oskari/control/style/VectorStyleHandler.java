@@ -85,10 +85,9 @@ public class VectorStyleHandler extends RestActionHandler {
             AuditLog.user(params.getClientIp(), params.getUser())
                     .withParam("id", id)
                     .deleted(AuditLog.ResourceType.VECTOR_STYLE);
-
+            ResponseHelper.writeResponse(params, true);
         } catch (Exception e) {
             throw new ActionException("Error when trying delete vector style", e);
         }
-        ResponseHelper.writeResponse(params, true);
     }
 }
