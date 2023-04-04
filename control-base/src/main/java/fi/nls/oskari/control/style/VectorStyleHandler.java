@@ -24,47 +24,39 @@ public class VectorStyleHandler extends RestActionHandler {
     }
 
     public void handleGet(final ActionParameters params) throws ActionException {
-        if (params.getUser().isGuest()) {
-            throw new ActionDeniedException("Session expired");
-        }
-        final long userId = params.getUser().getId();
-        List<VectorStyle> styles = getService().getStylesByUser(userId);
+        params.requireLoggedInUser();
+        List<VectorStyle> styles = getService().getStylesByUser(params.getUser().getId());
         params.getResponse().setCharacterEncoding("UTF-8");
         params.getResponse().setContentType("application/json;charset=UTF-8");
         ResponseHelper.writeResponse(params, VectorStyleHelper.writeJSON(styles));
     }
 
     public void handlePost(final ActionParameters params) throws ActionException {
-        if (params.getUser().isGuest()) {
-            throw new ActionDeniedException("Session expired");
-        }
-        final long userId = params.getUser().getId();
+        params.requireLoggedInUser();
         try {
             final VectorStyle style = VectorStyleHelper.readJSON(params.getPayLoad());
-            style.setCreator(userId);
-            long id = getService().saveStyle(style);
+            VectorStyleService service = getService();
+            style.setCreator(params.getUser().getId());
+            long id = service.saveStyle(style);
             AuditLog.user(params.getClientIp(), params.getUser())
                     .withParam("id", id)
                     .withParam("name", style.getName())
                     .withParam("layerId", style.getLayerId())
                     .added(AuditLog.ResourceType.VECTOR_STYLE);
 
+            final VectorStyle inserted = service.getStyleById(id);
+            ResponseHelper.writeResponse(params, VectorStyleHelper.writeJSON(inserted));
         } catch (Exception e) {
             throw new ActionException("Error when trying add vector style", e);
         }
-        ResponseHelper.writeResponse(params, true);
+
     }
     public void handlePut(final ActionParameters params) throws ActionException {
-        User user = params.getUser();
-        if (user.isGuest()) {
-            throw new ActionDeniedException("Session expired");
-        }
-        final long userId = params.getUser().getId();
-
+        params.requireLoggedInUser();
         try {
             VectorStyleService service = getService();
             final VectorStyle style = VectorStyleHelper.readJSON(params.getPayLoad());
-            if (!service.hasPermissionToUpdate(style.getId(), user)) {
+            if (!service.hasPermissionToAlter(style.getId(), params.getUser())) {
                 throw new ActionDeniedException("Not allowed to update vector style with id: " + style.getId());
             }
             style.setUpdated(OffsetDateTime.now());
@@ -75,10 +67,27 @@ public class VectorStyleHandler extends RestActionHandler {
                     .withParam("name", style.getName())
                     .withParam("layerId", style.getLayerId())
                     .updated(AuditLog.ResourceType.VECTOR_STYLE);
-
+            final VectorStyle updated = service.getStyleById(id);
+            ResponseHelper.writeResponse(params, VectorStyleHelper.writeJSON(updated));
         } catch (Exception e) {
             throw new ActionException("Error when trying update vector style", e);
         }
-        ResponseHelper.writeResponse(params, true);
+    }
+    public void handleDelete(final ActionParameters params) throws ActionException {
+        params.requireLoggedInUser();
+        try {
+            VectorStyleService service = getService();
+            final long id = params.getRequiredParamLong("id");
+            if (!service.hasPermissionToAlter(id, params.getUser())) {
+                throw new ActionDeniedException("Not allowed to delete vector style with id: " + id);
+            }
+            service.deleteStyle(id);
+            AuditLog.user(params.getClientIp(), params.getUser())
+                    .withParam("id", id)
+                    .deleted(AuditLog.ResourceType.VECTOR_STYLE);
+            ResponseHelper.writeResponse(params, true);
+        } catch (Exception e) {
+            throw new ActionException("Error when trying delete vector style", e);
+        }
     }
 }
