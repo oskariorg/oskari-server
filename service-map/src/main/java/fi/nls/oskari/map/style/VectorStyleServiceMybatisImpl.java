@@ -93,6 +93,7 @@ public class VectorStyleServiceMybatisImpl extends VectorStyleService {
         try (final SqlSession session = factory.openSession()) {
             final VectorStyleMapper mapper = session.getMapper(VectorStyleMapper.class);
             mapper.deleteStyle(id);
+            session.commit();
         } catch (Exception e) {
             throw new ServiceRuntimeException("Failed to delete vector style: " + id, e);
         }
@@ -133,6 +134,7 @@ public class VectorStyleServiceMybatisImpl extends VectorStyleService {
                 throw new AccessDeniedException("Tried to delete non-admin style");
             }
             mapper.deleteStyle(id);
+            session.commit();
         } catch (Exception e) {
             throw new ServiceRuntimeException("Failed to delete vector style: " + id, e);
         }
