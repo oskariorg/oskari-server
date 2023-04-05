@@ -8,11 +8,13 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.RestActionHandler;
 import fi.nls.oskari.control.layer.PermissionHelper;
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.domain.map.style.VectorStyle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.WKTHelper;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatter;
+import fi.nls.oskari.map.style.VectorStyleHelper;
 import fi.nls.oskari.map.style.VectorStyleService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceRuntimeException;
@@ -21,6 +23,8 @@ import org.json.JSONObject;
 import org.oskari.control.layer.model.LayerExtendedOutput;
 import org.oskari.control.layer.model.LayerOutput;
 import org.oskari.permissions.PermissionService;
+
+import java.util.List;
 
 import static fi.nls.oskari.control.ActionConstants.PARAM_ID;
 import static fi.nls.oskari.control.ActionConstants.PARAM_SRS;
@@ -78,7 +82,6 @@ public class DescribeLayerHandler extends RestActionHandler {
     private LayerExtendedOutput getLayerDetails(ActionParameters params, OskariLayer layer) {
         final String lang = params.getLocale().getLanguage();
         final String crs = params.getHttpParam(PARAM_SRS);
-        final long userId = params.getUser().getId();
         final int layerId = layer.getId();
 
         LayerExtendedOutput output = new LayerExtendedOutput();
@@ -88,8 +91,29 @@ public class DescribeLayerHandler extends RestActionHandler {
         if (!attributes.optBoolean(LayerJSONFormatter.KEY_ATTRIBUTE_IGNORE_COVERAGE, false)) {
             output.coverage = getCoverageWKT(layer.getGeometry(), crs);
         }
-        output.styles = getVectorStyleService().getStyles(userId,layerId);
+        if (VectorStyleHelper.isVectorLayer(layer)) {
+            output.styles = getVectorStyles(params, layerId);
+        }
         return output;
+    }
+
+    private List<VectorStyle> getVectorStyles (ActionParameters params, int layerId) {
+        VectorStyleService service = getVectorStyleService();
+        final long userId = params.getUser().getId();
+        List<VectorStyle> styles = service.getStyles(userId, layerId);
+        // link params or published map could have selected style which is created by another user
+        long styleId = params.getHttpParam("styleId", -1L);
+        boolean isPresent = styles.stream().filter(s -> s.getId() == styleId).findFirst().isPresent();
+        if (styleId == -1L || isPresent) {
+            return styles;
+        }
+        VectorStyle selected = service.getStyleById(styleId);
+        if (selected == null) {
+            LOG.info("Requested selected style with id:", styleId, "which doesn't exist");
+        } else {
+            styles.add(selected);
+        }
+        return styles;
     }
 
     // value will be not added if transform failed, that's ok since client can't handle it if it's in unknown projection
