@@ -47,7 +47,7 @@ public class LayerCapabilitiesWMTS extends LayerCapabilitiesOGC {
 
     public ResourceUrl getResourceUrl(String type) {
         return getResourceUrls().stream()
-                .filter(url -> "tile".equals(url.getType()))
+                .filter(url -> type.equals(url.getType()))
                 .findFirst().orElse(null);
     }
 
