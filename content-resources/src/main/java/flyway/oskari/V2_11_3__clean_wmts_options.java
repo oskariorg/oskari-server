@@ -14,10 +14,10 @@ import java.util.List;
 
 // Removes urlTemplate and requestEncoding from layer options.
 // These were previously used to store the url from capabilities, but now we just use it from capabilities directly.
-public class V2_11_4__clean_wmts_options extends BaseJavaMigration {
+public class V2_11_3__clean_wmts_options extends BaseJavaMigration {
 
     public void migrate(Context context) throws Exception {
-        Logger log = LogFactory.getLogger(V2_11_4__clean_wmts_options.class);
+        Logger log = LogFactory.getLogger(V2_11_3__clean_wmts_options.class);
         Connection connection = context.getConnection();
         List<OskariLayer> layers = getLayers(connection, OskariLayer.TYPE_WMTS);
         for (OskariLayer layer : layers) {
