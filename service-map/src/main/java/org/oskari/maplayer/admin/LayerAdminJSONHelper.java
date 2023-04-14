@@ -13,6 +13,7 @@ import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONObject;
 import org.oskari.maplayer.model.MapLayer;
 import org.oskari.maplayer.model.MapLayerAdminOutput;
+import org.oskari.maplayer.model.MapLayerAdminInput;
 
 import java.util.*;
 
@@ -38,6 +39,13 @@ public class LayerAdminJSONHelper {
             return OBJECT_MAPPER.writeValueAsString(layer);
         } catch (Exception ex) {
             throw new ServiceRuntimeException("Coudn't write layer to JSON", ex);
+        }
+    }
+    public static MapLayerAdminInput inputFromJSON(String layerJSON) {
+        try {
+            return OBJECT_MAPPER.readValue(layerJSON, MapLayerAdminInput.class);
+        } catch (Exception ex) {
+            throw new ServiceRuntimeException("Coudn't parse layer from: " + layerJSON, ex);
         }
     }
 

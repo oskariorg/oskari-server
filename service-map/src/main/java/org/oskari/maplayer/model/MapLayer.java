@@ -1,8 +1,8 @@
 package org.oskari.maplayer.model;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import fi.nls.oskari.domain.map.style.VectorStyle;
+
+import java.util.*;
 
 /**
  * Used as input data model for inserting layers via Flyway or the admin UI.
@@ -59,6 +59,8 @@ public class MapLayer {
         "User" : ["VIEW_LAYER", "VIEW_PUBLISHED", "PUBLISH"]
     }*/
     private Map<String, Set<String>> role_permissions;
+
+    private List<VectorStyle> vectorStyles;
 
     public Integer getId() {
         return id;
@@ -316,5 +318,11 @@ public class MapLayer {
 
     public void setRole_permissions(Map<String, Set<String>> role_permissions) {
         this.role_permissions = role_permissions;
+    }
+    public List<VectorStyle> getVectorStyles() {
+        return vectorStyles;
+    }
+    public void setVectorStyles(List<VectorStyle> vectorStyles) {
+        this.vectorStyles = vectorStyles;
     }
 }

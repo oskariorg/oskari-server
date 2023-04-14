@@ -31,7 +31,8 @@ public class AuditLog {
         TERMS_OF_USE,
         SEARCH,
         USER,
-        STATISTICAL_DATA
+        STATISTICAL_DATA,
+        VECTOR_STYLE
     }
 
     enum Op {
