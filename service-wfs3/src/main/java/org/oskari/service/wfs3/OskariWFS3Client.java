@@ -17,14 +17,13 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.filter.Filter;
 import org.opengis.geometry.MismatchedDimensionException;
-import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 import org.oskari.geojson.GeoJSONReader2;
 import org.oskari.geojson.GeoJSONSchemaDetector;
-import org.oskari.service.wfs3.model.WFS3Link;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,6 +34,9 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
+import org.oskari.ogcapi.OpenAPILink;
+
+import static fi.nls.oskari.util.IOHelper.CONTENT_TYPE_GEOJSON;
 
 /**
  * Client code for WFS 3 Core services
@@ -43,9 +45,16 @@ public class OskariWFS3Client {
 
     private static final Logger LOG = LogFactory.getLogger(OskariWFS3Client.class);
 
-    protected static final int PAGE_SIZE = 1000;
+    protected static final String ATTRIBUTE_PAGE_SIZE = "pageSize";
+    protected static final String ATTRIBUTE_HARD_LIMIT = "hardLimit";
 
-    private static final String CONTENT_TYPE_GEOJSON = "application/geo+json";
+    private static final int DEFAULT_PAGE_SIZE = 1000;
+    private static final int DEFAULT_HARD_LIMIT = 10_000;
+    private static final int MIN_PAGE_SIZE = 10;
+    private static final int MIN_HARD_LIMIT = 10;
+    private static final int MAX_PAGE_SIZE = 10_000;
+    private static final int MAX_HARD_LIMIT = 100_000;
+
     private static final int MAX_REDIRECTS = 5;
     private static final ObjectMapper OM = new ObjectMapper();
     private static final TypeReference<HashMap<String, Object>> TYPE_REF = new TypeReference<HashMap<String, Object>>() {};
@@ -66,18 +75,18 @@ public class OskariWFS3Client {
     }
 
     private OskariWFS3Client() {}
-    
+
+    /**
+     * @deprecated @see #getFeatures(OskariLayer, ReferencedEnvelope, CoordinateReferenceSystem, Filter)
+     */
+    @Deprecated
     public static SimpleFeatureCollection getFeatures(OskariLayer layer,
             ReferencedEnvelope bbox, CoordinateReferenceSystem crs) throws ServiceRuntimeException {
-        /* Servers can not yet implement this since no requirement URI is standardized yet
-        boolean crsExtension;
-        try {
-            crsExtension = checkCRSExtension(endPoint, user, pass);
-        } catch (IOException e) {
-            throw new ServiceRuntimeException("IOException occured", e);
-        }
-         */
-        
+        return getFeatures(layer, bbox, crs, null);
+    }
+
+    public static SimpleFeatureCollection getFeatures(OskariLayer layer,
+            ReferencedEnvelope bbox, CoordinateReferenceSystem crs, Filter filter) throws ServiceRuntimeException {
         String crsURI = getCrsURI(layer, crs);
         MathTransform transformCRS84ToTargetCRS = null;
         if (crsURI == null) {
@@ -89,46 +98,43 @@ public class OskariWFS3Client {
             }
         }
 
-        String bboxCrsURI = null;
-        if (bbox != null) {
-            bboxCrsURI = getCrsURI(layer, bbox.getCoordinateReferenceSystem());
-            if (bboxCrsURI == null) {
-                try {
-                    // Server doesn't support bboxes CRS - transform bbox to CRS84
-                    bbox = transformEnvelope(bbox, getCRS84());
-                } catch (Exception e) {
-                    throw new ServiceRuntimeException("bbox coordinate transformation failure", e);
-                }
-            }
-        }
-
-        String endPoint = layer.getUrl();
-        String collectionId = layer.getName();
+        String path = getItemsPath(layer.getUrl(), layer.getName());
         String user = layer.getUsername();
         String pass = layer.getPassword();
-        // TODO: FIXME!
-        int hardLimit = 10000;
 
-        String path = getItemsPath(endPoint, collectionId);
-        Map<String, String> query = getQueryParams(crsURI, bbox, bboxCrsURI, hardLimit);
+        int pageSize = DEFAULT_PAGE_SIZE;
+        int hardLimit = DEFAULT_HARD_LIMIT;
+        JSONObject attr = layer.getAttributes();
+        if (attr != null) {
+            pageSize = clamp(attr.optInt(ATTRIBUTE_PAGE_SIZE, pageSize), MIN_PAGE_SIZE, MAX_PAGE_SIZE);
+            hardLimit = clamp(attr.optInt(ATTRIBUTE_HARD_LIMIT, hardLimit), MIN_HARD_LIMIT, MAX_HARD_LIMIT);
+        }
+
+        Map<String, String> query = getQueryParams(crsURI, pageSize);
         // attach any extra params added for layer (for example properties=[prop name we are interested in])
         query.putAll(JSONHelper.getObjectAsMap(layer.getParams()));
 
+        Filter postFilter = Filter.INCLUDE;
+        if (filter != null) {
+            postFilter = new FilterToOAPIFCoreQuery(layer).toQueryParameters(filter, query);
+        } else if (bbox != null) {
+            addBboxToQuery(layer, bbox, query);
+        }
+
         Map<String, String> headers = Collections.singletonMap("Accept", CONTENT_TYPE_GEOJSON);
 
-        List<SimpleFeatureCollection> pages = new ArrayList<>();
-        int numFeatures = 0;
-
-        SimpleFeatureType schema;
         try {
+            List<SimpleFeatureCollection> pages = new ArrayList<>();
+            int numFeatures = 0;
+
             HttpURLConnection conn = IOHelper.getConnection(path, user, pass, query, headers);
             conn = IOHelper.followRedirect(conn, user, pass, query, headers, MAX_REDIRECTS);
 
-            validateResponse(conn, CONTENT_TYPE_GEOJSON);
+            IOHelper.validateResponse(conn, CONTENT_TYPE_GEOJSON);
             Map<String, Object> geojson = readMap(conn);
             boolean ignoreGeometryProperties = true;
-            schema = GeoJSONSchemaDetector.getSchema(geojson, crs, ignoreGeometryProperties);
-            SimpleFeatureCollection sfc = GeoJSONReader2.toFeatureCollection(geojson, schema, transformCRS84ToTargetCRS);
+            SimpleFeatureType schema = GeoJSONSchemaDetector.getSchema(geojson, crs, ignoreGeometryProperties);
+            SimpleFeatureCollection sfc = GeoJSONReader2.toFeatureCollection(geojson, schema, transformCRS84ToTargetCRS, postFilter);
             numFeatures += sfc.size();
             pages.add(sfc);
             String next = getLinkHref(geojson, "next");
@@ -138,31 +144,56 @@ public class OskariWFS3Client {
                 conn = IOHelper.getConnection(next, user, pass, null, headers);
                 conn = IOHelper.followRedirect(conn, user, pass, null, headers, MAX_REDIRECTS);
 
-                validateResponse(conn, CONTENT_TYPE_GEOJSON);
+                IOHelper.validateResponse(conn, CONTENT_TYPE_GEOJSON);
                 geojson = readMap(conn);
-                sfc = GeoJSONReader2.toFeatureCollection(geojson, schema, transformCRS84ToTargetCRS);
+                sfc = GeoJSONReader2.toFeatureCollection(geojson, schema, transformCRS84ToTargetCRS, postFilter);
                 numFeatures += sfc.size();
                 pages.add(sfc);
                 next = getLinkHref(geojson, "next");
             }
+
+            if (pages.size() == 1) {
+                return pages.get(0);
+            }
+            return new PaginatedFeatureCollection(pages, schema, "FeatureCollection", hardLimit);
         } catch (IOException e) {
             throw new ServiceRuntimeException("IOException occured", e);
         } catch (MismatchedDimensionException | TransformException e) {
             throw new ServiceRuntimeException("Projection transformation failed", e);
         }
-
-        if (pages.size() == 1) {
-            return pages.get(0);
-        }
-        return new PaginatedFeatureCollection(pages, schema, "FeatureCollection", hardLimit);
     }
 
-    private static ReferencedEnvelope transformEnvelope(ReferencedEnvelope env, CoordinateReferenceSystem to)
-            throws TransformException, FactoryException {
+    private static int clamp(int value, int min, int max) {
+        if (value > max) {
+            return max;
+        } else if (value < min) {
+            return min;
+        }
+        return value;
+    }
+
+    static void addBboxToQuery(OskariLayer layer, ReferencedEnvelope bbox, Map<String, String> query) {
+        String bboxCrsURI = getCrsURI(layer, bbox.getCoordinateReferenceSystem());
+        if (bboxCrsURI != null) {
+            query.put("bbox-crs", bboxCrsURI);
+        } else {
+            // Server doesn't support bbox's CRS - transform bbox to CRS84
+            bbox = transformEnvelope(bbox, getCRS84());
+        }
+        query.put("bbox", String.format(Locale.US, "%f,%f,%f,%f",
+                bbox.getMinX(), bbox.getMinY(),
+                bbox.getMaxX(), bbox.getMaxY()));
+    }
+
+    private static ReferencedEnvelope transformEnvelope(ReferencedEnvelope env, CoordinateReferenceSystem to) {
         if (CRS.equalsIgnoreMetadata(env.getCoordinateReferenceSystem(), to)) {
             return env;
         }
-        return env.transform(to, true);
+        try {
+            return env.transform(to, true);
+        } catch (Exception e) {
+            throw new ServiceRuntimeException("bbox coordinate transformation failure", e);
+        }
     }
 
     /**
@@ -192,7 +223,7 @@ public class OskariWFS3Client {
             return toLinks((List<Object>) _links).stream()
                     .filter(link -> rel.equals(link.getRel()))
                     .findAny()
-                    .map(WFS3Link::getHref)
+                    .map(OpenAPILink::getHref)
                     .orElse(null);
         }
         return null;
@@ -201,20 +232,6 @@ public class OskariWFS3Client {
     private static Map<String, Object> readMap(HttpURLConnection conn) throws IOException {
         try (InputStream in = conn.getInputStream()) {
             return OM.readValue(in, TYPE_REF);
-        }
-    }
-
-    public static void validateResponse(HttpURLConnection conn, String expectedContentType)
-            throws ServiceRuntimeException, IOException {
-        if (conn.getResponseCode() != 200) {
-            throw new ServiceRuntimeException("Unexpected status code " + conn.getResponseCode());
-        }
-
-        if (expectedContentType != null) {
-            String contentType = conn.getContentType();
-            if (contentType != null && !expectedContentType.equals(contentType)) {
-                throw new ServiceRuntimeException("Unexpected content type " + contentType);
-            }
         }
     }
 
@@ -233,23 +250,14 @@ public class OskariWFS3Client {
         return getCollectionsPath(endPoint, collectionId) + "/items";
     }
 
-    protected static Map<String, String> getQueryParams(String crsURI, ReferencedEnvelope bbox, String bboxCrsURI, int hardLimit)
+    protected static Map<String, String> getQueryParams(String crsURI, int limit)
             throws ServiceRuntimeException {
         // Linked not needed, but looks better when logging the requests
         Map<String, String> parameters = new LinkedHashMap<>();
         if (crsURI != null) {
             parameters.put("crs", crsURI);
         }
-        if (bbox != null) {
-            String bboxStr = String.format(Locale.US, "%f,%f,%f,%f",
-                    bbox.getMinX(), bbox.getMinY(),
-                    bbox.getMaxX(), bbox.getMaxY());
-            parameters.put("bbox", bboxStr);
-            if (bboxCrsURI != null) {
-                parameters.put("bbox-crs", bboxCrsURI);
-            }
-        }
-        parameters.put("limit", Integer.toString(Math.min(PAGE_SIZE, hardLimit)));
+        parameters.put("limit", Integer.toString(limit));
         return parameters;
     }
 
@@ -262,20 +270,20 @@ public class OskariWFS3Client {
     }
 
     @SuppressWarnings("unchecked")
-    protected static List<WFS3Link> toLinks(List<Object> arrayOflinks) {
+    protected static List<OpenAPILink> toLinks(List<Object> arrayOflinks) {
         return arrayOflinks.stream()
                 .map(obj -> (Map<String, String>) obj)
                 .map(OskariWFS3Client::toLink)
                 .collect(Collectors.toList());
     }
 
-    protected static WFS3Link toLink(Map<String, String> map) {
+    protected static OpenAPILink toLink(Map<String, String> map) {
         String href = map.get("href");
         String rel = map.get("rel");
         String type = map.get("type");
         String hreflang = map.get("hreflang");
         String title = map.get("title");
-        return new WFS3Link(href, rel, type, hreflang, title);
+        return new OpenAPILink(href, rel, type, hreflang, title);
     }
 
 

@@ -134,7 +134,7 @@ public class GetPrintHandler extends AbstractWFSFeaturesHandler {
         }
         request.setResolution(params.getRequiredParamDouble(PARM_RESOLUTION));
         request.setTitle(params.getHttpParam(PARM_TITLE));
-        request.setShowLogo(params.getHttpParam(PARM_LOGO, false));
+        request.setShowLogo(params.getHttpParam(PARM_LOGO, true));
         request.setShowScale(params.getHttpParam(PARM_SCALE, false));
         request.setShowDate(params.getHttpParam(PARM_DATE, false));
         request.setScaleText(params.getHttpParam(PARM_SCALE_TEXT, ""));

@@ -26,7 +26,7 @@ public class CSWISORecordParser {
     private static final Logger log = LogFactory.getLogger(CSWISORecordParser.class);
 
     // we need to map languages from 3-letter codes to 2-letter codes so initialize a global codeMapping property
-    private static final Map<String, String> ISO3letterOskariLangMapping = new HashMap<String, String>();
+    private static final Map<String, String> ISO3letterOskariLangMapping = new HashMap<>();
     private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'kk:mm:ss"); // or ISO_DATE_TIME
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -740,7 +740,7 @@ public class CSWISORecordParser {
     }
 
     private Map<String, String> getLocaleMap(final Node elem) {
-        final Map<String, String> locales = new HashMap<String, String>();
+        final Map<String, String> locales = new HashMap<>();
         try {
             final NodeList localeNodes = (NodeList) XPATH_LOCALE_MAP.evaluate(elem, XPathConstants.NODESET);
             Node loc;

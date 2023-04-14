@@ -1,7 +1,6 @@
 package fi.nls.oskari.control.users;
 
 import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.control.users.model.PasswordRules;
 import fi.nls.oskari.util.PropertyUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,24 +21,6 @@ public class RegistrationUtil {
         return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
     }
 
-    public static boolean isValidEmail(String email) {
-        String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
-        return email != null && !email.isEmpty() && email.matches(regex);
-    }
-
-    public static boolean isPasswordOk(String passwd) {
-        if(passwd == null) {
-            return false;
-        }
-        if(passwd.length() < PasswordRules.getMinLength()) {
-            return false;
-        }
-        if(PasswordRules.getRequireCase() &&
-                (passwd.toLowerCase().equals(passwd) || passwd.toUpperCase().equals(passwd))) {
-            return false;
-        }
-        return true;
-    }
     /**
      * Create timestamp for 2 days as expirytime.
      * @return

@@ -10,7 +10,7 @@ import fi.nls.oskari.util.XmlHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
-import org.jsoup.safety.Whitelist;
+import org.jsoup.safety.Safelist;
 import org.oskari.util.HtmlDoc;
 import org.w3c.dom.Document;
 
@@ -25,8 +25,6 @@ import javax.xml.transform.stream.StreamSource;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 public class GetGeoPointDataService {
 
@@ -138,7 +136,7 @@ public class GetGeoPointDataService {
             HttpURLConnection conn = IOHelper.getConnection(url, user, pw);
             IOHelper.addIdentifierHeaders(conn);
             if (conn.getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND) {
-                log.info("Nothing found on:", url);
+                log.debug("Nothing found on:", url);
                 return null;
             }
             String gfiResponse = IOHelper.getURL(conn, Collections.EMPTY_MAP, IOHelper.DEFAULT_CHARSET);
@@ -203,7 +201,7 @@ public class GetGeoPointDataService {
             }
         }
         // Sanitize response
-        return Jsoup.clean(response, Whitelist.relaxed());
+        return Jsoup.clean(response, Safelist.relaxed());
     }
 
     public static String getFormattedJSONString(Document document, StreamSource stylesource) throws TransformerException {

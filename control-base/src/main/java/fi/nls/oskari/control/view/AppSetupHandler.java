@@ -25,6 +25,7 @@ import org.json.JSONObject;
 import org.oskari.map.userlayer.service.UserLayerDbService;
 import org.oskari.permissions.PermissionService;
 
+import java.time.OffsetDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -67,7 +68,7 @@ public class AppSetupHandler extends RestActionHandler {
 
     // Bundles that require divmanazer to be loaded for them to work
     private static final Set<String> BUNDLE_REQUIRES_DIVMANAZER =
-            ConversionHelper.asSet(ViewModifier.BUNDLE_FEATUREDATA2, ViewModifier.BUNDLE_COORDINATETOOL, ViewModifier.BUNDLE_STATSGRID);
+            ConversionHelper.asSet(ViewModifier.BUNDLE_FEATUREDATA2, ViewModifier.BUNDLE_COORDINATETOOL, ViewModifier.BUNDLE_STATSGRID, ViewModifier.BUNDLE_METADATAFLYOUT);
 
     private static final Set<String> BUNDLE_WHITELIST = new LinkedHashSet();
 
@@ -138,7 +139,10 @@ public class AppSetupHandler extends RestActionHandler {
         SIMPLE_BUNDLES.addAll(ConversionHelper.asSet(
                 ViewModifier.BUNDLE_INFOBOX, ViewModifier.BUNDLE_TOOLBAR, ViewModifier.BUNDLE_TIMESERIES,
                 ViewModifier.BUNDLE_PUBLISHEDGRID, ViewModifier.BUNDLE_FEATUREDATA2,
-                ViewModifier.BUNDLE_COORDINATETOOL, ViewModifier.BUNDLE_STATSGRID, ViewModifier.BUNDLE_FEEDBACKSERVICE, ViewModifier.BUNDLE_CAMERA_CONTROLS_3D));
+                ViewModifier.BUNDLE_COORDINATETOOL, ViewModifier.BUNDLE_STATSGRID,
+                ViewModifier.BUNDLE_FEEDBACKSERVICE, ViewModifier.BUNDLE_CAMERA_CONTROLS_3D,
+                ViewModifier.BUNDLE_METADATACATALOGUE, ViewModifier.BUNDLE_METADATAFLYOUT,
+                ViewModifier.BUNDLE_MAPROTATOR, ViewModifier.BUNDLE_MAPLEGEND));
         for(String bundleId : configBundles) {
             SIMPLE_BUNDLES.add(bundleId);
         }
@@ -270,6 +274,9 @@ public class AppSetupHandler extends RestActionHandler {
                 .withParam("name", view.getName())
                 .withParam("domain", view.getPubDomain());
 
+        if (!isNew) {
+            view.setUpdated(OffsetDateTime.now());
+        }
         View savedView = saveView(view);
         // we might not have uuid before saving
         audit.withParam("uuid", view.getUuid());
@@ -298,7 +305,7 @@ public class AppSetupHandler extends RestActionHandler {
         }
 
         // setup basic info about view
-        final String domain = JSONHelper.getStringFromJSON(view.getMetadata(), KEY_DOMAIN, null);
+        final String domain = JSONHelper.getStringFromJSON(view.getMetadata(), KEY_DOMAIN, "");
         final String name = JSONHelper.getStringFromJSON(view.getMetadata(), KEY_NAME, "Published map " + System.currentTimeMillis());
         final String language = JSONHelper.getStringFromJSON(view.getMetadata(), KEY_LANGUAGE, PropertyUtil.getDefaultLanguage());
 

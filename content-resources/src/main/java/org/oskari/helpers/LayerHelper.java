@@ -6,20 +6,22 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
+import fi.nls.oskari.map.layer.formatters.LayerJSONFormatter;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.IOHelper;
-import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.OskariRuntimeException;
-import org.json.JSONObject;
 import org.oskari.admin.LayerCapabilitiesHelper;
 import org.oskari.admin.MapLayerGroupsHelper;
 import org.oskari.admin.MapLayerPermissionsHelper;
+import org.oskari.capabilities.CapabilitiesService;
 import org.oskari.maplayer.model.MapLayer;
 import org.oskari.maplayer.admin.LayerAdminJSONHelper;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 // Service-admin provides helpers for inserting layers BUT this helper has been used in multiple migrations for setting
@@ -27,11 +29,15 @@ import java.util.stream.Collectors;
 public class LayerHelper {
 
     private static final Logger log = LogFactory.getLogger(LayerHelper.class);
-    private static final OskariLayerService layerService = new OskariLayerServiceMybatisImpl();
+
+    private static OskariLayerService getLayerService() {
+        return OskariComponentManager.getComponentOfType(OskariLayerService.class);
+    }
 
     public static int setupLayer(final String layerfile) throws IOException {
         final String jsonStr = readLayerFile(layerfile);
         MapLayer layer = LayerAdminJSONHelper.readJSON(jsonStr);
+        OskariLayerService layerService = getLayerService();
         final List<OskariLayer> dbLayers = layerService.findByUrlAndName(layer.getUrl(), layer.getName());
         if(!dbLayers.isEmpty()) {
             if(dbLayers.size() > 1) {
@@ -76,14 +82,24 @@ public class LayerHelper {
      * So we can get updated "supported SRS" for layers after inserting a new appsetup with possibly new projection
      * @throws ServiceException
      */
-    protected static void refreshLayerCapabilities() {
-        for (OskariLayer layer : layerService.findAll()) {
-            if (layer.getUrl().startsWith("http://localhost:")) {
+    protected static void refreshLayerCapabilities(String srsForNewAppsetup) {
+        Set<String> systemSRSlist;
+        try {
+            systemSRSlist = LayerCapabilitiesHelper.getSystemCRSs();
+        } catch (Exception e) {
+            throw new OskariRuntimeException("Couldn't get system crs list");
+        }
+        OskariLayerService layerService = getLayerService();
+        List<OskariLayer> layers = layerService.findAll().stream()
                 // skip localhost servers as the service is starting when this is called and geoserver will not answer
-                continue;
-            }
+                .filter(l -> !l.getUrl().startsWith("http://localhost:"))
+                // only update layers when new projection is added
+                .filter(layer -> !LayerJSONFormatter.getSRSs(layer.getAttributes(), layer.getCapabilities()).contains(srsForNewAppsetup))
+                .collect(Collectors.toList());
+        CapabilitiesService.updateCapabilities(layers, systemSRSlist);
+        // Save updated capabilities to db
+        for (OskariLayer layer : layers) {
             try {
-                LayerCapabilitiesHelper.updateCapabilities(layer);
                 layerService.update(layer);
             } catch (Exception e) {
                 log.warn(e,"Couldn't update capabilities for layer:", layer.getUrl(), layer.getName());

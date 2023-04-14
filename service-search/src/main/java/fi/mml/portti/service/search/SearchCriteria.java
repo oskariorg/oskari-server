@@ -1,5 +1,6 @@
 package fi.mml.portti.service.search;
 
+import fi.nls.oskari.SearchWorker;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
@@ -147,7 +148,7 @@ public class SearchCriteria implements Serializable {
     }
 
     public void setMaxResults(int maxResults) {
-        this.maxResults = maxResults;
+        this.maxResults = SearchWorker.getMaxResults(maxResults);
     }
 
     public List<String> getChannels() {

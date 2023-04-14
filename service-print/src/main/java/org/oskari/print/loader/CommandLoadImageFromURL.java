@@ -39,7 +39,7 @@ public class CommandLoadImageFromURL extends CommandLoadImageBase {
     }
 
     public static BufferedImage load(String uri, String user, String pass) throws InterruptedException, IOException {
-        LOG.info("Loading image from:", uri);
+        LOG.debug("Loading image from:", uri);
         for (int i = 0; i < RETRY_COUNT; i++) {
             try {
                 HttpURLConnection conn = IOHelper.getConnection(uri, user, pass);

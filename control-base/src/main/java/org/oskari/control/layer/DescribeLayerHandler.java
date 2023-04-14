@@ -1,18 +1,32 @@
 package org.oskari.control.layer;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.control.ActionException;
-import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.control.RestActionHandler;
+import fi.nls.oskari.control.*;
 import fi.nls.oskari.control.layer.PermissionHelper;
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.domain.map.style.VectorStyle;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.geometry.WKTHelper;
 import fi.nls.oskari.map.layer.OskariLayerService;
+import fi.nls.oskari.map.layer.formatters.LayerJSONFormatter;
+import fi.nls.oskari.map.style.VectorStyleHelper;
+import fi.nls.oskari.map.style.VectorStyleService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceRuntimeException;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
+import org.json.JSONObject;
+import org.oskari.capabilities.CapabilitiesService;
+import org.oskari.capabilities.ogc.LayerCapabilitiesWMTS;
+import org.oskari.capabilities.ogc.wmts.TileMatrixLink;
+import org.oskari.control.layer.model.LayerExtendedOutput;
 import org.oskari.control.layer.model.LayerOutput;
-import org.oskari.control.layer.util.ModelHelper;
 import org.oskari.permissions.PermissionService;
+
+import java.util.List;
+import java.util.Map;
 
 import static fi.nls.oskari.control.ActionConstants.PARAM_ID;
 import static fi.nls.oskari.control.ActionConstants.PARAM_SRS;
@@ -23,6 +37,9 @@ import static fi.nls.oskari.control.ActionConstants.PARAM_SRS;
 @OskariActionRoute("DescribeLayer")
 public class DescribeLayerHandler extends RestActionHandler {
     private PermissionHelper permissionHelper;
+    private final ObjectMapper MAPPER = new ObjectMapper();
+
+    private static final Logger LOG = LogFactory.getLogger(DescribeLayerHandler.class);
 
     @Override
     public void init() {
@@ -42,13 +59,102 @@ public class DescribeLayerHandler extends RestActionHandler {
         permissionHelper = helper;
     }
 
+    private VectorStyleService getVectorStyleService() {
+        return OskariComponentManager.getComponentOfType(VectorStyleService.class);
+    }
+
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
         final int layerId = params.getRequiredParamInt(PARAM_ID);
         final OskariLayer layer = permissionHelper.getLayer(layerId, params.getUser());
-        final String crs = params.getHttpParam(PARAM_SRS);
-        LayerOutput output = ModelHelper.getLayerDetails(layer, params.getLocale().getLanguage(), crs);
 
-        ResponseHelper.writeResponse(params, ModelHelper.getString(output));
+        LayerExtendedOutput output = getLayerDetails(params, layer);
+
+        writeResponse(params, output);
+    }
+
+    private void writeResponse(ActionParameters params, LayerOutput output) throws ActionCommonException {
+        try {
+            ResponseHelper.writeResponse(params, MAPPER.writeValueAsString(output));
+        } catch (Exception e) {
+            throw new ActionCommonException("Error writing response", e);
+        }
+    }
+
+    private LayerExtendedOutput getLayerDetails(ActionParameters params, OskariLayer layer) throws ActionException {
+        final String lang = params.getLocale().getLanguage();
+        final String crs = params.getHttpParam(PARAM_SRS);
+        final int layerId = layer.getId();
+
+        LayerExtendedOutput output = new LayerExtendedOutput();
+        output.id = layerId;
+        output.name = layer.getName(lang);
+        JSONObject attributes = layer.getAttributes();
+        if (!attributes.optBoolean(LayerJSONFormatter.KEY_ATTRIBUTE_IGNORE_COVERAGE, false)) {
+            output.coverage = getCoverageWKT(layer.getGeometry(), crs);
+        }
+        if (VectorStyleHelper.isVectorLayer(layer)) {
+            output.styles = getVectorStyles(params, layerId);
+        }
+        if (OskariLayer.TYPE_WMTS.equals(layer.getType())) {
+            output.capabilities = getCapabilitiesJSON(layer, crs);
+        }
+        return output;
+    }
+
+    private List<VectorStyle> getVectorStyles (ActionParameters params, int layerId) {
+        VectorStyleService service = getVectorStyleService();
+        final long userId = params.getUser().getId();
+        List<VectorStyle> styles = service.getStyles(userId, layerId);
+        // link params or published map could have selected style which is created by another user
+        long styleId = params.getHttpParam("styleId", -1L);
+        boolean isPresent = styles.stream().filter(s -> s.getId() == styleId).findFirst().isPresent();
+        if (styleId == -1L || isPresent) {
+            return styles;
+        }
+        VectorStyle selected = service.getStyleById(styleId);
+        if (selected == null) {
+            LOG.info("Requested selected style with id:", styleId, "which doesn't exist");
+        } else {
+            styles.add(selected);
+        }
+        return styles;
+    }
+
+    // value will be not added if transform failed, that's ok since client can't handle it if it's in unknown projection
+    private String getCoverageWKT(final String wktWGS84, final String mapSRS) {
+        if (wktWGS84 == null || wktWGS84.isEmpty() || mapSRS == null || mapSRS.isEmpty()) {
+            return null;
+        }
+        try {
+            // WTK is saved as EPSG:4326 in database
+            return WKTHelper.transformLayerCoverage(wktWGS84, mapSRS);
+        } catch (Exception ex) {
+            LOG.debug("Error transforming coverage to", mapSRS, "from", wktWGS84);
+        }
+        return null;
+    }
+
+    private Map<String, Object> getCapabilitiesJSON(OskariLayer layer, String crs) throws ActionException {
+        if (!OskariLayer.TYPE_WMTS.equals(layer.getType())) {
+            return JSONHelper.getObjectAsMap(layer.getCapabilities());
+        }
+        try {
+            String capsJSON = layer.getCapabilities().toString();
+            LayerCapabilitiesWMTS caps = CapabilitiesService.fromJSON(layer.getCapabilities().toString(), OskariLayer.TYPE_WMTS);
+            TileMatrixLink link = caps.getTileMatrixLinks().stream()
+                    .filter(l -> crs.equals(l.getTileMatrixSet().getShortCrs()))
+                    .findFirst()
+                    .orElseThrow(() -> new ActionParamsException("No tilematrix matching srs: " + crs));
+
+            // Make a copy so we don't mutate layer in cache
+            JSONObject modifiedCapabilities = new JSONObject(capsJSON);
+            // remove "tileMatrixLinks" (with all matrices) that is replaced with "tileMatrixSet" (just for current projection)
+            modifiedCapabilities.remove("tileMatrixLinks");
+            modifiedCapabilities.put("tileMatrixSet", link.getTileMatrixSet().getAsJSON());
+            return JSONHelper.getObjectAsMap(modifiedCapabilities);
+        } catch (Exception e) {
+            throw new ActionParamsException("Unable to parse JSON", e);
+        }
     }
 }

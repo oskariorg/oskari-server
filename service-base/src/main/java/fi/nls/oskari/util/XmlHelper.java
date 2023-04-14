@@ -24,6 +24,10 @@ import java.util.Iterator;
 import java.util.Map;
 import javax.xml.stream.XMLStreamException;
 
+/**
+ * @deprecated Use org.oskari.xml.XmlHelper instead
+ */
+@Deprecated
 public class XmlHelper {
 
     private static final Logger LOGGER = LogFactory.getLogger(XmlHelper.class);

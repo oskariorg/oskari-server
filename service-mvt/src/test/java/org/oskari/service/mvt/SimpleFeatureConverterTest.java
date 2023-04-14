@@ -2,13 +2,9 @@ package org.oskari.service.mvt;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
@@ -21,9 +17,6 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
-import com.wdtinc.mapbox_vector_tile.adapt.jts.IUserDataConverter;
-import com.wdtinc.mapbox_vector_tile.adapt.jts.JtsAdapter;
-import com.wdtinc.mapbox_vector_tile.build.MvtLayerProps;
 
 public class SimpleFeatureConverterTest {
 
@@ -54,25 +47,17 @@ public class SimpleFeatureConverterTest {
 
         List<Geometry> mvtGeoms = SimpleFeaturesMVTEncoder.asMVTGeoms(fc, bbox, 4096, 256);
 
-        MvtLayerProps layerProps = new MvtLayerProps();
-        IUserDataConverter converter = new SimpleFeatureConverter();
-        JtsAdapter.toFeatures(mvtGeoms, layerProps, converter);
 
-        Iterator<String> keys = layerProps.getKeys().iterator();
-        Iterator<Object> vals = layerProps.getVals().iterator();
-        while (true) {
-            if (!keys.hasNext() || !vals.hasNext()) {
-                break;
-            }
-            String k = keys.next();
-            Object v = vals.next();
-            if (k.equals("$myComplexProperty")) {
-                assertTrue(v instanceof String);
-                assertEquals("{'cool-words':['foo','bar','baz']}".replace('\'', '"'), (String) v);
-                return;
-            }
-        }
-        fail();
+        List<Feature> features = mvtGeoms.stream()
+                .map(geom -> SimpleFeatureConverter.fromGeometry(geom))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+
+        Map<String, Object> props = features.get(0).properties;
+        Object value = props.get("$myComplexProperty");
+        assertTrue(value instanceof String);
+        assertEquals("{'cool-words':['foo','bar','baz']}".replace('\'', '"'), value);
     }
 
 }

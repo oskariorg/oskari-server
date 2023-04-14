@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.domain.map.wfs.WFSLayerAttributes;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.IOHelper;
@@ -30,11 +31,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.KEY_FEATURE_OUTPUT_FORMATS;
+import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.KEY_FORMATS;
 import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.KEY_MAX_FEATURES;
 
 public class OskariWFSClient {
 
-    private static final Logger LOG = LogFactory.getLogger(OskariWFS110Client.class);
+    private static final Logger LOG = LogFactory.getLogger(OskariWFSClient.class);
     private static final String EXC_HANDLING_OUTPUTFORMAT = "outputformat";
     private static final TypeReference<HashMap<String, Object>> TYPE_REF = new TypeReference<HashMap<String, Object>>() {};
     private static final ObjectMapper OM = new ObjectMapper();
@@ -160,17 +162,33 @@ public class OskariWFSClient {
     }
 
     protected static boolean tryGeoJSON (OskariLayer layer) {
-        if(layer.getAttributes().optBoolean(PROPERTY_FORCE_GML, false)) return false;
+        if (layer.getAttributes().optBoolean(PROPERTY_FORCE_GML, false)) {
+            return false;
+        }
 
         JSONObject capa = layer.getCapabilities();
         if (capa.has(KEY_FEATURE_OUTPUT_FORMATS)) {
+            // old capabilities (TODO: remove)
             List<String> formats = JSONHelper.getArrayAsList(JSONHelper.getJSONArray(capa, KEY_FEATURE_OUTPUT_FORMATS));
+            return formats.contains(JSON_OUTPUT_FORMAT);
+        }
+        if (capa.has(KEY_FORMATS)) {
+            // new capabilities
+            List<String> formats = JSONHelper.getArrayAsList(JSONHelper.getJSONArray(capa, KEY_FORMATS));
             return formats.contains(JSON_OUTPUT_FORMAT);
         }
         return true;
     }
     protected static int getMaxFeatures(OskariLayer layer) {
-        return layer.getCapabilities().optInt(KEY_MAX_FEATURES, DEFAULT_MAX_FEATURES);
+        int maxFeatures = layer.getAttributes().optInt(WFSLayerAttributes.KEY_MAXFEATURES, -1);
+        if (maxFeatures > 0) {
+            return maxFeatures;
+        }
+        maxFeatures = layer.getCapabilities().optInt(KEY_MAX_FEATURES, -1);
+        if (maxFeatures > 0) {
+            return maxFeatures;
+        }
+        return DEFAULT_MAX_FEATURES;
     }
     protected static Filter getWFSFilter (String id, OskariLayer layer, ReferencedEnvelope bbox, Optional<UserLayerService> processor) {
         if (processor.isPresent()) {

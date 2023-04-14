@@ -3,15 +3,16 @@ package fi.nls.oskari.control.admin;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.util.PropertyUtil;
+import org.oskari.capabilities.CapabilitiesService;
+import org.oskari.capabilities.CapabilitiesUpdateResult;
 import org.oskari.log.AuditLog;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.oskari.capabilities.CapabilitiesUpdateResult;
-import org.oskari.capabilities.CapabilitiesUpdateService;
 import org.oskari.service.util.ServiceFactory;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
@@ -20,7 +21,6 @@ import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.util.ViewHelper;
 import fi.nls.oskari.service.ServiceException;
-import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.util.ResponseHelper;
 
 /**
@@ -46,8 +46,6 @@ public class UpdateCapabilitiesHandler extends RestActionHandler {
     private static final String KEY_DATAPROVIDER_ID = "dataprovider_id";
     private static final String KEY_GROUP_ID = "group_id";
     private OskariLayerService layerService;
-    private CapabilitiesCacheService capabilitiesCacheService;
-    private CapabilitiesUpdateService capabilitiesUpdateService;
     private ViewService viewService;
 
     public UpdateCapabilitiesHandler() {
@@ -55,11 +53,9 @@ public class UpdateCapabilitiesHandler extends RestActionHandler {
     }
 
     public UpdateCapabilitiesHandler(OskariLayerService layerService,
-            CapabilitiesCacheService capabilitiesCacheService,
             ViewService viewService) {
         // Full-param constructor if one is required
         this.layerService = layerService;
-        this.capabilitiesCacheService = capabilitiesCacheService;
         this.viewService = viewService;
     }
 
@@ -68,13 +64,6 @@ public class UpdateCapabilitiesHandler extends RestActionHandler {
         // Lazily populate the fields if they haven't been set by the full-param constructor
         if (layerService == null) {
             layerService = ServiceFactory.getMapLayerService();
-        }
-        if (capabilitiesCacheService == null) {
-            capabilitiesCacheService = ServiceFactory.getCapabilitiesCacheService();
-        }
-        if (capabilitiesUpdateService == null) {
-            capabilitiesUpdateService = new CapabilitiesUpdateService(
-                    layerService, capabilitiesCacheService);
         }
         if (viewService == null) {
             viewService = ServiceFactory.getViewService();
@@ -85,9 +74,18 @@ public class UpdateCapabilitiesHandler extends RestActionHandler {
     public void handlePost(ActionParameters params) throws ActionException {
         params.requireAdminUser();
         List<OskariLayer> layers = getLayersToUpdate(params);
-        Set<String> systemCRSs = getSystemCRSs();
+
+        List<CapabilitiesUpdateResult> result = CapabilitiesService.updateCapabilities(layers, getSystemCRSs());
+        List<String> updatedLayers = result.stream()
+                .filter(res -> res.getErrorMessage() == null)
+                .map(l -> l.getLayerId())
+                .collect(Collectors.toList());
 
         for (OskariLayer layer : layers) {
+            if (!updatedLayers.contains("" + layer.getId())) {
+                continue;
+            }
+            layerService.update(layer);
             AuditLog.user(params.getClientIp(), params.getUser())
                     .withParam("id", layer.getId())
                     .withParam("name", layer.getName(PropertyUtil.getDefaultLanguage()))
@@ -96,9 +94,6 @@ public class UpdateCapabilitiesHandler extends RestActionHandler {
                     .withMsg("Capabilities update")
                     .updated(AuditLog.ResourceType.MAPLAYER);
         }
-
-        List<CapabilitiesUpdateResult> result =
-                capabilitiesUpdateService.updateCapabilities(layers, systemCRSs);
         JSONObject response = createResponse(result, params);
         ResponseHelper.writeResponse(params, response);
     }

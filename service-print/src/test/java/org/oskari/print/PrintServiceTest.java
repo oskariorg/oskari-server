@@ -13,19 +13,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.oskari.print.request.PrintFormat;
 import org.oskari.print.request.PrintLayer;
 import org.oskari.print.request.PrintRequest;
-import org.oskari.print.wmts.WMTSCapabilitiesCache;
 
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.service.ServiceException;
-import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
-import fi.nls.oskari.service.capabilities.OskariLayerCapabilities;
 import fi.nls.oskari.util.DuplicateException;
 import fi.nls.oskari.util.PropertyUtil;
 
@@ -83,18 +79,7 @@ public class PrintServiceTest {
 
         request.setLayers(Arrays.asList(bg, fg, fg2));
 
-        String dataBg = CapabilitiesCacheService.getFromService(bg.getUrl(), bg.getType(), bg.getVersion(), bg.getUsername(), bg.getPassword());
-        OskariLayerCapabilities answerBg = new OskariLayerCapabilities(1L, bg.getUrl(), bg.getType(), bg.getVersion(), dataBg, null, null);
-
-        String dataFg = CapabilitiesCacheService.getFromService(fg.getUrl(), fg.getType(), fg.getVersion(), fg.getUsername(), fg.getPassword());
-        OskariLayerCapabilities answerFg = new OskariLayerCapabilities(1L, fg.getUrl(), fg.getType(), fg.getVersion(), dataFg, null, null);
-
-        CapabilitiesCacheService mock = Mockito.mock(CapabilitiesCacheService.class);
-        Mockito.when(mock.getCapabilities(bg.getUrl(), bg.getType(), bg.getVersion(), bg.getUsername(), bg.getPassword())).thenReturn(answerBg);
-        Mockito.when(mock.getCapabilities(fg.getUrl(), fg.getType(), fg.getVersion(), fg.getUsername(), fg.getPassword())).thenReturn(answerFg);
-
-        WMTSCapabilitiesCache cache = new WMTSCapabilitiesCache(mock);
-        PrintService service = new PrintService(cache);
+        PrintService service = new PrintService();
 
         BufferedImage img = service.getPNG(request);
         File file = File.createTempFile("print-test", ".png");
@@ -147,18 +132,7 @@ public class PrintServiceTest {
 
         request.setLayers(Arrays.asList(bg, fg));
 
-        String dataBg = CapabilitiesCacheService.getFromService(bg.getUrl(), bg.getType(), bg.getUsername(), bg.getPassword(), bg.getVersion());
-        OskariLayerCapabilities answerBg = new OskariLayerCapabilities(1L, bg.getUrl(), bg.getType(), bg.getVersion(), dataBg, null, null);
-
-        String dataFg = CapabilitiesCacheService.getFromService(fg.getUrl(), fg.getType(), fg.getUsername(), fg.getPassword(), fg.getVersion());
-        OskariLayerCapabilities answerFg = new OskariLayerCapabilities(1L, fg.getUrl(), fg.getType(), fg.getVersion(), dataFg, null, null);
-
-        CapabilitiesCacheService mock = Mockito.mock(CapabilitiesCacheService.class);
-        Mockito.when(mock.getCapabilities(bg.getUrl(), bg.getType(), bg.getVersion(), bg.getUsername(), bg.getPassword())).thenReturn(answerBg);
-        Mockito.when(mock.getCapabilities(fg.getUrl(), fg.getType(), fg.getVersion(), fg.getUsername(), fg.getPassword())).thenReturn(answerFg);
-
-        WMTSCapabilitiesCache cache = new WMTSCapabilitiesCache(mock);
-        PrintService service = new PrintService(cache);
+        PrintService service = new PrintService();
 
         PDDocument doc = new PDDocument();
         service.getPDF(request, doc);
@@ -242,12 +216,7 @@ public class PrintServiceTest {
 
         request.setLayers(Arrays.asList(bg, fg, fg2));
 
-        String dataBg = CapabilitiesCacheService.getFromService(bg.getUrl(), bg.getType(), bg.getUsername(), bg.getPassword(), bg.getVersion());
-        OskariLayerCapabilities answerBg = new OskariLayerCapabilities(1L, bg.getUrl(), bg.getType(), bg.getVersion(), dataBg, null, null);
-        CapabilitiesCacheService mock = Mockito.mock(CapabilitiesCacheService.class);
-        Mockito.when(mock.getCapabilities(bg.getUrl(), bg.getType(), bg.getVersion(), bg.getUsername(), bg.getPassword())).thenReturn(answerBg);
-        WMTSCapabilitiesCache cache = new WMTSCapabilitiesCache(mock);
-        PrintService service = new PrintService(cache);
+        PrintService service = new PrintService();
 
         PDDocument doc = new PDDocument();
         service.getPDF(request, doc);

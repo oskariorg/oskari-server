@@ -15,6 +15,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Default handler for WFS Search channel filter and title
@@ -89,12 +90,8 @@ public class WFSChannelHandler extends OskariComponent {
     }
 
     public String getTitle(List<SelectItem> list, String separator) {
-        StringBuilder buf = new StringBuilder();
-        for(SelectItem item : list) {
-            buf.append(item.getValue());
-            buf.append(separator);
-        }
-        // drop last separator (', ')
-        return buf.substring(0, buf.length()-separator.length());
+        return list.stream()
+                .map(SelectItem::getValue)
+                .collect(Collectors.joining(separator));
     }
 }

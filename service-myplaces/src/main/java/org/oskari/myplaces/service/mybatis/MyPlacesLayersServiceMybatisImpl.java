@@ -11,6 +11,7 @@ import javax.sql.DataSource;
 import fi.nls.oskari.cache.Cache;
 import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.myplaces.MyPlacesServiceMybatisImpl;
+import fi.nls.oskari.myplaces.UserContentMyPlacesService;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ExecutorType;
@@ -114,7 +115,7 @@ public class MyPlacesLayersServiceMybatisImpl implements MyPlacesLayersService {
             for (MyPlaceCategory category : categories) {
                 mapper.update(category);
                 n++;
-                cache.remove(MyPlacesServiceMybatisImpl.getCacheKey(category.getId()));
+                cache.remove(UserContentMyPlacesService.getPlaceCacheKey(category.getId()));
             }
             session.commit();
             return n;
@@ -128,7 +129,7 @@ public class MyPlacesLayersServiceMybatisImpl implements MyPlacesLayersService {
             int n = 0;
             for (long id : ids) {
                 n += mapper.delete(id);
-                cache.remove(MyPlacesServiceMybatisImpl.getCacheKey(id));
+                cache.remove(UserContentMyPlacesService.getPlaceCacheKey(id));
             }
             session.commit();
             return n;

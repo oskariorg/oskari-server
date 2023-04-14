@@ -1,19 +1,18 @@
 package fi.nls.oskari.csw.service;
 
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.PrecisionModel;
+import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.csw.domain.CSWIsoRecord;
 import fi.nls.oskari.csw.helper.CSWISORecordNamespaceContext;
 import fi.nls.oskari.csw.helper.CSWISORecordParser;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.util.XmlHelper;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -22,7 +21,10 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
+import java.io.EOFException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -37,10 +39,9 @@ import java.util.Locale;
  */
 public class CSWService {
 
+    public static final String PROP_SERVICE_URL = "service.metadata.url";
     private static final Logger log = LogFactory
             .getLogger(CSWService.class);
-
-    GeometryFactory gf = new GeometryFactory(new PrecisionModel(), 4326);
 
     String baseURL;
     private CoordinateReferenceSystem targetCRS;
@@ -81,28 +82,24 @@ public class CSWService {
      *
      * @param uuid
      * @return
-     * @throws XMLException
-     * @throws OGCWebServiceException
-     * @throws URISyntaxException
-     * @throws IOException
      * @throws SAXException
-     * @throws XMLParsingException
+     * @throws IOException
+     * @throws URISyntaxException
+     * @throws TransformException
      * @throws XPathExpressionException
      * @throws ParseException
-     * @throws TransformException
+     * @throws ParserConfigurationException
      */
     public CSWIsoRecord getRecordById(String uuid, String lang) throws SAXException, IOException, URISyntaxException, TransformException, XPathExpressionException, ParseException, ParserConfigurationException {
-        CSWIsoRecord record = null;
-        Node responseElement;
-        Locale locale = new Locale(lang);
+        CSWIsoRecord record;
         final URL url = getGetRecordByIdUrl(uuid, lang);
-        responseElement = invokeCswGetRecordById(url);
+        Node responseElement = invokeCswGetRecordById(url);
 
         if (responseElement == null) {
             return null;
         }
         if (CSWISORecordNamespaceContext.GMDNS.equals(responseElement.getNamespaceURI())) {
-            record = mapIsoRecordElementToObject(responseElement, locale);
+            record = mapIsoRecordElementToObject(responseElement, lang);
         } else {
             throw new IOException("Invalid response");
         }
@@ -135,19 +132,31 @@ public class CSWService {
     /**
      * helper to invoke csw query
      *
-     * @throws URISyntaxException
-     * @throws XMLException
      * @throws IOException
      * @throws SAXException
      * @throws ParserConfigurationException
      */
     protected Node invokeCswGetRecordById(final URL url)
-            throws URISyntaxException, IOException, SAXException, ParserConfigurationException {
-        DocumentBuilderFactory dbf = XmlHelper.newDocumentBuilderFactory();
-        dbf.setNamespaceAware(true);
+            throws IOException {
 
+        HttpURLConnection con = IOHelper.followRedirect(
+                IOHelper.getConnection(url.toString()), 5);
+        if (con.getResponseCode() != HttpURLConnection.HTTP_OK) {
+            throw new IOException("Couldn't connect to service. Got response code " + con.getResponseCode());
+        }
+        try (InputStream in = con.getInputStream()) {
+            // TODO: return getMetadataRootFuture(in);
+            return getMetadataRootCurrent(in);
+        } catch (Exception e) {
+            throw new IOException("Unable to parse XML from " + url, e);
+        }
+    }
+
+    private Node getMetadataRootCurrent(InputStream in) throws Exception {
+        DocumentBuilderFactory dbf = fi.nls.oskari.util.XmlHelper.newDocumentBuilderFactory();
+        dbf.setNamespaceAware(true);
         DocumentBuilder db = dbf.newDocumentBuilder();
-        Document doc = db.parse(url.openStream());
+        Document doc = db.parse(in);
         Node root = doc.getDocumentElement();
         NodeList children = root.getChildNodes();
         Node ret = null;
@@ -159,11 +168,22 @@ public class CSWService {
         return ret;
     }
 
-    private CSWIsoRecord mapIsoRecordElementToObject(Node el, Locale locale) throws XPathExpressionException, TransformException, ParseException {
+    // Parsing with xpaths don't work with the "future" parser so we can't use it yet
+    // but this is the usage of revised version of XMLHelper
+    private Node getMetadataRootFuture(InputStream in) throws Exception {
+        Element root = org.oskari.xml.XmlHelper.parseXML(in, true);
+        Element metadata = org.oskari.xml.XmlHelper.getFirstChild(root, "MD_Metadata");
+        if (metadata == null) {
+            throw new EOFException("No 'MD_Metadata' element in metadata");
+        }
+        return metadata;
+    }
+
+
+    protected CSWIsoRecord mapIsoRecordElementToObject(Node el, String lang) throws XPathExpressionException, TransformException, ParseException {
         CSWISORecordParser parser = new CSWISORecordParser();
-        CSWIsoRecord ret;
-        ret = parser.parse(el, locale, transform);
-        return ret;
+        Locale locale = new Locale(lang);
+        return parser.parse(el, locale, transform);
     }
 
 }

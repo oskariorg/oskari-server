@@ -1,9 +1,12 @@
 package fi.nls.oskari.map.layer.formatters;
 
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.domain.map.style.VectorStyle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.WKTHelper;
+import fi.nls.oskari.map.style.VectorStyleService;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
@@ -12,6 +15,8 @@ import org.geotools.referencing.CRS;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.oskari.capabilities.MetadataHelper;
+import org.oskari.capabilities.ogc.LayerCapabilitiesOGC;
 import org.oskari.utils.common.Sets;
 
 import java.util.*;
@@ -68,6 +73,30 @@ public class LayerJSONFormatter {
         }
         return null;
     }
+    // This is temporal solution to add styles to options
+    // For now styles are migrated to new table and frontend doesn't handle async DescribeLayer response properly
+    protected void addVectorStylesToOptions(int layerId, JSONObject layer) {
+        VectorStyleService service = OskariComponentManager.getComponentOfType(VectorStyleService.class);
+        JSONObject styles = new JSONObject();
+        JSONObject external = new JSONObject();
+        service.getAdminStyles(layerId).forEach(vs -> {
+            LOG.debug("setting style for:" , layerId, "with name", vs.getName());
+            JSONObject style = vs.getStyle();
+            String id = Long.toString(vs.getId());
+            String name = vs.getName();
+            if (vs.getType().equals(VectorStyle.TYPE_OSKARI)) {
+                JSONHelper.putValue(style, "title", name);
+                JSONHelper.putValue(styles, id, style);
+            } else {
+                JSONHelper.putValue(external, name, style);
+            }
+
+        });
+
+        JSONObject options = JSONHelper.getJSONObject(layer, "options");
+        JSONHelper.putValue(options, "styles", styles);
+        JSONHelper.putValue(options, "externalStyles", external);
+    }
 
     /**
      * Use to add custom layer JSON formatter for custom layer type
@@ -98,6 +127,7 @@ public class LayerJSONFormatter {
 
         JSONHelper.putValue(layerJson, KEY_ID, layer.getId());
 
+        boolean useProxy = useProxy(layer);
         //LOG.debug("Type", layer.getType());
         if(layer.isCollection()) {
             // fixing frontend type for collection layers
@@ -138,8 +168,10 @@ public class LayerJSONFormatter {
             JSONHelper.putValue(layerJson, "maxScale", layer.getMaxScale());
         }
         JSONObject attributes = layer.getAttributes();
-
-        JSONHelper.putValue(layerJson, "params", layer.getParams());
+        if (!useProxy) {
+            // don't write additional params for proxied urls
+            JSONHelper.putValue(layerJson, "params", layer.getParams());
+        }
         JSONHelper.putValue(layerJson, KEY_OPTIONS, layer.getOptions());
         JSONHelper.putValue(layerJson, "attributes", attributes);
 
@@ -159,7 +191,7 @@ public class LayerJSONFormatter {
 
         // setup supported projections
         Set<String> srs = getSRSs(layer.getAttributes(), layer.getCapabilities());
-        if (srs != null) {
+        if (srs != null && !srs.isEmpty()) {
             JSONHelper.putValue(layerJson, KEY_SRS, new JSONArray(srs));
         }
 
@@ -208,9 +240,9 @@ public class LayerJSONFormatter {
         }
         for(int i = 0; i < styleList.length(); i++) {
             JSONObject style = styleList.optJSONObject(i);
-            String legend = style.optString(KEY_LEGEND);
-            String name = style.optString(KEY_STYLE_NAME);
-            String title = style.optString(KEY_STYLE_TITLE);
+            String legend = JSONHelper.optString(style, KEY_LEGEND);
+            String name = JSONHelper.optString(style, KEY_STYLE_NAME);
+            String title = JSONHelper.optString(style, KEY_STYLE_TITLE);
             if (legends.containsKey(name)) {
                 legend = legends.get(name);
             } else if (!globalLegend.isEmpty()) {
@@ -242,45 +274,17 @@ public class LayerJSONFormatter {
         }
         return IOHelper.constructUrl(PropertyUtil.get(PROPERTY_AJAXURL), urlParams);
     }
+
     public static String getMetadataUuid (OskariLayer layer) {
-        String fixed = LayerJSONFormatter.getFixedDataUrl(layer.getMetadataId());
+        String fixed = MetadataHelper.getIdFromMetadataUrl(layer.getMetadataId());
         if (fixed != null) {
             return fixed;
         }
-        return layer.getCapabilities().optString(KEY_METADATA);
-    }
-
-    // This is solution of transition for dataUrl and for dataUrl_uuid
-    public static String getFixedDataUrl(String metadataId) {
-        if(metadataId == null || metadataId.isEmpty()) {
-            return null;
+        String olderMetadataCaps = layer.getCapabilities().optString(KEY_METADATA, null);
+        if (olderMetadataCaps != null && !olderMetadataCaps.trim().isEmpty()) {
+            return olderMetadataCaps;
         }
-        if(!metadataId.toLowerCase().startsWith("http")) {
-            // not a url -> return as is
-            return metadataId;
-        }
-        try {
-            Map<String, List<String>> params = IOHelper.parseQuerystring(metadataId);
-            String idParam = params.keySet().stream()
-                    .filter(key -> "uuid".equalsIgnoreCase(key) || KEY_ID.equalsIgnoreCase(key))
-                    .findFirst()
-                    .orElse(null);
-            if (idParam == null) {
-                // param not in url
-                return null;
-            }
-            List<String> values = params.getOrDefault(idParam, Collections.emptyList());
-            if (values.isEmpty()) {
-                // param was present but has no value
-                return null;
-            }
-            return values.get(0);
-        } catch (Exception ignored) {
-            // propably just not valid URL
-            LOG.ignore("Unexpected error parsing metadataid", ignored);
-        }
-        LOG.debug("Couldn't parse uuid from metadata url:", metadataId);
-        return null;
+        return layer.getCapabilities().optString(LayerCapabilitiesOGC.METADATA_UUID, null);
     }
 
     /**
@@ -296,7 +300,7 @@ public class LayerJSONFormatter {
         JSONArray jsonCapabilitiesSRS = capabilities != null ? capabilities.optJSONArray(KEY_SRS): null;
         if (jsonForcedSRS == null && jsonCapabilitiesSRS == null) {
             LOG.debug("No SRS information found from either attributes or capabilities");
-            return null;
+            return Collections.emptySet();
         }
         Set<String> srs = new HashSet<>();
         srs.addAll(JSONHelper.getArrayAsList(jsonForcedSRS));

@@ -13,6 +13,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -147,6 +149,8 @@ public class ViewHelper {
         viewJSON.put("metadata", view.getMetadata());
         viewJSON.put("application", view.getApplication());
         viewJSON.put("page", view.getPage());
+        viewJSON.put("created", view.getCreated());
+        viewJSON.put("updated", view.getUpdated());
         viewJSON.put("bundles", createBundles(bundleService, view.getBundles()));
         return viewJSON;
     }
@@ -186,6 +190,8 @@ public class ViewHelper {
         view.setIsPublic(viewJSON.optBoolean("public", false));
         view.setOnlyForUuId(viewJSON.optBoolean("onlyUuid", true));
         view.setMetadata(viewJSON.optJSONObject("metadata"));
+        view.setCreated(OffsetDateTime.parse(viewJSON.getString("created"), DateTimeFormatter.ISO_DATE_TIME));
+        view.setUpdated(OffsetDateTime.parse(viewJSON.getString("updated"), DateTimeFormatter.ISO_DATE_TIME));
 
         if (viewJSON.has("oskari")) {
             // Support "old" format

@@ -76,10 +76,8 @@ public class CreateUserLayerHandler extends RestActionHandler {
     };
 
     private static final String PARAM_SOURCE_EPSG_KEY = "sourceEpsg";
-    private static final String KEY_NAME = "layer-name";
-    private static final String KEY_DESC = "layer-desc";
-    private static final String KEY_SOURCE = "layer-source";
-    private static final String KEY_STYLE = "layer-style";
+    private static final String KEY_STYLE = "style";
+    private static final String KEY_LOCALE = "locale";
 
     private static final int KB = 1024;
     private static final int MB = 1024 * KB;
@@ -90,9 +88,9 @@ public class CreateUserLayerHandler extends RestActionHandler {
     private static final int MAX_RETRY_RANDOM_UUID = 100;
 
     private final DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory(MAX_SIZE_MEMORY, null);
-    private final String targetEPSG = PropertyUtil.get(PROPERTY_TARGET_EPSG, "EPSG:4326");
-    private static final int userlayerMaxFileSize = PropertyUtil.getOptional(PROPERTY_USERLAYER_MAX_FILE_SIZE_MB, 10) * MB;
-    private static final long FILE_SIZE_LIMIT = 15 * userlayerMaxFileSize; // Max size of unzipped data, 15 * the zip size
+    private String targetEPSG = "EPSG:4326";
+    private int userlayerMaxFileSize = -1;
+    private long unzippiedFileSizeLimit = -1;
 
     private UserLayerDbService userLayerService;
 
@@ -110,6 +108,13 @@ public class CreateUserLayerHandler extends RestActionHandler {
     @Override
     public void handlePost(ActionParameters params) throws ActionException {
         params.requireLoggedInUser();
+
+        if (userlayerMaxFileSize == -1) {
+            // initialized here to workaround timing issue for reading config from properties
+            userlayerMaxFileSize = PropertyUtil.getOptional(PROPERTY_USERLAYER_MAX_FILE_SIZE_MB, 10) * MB;
+            unzippiedFileSizeLimit = 15 * userlayerMaxFileSize; // Max size of unzipped data, 15 * the zip size
+            targetEPSG = PropertyUtil.get(PROPERTY_TARGET_EPSG, targetEPSG);
+        }
 
         String sourceEPSG = params.getHttpParam(PARAM_SOURCE_EPSG_KEY);
         List<FileItem> fileItems = getFileItems(params.getRequest());
@@ -363,7 +368,7 @@ public class CreateUserLayerHandler extends RestActionHandler {
                 name = "a" + name.substring(name.lastIndexOf('.'));
                 File file = new File(dir, name);
                 try (FileOutputStream fos = new FileOutputStream(file)) {
-                    IOHelper.copy(zis, fos, FILE_SIZE_LIMIT);
+                    IOHelper.copy(zis, fos, unzippiedFileSizeLimit);
                 }
                 if (mainFile == null) {
                     String ext = getFileExt(name);
@@ -373,6 +378,8 @@ public class CreateUserLayerHandler extends RestActionHandler {
                 }
             }
             return mainFile;
+        } catch (EOFException e) {
+            throw new ServiceException("File too large. " + e.getMessage());
         } catch (IOException e) {
             throw new ServiceException("Failed to unzip file: " + zipFile.getName());
         }
@@ -402,11 +409,9 @@ public class CreateUserLayerHandler extends RestActionHandler {
     }
 
     private UserLayer createUserLayer(SimpleFeatureCollection fc, String uuid, Map<String, String> formParams) {
-        String name = formParams.get(KEY_NAME);
-        String desc = formParams.get(KEY_DESC);
-        String source = formParams.get(KEY_SOURCE);
-        String style = formParams.get(KEY_STYLE);
-        return UserLayerDataService.createUserLayer(fc, uuid, name, desc, source, style);
+        JSONObject locale = JSONHelper.createJSONObject(formParams.get(KEY_LOCALE));
+        JSONObject style = JSONHelper.createJSONObject(formParams.get(KEY_STYLE));
+        return UserLayerDataService.createUserLayer(fc, uuid, locale, style);
     }
 
     private void writeResponse(ActionParameters params, UserLayer ulayer) {

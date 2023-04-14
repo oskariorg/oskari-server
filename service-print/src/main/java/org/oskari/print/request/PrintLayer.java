@@ -2,15 +2,17 @@ package org.oskari.print.request;
 
 import java.util.Optional;
 
-import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
+import fi.nls.oskari.map.style.VectorStyleService;
+import fi.nls.oskari.service.OskariComponentManager;
 import org.json.JSONObject;
 import org.oskari.service.user.UserLayerService;
-import org.oskari.print.util.StyleUtil;
-import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.domain.map.OskariLayer;
 
 public class PrintLayer {
-    private static final String KEY_FEATURE_STYLE = "featureStyle";
+
+    private static VectorStyleService getVectorStyleService() {
+        return OskariComponentManager.getComponentOfType(VectorStyleService.class);
+    }
 
     private final int zIndex;
     private String layerId;
@@ -109,20 +111,15 @@ public class PrintLayer {
 
     public JSONObject getCustomStyle () { return customStyle; }
 
+    // TODO: print should support optionalStyles and whole style should be returned
+    // For now this handles and returns only Oskari style's featureStyle
     public JSONObject getOskariStyle () {
         if (customStyle != null) {
             return customStyle;
         }
-        // TODO: print should support optionalStyles and whole style should be returned
-        // return featureStyle for now
         if (getProcessor().isPresent()) {
             return getProcessor().get().getWFSLayerOptions(layerId).getDefaultFeatureStyle();
         }
-        JSONObject styleJson = new WFSLayerOptions(oskariLayer.getOptions()).getNamedStyle(style);
-        if (styleJson.has(KEY_FEATURE_STYLE)) {
-            return JSONHelper.getJSONObject(styleJson, KEY_FEATURE_STYLE);
-        }
-        return WFSLayerOptions.getDefaultOskariStyle();
+        return getVectorStyleService().getOskariFeatureStyle(style);
     }
-
 }

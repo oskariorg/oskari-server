@@ -1,8 +1,9 @@
 package fi.nls.oskari.control.feature;
 
 
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import org.locationtech.jts.geom.*;
-import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.*;
 
 import fi.nls.oskari.control.ActionException;
@@ -28,6 +29,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import org.locationtech.jts.io.ParseException;
+import org.locationtech.jts.io.geojson.GeoJsonReader;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
@@ -44,14 +47,15 @@ import java.util.*;
 
 public abstract class AbstractFeatureHandler extends RestActionHandler {
 
-    public final static String CACHE_KEY_PREFIX = "WFSImage_";
+    private static Logger LOG = LogFactory.getLogger(AbstractFeatureHandler.class);
 
     private OskariLayerService layerService;
     private PermissionService permissionsService;
 
     private static final Set<String> ALLOWED_GEOM_TYPES = ConversionHelper.asSet("multipoint",
             "multilinestring", "multipolygon");
-    private GeometryFactory gf = new GeometryFactory();
+    private static final GeometryFactory gf = new GeometryFactory();
+    private static final GeoJsonReader GEOJSON_READER = new GeoJsonReader(gf);
 
     @Override
     public void init() {
@@ -98,25 +102,41 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
         }
         return ALLOWED_GEOM_TYPES.contains(type);
     }
-
     protected Feature getFeature(JSONObject jsonObject) throws ActionParamsException, JSONException, FactoryException {
-        boolean flipFeature = PropertyUtil.getOptional("actionhandler.AbstractFeatureHandler.forceXY", false);
-        Feature feature = new Feature();
-        OskariLayer layer = getLayer(jsonObject.optString("layerId"));
         String srsName = JSONHelper.getStringFromJSON(jsonObject, "srsName", "EPSG:3067");
-        CoordinateReferenceSystem crs = CRS.decode(srsName);
+        return getFeature(jsonObject, jsonObject.optString("layerId"), srsName, jsonObject.getString("featureId"));
+    }
+
+    protected Feature initFeatureByLayer(String layerId) throws ActionParamsException {
+        return initFeatureByLayer(getLayer(layerId));
+    }
+
+    protected Feature initFeatureByLayer(OskariLayer layer) throws ActionParamsException {
+        Feature feature = new Feature();
         WFSLayerAttributes attrs = new WFSLayerAttributes(layer.getAttributes());
         WFSLayerCapabilities caps = new WFSLayerCapabilities(layer.getCapabilities());
         String layerName = layer.getName();
-        //remove prefix from layername
-        if(layerName.indexOf(":") != -1){
+        // remove prefix from layername
+        if (layerName.indexOf(":") != -1){
             layerName = (layerName.substring(layerName.indexOf(":")+1)).trim();
         }
 
         feature.setLayerName(layerName);
         feature.setNamespaceURI(attrs.getNamespaceURL());
         feature.setGMLGeometryProperty(caps.getGeometryAttribute());
-        feature.setId(jsonObject.getString("featureId"));
+        return feature;
+    }
+
+    // protected Feature getFeature(JSONObject jsonObject) throws ActionParamsException, JSONException, FactoryException {
+    protected Feature getFeature(JSONObject jsonObject, String layerId, String srsName, String featureId) throws ActionParamsException, JSONException, FactoryException {
+        boolean flipFeature = PropertyUtil.getOptional("actionhandler.AbstractFeatureHandler.forceXY", false);
+        Feature feature = initFeatureByLayer(layerId);
+        CoordinateReferenceSystem crs = CRS.decode(srsName);
+        if (featureId == null) {
+            feature.setId(featureId);
+        } else {
+            feature.setId(jsonObject.optString("id"));
+        }
 
         if(jsonObject.has("featureFields")) {
             JSONArray jsonArray = jsonObject.getJSONArray("featureFields");
@@ -140,6 +160,27 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
                 ProjectionHelper.flipFeatureYX(geometry);
             }
             feature.setGeometry(geometry);
+        }
+
+        // support GeoJSON feature
+        if (jsonObject.has("properties")) {
+            JSONObject props = jsonObject.getJSONObject("properties");
+            Iterator keys = props.keys();
+            while (keys.hasNext()) {
+                String name = (String) keys.next();
+                feature.addProperty(name, props.getString(name));
+            }
+        }
+        if (jsonObject.has("geometry")) {
+            String geojsonGeometry = jsonObject.getJSONObject("geometry").toString();
+            try {
+                Geometry geom = GEOJSON_READER.read(geojsonGeometry);
+                geom.setSRID(getSrid(srsName, 3067));
+                feature.setGeometry(geom);
+            } catch (ParseException e) {
+                LOG.debug(e, "Error parsing geometry:\n", geojsonGeometry);
+                throw new ActionParamsException("Couldn't parse feature: " + geojsonGeometry);
+            }
         }
         return feature;
     }
@@ -235,22 +276,6 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
 
     }
 
-    protected void flushLayerTilesCache(int layerId) {
-        Set<String> keys = JedisManager.keys(CACHE_KEY_PREFIX + Integer.toString(layerId));
-        for (String key : keys) {
-            JedisManager.delAll(key);
-        }
-    }
-
-    protected void flushLayerTilesCache(Map<Integer, OskariLayer> layers) {
-        for (Integer layerId : layers.keySet()) {
-            Set<String> keys = JedisManager.keys(CACHE_KEY_PREFIX + Integer.toString(layerId));
-            for (String key : keys) {
-                JedisManager.delAll(key);
-            }
-        }
-    }
-
     protected Map<Integer, OskariLayer> getLayers(JSONArray paramFeatures) throws JSONException, ActionParamsException {
         Map<Integer, OskariLayer> layers = new HashMap<>();
         for (int i = 0; i < paramFeatures.length(); i++) {
@@ -272,7 +297,7 @@ public abstract class AbstractFeatureHandler extends RestActionHandler {
     /**
      * Takes workspace prefix from layer name (before ':') and puts it into the layer url before '/wfs' or '/ows'
      * NOTE! May not work with other than geoserver
-     * @param  layer  OskariLayer layer
+     * @param  layerName  String layer technical name
      */
     protected String getURLForNamespace(String layerName, String url){
         

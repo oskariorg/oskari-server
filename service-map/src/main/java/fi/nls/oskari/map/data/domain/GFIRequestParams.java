@@ -4,10 +4,9 @@ import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -159,7 +158,6 @@ public class GFIRequestParams {
         queryMap.put("QUERY_LAYERS", wmsName);
         queryMap.put("WIDTH", getWidth());
         queryMap.put("HEIGHT", getHeight());
-        queryMap.put("STYLES", getCurrentStyle());
         queryMap.put("LAYERS", wmsName);
 
         if (additionalParams != null) {
@@ -184,6 +182,16 @@ public class GFIRequestParams {
         if (infoFormat != null && !infoFormat.isEmpty()) {
             return infoFormat;
         }
+        JSONArray infoFormats = layer.getCapabilities().optJSONArray("infoFormats");
+        if (infoFormats != null) {
+            List<String> available = JSONHelper.getArrayAsList(infoFormats);
+            for (String format : SUPPORTED_GET_FEATURE_INFO_FORMATS) {
+                if (available.contains(format)) {
+                    return format;
+                }
+            }
+        }
+        // TODO: deprecated part
         JSONObject formats = layer.getCapabilities().optJSONObject(KEY_FORMATS);
         if (formats == null) {
             return DEFAULT_FORMAT;

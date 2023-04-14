@@ -154,7 +154,10 @@ public abstract class SearchChannel extends OskariComponent implements Searchabl
             types.add(type);
             log.debug("Configurable zoom/rank for channel", getName(), "type:", type);
         }
-        item.setZoomScale(getZoomScale(type));
+        if (item.getZoomScale() == -1d) {
+            // try getting scale from common config
+            item.setZoomScale(getZoomScale(type));
+        }
         if(item.getRank() == -1) {
             item.setRank(getRank(type));
         }

@@ -2,39 +2,26 @@ package org.oskari.myplaces.service.mybatis;
 
 import static org.junit.Assert.assertEquals;
 
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.sql.Connection;
-import java.sql.Statement;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import org.h2.jdbcx.JdbcDataSource;
+import fi.nls.test.util.ResourceHelper;
+import fi.nls.test.util.TestHelper;
 import org.json.JSONObject;
 import org.junit.Test;
 
 import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.test.util.JSONTestHelper;
 
+import javax.sql.DataSource;
+
 public class MyPlacesLayersServiceMybatisImplTest {
 
     @Test
     public void happyCase() throws Exception {
-        JdbcDataSource ds = new JdbcDataSource();
-        ds.setUrl("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;INIT=create domain if not exists json as text;MODE=PostgreSQL");
-
-        Path path = Paths.get(getClass().getClassLoader().getResource("categories_ddl.sql").toURI());
-        byte[] utf8 = Files.readAllBytes(path);
-        String ddl = new String(utf8, StandardCharsets.UTF_8);
-
-        try (Connection c = ds.getConnection();
-                Statement stmt = c.createStatement()) {
-            stmt.execute(ddl);
-        }
-
+        List<String> sqls = ResourceHelper.readSqlStatements(MyPlacesLayersServiceMybatisImplTest.class, "/categories_ddl.sql");
+        DataSource ds = TestHelper.createMemDBforUnitTest(sqls);
         MyPlacesLayersServiceMybatisImpl service = new MyPlacesLayersServiceMybatisImpl(ds);
 
         String uuid = UUID.randomUUID().toString();

@@ -5,7 +5,6 @@ import java.awt.geom.AffineTransform;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,19 +28,19 @@ import org.apache.pdfbox.pdmodel.graphics.pattern.PDTilingPattern;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.oskari.print.PDF;
+import org.oskari.util.Customization;
 import org.oskari.print.request.PDPrintStyle;
 import org.oskari.print.request.PDPrintStyle.LineCap;
 import org.oskari.print.request.PDPrintStyle.LineJoin;
 import org.oskari.print.request.PDPrintStyle.LinePattern;
 
-import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
+import static org.oskari.util.Customization.PLACEHOLDER_STROKE;
+import static org.oskari.util.Customization.PLACEHOLDER_FILL;
 
 public class StyleUtil {
 
-    private static final String SVG_MARKERS_JSON = "svg-markers.json";
-    private static final String ICON_STROKE_COLOR = "#b4b4b4";
+    private static final String ICON_STROKE_COLOR = "#000000";
     private static final float ICON_SIZE = 32f;
     private static final double ICON_OFFSET = ICON_SIZE/2.0;
 
@@ -167,22 +166,18 @@ public class StyleUtil {
         }
     }
 
-    // TODO: get marker data from EnvHelper
     public static JSONObject getMarker (int index) throws IOException {
-        try (InputStream is = PDF.class.getResourceAsStream(SVG_MARKERS_JSON)) {
-            if (is == null) {
-                throw new IOException("Resource file " + SVG_MARKERS_JSON + " does not exist");
-            }
-            JSONArray svgMarkers = JSONHelper.createJSONArray(IOHelper.readString(is));
-            if (index >= svgMarkers.length()) {
-                throw new IOException("SVG marker:" + index + " does not exist");
-            }
-            return JSONHelper.getJSONObject(svgMarkers, index);
+        JSONArray svgMarkers = Customization.getMarkers();
+        if (index < 0 || index >= svgMarkers.length()) {
+            throw new IOException("SVG marker:" + index + " does not exist");
         }
+        return JSONHelper.getJSONObject(svgMarkers, index);
     }
 
     private static PDFormXObject createIcon (PDDocument doc, JSONObject marker, String fillColor, int size) throws JSONException, IOException, TranscoderException {
-        String markerData = JSONHelper.getString(marker, "data").replace("$fill", fillColor).replace("$stroke", ICON_STROKE_COLOR);
+        String markerData = JSONHelper.getString(marker, "data")
+                .replace(PLACEHOLDER_FILL, fillColor)
+                .replace(PLACEHOLDER_STROKE, ICON_STROKE_COLOR);
         double scale = size < 1 || size > 5 ? 1 : 0.6 +  size /10.0;
         double x =  marker.optDouble("offsetX", ICON_OFFSET) * scale;
         double y = marker.optDouble("offsetY", ICON_OFFSET) * scale;
@@ -216,29 +211,25 @@ public class StyleUtil {
         tilingPattern.setXStep(size);
         tilingPattern.setYStep(size);
         COSName patternName = resources.add(tilingPattern);
-        // thin 1 thick 2.5
-        float lineWidth = fillPattern == 0 || fillPattern == 2 ? 1.0f : 2.5f;
+        // frontend has thin 2 thick 4
+        float lineWidth = fillPattern == 0 || fillPattern == 2 ? 1.5f : 3f;
         boolean isHorizontal = fillPattern == 2 || fillPattern == 3;
-        float numberOfStripes = 9;
-        if (lineWidth > 2) {
-            numberOfStripes = isHorizontal ? 8 : 6;
-        }
-        float bandWidth = size / numberOfStripes;
+        float whiteSpace = isHorizontal ? lineWidth + 1.5f : lineWidth * 2 + 1.5f;
+        float bandWidth = lineWidth + whiteSpace;
+        float transition = size / (float) Math.floor(size / bandWidth);
         try (PDPatternContentStream pcs = new PDPatternContentStream(tilingPattern))
         {
-            // Set color, draw diagonal line + 2 more diagonals so that corners look good
             pcs.setStrokingColor(fillColor);
             pcs.setLineWidth(lineWidth);
             pcs.setLineCapStyle(LineCap.square.code);
-            float limit = isHorizontal ? numberOfStripes : numberOfStripes * 2;
-            for (int i = 0 ; i < limit; i ++) {
-                float transition = i * bandWidth+ bandWidth/2;
+            float limit = isHorizontal ? size : size * 2;
+            for (float t = transition / 2 ; t < limit; t += transition) {
                 if (isHorizontal)  {
-                    pcs.moveTo(0, transition);
-                    pcs.lineTo(size, transition );
+                    pcs.moveTo(0, t);
+                    pcs.lineTo(size, t );
                 } else {
-                    pcs.moveTo(0, size - transition);
-                    pcs.lineTo(transition, size);
+                    pcs.moveTo(0, size - t);
+                    pcs.lineTo(t, size);
                 }
                 pcs.stroke();
             }

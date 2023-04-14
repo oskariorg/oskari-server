@@ -133,6 +133,10 @@ public class WFSLayerOptions {
         JSONHelper.putValue(options, KEY_CLUSTER, cluster);
     }
 
+    /**
+     * Should match https://github.com/oskariorg/oskari-frontend/blob/master/src/react/components/StyleEditor/OskariDefaultStyle.js
+     * @return
+     */
     public static JSONObject getDefaultOskariStyle () {
         JSONObject json = new JSONObject();
         // dot
@@ -148,14 +152,14 @@ public class WFSLayerOptions {
         JSONHelper.putValue(stroke, "color", "#000000");
         JSONHelper.putValue(stroke, "width",1);
         JSONHelper.putValue(stroke, "lineDash", "solid");
-        JSONHelper.putValue(stroke, "lineCap", "butt" );
-        JSONHelper.putValue(stroke, "lineJoin", "mitre");
+        JSONHelper.putValue(stroke, "lineCap", "round" );
+        JSONHelper.putValue(stroke, "lineJoin", "round");
         // area
         JSONObject strokeArea = new JSONObject();
         JSONHelper.putValue(strokeArea, "color", "#000000");
         JSONHelper.putValue(strokeArea, "width", 1);
         JSONHelper.putValue(strokeArea, "lineDash", "solid");
-        JSONHelper.putValue(strokeArea, "lineJoin", "mitre");
+        JSONHelper.putValue(strokeArea, "lineJoin", "round");
         JSONHelper.putValue(stroke, "area", strokeArea);
         JSONHelper.putValue(json, "stroke", stroke);
         JSONObject fill = new JSONObject();

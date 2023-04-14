@@ -70,4 +70,13 @@ public class StatisticalIndicatorDataModel {
         }
         return null;
     }
+
+    @JsonIgnore
+    public StatisticalIndicatorDataModel clone() {
+        StatisticalIndicatorDataModel model = new StatisticalIndicatorDataModel();
+        model.setHasRegionInfo(hasRegionInfo);
+        model.setTimeVariable(timeVariable);
+        getDimensions().forEach(d -> model.addDimension(d.clone()));
+        return model;
+    }
 }

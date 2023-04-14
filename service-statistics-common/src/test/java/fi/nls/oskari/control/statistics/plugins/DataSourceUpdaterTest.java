@@ -1,10 +1,10 @@
 package fi.nls.oskari.control.statistics.plugins;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
 import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataDimension;
 import fi.nls.oskari.control.statistics.data.StatisticalIndicatorLayer;
-import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import org.junit.Test;

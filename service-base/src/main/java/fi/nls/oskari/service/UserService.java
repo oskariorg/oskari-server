@@ -14,7 +14,6 @@ import java.util.UUID;
 
 /**
  * Common interface for managing users.
- * TODO: this interface is still under development and new methods will propably be added when needed.
  */
 public abstract class UserService {
 
@@ -205,6 +204,34 @@ public abstract class UserService {
      * @throws ServiceException
      */
     public List<User> getUsersWithRoles() throws ServiceException {
+        return Collections.emptyList();
+    }
+
+    /**
+     * Return count of all users
+     * @return
+     * @throws ServiceException
+     */
+    public int getUserCount() throws ServiceException {
+        return -1;
+    }
+
+    /**
+     * Return count of all users when using search
+     * @return
+     * @throws ServiceException
+     */
+    public int getUserSearchCount(String search) throws ServiceException {
+        return -1;
+    }
+
+    /**
+     * Return all users using pagination & search. This method should be overridden in concrete implementation. The
+     * default implementation always throws an exception.
+     * @return List<User> users
+     * @throws ServiceException
+     */
+    public List<User> getUsersWithRoles(int limit, int offset, String query) throws ServiceException {
         return Collections.emptyList();
     }
 

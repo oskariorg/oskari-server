@@ -238,6 +238,12 @@ public class SendDownloadDetailsToEmailThread implements Runnable {
 			email.setSubject(PropertyUtil.getNecessary("oskari.wfs.download.email.subject"));
 			email.setCharset("UTF-8");
 
+			String user = PropertyUtil.getOptional("oskari.wfs.download.smtp.user");
+			String password = PropertyUtil.getOptional("oskari.wfs.download.smtp.password");
+			if (user != null && password != null) {
+				email.setAuthentication(user, password);
+			}
+
 			StringBuilder htmlHeader = new StringBuilder();
 			StringBuilder htmlMsg = new StringBuilder();
 			StringBuilder htmlFooter = new StringBuilder();

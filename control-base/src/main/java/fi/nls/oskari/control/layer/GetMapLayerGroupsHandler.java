@@ -152,8 +152,8 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
         try {
             // getListOfMapLayers checks permissions
             JSONObject response = OskariLayerWorker.getListOfMapLayers(layers, user, lang, crs, isPublished, isSecure);
-            response.put(KEY_GROUPS, getGroupJSON(groupsByParentId, linksByGroupId, sortedLayerIds, -1));
-            response.put(KEY_PROVIDERS, getProvidersJSON(lang, getProviderIds(response)));
+            response.put(KEY_GROUPS, getGroupJSON(groupsByParentId, linksByGroupId, sortedLayerIds, -1, lang));
+            response.put(KEY_PROVIDERS, getProvidersJSON(lang, getProviderIds(response, user)));
             return response.toString();
         } catch (JSONException e) {
             throw new ActionException("Failed to add groups", e);
@@ -182,7 +182,8 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
     private JSONArray getGroupJSON(final Map<Integer, List<MaplayerGroup>> groupsByParentId,
             final Map<Integer, List<OskariLayerGroupLink>> linksByGroupId,
             final int[] sortedLayerIds,
-            final int parentGroupId) throws JSONException {
+            final int parentGroupId,
+            final String language) throws JSONException {
         List<MaplayerGroup> groups = groupsByParentId.get(parentGroupId);
         if (groups == null || groups.isEmpty()) {
             return null;
@@ -192,9 +193,9 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
         groups.sort(Comparator.comparing(MaplayerGroup::getOrderNumber));
         for (MaplayerGroup group : groups) {
             int groupId = group.getId();
-            JSONObject groupAsJson = group.getAsJSON();
+            JSONObject groupAsJson = group.getAsJSON(language);
 
-            JSONArray subGroups = getGroupJSON(groupsByParentId, linksByGroupId, sortedLayerIds, groupId);
+            JSONArray subGroups = getGroupJSON(groupsByParentId, linksByGroupId, sortedLayerIds, groupId, language);
             if (subGroups != null) {
                 groupAsJson.put(KEY_GROUPS, subGroups);
             }
@@ -218,11 +219,15 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
 
     /**
      * Constructs a set of dataprovider ids that are used in the layers that will be returned to the user.
-     * FIXME: This is terrible. We need to refactor how we write this stuff for the frontend...
+     * FIXME: This is terrible (looping through layers as json). We need to refactor how we write this stuff for the frontend...
      * @param response
      * @return
      */
-    private Set<Integer> getProviderIds(JSONObject response) {
+    private Set<Integer> getProviderIds(JSONObject response, User user) {
+        if (user != null && user.isAdmin()) {
+            // don't filter providers based on layers, given them all for admin so editing works
+            return null;
+        }
         Set<Integer> providerIds = new HashSet<>();
         JSONArray layers = response.optJSONArray(OskariLayerWorker.KEY_LAYERS);
         for (int i = 0; i < layers.length(); i++) {
@@ -241,9 +246,14 @@ public class GetMapLayerGroupsHandler extends ActionHandler {
         dataProviderService.findAll().stream()
                 .forEach(provider -> {
                     int id = provider.getId();
-                    if (usedProviders.contains(id)) {
-                        JSONHelper.putValue(result, Integer.toString(id), provider.getName(language));
+                    if (usedProviders != null && !usedProviders.contains(id)) {
+                        // if provider filter is null the list is not filtered (==admin user)
+                        return;
                     }
+                    JSONObject json = new JSONObject();
+                    JSONHelper.putValue(json, "name", provider.getName(language));
+                    JSONHelper.putValue(json, "desc", provider.getDescription(language));
+                    JSONHelper.putValue(result, Integer.toString(id), json);
                 });
         return result;
     }

@@ -7,8 +7,6 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
-import fi.nls.oskari.service.OskariComponentManager;
-import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.control.JSONActionRouteTest;
 import fi.nls.test.util.TestHelper;
@@ -23,16 +21,15 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-/**
- * Created by SMAKINEN on 28.8.2015.
- */
 @RunWith(PowerMockRunner.class)
 public class GetLayerCapabilitiesHandlerTest extends JSONActionRouteTest {
 
@@ -44,10 +41,6 @@ public class GetLayerCapabilitiesHandlerTest extends JSONActionRouteTest {
         assumeTrue(TestHelper.dbAvailable());
         OskariLayerService layerService = getOskariLayerService();
         PermissionService permissionsService = getPermissionsService();
-        // replace the cache service with a test service
-        OskariComponentManager.removeComponentsOfType(CapabilitiesCacheService.class);
-        OskariComponentManager.addComponent(new CapabilitiesCacheServiceMock(TEST_DATA));
-        //CapabilitiesCacheService service = OskariComponentManager.getComponentOfType(CapabilitiesCacheService.class);
         handler = new GetLayerCapabilitiesHandler();
 
         PermissionHelper helper = new PermissionHelper(layerService, permissionsService);
@@ -114,7 +107,7 @@ public class GetLayerCapabilitiesHandlerTest extends JSONActionRouteTest {
         p.setExternalType(PermissionExternalType.ROLE);
         p.setExternalId("" + getLoggedInUser().getRoles().iterator().next().getId());
         res.addPermission(p);
-        doReturn(res).when(service).findResource(ResourceType.maplayer, any(String.class));
+        doReturn(Optional.of(res)).when(service).findResource(eq(ResourceType.maplayer), any(String.class));
         return service;
     }
 
@@ -122,5 +115,4 @@ public class GetLayerCapabilitiesHandlerTest extends JSONActionRouteTest {
     public static void delete() {
         PropertyUtil.clearProperties();
     }
-
 }

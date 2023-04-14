@@ -19,6 +19,7 @@ import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.view.modifier.ViewModifier;
 import fi.nls.test.control.JSONActionRouteTest;
 import fi.nls.test.util.ResourceHelper;
+import fi.nls.test.util.TestHelper;
 import fi.nls.test.view.ViewTestHelper;
 import org.json.JSONObject;
 import org.junit.AfterClass;
@@ -61,6 +62,7 @@ public class AppSetupHandlerTest extends JSONActionRouteTest {
 
     @BeforeClass
     public static void addProperties() throws Exception {
+        TestHelper.registerTestDataSource();
         PropertyUtil.addProperty("view.template.publish", "3", true);
         PropertyUtil.addProperty("oskari.domain", "//domain.com", true);
         PropertyUtil.addProperty("oskari.map.url", "/map", true);
@@ -91,6 +93,7 @@ public class AppSetupHandlerTest extends JSONActionRouteTest {
     @AfterClass
     public static void teardown() {
         PropertyUtil.clearProperties();
+        TestHelper.teardown();
     }
 
     private void mockViewService() {

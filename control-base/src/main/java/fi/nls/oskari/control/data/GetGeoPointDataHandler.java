@@ -34,7 +34,6 @@ public class GetGeoPointDataHandler extends ActionHandler {
     private static final String PARAM_BBOX = "bbox";
     private static final String PARAM_WIDTH = "width";
     private static final String PARAM_HEIGHT = "height";
-    private static final String PARAM_STYLES = "styles";
     private static final String PARAM_ZOOM = "zoom";
     private static final String PARAM_GEOJSON = "geojson";
     private static final String PARAM_PARAMS = "params";
@@ -76,7 +75,6 @@ public class GetGeoPointDataHandler extends ActionHandler {
 			if (OskariLayer.TYPE_WMS.equals(layerType)) {
 			    final GFIRequestParams gfiParams = new GFIRequestParams();
 			    gfiParams.setBbox(params.getRequiredParam(PARAM_BBOX));
-			    gfiParams.setCurrentStyle(params.getHttpParam(PARAM_STYLES, ""));
 			    gfiParams.setHeight(params.getHttpParam(PARAM_HEIGHT));
 			    gfiParams.setLat(lat);
 			    gfiParams.setLayer(layer);

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import fi.nls.oskari.util.JSONHelper;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.xsd.Encoder;
@@ -35,6 +36,8 @@ public class OskariWFS110Client {
         boolean tryGeoJSON = OskariWFSClient.tryGeoJSON(layer);
         int maxFeatures = OskariWFSClient.getMaxFeatures(layer);
         Map<String, String> query = getQueryParams(typeName, bbox, crs, maxFeatures, filter);
+        // attach any extra params added for layer (for example properties=[prop name we are interested in])
+        query.putAll(JSONHelper.getObjectAsMap(layer.getParams()));
         return OskariWFSClient.getFeatures(endPoint, user, pass, query, crs, tryGeoJSON, OSKARI_GML);
     }
 

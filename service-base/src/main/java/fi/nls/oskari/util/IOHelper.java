@@ -42,6 +42,7 @@ public class IOHelper {
     public static final Charset DEFAULT_CHARSET_CS = StandardCharsets.UTF_8;
     public static final String CONTENTTYPE_FORM_URLENCODED = "application/x-www-form-urlencoded";
     public static final String CONTENT_TYPE_JSON = "application/json";
+    public static final String CONTENT_TYPE_GEOJSON = "application/geo+json";
     public static final String CONTENT_TYPE_XML = "application/xml";
     public static final String ENCODING_GZIP = "gzip";
     private static final Logger log = LogFactory.getLogger(IOHelper.class);
@@ -269,7 +270,7 @@ public class IOHelper {
         int read = 0;
         while ((read = in.read(buffer, 0, BUFFER_SIZE)) != -1) {
             if (sizeLimit > -1 && total + read > sizeLimit) {
-                throw new IOException("Size limit reached: " + humanReadableByteCount(sizeLimit));
+                throw new EOFException("Size limit reached: " + humanReadableByteCount(sizeLimit));
             }
             out.write(buffer, 0, read);
             total += read;
@@ -419,12 +420,26 @@ public class IOHelper {
 
             log.info("Following redirect to", location);
             HttpURLConnection newConnection = getConnection(location, user, pass, query, headers);
+            IOHelper.addIdentifierHeaders(newConnection);
             return followRedirect(newConnection, user, pass, query, headers, redirectLatch);
         } else {
             return conn;
         }
     }
 
+    public static void validateResponse(HttpURLConnection conn, String expectedContentType)
+            throws ServiceRuntimeException, IOException {
+        if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
+            throw new ServiceRuntimeException("Unexpected status code " + conn.getResponseCode());
+        }
+
+        if (expectedContentType != null) {
+            String contentType = conn.getContentType();
+            if (contentType != null && !expectedContentType.equals(contentType)) {
+                throw new ServiceRuntimeException("Unexpected content type " + contentType);
+            }
+        }
+    }
     /**
      * If logger is set to debug this method reads the input stream, prints the response as text
      * and wraps it to another input stream for further consumption.
@@ -451,6 +466,9 @@ public class IOHelper {
 
     public static String getCharset(final HttpURLConnection con, final String defaultCharset) {
         final String contentType = con.getContentType();
+        if (contentType == null) {
+            return defaultCharset;
+        }
         final String[] values = contentType.split(";");
 
         for (String value : values) {
@@ -678,8 +696,12 @@ public class IOHelper {
      * @throws IOException
      */
     public static void addIdentifierHeaders(final HttpURLConnection con) throws IOException {
-        con.setRequestProperty(HEADER_USERAGENT, getUserAgent());
-        con.setRequestProperty(HEADER_REFERER, getMyDomain());
+        try {
+            con.setRequestProperty(HEADER_USERAGENT, getUserAgent());
+            con.setRequestProperty(HEADER_REFERER, getMyDomain());
+        } catch (IllegalStateException e) {
+            log.warn("Couldn't write ident headers:", e.getMessage());
+        }
     }
 
     /**

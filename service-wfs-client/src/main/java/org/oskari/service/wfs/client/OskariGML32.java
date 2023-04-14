@@ -15,7 +15,7 @@ import org.geotools.xsd.DOMParser;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import fi.nls.oskari.util.XmlHelper;
+import org.oskari.xml.XmlHelper;
 import net.opengis.wfs20.FeatureCollectionType;
 
 public class OskariGML32 implements OskariGMLDecoder {

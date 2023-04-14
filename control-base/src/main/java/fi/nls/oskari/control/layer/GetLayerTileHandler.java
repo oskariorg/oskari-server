@@ -3,6 +3,8 @@ package fi.nls.oskari.control.layer;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 import fi.nls.oskari.annotation.OskariActionRoute;
+import fi.nls.oskari.cache.Cache;
+import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
@@ -16,6 +18,10 @@ import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import org.oskari.capabilities.CapabilitiesService;
+import org.oskari.capabilities.ogc.LayerCapabilitiesWMTS;
+import org.oskari.capabilities.ogc.wmts.ResourceUrl;
 import org.oskari.permissions.PermissionService;
 import org.oskari.service.user.LayerAccessHandler;
 import org.oskari.service.util.ServiceFactory;
@@ -44,6 +50,7 @@ public class GetLayerTileHandler extends ActionHandler {
     private static final String METRICS_PREFIX = "Oskari.GetLayerTile";
     private PermissionHelper permissionHelper;
     private Collection<LayerAccessHandler> layerAccessHandlers;
+    private Cache<String> cache_WMTS_URL;
 
     // WMTS rest layers params
     private static final String KEY_STYLE = "STYLE";
@@ -60,6 +67,7 @@ public class GetLayerTileHandler extends ActionHandler {
 
         Map<String, LayerAccessHandler> handlerComponents = OskariComponentManager.getComponentsOfType(LayerAccessHandler.class);
         this.layerAccessHandlers = handlerComponents.values();
+        cache_WMTS_URL = CacheManager.getCache(GetLayerTileHandler.class.getSimpleName() + "_WMTS_URL");
     }
 
     /**
@@ -84,7 +92,7 @@ public class GetLayerTileHandler extends ActionHandler {
         } else {
             url = getURL(params, layer);
         }
-        if (url == null || url.trim().isEmpty()) {
+        if (url == null || url.trim().isEmpty() || url.startsWith("/")) {
             // For example legend url for proxied layers can be empty
             // -> not an error really, but we don't want to go any further either
             ResponseHelper.writeError(params, "No URL configured", HttpServletResponse.SC_NOT_FOUND);
@@ -146,6 +154,7 @@ public class GetLayerTileHandler extends ActionHandler {
             // just throw it as is if we already handled it
             throw e;
         } catch (Exception e) {
+            LOG.info("Url in proxy error was:", url);
             throw new ActionParamsException("Couldn't proxy request to actual service", e.getMessage(), e);
         } finally {
             if(actionTimer != null) {
@@ -170,8 +179,8 @@ public class GetLayerTileHandler extends ActionHandler {
         final HttpServletRequest httpRequest = params.getRequest();
         if (OskariLayer.TYPE_WMTS.equalsIgnoreCase(layer.getType())) {
             // check for rest url
-            final String urlTemplate = JSONHelper.getStringFromJSON(layer.getOptions(), "urlTemplate", null);
-            if(urlTemplate != null) {
+            final String urlTemplate = getWMTSUrl(layer);
+            if (!urlTemplate.isEmpty()) {
                 LOG.debug("REST WMTS layer proxy");
                 HashMap<String, String> capsParams = new HashMap<>();
                 Enumeration<String> paramNames = httpRequest.getParameterNames();
@@ -202,6 +211,27 @@ public class GetLayerTileHandler extends ActionHandler {
         return IOHelper.constructUrl(layer.getUrl(),urlParams);
     }
 
+    private String getWMTSUrl(OskariLayer layer) {
+        String cacheKey = "" + layer.getId();
+        String resourceUrl = cache_WMTS_URL.get(cacheKey);
+        if (resourceUrl != null) {
+            // empty means we parsed and there was no resource url
+            return resourceUrl;
+        }
+        LayerCapabilitiesWMTS caps = CapabilitiesService.fromJSON(layer.getCapabilities().toString(), OskariLayer.TYPE_WMTS);
+        ResourceUrl url = caps.getResourceUrl("tile");
+        String valueToCache = "";
+        if (url != null) {
+            valueToCache = url.getTemplate();
+        }
+        if (valueToCache == null) {
+            // just in case we have something wonky going on in the capabilities
+            valueToCache = "";
+        }
+        cache_WMTS_URL.put(cacheKey, valueToCache);
+        return valueToCache;
+    }
+
     private Map<String, String> getUrlParams(HttpServletRequest httpRequest) {
         Enumeration<String> paramNames = httpRequest.getParameterNames();
         Map<String, String> urlParams = new HashMap<>();
@@ -225,30 +255,37 @@ public class GetLayerTileHandler extends ActionHandler {
         // Get overridden legends
         Map<String,String> legends = JSONHelper.getObjectAsMap(layer.getOptions().optJSONObject(KEY_LEGENDS));
         String lurl = legends.getOrDefault(KEY_GLOBAL_LEGEND, "");
-        if (styleName != null) {
-            if (legends.containsKey(styleName)) {
-                return legends.get(styleName);
-            }
-            if (!lurl.isEmpty()) {
-                // use global legend url
-                return lurl;
-            }
-            // Get Capabilities style url
-            JSONObject json = layer.getCapabilities();
-            if (json.has(CapabilitiesConstants.KEY_STYLES)) {
+        if (styleName == null) {
+            return lurl;
+        }
+        if (legends.containsKey(styleName)) {
+            // override for legend added by admin
+            return legends.get(styleName);
+        }
+        if (!lurl.isEmpty()) {
+            // use global legend url
+            return lurl;
+        }
+        // Get Capabilities style url
+        JSONObject json = layer.getCapabilities();
+        if (!json.has(CapabilitiesConstants.KEY_STYLES)) {
+            return lurl;
+        }
 
-                JSONArray styles = JSONHelper.getJSONArray(json, CapabilitiesConstants.KEY_STYLES);
-                for (int i = 0; i < styles.length(); i++) {
-                    final JSONObject style = JSONHelper.getJSONObject(styles, i);
-                    if (JSONHelper.getStringFromJSON(style, NAME, "").equals(styleName)) {
-                        return style.optString(LEGEND);
-                    }
-                }
-
+        JSONArray styles = JSONHelper.getJSONArray(json, CapabilitiesConstants.KEY_STYLES);
+        for (int i = 0; i < styles.length(); i++) {
+            final JSONObject style = JSONHelper.getJSONObject(styles, i);
+            if (!JSONHelper.getStringFromJSON(style, NAME, "").equals(styleName)) {
+                continue;
+            }
+            // found the style in question
+            if (!style.isNull(LEGEND)) {
+                // without null check optString() returns null value as string "null"
+                // if the value is missing completely it returns empty string as default value
+                return style.optString(LEGEND);
             }
         }
         return lurl;
-
     }
     /**
      * Creates connection
@@ -262,8 +299,9 @@ public class GetLayerTileHandler extends ActionHandler {
         try {
             final String username = layer.getUsername();
             final String password = layer.getPassword();
-            LOG.debug("Getting layer tile from url:", url);
-            return IOHelper.getConnection(url, username, password);
+            String urlWithExtraParams = IOHelper.constructUrl(url, JSONHelper.getObjectAsMap(layer.getParams()));
+            LOG.debug("Getting layer tile from url:", urlWithExtraParams);
+            return IOHelper.getConnection(urlWithExtraParams, username, password);
         } catch (Exception e) {
             throw new ActionException("Couldn't get connection to service", e);
         }

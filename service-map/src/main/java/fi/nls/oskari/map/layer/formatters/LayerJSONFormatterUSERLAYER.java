@@ -22,12 +22,11 @@ public class LayerJSONFormatterUSERLAYER extends LayerJSONFormatterUSERDATA {
     public JSONObject getJSON(final OskariLayer baseLayer, UserLayer ulayer, String srs, String lang) {
         final JSONObject layerJson = super.getJSON(baseLayer, ulayer, srs, lang);
         JSONHelper.putValue(layerJson, KEY_LAYER_COVERAGE, getLayerCoverageWKT(ulayer.getWkt(), srs));
-        JSONHelper.putValue(layerJson, "description", ulayer.getLayer_desc());
-        JSONHelper.putValue(layerJson, "source", ulayer.getLayer_source());
         JSONObject baseAttributes = JSONHelper.getJSONObject(layerJson, "attributes");
         JSONObject layerAttributes = parseAttributes(ulayer.getFields());
         // baseAttributes comes from baseLayer merge layer attributes
         JSONHelper.putValue(layerJson, "attributes", JSONHelper.merge(baseAttributes, layerAttributes));
+        JSONHelper.putValue(layerJson, "created", ulayer.getCreated());
         return layerJson;
     }
     // parse fields like WFSLayerAttributes

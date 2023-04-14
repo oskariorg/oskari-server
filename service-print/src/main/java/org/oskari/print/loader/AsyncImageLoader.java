@@ -8,7 +8,6 @@ import java.util.concurrent.Future;
 
 import org.oskari.print.request.PrintLayer;
 import org.oskari.print.request.PrintRequest;
-import org.oskari.print.wmts.WMTSCapabilitiesCache;
 
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.service.ServiceException;
@@ -17,7 +16,7 @@ public class AsyncImageLoader {
 
     public static final String GROUP_KEY = "LoadImageFromURL";
 
-    public static Map<Integer, Future<BufferedImage>> initLayers(PrintRequest request, WMTSCapabilitiesCache wmtsCapsCache)
+    public static Map<Integer, Future<BufferedImage>> initLayers(PrintRequest request)
             throws ServiceException {
         final Map<Integer, Future<BufferedImage>> images = new HashMap<>();
 
@@ -39,7 +38,7 @@ public class AsyncImageLoader {
                 break;
             case OskariLayer.TYPE_WMTS:
                 images.put(layer.getZIndex(), new CommandLoadImageWMTS(layer, width, height, bbox, srsName,
-                        wmtsCapsCache.get(layer), request.getResolution()).queue());
+                        request.getResolution()).queue());
                 break;
             case OskariLayer.TYPE_ARCGIS93:
                 images.put(layer.getZIndex(), new CommandLoadImageArcGISREST(layer,

@@ -16,6 +16,7 @@ public class WFSConversionHelper {
                 "byte",
                 "decimal",
                 "int",
+                "number",
                 "integer",
                 "long",
                 "negativeInteger",
@@ -38,7 +39,16 @@ public class WFSConversionHelper {
                 "MultiPointPropertyType",
                 "MultiLinePropertyType",
                 "MultiPolygonPropertyType",
-                "SurfacePropertyType"
+                "MultiLineStringPropertyType",
+                "SurfacePropertyType",
+                "MultiSurfacePropertyType",
+                // OGC API Features/GeoJSON:
+                "Point",
+                "LineString",
+                "Polygon",
+                "MultiPoint",
+                "MultiLineString",
+                "MultiPolygon"
             )
     );
     private static final Set<String> STRING_TYPES = new HashSet<>(Arrays.asList("string", "date", "time"));

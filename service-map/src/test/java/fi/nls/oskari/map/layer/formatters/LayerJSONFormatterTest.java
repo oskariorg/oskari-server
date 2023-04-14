@@ -57,23 +57,6 @@ public class LayerJSONFormatterTest {
     }
 
     @Test
-    public void getFixedDataUrl() {
-        assertNull("Null metadata returns null id", LayerJSONFormatter.getFixedDataUrl(null));
-        assertNull("Empty metadata returns null id", LayerJSONFormatter.getFixedDataUrl(""));
-        assertEquals("Non http-starting metadata returns as is", "testing", LayerJSONFormatter.getFixedDataUrl("testing"));
-        assertNull("Url without querystring returns null id", LayerJSONFormatter.getFixedDataUrl("http://mydomain.org"));
-        assertNull("Url without id|uuid returns null id", LayerJSONFormatter.getFixedDataUrl("http://mydomain.org?my=key"));
-        assertEquals("Url with id returns id value simple", "key", LayerJSONFormatter.getFixedDataUrl("http://mydomain.org?uuid=key"));
-        Map<String, String> expected = new HashMap<>();
-        expected.put("http://mydomain.org?test=test&id=key&post=test", "key");
-        expected.put("http://mydomain.org?test=test&uuid=key2&post=test", "key2");
-        expected.put("http://mydomain.org?test=test&Id=key&post=test", "key");
-        expected.put("http://mydomain.org?test=test&uuId=Key&post=test", "Key");
-        for (String url : expected.keySet()) {
-            assertEquals("Url with id returns id value", expected.get(url), LayerJSONFormatter.getFixedDataUrl(url));
-        }
-    }
-    @Test
     public void legendWMS() throws Exception {
         OskariLayer layer = initLayer(OskariLayer.TYPE_WMS);
         JSONObject layerJSON = FORMATTER.getJSON(layer, LANG, false, CRS);
@@ -91,6 +74,21 @@ public class LayerJSONFormatterTest {
         Assert.assertTrue(layerJSON.getJSONArray("styles").length() == 1);
         Assert.assertEquals("layer should have default style with global legend", GLOBAL_LEGEND, getLegend(layerJSON, ""));
 
+    }
+    @Test
+    public void legendWMTS() throws Exception {
+        OskariLayer layer = new OskariLayer();
+        layer.setType(OskariLayer.TYPE_WMTS);
+        JSONArray styles = new JSONArray("[{\"default\": true, \"legend\": null, \"name\": \"default\", \"title\": \"default\"}]");
+        JSONHelper.putValue(layer.getCapabilities(), CapabilitiesConstants.KEY_STYLES, styles);
+
+        JSONObject layerJSON = FORMATTER.getJSON(layer, LANG, true, CRS);
+        JSONArray stylesJSON = layerJSON.getJSONArray("styles");
+        Assert.assertEquals(1, stylesJSON.length());
+        JSONObject styleJSON = stylesJSON.getJSONObject(0);
+        Assert.assertEquals("Style should have name",  "default", styleJSON.getString("name"));
+        Assert.assertEquals("Style should have title",  "default", styleJSON.getString("title"));
+        Assert.assertTrue("Style shouldn't have legend url", styleJSON.getString("legend").isEmpty());
     }
     @Test
     public void proxyLegend() throws Exception {

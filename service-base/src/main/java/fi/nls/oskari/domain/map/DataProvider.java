@@ -3,7 +3,6 @@ package fi.nls.oskari.domain.map;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONObject;
 
-import java.util.Map;
 
 public class DataProvider extends JSONLocalizedName {
 
@@ -22,13 +21,11 @@ public class DataProvider extends JSONLocalizedName {
         if(id > 0) {
             JSONHelper.putValue(me, "id", id);
         }
-
-        final JSONObject names = new JSONObject();
-        for (Map.Entry<String, String> localization : getNames().entrySet()) {
-            JSONHelper.putValue(names, localization.getKey(), localization.getValue());
-        }
-        JSONHelper.putValue(me, "name", names);
-
+        JSONHelper.putValue(me, "locale", getLocale());
         return me;
+    }
+
+    public String getDescription(String language) {
+        return getLocalizedValue(language, LOCALE_DESCRIPTION);
     }
 }

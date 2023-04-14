@@ -14,6 +14,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.oskari.log.AuditLog;
+import org.oskari.user.util.UserHelper;
 
 import java.util.List;
 
@@ -29,6 +30,9 @@ public class UsersHandler extends RestActionHandler {
     private static final String PARAM_SCREENNAME = "user";
     private static final String PARAM_PASSWORD = "pass";
     private static final String PARAM_EMAIL = "email";
+    private static final String PARAM_LIMIT = "limit";
+    private static final String PARAM_OFFSET = "offset";
+    private static final String PARAM_SEARCH = "search";
 
     @Override
     public void init() {
@@ -43,6 +47,9 @@ public class UsersHandler extends RestActionHandler {
     public void handleGet(ActionParameters params) throws ActionException {
         final JSONObject response;
         long id = getId(params);
+        int limit = params.getHttpParam(PARAM_LIMIT, 0);
+        int offset = params.getHttpParam(PARAM_OFFSET, 0);
+        String search = params.getHttpParam(PARAM_SEARCH);
         try {
             if (id > -1) {
                 LOG.debug("handleGet: has id", id);
@@ -50,14 +57,18 @@ public class UsersHandler extends RestActionHandler {
                 response = user2Json(user);
             } else {
                 LOG.debug("handleGet: no id");
-                List<User> users = userService.getUsers();
-
-                LOG.debug("Found: " + users.size() + "users");
                 response = new JSONObject();
                 JSONArray arr = new JSONArray();
                 response.put("users", arr);
 
-                List<User> newUsers = userService.getUsersWithRoles();
+                List<User> newUsers = userService.getUsersWithRoles(limit, offset, search);
+
+                if (search != null && search.trim() != "") {
+                    response.put("total_count", userService.getUserSearchCount(search));
+                } else {
+                    response.put("total_count", userService.getUserCount());
+                }
+
                 for (User user : newUsers) {
                     arr.put(user2Json(user));
                 }
@@ -70,54 +81,71 @@ public class UsersHandler extends RestActionHandler {
 
     @Override
     public void handlePost(ActionParameters params) throws ActionException {
-        User user = new User();
-        getUserParams(user, params);
-        String[] roles = params.getRequest().getParameterValues("roles");
-        String password = params.getHttpParam(PARAM_PASSWORD);
-        User retUser = null;
-
-        AuditLog audit = AuditLog.user(params.getClientIp(), params.getUser())
-                .withParam("email", user.getEmail());
-
-        try {
-            if (user.getId() > -1) {
-                //retUser = userService.modifyUser(user);
-                LOG.debug("roles size: " + roles.length);
-                retUser = userService.modifyUserwithRoles(user, roles);
-                LOG.debug("done modifying user");
-                if (password != null && !"".equals(password.trim())) {
-                    userService.updateUserPassword(retUser.getScreenname(), password);
-                }
-                audit.updated(AuditLog.ResourceType.USER);
-            } else {
-                LOG.debug("NOW IN POST and creating a new user!!!!!!!!!!!!!");
-                if (password == null || password.trim().isEmpty()) {
-                    throw new ActionException("Parameter 'password' not found.");
-                }
-                retUser = userService.createUser(user);
-                userService.setUserPassword(retUser.getScreenname(), password);
-                audit.added(AuditLog.ResourceType.USER);
+        // modify existing user
+        boolean extUsers = UsersBundleHandler.isUsersFromExternalSource();
+        long userId = params.getRequiredParamLong(PARAM_ID);
+        User user;
+        String password = null;
+        if (extUsers) {
+            user = findExistingUser(userId);
+        } else {
+            user = getUserFromParams(params);
+            password = params.getRequiredParam(PARAM_PASSWORD);
+            if (!UserHelper.isPasswordOk(password)) {
+                throw new ActionParamsException("Password too weak");
             }
+        }
+        String[] roles = params.getRequest().getParameterValues("roles");
 
+        User retUser;
+        try {
+            retUser = userService.modifyUserwithRoles(user, roles);
+            LOG.debug("done modifying user");
+            if (!extUsers) {
+                userService.updateUserPassword(retUser.getScreenname(), password);
+            }
         } catch (ServiceException se) {
             throw new ActionException(se.getMessage(), se);
         }
-        JSONObject response = null;
+
+        AuditLog.user(params.getClientIp(), params.getUser())
+                .withParam("email", user.getEmail())
+                .updated(AuditLog.ResourceType.USER);
         try {
-            response = user2Json(retUser);
+            ResponseHelper.writeResponse(params, user2Json(retUser));
         } catch (JSONException je) {
             throw new ActionException(je.getMessage(), je);
         }
-        ResponseHelper.writeResponse(params, response);
+    }
+
+    private User findExistingUser(long id) throws ActionParamsException {
+        try {
+            return userService.getUser(id);
+        } catch (ServiceException e) {
+            throw new ActionParamsException("Error loading user with id: " + id);
+        }
+    }
+    private User getUserFromParams(ActionParameters params) throws ActionParamsException {
+        User user = new User();
+        getUserParams(user, params);
+        return user;
     }
 
     @Override
     public void handlePut(ActionParameters params) throws ActionException {
         LOG.debug("handlePut");
+        if (UsersBundleHandler.isUsersFromExternalSource()) {
+            throw new ActionParamsException("Users from external source, adding is disabled");
+        }
         User user = new User();
         getUserParams(user, params);
         String password = params.getRequiredParam(PARAM_PASSWORD);
         String[] roles = params.getRequest().getParameterValues("roles");
+
+        if (!UserHelper.isPasswordOk(password)) {
+            throw new ActionParamsException("Password too weak");
+        }
+
         User retUser = null;
         try {
             retUser = userService.createUser(user, roles);
@@ -140,18 +168,14 @@ public class UsersHandler extends RestActionHandler {
     @Override
     public void handleDelete(ActionParameters params) throws ActionException {
         LOG.debug("handleDelete");
-        long id = getId(params);
-        if (id > -1) {
-            try {
-                userService.deleteUser(id);
-                AuditLog.user(params.getClientIp(), params.getUser())
-                        .withParam("id", id)
-                        .deleted(AuditLog.ResourceType.USER);
-            } catch (ServiceException se) {
-                throw new ActionException(se.getMessage(), se);
-            }
-        } else {
-            throw new ActionException("Parameter 'id' not found.");
+        long id = params.getRequiredParamLong(PARAM_ID);
+        try {
+            userService.deleteUser(id);
+            AuditLog.user(params.getClientIp(), params.getUser())
+                    .withParam("id", id)
+                    .deleted(AuditLog.ResourceType.USER);
+        } catch (ServiceException se) {
+            throw new ActionException(se.getMessage(), se);
         }
     }
 

@@ -7,7 +7,7 @@ import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
-import org.jsoup.safety.Whitelist;
+import org.jsoup.safety.Safelist;
 
 import java.io.Serializable;
 import java.util.*;
@@ -227,6 +227,9 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
 		return description;
 	}
 	public void setDescription(String description) {
+		if (description == null) {
+			return;
+		}
 		
 		if (description.length() > TRUNCATE_DESCRIPTION_LENGTH) {
 			this.trunkateDescription = description.substring(0,TRUNCATE_DESCRIPTION_LENGTH-3) + "...";
@@ -305,7 +308,7 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
 			this.westBoundLongitude = null;
 		}
 	}
-	public void setWestBoundLongitude(double westBoundLongitude) {
+	public void setWestBoundLongitude(Double westBoundLongitude) {
 		this.westBoundLongitude = westBoundLongitude;
 	}
 	public Double getSouthBoundLatitude() {
@@ -322,7 +325,7 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
 			this.southBoundLatitude = null;
 		}
 	}
-	public void setSouthBoundLatitude(double southBoundLatitude) {
+	public void setSouthBoundLatitude(Double southBoundLatitude) {
 		this.southBoundLatitude = southBoundLatitude;
 	}
 	public Double getEastBoundLongitude() {
@@ -339,7 +342,7 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
 			this.eastBoundLongitude = null;
 		}
 	}
-	public void setEastBoundLongitude(double eastBoundLongitude) {
+	public void setEastBoundLongitude(Double eastBoundLongitude) {
 		this.eastBoundLongitude = eastBoundLongitude;
 	}
 	public Double getNorthBoundLatitude() {
@@ -356,7 +359,7 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
 			this.northBoundLatitude = null;
 		}
 	}
-	public void setNorthBoundLatitude(double northBoundLatitude) {
+	public void setNorthBoundLatitude(Double northBoundLatitude) {
 		this.northBoundLatitude = northBoundLatitude;
 	}
 
@@ -468,7 +471,11 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
      * @return
      */
     public JSONObject toJSON() {
-        return toJSON(getResourceId());
+        String id = getResourceId();
+        if (id == null || id.isEmpty()) {
+            id = Long.toString(System.nanoTime());
+        }
+        return toJSON(id);
     }
 
     /**
@@ -489,7 +496,7 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
 		JSONHelper.putValue(node, KEY_CHANNELID, getChannelId());
 
         String region = ConversionHelper.getString(getRegion(), "");
-		JSONHelper.putValue(node, KEY_REGION, Jsoup.clean(region, Whitelist.none()));
+		JSONHelper.putValue(node, KEY_REGION, Jsoup.clean(region, Safelist.none()));
 
         // do the bbox if we have any of the bbox values (Should have all if has any one of these)
         if(getWestBoundLongitude() != null) {

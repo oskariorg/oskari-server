@@ -4,9 +4,11 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.statistics.data.*;
+import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -90,6 +92,9 @@ public class StatisticsHelper {
         pluginIndicatorJSON.put("public", indicator.isPublic());
         pluginIndicatorJSON.put("regionsets", toJSON(layers));
         pluginIndicatorJSON.put("selectors", toJSON(selectors));
+        pluginIndicatorJSON.put("metadata", indicator.getMetadata());
+        pluginIndicatorJSON.put("created", indicator.getCreated());
+        pluginIndicatorJSON.put("updated", indicator.getUpdated());
         return pluginIndicatorJSON;
     }
 
@@ -117,12 +122,14 @@ public class StatisticsHelper {
         return stringArray;
     }
 
-    public static JSONArray toJSON(List<StatisticalIndicatorLayer> layers) throws JSONException {
-        JSONArray layersJSON = new JSONArray();
-        for (StatisticalIndicatorLayer layer: layers) {
-            layersJSON.put(layer.getOskariLayerId());
-        }
-        return layersJSON;
+    public static JSONArray toJSON(List<StatisticalIndicatorLayer> layers) {
+        return new JSONArray(layers
+                .stream()
+                .map(StatisticalIndicatorLayer::getOskariLayerId)
+                // user indicators use a dummy -1 regionset to allow the indicator to pass to frontend.
+                // remove the dummy regionset here before we pass it to frontend
+                .filter(id -> id != -1)
+                .collect(Collectors.toSet()));
     }
 
 

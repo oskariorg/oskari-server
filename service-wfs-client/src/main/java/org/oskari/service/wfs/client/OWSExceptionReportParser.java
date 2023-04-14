@@ -8,19 +8,18 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
-import fi.nls.oskari.util.XmlHelper;
+import org.oskari.xml.XmlHelper;
 
 public class OWSExceptionReportParser {
 
     public static OWSException parse(InputStream in) throws Exception {
         DocumentBuilderFactory dbf = XmlHelper.newDocumentBuilderFactory();
-        dbf.setNamespaceAware(true);
         DocumentBuilder db = dbf.newDocumentBuilder();
         Document doc = db.parse(in);
         Element root = doc.getDocumentElement();
-        if (!"ExceptionReport".equals(root.getLocalName())) {
+
+        if (!"ExceptionReport".equals(XmlHelper.getLocalName(root))) {
             throw new IllegalArgumentException("Invalid root element");
         }
 
@@ -36,12 +35,7 @@ public class OWSExceptionReportParser {
     }
 
     private static Optional<Element> getFirstChildElement(Element parent, String localName) {
-        for (Node node = parent.getFirstChild(); node != null; node = node.getNextSibling()) {
-            if (node.getNodeType() == Node.ELEMENT_NODE && localName.equals(node.getLocalName())) {
-                return Optional.of((Element) node);
-            }
-        }
-        return Optional.empty();
+        return Optional.ofNullable(XmlHelper.getFirstChild(parent, localName));
     }
 
 }

@@ -9,10 +9,6 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
-import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.util.PropertyUtil;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.oskari.permissions.PermissionService;
 import org.oskari.permissions.model.PermissionType;
 import org.oskari.permissions.model.Resource;
@@ -27,11 +23,9 @@ public abstract class AbstractLayerAdminHandler extends RestActionHandler {
     private PermissionService permissionsService;
     private UserService userService;
 
-    private String[] capabilitiesRoles;
     private Set<String> availablePermissionTypes;
 
     public void init() {
-        capabilitiesRoles = PropertyUtil.getCommaSeparatedList("actionhandler.GetWSCapabilitiesHandler.roles");
         permissionsService = OskariComponentManager.getComponentOfType(PermissionService.class);
         availablePermissionTypes = getAvailablePermissions();
         try {
@@ -39,10 +33,6 @@ public abstract class AbstractLayerAdminHandler extends RestActionHandler {
         } catch (ServiceException se) {
             log.error(se, "Unable to initialize User service!");
         }
-    }
-
-    protected PermissionService getPermissionsService() {
-        return permissionsService;
     }
 
     protected UserService getUserService() throws ServiceException {
@@ -61,14 +51,7 @@ public abstract class AbstractLayerAdminHandler extends RestActionHandler {
         return user.isAdmin() || permissionsService.findResource(ResourceType.functionality, PermissionService.GENERIC_FUNCTIONALITY)
                 .filter(r -> r.hasPermission(user, PermissionType.ADD_MAPLAYER)).isPresent();
     }
-    protected boolean userHasCapabilitiesPermission(User user) {
-        return user.hasAnyRoleIn(capabilitiesRoles) || userHasAddPermission(user);
-    }
-    protected int getRoleId(String name) throws ServiceException {
-        final Role role = getUserService().getRoleByName(name);
-        return (int) role.getId();
 
-    }
     protected Map<Role, Set<String>> getPermissionsGroupByRole (User user, OskariLayer layer) throws ServiceException {
         Map<Role, Set<String>> permissions = new HashMap<>();
         String key = Integer.toString(layer.getId());
@@ -112,29 +95,5 @@ public abstract class AbstractLayerAdminHandler extends RestActionHandler {
         availablePermissionTypes.addAll(permissionsService.getAdditionalPermissions());
         return availablePermissionTypes;
     }
-    protected JSONObject getPermissionTemplateJson (User user) {
-        try {
-            Set<Role> roles = getAvailableRoles(user);
-            Optional<Role> guestRole = getUserService().getGuestUser().getRoles().stream().findFirst();
-            long guestId = guestRole.isPresent() ? guestRole.get().getId() : -1L;
-            long adminId = user.isAdmin() ? Role.getAdminRole().getId() : -1L;
-            JSONObject permissions = new JSONObject();
-            for (Role role : roles) {
-                long id = role.getId();
-                if (id == guestId) {
-                    JSONHelper.put(permissions, role.getName(), new JSONArray(Collections.singletonList(PermissionType.VIEW_PUBLISHED)));
-                } else if (id == adminId) {
-                    JSONHelper.put(permissions, role.getName(), new JSONArray(getAvailablePermissions()));
-                } else {
-                    JSONHelper.put(permissions, role.getName(), new JSONArray());
-                }
-            }
-            return permissions;
-        }catch (ServiceException e) {
-            log.warn("Failed to create permission template", e);
-            return new JSONObject();
-        }
-    }
-
 
 }

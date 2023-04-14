@@ -1,9 +1,15 @@
 package fi.nls.oskari.control.statistics.data;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
+
 import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
 import fi.nls.oskari.util.PropertyUtil;
 
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -15,6 +21,9 @@ import java.util.*;
  *   These could be for example: "Gender": "Male", "Female", "Other", "All", or "Year": "2010", "2011", ....
  */
 public class StatisticalIndicator {
+
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_DATE_TIME;
+
     private String id;
     @JsonProperty("public")
     private boolean isPublic = true;
@@ -24,6 +33,9 @@ public class StatisticalIndicator {
     private Map<String, String> source = new HashMap<>();
     private Map<String, String> desc = new HashMap<>();
     private StatisticalIndicatorDataModel dataModel;
+    private Map<String, Object> metadata;
+    private OffsetDateTime created;
+    private OffsetDateTime updated;
 
     public void setId(String id) {
         this.id = id;
@@ -92,7 +104,7 @@ public class StatisticalIndicator {
         if(value == null || value.trim().isEmpty()) {
             // try any language
             value = map.values().stream()
-                    .filter(val -> val.trim().isEmpty())
+                    .filter(val -> !val.trim().isEmpty())
                     .findFirst()
                     .orElse(null);
         }
@@ -141,5 +153,71 @@ public class StatisticalIndicator {
     }
     public void setDescription(Map<String, String> localized) {
         desc = localized;
+    }
+
+    public void setMetadata(Map<String, Object> values) {
+        metadata = values;
+    }
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public Map<String, Object> getMetadata() {
+        return metadata;
+    }
+    public void addMetadata(String key, Object value) {
+        if (metadata == null) {
+            metadata = new HashMap<>();
+        }
+        if (value != null) {
+            metadata.put(key, value);
+        }
+    }
+
+    @JsonGetter("created")
+    public String getFormattedCreated() {
+        if (created == null) {
+            return null;
+        }
+        return created.format(FORMATTER);
+    }
+
+    public OffsetDateTime getCreated() {
+        return this.created;
+    }
+
+    @JsonSetter("created")
+    public void setCreated(String created) {
+        if (created != null) {
+            this.created = OffsetDateTime.parse(created, FORMATTER);
+        } else {
+            this.created = null;
+        }
+    }
+
+    public void setCreated(OffsetDateTime created) {
+        this.created = created;
+    }
+
+    @JsonGetter("updated")
+    public String getFormattedUpdated() {
+        if (updated == null) {
+            return null;
+        }
+        return updated.format(FORMATTER);
+    }
+
+    public OffsetDateTime getUpdated() {
+        return this.updated;
+    }
+
+    @JsonSetter("updated")
+    public void setUpdated(String updated) {
+        if (updated != null) {
+            this.updated = OffsetDateTime.parse(updated, FORMATTER);
+        } else {
+            this.updated = null;
+        }
+    }
+
+    public void setUpdated(OffsetDateTime updated) {
+        this.updated = updated;
     }
 }

@@ -109,5 +109,7 @@
     "sv": "Indikatorn visar den procentuella andelen värdperioder som avslutats under äret inom specialiserad sjukvärd för patienter som kommit som jourfall inom den specialiserade sjukvärden av alla värdperioder som avslutats inom den specialiserade sjukvärden. Som värdperioder inom specialiserad sjukvärd statistikförs värdperioderna vid sjukvärdsdistriktens sjukhus och inom specialiteter vid specialistledda hälsovärdscentraler. ",
     "en": "<p>The indicator gives the percentage of completed periods of care during the year for patients admitted to specialised health care as an emergency case of all completed periods of care in specialised health care. Periods of care in specialised health care include periods of care at hospital district hospitals and in specialities in specialist-led health centres.</p><br /> "
   },
-  "public": true
+  "public": true,
+  "created": "2022-05-18T12:00:00Z",
+  "updated": "2022-05-18T12:00:00Z"
 }

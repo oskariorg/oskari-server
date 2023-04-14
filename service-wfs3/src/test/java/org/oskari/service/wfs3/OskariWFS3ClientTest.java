@@ -1,7 +1,6 @@
 package org.oskari.service.wfs3;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -15,10 +14,11 @@ import org.geotools.referencing.CRS;
 import org.json.JSONArray;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-
-import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.operation.predicate.RectangleIntersects;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.filter.Filter;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.service.ServiceException;
@@ -28,74 +28,47 @@ public class OskariWFS3ClientTest {
 
     @Ignore("Depends on outside service, results might vary")
     @Test
-    public void testGetFeaturesHardLimit() throws ServiceException, IOException {
+    public void testGetFeaturesBbox() throws ServiceException, IOException {
         OskariLayer layer = new OskariLayer();
-        layer.setUrl("https://beta-paikkatieto.maanmittauslaitos.fi/geographic-names/wfs3/v1/");
-        layer.setName("places");
+        layer.setUrl("https://demo.ldproxy.net/daraa");
+        layer.setName("AeronauticCrv");
+
         CoordinateReferenceSystem crs = OskariWFS3Client.getCRS84();
-        Envelope envelope = new Envelope(21.35, 21.40, 61.35, 61.40);
-        ReferencedEnvelope bbox = new ReferencedEnvelope(envelope, crs);
+        ReferencedEnvelope bbox = new ReferencedEnvelope(36.425, 32.713, 36.426, 32.714, crs);
+        SimpleFeatureCollection sfc;
 
-        int limit = 10;
-        SimpleFeatureCollection sfc = OskariWFS3Client.getFeatures(layer, bbox, crs);
-        assertEquals(limit, sfc.size());
-        int i = 0;
-        try (SimpleFeatureIterator it = sfc.features()) {
-            while (it.hasNext()) {
-                i++;
-                it.next();
-            }
-        }
-        assertEquals(limit, i);
+        // This is a bit confusing 
+        // If we provide non-null Filter as the 4th parameter
+        // the bbox should be ignored -- this is similiar to WFS 1.1/2 clients where 
+        // &bbox=<...> can be used if no other filter is provided, otherwise everything
+        // has to be packed into a single &filter=<...>
 
-        limit = 1000;
-        sfc = OskariWFS3Client.getFeatures(layer, bbox, crs);
-        assertEquals(29, sfc.size());
-        i = 0;
-        try (SimpleFeatureIterator it = sfc.features()) {
-            while (it.hasNext()) {
-                i++;
-                it.next();
-            }
-        }
-        assertEquals(29, i);
+        sfc = OskariWFS3Client.getFeatures(layer, null, crs, Filter.INCLUDE);
+        assertEquals("Expect all twenty features if no bbox filter", 20, sfc.size());
+        
+        sfc = OskariWFS3Client.getFeatures(layer, bbox, crs, null);
+        assertEquals("Expect three features to hit our bbox", 3, sfc.size());
     }
 
     @Ignore("Depends on outside service, results might vary")
     @Test
-    public void testGetFeaturesHardLimitPaging() throws ServiceException, IOException {
+    public void testGetFeaturesWebMercator() throws Exception {
         OskariLayer layer = new OskariLayer();
-        layer.setUrl("https://beta-paikkatieto.maanmittauslaitos.fi/geographic-names/wfs3/v1/");
-        layer.setName("places");
-        CoordinateReferenceSystem crs = OskariWFS3Client.getCRS84();
-        int limit = OskariWFS3Client.PAGE_SIZE + 10;
-        SimpleFeatureCollection sfc = OskariWFS3Client.getFeatures(layer, null, crs);
-        assertEquals(limit, sfc.size());
-        int i = 0;
-        try (SimpleFeatureIterator it = sfc.features()) {
-            while (it.hasNext()) {
-                i++;
-                it.next();
-            }
-        }
-        assertEquals(limit, i);
-    }
+        layer.setUrl("https://demo.ldproxy.net/daraa");
+        layer.setName("AeronauticCrv");
+        layer.setCapabilities(JSONHelper.createJSONObject("crs-uri", new JSONArray(Arrays.asList("http://www.opengis.net/def/crs/EPSG/0/3857"))));
+        CoordinateReferenceSystem webmerc = CRS.decode("EPSG:3857");
 
-    @Ignore("Depends on outside service, results might vary")
-    @Test
-    public void testGetFeaturesServiceSupportingCRS_EPSG3067() throws Exception {
-        OskariLayer layer = new OskariLayer();
-        layer.setUrl("https://beta-paikkatieto.maanmittauslaitos.fi/maastotiedot/wfs3/v1/");
-        layer.setName("rakennus");
-        layer.setCapabilities(JSONHelper.createJSONObject("crs-uri", new JSONArray(Arrays.asList("http://www.opengis.net/def/crs/EPSG/0/3067"))));
-        CoordinateReferenceSystem epsg3067 = CRS.decode("EPSG:3067");
-        ReferencedEnvelope bbox = new ReferencedEnvelope(500000, 501000, 6822000, 6823000, epsg3067);
-        SimpleFeatureCollection sfc = OskariWFS3Client.getFeatures(layer, bbox, epsg3067);
-        assertFalse(sfc.isEmpty());
+        ReferencedEnvelope bbox = new ReferencedEnvelope(4054812.45, 3857271.18, 4054923.77, 3857403.49, webmerc);
+        RectangleIntersects ri = new RectangleIntersects(JTS.toGeometry(bbox));
+
+        SimpleFeatureCollection sfc = OskariWFS3Client.getFeatures(layer, bbox, webmerc, null);
+        assertEquals("Expect three features to hit our bbox", 3, sfc.size());
         try (SimpleFeatureIterator it = sfc.features()) {
             while (it.hasNext()) {
-                Geometry geometryEnvelope = ((Geometry) it.next().getDefaultGeometry()).getEnvelope();
-                assertTrue(geometryEnvelope.within(JTS.toGeometry(bbox)));
+                SimpleFeature f = it.next();
+                Geometry g = (Geometry) f.getDefaultGeometry();
+                assertTrue(ri.intersects(g));
             }
         }
     }

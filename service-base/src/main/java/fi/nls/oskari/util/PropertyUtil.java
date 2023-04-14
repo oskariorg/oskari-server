@@ -16,6 +16,8 @@ public class PropertyUtil {
     private final static Properties properties = new Properties();
     private final static ConcurrentMap<Locale, Properties> localization = new ConcurrentHashMap<Locale, Properties>();
 
+    private static final String ENV_PREFIX = "OSKARI_";
+
     // this cannot be fetched from LogFactory on init since LogFactory uses PropertyUtil -> results a ExceptionInInitializerError
     private static Logger log = new NullLogger(PropertyUtil.class.getCanonicalName());
 
@@ -190,6 +192,13 @@ public class PropertyUtil {
     }
 
     public static String get(final Locale locale, final String propertyName, final String defaultValue) {
+        // first check environment variables
+        final String envValue = getEnv(propertyName);
+        if (envValue != null) {
+            return envValue;
+        }
+
+        // not found in environment variables, check localized properties
         if (localization.containsKey(locale)) {
             final String val = localization.get(locale).getProperty(propertyName);
             if(val != null) {
@@ -208,6 +217,11 @@ public class PropertyUtil {
         }
 
         return properties.getProperty(propertyName);
+    }
+
+    private static String getEnv(final String propertyName) {
+        final String key = ENV_PREFIX + propertyName.toUpperCase().replace('.', '_');
+        return System.getenv(key);
     }
 
     public static Object getLocalizableProperty(final String key) {

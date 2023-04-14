@@ -25,7 +25,7 @@ public interface AppSetupMapper {
     @Options(useGeneratedKeys=true, keyColumn = "id", keyProperty = "id")
     void addView(View view);
 
-    @Update("UPDATE oskari_appsetup SET is_public = #{isPublic} WHERE id = #{id}")
+    @Update("UPDATE oskari_appsetup SET is_public = #{isPublic}, updated = #{updated} WHERE id = #{id}")
     void updateAccessFlag(View view);
 
     @Delete("DELETE FROM oskari_appsetup_bundles WHERE appsetup_id = #{id}")
@@ -36,7 +36,7 @@ public interface AppSetupMapper {
     @Delete("DELETE FROM oskari_appsetup WHERE creator = #{userId}")
     void deleteViewByUser(long userId);
 
-    @Update("UPDATE oskari_appsetup SET is_default = FALSE WHERE creator = #{userId} AND type = 'USER'")
+    @Update("UPDATE oskari_appsetup SET is_default = FALSE, updated = NOW() WHERE creator = #{userId} AND is_default = TRUE AND type = 'USER'")
     void resetUsersDefaultViews(long userId);
     void update(View view);
     void updateUsage(View view);

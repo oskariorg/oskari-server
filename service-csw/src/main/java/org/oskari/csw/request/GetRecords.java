@@ -18,21 +18,25 @@ public class GetRecords {
 
     private static final String CSW_VERSION = "2.0.2";
     private static final String CONSTRAINT_VERSION = "1.0.0";
+    public static final String DEFAULT_QUERY_TYPE = "summary";
 
     private GetRecords() {}
 
+    public static String createRequest(Filter filter) {
+        return createRequest(filter, DEFAULT_QUERY_TYPE);
+    }
     /**
      * Builds a GetRecords request payload for CSW-service with the given filters.
      * @param filter required
      * @return
      */
-    public static String createRequest(Filter filter) {
+    public static String createRequest(Filter filter, String queryType) {
         if (filter == null) {
             throw new ServiceRuntimeException("Filter is required");
         }
         final StringWriter writer = new StringWriter();
         XMLStreamWriter xsw = getXMLWriter(writer);
-        startDocument(xsw);
+        startDocument(xsw, queryType);
         writeRawXMLUnsafe(xsw, writer, getFilterAsString(filter));
         endDocument(xsw);
         return writer.toString();
@@ -59,7 +63,7 @@ public class GetRecords {
      <csw:Constraint version="1.1.0">
      ...
      */
-    private static void startDocument(XMLStreamWriter xsw) {
+    private static void startDocument(XMLStreamWriter xsw, String queryType) {
         try {
             xsw.writeStartDocument();
             xsw.writeStartElement("csw", "GetRecords", CSW_URI);
@@ -72,7 +76,7 @@ public class GetRecords {
             xsw.writeAttribute("service", "CSW");
             xsw.writeAttribute("version", CSW_VERSION);
 
-            xsw.writeAttribute("maxRecords", "10000");
+            xsw.writeAttribute("maxRecords", "100");
             xsw.writeAttribute("startPosition", "1");
 
             xsw.writeAttribute("resultType", "results"); // or "validate" or "hits"
@@ -89,7 +93,16 @@ public class GetRecords {
             // this might lead to complications. Just using "full" for now, it's more XML to transfer and
             // parse but it's safe.
             xsw.writeStartElement(CSW_URI, "ElementSetName");
-            xsw.writeCharacters("full");
+            // changes from full to summary for performance reasons. "brief" would be even faster but doesn't include dates
+            String type = queryType;
+            // these are the valid values
+            if (type == null) {
+                type = "summary";
+            }
+            if (!("summary".equals(type) || "brief".equals(type) || "full".equals(type))) {
+                throw new IllegalArgumentException("Type needs to be one of: summary, brief, full. Was: " + type);
+            }
+            xsw.writeCharacters(type);
             xsw.writeEndElement(); // ElementSetName
 
 

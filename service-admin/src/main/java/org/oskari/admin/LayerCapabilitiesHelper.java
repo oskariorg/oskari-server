@@ -6,45 +6,118 @@ import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.util.ViewHelper;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
-import fi.nls.oskari.service.capabilities.CapabilitiesConstants;
-import fi.nls.oskari.service.capabilities.OskariLayerCapabilitiesHelper;
-import fi.nls.oskari.wfs.WFSCapabilitiesService;
-import fi.nls.oskari.wms.WMSCapabilitiesService;
-import fi.nls.oskari.wmts.WMTSCapabilitiesService;
-import fi.nls.oskari.wmts.domain.WMTSCapabilities;
-import org.geotools.data.wfs.WFSDataStore;
+import fi.nls.oskari.util.PropertyUtil;
+import org.oskari.capabilities.CapabilitiesService;
+import org.oskari.capabilities.LayerCapabilities;
+import org.oskari.capabilities.ServiceConnectInfo;
+import org.oskari.capabilities.ogc.LayerCapabilitiesOGC;
+import org.oskari.capabilities.ogc.LayerCapabilitiesWMS;
+import org.oskari.maplayer.admin.LayerAdminJSONHelper;
+import org.oskari.maplayer.model.MapLayerStructure;
 import org.oskari.maplayer.model.ServiceCapabilitiesResult;
-import org.oskari.service.wfs3.WFS3Service;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class LayerCapabilitiesHelper {
 
     private static final List<String> OWS_SERVICES = Arrays.asList("ows", "wms", "wmts", "wfs");
-    private static WMTSCapabilitiesService wmtsCapabilities = new WMTSCapabilitiesService();
-    private static WMSCapabilitiesService wmsCapabilities = new WMSCapabilitiesService();
 
     // Hiding ugliness
     public static ServiceCapabilitiesResult getCapabilitiesResults(String url, String type, String version, String username, String password, String currentSRS) throws ServiceException {
-        ServiceCapabilitiesResult results = getCapabilitiesResultForType(url, type, version, username, password, currentSRS);
+
+        ServiceConnectInfo info = new ServiceConnectInfo(url, type, version);
+        info.setCredentials(username, password);
+        Map<String, LayerCapabilities> caps;
+        try {
+            caps = CapabilitiesService.getLayersFromService(info);
+        } catch (IOException e) {
+            throw new ServiceException ("Failed to get capabilities version: " + version + " from url: " + url, e);
+        }
+
+        Set<String> supportedSRS = getSystemCRSs();
+        List<OskariLayer> layers = caps.values().stream()
+                .map(layer -> toOskariLayer(layer, url, username, password, supportedSRS))
+                .filter(l -> l != null)
+                .collect(Collectors.toList());
+
+
+        ServiceCapabilitiesResult results = new ServiceCapabilitiesResult();
+        results.setTitle("N/A");
+        if (!layers.isEmpty()) {
+            results.setVersion(layers.get(0).getVersion());
+            results.setLayers(layers.stream()
+                    .map(l -> LayerAdminJSONHelper.toJSON(l))
+                    .collect(Collectors.toList()));
+        }
+
+        // WMS specific structure handling
+        if (OskariLayer.TYPE_WMS.equals(type)) {
+            Collection<LayerCapabilitiesWMS> list = caps.values().stream().map(l -> {
+                        if (!(l instanceof LayerCapabilitiesWMS)) {
+                            return null;
+                        }
+                        return (LayerCapabilitiesWMS) l;
+                    })
+                    .filter(l -> l != null)
+                    .collect(Collectors.toList());
+            results.setStructure(parseStructureJson(list));
+        }
+
         results.setCurrentSrs(currentSRS);
         results.setExistingLayers(getExistingLayers(url, type));
+
         return results;
     }
-    private static ServiceCapabilitiesResult getCapabilitiesResultForType(String url, String type, String version, String username, String password, String currentSRS) throws ServiceException {
-        switch (type) {
-            case OskariLayer.TYPE_WMS:
-                return wmsCapabilities.getCapabilitiesResults(url, version, username, password, getSystemCRSs());
-            case OskariLayer.TYPE_WFS:
-                return WFSCapabilitiesService.getCapabilitiesResults(url, version, username, password, getSystemCRSs());
-            case OskariLayer.TYPE_WMTS:
-                return wmtsCapabilities.getCapabilitiesResults(url, version, username, password, currentSRS, getSystemCRSs());
-            default:
-                throw new ServiceException("Couldn't determine operation based on parameters");
+
+    private static OskariLayer toOskariLayer(LayerCapabilities layer, String url, String user, String pw, Set<String> systemCRSs) {
+        final OskariLayer ml = new OskariLayer();
+        ml.setType(layer.getType());
+        ml.setUrl(url);
+        ml.setPassword(pw);
+        ml.setUsername(user);
+        ml.setName(layer.getName());
+        if (layer instanceof LayerCapabilitiesOGC) {
+            LayerCapabilitiesOGC ogcCaps = (LayerCapabilitiesOGC) layer;
+            ml.setVersion(ogcCaps.getVersion());
         }
+        if (layer instanceof LayerCapabilitiesWMS) {
+            LayerCapabilitiesWMS wmsCaps = (LayerCapabilitiesWMS) layer;
+            // Check what this comment means from previous impl: "THIS IS ON PURPOSE: min -> max, max -> min"
+            ml.setMaxScale(wmsCaps.getMaxScale());
+            ml.setMinScale(wmsCaps.getMinScale());
+        }
+        // default style for wms + wmts mostly
+        ml.setStyle(layer.getDefaultStyle());
+
+        String title = layer.getTitle();
+        if (title == null || title.isEmpty()) {
+            title = layer.getName();
+        }
+        for (String lang : PropertyUtil.getSupportedLanguages()) {
+            ml.setName(lang, title);
+        }
+        ml.setCapabilities(CapabilitiesService.toJSON(layer, systemCRSs));
+        ml.setCapabilitiesLastUpdated(new Date());
+        return ml;
+    }
+
+    private static List<MapLayerStructure> parseStructureJson(Collection<LayerCapabilitiesWMS> caps) {
+        List<MapLayerStructure> layers = caps.stream()
+                .map(l -> {
+                    if (!(l instanceof LayerCapabilitiesWMS)) {
+                        return null;
+                    }
+                    MapLayerStructure cap = new MapLayerStructure();
+                    cap.setName(l.getName());
+                    List<LayerCapabilitiesWMS> sublayers = l.getLayers();
+                    cap.setStructure(parseStructureJson(sublayers));
+                    return cap;
+                })
+                .filter(l -> l != null)
+                .collect(Collectors.toList());
+        return layers;
     }
 
     private static Map<String, List<Integer>> getExistingLayers(String url, String type) {
@@ -62,31 +135,10 @@ public class LayerCapabilitiesHelper {
     }
 
     public static void updateCapabilities(OskariLayer ml) throws ServiceException {
-        switch (ml.getType()) {
-            case OskariLayer.TYPE_WFS:
-                updateCapabilitiesWFS(ml);
-                break;
-            case OskariLayer.TYPE_WMS:
-                wmsCapabilities.updateLayerCapabilities(ml, getSystemCRSs());
-                break;
-            case OskariLayer.TYPE_WMTS:
-                WMTSCapabilities wmts = wmtsCapabilities.updateCapabilities(ml);
-                OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWMTS(wmts, ml, getSystemCRSs());
-                break;
-        }
+        CapabilitiesService.updateCapabilities(ml, getSystemCRSs());
     }
 
-    private static void updateCapabilitiesWFS(OskariLayer ml) throws ServiceException {
-        if (CapabilitiesConstants.WFS3_VERSION.equals(ml.getVersion())) {
-            WFS3Service service = WFSCapabilitiesService.getCapabilitiesOAPIF(ml.getUrl(), ml.getUsername(), ml.getPassword());
-            OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesOAPIF(service, ml, getSystemCRSs());
-        } else {
-            WFSDataStore wfs = WFSCapabilitiesService.getDataStore(ml);
-            OskariLayerCapabilitiesHelper.setPropertiesFromCapabilitiesWFS(wfs, ml, getSystemCRSs());
-        }
-    }
-
-    private static Set<String> getSystemCRSs() throws ServiceException {
+    public static Set<String> getSystemCRSs() throws ServiceException {
         return ViewHelper.getSystemCRSs(getViewService());
     }
 

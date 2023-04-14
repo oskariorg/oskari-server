@@ -1,0 +1,34 @@
+{
+  "keywords": [
+    "Cadastral Boundary"
+  ],
+  "maxScale": 20000,
+  "defaultStyle": "CP.CadastralBoundary.Default",
+  "bbox": {
+    "wkt": "POLYGON ((15.608220469655935 59.36205414098515, 15.608220469655935 70.09468368748001, 33.107629330539034 70.09468368748001, 33.107629330539034 59.36205414098515, 15.608220469655935 59.36205414098515))",
+    "minY": 59.36205414098515,
+    "minX": 15.608220469655935,
+    "srs": "EPSG:4326",
+    "maxY": 70.09468368748001,
+    "maxX": 33.107629330539034
+  },
+  "title": "Cadastral Boundary",
+  "type": "wmslayer",
+  "metadataId": "34af5151-8372-495c-a423-4f8de4bde152",
+  "queryable": false,
+  "metadataUrl": "http://www.paikkatietohakemisto.fi/geonetwork/srv/en/csw?request=GetRecordById&service=CSW&id=34af5151-8372-495c-a423-4f8de4bde152&elementSetName=full&outputSchema=http://www.isotc211.org/2005/gmd&version=2.0.2",
+  "srs": [
+    "EPSG:3067"
+  ],
+  "name": "CP.CadastralBoundary",
+  "styles": [
+    {
+      "default": false,
+      "legend": "https://fake.address/inspire-wms/CP/ows?service=WMS&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=CP.CadastralBoundary",
+      "name": "CP.CadastralBoundary.Default",
+      "title": "Cadastral Boundary Default Style"
+    }
+  ],
+  "minScale": 1,
+  "desc": "Part of the outline of a cadastral parcel. One cadastral boundary may be shared by two neighbouring cadastral parcels."
+}

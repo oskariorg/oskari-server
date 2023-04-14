@@ -79,6 +79,7 @@ public class UserLayerException extends ServiceException {
         // Error codes for frontEnd localization (error or cause)
         PARSER("parser_error"),
         NO_FILE("no_main_file"),
+        NO_NAME("no_name"),
         NO_FEATURES("no_features"),
         NO_SOURCE_EPSG("unknown_projection"),
         MULTI_MAIN("multiple_main_file"),

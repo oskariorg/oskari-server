@@ -4,7 +4,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.safety.Cleaner;
-import org.jsoup.safety.CustomWhitelist;
+import org.jsoup.safety.CustomSafelist;
 import org.jsoup.select.Elements;
 
 import java.util.Iterator;
@@ -27,7 +27,7 @@ public class HtmlDoc {
         if (doc == null) {
             return null;
         }
-        Cleaner cleaner = new Cleaner(new CustomWhitelist(functionality));
+        Cleaner cleaner = new Cleaner(new CustomSafelist(functionality));
         Document safeDoc = cleaner.clean(doc);
         Element body = safeDoc.body();
         if (body == null) {
