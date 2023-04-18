@@ -244,13 +244,14 @@ public class V2_11_2__migrate_maplayer_styles extends BaseJavaMigration  {
     }
     protected List<OskariLayer> getLayers(Connection conn) throws SQLException {
         List<OskariLayer> layers = new ArrayList();
-        final String sql = "SELECT id, style, options FROM oskari_maplayer where type in ('wfslayer','tiles3dlayer','vectortilelayer')";
+        final String sql = "SELECT id, style, type, options FROM oskari_maplayer where type in ('wfslayer','tiles3dlayer','vectortilelayer')";
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             try (ResultSet rs = statement.executeQuery()) {
                 while (rs.next()) {
                     OskariLayer layer = new OskariLayer();
                     layer.setId(rs.getInt("id"));
                     layer.setStyle(rs.getString("style"));
+                    layer.setType(rs.getString("type"));
                     layer.setOptions(JSONHelper.createJSONObject(rs.getString("options")));
                     layers.add(layer);
                 }
