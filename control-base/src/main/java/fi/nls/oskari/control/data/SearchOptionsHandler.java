@@ -54,7 +54,12 @@ public class SearchOptionsHandler extends ActionHandler {
             JSONHelper.putValue(json, "id", channel.getId());
             JSONHelper.putValue(json, "isDefault", channel.isDefaultChannel());
             JSONHelper.putValue(json, "isSuggestions", channel instanceof SearchAutocomplete);
-            JSONHelper.putValue(json, "locale", channel.getUILabels().optJSONObject(params.getLocale().getLanguage()));
+            JSONObject labels = channel.getUILabels();
+            if (labels.has(params.getLocale().getLanguage())) {
+                JSONHelper.putValue(json, "locale", channel.getUILabels().optJSONObject(params.getLocale().getLanguage()));
+            } else {
+                JSONHelper.putValue(json, "locale", channel.getUILabels().optJSONObject(PropertyUtil.getDefaultLanguage()));
+            }
             channelsJSONArray.put(json);
         }
         JSONObject response = new JSONObject();

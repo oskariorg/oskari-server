@@ -31,6 +31,7 @@ public abstract class SearchChannel extends OskariComponent implements Searchabl
     // store encountered types here to only log about possible configs for new types
     private Set<String> types = new HashSet<String>();
     private int maxCount = 100;
+    private JSONObject uiLabels = null;
 
     public String getId() {
         return getName();
@@ -69,8 +70,46 @@ public abstract class SearchChannel extends OskariComponent implements Searchabl
     }
 
     public JSONObject getUILabels() {
+        if (uiLabels != null) {
+            return uiLabels;
+        }
+        String defaultLang = PropertyUtil.getDefaultLanguage();
+        uiLabels = new JSONObject();
+        final Object labelObj = PropertyUtil.getLocalizableProperty("search.channel." + getName() + ".label", getId());
+        if (labelObj instanceof String) {
+            // single value configured
+            JSONHelper.putValue(uiLabels, defaultLang, JSONHelper.createJSONObject("name", labelObj));
+        } else if (labelObj instanceof Map) {
+            // localized values configured
+            Map<String, String> values = (Map<String, String>) labelObj;
+            values.keySet().forEach(lang ->
+                    JSONHelper.putValue(uiLabels, lang, JSONHelper.createJSONObject("name", values.get(lang))));
+        }
+        // inject descriptions
+        final Object descObj = PropertyUtil.getLocalizableProperty("search.channel." + getName() + ".desc", getId());
+        if (descObj instanceof String) {
+            // single value configured
+            JSONObject langBlock = uiLabels.optJSONObject(defaultLang);
+            if (langBlock != null) {
+                JSONHelper.putValue(langBlock, "desc", descObj);
+            }
+        } else if (descObj instanceof Map) {
+            // localized values configured
+            Map<String, String> values = (Map<String, String>) descObj;
+            values.keySet().forEach(lang -> {
+                JSONObject langBlock = uiLabels.optJSONObject(lang);
+                if (langBlock != null) {
+                    JSONHelper.putValue(langBlock, "desc", values.get(lang));
+                }
+            });
+        }
+        if (uiLabels.keys().hasNext()) {
+            return uiLabels;
+        }
+        // fallback to channel id
         JSONObject name = JSONHelper.createJSONObject("name", getId());
-        return JSONHelper.createJSONObject(PropertyUtil.getDefaultLanguage(), name);
+        JSONHelper.putValue(uiLabels, defaultLang, name);
+        return uiLabels;
     }
 
     public boolean isValidSearchTerm(SearchCriteria criteria) {
