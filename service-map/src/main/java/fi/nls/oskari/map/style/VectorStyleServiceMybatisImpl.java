@@ -2,6 +2,7 @@ package fi.nls.oskari.map.style;
 
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.db.DatasourceHelper;
+import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.style.VectorStyle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -79,10 +80,20 @@ public class VectorStyleServiceMybatisImpl extends VectorStyleService {
             throw new ServiceRuntimeException("Failed to get vector styles for layer: " + layerId, e);
         }
     }
-    public long deleteStyle(final long id) {
+    public boolean hasPermissionToAlter(final long id, final User user) {
         try (final SqlSession session = factory.openSession()) {
             final VectorStyleMapper mapper = session.getMapper(VectorStyleMapper.class);
-            return mapper.deleteStyle(id);
+            long userId = mapper.getUserId(id);
+            return user.getId() == userId;
+        } catch (Exception e) {
+            throw new ServiceRuntimeException("Failed to check vector style permission for id: " + id, e);
+        }
+    }
+    public void deleteStyle(final long id) {
+        try (final SqlSession session = factory.openSession()) {
+            final VectorStyleMapper mapper = session.getMapper(VectorStyleMapper.class);
+            mapper.deleteStyle(id);
+            session.commit();
         } catch (Exception e) {
             throw new ServiceRuntimeException("Failed to delete vector style: " + id, e);
         }
@@ -115,14 +126,15 @@ public class VectorStyleServiceMybatisImpl extends VectorStyleService {
             throw new ServiceRuntimeException("Failed to get vector styles for layer: " + layerId, e);
         }
     }
-    public long deleteAdminStyle(final long id) {
+    public void deleteAdminStyle(final long id) {
         try (final SqlSession session = factory.openSession()) {
             final VectorStyleMapper mapper = session.getMapper(VectorStyleMapper.class);
             VectorStyle found = getStyleById(id);
             if (found != null && found.getCreator() != null) {
                 throw new AccessDeniedException("Tried to delete non-admin style");
             }
-            return mapper.deleteStyle(id);
+            mapper.deleteStyle(id);
+            session.commit();
         } catch (Exception e) {
             throw new ServiceRuntimeException("Failed to delete vector style: " + id, e);
         }

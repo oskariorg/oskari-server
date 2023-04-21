@@ -2,6 +2,7 @@ package flyway.oskari;
 
 import java.sql.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.flywaydb.core.api.migration.BaseJavaMigration;
 import org.flywaydb.core.api.migration.Context;
@@ -26,38 +27,28 @@ public class V2_11_2__migrate_maplayer_styles extends BaseJavaMigration  {
     public void migrate(Context context) throws Exception {
         Logger log = LogFactory.getLogger(V2_11_2__migrate_maplayer_styles.class);
         Connection conn = context.getConnection();
-        List<StyleConfig> styles = new ArrayList();
 
-        List<OskariLayer> wfs = getLayers(conn, OskariLayer.TYPE_WFS);
-        log.info("Found: " + wfs.size() + " WFS layers to migrate");
-        for (OskariLayer layer: wfs) {
-            styles.addAll(getOskariStyleDefs(layer));
-        }
+        List<OskariLayer> layers = getLayers(conn);
+        log.info("Found: " + layers.size() + " layers to migrate");
 
-        List<OskariLayer> tiles3d = getLayers(conn, OskariLayer.TYPE_3DTILES);
-        log.info("Found: " + tiles3d.size() + " tiles 3D layers to migrate");
-        for (OskariLayer layer: tiles3d) {
-            styles.addAll(getOskariStyleDefs(layer));
-            styles.addAll(getCesiumStyleDefs(layer));
-        }
-
-        List<OskariLayer> vectortile = getLayers(conn, OskariLayer.TYPE_VECTOR_TILE);
-        log.info("Found: " + vectortile.size() + " vector tile layers to migrate");
-        for (OskariLayer layer: vectortile) {
-            styles.addAll(getOskariStyleDefs(layer));
-            styles.addAll(getMapboxStyleDefs(layer));
-        }
+        List<StyleConfig> styles = getStyleConfigs(layers);
+        log.info("Parsed: " + styles.size() + " styles from layers");
 
         // insert styles
-        log.info("Parsed: " + styles.size() + " styles from layers");
         for (StyleConfig style: styles) {
             insertStyle(conn, style);
         }
+        // update default styles
+        for (OskariLayer layer : layers) {
+            updateLayerDefaultStyle(conn, layer, styles);
+        }
+
         int count = 0;
         // update appsetup styles
         long mapfullId = getMapfullId(conn);
-        Map<Long, JSONObject> states = getAppsetupStates(conn, mapfullId);
-        for (Long appId : states.keySet()) {
+        // Use String as key
+        Map<String, JSONObject> states = getAppsetupStates(conn, mapfullId);
+        for (String appId : states.keySet()) {
             boolean update = false;
             JSONObject state = states.get(appId);
             JSONArray stateLayers = JSONHelper.getEmptyIfNull(JSONHelper.getJSONArray(state, "selectedLayers"));
@@ -74,14 +65,28 @@ public class V2_11_2__migrate_maplayer_styles extends BaseJavaMigration  {
             if (update) {
                 try {
                     count++;
-                    updateAppsetupState(conn, mapfullId, appId, state);
+                    updateAppsetupState(conn, mapfullId, Long.parseLong(appId), state);
                 } catch (SQLException e) {
                     log.error(e, "Error updating mapfull bundle state for appsetup: " + appId);
                     throw e;
                 }
             }
         }
-        log.info("Updated style id/name for: + " + count + " appsetups");
+        log.info("Updated style id/name for:", count, "appsetups");
+    }
+    protected List<StyleConfig> getStyleConfigs (List<OskariLayer> layers) {
+        List<StyleConfig> styles = new ArrayList();
+        for (OskariLayer layer: layers) {
+            String type = layer.getType();
+            styles.addAll(getOskariStyleDefs(layer));
+            if (OskariLayer.TYPE_3DTILES.equals(type)) {
+                styles.addAll(getCesiumStyleDefs(layer));
+            }
+            if (OskariLayer.TYPE_VECTOR_TILE.equals(type)){
+                styles.addAll(getMapboxStyleDefs(layer));
+            }
+        }
+        return styles;
     }
 
     protected List<StyleConfig> getOskariStyleDefs(OskariLayer layer) {
@@ -207,6 +212,25 @@ public class V2_11_2__migrate_maplayer_styles extends BaseJavaMigration  {
             statement.execute();
         }
     }
+    protected void updateLayerDefaultStyle(Connection conn, OskariLayer layer, List<StyleConfig> styles ) throws SQLException {
+        int layerId = layer.getId();
+        List<StyleConfig> layerStyles = styles.stream().filter(s -> s.layerId == layerId).collect(Collectors.toList());
+        if (!layerStyles.isEmpty()) {
+            String style = layer.getStyle() != null ? layer.getStyle() : "";
+            // select first style as default if selected not found
+            StyleConfig selected = layerStyles.stream().filter(s -> style.equals(s.name)).findFirst().orElse(layerStyles.get(0));
+            updateDefaultStyle(conn, layerId, String.valueOf(selected.id));
+        }
+
+    }
+    protected void updateDefaultStyle (Connection conn, int layerId, String styleName) throws SQLException {
+        final String sql = "UPDATE oskari_maplayer SET style=? WHERE id=?";
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setString(1, styleName);
+            statement.setInt(2, layerId);
+            statement.execute();
+        }
+    }
     protected long getMapfullId (Connection conn) throws SQLException {
         final String sql = "SELECT id from oskari_bundle WHERE name = 'mapfull'";
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
@@ -218,15 +242,16 @@ public class V2_11_2__migrate_maplayer_styles extends BaseJavaMigration  {
             }
         }
     }
-    protected List<OskariLayer> getLayers(Connection conn, String layerType) throws SQLException {
+    protected List<OskariLayer> getLayers(Connection conn) throws SQLException {
         List<OskariLayer> layers = new ArrayList();
-        final String sql = "SELECT id, options FROM oskari_maplayer where type=?";
+        final String sql = "SELECT id, style, type, options FROM oskari_maplayer where type in ('wfslayer','tiles3dlayer','vectortilelayer')";
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
-            statement.setString(1, layerType);
             try (ResultSet rs = statement.executeQuery()) {
                 while (rs.next()) {
                     OskariLayer layer = new OskariLayer();
                     layer.setId(rs.getInt("id"));
+                    layer.setStyle(rs.getString("style"));
+                    layer.setType(rs.getString("type"));
                     layer.setOptions(JSONHelper.createJSONObject(rs.getString("options")));
                     layers.add(layer);
                 }
@@ -234,8 +259,8 @@ public class V2_11_2__migrate_maplayer_styles extends BaseJavaMigration  {
         }
         return layers;
     }
-    protected Map<Long, JSONObject> getAppsetupStates(Connection conn, long mapfullId) throws SQLException {
-        Map<Long, JSONObject> states = new HashMap();
+    protected Map<String, JSONObject> getAppsetupStates(Connection conn, long mapfullId) throws SQLException {
+        Map<String, JSONObject> states = new HashMap();
         final String sql = "SELECT appsetup_id, state from oskari_appsetup_bundles where bundle_id = ?";
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setLong(1, mapfullId);
@@ -243,7 +268,7 @@ public class V2_11_2__migrate_maplayer_styles extends BaseJavaMigration  {
                 while (rs.next()) {
                     long id = rs.getLong("appsetup_id");
                     JSONObject state = JSONHelper.createJSONObject(rs.getString("state"));
-                    states.put(id, state);
+                    states.put(Long.toString(id), state);
                 }
             }
         }

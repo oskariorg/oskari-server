@@ -3,6 +3,8 @@ package fi.nls.oskari.control.layer;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 import fi.nls.oskari.annotation.OskariActionRoute;
+import fi.nls.oskari.cache.Cache;
+import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
@@ -16,6 +18,10 @@ import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import org.oskari.capabilities.CapabilitiesService;
+import org.oskari.capabilities.ogc.LayerCapabilitiesWMTS;
+import org.oskari.capabilities.ogc.wmts.ResourceUrl;
 import org.oskari.permissions.PermissionService;
 import org.oskari.service.user.LayerAccessHandler;
 import org.oskari.service.util.ServiceFactory;
@@ -44,6 +50,7 @@ public class GetLayerTileHandler extends ActionHandler {
     private static final String METRICS_PREFIX = "Oskari.GetLayerTile";
     private PermissionHelper permissionHelper;
     private Collection<LayerAccessHandler> layerAccessHandlers;
+    private Cache<String> cache_WMTS_URL;
 
     // WMTS rest layers params
     private static final String KEY_STYLE = "STYLE";
@@ -60,6 +67,7 @@ public class GetLayerTileHandler extends ActionHandler {
 
         Map<String, LayerAccessHandler> handlerComponents = OskariComponentManager.getComponentsOfType(LayerAccessHandler.class);
         this.layerAccessHandlers = handlerComponents.values();
+        cache_WMTS_URL = CacheManager.getCache(GetLayerTileHandler.class.getSimpleName() + "_WMTS_URL");
     }
 
     /**
@@ -171,9 +179,8 @@ public class GetLayerTileHandler extends ActionHandler {
         final HttpServletRequest httpRequest = params.getRequest();
         if (OskariLayer.TYPE_WMTS.equalsIgnoreCase(layer.getType())) {
             // check for rest url
-            // TODO: look at GetLayerCapabilitiesHandler and get resource url from capabilities instead
-            final String urlTemplate = JSONHelper.getStringFromJSON(layer.getOptions(), "urlTemplate", null);
-            if(urlTemplate != null) {
+            final String urlTemplate = getWMTSUrl(layer);
+            if (!urlTemplate.isEmpty()) {
                 LOG.debug("REST WMTS layer proxy");
                 HashMap<String, String> capsParams = new HashMap<>();
                 Enumeration<String> paramNames = httpRequest.getParameterNames();
@@ -202,6 +209,27 @@ public class GetLayerTileHandler extends ActionHandler {
 
         Map<String, String> urlParams = getUrlParams(httpRequest);
         return IOHelper.constructUrl(layer.getUrl(),urlParams);
+    }
+
+    private String getWMTSUrl(OskariLayer layer) {
+        String cacheKey = "" + layer.getId();
+        String resourceUrl = cache_WMTS_URL.get(cacheKey);
+        if (resourceUrl != null) {
+            // empty means we parsed and there was no resource url
+            return resourceUrl;
+        }
+        LayerCapabilitiesWMTS caps = CapabilitiesService.fromJSON(layer.getCapabilities().toString(), OskariLayer.TYPE_WMTS);
+        ResourceUrl url = caps.getResourceUrl("tile");
+        String valueToCache = "";
+        if (url != null) {
+            valueToCache = url.getTemplate();
+        }
+        if (valueToCache == null) {
+            // just in case we have something wonky going on in the capabilities
+            valueToCache = "";
+        }
+        cache_WMTS_URL.put(cacheKey, valueToCache);
+        return valueToCache;
     }
 
     private Map<String, String> getUrlParams(HttpServletRequest httpRequest) {
