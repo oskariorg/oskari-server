@@ -77,7 +77,10 @@ public class MetadataCatalogueQueryHelper {
         }
         List<Filter> queryFilters = new ArrayList<>();
         for (String field: queryFields) {
-            queryFilters.add(createLikeFilter(searchCriteria.getSearchString(), field));
+            Filter query = createLikeFilter(searchCriteria.getSearchString(), field);
+            if (query != null) {
+                queryFilters.add(query);
+            }
         }
         if (queryFilters.size() == 1) {
             list.add(queryFilters.get(0));
