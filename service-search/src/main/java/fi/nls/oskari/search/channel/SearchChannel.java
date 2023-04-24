@@ -86,7 +86,7 @@ public abstract class SearchChannel extends OskariComponent implements Searchabl
                     JSONHelper.putValue(uiLabels, lang, JSONHelper.createJSONObject("name", values.get(lang))));
         }
         // inject descriptions
-        final Object descObj = PropertyUtil.getLocalizableProperty("search.channel." + getName() + ".desc", getId());
+        final Object descObj = PropertyUtil.getLocalizableProperty("search.channel." + getName() + ".desc");
         if (descObj instanceof String) {
             // single value configured
             JSONObject langBlock = uiLabels.optJSONObject(defaultLang);
