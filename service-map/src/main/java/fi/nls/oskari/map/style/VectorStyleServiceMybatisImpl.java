@@ -105,7 +105,9 @@ public class VectorStyleServiceMybatisImpl extends VectorStyleService {
                 throw new IllegalArgumentException("Tried to add vector style without layerId");
             }
             final VectorStyleMapper mapper = session.getMapper(VectorStyleMapper.class);
-            return mapper.saveStyle(style);
+            mapper.saveStyle(style);
+            session.commit();
+            return style.getId();
         } catch (Exception e) {
             throw new ServiceRuntimeException("Failed to save vector style", e);
         }
@@ -113,7 +115,9 @@ public class VectorStyleServiceMybatisImpl extends VectorStyleService {
     public long updateStyle(final VectorStyle style) {
         try (final SqlSession session = factory.openSession()) {
             final VectorStyleMapper mapper = session.getMapper(VectorStyleMapper.class);
-            return mapper.updateStyle(style);
+            mapper.updateStyle(style);
+            session.commit();
+            return style.getId();
         } catch (Exception e) {
             throw new ServiceRuntimeException("Failed to update vector style", e);
         }
@@ -150,7 +154,9 @@ public class VectorStyleServiceMybatisImpl extends VectorStyleService {
                 style.setCreator(null);
             }
             final VectorStyleMapper mapper = session.getMapper(VectorStyleMapper.class);
-            return mapper.saveStyle(style);
+            mapper.saveStyle(style);
+            session.commit();
+            return style.getId();
         } catch (Exception e) {
             throw new ServiceRuntimeException("Failed to save vector style", e);
         }
@@ -162,7 +168,9 @@ public class VectorStyleServiceMybatisImpl extends VectorStyleService {
                 style.setCreator(null);
             }
             final VectorStyleMapper mapper = session.getMapper(VectorStyleMapper.class);
-            return mapper.updateStyle(style);
+            mapper.updateStyle(style);
+            session.commit();
+            return style.getId();
         } catch (Exception e) {
             throw new ServiceRuntimeException("Failed to update vector style", e);
         }

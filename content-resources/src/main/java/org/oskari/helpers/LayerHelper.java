@@ -2,11 +2,14 @@ package org.oskari.helpers;
 
 import fi.nls.oskari.domain.map.MaplayerGroup;
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.domain.map.style.VectorStyle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatter;
+import fi.nls.oskari.map.style.VectorStyleHelper;
+import fi.nls.oskari.map.style.VectorStyleService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.IOHelper;
@@ -59,11 +62,23 @@ public class LayerHelper {
                                 "might work slower than normal with capabilities/tilegrids not cached. Try caching the capabilities later using the admin UI.");
                     }
                 }
-
             }
             // insert to db
             int id = layerService.insert(oskariLayer);
             MapLayerPermissionsHelper.setLayerPermissions(id, layer.getRole_permissions());
+
+            // insert styles if available
+            List<VectorStyle> styles = layer.getVectorStyles();
+            if (VectorStyleHelper.isVectorLayer(oskariLayer) && styles != null && !styles.isEmpty()) {
+                VectorStyleService vss = OskariComponentManager.getComponentOfType(VectorStyleService.class);
+                styles.forEach(style -> {
+                    style.setLayerId(id);
+                    vss.saveAdminStyle(style);
+                });
+                // update default style for layer
+                oskariLayer.setStyle("" + styles.get(0).getId());
+                layerService.update(oskariLayer);
+            }
 
             if (layer.getGroups() != null) {
                 List<MaplayerGroup> groups = MapLayerGroupsHelper.findGroupsForNames_dangerzone_(layer.getGroups());

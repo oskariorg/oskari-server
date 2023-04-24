@@ -39,20 +39,18 @@ public interface VectorStyleMapper {
     @Delete("DELETE FROM oskari_maplayer_style WHERE id = #{id}")
     void deleteStyle(long id);
 
-    @Select("INSERT INTO oskari_maplayer_style"
+    @Insert("INSERT INTO oskari_maplayer_style"
             + " (layer_id, type, creator, name, style) VALUES"
-            + " (#{layerId}, #{type}, #{creator}, #{name}, #{style})"
-            + " RETURNING id")
-    @Options(flushCache = Options.FlushCachePolicy.TRUE)
-    long saveStyle(final VectorStyle style);
+            + " (#{layerId}, #{type}, #{creator}, #{name}, #{style})")
+    @Options(useGeneratedKeys = true, keyProperty = "id", flushCache = Options.FlushCachePolicy.TRUE)
+    void saveStyle(final VectorStyle style);
 
-    @Select("UPDATE oskari_maplayer_style"
+    @Update("UPDATE oskari_maplayer_style"
             + " SET updated = #{updated},"
             + " name = #{name}, style = #{style}"
-            + " WHERE id = #{id}"
-            + " RETURNING id")
-    @Options(flushCache = Options.FlushCachePolicy.TRUE)
-    long updateStyle(final VectorStyle style);
+            + " WHERE id = #{id}")
+    @Options(useGeneratedKeys = true, keyProperty = "id", flushCache = Options.FlushCachePolicy.TRUE)
+    void updateStyle(final VectorStyle style);
 
     @Select("SELECT creator FROM oskari_maplayer_style WHERE id = #{id}")
     long getUserId(@Param("id") long id);
