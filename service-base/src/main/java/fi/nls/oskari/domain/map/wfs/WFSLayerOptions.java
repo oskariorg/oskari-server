@@ -8,6 +8,7 @@ import org.json.JSONObject;
  *     "renderMode": "vector",
  *     "clusteringDistance": 10,
  *     "labelProperty": "name",
+ *     // only for UserData layers
  *     "styles": {
  *          "default": {
  *              "featureStyle": {
@@ -68,10 +69,12 @@ public class WFSLayerOptions {
         JSONObject styles = JSONHelper.getJSONObject(options, KEY_STYLES);
         if (styles == null) {
             styles = new JSONObject();
+            JSONHelper.putValue(options, KEY_STYLES, styles);
         }
         JSONObject defaultStyle = JSONHelper.getJSONObject(styles, KEY_DEFAULT_STYLE);
         if (defaultStyle == null) {
             defaultStyle = new JSONObject();
+            JSONHelper.putValue(styles, KEY_DEFAULT_STYLE, defaultStyle);
         }
         JSONHelper.putValue(defaultStyle, KEY_FEATURE_STYLE, style);
     }
@@ -81,7 +84,7 @@ public class WFSLayerOptions {
         JSONObject featureStyle =  JSONHelper.getJSONObject(defaultStyle, KEY_FEATURE_STYLE);
         if (featureStyle == null) {
             // all UserDataLayer should have one 'default' named style with featureStyle definitions
-            return new JSONObject();
+            return getDefaultOskariStyle();
         }
         return featureStyle;
     }
