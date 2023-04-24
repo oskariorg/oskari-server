@@ -15,13 +15,13 @@ import java.sql.ResultSet;
  * This removes styles from oskari_maplayer.options column for vector layers
  * Styles were migrated to new table by 2.11.2
  */
-public class V2_11_3__remove_vector_styles_from_options extends BaseJavaMigration {
+public class V2_11_4__remove_vector_styles_from_options extends BaseJavaMigration {
     private static final String KEY_OSKARI = "styles";
     private static final String KEY_EXTERNAL = "externalStyles";
 
     @Override
     public void migrate(Context context) throws Exception {
-        Logger log = LogFactory.getLogger(V2_11_3__remove_vector_styles_from_options.class);
+        Logger log = LogFactory.getLogger(V2_11_4__remove_vector_styles_from_options.class);
         Connection connection = context.getConnection();
         String select = "SELECT id, options FROM oskari_maplayer WHERE type IN ('wfslayer','tiles3dlayer','vectortilelayer')";
         String update = "UPDATE oskari_maplayer SET options=? WHERE id=?";
