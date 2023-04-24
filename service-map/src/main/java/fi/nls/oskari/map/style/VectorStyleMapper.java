@@ -41,18 +41,16 @@ public interface VectorStyleMapper {
 
     @Select("INSERT INTO oskari_maplayer_style"
             + " (layer_id, type, creator, name, style) VALUES"
-            + " (#{layerId}, #{type}, #{creator}, #{name}, #{style})"
-            + " RETURNING id")
+            + " (#{layerId}, #{type}, #{creator}, #{name}, #{style})")
     @Options(flushCache = Options.FlushCachePolicy.TRUE)
-    long saveStyle(final VectorStyle style);
+    void saveStyle(final VectorStyle style);
 
     @Select("UPDATE oskari_maplayer_style"
             + " SET updated = #{updated},"
             + " name = #{name}, style = #{style}"
-            + " WHERE id = #{id}"
-            + " RETURNING id")
+            + " WHERE id = #{id}")
     @Options(flushCache = Options.FlushCachePolicy.TRUE)
-    long updateStyle(final VectorStyle style);
+    void updateStyle(final VectorStyle style);
 
     @Select("SELECT creator FROM oskari_maplayer_style WHERE id = #{id}")
     long getUserId(@Param("id") long id);
