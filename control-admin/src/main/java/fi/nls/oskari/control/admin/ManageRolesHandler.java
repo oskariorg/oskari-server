@@ -107,7 +107,13 @@ public class ManageRolesHandler extends RestActionHandler {
 
         final JSONObject response = new JSONObject();
         JSONHelper.put(response, "rolelist", roleValues);
-        
+
+        final JSONArray systemRoles = new JSONArray();
+        systemRoles.put(JSONHelper.createJSONObject("anonymous", "Guest"));
+        systemRoles.put(JSONHelper.createJSONObject("user", Role.getDefaultUserRole().getName()));
+        systemRoles.put(JSONHelper.createJSONObject("admin", Role.getAdminRole().getName()));
+        JSONHelper.put(response, "systemRoles", systemRoles);
+
         return response;
     }
     
