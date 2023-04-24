@@ -106,6 +106,7 @@ public class VectorStyleServiceMybatisImpl extends VectorStyleService {
             }
             final VectorStyleMapper mapper = session.getMapper(VectorStyleMapper.class);
             mapper.saveStyle(style);
+            session.commit();
             return style.getId();
         } catch (Exception e) {
             throw new ServiceRuntimeException("Failed to save vector style", e);
@@ -115,6 +116,7 @@ public class VectorStyleServiceMybatisImpl extends VectorStyleService {
         try (final SqlSession session = factory.openSession()) {
             final VectorStyleMapper mapper = session.getMapper(VectorStyleMapper.class);
             mapper.updateStyle(style);
+            session.commit();
             return style.getId();
         } catch (Exception e) {
             throw new ServiceRuntimeException("Failed to update vector style", e);
@@ -153,6 +155,7 @@ public class VectorStyleServiceMybatisImpl extends VectorStyleService {
             }
             final VectorStyleMapper mapper = session.getMapper(VectorStyleMapper.class);
             mapper.saveStyle(style);
+            session.commit();
             return style.getId();
         } catch (Exception e) {
             throw new ServiceRuntimeException("Failed to save vector style", e);
@@ -166,6 +169,7 @@ public class VectorStyleServiceMybatisImpl extends VectorStyleService {
             }
             final VectorStyleMapper mapper = session.getMapper(VectorStyleMapper.class);
             mapper.updateStyle(style);
+            session.commit();
             return style.getId();
         } catch (Exception e) {
             throw new ServiceRuntimeException("Failed to update vector style", e);
