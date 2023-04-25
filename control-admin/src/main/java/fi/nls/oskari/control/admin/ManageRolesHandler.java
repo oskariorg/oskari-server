@@ -100,7 +100,7 @@ public class ManageRolesHandler extends RestActionHandler {
 
         final JSONArray roleValues = new JSONArray();
         if (roles != null) {
-            for(Role role : roles){
+            for (Role role : roles) {
                 roleValues.put(role2Json(role));
             }
         }
@@ -108,11 +108,11 @@ public class ManageRolesHandler extends RestActionHandler {
         final JSONObject response = new JSONObject();
         JSONHelper.put(response, "rolelist", roleValues);
 
-        final JSONArray systemRoles = new JSONArray();
-        systemRoles.put(JSONHelper.createJSONObject("anonymous", "Guest"));
-        systemRoles.put(JSONHelper.createJSONObject("user", Role.getDefaultUserRole().getName()));
-        systemRoles.put(JSONHelper.createJSONObject("admin", Role.getAdminRole().getName()));
-        JSONHelper.put(response, "systemRoles", systemRoles);
+        final JSONObject systemRoles = new JSONObject();
+        JSONHelper.putValue(systemRoles, "anonymous", "Guest");
+        JSONHelper.putValue(systemRoles, "user", Role.getDefaultUserRole().getName());
+        JSONHelper.putValue(systemRoles, "admin", Role.getAdminRole().getName());
+        JSONHelper.putValue(response, "systemRoles", systemRoles);
 
         return response;
     }
