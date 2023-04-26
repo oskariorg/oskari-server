@@ -106,6 +106,22 @@ public class MybatisRoleService extends OskariComponent {
         return role.getId();
     }
 
+    public long update(long id, String name) {
+        final SqlSession session = factory.openSession();
+        try {
+            log.debug("Updating role: ", id);
+            final RolesMapper mapper = session.getMapper(RolesMapper.class);
+            mapper.update(id, name);
+            session.commit();
+            log.debug("Updated role: ", id);
+        } catch (Exception e) {
+            log.warn(e, "Exception when trying to update role: ", id);
+        } finally {
+            session.close();
+        }
+        return id;
+    }
+
     public List<Role> findByUserName(String username) {
         if(username == null) {
             return Collections.emptyList();

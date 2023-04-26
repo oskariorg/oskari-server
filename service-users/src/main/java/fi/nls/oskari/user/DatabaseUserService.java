@@ -308,6 +308,16 @@ public class DatabaseUserService extends UserService {
         return null;
     }
 
+    @Override
+    public Role updateRole(long id, String name) throws ServiceException {
+        log.debug("updateRole");
+        roleService.update(id, name);
+        Role role = new Role();
+        role.setId(id);
+        role.setName(name);
+        return role;
+    }
+
     private Set<Role> ensureRolesInDB(final Set<Role> userRoles) throws ServiceException {
         final Role[] systemRoles = getRoles();
         final Set<Role> rolesToInsert = new HashSet<>(userRoles.size());

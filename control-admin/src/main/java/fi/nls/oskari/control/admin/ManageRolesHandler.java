@@ -58,10 +58,16 @@ public class ManageRolesHandler extends RestActionHandler {
     public void handlePut(ActionParameters params) throws ActionException {
 
         final String roleName = params.getRequiredParam(ROLE_NAME);
+        final long id = params.getHttpParam(ROLE_ID, 0);
         log.debug("Inserting role with name:", roleName);
 
         try {
-            final Role role =  userService.insertRole(roleName);
+            Role role;
+            if (id > 0) {
+                role = userService.updateRole(id, roleName);
+            } else {
+                role = userService.insertRole(roleName);
+            }
             AuditLog.user(params.getClientIp(), params.getUser())
                     .withParam("id", role.getId())
                     .withParam("name", role.getName())
