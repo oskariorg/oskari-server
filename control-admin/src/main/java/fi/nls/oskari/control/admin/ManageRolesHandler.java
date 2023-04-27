@@ -63,16 +63,20 @@ public class ManageRolesHandler extends RestActionHandler {
 
         try {
             Role role;
+            AuditLog audit = AuditLog.user(params.getClientIp(), params.getUser());
             if (id > 0) {
                 role = userService.updateRole(id, roleName);
+                audit.withParam("id", role.getId())
+                    .withParam("name", role.getName())
+                    .withMsg("Role")
+                    .updated(AuditLog.ResourceType.USER);
             } else {
                 role = userService.insertRole(roleName);
-            }
-            AuditLog.user(params.getClientIp(), params.getUser())
-                    .withParam("id", role.getId())
+                audit.withParam("id", role.getId())
                     .withParam("name", role.getName())
                     .withMsg("Role")
                     .added(AuditLog.ResourceType.USER);
+            }
             ResponseHelper.writeResponse(params, role2Json(role));
         } catch (Exception se) {
             throw new ActionException(se.getMessage(), se);
