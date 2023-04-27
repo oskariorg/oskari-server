@@ -90,10 +90,7 @@ public class UsersHandler extends RestActionHandler {
             user = findExistingUser(userId);
         } else {
             user = getUserFromParams(params);
-            password = params.getRequiredParam(PARAM_PASSWORD);
-            if (!UserHelper.isPasswordOk(password)) {
-                throw new ActionParamsException("Password too weak");
-            }
+            password = params.getHttpParam(PARAM_PASSWORD);
         }
         String[] roles = params.getRequest().getParameterValues("roles");
 
@@ -102,7 +99,12 @@ public class UsersHandler extends RestActionHandler {
             retUser = userService.modifyUserwithRoles(user, roles);
             LOG.debug("done modifying user");
             if (!extUsers) {
-                userService.updateUserPassword(retUser.getScreenname(), password);
+                if (password != null && !password.trim().isEmpty()) {
+                    if (!UserHelper.isPasswordOk(password)) {
+                        throw new ActionParamsException("Password too weak");
+                    }
+                    userService.updateUserPassword(retUser.getScreenname(), password);
+                }
             }
         } catch (ServiceException se) {
             throw new ActionException(se.getMessage(), se);
