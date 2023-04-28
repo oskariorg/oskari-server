@@ -4,6 +4,7 @@ import java.util.List;
 
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.style.VectorStyle;
+import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.OskariComponent;
@@ -31,7 +32,7 @@ public abstract class VectorStyleService extends OskariComponent  {
         VectorStyle defaultStyle = getDefaultStyle();
         if (defaultStyle == null) {
             log.error("Can't find default vector style");
-            return new JSONObject();
+            return WFSLayerOptions.getDefaultOskariStyle();
         }
         return JSONHelper.getJSONObject(defaultStyle.getStyle(), KEY_FEATURE_STYLE);
     }
