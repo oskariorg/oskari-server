@@ -13,8 +13,6 @@ public class LayerJSONFormatterVectorTile extends LayerJSONFormatter {
     @Override
     public JSONObject getJSON(OskariLayer layer, String lang, boolean isSecure, String crs) {
         JSONObject layerJson = getBaseJSON(layer, lang, isSecure, crs);
-        // This is temporal solution to add styles to options
-        addVectorStylesToOptions(layer.getId(), layerJson);
         return layerJson;
     }
 
