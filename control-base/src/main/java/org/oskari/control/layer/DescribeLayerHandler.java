@@ -15,6 +15,7 @@ import fi.nls.oskari.map.style.VectorStyleHelper;
 import fi.nls.oskari.map.style.VectorStyleService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceRuntimeException;
+import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONObject;
@@ -25,6 +26,7 @@ import org.oskari.control.layer.model.LayerExtendedOutput;
 import org.oskari.control.layer.model.LayerOutput;
 import org.oskari.permissions.PermissionService;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -107,17 +109,30 @@ public class DescribeLayerHandler extends RestActionHandler {
         final long userId = params.getUser().getId();
         List<VectorStyle> styles = service.getStyles(userId, layerId);
         // link params or published map could have selected style which is created by another user
-        long styleId = params.getHttpParam("styleId", -1L);
-        boolean isPresent = styles.stream().filter(s -> s.getId() == styleId).findFirst().isPresent();
-        if (styleId == -1L || isPresent) {
+        String styleIdList = params.getHttpParam("styleId");
+        if (styleIdList == null || styleIdList.isEmpty()) {
             return styles;
         }
-        VectorStyle selected = service.getStyleById(styleId);
-        if (selected == null) {
-            LOG.info("Requested selected style with id:", styleId, "which doesn't exist");
-        } else {
-            styles.add(selected);
-        }
+        // attach any styles that were specifically requested by the frontend
+        Arrays.stream(styleIdList.split(","))
+                .forEach(style -> {
+            int styleId = ConversionHelper.getInt(style, -1);
+            if (styleId == -1) {
+                // not a number, we only care about numbers as other styles are not saved in vector styles
+                return;
+            }
+            boolean isPresent = styles.stream().filter(s -> s.getId() == styleId).findFirst().isPresent();
+            if (isPresent) {
+                // already referenced in styles -> don't need to add it again
+                return;
+            }
+            VectorStyle selected = service.getStyleById(styleId);
+            if (selected == null) {
+                LOG.info("Requested selected style with id:", styleId, "which doesn't exist");
+            } else {
+                styles.add(selected);
+            }
+        });
         return styles;
     }
 
