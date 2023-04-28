@@ -78,7 +78,7 @@ public abstract class MyPlacesService extends OskariComponent {
         category.setDefault(true);
         category.setLocale(new JSONObject());
         VectorStyleService vss = OskariComponentManager.getComponentOfType(VectorStyleService.class);
-        //category.getWFSLayerOptions().setDefaultFeatureStyle(vss.getDefaultFeatureStyle());
+        category.getWFSLayerOptions().setDefaultFeatureStyle(vss.getDefaultFeatureStyle());
         return category;
     }
 
