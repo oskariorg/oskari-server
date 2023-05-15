@@ -65,6 +65,8 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
             mapper.insertUserLayer(userLayer);
             session.flushStatements();
             long userLayerId = userLayer.getId();
+            final UserLayer inserted = mapper.findUserLayer(userLayerId);
+            userLayer.setCreated(inserted.getCreated());
             log.debug("got layer id", userLayerId);
 
             for (UserLayerData userLayerData : userLayerDataList) {
