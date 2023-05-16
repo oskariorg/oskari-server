@@ -92,6 +92,9 @@ public class LayerCapabilitiesWMS extends LayerCapabilitiesOGC {
 
     public void setMaxScale(Double maxScale) {
         this.maxScale = maxScale;
+        if (this.maxScale == 0) {
+            this.maxScale = -1d;
+        }
     }
 
     public Double getMinScale() {
@@ -107,6 +110,9 @@ public class LayerCapabilitiesWMS extends LayerCapabilitiesOGC {
 
     public void setMinScale(Double minScale) {
         this.minScale = minScale;
+        if (this.minScale == 0) {
+            this.minScale = -1d;
+        }
     }
 
     public String getParent() {
