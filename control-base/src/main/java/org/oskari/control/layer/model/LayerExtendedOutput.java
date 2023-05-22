@@ -10,4 +10,6 @@ public class LayerExtendedOutput extends LayerOutput {
     public String coverage;
     public List<VectorStyle> styles;
     public Map<String, Object> capabilities;
+
+    public List<FeatureProperties> properties;
 }
