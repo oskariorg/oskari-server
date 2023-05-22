@@ -174,7 +174,9 @@ public class AppSetupServiceMybatisImpl extends ViewService {
         try (final SqlSession session = factory.openSession()) {
             final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
             View view = mapper.getViewWithConfByUuId(uuId);
-            view.setBundles(mapper.getBundlesByViewId(view.getId()));
+            if (view != null) {
+                view.setBundles(mapper.getBundlesByViewId(view.getId()));
+            }
             return view;
         } catch (Exception e) {
             LOG.warn(e, "Exception while getting view with config by uuid: " + uuId);
