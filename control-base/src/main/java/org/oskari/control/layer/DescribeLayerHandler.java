@@ -36,6 +36,7 @@ import java.util.Map;
 
 import static fi.nls.oskari.control.ActionConstants.PARAM_ID;
 import static fi.nls.oskari.control.ActionConstants.PARAM_SRS;
+import static fi.nls.oskari.domain.map.OskariLayer.TYPE_WFS;
 
 /**
  * An action route that returns metadata for layers
@@ -110,6 +111,9 @@ public class DescribeLayerHandler extends RestActionHandler {
     }
 
     private List<FeatureProperties> getProperties(OskariLayer layer, String lang) {
+        if (!OskariLayer.TYPE_WFS.equals(layer.getType())) {
+            return null;
+        }
         LayerCapabilitiesWFS caps = CapabilitiesService.fromJSON(layer.getCapabilities().toString(), layer.getType());
         List<FeatureProperties> props = new ArrayList<>();
 
