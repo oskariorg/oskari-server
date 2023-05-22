@@ -66,7 +66,7 @@ public class MapController {
 
     @RequestMapping("/")
     public String getMap(Model model, @OskariParam ActionParameters params) {
-        if(paramHandlers.isEmpty()) {
+        if (paramHandlers.isEmpty()) {
             // check control params to pass for getappsetup
             // setup on first call to allow more flexibility regarding timing issues
             paramHandlers.addAll(ParamControl.getHandlerKeys());
@@ -77,7 +77,7 @@ public class MapController {
 
         // JSP
         final String viewJSP = setupRenderParameters(params, model);
-        if(viewJSP == null) {
+        if (viewJSP == null) {
             // view not found
             log.debug("View not found, going to error/404");
             params.getResponse().setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -243,6 +243,9 @@ public class MapController {
 
         log.debug("Using id to fetch a view:", viewId);
         View view = viewService.getViewWithConf(viewId);
+        if (view == null) {
+            return null;
+        }
         if(!isDefault && view.isOnlyForUuId()) {
             log.warn("View can only be loaded by uuid. ViewId:", viewId);
             return null;
