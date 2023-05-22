@@ -3,6 +3,7 @@ package fi.nls.oskari;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.view.GetAppSetupHandler;
 import fi.nls.oskari.control.view.modifier.param.ParamControl;
+import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
 import fi.nls.oskari.log.LogFactory;
@@ -79,6 +80,7 @@ public class MapController {
         if(viewJSP == null) {
             // view not found
             log.debug("View not found, going to error/404");
+            params.getResponse().setStatus(HttpServletResponse.SC_NOT_FOUND);
             return "error/404";
         }
 
@@ -129,7 +131,6 @@ public class MapController {
             }
         }
     }
-
     /**
      * Sets up request attributes expected by JSP to link correct Oskari application based on view
      * and construct configuration elements for GetAppSetup action route.
@@ -156,10 +157,11 @@ public class MapController {
 
         log.debug("Loading view with id:", viewId);
 
-        final View view = getView(uuId, viewId, useDefault);
+        final View view = checkAccess(
+                getView(uuId, viewId, useDefault),
+                params.getUser());
         if (view == null) {
             log.debug("no such view");
-            ResponseHelper.writeError(params, "No such view (id:" + viewId + ")");
             return null;
         }
 
@@ -248,6 +250,17 @@ public class MapController {
         return view;
     }
 
+    private View checkAccess(View view, User user) {
+        if (view == null) {
+            return null;
+        }
+        boolean canAccess = view.isPublic() || view.getCreator() == user.getId();
+        if (canAccess) {
+            return view;
+        }
+        log.info("Tried accessing private view. User:", user.getId(), "view:", view.getUuid());
+        return null;
+    }
     /**
      * Checks all viewmodifiers registered in the system that are handling parameters
      * and constructs a controlParams JSON to be passed on to GetAppSetup action route.
