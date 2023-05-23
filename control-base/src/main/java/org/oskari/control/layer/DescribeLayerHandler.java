@@ -18,20 +18,25 @@ import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
+import fi.nls.oskari.util.WFSConversionHelper;
 import org.json.JSONObject;
 import org.oskari.capabilities.CapabilitiesService;
+import org.oskari.capabilities.ogc.LayerCapabilitiesWFS;
 import org.oskari.capabilities.ogc.LayerCapabilitiesWMTS;
 import org.oskari.capabilities.ogc.wmts.TileMatrixLink;
+import org.oskari.control.layer.model.FeatureProperties;
 import org.oskari.control.layer.model.LayerExtendedOutput;
 import org.oskari.control.layer.model.LayerOutput;
 import org.oskari.permissions.PermissionService;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import static fi.nls.oskari.control.ActionConstants.PARAM_ID;
 import static fi.nls.oskari.control.ActionConstants.PARAM_SRS;
+import static fi.nls.oskari.domain.map.OskariLayer.TYPE_WFS;
 
 /**
  * An action route that returns metadata for layers
@@ -97,11 +102,53 @@ public class DescribeLayerHandler extends RestActionHandler {
         }
         if (VectorStyleHelper.isVectorLayer(layer)) {
             output.styles = getVectorStyles(params, layerId);
+            output.properties = getProperties(layer, lang);
         }
         if (OskariLayer.TYPE_WMTS.equals(layer.getType())) {
             output.capabilities = getCapabilitiesJSON(layer, crs);
         }
         return output;
+    }
+
+    private List<FeatureProperties> getProperties(OskariLayer layer, String lang) {
+        if (!OskariLayer.TYPE_WFS.equals(layer.getType())) {
+            return null;
+        }
+        LayerCapabilitiesWFS caps = CapabilitiesService.fromJSON(layer.getCapabilities().toString(), layer.getType());
+        List<FeatureProperties> props = new ArrayList<>();
+
+        JSONObject locale = getPropertiesLocale(layer);
+        caps.getFeatureProperties().stream().forEach(prop -> {
+            FeatureProperties p = new FeatureProperties();
+            p.name = prop.name;
+            p.type = WFSConversionHelper.getSimpleType(prop.type);
+            p.rawType = prop.type;
+            p.label = getLabelForProperty(locale, prop.name, lang);
+            props.add(p);
+        });
+        return props;
+    }
+    private JSONObject getPropertiesLocale(OskariLayer layer) {
+        JSONObject attrs = layer.getAttributes();
+        if (attrs == null) {
+            return null;
+        }
+        JSONObject data = attrs.optJSONObject("data");
+        if (data == null) {
+            return null;
+        }
+        return data.optJSONObject("locale");
+    }
+
+    private String getLabelForProperty(JSONObject locale, String prop, String lang) {
+        if (locale == null) {
+            return null;
+        }
+        JSONObject labelsForLang = locale.optJSONObject(lang);
+        if (labelsForLang == null) {
+            return null;
+        }
+        return labelsForLang.optString(prop, null);
     }
 
     private List<VectorStyle> getVectorStyles (ActionParameters params, int layerId) {
