@@ -11,6 +11,7 @@ import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.oskari.capabilities.UpdateCapabilitiesJob;
 import org.oskari.maplayer.admin.LayerValidator;
 import org.oskari.permissions.PermissionService;
 import org.oskari.permissions.model.PermissionType;
@@ -36,6 +37,8 @@ public class LayerAdminMetadataHandler extends RestActionHandler {
     private final static String JSKEY_ID = "id";
     private final static String JSKEY_NAME = "name";
 
+    private String capabilitiesCron = null;
+
     @Override
     public void init() {
         try {
@@ -51,6 +54,14 @@ public class LayerAdminMetadataHandler extends RestActionHandler {
         }
     }
 
+    private String getCapabilitiesUpdateCron() {
+        if (capabilitiesCron == null) {
+            // "oskari.scheduler.job.UpdateCapabilitiesJob.cronLine" in oskari-ext.properties or default from class
+            capabilitiesCron = new UpdateCapabilitiesJob().getCronLine();
+        }
+        return capabilitiesCron;
+    }
+
     @Override
     public void preProcess(ActionParameters params) throws ActionException {
         params.requireAdminUser();
@@ -63,6 +74,7 @@ public class LayerAdminMetadataHandler extends RestActionHandler {
             JSONHelper.putValue(root, "roles", getRoles());
             JSONHelper.putValue(root, "permissionTypes", getPermissionTypes(params.getLocale().getLanguage()));
             JSONHelper.putValue(root, "layerTypes", getMandatoryFields());
+            JSONHelper.putValue(root, "capabilitiesCron", getCapabilitiesUpdateCron());
             ResponseHelper.writeResponse(params, root);
         } catch (Exception e) {
             throw new ActionException("Something went wrong getting roles and permission types from the platform", e);

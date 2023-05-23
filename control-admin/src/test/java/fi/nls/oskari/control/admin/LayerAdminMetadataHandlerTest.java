@@ -7,6 +7,7 @@ import java.util.HashSet;
 
 import fi.nls.oskari.service.DummyUserService;
 import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.test.util.TestHelper;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -26,6 +27,8 @@ import fi.nls.oskari.service.UserService;
 import fi.nls.test.control.JSONActionRouteTest;
 import fi.nls.test.util.ResourceHelper;
 
+import javax.sql.DataSource;
+
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({OskariComponentManager.class})
 public class LayerAdminMetadataHandlerTest extends JSONActionRouteTest {
@@ -36,11 +39,13 @@ public class LayerAdminMetadataHandlerTest extends JSONActionRouteTest {
     public static void setup() throws Exception {
         PropertyUtil.addProperty("oskari.user.service", DummyUserService.class.getCanonicalName(), true);
         setupPermissionsServiceMock();
+        TestHelper.registerTestDataSource();
         handler.init();
     }
     @AfterClass
     public static void tearDown() {
         PropertyUtil.clearProperties();
+        TestHelper.teardown();
     }
 
     private static void setupPermissionsServiceMock() {
