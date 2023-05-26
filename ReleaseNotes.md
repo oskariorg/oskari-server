@@ -1,5 +1,62 @@
 # Release Notes
 
+## 2.11.0
+
+For a full list of changes see: 
+https://github.com/oskariorg/oskari-server/milestone/45?closed=1
+
+### Vector layer styles
+
+- End-users can now store styles for vector layers! These are public/anyone can reference them so they can work with embedded maps in a way that users expect them to work.
+- New table for storing styles: oskari_maplayer_style
+- Styles migrated from oskari_maplayer.options to new table
+- Also storing instance default style in the table (type=default) https://github.com/oskariorg/oskari-server/pull/932
+- Styles have been removed from layer options from the layer listing functionality as well and frontend is expected to fetch them by calling DescribeLayer route.
+- Printing functionality has been migrated to use styles from the database
+
+### User/role management
+
+- Users listing is now fetched in pages so instances with lots of users can use this as well without crashing the browser
+- Users can now be searched as well as listed
+- Role names can now be edited
+- Admin user management now uses the same rules to validate users as end-user registration
+- Additional metadata about roles is sent for admin user-interface so we can make admins life easier (hide guest role/disable edit and delete for built-in roles etc)
+- Instance admins can now configure oskari-ext.properties to disable user edits other than roles on the frontend (https://github.com/oskariorg/oskari-server/pull/944):
+```
+oskari.user.external=true
+```
+
+### Search channel options
+
+Search channels with code based adapters (non-WFS search channels) can now be configured with a localized name and desciption on oskari-ext.properties: https://github.com/oskariorg/oskari-server/pull/953 Localization is not required, these can be configured with or without specific language:
+```
+search.channel.OPENSTREETMAP_CHANNEL.label=OpenStreetMap
+search.channel.OPENSTREETMAP_CHANNEL.desc.fi=Hae paikkoja ja/tai osoitteita
+search.channel.OPENSTREETMAP_CHANNEL.desc.en=Search addresses and/or points of interest
+```
+
+### Other changes
+- DescribeLayer route has been improved so it can function as a source for frontend to get additional metadata for layers that are added on the map. This enables us to remove unnecessary data from the layer listing response. This allows us to remove some of the layer specific routes that have been previously created and now returns:
+    - coverage area for the layer data
+    - styles for vector layers
+    - vector layer properties
+    - tile matrix information for wmts layers
+
+- Fixed an issue with email validation. The original change was meant to add support for domains with dashes, but this prevented users from registering if their email did NOT have a dash in the domain.
+- Fixed an issue with proxying WMTS-layers through GetLayerTile
+- Fixed an issue where searching for metadata with filters but not giving a free text query resulted in an error
+- Fixed an issue in capabilities parsing where the service declared scale limit of 0
+- Capabilities parsing now allows adding layers where the capabilities header and XML content declares conflicting character encoding
+- Missing page (HTTP 404) is now handled in consistent way (and the page can be overridden in instances)
+
+- Dependency updates:
+    - Geotools 27.1 -> 28.2
+    - JTS 1.18.2 -> 1.19.0
+    - FlywayDB 6.5.7 -> 9.12.0 (Note! PostgreSQL 11 is now min supported version)
+    - Spring 5.3.20 -> 5.3.25
+    - Spring security 5.7.0 -> 5.7.5
+    
+
 ## 2.10.1
 
 For a full list of changes see: 
