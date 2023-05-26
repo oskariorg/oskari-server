@@ -7,28 +7,29 @@ https://github.com/oskariorg/oskari-server/milestone/45?closed=1
 
 ### Vector layer styles
 
-- End-users can now store styles for vector layers! These are public/anyone can reference them so they can work with embedded maps in a way that users expect them to work.
-- New table for storing styles: oskari_maplayer_style
-- Styles migrated from oskari_maplayer.options to new table
-- Also storing instance default style in the table (type=default) https://github.com/oskariorg/oskari-server/pull/932
-- Styles have been removed from layer options from the layer listing functionality as well and frontend is expected to fetch them by calling DescribeLayer route.
+- End-users can now store styles for vector layers!
+- The styles users create are public/anyone can reference them. This makes them work with embedded maps in a way that users expect them to work. This doesn't mean that users styles are listed to other users in the geoportal UI.
+- New table for storing styles: `oskari_maplayer_style`
+- Styles have been migrated from `oskari_maplayer`.`options`
+- Instance default style is also stored in the table: https://github.com/oskariorg/oskari-server/pull/932
+- Styles have been removed from layer options from the layer listing functionality. Frontend is expected to fetch them by calling DescribeLayer route.
 - Printing functionality has been migrated to use styles from the database
 
 ### User/role management
 
-- Users listing is now fetched in pages so instances with lots of users can use this as well without crashing the browser
+- User listing is now fetched in pages so instances with lots of users can use this without crashing the browser
 - Users can now be searched as well as listed
 - Role names can now be edited
 - Admin user management now uses the same rules to validate users as end-user registration
-- Additional metadata about roles is sent for admin user-interface so we can make admins life easier (hide guest role/disable edit and delete for built-in roles etc)
-- Instance admins can now configure oskari-ext.properties to disable user edits other than roles on the frontend (https://github.com/oskariorg/oskari-server/pull/944):
+- Additional metadata about roles is sent for admin user interface to make admins life easier (can be used to hide guest role/disable edit and delete for built-in roles etc)
+- Instance admins can now configure oskari-ext.properties to disable editing user data. This is convenient if the user data in Oskari is updated using some external system. User roles can still be assigned for users (https://github.com/oskariorg/oskari-server/pull/944):
 ```
 oskari.user.external=true
 ```
 
 ### Search channel options
 
-Search channels with code based adapters (non-WFS search channels) can now be configured with a localized name and desciption on oskari-ext.properties: https://github.com/oskariorg/oskari-server/pull/953 Localization is not required, these can be configured with or without specific language:
+Search channels with code based adapters (non-WFS search channels) can now be configured with a localized name and desciption on oskari-ext.properties: https://github.com/oskariorg/oskari-server/pull/953 Localization is not required/these can be configured with or without specific language:
 ```
 search.channel.OPENSTREETMAP_CHANNEL.label=OpenStreetMap
 search.channel.OPENSTREETMAP_CHANNEL.desc.fi=Hae paikkoja ja/tai osoitteita
