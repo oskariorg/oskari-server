@@ -1,5 +1,20 @@
 # Migration guide
 
+## 2.11.0
+
+Remove OpenStreetMap and What3Words search channels from control-example dependencies.
+
+If you want to use these as your applications search backend you can add them in the app dependencies on pom.xml like this:
+
+```
+<dependency>
+    <groupId>org.oskari</groupId>
+    <artifactId>service-search-opendata</artifactId>
+</dependency>
+```
+
+This fixes an issue where (most) applications that have their own search backend implementations either need to black list the OSM channel OR exclude this depedency. This makes the choice of using the channel more explicit.
+
 ## 2.10.0
 
 Sample-server-extension now includes JSTL dependency by default so the web app works out-of-the-box in for example Tomcat environment:
