@@ -86,13 +86,13 @@ public class DatabaseUserService extends UserService {
 
     @Override
     public List<User> getUsers() throws ServiceException {
-        log.info("getUsers");
+        log.debug("getUsers");
         return userService.findAll();
     }
 
     @Override
     public List<User> getUsersWithRoles() throws ServiceException {
-        log.info("getUsersWithRoles");
+        log.debug("getUsersWithRoles");
         List<User> users = userService.findAll();
 
         List<User> newUserList = new ArrayList<>();
@@ -110,7 +110,7 @@ public class DatabaseUserService extends UserService {
 
     @Override
     public List<User> getUsersWithRoles(int limit, int offset, String query) throws ServiceException {
-        log.info("getUsersWithRoles");
+        log.debug("getUsersWithRoles");
         List<User> users = userService.findAll(limit, offset, query);
 
         List<User> newUserList = new ArrayList<User>();
