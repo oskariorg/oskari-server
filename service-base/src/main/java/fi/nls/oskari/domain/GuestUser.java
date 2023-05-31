@@ -10,7 +10,11 @@ import fi.nls.oskari.service.UserService;
 public class GuestUser extends User {
 
     private final static Logger log = LogFactory.getLogger(GuestUser.class);
-
+    public GuestUser () {
+        setFirstname("guest");
+        setLastname("guest");
+        setScreenname("guest");
+    }
     /**
      * Always returns true
      * @return

@@ -28,9 +28,9 @@ public class User implements Serializable {
     private final static String KEY_ROLES = "roles";
 
     private long id = -1;
-    private String lastname = "guest";
-    private String firstname = "guest";
-    private String screenname = "guest";
+    private String lastname = "";
+    private String firstname = "";
+    private String screenname = "";
     private String email = "";
     private JSONObject attributes = new JSONObject();
 
