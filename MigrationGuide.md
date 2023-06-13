@@ -2,8 +2,9 @@
 
 ## 2.11.0
 
-Remove OpenStreetMap and What3Words search channels from control-example dependencies.
+PostgreSQL 11 is now the minimum version supported (FlywayDB dependency).
 
+OpenStreetMap and What3Words search channels were removed from control-example dependencies.
 If you want to use these as your applications search backend you can add them in the app dependencies on pom.xml like this:
 
 ```
@@ -14,6 +15,15 @@ If you want to use these as your applications search backend you can add them in
 ```
 
 This fixes an issue where (most) applications that have their own search backend implementations either need to black list the OSM channel OR exclude this depedency. This makes the choice of using the channel more explicit.
+
+Another common configuration that most instances would probably want to add to oskari-ext.properties is:
+```
+# Don't show metadata catalogue as option as it doesn't return locations as results
+actionhandler.SearchOptions.blacklist=METADATA_CATALOGUE_CHANNEL
+```
+
+This removes metadata search channel from SearchPlugin channel listing.
+As the channel is not returning locations it will never return anything useful for the location search UIs.
 
 ## 2.10.0
 

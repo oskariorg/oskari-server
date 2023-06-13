@@ -54,8 +54,8 @@ search.channel.OPENSTREETMAP_CHANNEL.desc.en=Search addresses and/or points of i
     - Geotools 27.1 -> 28.2
     - JTS 1.18.2 -> 1.19.0
     - FlywayDB 6.5.7 -> 9.12.0 (Note! PostgreSQL 11 is now min supported version)
-    - Spring 5.3.20 -> 5.3.25
-    - Spring security 5.7.0 -> 5.7.5
+    - Spring 5.3.20 -> 5.3.27
+    - Spring security 5.7.0 -> 5.7.8
     
 
 ## 2.10.1
