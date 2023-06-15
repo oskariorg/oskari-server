@@ -66,10 +66,12 @@ public class MybatisUserService {
         try (SqlSession session = factory.openSession()) {
             log.debug("Find all users with limit, offset & search");
             final UsersMapper mapper = session.getMapper(UsersMapper.class);
-            if (query != null) {
+            if (!query.isEmpty()) {
                 userList = mapper.findAllPaginatedSearch(query, limit, offset);
-            } else {
+            } else if (limit > 0){
                 userList = mapper.findAllPaginated(limit, offset);
+            } else {
+                userList = mapper.findAll();
             }
         } catch (Exception e) {
             log.warn(e, "Exception when trying to find all users");
