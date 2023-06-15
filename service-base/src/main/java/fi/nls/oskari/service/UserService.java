@@ -208,6 +208,10 @@ public abstract class UserService {
         return Collections.emptyList();
     }
 
+    public List<User> getUsersByRole(long roleId) throws ServiceException {
+        throw new ServiceException("Not implemented");
+    }
+
     /**
      * Return all users. This method should be overridden in concrete implementation. The
      * default implementation always throws an exception.

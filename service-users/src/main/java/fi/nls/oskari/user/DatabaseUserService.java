@@ -91,6 +91,11 @@ public class DatabaseUserService extends UserService {
     }
 
     @Override
+    public List<User> getUsersByRole(long roleId) throws ServiceException {
+        return userService.findByRoleId(roleId);
+    }
+
+    @Override
     public List<User> getUsersWithRoles() throws ServiceException {
         log.debug("getUsersWithRoles");
         List<User> users = userService.findAll();

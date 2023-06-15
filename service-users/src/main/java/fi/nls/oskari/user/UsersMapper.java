@@ -120,4 +120,10 @@ public interface UsersMapper {
 
     @Delete("DELETE FROM oskari_users_credentials WHERE login = #{username}")
     void deletePassword(String username);
+
+    @ResultMap("UsersResult")
+    @Select("SELECT u.id, u.first_name, u.last_name, u.user_name, u.email, u.uuid, u.attributes" +
+            " FROM oskari_users_roles r, oskari_users u" +
+            " WHERE r.user_id = u.id and r.role_id = #{id}")
+    List<User> findByRoleId (long id);
 }

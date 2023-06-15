@@ -5,6 +5,7 @@ import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.ServiceException;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
@@ -14,9 +15,7 @@ import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 
 import javax.sql.DataSource;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class MybatisUserService {
     private MybatisRoleService roleService = new MybatisRoleService();
@@ -136,6 +135,15 @@ public class MybatisUserService {
         loadRoles(user);
         log.debug("Found user: " + user);
         return user;
+    }
+    public List<User> findByRoleId (long id) throws ServiceException {
+        try (SqlSession session = factory.openSession()) {
+            log.debug("Finding users role by id: ", id);
+            final UsersMapper mapper = session.getMapper(UsersMapper.class);
+            return mapper.findByRoleId(id);
+        } catch (Exception e) {
+            throw new ServiceException("Exception when trying to find users by role id: " + id, e);
+        }
     }
 
     /**
