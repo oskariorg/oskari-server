@@ -26,7 +26,7 @@ public class UsersHandler extends RestActionHandler {
     private UserService userService = null;
 
     private static final String PARAM_ID = "id";
-    private static final String PARAM_ROLE_ID = "id";
+    private static final String PARAM_ROLE_ID = "roleId";
     private static final String PARAM_FIRSTNAME = "firstName";
     private static final String PARAM_LASTNAME = "lastName";
     private static final String PARAM_SCREENNAME = "user";
@@ -49,16 +49,16 @@ public class UsersHandler extends RestActionHandler {
     public void handleGet(ActionParameters params) throws ActionException {
         JSONObject response = new JSONObject();
         List<User> users = Collections.emptyList();
-        long id = getId(params);
-        long roleId = params.getHttpParam(PARAM_ROLE_ID, -1);
-        int limit = params.getHttpParam(PARAM_LIMIT, 0);
+        long id = params.getHttpParam(PARAM_ID, -1L);
+        long roleId = params.getHttpParam(PARAM_ROLE_ID, -1L);
+        int limit = params.getHttpParam(PARAM_LIMIT, -1);
         int offset = params.getHttpParam(PARAM_OFFSET, 0);
-        String search = params.getHttpParam(PARAM_SEARCH);
+        String search = params.getHttpParam(PARAM_SEARCH, "");
         try {
             if (roleId > 0) {
                 LOG.debug("handleGet by role id", roleId);
                 users = userService.getUsersByRole(roleId);
-            } else if (id > -1) {
+            } else if (id > 0) {
                 LOG.debug("handleGet: has id", id);
                 User user = userService.getUser(id);
                 response = user2Json(user);
@@ -193,13 +193,8 @@ public class UsersHandler extends RestActionHandler {
         }
     }
 
-    private long getId(ActionParameters params) throws NumberFormatException {
-        // see if params contains an ID
-        return params.getHttpParam(PARAM_ID, -1);
-    }
-
     private void getUserParams(User user, ActionParameters params) throws ActionParamsException {
-        user.setId(getId(params));
+        user.setId(params.getHttpParam(PARAM_ID, -1L));
         user.setFirstname(params.getRequiredParam(PARAM_FIRSTNAME));
         user.setLastname(params.getRequiredParam(PARAM_LASTNAME));
         user.setScreenname(params.getRequiredParam(PARAM_SCREENNAME));
