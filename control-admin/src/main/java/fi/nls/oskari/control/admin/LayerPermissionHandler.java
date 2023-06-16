@@ -94,7 +94,7 @@ public class LayerPermissionHandler extends AbstractLayerAdminHandler {
     public void handlePost(ActionParameters params) throws ActionException {
         // TODO: basically SaveLayerPermissionHandler, but check if the syntax still makes sense
     }
-    
+
     private JSONObject getPermissionNames(String lang) {
         final JSONObject permissionNames = new JSONObject();
         for (String id : availablePermissionTypes) {
