@@ -3,9 +3,12 @@ package fi.nls.oskari.control.admin;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.service.OskariComponentManager;
+import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
@@ -35,7 +38,7 @@ public class LayerPermissionHandler extends AbstractLayerAdminHandler {
 
     private static final String KEY_NAMES = "names";
     private static final String KEY_LAYERS = "layers";
-    private static final String KEY_PERMISSION = "permission";
+    private static final String KEY_PERMISSION = "permissions";
 
     @Override
     public void init() {
@@ -52,14 +55,14 @@ public class LayerPermissionHandler extends AbstractLayerAdminHandler {
     }
 
     /**
-     * Returns permissions for all layers for the given role
+     * Returns permissions for all layers or a single layer when id-param is used
      *
      * @param params
      * @throws ActionException
      */
     @Override
     public void handleGet(ActionParameters params) throws ActionException {
-        int roleId = params.getRequiredParamInt(PARAM_ID);
+        int layerId = params.getHttpParam(PARAM_ID, -1);
         String lang = params.getLocale().getLanguage();
 
         final JSONObject root = new JSONObject();
@@ -67,11 +70,19 @@ public class LayerPermissionHandler extends AbstractLayerAdminHandler {
         JSONArray layerPermission = new JSONArray();
         JSONHelper.putValue(root, KEY_LAYERS, layerPermission);
 
-        final List<OskariLayer> layers = mapLayerService.findAll();
+        List<OskariLayer> layers;
+        if (layerId != -1) {
+            OskariLayer layer = mapLayerService.find(layerId);
+            layers = new ArrayList<>(5);
+            layers.add(layer);
+        } else {
+            layers = mapLayerService.findAll();
+        }
         Collections.sort(layers);
 
         List<Resource> resources = permissionsService.findResourcesByType(ResourceType.maplayer);
         PermissionSet permissions = new PermissionSet(resources);
+
         for (OskariLayer layer : layers) {
             if (layer.isInternal()) {
                 // skip internal layers
@@ -81,7 +92,7 @@ public class LayerPermissionHandler extends AbstractLayerAdminHandler {
                 JSONObject layerJSON = new JSONObject();
                 layerJSON.put(KEY_ID, layer.getId());
                 layerJSON.put(KEY_NAME, layer.getName(PropertyUtil.getDefaultLanguage()));
-                layerJSON.put(KEY_PERMISSION, getPermissionsForLayer(permissions, layer.getId(), roleId));
+                layerJSON.put(KEY_PERMISSION, getPermissionsForLayer(permissions, layer.getId()));
             } catch (JSONException e) {
                 throw new ActionException("Something is wrong with doPermissionResourcesJson ajax reguest", e);
             }
@@ -95,6 +106,14 @@ public class LayerPermissionHandler extends AbstractLayerAdminHandler {
         // TODO: basically SaveLayerPermissionHandler, but check if the syntax still makes sense
     }
 
+    private Role[] getRoles() {
+        try {
+            return getUserService().getRoles(Collections.emptyMap());
+        } catch (ServiceException e) {
+            throw new ServiceRuntimeException("Unable to list roles");
+        }
+    }
+
     private JSONObject getPermissionNames(String lang) {
         final JSONObject permissionNames = new JSONObject();
         for (String id : availablePermissionTypes) {
@@ -102,15 +121,37 @@ public class LayerPermissionHandler extends AbstractLayerAdminHandler {
         }
         return permissionNames;
     }
-    private JSONObject getPermissionsForLayer(PermissionSet permissions, int layerId, int roleId) {
-        JSONObject permissionJSON = new JSONObject();
+
+    /**
+     * {
+     *     roleId: {
+     *         VIEW_LAYER: true,
+     *         PUBLISH: false
+     *     },
+     *     roleId2: {
+     *         VIEW_LAYER: true,
+     *         PUBLISH: false
+     *     }
+     * }
+     * @param permissions
+     * @param layerId
+     * @return
+     */
+    private JSONObject getPermissionsForLayer(PermissionSet permissions, int layerId) {
+        JSONObject rolesJSON = new JSONObject();
         Optional<Resource> layerResource = permissions.get(ResourceType.maplayer, Integer.toString(layerId));
-        for (String permission : availablePermissionTypes) {
-            boolean hasPermission = layerResource
-                    .map(r -> r.hasRolePermission(roleId, permission))
-                    .orElse(false);
-            JSONHelper.putValue(permissionJSON, permission, hasPermission);
+
+        for (Role role : getRoles()) {
+            JSONObject permissionJSON = new JSONObject();
+            long roleId = role.getId();
+            JSONHelper.putValue(rolesJSON, Long.toString(roleId), permissionJSON);
+            for (String permission : availablePermissionTypes) {
+                boolean hasPermission = layerResource
+                        .map(r -> r.hasRolePermission(roleId, permission))
+                        .orElse(false);
+                JSONHelper.putValue(permissionJSON, permission, hasPermission);
+            }
         }
-        return permissionJSON;
+        return rolesJSON;
     }
 }
