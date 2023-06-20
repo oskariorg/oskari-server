@@ -7,7 +7,7 @@ import org.oskari.helpers.BundleHelper;
 import java.sql.Connection;
 
 /**
- * Register mydata bundle as intended replacement for personaldata bundle.
+ * Register featuredata bundle (React impl) as intended replacement for featuredata2 bundle (jQuery impl).
  */
 public class V2_12_1__register_featuredata_bundle extends BaseJavaMigration {
 
