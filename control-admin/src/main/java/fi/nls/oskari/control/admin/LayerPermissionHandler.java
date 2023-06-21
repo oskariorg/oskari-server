@@ -84,8 +84,8 @@ public class LayerPermissionHandler extends AbstractLayerAdminHandler {
         PermissionSet permissions = new PermissionSet(resources);
 
         for (OskariLayer layer : layers) {
-            if (layer.isInternal()) {
-                // skip internal layers
+            if (layer.isInternal() || layer.getParentId() != -1) {
+                // skip internal layers and sublayers
                 continue;
             }
             try {
@@ -93,6 +93,7 @@ public class LayerPermissionHandler extends AbstractLayerAdminHandler {
                 layerJSON.put(KEY_ID, layer.getId());
                 layerJSON.put(KEY_NAME, layer.getName(PropertyUtil.getDefaultLanguage()));
                 layerJSON.put(KEY_PERMISSION, getPermissionsForLayer(permissions, layer.getId()));
+                layerPermission.put(layerJSON);
             } catch (JSONException e) {
                 throw new ActionException("Something is wrong with doPermissionResourcesJson ajax reguest", e);
             }
