@@ -2,8 +2,6 @@ package fi.nls.oskari.control.feature;
 
 import fi.nls.oskari.domain.map.Feature;
 
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.GML3Writer;
 import org.oskari.wfst.WFSTRequestBuilder;
 
@@ -13,7 +11,6 @@ import java.io.*;
 import java.util.Map;
 
 public class FeatureWFSTRequestBuilder extends WFSTRequestBuilder {
-    private final static Logger LOG = LogFactory.getLogger(FeatureWFSTRequestBuilder.class);
 
     public static void updateFeature(OutputStream out, Feature feature)
             throws XMLStreamException {
