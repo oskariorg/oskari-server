@@ -1,8 +1,11 @@
 package fi.nls.oskari.control.feature;
 
 import fi.nls.oskari.domain.map.Feature;
-
+import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.util.GML3Writer;
+
+import org.locationtech.jts.geom.Geometry;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.wfst.WFSTRequestBuilder;
 
 import javax.xml.stream.XMLStreamException;
@@ -12,7 +15,16 @@ import java.util.Map;
 
 public class FeatureWFSTRequestBuilder extends WFSTRequestBuilder {
 
+    @Deprecated
+    /**
+     * @deprecated see updateFeature(OutputStream, Feature, CoordinateReferenceSystem)
+     */
     public static void updateFeature(OutputStream out, Feature feature)
+            throws XMLStreamException {
+        updateFeature(out, feature, null);
+    }
+
+    public static void updateFeature(OutputStream out, Feature feature, CoordinateReferenceSystem crs)
             throws XMLStreamException {
         XMLStreamWriter xsw = XOF.createXMLStreamWriter(out);
         writeStartTransaction(xsw, "1.1.0");
@@ -34,7 +46,7 @@ public class FeatureWFSTRequestBuilder extends WFSTRequestBuilder {
             xsw.writeEndElement();
         }
 
-        writeGeometryProperty(xsw, feature);
+        writeGeometryProperty(xsw, feature, crs);
         writeFeatureIdFilter(xsw, feature.getId());
         xsw.writeEndElement(); // close <wfs:Update>
 
@@ -43,7 +55,16 @@ public class FeatureWFSTRequestBuilder extends WFSTRequestBuilder {
         xsw.close();
     }
 
+    @Deprecated
+    /**
+     * @deprecated see insertFeature(OutputStream, Feature, CoordinateReferenceSystem)
+     */
     public static void insertFeature(OutputStream out, Feature feature)
+            throws XMLStreamException {
+        insertFeature(out, feature, null);
+    }
+
+    public static void insertFeature(OutputStream out, Feature feature, CoordinateReferenceSystem crs)
             throws XMLStreamException {
         XMLStreamWriter xsw = XOF.createXMLStreamWriter(out);
         writeStartTransaction(xsw, "1.1.0");
@@ -59,7 +80,7 @@ public class FeatureWFSTRequestBuilder extends WFSTRequestBuilder {
 
         if (feature.hasGeometry()) {
             xsw.writeStartElement(feature.getGMLGeometryProperty());
-            GML3Writer.writeGeometry(xsw, feature.getGeometry());
+            writeGeometry(xsw, feature.getGeometry(), crs);
             xsw.writeEndElement();
         }
 
@@ -86,7 +107,7 @@ public class FeatureWFSTRequestBuilder extends WFSTRequestBuilder {
         xsw.close();
     }
 
-    private static void writeGeometryProperty(XMLStreamWriter xsw, Feature feature) throws XMLStreamException {
+    private static void writeGeometryProperty(XMLStreamWriter xsw, Feature feature, CoordinateReferenceSystem crs) throws XMLStreamException {
         if(!feature.hasGeometry()) {
             return;
         }
@@ -98,10 +119,18 @@ public class FeatureWFSTRequestBuilder extends WFSTRequestBuilder {
         xsw.writeEndElement();
 
         xsw.writeStartElement(WFS, "Value");
-        GML3Writer.writeGeometry(xsw, feature.getGeometry());
+        writeGeometry(xsw, feature.getGeometry(), crs);
         xsw.writeEndElement();
 
         xsw.writeEndElement();
+    }
+
+    private static void writeGeometry(XMLStreamWriter xsw, Geometry geometry, CoordinateReferenceSystem crs) throws XMLStreamException {
+        boolean xyOrder = true;
+        if (crs != null) {
+            xyOrder = ProjectionHelper.isFirstAxisNorth(crs);
+        }
+        GML3Writer.writeGeometry(xsw, geometry, xyOrder);
     }
 
 }
