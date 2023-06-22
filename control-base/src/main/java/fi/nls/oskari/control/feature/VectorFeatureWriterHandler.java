@@ -133,7 +133,7 @@ public class VectorFeatureWriterHandler extends AbstractFeatureHandler {
         }
     }
 
-    private String createWFSTMessageForUpdate(Feature feature, CoordinateReferenceSystem crs)
+    static String createWFSTMessageForUpdate(Feature feature, CoordinateReferenceSystem crs)
             throws ActionException {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -143,7 +143,8 @@ public class VectorFeatureWriterHandler extends AbstractFeatureHandler {
             throw new ActionException("Failed to create WFS-T request", e);
         }
     }
-    private String createWFSTMessageForInsert(Feature feature, CoordinateReferenceSystem coordRefSys)
+
+    static String createWFSTMessageForInsert(Feature feature, CoordinateReferenceSystem coordRefSys)
             throws ActionException {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
