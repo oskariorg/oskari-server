@@ -19,6 +19,7 @@ import org.oskari.permissions.PermissionService;
 import org.oskari.permissions.model.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static fi.nls.oskari.control.ActionConstants.*;
 
@@ -143,14 +144,14 @@ public class LayerPermissionHandler extends AbstractLayerAdminHandler {
         Optional<Resource> layerResource = permissions.get(ResourceType.maplayer, Integer.toString(layerId));
 
         for (Role role : getRoles()) {
-            JSONObject permissionJSON = new JSONObject();
             long roleId = role.getId();
-            JSONHelper.putValue(rolesJSON, Long.toString(roleId), permissionJSON);
-            for (String permission : availablePermissionTypes) {
-                boolean hasPermission = layerResource
-                        .map(r -> r.hasRolePermission(roleId, permission))
-                        .orElse(false);
-                JSONHelper.putValue(permissionJSON, permission, hasPermission);
+            Set<String> allowedPermissions = availablePermissionTypes.stream()
+                    .filter(perm -> layerResource
+                            .map(r -> r.hasRolePermission(roleId, perm))
+                            .orElse(false))
+                    .collect(Collectors.toSet());
+            if (!allowedPermissions.isEmpty()) {
+                JSONHelper.putValue(rolesJSON, Long.toString(roleId), allowedPermissions);
             }
         }
         return rolesJSON;
