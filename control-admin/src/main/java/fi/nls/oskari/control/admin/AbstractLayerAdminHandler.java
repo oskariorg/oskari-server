@@ -78,7 +78,7 @@ public abstract class AbstractLayerAdminHandler extends RestActionHandler {
         }
         return roles;
     }
-    private Set<String> getAvailablePermissions() {
+    protected Set<String> getAvailablePermissions() {
         if (availablePermissionTypes != null) {
             return availablePermissionTypes;
         }

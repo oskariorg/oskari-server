@@ -24,7 +24,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * @deprecated This will be replaced by LayerPermissionHandler
+ */
 @OskariActionRoute("SaveLayerPermission")
+@Deprecated
 public class SaveLayerPermissionHandler extends RestActionHandler {
 
     private final static Logger log = LogFactory.getLogger(SaveLayerPermissionHandler.class);

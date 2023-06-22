@@ -23,6 +23,7 @@ import static fi.nls.oskari.control.ActionConstants.KEY_ID;
 import static fi.nls.oskari.control.ActionConstants.KEY_NAME;
 
 /**
+ * @deprecated Use LayerPermissionHandler instead
  * Configuring additional permission types in oskari-ext.properties
  * <p>
  * permission.types = EDIT_LAYER_CONTENT
@@ -30,6 +31,7 @@ import static fi.nls.oskari.control.ActionConstants.KEY_NAME;
  * permission.EDIT_LAYER_CONTENT.name.en=Edit layer
  */
 @OskariActionRoute("GetPermissionsLayerHandlers")
+@Deprecated
 public class GetPermissionsLayerHandlers extends ActionHandler {
 
     private static String JSON_NAMES_SPACE = "namespace";
