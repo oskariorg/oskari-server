@@ -16,6 +16,7 @@ import org.json.JSONObject;
 import org.oskari.log.AuditLog;
 import org.oskari.user.util.UserHelper;
 
+import java.util.Collections;
 import java.util.List;
 
 @OskariActionRoute("Users")
@@ -25,6 +26,7 @@ public class UsersHandler extends RestActionHandler {
     private UserService userService = null;
 
     private static final String PARAM_ID = "id";
+    private static final String PARAM_ROLE_ID = "roleId";
     private static final String PARAM_FIRSTNAME = "firstName";
     private static final String PARAM_LASTNAME = "lastName";
     private static final String PARAM_SCREENNAME = "user";
@@ -45,31 +47,34 @@ public class UsersHandler extends RestActionHandler {
 
     @Override
     public void handleGet(ActionParameters params) throws ActionException {
-        final JSONObject response;
-        long id = getId(params);
-        int limit = params.getHttpParam(PARAM_LIMIT, 0);
+        JSONObject response = new JSONObject();
+        List<User> users = Collections.emptyList();
+        long id = params.getHttpParam(PARAM_ID, -1L);
+        long roleId = params.getHttpParam(PARAM_ROLE_ID, -1L);
+        int limit = params.getHttpParam(PARAM_LIMIT, -1);
         int offset = params.getHttpParam(PARAM_OFFSET, 0);
-        String search = params.getHttpParam(PARAM_SEARCH);
+        String search = params.getHttpParam(PARAM_SEARCH, "");
         try {
-            if (id > -1) {
+            if (roleId > 0) {
+                LOG.debug("handleGet by role id", roleId);
+                users = userService.getUsersByRole(roleId);
+            } else if (id > 0) {
                 LOG.debug("handleGet: has id", id);
                 User user = userService.getUser(id);
                 response = user2Json(user);
             } else {
                 LOG.debug("handleGet: no id");
-                response = new JSONObject();
-                JSONArray arr = new JSONArray();
-                response.put("users", arr);
-
-                List<User> newUsers = userService.getUsersWithRoles(limit, offset, search);
-
+                users = userService.getUsersWithRoles(limit, offset, search);
                 if (search != null && search.trim() != "") {
                     response.put("total_count", userService.getUserSearchCount(search));
                 } else {
                     response.put("total_count", userService.getUserCount());
                 }
-
-                for (User user : newUsers) {
+            }
+            if (!users.isEmpty()) {
+                JSONArray arr = new JSONArray();
+                response.put("users", arr);
+                for (User user : users) {
                     arr.put(user2Json(user));
                 }
             }
@@ -188,13 +193,8 @@ public class UsersHandler extends RestActionHandler {
         }
     }
 
-    private long getId(ActionParameters params) throws NumberFormatException {
-        // see if params contains an ID
-        return params.getHttpParam(PARAM_ID, -1);
-    }
-
     private void getUserParams(User user, ActionParameters params) throws ActionParamsException {
-        user.setId(getId(params));
+        user.setId(params.getHttpParam(PARAM_ID, -1L));
         user.setFirstname(params.getRequiredParam(PARAM_FIRSTNAME));
         user.setLastname(params.getRequiredParam(PARAM_LASTNAME));
         user.setScreenname(params.getRequiredParam(PARAM_SCREENNAME));
