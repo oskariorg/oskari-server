@@ -128,7 +128,7 @@ public class FeatureWFSTRequestBuilder extends WFSTRequestBuilder {
     private static void writeGeometry(XMLStreamWriter xsw, Geometry geometry, CoordinateReferenceSystem crs) throws XMLStreamException {
         boolean xyOrder = true;
         if (crs != null) {
-            xyOrder = ProjectionHelper.isFirstAxisNorth(crs);
+            xyOrder = !ProjectionHelper.isFirstAxisNorth(crs);
         }
         GML3Writer.writeGeometry(xsw, geometry, xyOrder);
     }

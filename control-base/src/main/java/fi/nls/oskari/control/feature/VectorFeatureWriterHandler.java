@@ -12,9 +12,12 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.util.XmlHelper;
+
+import org.geotools.referencing.CRS;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -74,10 +77,12 @@ public class VectorFeatureWriterHandler extends AbstractFeatureHandler {
         }
 
         try {
+            CoordinateReferenceSystem coordRefSys = CRS.decode(crs);
+
             JSONObject geojson = params.getPayLoadJSON();
 
             Feature feature = getFeature(geojson, layerId, crs, geojson.optString("id"));
-            final String wfstMessage = createWFSTMessageForInsert(feature);
+            final String wfstMessage = createWFSTMessageForInsert(feature, coordRefSys);
             LOG.debug("Inserting feature to service at", layer.getUrl(), "with payload:\n", wfstMessage);
             final String responseString = postPayload(layer.getUsername(), layer.getPassword(), wfstMessage, getURLForNamespace(layer.getName(),layer.getUrl()));
 
@@ -106,10 +111,12 @@ public class VectorFeatureWriterHandler extends AbstractFeatureHandler {
         }
 
         try {
+            CoordinateReferenceSystem coordRefSys = CRS.decode(crs);
+
             JSONObject geojson = params.getPayLoadJSON();
             Feature feature = getFeature(geojson, layerId, crs, geojson.optString("id"));
 
-            final String wfstMessage = createWFSTMessageForUpdate(feature);
+            final String wfstMessage = createWFSTMessageForUpdate(feature, coordRefSys);
             LOG.debug("Updating feature to service at", layer.getUrl(), "with payload:\n", wfstMessage);
             String responseString = postPayload(layer.getUsername(), layer.getPassword(), wfstMessage, getURLForNamespace(layer.getName(),layer.getUrl()));
 
@@ -126,21 +133,21 @@ public class VectorFeatureWriterHandler extends AbstractFeatureHandler {
         }
     }
 
-    private String createWFSTMessageForUpdate(Feature feature)
+    private String createWFSTMessageForUpdate(Feature feature, CoordinateReferenceSystem crs)
             throws ActionException {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            FeatureWFSTRequestBuilder.updateFeature(baos, feature);
+            FeatureWFSTRequestBuilder.updateFeature(baos, feature, crs);
             return baos.toString();
         } catch (XMLStreamException e) {
             throw new ActionException("Failed to create WFS-T request", e);
         }
     }
-    private String createWFSTMessageForInsert(Feature feature)
+    private String createWFSTMessageForInsert(Feature feature, CoordinateReferenceSystem coordRefSys)
             throws ActionException {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            FeatureWFSTRequestBuilder.insertFeature(baos, feature);
+            FeatureWFSTRequestBuilder.insertFeature(baos, feature, coordRefSys);
             return baos.toString();
         } catch (XMLStreamException e) {
             throw new ActionException("Failed to create WFS-T request", e);
