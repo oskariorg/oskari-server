@@ -106,10 +106,7 @@ public class WFSLayerOptions {
         JSONHelper.putValue(options, KEY_CLUSTER, cluster);
     }
 
-    /**
-     * Should match https://github.com/oskariorg/oskari-frontend/blob/master/src/react/components/StyleEditor/OskariDefaultStyle.js
-     * @return
-     */
+    // fallback for VectorStyleService and UserDataLayer getDefaultFeatureStyle
     public static JSONObject getDefaultOskariStyle () {
         JSONObject json = new JSONObject();
         // dot
