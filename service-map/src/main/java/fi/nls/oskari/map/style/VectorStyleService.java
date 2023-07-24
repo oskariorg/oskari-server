@@ -31,7 +31,7 @@ public abstract class VectorStyleService extends OskariComponent  {
     public JSONObject getDefaultFeatureStyle () {
         VectorStyle defaultStyle = getDefaultStyle();
         if (defaultStyle == null) {
-            log.error("Can't find default vector style");
+            log.info("Can't find default vector style from db, using default style from WFSLayerOptions");
             return WFSLayerOptions.getDefaultOskariStyle();
         }
         return JSONHelper.getJSONObject(defaultStyle.getStyle(), KEY_FEATURE_STYLE);

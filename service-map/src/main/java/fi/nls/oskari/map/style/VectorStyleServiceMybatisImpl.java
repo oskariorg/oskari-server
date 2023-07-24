@@ -53,8 +53,9 @@ public class VectorStyleServiceMybatisImpl extends VectorStyleService {
             final VectorStyleMapper mapper = session.getMapper(VectorStyleMapper.class);
             return mapper.getDefaultStyle();
         } catch (Exception e) {
-            throw new ServiceRuntimeException("Failed to get instance default vector style");
+            log.warn("Failed to get instance default vector style");
         }
+        return null;
     }
     public VectorStyle getStyleById(final long id) {
         try (final SqlSession session = factory.openSession()) {
