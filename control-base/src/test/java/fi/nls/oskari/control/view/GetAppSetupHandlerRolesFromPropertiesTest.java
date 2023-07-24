@@ -5,7 +5,6 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.view.modifier.bundle.MapfullHandler;
 import fi.nls.oskari.control.view.modifier.param.WFSHighlightParamHandler;
 import fi.nls.oskari.domain.Role;
-import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
@@ -20,7 +19,6 @@ import fi.nls.oskari.util.DuplicateException;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.view.modifier.ViewModifier;
 import fi.nls.test.control.JSONActionRouteTest;
-import fi.nls.test.util.ResourceHelper;
 import fi.nls.test.util.TestHelper;
 import fi.nls.test.view.BundleTestHelper;
 import fi.nls.test.view.ViewTestHelper;
@@ -122,8 +120,7 @@ public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTe
         r.setId(42);
         params.getUser().addRole(r);
         handler.handleAction(params);
-
-        verifyResponseContent(ResourceHelper.readJSONResource("GetAppSetupHandlerTest-view-roles-from-properties.json", this));
+        GetAppSetupTestHelper.verifyResponseContent("GetAppSetupHandlerTest-view-roles-from-properties.json", getResponseJSON());
     }
 
 
@@ -136,8 +133,7 @@ public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTe
         r.setId(66);
         params.getUser().addRole(r);
         handler.handleAction(params);
-
-        verifyResponseContent(ResourceHelper.readJSONResource("GetAppSetupHandlerTest-view-roles-from-properties-admin.json", this));
+        GetAppSetupTestHelper.verifyResponseContent("GetAppSetupHandlerTest-view-roles-from-properties-admin.json", getResponseJSON());
     }
 
 
@@ -165,7 +161,6 @@ public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTe
          *      at fi.nls.oskari.control.view.GetAppSetupHandler.handleAction(GetAppSetupHandler.java:136)
          */
     }
-
 
 
     private void mockBundleService() throws Exception {
