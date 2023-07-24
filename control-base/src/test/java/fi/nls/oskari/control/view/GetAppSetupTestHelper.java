@@ -16,7 +16,7 @@ public class GetAppSetupTestHelper {
     private static final String KEY_MARKERS = "svgMarkers";
     private static final String KEY_MARKER_DATA = "data";
 
-    // to test and remove appsetup content which aren't in resource file
+    // to test and remove content from AppSetup json response which aren't in test resource file
     public static void verifyResponseContent (final String resourceName, final JSONObject response) {
         final JSONObject expectedResult = ResourceHelper.readJSONResource(resourceName, GetAppSetupTestHelper.class);
 
@@ -27,7 +27,7 @@ public class GetAppSetupTestHelper {
         JSONTestHelper.shouldEqual(style, WFSLayerOptions.getDefaultOskariStyle());
 
         JSONArray markers = JSONHelper.getJSONArray(env, KEY_MARKERS);
-        assertTrue("Appsetup should have markers", markers.length() > 0);
+        assertTrue("Response env should have markers", markers.length() > 0);
         for (int i = 0; i < markers.length(); i++) {
             String data = JSONHelper.getJSONObject(markers, i).optString(KEY_MARKER_DATA);
             assertFalse("Every marker should have data", data.isEmpty());
