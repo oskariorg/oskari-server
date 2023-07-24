@@ -12,6 +12,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.oskari.util.Customization;
 
+import java.io.IOException;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
@@ -113,7 +114,11 @@ public class EnvHelper {
         JSONHelper.putValue(env, KEY_DEFAULT_VIEWS, new JSONArray(DEFAULT_VIEWS));
 
         // setup markers SVG info
-        JSONHelper.putValue(env, KEY_SVG_MARKERS, Customization.getMarkers());
+        try {
+            JSONHelper.putValue(env, KEY_SVG_MARKERS, Customization.getMarkers());
+        } catch (IOException e) {
+            LOGGER.info("No setup for svg markers found", e);
+        }
         // setup default vector style
         VectorStyleService vss = OskariComponentManager.getComponentOfType(VectorStyleService.class);
         JSONHelper.putValue(env, KEY_OSKARI_STYLE, vss.getDefaultFeatureStyle());
