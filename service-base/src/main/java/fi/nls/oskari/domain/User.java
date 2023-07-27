@@ -26,6 +26,7 @@ public class User implements Serializable {
     private static final String KEY_USERUUID = "userUUID";
     private static final String KEY_USERID = "userID";
     private final static String KEY_ROLES = "roles";
+    private final static String KEY_ADMIN = "admin";
 
     private long id = -1;
     private String lastname = "";
@@ -218,7 +219,9 @@ public class User implements Serializable {
             userData.put(KEY_NICKNAME, getScreenname());
             userData.put(KEY_USERUUID, getUuid());
             userData.put(KEY_USERID, getId());
-
+            if (isAdmin()){
+                userData.put(KEY_ADMIN, true);
+            }
             JSONArray roles = new JSONArray();
             for (Role role: getRoles()) {
                 roles.put(role.toJSON());
