@@ -12,12 +12,11 @@ import java.util.HashMap;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.geotools.referencing.CRS;
 import org.junit.Test;
 import org.locationtech.jts.geom.CoordinateSequence;
+import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Polygon;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -27,9 +26,6 @@ public class VectorFeatureWriterHandlerTest {
 
     @Test
     public void testUpdateXYAxisOrder() throws Exception {
-        String epsg = "EPSG:3067";
-        CoordinateReferenceSystem crs = CRS.decode(epsg);
-
         double[] pts = {
                 473183.20423224,6680301.618281904,
                 473257.20423224,6680411.618281904,
@@ -43,9 +39,11 @@ public class VectorFeatureWriterHandlerTest {
         oskariFeature.setId("12345");
         oskariFeature.setProperties(new HashMap<>());
         oskariFeature.setGMLGeometryProperty("geometry");
-        oskariFeature.setGeometry(createPolygon(pts));
+        Geometry g = createPolygon(pts);
+        g.setSRID(3067);
+        oskariFeature.setGeometry(g);
 
-        String wfsTransaction = VectorFeatureWriterHandler.createWFSTMessageForUpdate(oskariFeature, crs);
+        String wfsTransaction = VectorFeatureWriterHandler.createWFSTMessageForUpdate(oskariFeature);
         double[] actual = readPosList(wfsTransaction);
 
         assertArrayEquals(pts, actual, 1e-10);
@@ -53,9 +51,6 @@ public class VectorFeatureWriterHandlerTest {
 
     @Test
     public void testInsertYXAxisOrder() throws Exception {
-        String epsg = "EPSG:3879";
-        CoordinateReferenceSystem crs = CRS.decode(epsg);
-
         double[] pts = {
                 25473183.20423224,6680301.618281904,
                 25473257.20423224,6680411.618281904,
@@ -68,9 +63,11 @@ public class VectorFeatureWriterHandlerTest {
         oskariFeature.setLayerName("foo");
         oskariFeature.setProperties(new HashMap<>());
         oskariFeature.setGMLGeometryProperty("geometry");
-        oskariFeature.setGeometry(createPolygon(pts));
+        Geometry g = createPolygon(pts);
+        g.setSRID(3879);
+        oskariFeature.setGeometry(g);
 
-        String wfsTransaction = VectorFeatureWriterHandler.createWFSTMessageForInsert(oskariFeature, crs);
+        String wfsTransaction = VectorFeatureWriterHandler.createWFSTMessageForInsert(oskariFeature);
         double[] actual = readPosList(wfsTransaction);
         for (int i = 0; i < pts.length / 2; i++) {
             assertEquals(pts[i * 2 + 0], actual[i * 2 + 1], 1e-10);

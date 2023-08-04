@@ -77,12 +77,10 @@ public class VectorFeatureWriterHandler extends AbstractFeatureHandler {
         }
 
         try {
-            CoordinateReferenceSystem coordRefSys = CRS.decode(crs);
-
             JSONObject geojson = params.getPayLoadJSON();
 
             Feature feature = getFeature(geojson, layerId, crs, geojson.optString("id"));
-            final String wfstMessage = createWFSTMessageForInsert(feature, coordRefSys);
+            final String wfstMessage = createWFSTMessageForInsert(feature);
             LOG.debug("Inserting feature to service at", layer.getUrl(), "with payload:\n", wfstMessage);
             final String responseString = postPayload(layer.getUsername(), layer.getPassword(), wfstMessage, getURLForNamespace(layer.getName(),layer.getUrl()));
 
@@ -111,12 +109,10 @@ public class VectorFeatureWriterHandler extends AbstractFeatureHandler {
         }
 
         try {
-            CoordinateReferenceSystem coordRefSys = CRS.decode(crs);
-
             JSONObject geojson = params.getPayLoadJSON();
             Feature feature = getFeature(geojson, layerId, crs, geojson.optString("id"));
 
-            final String wfstMessage = createWFSTMessageForUpdate(feature, coordRefSys);
+            final String wfstMessage = createWFSTMessageForUpdate(feature);
             LOG.debug("Updating feature to service at", layer.getUrl(), "with payload:\n", wfstMessage);
             String responseString = postPayload(layer.getUsername(), layer.getPassword(), wfstMessage, getURLForNamespace(layer.getName(),layer.getUrl()));
 
@@ -133,22 +129,22 @@ public class VectorFeatureWriterHandler extends AbstractFeatureHandler {
         }
     }
 
-    static String createWFSTMessageForUpdate(Feature feature, CoordinateReferenceSystem crs)
+    static String createWFSTMessageForUpdate(Feature feature)
             throws ActionException {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            FeatureWFSTRequestBuilder.updateFeature(baos, feature, crs);
+            FeatureWFSTRequestBuilder.updateFeature(baos, feature);
             return baos.toString();
         } catch (XMLStreamException e) {
             throw new ActionException("Failed to create WFS-T request", e);
         }
     }
 
-    static String createWFSTMessageForInsert(Feature feature, CoordinateReferenceSystem coordRefSys)
+    static String createWFSTMessageForInsert(Feature feature)
             throws ActionException {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            FeatureWFSTRequestBuilder.insertFeature(baos, feature, coordRefSys);
+            FeatureWFSTRequestBuilder.insertFeature(baos, feature);
             return baos.toString();
         } catch (XMLStreamException e) {
             throw new ActionException("Failed to create WFS-T request", e);

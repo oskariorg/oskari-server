@@ -1,10 +1,14 @@
 package fi.nls.oskari.control.feature;
 
 import fi.nls.oskari.domain.map.Feature;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.util.GML3Writer;
 
+import org.geotools.referencing.CRS;
 import org.locationtech.jts.geom.Geometry;
+import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.wfst.WFSTRequestBuilder;
 
@@ -15,16 +19,9 @@ import java.util.Map;
 
 public class FeatureWFSTRequestBuilder extends WFSTRequestBuilder {
 
-    @Deprecated
-    /**
-     * @deprecated see updateFeature(OutputStream, Feature, CoordinateReferenceSystem)
-     */
-    public static void updateFeature(OutputStream out, Feature feature)
-            throws XMLStreamException {
-        updateFeature(out, feature, null);
-    }
+    private final static Logger LOG = LogFactory.getLogger(FeatureWFSTRequestBuilder.class);
 
-    public static void updateFeature(OutputStream out, Feature feature, CoordinateReferenceSystem crs)
+    public static void updateFeature(OutputStream out, Feature feature)
             throws XMLStreamException {
         XMLStreamWriter xsw = XOF.createXMLStreamWriter(out);
         writeStartTransaction(xsw, "1.1.0");
@@ -46,7 +43,7 @@ public class FeatureWFSTRequestBuilder extends WFSTRequestBuilder {
             xsw.writeEndElement();
         }
 
-        writeGeometryProperty(xsw, feature, crs);
+        writeGeometryProperty(xsw, feature);
         writeFeatureIdFilter(xsw, feature.getId());
         xsw.writeEndElement(); // close <wfs:Update>
 
@@ -55,16 +52,7 @@ public class FeatureWFSTRequestBuilder extends WFSTRequestBuilder {
         xsw.close();
     }
 
-    @Deprecated
-    /**
-     * @deprecated see insertFeature(OutputStream, Feature, CoordinateReferenceSystem)
-     */
     public static void insertFeature(OutputStream out, Feature feature)
-            throws XMLStreamException {
-        insertFeature(out, feature, null);
-    }
-
-    public static void insertFeature(OutputStream out, Feature feature, CoordinateReferenceSystem crs)
             throws XMLStreamException {
         XMLStreamWriter xsw = XOF.createXMLStreamWriter(out);
         writeStartTransaction(xsw, "1.1.0");
@@ -80,7 +68,7 @@ public class FeatureWFSTRequestBuilder extends WFSTRequestBuilder {
 
         if (feature.hasGeometry()) {
             xsw.writeStartElement(feature.getGMLGeometryProperty());
-            writeGeometry(xsw, feature.getGeometry(), crs);
+            writeGeometry(xsw, feature.getGeometry());
             xsw.writeEndElement();
         }
 
@@ -107,7 +95,7 @@ public class FeatureWFSTRequestBuilder extends WFSTRequestBuilder {
         xsw.close();
     }
 
-    private static void writeGeometryProperty(XMLStreamWriter xsw, Feature feature, CoordinateReferenceSystem crs) throws XMLStreamException {
+    private static void writeGeometryProperty(XMLStreamWriter xsw, Feature feature) throws XMLStreamException {
         if(!feature.hasGeometry()) {
             return;
         }
@@ -119,16 +107,23 @@ public class FeatureWFSTRequestBuilder extends WFSTRequestBuilder {
         xsw.writeEndElement();
 
         xsw.writeStartElement(WFS, "Value");
-        writeGeometry(xsw, feature.getGeometry(), crs);
+        writeGeometry(xsw, feature.getGeometry());
         xsw.writeEndElement();
 
         xsw.writeEndElement();
     }
 
-    private static void writeGeometry(XMLStreamWriter xsw, Geometry geometry, CoordinateReferenceSystem crs) throws XMLStreamException {
+    private static void writeGeometry(XMLStreamWriter xsw, Geometry geometry) throws XMLStreamException {
         boolean xyOrder = true;
-        if (crs != null) {
-            xyOrder = !ProjectionHelper.isFirstAxisNorth(crs);
+        if (geometry.getSRID() != 0) {
+            String srsName = GML3Writer.getSrsName(geometry.getSRID());
+            try {
+                CoordinateReferenceSystem crs = CRS.decode(srsName);
+                xyOrder = !ProjectionHelper.isFirstAxisNorth(crs);
+                LOG.debug("srsName:", srsName, "xyOrder:", xyOrder);
+            } catch (FactoryException e) {
+                LOG.warn(e);
+            }
         }
         GML3Writer.writeGeometry(xsw, geometry, xyOrder);
     }

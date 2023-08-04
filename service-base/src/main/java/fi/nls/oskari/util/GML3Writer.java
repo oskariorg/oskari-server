@@ -157,8 +157,12 @@ public class GML3Writer {
     private static void writeSRID(XMLStreamWriter xsw, int srid)
             throws XMLStreamException {
         if (srid != 0) {
-            xsw.writeAttribute("srsName", "http://www.opengis.net/def/crs/EPSG/0/" + srid);
+            xsw.writeAttribute("srsName", getSrsName(srid));
         }
+    }
+
+    public static String getSrsName(int srid) {
+        return "http://www.opengis.net/def/crs/EPSG/0/" + srid;
     }
 
 }
