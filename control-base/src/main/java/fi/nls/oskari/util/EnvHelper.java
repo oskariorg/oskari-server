@@ -5,6 +5,8 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.style.VectorStyleService;
+import fi.nls.oskari.service.OskariComponentManager;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,8 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static fi.nls.oskari.control.ActionConstants.*;
-import static org.oskari.util.Customization.PLACEHOLDER_STROKE;
-import static org.oskari.util.Customization.PLACEHOLDER_FILL;
 
 /**
  * Describes the environment the appsetup is used in:
@@ -35,8 +35,9 @@ public class EnvHelper {
     private static final String KEY_SUPPORTED_LOCALES = "locales";
     private static final String KEY_DECIMAL_SEPARATOR = "decimalSeparator";
 
-    // markers
+    // customization
     private static final String KEY_SVG_MARKERS = "svgMarkers";
+    private static final String KEY_OSKARI_STYLE = "oskariStyle";
 
     // urls
     private static final String KEY_URLS = "urls";
@@ -113,31 +114,16 @@ public class EnvHelper {
         JSONHelper.putValue(env, KEY_DEFAULT_VIEWS, new JSONArray(DEFAULT_VIEWS));
 
         // setup markers SVG info
-        JSONArray svgMarkers = getMarkers();
-        if (svgMarkers != null && svgMarkers.length() > 0) {
-            JSONHelper.putValue(env, KEY_SVG_MARKERS, svgMarkers);
-        }
-        return env;
-    }
-
-    private static JSONArray getMarkers() {
         try {
-            JSONArray svgMarkers = Customization.getMarkers();
-            for (int i = 0; i < svgMarkers.length(); i++) {
-                JSONObject marker = svgMarkers.optJSONObject(i);
-                String svg = marker.optString("data");
-                String updated = svg
-                        .replace(PLACEHOLDER_FILL, "#000000")
-                        .replace(PLACEHOLDER_STROKE, "#000000")
-                        // TODO: GetAppSetupHandlerTest fails with xmlns. Should we update json resources??
-                        .replace("xmlns='http://www.w3.org/2000/svg' ", "");
-                JSONHelper.putValue(marker, "data", updated);
-            }
-            return svgMarkers;
+            JSONHelper.putValue(env, KEY_SVG_MARKERS, Customization.getMarkers());
         } catch (IOException e) {
             LOGGER.info("No setup for svg markers found", e);
         }
-        return null;
+        // setup default vector style
+        VectorStyleService vss = OskariComponentManager.getComponentOfType(VectorStyleService.class);
+        JSONHelper.putValue(env, KEY_OSKARI_STYLE, vss.getDefaultFeatureStyle());
+
+        return env;
     }
 
     public static String getAPIurl(final ActionParameters params) {
