@@ -11,7 +11,9 @@ import org.oskari.permissions.model.PermissionType;
 
 import java.util.Map;
 
-public abstract class LayerJSONFormatterUSERDATA extends LayerJSONFormatterWFS {
+import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.KEY_ISQUERYABLE;
+
+public abstract class LayerJSONFormatterUSERDATA extends LayerJSONFormatter {
 
     private static final boolean IS_SECURE = true;
     protected static final String KEY_PERMISSIONS = "permissions";
@@ -22,7 +24,8 @@ public abstract class LayerJSONFormatterUSERDATA extends LayerJSONFormatterWFS {
     }
 
     public JSONObject getJSON(OskariLayer baseLayer, UserDataLayer layer, String srs, String lang) {
-        JSONObject layerJson = getJSON(baseLayer, lang, IS_SECURE, srs);
+        JSONObject layerJson = getBaseJSON(baseLayer, lang, IS_SECURE, srs);
+        JSONHelper.putValue(layerJson, KEY_ISQUERYABLE, true);
 
         // Override base layer values
         JSONHelper.putValue(layerJson, KEY_TYPE, layer.getType());
