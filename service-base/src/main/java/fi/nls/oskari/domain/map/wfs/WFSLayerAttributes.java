@@ -50,9 +50,23 @@ import java.util.*;
  *                 "id_nro": "ID No."
  *             }
  *         },
+ *         "format": {
+ *             "kunta_fi": {
+ *                 "type": "link"
+ *             },
+ *             "id_nro": {
+ *                 "skipEmpty": true,
+ *                 "type": "number"
+ *             },
+ *             "grd_id": {
+ *                 "type": "link"
+ *             }
+ *         },
  *         "noDataValue": -1,
  *         "commonId": "grd_id",
- *         "wpsInputType": "gs_vector"
+ *         "wpsInputType": "gs_vector",
+ *         "geometryType": GeometryType,
+ *         "idProperty": "id_nro"
  *     },
  *     "maxFeatures": 100,
  *     "namespaceURL": "http://oskari.org"
@@ -63,7 +77,9 @@ public class WFSLayerAttributes {
     public static final String KEY_MAXFEATURES = "maxFeatures";
     public static final String KEY_NO_DATA_VALUE = "noDataValue";
     public static final String KEY_COMMON_ID = "commonId";
-    public static final String KEY_WPS_TYPE = "wpsType";
+    public static final String KEY_WPS_TYPE = "wpsInputType";
+    public static final String KEY_GEOMETRY_TYPE = "geometryType";
+    public static final String KEY_ID_PROPERTY = "idProperty";
 
     private Map<String, List<String>> params = new HashMap<>();
     private JSONObject locales = null;
@@ -133,7 +149,8 @@ public class WFSLayerAttributes {
 
     public List<String> getSelectedAttributes(String lang) {
         return params.getOrDefault(lang,
-                params.getOrDefault(PropertyUtil.getDefaultLanguage(), Collections.emptyList()));
+                params.getOrDefault("default",
+                params.getOrDefault(PropertyUtil.getDefaultLanguage(), Collections.emptyList())));
     }
 
     public String getNamespaceURL() {

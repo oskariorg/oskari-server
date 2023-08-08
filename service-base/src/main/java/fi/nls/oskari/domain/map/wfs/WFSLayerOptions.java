@@ -30,8 +30,8 @@ import org.json.JSONObject;
  * }
  */
 public class WFSLayerOptions {
-    private static final String KEY_RENDER_MODE = "renderMode";
-    private static final String KEY_CLUSTER = "clusteringDistance";
+    public static final String KEY_RENDER_MODE = "renderMode";
+    public static final String KEY_CLUSTER = "clusteringDistance";
     private static final String KEY_LABEL = "labelProperty";
     private static final String KEY_STYLES = "styles";
     private static final String KEY_DEFAULT_STYLE = "default";
