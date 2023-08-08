@@ -138,7 +138,7 @@ public class LayerPermissionHandler extends AbstractLayerAdminHandler {
                     boolean found = false;
                     String type = permission.getType();
                     for (int j = 0; j < perm.length(); j++) {
-                        if (perm.getString(j) == type) {
+                        if (perm.getString(j).equals(type)) {
                             found = true;
                         }
                     }
