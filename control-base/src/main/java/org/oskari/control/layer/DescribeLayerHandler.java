@@ -6,6 +6,8 @@ import fi.nls.oskari.control.*;
 import fi.nls.oskari.control.layer.PermissionHelper;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.style.VectorStyle;
+import fi.nls.oskari.domain.map.wfs.WFSLayerAttributes;
+import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.WKTHelper;
@@ -15,24 +17,19 @@ import fi.nls.oskari.map.style.VectorStyleHelper;
 import fi.nls.oskari.map.style.VectorStyleService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceRuntimeException;
-import fi.nls.oskari.util.ConversionHelper;
-import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.util.ResponseHelper;
-import fi.nls.oskari.util.WFSConversionHelper;
+import fi.nls.oskari.util.*;
 import org.json.JSONObject;
 import org.oskari.capabilities.CapabilitiesService;
 import org.oskari.capabilities.ogc.LayerCapabilitiesWFS;
 import org.oskari.capabilities.ogc.LayerCapabilitiesWMTS;
+import org.oskari.capabilities.ogc.wfs.FeaturePropertyType;
 import org.oskari.capabilities.ogc.wmts.TileMatrixLink;
 import org.oskari.control.layer.model.FeatureProperties;
 import org.oskari.control.layer.model.LayerExtendedOutput;
 import org.oskari.control.layer.model.LayerOutput;
 import org.oskari.permissions.PermissionService;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static fi.nls.oskari.control.ActionConstants.PARAM_ID;
 import static fi.nls.oskari.control.ActionConstants.PARAM_SRS;
@@ -92,6 +89,7 @@ public class DescribeLayerHandler extends RestActionHandler {
         final String lang = params.getLocale().getLanguage();
         final String crs = params.getHttpParam(PARAM_SRS);
         final int layerId = layer.getId();
+        final String layerType = layer.getType();
 
         LayerExtendedOutput output = new LayerExtendedOutput();
         output.id = layerId;
@@ -102,53 +100,83 @@ public class DescribeLayerHandler extends RestActionHandler {
         }
         if (VectorStyleHelper.isVectorLayer(layer)) {
             output.styles = getVectorStyles(params, layerId);
-            output.properties = getProperties(layer, lang);
+            output.hover = JSONHelper.getObjectAsMap(layer.getOptions().optJSONObject("hover"));
         }
-        if (OskariLayer.TYPE_WMTS.equals(layer.getType())) {
+        if (OskariLayer.TYPE_WFS.equals(layerType)) {
+            setDetailsForWFS(output, layer, lang);
+        }
+        if (OskariLayer.TYPE_WMTS.equals(layerType)) {
             output.capabilities = getCapabilitiesJSON(layer, crs);
         }
         return output;
     }
-
-    private List<FeatureProperties> getProperties(OskariLayer layer, String lang) {
-        if (!OskariLayer.TYPE_WFS.equals(layer.getType())) {
-            return null;
-        }
+    private void setDetailsForWFS (LayerExtendedOutput output, OskariLayer layer, String lang) {
         LayerCapabilitiesWFS caps = CapabilitiesService.fromJSON(layer.getCapabilities().toString(), layer.getType());
+        WFSLayerAttributes attr = new WFSLayerAttributes(layer.getAttributes());
+        WFSLayerOptions opts = new WFSLayerOptions(layer.getOptions());
+        output.properties = getProperties(caps, attr, lang);
+        output.data = getData(caps, attr, opts);
+    }
+
+    private List<FeatureProperties> getProperties(LayerCapabilitiesWFS caps, WFSLayerAttributes attr , String lang) {
         List<FeatureProperties> props = new ArrayList<>();
 
-        JSONObject locale = getPropertiesLocale(layer);
+        List<String> selected = attr.getSelectedAttributes(lang);
+        Optional<JSONObject> locale = attr.getLocalization(lang);
+        JSONObject format = attr.getAttributesData().optJSONObject("format");
+
         caps.getFeatureProperties().stream().forEach(prop -> {
             FeatureProperties p = new FeatureProperties();
             p.name = prop.name;
             p.type = WFSConversionHelper.getSimpleType(prop.type);
             p.rawType = prop.type;
-            p.label = getLabelForProperty(locale, prop.name, lang);
+            p.label = locale.isPresent() ? locale.get().optString(prop.name, null) : null;
+            p.format = getPropertyFormat(format, prop.name);
+            if (!selected.isEmpty()) {
+                int index = selected.indexOf(p.name);
+                if (index == -1) {
+                    p.hidden = true;
+                    p.order = selected.size();
+                } else {
+                    p.order = index;
+                }
+            }
             props.add(p);
         });
+        if (!selected.isEmpty()) {
+            props.sort(Comparator.comparingInt(a -> a.order));
+        }
         return props;
     }
-    private JSONObject getPropertiesLocale(OskariLayer layer) {
-        JSONObject attrs = layer.getAttributes();
-        if (attrs == null) {
+    private Map<String, Object> getPropertyFormat (JSONObject format, String name) {
+        if (format == null) {
             return null;
         }
-        JSONObject data = attrs.optJSONObject("data");
-        if (data == null) {
-            return null;
-        }
-        return data.optJSONObject("locale");
+        return JSONHelper.getObjectAsMap(format.optJSONObject(name));
     }
 
-    private String getLabelForProperty(JSONObject locale, String prop, String lang) {
-        if (locale == null) {
-            return null;
+    private Map<String, Object> getData (LayerCapabilitiesWFS caps, WFSLayerAttributes attr, WFSLayerOptions opts) {
+        Map<String, Object> data = new HashMap<>();
+
+        JSONObject attrData = attr.getAttributesData();
+        data.put(WFSLayerAttributes.KEY_NO_DATA_VALUE, attr.getNoDataValue());
+        data.put(WFSLayerAttributes.KEY_COMMON_ID, attr.getCommonId());
+        data.put(WFSLayerAttributes.KEY_WPS_TYPE, attrData.optString(WFSLayerAttributes.KEY_WPS_TYPE, null));
+        data.put(WFSLayerAttributes.KEY_ID_PROPERTY, attrData.optString(WFSLayerAttributes.KEY_ID_PROPERTY, null));
+
+        String geometryType = attrData.optString(WFSLayerAttributes.KEY_GEOMETRY_TYPE, null);
+        if (geometryType == null) {
+            String geomName = caps.getGeometryField();
+            FeaturePropertyType fpt = caps.getFeatureProperty(geomName);
+            if (fpt != null) {
+                geometryType = fpt.type;
+            }
         }
-        JSONObject labelsForLang = locale.optJSONObject(lang);
-        if (labelsForLang == null) {
-            return null;
-        }
-        return labelsForLang.optString(prop, null);
+        data.put(WFSLayerAttributes.KEY_GEOMETRY_TYPE, geometryType);
+
+        data.put(WFSLayerOptions.KEY_RENDER_MODE, opts.getRenderMode());
+        data.put(WFSLayerOptions.KEY_CLUSTER, opts.getClusteringDistance());
+        return data;
     }
 
     private List<VectorStyle> getVectorStyles (ActionParameters params, int layerId) {
