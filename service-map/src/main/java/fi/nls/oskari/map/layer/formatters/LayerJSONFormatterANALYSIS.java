@@ -48,7 +48,8 @@ public class LayerJSONFormatterANALYSIS extends LayerJSONFormatterUSERDATA {
         return layerJson;
     }
     @Override
-    protected String getGeometryType() {
+    protected String getStyleType(JSONArray properties) {
+        // no need to find from properties
         return WFSConversionHelper.TYPE_COLLECTION;
     }
     @Override
@@ -68,6 +69,7 @@ public class LayerJSONFormatterANALYSIS extends LayerJSONFormatterUSERDATA {
                 props.put(prop);
             }
         }
+        props.put(DEAULT_GEOMETRY_PROPERTY);
         return props;
     }
     @Override
