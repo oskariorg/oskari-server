@@ -64,7 +64,6 @@ import java.util.*;
  *         },
  *         "noDataValue": -1,
  *         "commonId": "grd_id",
- *         "wpsInputType": "gs_vector",
  *         "geometryType": GeometryType,
  *         "idProperty": "id_nro"
  *     },
@@ -77,7 +76,7 @@ public class WFSLayerAttributes {
     public static final String KEY_MAXFEATURES = "maxFeatures";
     public static final String KEY_NO_DATA_VALUE = "noDataValue";
     public static final String KEY_COMMON_ID = "commonId";
-    public static final String KEY_WPS_TYPE = "wpsInputType";
+
     public static final String KEY_GEOMETRY_TYPE = "geometryType";
     public static final String KEY_ID_PROPERTY = "idProperty";
 
@@ -187,5 +186,9 @@ public class WFSLayerAttributes {
         }
         JSONObject data = JSONHelper.getJSONObject(attributes, "data");
         return data == null ? new JSONObject() : data;
+    }
+    public Optional<JSONObject> getFieldFormatMetadata () {
+        JSONObject format = getAttributesData().optJSONObject("format");
+        return format == null ? Optional.empty() : Optional.of(format);
     }
 }

@@ -111,26 +111,28 @@ public class DescribeLayerHandler extends RestActionHandler {
         return output;
     }
     private void setDetailsForWFS (LayerExtendedOutput output, OskariLayer layer, String lang) {
+        // UserDataLayers are handled in frontend by WFS plugin and embedded myplaces is using WFS type
+        // so LayerJSONFormatterUSERDATA gathers values from options and attributes in same way than this
         LayerCapabilitiesWFS caps = CapabilitiesService.fromJSON(layer.getCapabilities().toString(), layer.getType());
         WFSLayerAttributes attr = new WFSLayerAttributes(layer.getAttributes());
         WFSLayerOptions opts = new WFSLayerOptions(layer.getOptions());
         output.properties = getProperties(caps, attr, lang);
-        output.data = getData(caps, attr, opts);
+        output.controlData = getControlData(caps, attr, opts);
     }
 
     private List<FeatureProperties> getProperties(LayerCapabilitiesWFS caps, WFSLayerAttributes attr , String lang) {
         List<FeatureProperties> props = new ArrayList<>();
 
         List<String> selected = attr.getSelectedAttributes(lang);
-        Optional<JSONObject> locale = attr.getLocalization(lang);
-        JSONObject format = attr.getAttributesData().optJSONObject("format");
+        JSONObject locale = attr.getLocalization(lang).orElse(new JSONObject());
+        JSONObject format = attr.getFieldFormatMetadata().orElse(new JSONObject());
 
         caps.getFeatureProperties().stream().forEach(prop -> {
             FeatureProperties p = new FeatureProperties();
             p.name = prop.name;
             p.type = WFSConversionHelper.getSimpleType(prop.type);
             p.rawType = prop.type;
-            p.label = locale.isPresent() ? locale.get().optString(prop.name, null) : null;
+            p.label = locale.optString(prop.name, null);
             p.format = getPropertyFormat(format, prop.name);
             if (!selected.isEmpty()) {
                 int index = selected.indexOf(p.name);
@@ -149,28 +151,24 @@ public class DescribeLayerHandler extends RestActionHandler {
         return props;
     }
     private Map<String, Object> getPropertyFormat (JSONObject format, String name) {
-        if (format == null) {
-            return null;
-        }
-        return JSONHelper.getObjectAsMap(format.optJSONObject(name));
+        JSONObject propFormat = format.optJSONObject(name);
+        // return null if doesn't exist
+        return propFormat != null ? JSONHelper.getObjectAsMap(propFormat) : null;
     }
 
-    private Map<String, Object> getData (LayerCapabilitiesWFS caps, WFSLayerAttributes attr, WFSLayerOptions opts) {
+    private Map<String, Object> getControlData (LayerCapabilitiesWFS caps, WFSLayerAttributes attr, WFSLayerOptions opts) {
         Map<String, Object> data = new HashMap<>();
 
         JSONObject attrData = attr.getAttributesData();
         data.put(WFSLayerAttributes.KEY_NO_DATA_VALUE, attr.getNoDataValue());
         data.put(WFSLayerAttributes.KEY_COMMON_ID, attr.getCommonId());
-        data.put(WFSLayerAttributes.KEY_WPS_TYPE, attrData.optString(WFSLayerAttributes.KEY_WPS_TYPE, null));
         data.put(WFSLayerAttributes.KEY_ID_PROPERTY, attrData.optString(WFSLayerAttributes.KEY_ID_PROPERTY, null));
 
         String geometryType = attrData.optString(WFSLayerAttributes.KEY_GEOMETRY_TYPE, null);
         if (geometryType == null) {
             String geomName = caps.getGeometryField();
             FeaturePropertyType fpt = caps.getFeatureProperty(geomName);
-            if (fpt != null) {
-                geometryType = fpt.type;
-            }
+            geometryType = WFSConversionHelper.getStyleType(fpt.type);
         }
         data.put(WFSLayerAttributes.KEY_GEOMETRY_TYPE, geometryType);
 

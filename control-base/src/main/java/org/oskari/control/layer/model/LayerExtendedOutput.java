@@ -13,5 +13,5 @@ public class LayerExtendedOutput extends LayerOutput {
     public Map<String, Object> capabilities;
 
     public List<FeatureProperties> properties;
-    public Map<String, Object> data;
+    public Map<String, Object> controlData;
 }
