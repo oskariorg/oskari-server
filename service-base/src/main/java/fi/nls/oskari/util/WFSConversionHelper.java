@@ -10,6 +10,11 @@ public class WFSConversionHelper {
     public static final String BOOLEAN = "boolean";
     public static final String GEOMETRY = "geometry";
     public static final String UNKNOWN = "unknown";
+    public static final String TYPE_COLLECTION = "collection";
+    public static final String TYPE_POINT = "point";
+    public static final String TYPE_LINE = "line";
+    public static final String TYPE_AREA = "area";
+
     private static final Set<String> NUMBER_TYPES = new HashSet<>(
             Arrays.asList("double",
                 "float",
@@ -81,6 +86,24 @@ public class WFSConversionHelper {
         }
         return UNKNOWN;
     }
+
+    public static String getStyleType (String rawGeometryType) {
+        if (rawGeometryType == null) {
+            return UNKNOWN;
+        }
+        String lower = rawGeometryType.toLowerCase();
+        if (lower.contains("surface") || lower.contains("polygon")) {
+            return TYPE_AREA;
+        }
+        if (lower.contains(TYPE_POINT)) {
+            return TYPE_POINT;
+        }
+        if (lower.contains(TYPE_LINE)) {
+            return TYPE_LINE;
+        }
+        return TYPE_COLLECTION;
+    }
+
     public static String getStringOrNumber (String type) {
         return isNumberType(type) ? NUMBER : STRING;
 
