@@ -1,16 +1,15 @@
 package fi.nls.oskari.map.layer.formatters;
 
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.domain.map.UserDataLayer;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
+import fi.nls.oskari.domain.map.wfs.WFSLayerAttributes;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.WFSConversionHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.*;
-
-import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.KEY_LAYER_COVERAGE;
-
 
 /**
  * User layer to oskari layer json
@@ -21,14 +20,32 @@ public class LayerJSONFormatterUSERLAYER extends LayerJSONFormatterUSERDATA {
 
     public JSONObject getJSON(final OskariLayer baseLayer, UserLayer ulayer, String srs, String lang) {
         final JSONObject layerJson = super.getJSON(baseLayer, ulayer, srs, lang);
-        JSONHelper.putValue(layerJson, KEY_LAYER_COVERAGE, getLayerCoverageWKT(ulayer.getWkt(), srs));
-        JSONObject baseAttributes = JSONHelper.getJSONObject(layerJson, "attributes");
-        JSONObject layerAttributes = parseAttributes(ulayer.getFields());
-        // baseAttributes comes from baseLayer merge layer attributes
-        JSONHelper.putValue(layerJson, "attributes", JSONHelper.merge(baseAttributes, layerAttributes));
         JSONHelper.putValue(layerJson, "created", ulayer.getCreated());
         return layerJson;
     }
+    @Override
+    protected String getCoverage (UserDataLayer layer, String srs) {
+        UserLayer uLayer = (UserLayer) layer;
+        return getLayerCoverageWKT(uLayer.getWkt(), srs);
+    }
+
+    @Override
+    protected JSONArray getProperties (UserDataLayer layer, WFSLayerAttributes wfsAttr, String lang) {
+        UserLayer uLayer = (UserLayer) layer;
+        JSONArray fields = uLayer.getFields(); // {locales: {}, name, type }
+        // parse label from locale
+        for(int i = 0; i < fields.length(); i++) {
+            JSONObject prop = JSONHelper.getJSONObject(fields, i);
+            JSONObject locales = prop.optJSONObject("locales");
+            if (locales != null) {
+                // For now UserLayerDataService.parseFields() adds only "en" localization
+                JSONHelper.putValue(prop, "label", locales.optString("en"));
+                prop.remove("locales");
+            }
+        }
+        return fields;
+    }
+
     // parse fields like WFSLayerAttributes
     private static JSONObject parseAttributes(final JSONArray fields) {
         JSONObject attributes = new JSONObject();
