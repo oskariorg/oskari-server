@@ -164,13 +164,14 @@ public class DescribeLayerHandler extends RestActionHandler {
         data.put(WFSLayerAttributes.KEY_COMMON_ID, attr.getCommonId());
         data.put(WFSLayerAttributes.KEY_ID_PROPERTY, attrData.optString(WFSLayerAttributes.KEY_ID_PROPERTY, null));
 
-        String geometryType = attrData.optString(WFSLayerAttributes.KEY_GEOMETRY_TYPE, null);
-        if (geometryType == null) {
+        // TODO: should admin store geometryType => styleType
+        String styleType = attrData.optString(WFSLayerAttributes.KEY_GEOMETRY_TYPE, null);
+        if (styleType == null) {
             String geomName = caps.getGeometryField();
             FeaturePropertyType fpt = caps.getFeatureProperty(geomName);
-            geometryType = WFSConversionHelper.getStyleType(fpt.type);
+            styleType = WFSConversionHelper.getStyleType(fpt.type);
         }
-        data.put(WFSLayerAttributes.KEY_GEOMETRY_TYPE, geometryType);
+        data.put(WFSLayerAttributes.KEY_STYLE_TYPE, styleType);
 
         data.put(WFSLayerOptions.KEY_RENDER_MODE, opts.getRenderMode());
         data.put(WFSLayerOptions.KEY_CLUSTER, opts.getClusteringDistance());
