@@ -19,8 +19,8 @@ public class LayerJSONFormatterWFS extends LayerJSONFormatter {
         final JSONObject layerJson = getBaseJSON(layer, lang, isSecure, crs);
         JSONHelper.putValue(layerJson, KEY_ISQUERYABLE, true);
         // getBaseJSON adds these but model builder isn't using them. Frontend uses DescribeLayer response
-        layerJson.remove("attributes");
-        layerJson.remove("options");
+        layerJson.remove(KEY_OPTIONS);
+        layerJson.remove(KEY_ATTRIBUTES);
         return layerJson;
     }
 }
