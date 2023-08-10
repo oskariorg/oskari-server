@@ -12,8 +12,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.oskari.permissions.model.PermissionType;
 
-import java.util.Map;
-
 import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.KEY_ISQUERYABLE;
 
 public abstract class LayerJSONFormatterUSERDATA extends LayerJSONFormatter {
