@@ -1,6 +1,10 @@
 package fi.nls.oskari.map.layer.formatters;
 
+import fi.nls.oskari.domain.map.UserDataLayer;
+import fi.nls.oskari.domain.map.wfs.WFSLayerAttributes;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.WFSConversionHelper;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import fi.nls.oskari.domain.map.MyPlaceCategory;
@@ -26,4 +30,23 @@ public class LayerJSONFormatterMYPLACES extends LayerJSONFormatterUSERDATA {
         return layerJson;
     }
 
+    @Override
+    protected JSONArray getProperties (UserDataLayer layer, WFSLayerAttributes wfsAttr, String lang) {
+        JSONArray props = new JSONArray();
+        JSONObject format = wfsAttr.getFieldFormatMetadata().orElse(new JSONObject());
+        JSONObject locale = wfsAttr.getLocalization(lang).orElse(new JSONObject());
+        wfsAttr.getSelectedAttributes(lang).stream().forEach(name -> {
+            JSONObject prop = JSONHelper.createJSONObject("name", name);
+            JSONHelper.putValue(prop, "type", "string");
+            JSONHelper.putValue(prop, "rawType", "string");
+            JSONHelper.putValue(prop, "label", locale.optString(name, null));
+            JSONHelper.putValue(prop, "format", JSONHelper.getJSONObject(format, name));
+            props.put(prop);
+        });
+        return props;
+    }
+    @Override
+    protected String getGeometryType() {
+        return WFSConversionHelper.TYPE_COLLECTION;
+    }
 }
