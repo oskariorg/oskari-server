@@ -38,15 +38,17 @@ public class LayerJSONFormatterMYPLACES extends LayerJSONFormatterUSERDATA {
         wfsAttr.getSelectedAttributes(lang).stream().forEach(name -> {
             JSONObject prop = JSONHelper.createJSONObject("name", name);
             JSONHelper.putValue(prop, "type", "string");
-            JSONHelper.putValue(prop, "rawType", "string");
+            JSONHelper.putValue(prop, "rawType", "String");
             JSONHelper.putValue(prop, "label", locale.optString(name, null));
             JSONHelper.putValue(prop, "format", JSONHelper.getJSONObject(format, name));
             props.put(prop);
         });
+        props.put(DEAULT_GEOMETRY_PROPERTY);
         return props;
     }
     @Override
-    protected String getGeometryType() {
+    protected String getStyleType(JSONArray properties) {
+        // no need to find from properties
         return WFSConversionHelper.TYPE_COLLECTION;
     }
 }

@@ -19,6 +19,8 @@ public abstract class LayerJSONFormatterUSERDATA extends LayerJSONFormatter {
     private static final boolean IS_SECURE = true;
     protected static final String KEY_PERMISSIONS = "permissions";
     protected static final String KEY_LOCALE = "locale";
+    protected static final JSONObject DEAULT_GEOMETRY_PROPERTY =
+            JSONHelper.createJSONObject("{\"name\":\"the_geom\", \"type\": \"geometry\", \"rawType\": \"GeometryPropertyType\"}");
 
     public JSONObject getJSON(OskariLayer baseLayer, UserDataLayer layer, String srs) {
         return this.getJSON(baseLayer, layer, srs, PropertyUtil.getDefaultLanguage());
