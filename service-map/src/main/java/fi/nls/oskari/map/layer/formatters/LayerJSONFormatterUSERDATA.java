@@ -56,9 +56,12 @@ public abstract class LayerJSONFormatterUSERDATA extends LayerJSONFormatter {
 
         JSONHelper.putValue(describeLayer, "hover", wfsOpts.getHover());
 
-        JSONHelper.putValue(describeLayer, "properties", getProperties(layer, wfsAttr, lang));
+        JSONArray properties = getProperties(layer, wfsAttr, lang);
+        JSONHelper.put(describeLayer, "properties", properties);
 
-        JSONHelper.putValue(describeLayer, "controlData", getControlData(layer, wfsOpts));
+        JSONObject controlData = new JSONObject( getControlData(layer, wfsOpts));
+        JSONHelper.putValue(controlData,"styleType", getStyleType(properties));
+        JSONHelper.putValue(describeLayer, "controlData", controlData);
 
         JSONHelper.putValue(describeLayer, "coverage", getCoverage(layer, srs));
 
@@ -77,10 +80,18 @@ public abstract class LayerJSONFormatterUSERDATA extends LayerJSONFormatter {
         JSONObject controlData = new JSONObject();
         JSONHelper.putValue(controlData, WFSLayerOptions.KEY_RENDER_MODE, wfsOpts.getRenderMode());
         JSONHelper.putValue(controlData, WFSLayerOptions.KEY_CLUSTER, wfsOpts.getClusteringDistance());
-        JSONHelper.putValue(controlData, WFSLayerAttributes.KEY_GEOMETRY_TYPE, getGeometryType());
+
         return controlData;
     }
-    protected String getGeometryType() {
+    protected String getStyleType(JSONArray properties) {
+        for (int i = 0; i < properties.length(); i++) {
+            JSONObject prop = JSONHelper.getJSONObject(properties, i);
+            String type = JSONHelper.optString(prop, "type");
+            if (WFSConversionHelper.GEOMETRY.equals(type)) {
+                String raw = JSONHelper.optString(prop, "rawType");
+                return WFSConversionHelper.getStyleType(raw);
+            }
+        }
         return WFSConversionHelper.UNKNOWN;
     }
 
