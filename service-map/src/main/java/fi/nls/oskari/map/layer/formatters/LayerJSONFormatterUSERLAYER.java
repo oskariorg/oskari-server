@@ -23,6 +23,7 @@ public class LayerJSONFormatterUSERLAYER extends LayerJSONFormatterUSERDATA {
         JSONHelper.putValue(layerJson, "created", ulayer.getCreated());
         return layerJson;
     }
+
     @Override
     protected String getCoverage (UserDataLayer layer, String srs) {
         UserLayer uLayer = (UserLayer) layer;
@@ -32,18 +33,27 @@ public class LayerJSONFormatterUSERLAYER extends LayerJSONFormatterUSERDATA {
     @Override
     protected JSONArray getProperties (UserDataLayer layer, WFSLayerAttributes wfsAttr, String lang) {
         UserLayer uLayer = (UserLayer) layer;
-        JSONArray fields = uLayer.getFields(); // {locales: {}, name, type }
-        // parse label from locale
+        JSONArray fields = uLayer.getFields();
+        JSONArray props = new JSONArray();
         for(int i = 0; i < fields.length(); i++) {
-            JSONObject prop = JSONHelper.getJSONObject(fields, i);
-            JSONObject locales = prop.optJSONObject("locales");
-            if (locales != null) {
-                // For now UserLayerDataService.parseFields() adds only "en" localization
-                JSONHelper.putValue(prop, "label", locales.optString("en"));
-                prop.remove("locales");
-            }
+            JSONObject field = JSONHelper.getJSONObject(fields, i); // {locales: {en}, name, type }
+            JSONObject prop = new JSONObject();
+            String rawType = field.optString("type");
+            JSONHelper.putValue(prop, "name", field.optString("name"));
+            JSONHelper.putValue(prop, "rawType", rawType);
+            JSONHelper.putValue(prop, "type", WFSConversionHelper.getSimpleType(rawType));
+            JSONHelper.putValue(prop, "label", getLabel(field));
+            props.put(prop);
         }
-        return fields;
+        return props;
+    }
+    private String getLabel (JSONObject field) {
+        JSONObject locales = field.optJSONObject("locales");
+        if (locales == null) {
+            return null;
+        }
+        // For now UserLayerDataService.parseFields() adds only "en" localization
+        return locales.optString("en", null);
     }
 
     // parse fields like WFSLayerAttributes
