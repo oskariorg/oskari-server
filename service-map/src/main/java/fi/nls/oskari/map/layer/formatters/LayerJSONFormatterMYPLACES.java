@@ -51,8 +51,11 @@ public class LayerJSONFormatterMYPLACES extends LayerJSONFormatterUSERDATA {
         // not visible/selected properties should be found from filter, format and/or locale
         // MyPlaces has hard coded values (columns in db and frontend), so just add to list
         List<String> selected = wfsAttr.getSelectedAttributes(lang);
+        if (selected.isEmpty()) {
+            return props;
+        }
         selected.add("attention_text");
-        wfsAttr.getSelectedAttributes(lang).stream().forEach(name -> {
+        selected.stream().forEach(name -> {
             JSONObject prop = JSONHelper.createJSONObject("name", name);
             JSONHelper.putValue(prop, "type", "string");
             JSONHelper.putValue(prop, "rawType", "String");
