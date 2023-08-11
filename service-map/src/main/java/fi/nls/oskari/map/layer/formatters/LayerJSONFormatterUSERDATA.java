@@ -3,6 +3,7 @@ package fi.nls.oskari.map.layer.formatters;
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.UserDataLayer;
+import fi.nls.oskari.domain.map.style.VectorStyle;
 import fi.nls.oskari.domain.map.wfs.WFSLayerAttributes;
 import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
 import fi.nls.oskari.util.JSONHelper;
@@ -38,6 +39,7 @@ public abstract class LayerJSONFormatterUSERDATA extends LayerJSONFormatter {
         // FIXME: base layer should have correct data provider and title.
         layerJson.remove(KEY_SUBTITLE);
         layerJson.remove(KEY_DATA_PROVIDER);
+        layerJson.remove(KEY_DATA_PROVIDER_ID);
 
         // getBaseJSON adds these but model builder isn't using them. Frontend uses DescribeLayer response
         layerJson.remove(KEY_OPTIONS);
@@ -54,6 +56,7 @@ public abstract class LayerJSONFormatterUSERDATA extends LayerJSONFormatter {
         // has only one 'default' named style
         JSONObject vectorStyleLike = JSONHelper.createJSONObject("id", "default");
         JSONHelper.putValue(vectorStyleLike, "style", wfsOpts.getDefaultStyle());
+        JSONHelper.putValue(vectorStyleLike, "type", VectorStyle.TYPE_OSKARI);
         JSONHelper.put(describeLayer, "styles", JSONHelper.createJSONArray(vectorStyleLike));
 
         JSONHelper.putValue(describeLayer, "hover", wfsOpts.getHover());
@@ -61,7 +64,7 @@ public abstract class LayerJSONFormatterUSERDATA extends LayerJSONFormatter {
         JSONArray properties = getProperties(layer, wfsAttr, lang);
         JSONHelper.put(describeLayer, "properties", properties);
 
-        JSONObject controlData = new JSONObject( getControlData(layer, wfsOpts));
+        JSONObject controlData = getControlData(layer, wfsOpts);
         JSONHelper.putValue(controlData,"styleType", getStyleType(properties));
         JSONHelper.putValue(describeLayer, "controlData", controlData);
 
@@ -82,7 +85,6 @@ public abstract class LayerJSONFormatterUSERDATA extends LayerJSONFormatter {
         JSONObject controlData = new JSONObject();
         JSONHelper.putValue(controlData, WFSLayerOptions.KEY_RENDER_MODE, wfsOpts.getRenderMode());
         JSONHelper.putValue(controlData, WFSLayerOptions.KEY_CLUSTER, wfsOpts.getClusteringDistance());
-
         return controlData;
     }
     protected String getStyleType(JSONArray properties) {
