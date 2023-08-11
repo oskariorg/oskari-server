@@ -27,6 +27,8 @@ public abstract class LayerJSONFormatterUSERDATA extends LayerJSONFormatter {
         return this.getJSON(baseLayer, layer, srs, PropertyUtil.getDefaultLanguage());
     }
 
+    // common parser for UserData layers
+    // override methods in subclasses if needed to highlight differences between them
     public JSONObject getJSON(OskariLayer baseLayer, UserDataLayer layer, String srs, String lang) {
         JSONObject layerJson = getBaseJSON(baseLayer, lang, IS_SECURE, srs);
         JSONHelper.putValue(layerJson, KEY_ISQUERYABLE, true);
