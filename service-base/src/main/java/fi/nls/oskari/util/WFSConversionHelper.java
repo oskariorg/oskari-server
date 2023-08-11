@@ -24,15 +24,15 @@ public class WFSConversionHelper {
                 "number",
                 "integer",
                 "long",
-                "negativeInteger",
-                "nonNegativeInteger",
-                "nonPositiveInteger",
-                "positiveInteger",
+                "negativeinteger",
+                "nonnegativeinteger",
+                "nonpositiveinteger",
+                "positiveinteger",
                 "short",
-                "unsignedLong",
-                "unsignedInt",
-                "unsignedShort",
-                "unsignedByte"
+                "unsignedlong",
+                "unsignedint",
+                "unsignedshort",
+                "unsignedbyte"
             )
     );
     private static final Set<String> GEOMETRY_TYPES = new HashSet<>(
@@ -72,16 +72,20 @@ public class WFSConversionHelper {
         return GEOMETRY_TYPES.contains(type);
     }
     public static String getSimpleType (String type) {
+        if (type == null) {
+            return UNKNOWN;
+        }
         if (isGeometryType(type)) {
             return GEOMETRY;
         }
-        if (isStringType(type)) {
+        String lower = type.toLowerCase();
+        if (isStringType(lower)) {
             return STRING;
         }
-        if (isNumberType(type)) {
+        if (isNumberType(lower)) {
             return NUMBER;
         }
-        if (isBooleanType(type)) {
+        if (isBooleanType(lower)) {
             return BOOLEAN;
         }
         return UNKNOWN;
