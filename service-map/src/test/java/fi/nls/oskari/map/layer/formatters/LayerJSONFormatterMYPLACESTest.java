@@ -21,15 +21,16 @@ public class LayerJSONFormatterMYPLACESTest {
 
     // Copied from DB (select attributes from oskari_maplayer where name = 'oskari:my_places';)
     private static final String ATTRIBUTES = "{\"data\":{\"filter\":{\"default\":[\"name\",\"place_desc\",\"image_url\",\"link\"],\"fi\":[\"name\",\"place_desc\",\"image_url\",\"link\"]},\"format\":{\"image_url\":{\"noLabel\":true,\"skipEmpty\":true,\"type\":\"image\",\"params\":{\"link\":true}},\"place_desc\":{\"noLabel\":true,\"skipEmpty\":true,\"type\":\"p\"},\"name\":{\"noLabel\":true,\"type\":\"h3\"},\"link\":{\"skipEmpty\":true,\"type\":\"link\"},\"attention_text\":{\"type\":\"hidden\"}},\"locale\":{\"fi\":{\"image_url\":\"Kuvalinkki\",\"place_desc\":\"Kuvaus\",\"name\":\"Nimi\",\"link\":\"Lisätiedot\",\"attention_text\":\"Teksti kartalla\"},\"sv\":{\"image_url\":\"Bild-URL\",\"place_desc\":\"Beskrivelse\",\"name\":\"Namn\",\"link\":\"Mera information\",\"attention_text\":\"Placera text på kartan\"},\"en\":{\"image_url\":\"Image URL\",\"place_desc\":\"Description\",\"name\":\"Name\",\"link\":\"More information\",\"attention_text\":\"Text on map\"}}},\"maxFeatures\":2000,\"namespaceURL\":\"http://www.oskari.org\"}";
+    private static final String LOCALE = "{\"sv\":{\"name\":\"Mitt kartlager\"},\"en\":{\"name\":\"My map layer\"}}";
 
-    private static final String NAME = "{" +
+    private static final String PROP_NAME = "{" +
             "\"name\": \"name\"," +
             "\"type\": \"string\"," +
             "\"rawType\": \"String\"," +
             "\"label\": \"Name\"," +
             "\"format\": {\"noLabel\": true, \"type\":\"h3\"}" +
         "}";
-    private static final String IMAGE = "{" +
+    private static final String PROP_IMAGE = "{" +
             "\"name\": \"image_url\"," +
             "\"type\": \"string\"," +
             "\"rawType\": \"String\"," +
@@ -66,9 +67,9 @@ public class LayerJSONFormatterMYPLACESTest {
         JSONArray properties = describeLayer.getJSONArray("properties");
         Assert.assertEquals("Properties should include all (also geometry and hidden)", 6, properties.length());
         Assert.assertTrue("Property should get parsed like DescribeLayer",
-                JSONHelper.isEqual(properties.getJSONObject(0), new JSONObject(NAME)));
+                JSONHelper.isEqual(properties.getJSONObject(0), new JSONObject(PROP_NAME)));
         Assert.assertTrue("Property should get parsed like DescribeLayer",
-                JSONHelper.isEqual(properties.getJSONObject(2), new JSONObject(IMAGE)));
+                JSONHelper.isEqual(properties.getJSONObject(2), new JSONObject(PROP_IMAGE)));
         Assert.assertTrue("Attention text should be hidden and after visible props",
                 properties.getJSONObject(4).getBoolean("hidden"));
         Assert.assertEquals("Geometry is last", "geometry",
@@ -81,12 +82,35 @@ public class LayerJSONFormatterMYPLACESTest {
         Assert.assertEquals("Should have style type", "collection", controlData.getString("styleType"));
         Assert.assertEquals("Should have default render mode", "vector", controlData.getString("renderMode"));
         Assert.assertEquals("Shouldn't have clustering distance", -1, controlData.getInt("clusteringDistance"));
+        Assert.assertFalse(controlData.getBoolean("isDefault"));
 
+        layer.setDefault(true);
         JSONObject seJson = FORMATTER.getJSON(baseLayer, layer, SRS, "sv");
         List <Map<String, Object>> props = JSONHelper.getArrayAsList(seJson.getJSONObject("describeLayer").getJSONArray("properties"));
         String[] labels = props.stream()
                 .map(m -> (String) m.getOrDefault("label", null))
                 .toArray(String[]::new);
         Assert.assertArrayEquals("Labels should be localized", SE_LABELS, labels);
+        Assert.assertTrue(seJson.getJSONObject("describeLayer").getJSONObject("controlData").getBoolean("isDefault"));
+    }
+
+    @Test
+    public void testLocale() throws JSONException {
+        OskariLayer baseLayer = new OskariLayer();
+        baseLayer.setInternal(true);
+        baseLayer.setLocale(new JSONObject(LOCALE));
+
+        MyPlaceCategory layer = new MyPlaceCategory();
+        JSONObject layerJson = FORMATTER.getJSON(baseLayer, layer, SRS, LANG);
+        // Some MyPlaces layers have empty locale in DB for auto created default layer
+        Assert.assertEquals("Should have localized name from baselayer", "My map layer", layerJson.getString("name"));
+        Assert.assertTrue("and locale", JSONHelper.isEqual(baseLayer.getLocale(), layerJson.optJSONObject("locale")));
+
+        String name = "Edited my place";
+        layer.setName(LANG, name);
+        layerJson = FORMATTER.getJSON(baseLayer, layer, SRS, LANG);
+        Assert.assertEquals("Should have localized name for WFS layer type", name, layerJson.getString("name"));
+        JSONObject locale = JSONHelper.createJSONObject(LANG,JSONHelper.createJSONObject("name", name));
+        Assert.assertTrue("and locale", JSONHelper.isEqual(locale, layerJson.optJSONObject("locale")));
     }
 }
