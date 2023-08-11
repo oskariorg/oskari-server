@@ -2,6 +2,7 @@ package fi.nls.oskari.map.layer.formatters;
 
 import fi.nls.oskari.domain.map.UserDataLayer;
 import fi.nls.oskari.domain.map.wfs.WFSLayerAttributes;
+import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.WFSConversionHelper;
 import org.json.JSONArray;
@@ -20,16 +21,26 @@ public class LayerJSONFormatterMYPLACES extends LayerJSONFormatterUSERDATA {
     private static final String KEY_IS_DEFAULT = "isDefault";
 
     public JSONObject getJSON(OskariLayer baseLayer, MyPlaceCategory category, String srs, String lang) {
-        category.getWFSLayerOptions().setProperty(KEY_IS_DEFAULT, category.isDefault());
         final JSONObject layerJson = super.getJSON(baseLayer, category, srs, lang);
-
         // If user doesn't have category, default category is added with empty locale
         // Categories isn't always handled by MyPlaces bundle so default localized names are stored in baselayer
         if (category.getNames().isEmpty()) {
             // use locale from baselayer
             JSONHelper.putValue(layerJson, KEY_LOCALE, baseLayer.getLocale());
+        } else {
+            // Override localized name (from baselayer) if available
+            // if MyPlaces bundle doesn't handle layer, locale isn't used
+            JSONHelper.putValue(layerJson, KEY_LOCALIZED_NAME, category.getName(lang));
         }
         return layerJson;
+    }
+
+    @Override
+    protected JSONObject getControlData(UserDataLayer layer, WFSLayerOptions wfsOpts) {
+        MyPlaceCategory cat = (MyPlaceCategory) layer;
+        JSONObject controlData = super.getControlData(layer, wfsOpts);
+        JSONHelper.putValue(controlData, KEY_IS_DEFAULT, cat.isDefault());
+        return controlData;
     }
 
     @Override
