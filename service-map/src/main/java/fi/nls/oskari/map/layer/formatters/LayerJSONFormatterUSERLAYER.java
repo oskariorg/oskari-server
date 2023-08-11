@@ -57,7 +57,7 @@ public class LayerJSONFormatterUSERLAYER extends LayerJSONFormatterUSERDATA {
     }
 
     // parse fields like WFSLayerAttributes
-    private static JSONObject parseAttributes(final JSONArray fields) {
+    protected static JSONObject parseAttributes(final JSONArray fields) {
         JSONObject attributes = new JSONObject();
         if (fields == null || fields.length() == 0){
             return attributes;
