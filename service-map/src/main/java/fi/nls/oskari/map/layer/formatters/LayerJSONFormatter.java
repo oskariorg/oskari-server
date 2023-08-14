@@ -41,6 +41,7 @@ public class LayerJSONFormatter {
     protected static final String KEY_LOCALIZED_NAME = "name"; // FIXME: title
     protected static final String KEY_SUBTITLE = "subtitle";
     protected static final String KEY_OPTIONS = "options";
+    protected static final String KEY_ATTRIBUTES = "attributes";
     protected static final String KEY_DATA_PROVIDER = "orgName";
     protected static final String[] STYLE_KEYS ={"name", "title", "legend"};
 
@@ -140,13 +141,12 @@ public class LayerJSONFormatter {
         if(layer.getMaxScale() != null && layer.getMaxScale() != -1) {
             JSONHelper.putValue(layerJson, "maxScale", layer.getMaxScale());
         }
-        JSONObject attributes = layer.getAttributes();
         if (!useProxy) {
             // don't write additional params for proxied urls
             JSONHelper.putValue(layerJson, "params", layer.getParams());
         }
         JSONHelper.putValue(layerJson, KEY_OPTIONS, layer.getOptions());
-        JSONHelper.putValue(layerJson, "attributes", attributes);
+        JSONHelper.putValue(layerJson, KEY_ATTRIBUTES, layer.getAttributes());
 
         JSONHelper.putValue(layerJson, "realtime", layer.getRealtime());
         JSONHelper.putValue(layerJson, "refreshRate", layer.getRefreshRate());

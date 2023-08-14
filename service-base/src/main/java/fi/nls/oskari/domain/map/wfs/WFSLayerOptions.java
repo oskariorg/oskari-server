@@ -30,8 +30,9 @@ import org.json.JSONObject;
  * }
  */
 public class WFSLayerOptions {
-    private static final String KEY_RENDER_MODE = "renderMode";
-    private static final String KEY_CLUSTER = "clusteringDistance";
+    public static final String KEY_RENDER_MODE = "renderMode";
+    public static final String KEY_CLUSTER = "clusteringDistance";
+    private static final String KEY_HOVER = "hover";
     private static final String KEY_LABEL = "labelProperty";
     private static final String KEY_STYLES = "styles";
     private static final String KEY_DEFAULT_STYLE = "default";
@@ -78,15 +79,20 @@ public class WFSLayerOptions {
         }
         JSONHelper.putValue(defaultStyle, KEY_FEATURE_STYLE, style);
     }
-    public JSONObject getDefaultFeatureStyle () {
+    public JSONObject getDefaultStyle () {
         JSONObject styles = JSONHelper.getJSONObject(options, KEY_STYLES);
         JSONObject defaultStyle = JSONHelper.getJSONObject(styles, KEY_DEFAULT_STYLE);
-        JSONObject featureStyle =  JSONHelper.getJSONObject(defaultStyle, KEY_FEATURE_STYLE);
-        if (featureStyle == null) {
+        if (defaultStyle != null) {
             // all UserDataLayer should have one 'default' named style with featureStyle definitions
-            return getDefaultOskariStyle();
+            return defaultStyle;
         }
-        return featureStyle;
+        return JSONHelper.createJSONObject(KEY_FEATURE_STYLE, getDefaultOskariStyle());
+    }
+    public JSONObject getDefaultFeatureStyle () {
+        JSONObject defaultStyle = getDefaultStyle();
+        return defaultStyle.has(KEY_FEATURE_STYLE)
+                ? JSONHelper.getJSONObject(defaultStyle, KEY_FEATURE_STYLE)
+                : getDefaultOskariStyle();
     }
     /*-- Common --*/
     public void setProperty (String key, Object value) {
@@ -105,6 +111,7 @@ public class WFSLayerOptions {
     public void setClusteringDistance (int cluster) {
         JSONHelper.putValue(options, KEY_CLUSTER, cluster);
     }
+    public JSONObject getHover () { return options.optJSONObject(KEY_HOVER); }
 
     // fallback for VectorStyleService and UserDataLayer getDefaultFeatureStyle
     public static JSONObject getDefaultOskariStyle () {

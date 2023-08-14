@@ -1,19 +1,18 @@
 package fi.nls.oskari.map.layer.formatters;
 
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
-import fi.nls.oskari.analysis.AnalysisHelper;
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.domain.map.UserDataLayer;
 import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.domain.map.wfs.WFSLayerAttributes;
+import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
+import fi.nls.oskari.map.geometry.WKTHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.WFSConversionHelper;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.oskari.permissions.model.PermissionType;
-
-import static fi.nls.oskari.service.capabilities.CapabilitiesConstants.KEY_LAYER_COVERAGE;
 
 /**
  * Analysis layer to Oskari layer JSON
@@ -22,9 +21,7 @@ public class LayerJSONFormatterANALYSIS extends LayerJSONFormatterUSERDATA {
     private static final String ANALYSIS_BASELAYER_ID = PropertyUtil.get("analysis.baselayer.id");
 
     private static final String JSKEY_LAYERID = "layerId";
-    private static final String JSKEY_OPACITY = "opacity";
-    private static final String JSKEY_MINSCALE = "minScale";
-    private static final String JSKEY_MAXSCALE = "maxScale";
+    private static final String JSKEY_LAYER_TYPE = "layerType";
     private static final String JSKEY_METHODPARAMS = "methodParams";
     private static final String JSKEY_NO_DATA = "no_data";
     private static final String JSKEY_METHOD = "method";
@@ -33,11 +30,7 @@ public class LayerJSONFormatterANALYSIS extends LayerJSONFormatterUSERDATA {
     private static final String JSKEY_TOP = "top";
     private static final String JSKEY_LEFT = "left";
     private static final String JSKEY_RIGHT = "right";
-    private static final String JSKEY_WPSURL = "wpsUrl";
-    private static final String JSKEY_WPSNAME = "wpsName";
-    private static final String JSKEY_WPSLAYERID = "wpsLayerId";
-
-    private static final String ANALYSIS_RENDERING_ELEMENT = PropertyUtil.get("analysis.rendering.element");
+    private static final String JSKEY_WPS_TYPE = "wpsInputType";
 
     public JSONObject getJSON(OskariLayer baseLayer, Analysis analysis, String srs, String lang) {
         final JSONObject layerJson = super.getJSON(baseLayer, analysis, srs, lang);
@@ -52,42 +45,74 @@ public class LayerJSONFormatterANALYSIS extends LayerJSONFormatterUSERDATA {
             }
             JSONHelper.putValue(layerJson, KEY_ID, id);
         }
-
-        JSONHelper.putValue(layerJson, JSKEY_WPSURL, AnalysisHelper.getAnalysisRenderingUrl());
-        JSONHelper.putValue(layerJson, JSKEY_WPSNAME, ANALYSIS_RENDERING_ELEMENT);
-        JSONHelper.putValue(layerJson, JSKEY_WPSLAYERID, analysis.getId());
-
-        int opacity = layerJson.optInt(JSKEY_OPACITY, -1);
-        if (opacity > -1) {
-            JSONHelper.putValue(layerJson, JSKEY_OPACITY, opacity);
-        }
-        if (layerJson.has(JSKEY_MINSCALE)) {
-            JSONHelper.putValue(layerJson, JSKEY_MINSCALE, layerJson.optInt(JSKEY_MINSCALE, -1));
-        }
-        if (layerJson.has(JSKEY_MINSCALE)) {
-            JSONHelper.putValue(layerJson, JSKEY_MAXSCALE,  layerJson.optInt(JSKEY_MAXSCALE, -1));
-        }
-        JSONObject bbox = JSONHelper.getJSONObject(analyseJson, JSKEY_BBOX);
-        if (bbox != null) {
-            try {
-                // TODO: ReverencedEnvelope or WKT -> WKTHelper.transform(native, srs)
-                Double bottom = bbox.getDouble(JSKEY_BOTTOM);
-                Double top = bbox.getDouble(JSKEY_TOP);
-                Double left = bbox.getDouble(JSKEY_LEFT);
-                Double right = bbox.getDouble(JSKEY_RIGHT);
-                String geom = "POLYGON ((" + left + " " + bottom + ", " + right + " " + bottom + ", " +
-                        right + " " + top + ", " + left + " " + top + ", " + left + " " + bottom + "))";
-                layerJson.put(KEY_LAYER_COVERAGE, geom);
-            } catch (JSONException ignored) {
-                // Don't add geom if some value is missing or invalid
-            }
-        }
-        JSONObject baseAttributes = JSONHelper.getJSONObject(layerJson, "attributes");
-        JSONObject layerAttributes = parseAttributes(analysis, analyseJson, lang);
-        // baseAttributes comes from baseLayer merge layer attributes
-        JSONHelper.putValue(layerJson, "attributes", JSONHelper.merge(baseAttributes, layerAttributes));
         return layerJson;
     }
+    @Override
+    protected String getStyleType(JSONArray properties) {
+        // no need to find from properties
+        return WFSConversionHelper.TYPE_COLLECTION;
+    }
+    @Override
+    protected JSONArray getProperties (UserDataLayer layer, WFSLayerAttributes wfsAttr, String lang) {
+        Analysis analysis = (Analysis) layer;
+        JSONArray props = new JSONArray();
+        // Analysis json contains fields and fieldTypes, maybe should use them instead of 't' or 'n' prefixed names
+        // Requires changes in frontend so use columns for now
+        for (int i = 1; i < 11; i++) {
+            String col = analysis.getColx(i);
+            if (col != null && col.contains("=")) {
+                String[] splitted = col.split("=");
+                JSONObject prop = JSONHelper.createJSONObject("name", splitted[0]); // t${i} || n${i}
+                JSONHelper.putValue(prop, "label", splitted[1]);
+                String type = splitted[0].startsWith("n") ? WFSConversionHelper.NUMBER : WFSConversionHelper.STRING;
+                JSONHelper.putValue(prop, "type", type);
+                props.put(prop);
+            }
+        }
+        props.put(DEAULT_GEOMETRY_PROPERTY);
+        return props;
+    }
+    @Override
+    protected String getCoverage (UserDataLayer layer, String srs) {
+        Analysis analysis = (Analysis) layer;
+        JSONObject analyseJson = JSONHelper.createJSONObject(analysis.getAnalyse_json());
+        JSONObject bbox = JSONHelper.getJSONObject(analyseJson, JSKEY_BBOX);
+        if (bbox == null) {
+            return null;
+        }
+        try {
+            Double bottom = bbox.getDouble(JSKEY_BOTTOM);
+            Double top = bbox.getDouble(JSKEY_TOP);
+            Double left = bbox.getDouble(JSKEY_LEFT);
+            Double right = bbox.getDouble(JSKEY_RIGHT);
+            String geomWKT = WKTHelper.getBBOX(left,bottom, right, top);
+            String nativeSrs = PropertyUtil.get("oskari.native.srs", "EPSG:4326");
+            if (nativeSrs.equals(srs)) {
+                return geomWKT;
+            }
+            return WKTHelper.transform(geomWKT, nativeSrs, srs);
+        } catch (Exception ignored) {
+            // Don't add geom if some value is missing or invalid
+        }
+        return null;
+    }
+    @Override
+    protected JSONObject getControlData (UserDataLayer layer, WFSLayerOptions wfsOpts) {
+        JSONObject controlData = super.getControlData(layer, wfsOpts);
+        Analysis analysis = (Analysis) layer;
+        JSONObject analyseJson = JSONHelper.createJSONObject(analysis.getAnalyse_json());
+        JSONObject params = JSONHelper.getJSONObject(analyseJson, JSKEY_METHODPARAMS);
+        if (params != null) {
+            JSONHelper.putValue(controlData, WFSLayerAttributes.KEY_NO_DATA_VALUE, JSONHelper.get(params, JSKEY_NO_DATA));
+        }
+        JSONHelper.putValue(controlData, JSKEY_METHOD, JSONHelper.optString(analyseJson, JSKEY_METHOD));
+        // JSONHelper.putValue(controlData, JSKEY_WPS_TYPE, attrData.optString(JSKEY_WPS_TYPE, null));
+        JSONHelper.putValue(controlData, "analysisId", analysis.getId());
+        JSONHelper.putValue(controlData, "baseLayerId", JSONHelper.optString(analyseJson, JSKEY_LAYERID));
+        JSONHelper.putValue(controlData, "baseLayerType", JSONHelper.optString(analyseJson, JSKEY_LAYER_TYPE));
+        return controlData;
+    }
+
     private static JSONObject parseAttributes (Analysis analysis, JSONObject analysisJSON, String lang) {
         JSONObject attributes = new JSONObject();
         JSONObject data = new JSONObject();
