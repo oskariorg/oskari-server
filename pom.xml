@@ -102,7 +102,7 @@
         <powermock.version>2.0.9</powermock.version>
         <junit.version>4.13.2</junit.version>
         <xmlunit.version>1.6</xmlunit.version>
-        <h2database.version>2.1.210</h2database.version>
+        <h2database.version>2.2.220</h2database.version>
 
         <log4j.version>2.17.1</log4j.version>
         <slf4j.version>1.7.32</slf4j.version>
