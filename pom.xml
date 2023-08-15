@@ -78,8 +78,8 @@
         <axiom.version>1.2.22</axiom.version>
         <stax-api.version>1.0-2</stax-api.version>
 
-        <jackson.version>2.13.4</jackson.version>
-        <jackson-databind.version>2.13.4.2</jackson-databind.version>
+        <jackson.version>2.15.2</jackson.version>
+        <jackson-databind.version>2.15.2</jackson-databind.version>
 
         <fi.mml.nameregister.version>1.0</fi.mml.nameregister.version>
 
