@@ -169,7 +169,9 @@ public class DescribeLayerHandler extends RestActionHandler {
         if (styleType == null) {
             String geomName = caps.getGeometryField();
             FeaturePropertyType fpt = caps.getFeatureProperty(geomName);
-            styleType = WFSConversionHelper.getStyleType(fpt.type);
+            if (fpt != null) {
+                styleType = WFSConversionHelper.getStyleType(fpt.type);
+            }
         }
         data.put(WFSLayerAttributes.KEY_STYLE_TYPE, styleType);
 
