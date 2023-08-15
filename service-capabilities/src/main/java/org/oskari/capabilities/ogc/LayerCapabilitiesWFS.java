@@ -55,6 +55,9 @@ public class LayerCapabilitiesWFS extends LayerCapabilitiesOGC {
 
     @JsonIgnore
     public FeaturePropertyType getFeatureProperty(String name) {
+        if (name == null) {
+            return null;
+        }
         return getFeatureProperties().stream().filter(p -> name.equals(p.name)).findFirst().orElse(null);
     }
 
