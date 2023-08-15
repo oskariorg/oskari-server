@@ -49,15 +49,15 @@
         <!-- Value comes from profile when needed -->
         <module.build.config></module.build.config>
 
-        <spring.version>5.3.27</spring.version>
-        <spring-security.version>5.7.8</spring-security.version>
+        <spring.version>5.3.28</spring.version>
+        <spring-security.version>5.7.9</spring-security.version>
         <!--
         session-bom 2021.2.0 uses 2.7.0 from session
-        https://github.com/spring-projects/spring-session/blob/2.7.0/gradle/dependency-management.gradle
-        which is aligned with core 5.3.20 and security 5.7.0 versions
-        https://github.com/spring-projects/spring-session/releases/tag/2.7.0
+        https://github.com/spring-projects/spring-session/blob/2.7.2/gradle/dependency-management.gradle
+        which is aligned with core 5.3.28 and security 5.7.9 versions
+        https://github.com/spring-projects/spring-session/releases/tag/2.7.2
         https://search.maven.org/artifact/org.springframework.session/spring-session-bom/2021.2.0/pom -->
-        <spring.session.version>2021.2.0</spring.session.version>
+        <spring.session.version>2021.2.2</spring.session.version>
 
         <javax.servlet.version>3.1.0</javax.servlet.version>
         <javax.servlet.jsp.version>2.3.3</javax.servlet.jsp.version>
