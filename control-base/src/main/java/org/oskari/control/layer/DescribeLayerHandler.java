@@ -30,10 +30,10 @@ import org.oskari.control.layer.model.LayerOutput;
 import org.oskari.permissions.PermissionService;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static fi.nls.oskari.control.ActionConstants.PARAM_ID;
 import static fi.nls.oskari.control.ActionConstants.PARAM_SRS;
-import static fi.nls.oskari.domain.map.OskariLayer.TYPE_WFS;
 
 /**
  * An action route that returns metadata for layers
@@ -43,6 +43,7 @@ public class DescribeLayerHandler extends RestActionHandler {
     private PermissionHelper permissionHelper;
     private final ObjectMapper MAPPER = new ObjectMapper();
 
+    private Set<String> preferredSRS;
     private static final Logger LOG = LogFactory.getLogger(DescribeLayerHandler.class);
 
     @Override
@@ -233,10 +234,7 @@ public class DescribeLayerHandler extends RestActionHandler {
         try {
             String capsJSON = layer.getCapabilities().toString();
             LayerCapabilitiesWMTS caps = CapabilitiesService.fromJSON(layer.getCapabilities().toString(), OskariLayer.TYPE_WMTS);
-            TileMatrixLink link = caps.getTileMatrixLinks().stream()
-                    .filter(l -> crs.equals(l.getTileMatrixSet().getShortCrs()))
-                    .findFirst()
-                    .orElseThrow(() -> new ActionParamsException("No tilematrix matching srs: " + crs));
+            TileMatrixLink link = determineTileMatrix(caps, crs);
 
             // Make a copy so we don't mutate layer in cache
             JSONObject modifiedCapabilities = new JSONObject(capsJSON);
@@ -247,5 +245,43 @@ public class DescribeLayerHandler extends RestActionHandler {
         } catch (Exception e) {
             throw new ActionParamsException("Unable to parse JSON", e);
         }
+    }
+
+    private TileMatrixLink determineTileMatrix(LayerCapabilitiesWMTS caps, String crs) throws ActionException {
+        TileMatrixLink link = caps.getTileMatrixLinks().stream()
+                .filter(l -> crs.equals(l.getTileMatrixSet().getShortCrs()))
+                .findFirst()
+                .orElse(null);
+        if (link != null) {
+            // happy case, we found a matching tilematrix for projection
+            return link;
+        }
+        // set of srs that layer supports
+        Set<String> supportedSRS = caps.getTileMatrixLinks().stream()
+                .map(l -> l.getTileMatrixSet().getShortCrs())
+                .collect(Collectors.toSet());
+        // first of preferred srs that layer supports
+        Set<String> prefSRS = getPreferredSRS();
+        String matchedSRS = prefSRS.stream()
+                .filter(srs -> supportedSRS.contains(srs))
+                .findFirst()
+                .orElseThrow(() -> new ActionParamsException("None of preferred SRS (" + LOG.getAsString(prefSRS) + ") supported by layer: " + LOG.getAsString(supportedSRS)));
+
+        return caps.getTileMatrixLinks().stream()
+                .filter(l -> matchedSRS.equals(l.getTileMatrixSet().getShortCrs()))
+                .findFirst()
+                .orElseThrow(() -> new ActionParamsException("No tilematrix matching srs: " + matchedSRS));
+    }
+
+    private Set<String> getPreferredSRS() {
+        if (preferredSRS == null) {
+            preferredSRS = new HashSet<>(5);
+            String nativeCRS = PropertyUtil.get("oskari.native.srs", "EPSG:3857");
+            preferredSRS.add(nativeCRS);
+            preferredSRS.add("EPSG:3857");
+            preferredSRS.add("EPSG:4326");
+            preferredSRS.add("EPSG:900913");
+        }
+        return preferredSRS;
     }
 }
