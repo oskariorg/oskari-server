@@ -91,7 +91,7 @@
         <jedis.version>3.8.0</jedis.version>
         <quartz-scheduler.version>2.3.2</quartz-scheduler.version>
 
-        <geotools.version>28.2</geotools.version>
+        <geotools.version>28.4</geotools.version>
         <jts.version>1.19.0</jts.version>
         <!-- https://github.com/ElectronicChartCentre/java-vector-tile -->
         <mvt.version>1.3.23</mvt.version>
