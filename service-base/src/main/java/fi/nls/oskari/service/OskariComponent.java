@@ -21,6 +21,13 @@ public abstract class OskariComponent {
         }
         return getClass().getSimpleName();
     }
+    public int getOrder () {
+        if(getClass().isAnnotationPresent(Oskari.class)) {
+            Oskari r = getClass().getAnnotation(Oskari.class);
+            return r.order();
+        }
+        return Integer.MAX_VALUE;
+    }
     /**
      * Hook for setting up requirements for component
      */
