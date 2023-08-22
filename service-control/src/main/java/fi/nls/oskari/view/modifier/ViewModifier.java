@@ -179,14 +179,17 @@ public abstract class ViewModifier {
      * @return Set of bundles listed in the startupsequence
      */
     public Set<String> getBundleIds(final JSONArray startupSeq) {
-        final Set<String> bundles = new HashSet<String>();
+        final Set<String> bundles = new HashSet<>();
         if(startupSeq == null) {
             return bundles;
         }
         for (int i = 0; i < startupSeq.length(); i++) {
-            final JSONObject bundle = (JSONObject) startupSeq.opt(i);
-            final String startupBundleid = bundle.optString("bundlename");
-            if(startupBundleid != null) {
+            JSONObject bundle = startupSeq.optJSONObject(i);
+            if (bundle == null) {
+                continue;
+            }
+            final String startupBundleid = bundle.optString("bundlename", null);
+            if (startupBundleid != null) {
                 bundles.add(startupBundleid);
             }
         }
