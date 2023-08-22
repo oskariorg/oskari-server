@@ -99,14 +99,24 @@ public class ActionControl {
      * returned by getName() method.
      */
     public synchronized static void addDefaultControls() {
-
         ServiceLoader<ActionHandler> impl = ServiceLoader.load(ActionHandler.class);
-
-        for (ActionHandler loadedImpl : impl) {
-            if ( loadedImpl != null ) {
-                addAction(loadedImpl.getName(), loadedImpl);
+        List<ActionHandler> sortedList = new ArrayList<>();
+        for (ActionHandler loadedImpl: impl) {
+            if (loadedImpl == null) {
+                continue;
             }
+            sortedList.add(loadedImpl);
         }
+        sortedList.sort(Comparator.comparingInt(ActionHandler::getOrder));
+        sortedList.forEach(loadedImpl -> addAction(loadedImpl.getName(), loadedImpl));
+        /*
+        // After Java 9+ we can use stream
+        impl.stream()
+                .filter( h -> h != null)
+                .map(h -> h.get())
+                .sorted(Comparator.comparingInt(ActionHandler::getOrder))
+                .forEach(loadedImpl -> addAction(loadedImpl.getName(), loadedImpl));
+         */
     }
 
     /**

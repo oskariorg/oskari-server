@@ -16,4 +16,5 @@ import java.lang.annotation.Target;
 public @interface Oskari {
 
     String value() default "";
+    int order() default Integer.MAX_VALUE;
 }

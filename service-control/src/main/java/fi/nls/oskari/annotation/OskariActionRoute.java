@@ -20,4 +20,6 @@ public @interface OskariActionRoute {
      * @return
      */
     String value() default "";
+
+    int order() default Integer.MAX_VALUE;
 }
