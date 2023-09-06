@@ -13,7 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
-import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -69,7 +69,7 @@ public class DatabaseUserService extends UserService {
 
             User fetchedUser = getUser(username);
             OffsetDateTime previousLastLogin = fetchedUser.getLastLogin();
-            OffsetDateTime now = LocalDateTime.now().atZone(ZoneId.systemDefault()).toOffsetDateTime();
+            OffsetDateTime now = LocalDateTime.now().atOffset(ZoneOffset.UTC);
             fetchedUser.setLastLogin(now);
             userService.updateUser(fetchedUser);
 
