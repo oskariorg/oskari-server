@@ -11,9 +11,6 @@ import fi.nls.oskari.service.db.UserContentService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -67,16 +64,7 @@ public class DatabaseUserService extends UserService {
                 return null;
             }
 
-            User fetchedUser = getUser(username);
-            OffsetDateTime previousLastLogin = fetchedUser.getLastLogin();
-            OffsetDateTime now = LocalDateTime.now().atOffset(ZoneOffset.UTC);
-            fetchedUser.setLastLogin(now);
-            userService.updateUser(fetchedUser);
-
-            // return the previous login to front
-            fetchedUser.setLastLogin(previousLastLogin);
-            return fetchedUser;
-
+            return getUser(username);
         } catch (Exception ex) {
             throw new ServiceException("Unable to handle login", ex);
         }
