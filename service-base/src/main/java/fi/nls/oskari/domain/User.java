@@ -8,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -34,6 +35,8 @@ public class User implements Serializable {
     private String screenname = "";
     private String email = "";
     private JSONObject attributes = new JSONObject();
+    private OffsetDateTime created;
+    private OffsetDateTime lastLogin;
 
     private String uuid = "";
     private Set<Role> roles = new LinkedHashSet<>();
@@ -208,6 +211,22 @@ public class User implements Serializable {
 
     public String getFirstname() {
         return firstname;
+    }
+
+    public OffsetDateTime getCreated() {
+        return created;
+    }
+
+    public void setCreated(OffsetDateTime created) {
+        this.created = created;
+    }
+
+    public OffsetDateTime getLastLogin() {
+        return lastLogin;
+    }
+
+    public void setLastLogin(OffsetDateTime lastLogin) {
+        this.lastLogin = lastLogin;
     }
 
     public JSONObject toJSON() {
