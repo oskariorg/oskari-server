@@ -28,6 +28,8 @@ public class User implements Serializable {
     private static final String KEY_USERID = "userID";
     private final static String KEY_ROLES = "roles";
     private final static String KEY_ADMIN = "admin";
+    private final static String KEY_CREATED = "created";
+    private final static String KEY_LAST_LOGIN = "lastLogin";
 
     private long id = -1;
     private String lastname = "";
@@ -238,6 +240,8 @@ public class User implements Serializable {
             userData.put(KEY_NICKNAME, getScreenname());
             userData.put(KEY_USERUUID, getUuid());
             userData.put(KEY_USERID, getId());
+            userData.put(KEY_CREATED, getCreated());
+            userData.put(KEY_LAST_LOGIN, getLastLogin());
             if (isAdmin()){
                 userData.put(KEY_ADMIN, true);
             }
