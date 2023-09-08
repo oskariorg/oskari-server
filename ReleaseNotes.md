@@ -1,5 +1,62 @@
 # Release Notes
 
+## 2.12.0
+
+For a full list of changes see: 
+https://github.com/oskariorg/oskari-server/milestone/47?closed=1
+
+### User management
+
+- Added param for `Users` route to get users by role.
+- Added paging for user queries to make user management usable on instances with a lot of users
+- `GetAllRoles` route has been deprecated since a more recent `ManageRoles` route basically does a better job for the same thing.
+- Frontend now receives a simple boolean flag if user is admin or not. Role name for admins can change between instances and now frontend has easy way of detecting admins.
+
+### Layer permissions
+
+- Added new route for getting and changing layer permissions `LayerPermission`.
+- Replaces `GetPermissionsLayerHandlers` that is now deprecated and will be removed in future release.
+- Replaces `SaveLayerPermission` that is now deprecated and will be removed in future release.
+- Output format/more details: https://github.com/oskariorg/oskari-server/pull/973
+
+### GetAppSetup route
+
+- The instance default vector style is now sent as part of the `GetAppSetup`` response.
+- Markers are now sent as templates with placeholders instead of hardcoded colors. This removes duplicated processing of markers in server / frontend.
+- Now accepts url-parameter `mobile` with boolean value. The server can be configured to add or remove bundles depending on this value to make mobile experience more user-friendly by removing functionality that doens't work well on mobile/small screens. Configuration described in: https://github.com/oskariorg/oskari-server/pull/995
+
+### DescribeLayer route
+
+- Added metadata about attributes available on WFS layers.
+- Added configuration of attributes like renaming, hiding and reordering properties and for formatting attribute values.
+- Added a simple type for layer geometry that allows optimizing frontend based on the geometry type (point/line/polygon).
+
+### Other changes
+
+- Fixed an axis order issue on VectorFeatureWriter: https://github.com/oskariorg/oskari-server/pull/976
+- Reduced unnecessary logging when a vector service doesn't respond with JSON/GML.
+- Allowed WMTS tile matrices to be passed to frontend even if there is no exact match for CRS. This allows OpenLayers to reproject the layer with proper configs: https://github.com/oskariorg/oskari-server/pull/991
+- Added order attribute for custom annotated components to control the initialization order: https://github.com/oskariorg/oskari-server/pull/992. Can be usedto fix issues where one component needs to be initialized before another.
+- Added new bundle registrations:
+    - `featuredata` (React.js replacement for current jQuery impl `featuredata2`)
+    - `admin-permissions`  (React.js replacement for current jQuery impl `admin-layerrights`)
+
+### Updated dependencies
+
+- Jetty 9.4.48.v20220622 -> 9.4.51.v20230217
+- GeoTools 28.2 -> 28.4
+- Spring 5.3.27 -> 5.3.28
+- Spring security 5.7.8 -> 5.7.9
+- Spring session 2021.2.0 -> 2021.2.2
+- Jackson 2.13.4 -> 2.15.2
+- JSoup 1.15.3 -> 1.16.1
+- Log4J 2.17.1 -> 2.20.0
+- SLFJ2 1.7.32 -> 1.7.36
+- commons-lang 3.12.0 -> 3.13.0
+- MVT 1.3.22 -> 1.3.23
+- h2 2.1.210 -> 2.2.220
+- GeoServer extensions updated 2.19 -> 2.22.4 
+
 ## 2.11.0
 
 For a full list of changes see: 
