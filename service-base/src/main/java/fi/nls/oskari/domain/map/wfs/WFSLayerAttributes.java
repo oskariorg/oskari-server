@@ -64,9 +64,8 @@ import java.util.*;
  *         },
  *         "noDataValue": -1,
  *         "commonId": "grd_id",
- *         "geometryType": GeometryType,
- *         "styleType": "point" || "line" || "area" || "collection"
- *         "idProperty": "id_nro"
+ *         "simpleGeometryType": "point" || "line" || "area" || "collection"
+ *         "replaceFeatureId": "id_nro"
  *     },
  *     "maxFeatures": 100,
  *     "namespaceURL": "http://oskari.org"
@@ -78,10 +77,8 @@ public class WFSLayerAttributes {
     public static final String KEY_NO_DATA_VALUE = "noDataValue";
     public static final String KEY_COMMON_ID = "commonId";
 
-    public static final String KEY_STYLE_TYPE = "styleType";
-    // TODO: should admin store geometryType => styleType
-    public static final String KEY_GEOMETRY_TYPE = "geometryType";
-    public static final String KEY_ID_PROPERTY = "idProperty";
+    public static final String KEY_GEOMETRY_TYPE = "simpleGeometryType";
+    public static final String KEY_REPLACE_ID = "replaceFeatureId";
 
     private Map<String, List<String>> params = new HashMap<>();
     private JSONObject locales = null;

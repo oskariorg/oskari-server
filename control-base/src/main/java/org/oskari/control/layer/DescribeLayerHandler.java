@@ -1,5 +1,6 @@
 package org.oskari.control.layer;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
@@ -41,7 +42,10 @@ import static fi.nls.oskari.control.ActionConstants.PARAM_SRS;
 @OskariActionRoute("DescribeLayer")
 public class DescribeLayerHandler extends RestActionHandler {
     private PermissionHelper permissionHelper;
-    private final ObjectMapper MAPPER = new ObjectMapper();
+    private static final ObjectMapper MAPPER = new ObjectMapper();
+    static {
+        MAPPER.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+    }
 
     private Set<String> preferredSRS;
     private static final Logger LOG = LogFactory.getLogger(DescribeLayerHandler.class);
@@ -163,18 +167,17 @@ public class DescribeLayerHandler extends RestActionHandler {
         JSONObject attrData = attr.getAttributesData();
         data.put(WFSLayerAttributes.KEY_NO_DATA_VALUE, attr.getNoDataValue());
         data.put(WFSLayerAttributes.KEY_COMMON_ID, attr.getCommonId());
-        data.put(WFSLayerAttributes.KEY_ID_PROPERTY, attrData.optString(WFSLayerAttributes.KEY_ID_PROPERTY, null));
+        data.put(WFSLayerAttributes.KEY_REPLACE_ID, attrData.optString(WFSLayerAttributes.KEY_REPLACE_ID, null));
 
-        // TODO: should admin store geometryType => styleType
-        String styleType = attrData.optString(WFSLayerAttributes.KEY_GEOMETRY_TYPE, null);
-        if (styleType == null) {
+        String geomType = attrData.optString(WFSLayerAttributes.KEY_GEOMETRY_TYPE, null);
+        if (geomType == null) {
             String geomName = caps.getGeometryField();
             FeaturePropertyType fpt = caps.getFeatureProperty(geomName);
             if (fpt != null) {
-                styleType = WFSConversionHelper.getStyleType(fpt.type);
+                geomType = WFSConversionHelper.getStyleType(fpt.type);
             }
         }
-        data.put(WFSLayerAttributes.KEY_STYLE_TYPE, styleType);
+        data.put(WFSLayerAttributes.KEY_GEOMETRY_TYPE, geomType);
 
         data.put(WFSLayerOptions.KEY_RENDER_MODE, opts.getRenderMode());
         data.put(WFSLayerOptions.KEY_CLUSTER, opts.getClusteringDistance());
