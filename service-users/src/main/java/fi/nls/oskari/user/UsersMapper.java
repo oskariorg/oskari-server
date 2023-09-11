@@ -13,22 +13,24 @@ public interface UsersMapper {
             @Result(property="email", column="email"),
             @Result(property="uuid", column="uuid"),
             @Result(property="screenname", column="user_name"),
-            @Result(property="attributes", column="attributes")
+            @Result(property="attributes", column="attributes"),
+            @Result(property="created", column="created"),
+            @Result(property="lastLogin", column="last_login")
     })
-    @Select("SELECT id, first_name, last_name, user_name, email, uuid, attributes" +
+    @Select("SELECT id, first_name, last_name, user_name, email, uuid, attributes, created, last_login" +
             " FROM oskari_users" +
             " ORDER BY user_name")
     List<User> findAll();
 
     @ResultMap("UsersResult")
-    @Select("SELECT id, first_name, last_name, user_name, email, uuid, attributes" +
+    @Select("SELECT id, first_name, last_name, user_name, email, uuid, attributes, created, last_login" +
             " FROM oskari_users" +
             " ORDER BY user_name" +
             " LIMIT #{limit} OFFSET #{offset}")
     List<User> findAllPaginated(@Param("limit") int limit, @Param("offset") int offset);
 
     @ResultMap("UsersResult")
-    @Select("SELECT id, first_name, last_name, user_name, email, uuid, attributes" +
+    @Select("SELECT id, first_name, last_name, user_name, email, uuid, attributes, created, last_login" +
             " FROM oskari_users" +
             " WHERE " +
             "   user_name ilike '%' || #{query} || '%'" +
@@ -74,12 +76,13 @@ public interface UsersMapper {
             " last_name = #{lastname}, " +
             " user_name = #{screenname}, " +
             " email = #{email}, " +
-            " attributes = #{attributes} " +
+            " attributes = #{attributes}, " +
+            " last_login = #{lastLogin} " +
             " WHERE id = #{id}")
     void updateUser(User user);
 
     @ResultMap("UsersResult")
-    @Select("SELECT id, first_name, last_name, user_name, email, uuid, attributes" +
+    @Select("SELECT id, first_name, last_name, user_name, email, uuid, attributes, created, last_login" +
             " FROM oskari_users" +
             " WHERE id = #{id}")
     User find(long id);
@@ -95,7 +98,7 @@ public interface UsersMapper {
     String getPassword(final String username);
 
     @ResultMap("UsersResult")
-    @Select("SELECT id, first_name, last_name, user_name, email, uuid, attributes" +
+    @Select("SELECT id, first_name, last_name, user_name, email, uuid, attributes, created, last_login" +
             " FROM oskari_users" +
             " WHERE user_name = #{username}")
     User findByUserName(String username);

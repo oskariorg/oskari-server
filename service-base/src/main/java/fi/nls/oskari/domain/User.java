@@ -8,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -27,6 +28,8 @@ public class User implements Serializable {
     private static final String KEY_USERID = "userID";
     private final static String KEY_ROLES = "roles";
     private final static String KEY_ADMIN = "admin";
+    private final static String KEY_CREATED = "created";
+    private final static String KEY_LAST_LOGIN = "lastLogin";
 
     private long id = -1;
     private String lastname = "";
@@ -34,6 +37,8 @@ public class User implements Serializable {
     private String screenname = "";
     private String email = "";
     private JSONObject attributes = new JSONObject();
+    private OffsetDateTime created;
+    private OffsetDateTime lastLogin;
 
     private String uuid = "";
     private Set<Role> roles = new LinkedHashSet<>();
@@ -210,6 +215,22 @@ public class User implements Serializable {
         return firstname;
     }
 
+    public OffsetDateTime getCreated() {
+        return created;
+    }
+
+    public void setCreated(OffsetDateTime created) {
+        this.created = created;
+    }
+
+    public OffsetDateTime getLastLogin() {
+        return lastLogin;
+    }
+
+    public void setLastLogin(OffsetDateTime lastLogin) {
+        this.lastLogin = lastLogin;
+    }
+
     public JSONObject toJSON() {
         try {
             JSONObject userData = new JSONObject();
@@ -219,6 +240,8 @@ public class User implements Serializable {
             userData.put(KEY_NICKNAME, getScreenname());
             userData.put(KEY_USERUUID, getUuid());
             userData.put(KEY_USERID, getId());
+            userData.put(KEY_CREATED, getCreated());
+            userData.put(KEY_LAST_LOGIN, getLastLogin());
             if (isAdmin()){
                 userData.put(KEY_ADMIN, true);
             }

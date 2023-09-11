@@ -11,7 +11,14 @@ import fi.nls.oskari.service.db.UserContentService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 
 
 public class DatabaseUserService extends UserService {
