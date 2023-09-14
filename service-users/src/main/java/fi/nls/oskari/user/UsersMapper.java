@@ -104,7 +104,7 @@ public interface UsersMapper {
     User findByUserName(String username);
 
     @ResultMap("UsersResult")
-    @Select("SELECT id, user_name, first_name, last_name, email, uuid, attributes FROM oskari_users" +
+    @Select("SELECT id, user_name, first_name, last_name, email, uuid, attributes, created, last_login FROM oskari_users" +
             " WHERE LOWER(email) = #{email}")
     User findByEmail(String email);
 
