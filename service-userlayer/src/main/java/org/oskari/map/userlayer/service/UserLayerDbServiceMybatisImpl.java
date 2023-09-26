@@ -26,7 +26,9 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
 
     private static final Logger log = LogFactory.getLogger(UserLayerDbServiceMybatisImpl.class);
     private static final String USERLAYER_MYBATIS_BATCH_SIZE = "userlayer.mybatis.batch.size";
+    private static final String NATIVE_SRS = "oskari.native.srs";
     final int batchSize = PropertyUtil.getOptional(USERLAYER_MYBATIS_BATCH_SIZE, 1000);
+    private final int srid;
     private final Cache<UserLayer> cache;
     private SqlSessionFactory factory = null;
 
@@ -41,6 +43,8 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
             log.error("Couldn't get datasource for userlayer");
         }
         cache = CacheManager.getCache(getClass().getName());
+        String epsg = PropertyUtil.get(NATIVE_SRS, "EPSG:4326");
+        srid = Integer.parseInt(epsg.substring(epsg.indexOf(':') + 1));
     }
 
     private SqlSessionFactory initializeMyBatis(final DataSource dataSource) {
@@ -68,9 +72,8 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
             final UserLayer inserted = mapper.findUserLayer(userLayerId);
             userLayer.setCreated(inserted.getCreated());
             log.debug("got layer id", userLayerId);
-
             for (UserLayerData userLayerData : userLayerDataList) {
-                mapper.insertUserLayerData(userLayerData, userLayerId);
+                mapper.insertUserLayerData(userLayerData, userLayerId, srid);
                 count++;
                 // Flushes batch statements and clears local session cache
                 if (count % batchSize == 0) {
