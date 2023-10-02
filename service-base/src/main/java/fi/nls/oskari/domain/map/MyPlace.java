@@ -13,7 +13,6 @@ public class MyPlace {
     private String imageUrl;
     private String attentionText;
     private Geometry geometry;
-
     public long getId() {
         return id;
     }
@@ -84,6 +83,14 @@ public class MyPlace {
 
     public void setGeometry(Geometry geometry) {
         this.geometry = geometry;
+    }
+
+    public String getGeomAsText() {
+        return geometry.toText();
+    }
+
+    public int getSrid() {
+        return this.geometry.getSRID();
     }
 
     public boolean isOwnedBy(final String uuid) {

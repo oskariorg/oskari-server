@@ -3,6 +3,8 @@ package fi.nls.oskari.myplaces;
 import fi.nls.oskari.domain.map.MyPlace;
 import fi.nls.oskari.domain.map.MyPlaceCategory;
 import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Update;
 
@@ -24,4 +26,30 @@ public interface MyPlaceMapper {
     List<MyPlaceCategory> findAll();
     @Delete("delete from categories where uuid = #{uid}")
     void deleteByUid(String uid);
+
+    @Insert("INSERT INTO my_places (" +
+            " uuid, " +
+            " category_id, " +
+            " name, " +
+            " attention_text, " +
+            " updated, " +
+            " geometry, " +
+            " place_desc, " +
+            " link, " +
+            " image_url " +
+            ") " +
+            " VALUES (" +
+            " #{uuid}, " +
+            " #{categoryId}, " +
+            " #{name}, " +
+            " #{attentionText}, " +
+            " now(), " +
+            " ST_SetSRID(ST_GeometryFromText(#{geomAsText}), #{srid}), " +
+            " #{desc}, " +
+            " #{link}, " +
+            " #{imageUrl} " +
+            ")")
+    @Options(useGeneratedKeys=true, keyColumn="id", keyProperty="id")
+    Long addMyPlace(MyPlace myPlace);
+
 }
