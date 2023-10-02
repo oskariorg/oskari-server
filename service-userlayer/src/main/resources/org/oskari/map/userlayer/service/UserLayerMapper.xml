@@ -127,7 +127,7 @@
             #{user_layer_data.uuid},
             #{user_layer_data.feature_id},
             CAST(#{user_layer_data.property_json} as json),
-            ST_GeomFromGeoJSON(#{user_layer_data.geometry})
+            ST_SetSRID(ST_GeomFromGeoJSON(#{user_layer_data.geometry}), #{srid})
         )
     </insert>
 

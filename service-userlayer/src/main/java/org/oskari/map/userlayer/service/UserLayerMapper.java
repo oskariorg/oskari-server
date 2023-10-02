@@ -19,7 +19,7 @@ public interface UserLayerMapper {
     String getUserLayerBbox (final long userLayerId);
 
     //UserLayerData related
-    void insertUserLayerData(@Param ("user_layer_data") final UserLayerData userLayerData, @Param("user_layer_id") final long userLayerId);
+    void insertUserLayerData(@Param ("user_layer_data") final UserLayerData userLayerData, @Param("user_layer_id") final long userLayerId, @Param("srid") final int srid);
     int updateUserLayerData(final UserLayerData userLayerData);
     void deleteUserLayerDataByLayerId (final long userLayerId);
     void deleteUserLayerData (final long id);
