@@ -87,12 +87,37 @@ public class MyPlacesFeaturesServiceMybatisImpl implements MyPlacesFeaturesServi
                 LOG.info("inserted myplace: ", place.getId());
             }
             session.commit();
+            return places.stream().mapToLong(MyPlace::getId).toArray();
         } catch (Exception e) {
             LOG.warn(e, "Exception when trying to add MyPlaces: ");
+            throw new ServiceException(e.getMessage());
         }
+    }
 
-        long[] ids = places.stream().mapToLong(place -> place.getId()).toArray();
-        return ids;
+
+    @Override
+    public int update(List<MyPlace> places) throws ServiceException {
+        try (SqlSession session = factory.openSession()) {
+            LOG.debug("Adding new places: ", places);
+            final MyPlaceMapper mapper = session.getMapper(MyPlaceMapper.class);
+            for (MyPlace place : places) {
+                Geometry transformed = this.doGeometryTransform(place.getGeometry());
+                place.setGeometry(transformed);
+
+                mapper.updateMyPlace(place);
+                LOG.info("inserted myplace: ", place.getId());
+            }
+            session.commit();
+            return places.size();
+        } catch (Exception e) {
+            LOG.warn(e, "Exception when trying to add MyPlaces ");
+            throw new ServiceException(e.getMessage());
+        }
+    }
+
+    @Override
+    public int delete(long[] ids) throws ServiceException {
+        return 0;
     }
 
     private Geometry doGeometryTransform(Geometry geometry) throws ServiceException {
@@ -124,13 +149,5 @@ public class MyPlacesFeaturesServiceMybatisImpl implements MyPlacesFeaturesServi
         return Integer.parseInt(srid);
     }
 
-    @Override
-    public int update(List<MyPlace> places) throws ServiceException {
-        return 0;
-    }
 
-    @Override
-    public int delete(long[] ids) throws ServiceException {
-        return 0;
-    }
 }

@@ -139,7 +139,7 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
 
         try {
             LOG.debug("Updating MyPlaces:", ids);
-            int updated = featureService.update(places);
+            int updated = mybatisFeatureService.update(places);
             LOG.info("Updated", updated, "/", places.size());
         } catch (ServiceException e) {
             LOG.warn(e);
