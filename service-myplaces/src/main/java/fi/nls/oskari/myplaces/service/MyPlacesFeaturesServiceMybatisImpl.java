@@ -117,7 +117,19 @@ public class MyPlacesFeaturesServiceMybatisImpl implements MyPlacesFeaturesServi
 
     @Override
     public int delete(long[] ids) throws ServiceException {
-        return 0;
+        try (SqlSession session = factory.openSession()) {
+            LOG.debug("Deleting from myPlaces: ", ids);
+            final MyPlaceMapper mapper = session.getMapper(MyPlaceMapper.class);
+            for (long id : ids) {
+                mapper.deleteMyPlace(id);
+                LOG.info("deleted myplace: ", id);
+            }
+            session.commit();
+            return ids.length;
+        } catch (Exception e) {
+            LOG.warn(e, "Exception when trying to add MyPlaces ");
+            throw new ServiceException(e.getMessage());
+        }
     }
 
     private Geometry doGeometryTransform(Geometry geometry) throws ServiceException {
