@@ -177,7 +177,7 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
         int deleted;
         try {
             LOG.debug("Deleting MyPlaces:", ids);
-            deleted = featureService.delete(ids);
+            deleted = mybatisFeatureService.delete(ids);
             LOG.info("Deleted", deleted, "/", ids.length);
         } catch (ServiceException e) {
             LOG.warn(e);

@@ -64,4 +64,10 @@ public interface MyPlaceMapper {
             " WHERE "+
             " id = #{id} ")
     Long updateMyPlace(MyPlace myPlace);
+
+    @Delete("DELETE FROM my_places "+
+            " WHERE "+
+            " id = #{id} ")
+    Long deleteMyPlace(long id);
+
 }
