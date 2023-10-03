@@ -52,4 +52,16 @@ public interface MyPlaceMapper {
     @Options(useGeneratedKeys=true, keyColumn="id", keyProperty="id")
     Long addMyPlace(MyPlace myPlace);
 
+    @Update("UPDATE my_places SET " +
+            " category_id = #{categoryId}, " +
+            " name = #{name}, " +
+            " attention_text = #{attentionText}, " +
+            " updated = now(), " +
+            " geometry = ST_SetSRID(ST_GeometryFromText(#{geomAsText}), #{srid}), " +
+            " place_desc = #{desc}, " +
+            " link = #{link}, " +
+            " image_url = #{imageUrl} " +
+            " WHERE "+
+            " id = #{id} ")
+    Long updateMyPlace(MyPlace myPlace);
 }

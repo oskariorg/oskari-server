@@ -105,6 +105,9 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
         long[] ids;
         try {
             ids = mybatisFeatureService.insert(places);
+            if (ids == null) {
+                throw new ServiceException("Failed to insert MyPlaces.");
+            }
             LOG.info("Inserted MyPlaces:", ids);
         } catch (ServiceException e) {
             LOG.warn(e);
@@ -139,7 +142,10 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
 
         try {
             LOG.debug("Updating MyPlaces:", ids);
-            int updated = featureService.update(places);
+            int updated = mybatisFeatureService.update(places);
+            if (updated == -1) {
+                throw new ServiceException("Failed to update MyPlaces.");
+            }
             LOG.info("Updated", updated, "/", places.size());
         } catch (ServiceException e) {
             LOG.warn(e);
