@@ -14,7 +14,6 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.myplaces.service.MyPlacesFeaturesService;
 import fi.nls.oskari.myplaces.service.MyPlacesFeaturesServiceMybatisImpl;
-import fi.nls.oskari.myplaces.service.wfst.MyPlacesFeaturesServiceWFST;
 import fi.nls.oskari.myplaces.service.wfst.MyPlacesFeaturesWFSTRequestBuilder;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
@@ -42,14 +41,11 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
 
     private MyPlacesService service;
     private MyPlacesFeaturesService featureService;
-
-    private MyPlacesFeaturesService mybatisFeatureService;
     @Override
     public void init() {
         super.init();
         service = OskariComponentManager.getComponentOfType(MyPlacesService.class);
-        featureService = new MyPlacesFeaturesServiceWFST();
-        mybatisFeatureService = new MyPlacesFeaturesServiceMybatisImpl();
+        featureService = new MyPlacesFeaturesServiceMybatisImpl();
     }
 
     @Override
@@ -75,7 +71,9 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
         if (layerId == null || layerId.isEmpty()) {
             LOG.debug("Get MyPlaces by user uuid, uuid:", user.getUuid(),
                     "crs:", crs);
-            return featureService.getFeaturesByUserId(user.getUuid(), crs);
+
+            JSONObject features = featureService.getFeaturesByUserId(user.getUuid(), crs);
+            return features;
         }
         LOG.debug("Get MyPlaces by layer id, uuid:", user.getUuid(),
                 "layerId:", layerId, "crs:", crs);
@@ -104,7 +102,7 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
 
         long[] ids;
         try {
-            ids = mybatisFeatureService.insert(places);
+            ids = featureService.insert(places);
             LOG.info("Inserted MyPlaces:", ids);
         } catch (ServiceException e) {
             LOG.warn(e);
@@ -139,7 +137,7 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
 
         try {
             LOG.debug("Updating MyPlaces:", ids);
-            int updated = mybatisFeatureService.update(places);
+            int updated = featureService.update(places);
             LOG.info("Updated", updated, "/", places.size());
         } catch (ServiceException e) {
             LOG.warn(e);
@@ -177,7 +175,7 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
         int deleted;
         try {
             LOG.debug("Deleting MyPlaces:", ids);
-            deleted = mybatisFeatureService.delete(ids);
+            deleted = featureService.delete(ids);
             LOG.info("Deleted", deleted, "/", ids.length);
         } catch (ServiceException e) {
             LOG.warn(e);
