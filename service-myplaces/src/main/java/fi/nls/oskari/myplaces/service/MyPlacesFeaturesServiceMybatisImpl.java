@@ -235,7 +235,7 @@ public class MyPlacesFeaturesServiceMybatisImpl implements MyPlacesFeaturesServi
             feature.put(GeoJSON.TYPE, GeoJSON.FEATURE);
             String sourceSRSName = "EPSG:" + place.getDatabaseSRID();
             Geometry transformed = wktToGeometry(place.getWkt(), sourceSRSName, targetSRSName);
-            JSONObject geoJsonGeometry = new GeoJSONWriter().writeGeometry(transformed);
+            JSONObject geoJsonGeometry = geojsonWriter.writeGeometry(transformed);
             feature.put(GeoJSON.GEOMETRY, geoJsonGeometry);
 
             // TODO: feature bbox
