@@ -4,7 +4,6 @@ import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -35,7 +34,6 @@ public class GetGeoPointDataHandler extends ActionHandler {
     private static final String PARAM_WIDTH = "width";
     private static final String PARAM_HEIGHT = "height";
     private static final String PARAM_ZOOM = "zoom";
-    private static final String PARAM_GEOJSON = "geojson";
     private static final String PARAM_PARAMS = "params";
 
 	@Override
@@ -44,28 +42,18 @@ public class GetGeoPointDataHandler extends ActionHandler {
 		final String layerIds = params.getRequiredParam(PARAM_LAYERS);
 		final String[] layerIdsArr = layerIds.split(",");
 		final JSONObject allLayerAdditionalParams = getAllLayerAdditionalParams(params);
-		
-        final User user = params.getUser();
+
         final double lat = ConversionHelper.getDouble(params.getHttpParam(PARAM_LAT), -1);
         final double lon = ConversionHelper.getDouble(params.getHttpParam(PARAM_LON), -1);
         final int zoom = ConversionHelper.getInt(params.getHttpParam(PARAM_ZOOM), 0);
         
         final JSONArray data = new JSONArray();
-		JSONObject geojs = new JSONObject();
-        try {
-           
-            geojs = new JSONObject(params.getHttpParam(
-                    PARAM_GEOJSON, "{}"));
-
-        } catch (JSONException ee) {
-            log.warn("Couldn't parse geojson from POST request", ee);
-        }
 		final String srs = params.getHttpParam(PARAM_SRS, "EPSG:3067");
 
 		for (String id : layerIdsArr) {
 			final int layerId = ConversionHelper.getInt(id, -1);
 			if (layerId == -1) {
-                log.warn("Couldnt parse layer id", id);
+                log.warn("Couldn't parse layer id", id);
                 continue;
 			}
 
@@ -87,10 +75,9 @@ public class GetGeoPointDataHandler extends ActionHandler {
                 gfiParams.setAdditionalParams(allLayerAdditionalParams.optJSONObject(id));
 			    
 			    final JSONObject response = geoPointService.getWMSFeatureInfo(gfiParams);
-                if(response != null) {
+                if (response != null) {
                     data.put(response);
                 }
-				continue;
 			} else if (OskariLayer.TYPE_ARCGIS93.equals(layerType)) {
 				final GFIRestQueryParams gfiParams = new GFIRestQueryParams();
 
@@ -102,10 +89,9 @@ public class GetGeoPointDataHandler extends ActionHandler {
 				gfiParams.setSRSName(srs);
 
 				final JSONObject response = geoPointService.getRESTFeatureInfo(gfiParams);
-				if(response != null) {
+				if (response != null) {
 					data.put(response);
 				}
-				continue;
 			}
 		}
 
