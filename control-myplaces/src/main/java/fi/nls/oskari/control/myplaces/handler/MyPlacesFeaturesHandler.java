@@ -13,7 +13,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.myplaces.service.MyPlacesFeaturesService;
-import fi.nls.oskari.myplaces.service.MyPlacesFeaturesServiceMybatisImpl;
+import org.oskari.myplaces.service.mybatis.MyPlacesFeaturesServiceMybatisImpl;
 import fi.nls.oskari.myplaces.service.wfst.MyPlacesFeaturesWFSTRequestBuilder;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;

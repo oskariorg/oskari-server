@@ -1,4 +1,4 @@
-package fi.nls.oskari.myplaces.service;
+package org.oskari.myplaces.service.mybatis;
 
 import fi.nls.oskari.control.ActionConstants;
 import fi.nls.oskari.control.ActionParamsException;
@@ -9,6 +9,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.mybatis.JSONObjectMybatisTypeHandler;
 import fi.nls.oskari.myplaces.MyPlaceMapper;
+import fi.nls.oskari.myplaces.service.MyPlacesFeaturesService;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.PropertyUtil;
 import org.apache.ibatis.mapping.Environment;
