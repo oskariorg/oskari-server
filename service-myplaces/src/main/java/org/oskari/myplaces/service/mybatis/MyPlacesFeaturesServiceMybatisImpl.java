@@ -33,8 +33,11 @@ import org.oskari.geojson.GeoJSON;
 import org.oskari.geojson.GeoJSONWriter;
 
 import javax.sql.DataSource;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.lang.Float.NaN;
 
 public class MyPlacesFeaturesServiceMybatisImpl implements MyPlacesFeaturesService {
     private static final Logger LOG = LogFactory.getLogger(
@@ -210,12 +213,19 @@ public class MyPlacesFeaturesServiceMybatisImpl implements MyPlacesFeaturesServi
         return Integer.parseInt(srid);
     }
 
-     private JSONObject toGeoJSONFeatureCollection(List<MyPlace> places, String targetSRSName) throws ServiceException{
+     private JSONObject toGeoJSONFeatureCollection(List<MyPlace> places, String targetSRSName) throws ServiceException {
+        if (places == null || places.isEmpty()) {
+            return null;
+        }
         JSONObject json = new JSONObject();
         try {
             json.put(GeoJSON.TYPE, GeoJSON.FEATURE_COLLECTION);
-            // json.put(GeoJSON.BBOX, "[]"); // TODO: calculate bbox
-            // json.put("crs", "{}"); TODO: crs
+
+            List<Geometry> geometries = places
+                .stream()
+                .map(place -> wktToGeometry(place.getWkt(), "EPSG:" + place.getDatabaseSRID(), targetSRSName))
+                .collect(Collectors.toList());
+            json.put(GeoJSON.BBOX, getBBOX(geometries));
 
             JSONArray features = new JSONArray(places.stream().map(place -> this.toGeoJSONFeature(place, targetSRSName)).collect(Collectors.toList()));
             json.put(GeoJSON.FEATURES, features);
@@ -227,6 +237,36 @@ public class MyPlacesFeaturesServiceMybatisImpl implements MyPlacesFeaturesServi
         return json;
      }
 
+     private JSONArray getBBOX(List<Geometry> geometries) {
+        JSONArray bbox = null;
+        try {
+            double minX = NaN, minY = NaN, maxX = NaN, maxY = NaN;
+            for (Geometry g : geometries) {
+                if (g.getEnvelopeInternal().getMinX() < minX || Double.isNaN(minX)) {
+                    minX = g.getEnvelopeInternal().getMinX();
+                }
+                if (g.getEnvelopeInternal().getMaxX() > maxX || Double.isNaN(maxX)) {
+                    maxX = g.getEnvelopeInternal().getMaxX();
+                }
+                if (g.getEnvelopeInternal().getMinY() < minY || Double.isNaN(minY)) {
+                    minY = g.getEnvelopeInternal().getMinY();
+                }
+                if (g.getEnvelopeInternal().getMaxY() > maxY || Double.isNaN(maxY)) {
+                    maxY = g.getEnvelopeInternal().getMaxY();
+                }
+            }
+            bbox = new JSONArray(new double[]{
+                minX,
+                minY,
+                maxX,
+                maxY
+            });
+        } catch(JSONException e) {
+            LOG.warn("Failed to calculate bbox");
+        }
+
+        return bbox;
+     }
      private JSONObject toGeoJSONFeature(MyPlace place, String targetSRSName) {
         JSONObject feature = new JSONObject();
         JSONObject properties = new JSONObject();
@@ -238,8 +278,9 @@ public class MyPlacesFeaturesServiceMybatisImpl implements MyPlacesFeaturesServi
             Geometry transformed = wktToGeometry(place.getWkt(), sourceSRSName, targetSRSName);
             JSONObject geoJsonGeometry = geojsonWriter.writeGeometry(transformed);
             feature.put(GeoJSON.GEOMETRY, geoJsonGeometry);
+            JSONArray featureBbox = getBBOX(Collections.singletonList(transformed));
+            feature.put(GeoJSON.BBOX, featureBbox);
 
-            // TODO: feature bbox
             properties.put("attention_text", place.getAttentionText());
             properties.put("category_id", place.getCategoryId());
             properties.put("created", place.getCreated());
