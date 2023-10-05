@@ -6,6 +6,7 @@ import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.control.RestActionHandler;
+import fi.nls.oskari.control.myplaces.MyPlacesWFSHelper;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.MyPlace;
 import fi.nls.oskari.domain.map.MyPlaceCategory;
@@ -13,8 +14,6 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.myplaces.service.MyPlacesFeaturesService;
-import org.oskari.myplaces.service.mybatis.MyPlacesFeaturesServiceMybatisImpl;
-import fi.nls.oskari.myplaces.service.wfst.MyPlacesFeaturesWFSTRequestBuilder;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.IOHelper;
@@ -23,6 +22,7 @@ import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.oskari.log.AuditLog;
+import org.oskari.myplaces.service.mybatis.MyPlacesFeaturesServiceMybatisImpl;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -200,8 +200,7 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
             } catch (IOException e) {
                 throw new ActionException("IOException occured");
             }
-            // TODO: move parseMyPlaces outside MyPlacesFeaturesWFSTRequestBuilder
-            return MyPlacesFeaturesWFSTRequestBuilder.parseMyPlaces(payload, checkId);
+            return MyPlacesWFSHelper.parseMyPlaces(payload, checkId);
         } catch (JSONException e) {
             throw new ActionParamsException("Invalid input", e);
         }
