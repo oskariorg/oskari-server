@@ -210,12 +210,14 @@ public class MyPlacesFeaturesServiceMybatisImpl implements MyPlacesFeaturesServi
         return Integer.parseInt(srid);
     }
 
-     private JSONObject toGeoJSONFeatureCollection(List<MyPlace> places, String targetSRSName) throws ServiceException{
+     private JSONObject toGeoJSONFeatureCollection(List<MyPlace> places, String targetSRSName) throws ServiceException {
+        if (places == null || places.isEmpty()) {
+            return null;
+        }
         JSONObject json = new JSONObject();
         try {
             json.put(GeoJSON.TYPE, GeoJSON.FEATURE_COLLECTION);
-            // json.put(GeoJSON.BBOX, "[]"); // TODO: calculate bbox
-            // json.put("crs", "{}"); TODO: crs
+            json.put("crs", createCRSObject(targetSRSName));
 
             JSONArray features = new JSONArray(places.stream().map(place -> this.toGeoJSONFeature(place, targetSRSName)).collect(Collectors.toList()));
             json.put(GeoJSON.FEATURES, features);
@@ -227,6 +229,22 @@ public class MyPlacesFeaturesServiceMybatisImpl implements MyPlacesFeaturesServi
         return json;
      }
 
+     private JSONObject createCRSObject(String srsName) {
+        JSONObject crs = new JSONObject();
+        try {
+            crs.put("type", "name");
+            JSONObject crsProperties = new JSONObject();
+            crsProperties.put("name", srsName);
+            crs.put(GeoJSON.PROPERTIES, crsProperties);
+
+        } catch(JSONException e) {
+            LOG.warn("Failed to create crs object.");
+            return null;
+        }
+
+        return crs;
+     }
+
      private JSONObject toGeoJSONFeature(MyPlace place, String targetSRSName) {
         JSONObject feature = new JSONObject();
         JSONObject properties = new JSONObject();
@@ -234,12 +252,12 @@ public class MyPlacesFeaturesServiceMybatisImpl implements MyPlacesFeaturesServi
             feature.put("id", place.getId());
             feature.put("geometry_name", GeoJSON.GEOMETRY);
             feature.put(GeoJSON.TYPE, GeoJSON.FEATURE);
+
             String sourceSRSName = "EPSG:" + place.getDatabaseSRID();
             Geometry transformed = wktToGeometry(place.getWkt(), sourceSRSName, targetSRSName);
             JSONObject geoJsonGeometry = geojsonWriter.writeGeometry(transformed);
             feature.put(GeoJSON.GEOMETRY, geoJsonGeometry);
 
-            // TODO: feature bbox
             properties.put("attention_text", place.getAttentionText());
             properties.put("category_id", place.getCategoryId());
             properties.put("created", place.getCreated());
