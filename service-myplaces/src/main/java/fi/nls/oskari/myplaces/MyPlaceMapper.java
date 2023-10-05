@@ -6,6 +6,8 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.ResultMap;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
@@ -15,6 +17,63 @@ import java.util.Map;
  * Created by SMAKINEN on 8.7.2015.
  */
 public interface MyPlaceMapper {
+    @ResultMap("MyPlacesResult")
+    @Select("SELECT " +
+            " id, " +
+            " uuid, " +
+            " category_id, " +
+            " name, " +
+            " attention_text, " +
+            " created, " +
+            " updated, " +
+            " place_desc, " +
+            " link, " +
+            " image_url, " +
+            " ST_ASTEXT(geometry) as wkt, "+
+            " ST_SRID(geometry) as srid "+
+            " FROM my_places " +
+            " WHERE "+
+            " uuid = #{uuid} ")
+    List<MyPlace> findAllByUuId(String uuid);
+
+    @ResultMap("MyPlacesResult")
+    @Select("SELECT " +
+            " id, " +
+            " uuid, " +
+            " category_id, " +
+            " name, " +
+            " attention_text, " +
+            " created, " +
+            " updated, " +
+            " place_desc, " +
+            " link, " +
+            " image_url, " +
+            " ST_ASTEXT(geometry) as wkt, "+
+            " ST_SRID(geometry) as srid "+
+            " FROM my_places " +
+            " WHERE "+
+            " category_id = #{categoryId} ")
+    List<MyPlace> findAllByCategoryId(long categoryId);
+
+    @ResultMap("MyPlacesResult")
+    @Select("SELECT " +
+            " id, " +
+            " uuid, " +
+            " category_id, " +
+            " name, " +
+            " attention_text, " +
+            " created, " +
+            " updated, " +
+            " place_desc, " +
+            " link, " +
+            " image_url, " +
+            " ST_ASTEXT(geometry) as wkt, "+
+            " ST_SRID(geometry) as srid "+
+            " FROM my_places " +
+            " WHERE "+
+            " id=ANY(#{ids}) ")
+    List<MyPlace> findAllByPlaceIdIn(@Param("ids") long[] ids);
+
     MyPlace findPlace(long id);
     MyPlaceCategory find(long categoryId);
     @Update("update categories set " +
@@ -44,7 +103,7 @@ public interface MyPlaceMapper {
             " #{name}, " +
             " #{attentionText}, " +
             " now(), " +
-            " ST_SetSRID(ST_GeometryFromText(#{geomAsText}), #{srid}), " +
+            " ST_SetSRID(ST_GeometryFromText(#{wkt}), #{applicationSRID}), " +
             " #{desc}, " +
             " #{link}, " +
             " #{imageUrl} " +
@@ -57,7 +116,7 @@ public interface MyPlaceMapper {
             " name = #{name}, " +
             " attention_text = #{attentionText}, " +
             " updated = now(), " +
-            " geometry = ST_SetSRID(ST_GeometryFromText(#{geomAsText}), #{srid}), " +
+            " geometry = ST_SetSRID(ST_GeometryFromText(#{wkt}), #{applicationSRID}), " +
             " place_desc = #{desc}, " +
             " link = #{link}, " +
             " image_url = #{imageUrl} " +
