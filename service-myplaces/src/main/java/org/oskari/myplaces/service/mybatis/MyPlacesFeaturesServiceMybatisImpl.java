@@ -225,7 +225,8 @@ public class MyPlacesFeaturesServiceMybatisImpl implements MyPlacesFeaturesServi
                 .stream()
                 .map(place -> wktToGeometry(place.getWkt(), "EPSG:" + place.getDatabaseSRID(), targetSRSName))
                 .collect(Collectors.toList());
-            json.put(GeoJSON.BBOX, getBBOX(geometries));
+            json.put(GeoJSON.BBOX, createBBOX(geometries));
+            json.put("crs", createCRSObject(targetSRSName));
 
             JSONArray features = new JSONArray(places.stream().map(place -> this.toGeoJSONFeature(place, targetSRSName)).collect(Collectors.toList()));
             json.put(GeoJSON.FEATURES, features);
@@ -237,7 +238,23 @@ public class MyPlacesFeaturesServiceMybatisImpl implements MyPlacesFeaturesServi
         return json;
      }
 
-     private JSONArray getBBOX(List<Geometry> geometries) {
+     private JSONObject createCRSObject(String srsName) {
+        JSONObject crs = new JSONObject();
+        try {
+            crs.put("type", "name");
+            JSONObject crsProperties = new JSONObject();
+            crsProperties.put("name", srsName);
+            crs.put(GeoJSON.PROPERTIES, crsProperties);
+
+        } catch(JSONException e) {
+            LOG.warn("Failed to create crs object.");
+            return null;
+        }
+
+        return crs;
+     }
+
+     private JSONArray createBBOX(List<Geometry> geometries) {
         JSONArray bbox = null;
         try {
             double minX = NaN, minY = NaN, maxX = NaN, maxY = NaN;
@@ -278,7 +295,7 @@ public class MyPlacesFeaturesServiceMybatisImpl implements MyPlacesFeaturesServi
             Geometry transformed = wktToGeometry(place.getWkt(), sourceSRSName, targetSRSName);
             JSONObject geoJsonGeometry = geojsonWriter.writeGeometry(transformed);
             feature.put(GeoJSON.GEOMETRY, geoJsonGeometry);
-            JSONArray featureBbox = getBBOX(Collections.singletonList(transformed));
+            JSONArray featureBbox = createBBOX(Collections.singletonList(transformed));
             feature.put(GeoJSON.BBOX, featureBbox);
 
             properties.put("attention_text", place.getAttentionText());
