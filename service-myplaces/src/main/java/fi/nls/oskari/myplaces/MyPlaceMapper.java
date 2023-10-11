@@ -74,6 +74,30 @@ public interface MyPlaceMapper {
             " id=ANY(#{ids}) ")
     List<MyPlace> findAllByPlaceIdIn(@Param("ids") long[] ids);
 
+    @ResultMap("MyPlacesResult")
+    @Select("SELECT " +
+            " id, " +
+            " uuid, " +
+            " category_id, " +
+            " name, " +
+            " attention_text, " +
+            " created, " +
+            " updated, " +
+            " place_desc, " +
+            " link, " +
+            " image_url, " +
+            " ST_ASTEXT(geometry) as wkt, "+
+            " ST_SRID(geometry) as srid "+
+            " FROM my_places " +
+            " WHERE "+
+            " ST_CONTAINS(" +
+            "   ST_MAKEENVELOPE(#{minX}, #{minY}, #{maxX}, #{maxY}, #{srid}), " +
+        "       geometry)")
+    List<MyPlace> findAllByBBOX(@Param("minX") double minX,
+                                @Param("minY") double minY,
+                                @Param("maxX") double maxX,
+                                @Param("maxY") double maxY,
+                                @Param("srid") int srid);
     MyPlace findPlace(long id);
     MyPlaceCategory find(long categoryId);
     @Update("update categories set " +

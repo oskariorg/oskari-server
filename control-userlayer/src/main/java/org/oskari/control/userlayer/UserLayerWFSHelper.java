@@ -1,12 +1,13 @@
 package org.oskari.control.userlayer;
 
-import java.util.*;
-
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.domain.User;
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.service.OskariComponentManager;
+import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.factory.CommonFactoryFinder;
@@ -21,14 +22,17 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.expression.Expression;
-
-import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.util.PropertyUtil;
-
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.geojson.GeoJSONFeatureCollection;
 import org.oskari.map.userlayer.service.UserLayerDataService;
 import org.oskari.map.userlayer.service.UserLayerDbService;
 import org.oskari.service.user.UserLayerService;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 @Oskari
 public class UserLayerWFSHelper extends UserLayerService {
@@ -162,4 +166,8 @@ public class UserLayerWFSHelper extends UserLayerService {
         return typeBuilder.buildFeatureType();
     }
 
+    @Override
+    public SimpleFeatureCollection getFeatures(ReferencedEnvelope bbox, CoordinateReferenceSystem crs) throws ServiceException {
+        return null;
+    }
 }
