@@ -18,7 +18,7 @@ public interface MyPlacesFeaturesService {
     public JSONObject getFeaturesByUserId(String uuid, String crs) throws ServiceException;
     public JSONObject getFeaturesByMyPlaceId(long[] ids, String crs) throws ServiceException;
 
-    public JSONObject getFeatures(ReferencedEnvelope bbox, CoordinateReferenceSystem crs) throws ServiceException;
+    public JSONObject getFeatures(int categoryId, ReferencedEnvelope bbox, CoordinateReferenceSystem crs) throws ServiceException;
 
     /**
      * Returns ids of inserted features

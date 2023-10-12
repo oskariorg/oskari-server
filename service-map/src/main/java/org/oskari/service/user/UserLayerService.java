@@ -44,5 +44,5 @@ public abstract class UserLayerService extends OskariComponent {
         return wfsOpts;
     }
 
-    public abstract SimpleFeatureCollection getFeatures(ReferencedEnvelope bbox, CoordinateReferenceSystem crs) throws ServiceException;
+    public abstract SimpleFeatureCollection getFeatures(String layerId, ReferencedEnvelope bbox, CoordinateReferenceSystem crs) throws ServiceException;
 }

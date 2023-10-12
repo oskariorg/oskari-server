@@ -78,7 +78,7 @@ public class OskariFeatureClient {
         if (processor.isPresent()) {
             try {
                 // TODO: implement for AnalysisWfsHelper / UserLayerWfsHelper
-                sfc = processor.get().getFeatures(bbox, crs);
+                sfc = processor.get().getFeatures(id, bbox, crs);
             } catch(ServiceException e) {
                 throw new ServiceRuntimeException("Failed to get features for user layer", e);
             }

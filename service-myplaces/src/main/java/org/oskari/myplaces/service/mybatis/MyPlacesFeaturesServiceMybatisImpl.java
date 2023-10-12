@@ -113,7 +113,7 @@ public class MyPlacesFeaturesServiceMybatisImpl implements MyPlacesFeaturesServi
     }
 
     @Override
-    public JSONObject getFeatures(ReferencedEnvelope bbox, CoordinateReferenceSystem crs)  throws ServiceException{
+    public JSONObject getFeatures(int categoryId, ReferencedEnvelope bbox, CoordinateReferenceSystem crs)  throws ServiceException{
         try (SqlSession session = factory.openSession()) {
             LOG.debug("getFeatures by bbox: ", bbox);
 
@@ -127,7 +127,7 @@ public class MyPlacesFeaturesServiceMybatisImpl implements MyPlacesFeaturesServi
                 .orElse(null);
 
             int nativeSrid = getSRID(nativeSrsName);
-            List<MyPlace> places = mapper.findAllByBBOX(bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY(), nativeSrid);
+            List<MyPlace> places = mapper.findAllByBBOX(categoryId, bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY(), nativeSrid);
 
             JSONObject featureCollection = this.toGeoJSONFeatureCollection(places, targetSrsName != null ? targetSrsName : nativeSrsName);
             return featureCollection;
@@ -158,7 +158,6 @@ public class MyPlacesFeaturesServiceMybatisImpl implements MyPlacesFeaturesServi
             throw new ServiceException(e.getMessage());
         }
     }
-
 
     @Override
     public int update(List<MyPlace> places) throws ServiceException {

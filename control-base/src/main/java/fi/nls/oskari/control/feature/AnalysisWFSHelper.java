@@ -167,7 +167,7 @@ public class AnalysisWFSHelper extends UserLayerService {
     }
 
     @Override
-    public SimpleFeatureCollection getFeatures(ReferencedEnvelope bbox, CoordinateReferenceSystem crs) throws ServiceException {
+    public SimpleFeatureCollection getFeatures(String layerId, ReferencedEnvelope bbox, CoordinateReferenceSystem crs) throws ServiceException {
         return null;
     }
 }

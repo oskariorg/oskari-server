@@ -86,14 +86,17 @@ public interface MyPlaceMapper {
             " place_desc, " +
             " link, " +
             " image_url, " +
-            " ST_ASTEXT(geometry) as wkt, "+
-            " ST_SRID(geometry) as srid "+
+            " ST_ASTEXT(geometry) as wkt, " +
+            " ST_SRID(geometry) as srid " +
             " FROM my_places " +
             " WHERE "+
+            " category_id = #{categoryId} " +
+            " AND " +
             " ST_CONTAINS(" +
             "   ST_MAKEENVELOPE(#{minX}, #{minY}, #{maxX}, #{maxY}, #{srid}), " +
         "       geometry)")
-    List<MyPlace> findAllByBBOX(@Param("minX") double minX,
+    List<MyPlace> findAllByBBOX(@Param("categoryId") int categoryId,
+                                @Param("minX") double minX,
                                 @Param("minY") double minY,
                                 @Param("maxX") double maxX,
                                 @Param("maxY") double maxY,

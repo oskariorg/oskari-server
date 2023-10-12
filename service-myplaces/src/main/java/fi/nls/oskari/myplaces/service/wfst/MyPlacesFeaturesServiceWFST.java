@@ -77,7 +77,7 @@ public class MyPlacesFeaturesServiceWFST extends BaseServiceWFST implements MyPl
     }
 
     @Override
-    public JSONObject getFeatures(ReferencedEnvelope bbox, CoordinateReferenceSystem crs) throws ServiceException {
+    public JSONObject getFeatures(int categoryId, ReferencedEnvelope bbox, CoordinateReferenceSystem crs) throws ServiceException {
         return null;
     }
 
