@@ -220,7 +220,7 @@ public class MyPlacesWFSHelper extends UserLayerService {
     }
 
     @Override
-    public SimpleFeatureCollection getFeatures(String layerId, ReferencedEnvelope bbox, CoordinateReferenceSystem crs) throws ServiceException{
+    public SimpleFeatureCollection getFeatures(String layerId, OskariLayer layer, ReferencedEnvelope bbox, CoordinateReferenceSystem crs) throws ServiceException{
             try {
                 int categoryId = parseId(layerId);
                 JSONObject featureCollectionJSON = featureService.getFeatures(categoryId, bbox, crs);

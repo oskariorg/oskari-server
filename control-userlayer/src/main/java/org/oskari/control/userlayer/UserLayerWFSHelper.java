@@ -27,6 +27,8 @@ import org.oskari.geojson.GeoJSONFeatureCollection;
 import org.oskari.map.userlayer.service.UserLayerDataService;
 import org.oskari.map.userlayer.service.UserLayerDbService;
 import org.oskari.service.user.UserLayerService;
+import org.oskari.service.wfs.client.CachingOskariWFSClient;
+import org.oskari.service.wfs.client.OskariWFSClient;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,6 +49,7 @@ public class UserLayerWFSHelper extends UserLayerService {
     private FilterFactory ff;
     private int userlayerLayerId;
     private UserLayerDbService service;
+    private OskariWFSClient wfsClient = new CachingOskariWFSClient();
 
     public UserLayerWFSHelper() {
         init();
@@ -167,7 +170,13 @@ public class UserLayerWFSHelper extends UserLayerService {
     }
 
     @Override
-    public SimpleFeatureCollection getFeatures(String layerId, ReferencedEnvelope bbox, CoordinateReferenceSystem crs) throws ServiceException {
-        return null;
+    public SimpleFeatureCollection getFeatures(String layerId, OskariLayer layer, ReferencedEnvelope bbox, CoordinateReferenceSystem crs) throws ServiceException {
+        try {
+            Filter filter = this.getWFSFilter(layerId, bbox);
+            SimpleFeatureCollection sfc = wfsClient.getFeatures(layer, bbox, crs, filter);
+            return this.postProcess(sfc);
+        } catch(Exception e) {
+            throw new ServiceException("Failed to get features. ", e);
+        }
     }
 }

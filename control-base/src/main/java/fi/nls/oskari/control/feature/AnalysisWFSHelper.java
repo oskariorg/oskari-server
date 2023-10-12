@@ -30,6 +30,8 @@ import org.oskari.permissions.PermissionService;
 import org.oskari.permissions.model.PermissionType;
 import org.oskari.permissions.model.ResourceType;
 import org.oskari.service.user.UserLayerService;
+import org.oskari.service.wfs.client.CachingOskariWFSClient;
+import org.oskari.service.wfs.client.OskariWFSClient;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,6 +53,7 @@ public class AnalysisWFSHelper extends UserLayerService {
     private int analysisLayerId;
     private AnalysisDbService service;
     private ComputeOnceCache<Set<String>> permissionsCache;
+    private OskariWFSClient wfsClient = new CachingOskariWFSClient();
 
     public AnalysisWFSHelper() {
         init();
@@ -167,7 +170,13 @@ public class AnalysisWFSHelper extends UserLayerService {
     }
 
     @Override
-    public SimpleFeatureCollection getFeatures(String layerId, ReferencedEnvelope bbox, CoordinateReferenceSystem crs) throws ServiceException {
-        return null;
+    public SimpleFeatureCollection getFeatures(String layerId, OskariLayer layer, ReferencedEnvelope bbox, CoordinateReferenceSystem crs) throws ServiceException {
+        try {
+            Filter filter = this.getWFSFilter(layerId, bbox);
+            SimpleFeatureCollection sfc = wfsClient.getFeatures(layer, bbox, crs, filter);
+            return this.postProcess(sfc);
+        } catch(Exception e) {
+            throw new ServiceException("Failed to get features. ", e);
+        }
     }
 }

@@ -77,8 +77,7 @@ public class OskariFeatureClient {
         SimpleFeatureCollection sfc;
         if (processor.isPresent()) {
             try {
-                // TODO: implement for AnalysisWfsHelper / UserLayerWfsHelper
-                sfc = processor.get().getFeatures(id, bbox, crs);
+                sfc = processor.get().getFeatures(id, layer, bbox, crs);
             } catch(ServiceException e) {
                 throw new ServiceRuntimeException("Failed to get features for user layer", e);
             }
@@ -87,16 +86,6 @@ public class OskariFeatureClient {
             sfc = wfsClient.getFeatures(layer, bbox, crs, filter);
         }
 
-        // TODO: see if postprocess still is needed for something or if we could get rid of the concept altogether.
-        /*
-        if (processor.isPresent()) {
-            try {
-                sfc = processor.get().postProcess(sfc);
-            } catch (Exception e) {
-                throw new ServiceRuntimeException("Failed to post-process user layer", e);
-            }
-        }
-*/
         return sfc;
     }
 }
