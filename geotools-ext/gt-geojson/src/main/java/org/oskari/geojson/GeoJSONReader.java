@@ -1,7 +1,5 @@
 package org.oskari.geojson;
 
-import java.util.Iterator;
-
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
@@ -9,9 +7,6 @@ import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
-
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryCollection;
@@ -23,6 +18,10 @@ import org.locationtech.jts.geom.MultiPoint;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+
+import java.util.Iterator;
 
 /**
  * Convert org.json.JSONObjects (that follow GeoJSON spec) to
@@ -52,13 +51,14 @@ public class GeoJSONReader {
             return new DefaultFeatureCollection();
         }
 
+        // FIXME: this won't work for collections with varying geometry type.
         if (builder == null) {
             builder = getBuilder(features.getJSONObject(0));
         }
 
         DefaultFeatureCollection fc = new DefaultFeatureCollection();
         for (int i = 0; i < n; i++) {
-            fc.add(toFeature(features.getJSONObject(i), builder));
+            fc.add(toFeature(features.getJSONObject(i), null));
         }
 
         return fc;
