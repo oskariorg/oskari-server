@@ -20,6 +20,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.geotools.geometry.jts.JTS;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -112,6 +113,31 @@ public class MyPlacesFeaturesServiceMybatisImpl implements MyPlacesFeaturesServi
     }
 
     @Override
+    public JSONObject getFeatures(int categoryId, ReferencedEnvelope bbox, CoordinateReferenceSystem crs)  throws ServiceException{
+        try (SqlSession session = factory.openSession()) {
+            LOG.debug("getFeatures by bbox: ", bbox);
+
+            final MyPlaceMapper mapper = session.getMapper(MyPlaceMapper.class);
+            String nativeSrsName = PropertyUtil.get("oskari.native.srs", "EPSG:3857");
+            String targetSrsName = crs.getIdentifiers()
+                .stream()
+                .filter(identifier -> identifier.getCodeSpace().equals("EPSG"))
+                .map(identifier -> identifier.getCodeSpace() + ":" + identifier.getCode())
+                .findFirst()
+                .orElse(null);
+
+            int nativeSrid = getSRID(nativeSrsName);
+            List<MyPlace> places = mapper.findAllByBBOX(categoryId, bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY(), nativeSrid);
+
+            JSONObject featureCollection = this.toGeoJSONFeatureCollection(places, targetSrsName != null ? targetSrsName : nativeSrsName);
+            return featureCollection;
+        } catch (Exception e) {
+            LOG.warn(e, "Exception when trying to get features by bounding box ", bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY());
+            throw new ServiceException(e.getMessage());
+        }
+    }
+
+    @Override
     public long[] insert(List<MyPlace> places) throws ServiceException {
         String targetSRSName = PropertyUtil.get("oskari.native.srs", "EPSG:3857");
         try (SqlSession session = factory.openSession()) {
@@ -132,7 +158,6 @@ public class MyPlacesFeaturesServiceMybatisImpl implements MyPlacesFeaturesServi
             throw new ServiceException(e.getMessage());
         }
     }
-
 
     @Override
     public int update(List<MyPlace> places) throws ServiceException {
@@ -196,6 +221,10 @@ public class MyPlacesFeaturesServiceMybatisImpl implements MyPlacesFeaturesServi
     }
      private Geometry wktToGeometry(String wkt, String sourceSRSName, String targetSRSName) {
         try {
+            if (sourceSRSName.equals(targetSRSName)) {
+                return wktReader.read(wkt);
+            }
+
             Geometry geometry = wktReader.read(wkt);
             Geometry transformed = transformGeometry(geometry, sourceSRSName, targetSRSName);
             return transformed;

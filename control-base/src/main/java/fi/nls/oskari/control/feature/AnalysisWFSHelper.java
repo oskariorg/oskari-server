@@ -9,6 +9,7 @@ import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.map.analysis.service.AnalysisDataService;
 import fi.nls.oskari.map.analysis.service.AnalysisDbService;
 import fi.nls.oskari.service.OskariComponentManager;
+import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.PropertyUtil;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
@@ -23,11 +24,14 @@ import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.expression.Expression;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.geojson.GeoJSONFeatureCollection;
 import org.oskari.permissions.PermissionService;
 import org.oskari.permissions.model.PermissionType;
 import org.oskari.permissions.model.ResourceType;
 import org.oskari.service.user.UserLayerService;
+import org.oskari.service.wfs.client.CachingOskariWFSClient;
+import org.oskari.service.wfs.client.OskariWFSClient;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,6 +53,7 @@ public class AnalysisWFSHelper extends UserLayerService {
     private int analysisLayerId;
     private AnalysisDbService service;
     private ComputeOnceCache<Set<String>> permissionsCache;
+    private OskariWFSClient wfsClient = new CachingOskariWFSClient();
 
     public AnalysisWFSHelper() {
         init();
@@ -162,5 +167,16 @@ public class AnalysisWFSHelper extends UserLayerService {
 
     private boolean isVisibleProperty(String name) {
         return HIDDEN_PROPERTIES.stream().noneMatch(propName -> propName.equals(name));
+    }
+
+    @Override
+    public SimpleFeatureCollection getFeatures(String layerId, OskariLayer layer, ReferencedEnvelope bbox, CoordinateReferenceSystem crs) throws ServiceException {
+        try {
+            Filter filter = this.getWFSFilter(layerId, bbox);
+            SimpleFeatureCollection sfc = wfsClient.getFeatures(layer, bbox, crs, filter);
+            return this.postProcess(sfc);
+        } catch(Exception e) {
+            throw new ServiceException("Failed to get features. ", e);
+        }
     }
 }

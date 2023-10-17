@@ -1,26 +1,26 @@
 package fi.nls.oskari.myplaces.service.wfst;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.stream.XMLStreamException;
-
+import fi.nls.oskari.domain.map.MyPlace;
+import fi.nls.oskari.myplaces.service.MyPlacesFeaturesService;
+import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.util.IOHelper;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.wfst.response.InsertedFeature;
 import org.oskari.wfst.response.TransactionResponseParser_100;
 import org.oskari.wfst.response.TransactionResponse_100;
 import org.xml.sax.SAXException;
 
-import fi.nls.oskari.domain.map.MyPlace;
-import fi.nls.oskari.myplaces.service.MyPlacesFeaturesService;
-import fi.nls.oskari.service.ServiceException;
-import fi.nls.oskari.util.IOHelper;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.stream.XMLStreamException;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 /**
  * WFS-T implementation of MyPlacesFeaturesService
@@ -74,6 +74,11 @@ public class MyPlacesFeaturesServiceWFST extends BaseServiceWFST implements MyPl
         } catch (IOException e) {
             throw new ServiceException("IOException occured", e);
         }
+    }
+
+    @Override
+    public JSONObject getFeatures(int categoryId, ReferencedEnvelope bbox, CoordinateReferenceSystem crs) throws ServiceException {
+        return null;
     }
 
     @Override

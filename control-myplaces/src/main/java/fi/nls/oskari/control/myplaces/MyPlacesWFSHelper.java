@@ -6,12 +6,14 @@ import fi.nls.oskari.domain.map.MyPlace;
 import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.myplaces.MyPlacesService;
+import fi.nls.oskari.myplaces.service.MyPlacesFeaturesService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
+import org.geotools.data.store.EmptyFeatureCollection;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
@@ -27,8 +29,10 @@ import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.expression.Expression;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.geojson.GeoJSONFeatureCollection;
 import org.oskari.geojson.GeoJSONReader;
+import org.oskari.myplaces.service.mybatis.MyPlacesFeaturesServiceMybatisImpl;
 import org.oskari.service.user.UserLayerService;
 
 import java.util.ArrayList;
@@ -51,6 +55,7 @@ public class MyPlacesWFSHelper extends UserLayerService {
     private int myPlacesLayerId;
     private MyPlacesService service;
 
+    private MyPlacesFeaturesService featureService = new MyPlacesFeaturesServiceMybatisImpl();
     public MyPlacesWFSHelper() {
         init();
     }
@@ -115,6 +120,7 @@ public class MyPlacesWFSHelper extends UserLayerService {
         return service.findCategory(id);
     }
 
+    // TODO: remove this and references
     public SimpleFeatureCollection postProcess(SimpleFeatureCollection sfc) throws Exception {
         List<SimpleFeature> fc = new ArrayList<>();
         SimpleFeatureType schema;
@@ -213,4 +219,19 @@ public class MyPlacesWFSHelper extends UserLayerService {
         return myPlace;
     }
 
+    @Override
+    public SimpleFeatureCollection getFeatures(String layerId, OskariLayer layer, ReferencedEnvelope bbox, CoordinateReferenceSystem crs) throws ServiceException{
+            try {
+                int categoryId = parseId(layerId);
+                JSONObject featureCollectionJSON = featureService.getFeatures(categoryId, bbox, crs);
+
+                if (featureCollectionJSON == null) {
+                    return new EmptyFeatureCollection(null);
+                }
+                SimpleFeatureCollection featureCollection = GeoJSONReader.toFeatureCollection(featureCollectionJSON);
+                return featureCollection != null ? featureCollection : new EmptyFeatureCollection(null);
+            } catch (JSONException e) {
+                throw new ServiceException("GetFeatures failed.", e);
+            }
+    }
 }
