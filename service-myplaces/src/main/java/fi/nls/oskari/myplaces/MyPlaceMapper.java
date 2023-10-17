@@ -92,7 +92,7 @@ public interface MyPlaceMapper {
             " WHERE "+
             " category_id = #{categoryId} " +
             " AND " +
-            " ST_CONTAINS(" +
+            " ST_INTERSECTS(" +
             "   ST_MAKEENVELOPE(#{minX}, #{minY}, #{maxX}, #{maxY}, #{srid}), " +
         "       geometry)")
     List<MyPlace> findAllByBBOX(@Param("categoryId") int categoryId,
