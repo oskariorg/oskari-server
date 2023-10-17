@@ -19,8 +19,10 @@ import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.oskari.geojson.GeoJSON;
 import org.oskari.log.AuditLog;
 import org.oskari.myplaces.service.mybatis.MyPlacesFeaturesServiceMybatisImpl;
 
@@ -61,11 +63,24 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
 
         try {
             final JSONObject featureCollection = getFeatures(user, layerId, crs);
-            ResponseHelper.writeResponse(params, featureCollection);
+            ResponseHelper.writeResponse(params, featureCollection != null ? featureCollection : createEmptyFeatureCollection());
         } catch (ServiceException e) {
             LOG.warn(e);
             throw new ActionException("Failed to get features");
         }
+    }
+
+    private JSONObject createEmptyFeatureCollection() throws ActionException{
+        JSONObject json = new JSONObject();
+        try {
+            json.put(GeoJSON.TYPE, GeoJSON.FEATURE_COLLECTION);
+            json.put(GeoJSON.FEATURES, new JSONArray());
+            return json;
+        } catch(JSONException ex) {
+            LOG.warn("Failed to create empty featurecollection json.");
+            throw new ActionException("Failed to create empty featurecollection json.");
+        }
+
     }
     protected JSONObject getFeatures (User user, String layerId, String crs) throws ActionDeniedException, ServiceException {
         if (layerId == null || layerId.isEmpty()) {
