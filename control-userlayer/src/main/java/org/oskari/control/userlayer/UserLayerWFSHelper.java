@@ -10,6 +10,7 @@ import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
+import org.geotools.data.store.EmptyFeatureCollection;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
@@ -24,6 +25,7 @@ import org.opengis.filter.FilterFactory;
 import org.opengis.filter.expression.Expression;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.geojson.GeoJSONFeatureCollection;
+import org.oskari.geojson.GeoJSONReader;
 import org.oskari.map.userlayer.service.UserLayerDataService;
 import org.oskari.map.userlayer.service.UserLayerDbService;
 import org.oskari.service.user.UserLayerService;
@@ -97,33 +99,22 @@ public class UserLayerWFSHelper extends UserLayerService {
             return sfc;
         }
         List<SimpleFeature> fc = new ArrayList<>();
-        SimpleFeatureType schema;
+        SimpleFeatureType schema = null;
 
         String geomAttrName = sfc.getSchema().getGeometryDescriptor().getLocalName();
 
         try (SimpleFeatureIterator it = sfc.features()) {
-            SimpleFeature firstFeatureForSchemaGeneration = it.next();
-            // parse the _first feature_ AND _generate schema_ based on it
-            String property_json_for_first = (String) firstFeatureForSchemaGeneration.getAttribute(USERLAYER_ATTR_PROPERTY_JSON);
-            JSONObject properties_for_first = new JSONObject(property_json_for_first);
-            Set<String> featureAttributeNames = JSONHelper.getObjectAsMap(properties_for_first).keySet();
-
-            schema = createType(sfc.getSchema(), properties_for_first);
-            SimpleFeatureBuilder builder = new SimpleFeatureBuilder(schema);
-
-            // process and add the the first feature to the result collection
-            builder.set(geomAttrName, firstFeatureForSchemaGeneration.getDefaultGeometry());
-            for (String attrName : featureAttributeNames) {
-                builder.set(attrName, properties_for_first.get(attrName));
-            }
-            fc.add(builder.buildFeature(firstFeatureForSchemaGeneration.getID()));
-
-            // process and add the _remaining features_ to the result collection
             while (it.hasNext()) {
                 SimpleFeature feature = it.next();
+                String propertyJson = feature.getAttribute(USERLAYER_ATTR_PROPERTY_JSON).toString();
+                JSONObject properties = new JSONObject(propertyJson);
+                // use the first feature's featuretype as schema for the final collection
+                if (schema == null) {
+                    schema = createType(feature.getFeatureType(), properties);
+                }
+                SimpleFeatureBuilder builder = new SimpleFeatureBuilder(createType(feature.getFeatureType(), properties));
                 builder.set(geomAttrName, feature.getDefaultGeometry());
-                String property_json = (String) feature.getAttribute(USERLAYER_ATTR_PROPERTY_JSON);
-                JSONObject properties = new JSONObject(property_json);
+                Set<String> featureAttributeNames = JSONHelper.getObjectAsMap(properties).keySet();
                 for (String attrName : featureAttributeNames) {
                     builder.set(attrName, properties.opt(attrName));
                 }
@@ -172,9 +163,13 @@ public class UserLayerWFSHelper extends UserLayerService {
     @Override
     public SimpleFeatureCollection getFeatures(String layerId, OskariLayer layer, ReferencedEnvelope bbox, CoordinateReferenceSystem crs) throws ServiceException {
         try {
-            Filter filter = this.getWFSFilter(layerId, bbox);
-            SimpleFeatureCollection sfc = wfsClient.getFeatures(layer, bbox, crs, filter);
-            return this.postProcess(sfc);
+            int id = parseId(layerId);
+            JSONObject featureCollectionJSON = service.getFeatures(id, bbox, crs);
+            SimpleFeatureCollection featureCollection = featureCollectionJSON == null ?
+                new EmptyFeatureCollection(null) :
+                GeoJSONReader.toFeatureCollection(featureCollectionJSON);
+
+            return postProcess(featureCollection);
         } catch(Exception e) {
             throw new ServiceException("Failed to get features. ", e);
         }

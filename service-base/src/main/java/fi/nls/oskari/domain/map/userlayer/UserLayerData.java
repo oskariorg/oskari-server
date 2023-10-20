@@ -3,6 +3,8 @@ package fi.nls.oskari.domain.map.userlayer;
 
 import org.json.JSONObject;
 
+import java.time.OffsetDateTime;
+
 public class UserLayerData {
 
     private long id;
@@ -11,6 +13,11 @@ public class UserLayerData {
     private String feature_id ;
     private JSONObject property_json;
     private String  geometry;
+
+    private String wkt;
+    private int databaseSRID;
+    private OffsetDateTime created;
+    private OffsetDateTime updated;
 
     public long getId() {
         return id;
@@ -62,5 +69,38 @@ public class UserLayerData {
 
     public void setGeometry(String geometry) {
         this.geometry = geometry;
+        this.wkt = geometry;
+    }
+
+    public String getWkt() {
+        return wkt;
+    }
+
+    public void setWkt(String wkt) {
+        this.wkt = wkt;
+    }
+
+    public OffsetDateTime getCreated() {
+        return created;
+    }
+
+    public void setCreated(OffsetDateTime created) {
+        this.created = created;
+    }
+
+    public OffsetDateTime getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(OffsetDateTime updated) {
+        this.updated = updated;
+    }
+
+    public int getDatabaseSRID() {
+        return databaseSRID;
+    }
+
+    public void setDatabaseSRID(int databaseSRID) {
+        this.databaseSRID = databaseSRID;
     }
 }
