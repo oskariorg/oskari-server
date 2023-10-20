@@ -9,6 +9,7 @@ import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.domain.map.userlayer.UserLayerData;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.geometry.WKTHelper;
 import fi.nls.oskari.mybatis.JSONArrayMybatisTypeHandler;
 import fi.nls.oskari.mybatis.JSONObjectMybatisTypeHandler;
 import fi.nls.oskari.service.ServiceException;
@@ -21,23 +22,21 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
-import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.geotools.referencing.CRS;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.io.ParseException;
-import org.locationtech.jts.io.WKTReader;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.MathTransform;
 import org.oskari.geojson.GeoJSON;
 import org.oskari.geojson.GeoJSONWriter;
 
 import javax.sql.DataSource;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static fi.nls.oskari.map.geometry.WKTHelper.getSRID;
+import static fi.nls.oskari.map.geometry.WKTHelper.parseWKT;
 
 @Oskari
 public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
@@ -50,7 +49,6 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
     private final Cache<UserLayer> cache;
     private SqlSessionFactory factory = null;
 
-    private static final WKTReader wktReader = new WKTReader();
     private static final GeoJSONWriter geojsonWriter = new GeoJSONWriter();
 
     public UserLayerDbServiceMybatisImpl() {
@@ -311,7 +309,7 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
         JSONObject json = new JSONObject();
         try {
             json.put(GeoJSON.TYPE, GeoJSON.FEATURE_COLLECTION);
-            json.put("crs", createCRSObject(targetSRSName));
+            json.put("crs", geojsonWriter.writeCRSObject(targetSRSName));
 
             JSONArray jsonFeatures = new JSONArray(features.stream().map(feature -> this.toGeoJSONFeature(feature, targetSRSName)).collect(Collectors.toList()));
             json.put(GeoJSON.FEATURES, jsonFeatures);
@@ -332,7 +330,7 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
             jsonFeature.put(GeoJSON.TYPE, GeoJSON.FEATURE);
 
             String sourceSRSName = "EPSG:" + feature.getDatabaseSRID();
-            Geometry transformed = wktToGeometry(feature.getWkt(), sourceSRSName, targetSRSName);
+            Geometry transformed = WKTHelper.transform(parseWKT(feature.getWkt()), sourceSRSName, targetSRSName);
             JSONObject geoJsonGeometry = geojsonWriter.writeGeometry(transformed);
             jsonFeature.put(GeoJSON.GEOMETRY, geoJsonGeometry);
 
@@ -351,64 +349,4 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
 
         return jsonFeature;
      }
-
-    /** //////
-     * TODO: move to some helper class - common with myplaces
-     * //////*/
-     private JSONObject createCRSObject(String srsName) {
-        JSONObject crs = new JSONObject();
-        try {
-            crs.put("type", "name");
-            JSONObject crsProperties = new JSONObject();
-            crsProperties.put("name", srsName);
-            crs.put(GeoJSON.PROPERTIES, crsProperties);
-
-        } catch(JSONException e) {
-            log.warn("Failed to create crs object.");
-            return null;
-        }
-
-        return crs;
-     }
-
-     private int getSRID(String srsName) {
-        String srid = srsName.substring(srsName.indexOf(':') + 1);
-        return Integer.parseInt(srid);
-    }
-    private Geometry transformGeometry(Geometry geometry, String sourceSRSName, String targetSRSName) {
-        try {
-            CoordinateReferenceSystem targetCRS, sourceCRS;
-            MathTransform transform;
-
-            try {
-                targetCRS = CRS.decode(targetSRSName);
-                sourceCRS = CRS.decode(sourceSRSName);
-                transform = CRS.findMathTransform(sourceCRS, targetCRS);
-            } catch (Exception e) {
-                throw new UserLayerException("Failed to get geometry transform from " + sourceSRSName + " to " + targetSRSName);
-            }
-            Geometry transformed = JTS.transform(geometry, transform);
-            transformed.setSRID(getSRID(targetSRSName));
-            return transformed;
-
-        } catch(Exception e) {
-            log.warn(e, "Exception transforming geometry");
-        }
-        return null;
-    }
-     private Geometry wktToGeometry(String wkt, String sourceSRSName, String targetSRSName) {
-        try {
-            if (sourceSRSName.equals(targetSRSName)) {
-                return wktReader.read(wkt);
-            }
-
-            Geometry geometry = wktReader.read(wkt);
-            Geometry transformed = transformGeometry(geometry, sourceSRSName, targetSRSName);
-            return transformed;
-        } catch(ParseException e) {
-            log.warn("Failed to parse geometry from wkt " + wkt);
-            return null;
-        }
-     }
-    /* ////////////// */
 }
