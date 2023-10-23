@@ -181,15 +181,4 @@ public class WKTHelper {
         log.debug("BBOX: " + bbox);
         return bbox;
     }
-
-    /**
-     * Get the numeric SRID of an EPSG-code
-     * @param srsName The String representation of the EPSG-code (e.g. EPSG:3857)
-     * @return the (int) id part of the string e.g. 3857
-     */
-     public static int getSRID(String srsName) {
-        String srid = srsName.substring(srsName.indexOf(':') + 1);
-        return Integer.parseInt(srid);
-    }
-
 }

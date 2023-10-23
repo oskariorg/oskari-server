@@ -37,7 +37,7 @@ import javax.sql.DataSource;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static fi.nls.oskari.map.geometry.WKTHelper.getSRID;
+import static fi.nls.oskari.map.geometry.ProjectionHelper.getSRID;
 import static fi.nls.oskari.map.geometry.WKTHelper.parseWKT;
 
 public class MyPlacesFeaturesServiceMybatisImpl implements MyPlacesFeaturesService {
