@@ -29,6 +29,7 @@
         <result property="wkt" column="wkt" />
         <result property="databaseSRID" column="srid"/>
         <result property="created" column = "created" jdbcType="TIMESTAMP" javaType="java.time.OffsetDateTime" />
+        <result property="updated" column = "updated" jdbcType="TIMESTAMP" javaType="java.time.OffsetDateTime" />
     </resultMap>
 
 
