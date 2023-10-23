@@ -9,17 +9,34 @@ import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.domain.map.userlayer.UserLayerData;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.geometry.WKTHelper;
 import fi.nls.oskari.mybatis.JSONArrayMybatisTypeHandler;
 import fi.nls.oskari.mybatis.JSONObjectMybatisTypeHandler;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.PropertyUtil;
 import org.apache.ibatis.mapping.Environment;
-import org.apache.ibatis.session.*;
+import org.apache.ibatis.session.Configuration;
+import org.apache.ibatis.session.ExecutorType;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
+import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.locationtech.jts.geom.Geometry;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.oskari.geojson.GeoJSON;
+import org.oskari.geojson.GeoJSONWriter;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static fi.nls.oskari.map.geometry.ProjectionHelper.getSRID;
+import static fi.nls.oskari.map.geometry.WKTHelper.parseWKT;
 
 @Oskari
 public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
@@ -32,6 +49,7 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
     private final Cache<UserLayer> cache;
     private SqlSessionFactory factory = null;
 
+    private static final GeoJSONWriter geojsonWriter = new GeoJSONWriter();
 
     public UserLayerDbServiceMybatisImpl() {
         final DatasourceHelper helper = DatasourceHelper.getInstance();
@@ -258,4 +276,77 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
 	    return session.getMapper(UserLayerMapper.class);
 	}
 
+    @Override
+    public JSONObject getFeatures(int layerId, ReferencedEnvelope bbox, CoordinateReferenceSystem crs) throws ServiceException {
+        try (SqlSession session = factory.openSession()) {
+            log.debug("getFeatures by bbox: ", bbox);
+
+            final UserLayerMapper mapper = getMapper(session);
+            String nativeSrsName = PropertyUtil.get("oskari.native.srs", "EPSG:3857");
+            String targetSrsName = crs.getIdentifiers()
+                .stream()
+                .filter(identifier -> identifier.getCodeSpace().equals("EPSG"))
+                .map(identifier -> identifier.getCodeSpace() + ":" + identifier.getCode())
+                .findFirst()
+                .orElse(null);
+
+            int nativeSrid = getSRID(nativeSrsName);
+            List<UserLayerData> features = mapper.findAllByBBOX(layerId, bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY(), nativeSrid);
+
+            JSONObject featureCollection = this.toGeoJSONFeatureCollection(features, targetSrsName != null ? targetSrsName : nativeSrsName);
+            return featureCollection;
+        } catch (Exception e) {
+            log.warn(e, "Exception when trying to get features by bounding box ", bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY());
+            throw new ServiceException(e.getMessage());
+        }
+    }
+
+
+    private JSONObject toGeoJSONFeatureCollection(List<UserLayerData> features, String targetSRSName) throws ServiceException {
+        if (features == null || features.isEmpty()) {
+            return null;
+        }
+        JSONObject json = new JSONObject();
+        try {
+            json.put(GeoJSON.TYPE, GeoJSON.FEATURE_COLLECTION);
+            json.put("crs", geojsonWriter.writeCRSObject(targetSRSName));
+
+            JSONArray jsonFeatures = new JSONArray(features.stream().map(feature -> this.toGeoJSONFeature(feature, targetSRSName)).collect(Collectors.toList()));
+            json.put(GeoJSON.FEATURES, jsonFeatures);
+
+        } catch(JSONException ex) {
+            log.warn("Failed to create GeoJSON FeatureCollection");
+            throw new ServiceException("Failed to create GeoJSON FeatureCollection");
+        }
+        return json;
+    }
+
+     private JSONObject toGeoJSONFeature(UserLayerData feature, String targetSRSName) {
+        JSONObject jsonFeature = new JSONObject();
+        JSONObject properties = new JSONObject();
+        try {
+            jsonFeature.put("id", feature.getId());
+            jsonFeature.put("geometry_name", GeoJSON.GEOMETRY);
+            jsonFeature.put(GeoJSON.TYPE, GeoJSON.FEATURE);
+
+            String sourceSRSName = "EPSG:" + feature.getDatabaseSRID();
+            Geometry transformed = WKTHelper.transform(parseWKT(feature.getWkt()), sourceSRSName, targetSRSName);
+            JSONObject geoJsonGeometry = geojsonWriter.writeGeometry(transformed);
+            jsonFeature.put(GeoJSON.GEOMETRY, geoJsonGeometry);
+
+            properties.put("id", feature.getId());
+            properties.put("user_layer_id", feature.getUser_layer_id());
+            properties.put("uuid", feature.getUuid());
+            properties.put("feature_id", feature.getFeature_id());
+            properties.put("property_json", feature.getProperty_json());
+            properties.put("created", feature.getCreated());
+            properties.put("updated", feature.getUpdated());
+            jsonFeature.put("properties", properties);
+
+        } catch(JSONException ex) {
+            log.warn("Failed to convert UserLayerData to GeoJSONFeature");
+        }
+
+        return jsonFeature;
+     }
 }

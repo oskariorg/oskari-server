@@ -4,6 +4,8 @@ import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.domain.map.userlayer.UserLayerData;
 import fi.nls.oskari.service.ServiceException;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.ResultMap;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -23,4 +25,30 @@ public interface UserLayerMapper {
     int updateUserLayerData(final UserLayerData userLayerData);
     void deleteUserLayerDataByLayerId (final long userLayerId);
     void deleteUserLayerData (final long id);
+
+    @ResultMap("UserLayerDataResult")
+    @Select("SELECT " +
+            " id, " +
+            " user_layer_id, " +
+            " uuid, " +
+            " feature_id, " +
+            " property_json, " +
+            " ST_ASTEXT(geometry) as wkt, " +
+            " ST_SRID(geometry) as srid, " +
+            " created, " +
+            " updated " +
+            " FROM user_layer_data " +
+            " WHERE "+
+            " user_layer_id = #{layerId} " +
+            " AND " +
+            " ST_INTERSECTS(" +
+            "   ST_MAKEENVELOPE(#{minX}, #{minY}, #{maxX}, #{maxY}, #{srid}), " +
+        "       geometry)")
+    List<UserLayerData> findAllByBBOX(@Param("layerId") int layerId,
+                                @Param("minX") double minX,
+                                @Param("minY") double minY,
+                                @Param("maxX") double maxX,
+                                @Param("maxY") double maxY,
+                                @Param("srid") int srid);
+
 }

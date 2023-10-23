@@ -1,5 +1,6 @@
 package fi.nls.oskari.map.geometry;
 
+import fi.nls.oskari.service.ServiceRuntimeException;
 import org.locationtech.jts.geom.CoordinateSequence;
 import org.locationtech.jts.geom.CoordinateSequenceFilter;
 import org.locationtech.jts.geom.Geometry;
@@ -193,6 +194,19 @@ public class ProjectionHelper implements PointTransformer {
         return null;
     }
 
+    /**
+     * Get the numeric SRID of an EPSG-code
+     * @param srsName The String representation of the EPSG-code (e.g. EPSG:3857)
+     * @return the (int) id part of the string e.g. 3857
+     */
+    public static int getSRID(String srsName) {
+        try {
+            String srid = srsName.substring(srsName.lastIndexOf(':') + 1);
+            return Integer.parseInt(srid);
+        } catch(Exception e) {
+            throw new ServiceRuntimeException("Failed to parse SRID from srsName " + srsName, e);
+        }
+    }
 
     /**
      * Transforms geojson geometry coordinates

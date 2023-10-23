@@ -7,6 +7,7 @@ import fi.nls.oskari.domain.map.MyPlace;
 import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.geometry.WKTHelper;
 import fi.nls.oskari.mybatis.JSONObjectMybatisTypeHandler;
 import fi.nls.oskari.myplaces.MyPlaceMapper;
 import fi.nls.oskari.myplaces.service.MyPlacesFeaturesService;
@@ -26,7 +27,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
@@ -36,6 +36,9 @@ import org.oskari.geojson.GeoJSONWriter;
 import javax.sql.DataSource;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static fi.nls.oskari.map.geometry.ProjectionHelper.getSRID;
+import static fi.nls.oskari.map.geometry.WKTHelper.parseWKT;
 
 public class MyPlacesFeaturesServiceMybatisImpl implements MyPlacesFeaturesService {
     private static final Logger LOG = LogFactory.getLogger(
@@ -219,25 +222,6 @@ public class MyPlacesFeaturesServiceMybatisImpl implements MyPlacesFeaturesServi
         }
         return null;
     }
-     private Geometry wktToGeometry(String wkt, String sourceSRSName, String targetSRSName) {
-        try {
-            if (sourceSRSName.equals(targetSRSName)) {
-                return wktReader.read(wkt);
-            }
-
-            Geometry geometry = wktReader.read(wkt);
-            Geometry transformed = transformGeometry(geometry, sourceSRSName, targetSRSName);
-            return transformed;
-        } catch(ParseException e) {
-            LOG.warn("Failed to parse geometry from wkt " + wkt);
-            return null;
-        }
-     }
-
-    private int getSRID(String srsName) {
-        String srid = srsName.substring(srsName.indexOf(':') + 1);
-        return Integer.parseInt(srid);
-    }
 
      private JSONObject toGeoJSONFeatureCollection(List<MyPlace> places, String targetSRSName) throws ServiceException {
         if (places == null || places.isEmpty()) {
@@ -246,7 +230,7 @@ public class MyPlacesFeaturesServiceMybatisImpl implements MyPlacesFeaturesServi
         JSONObject json = new JSONObject();
         try {
             json.put(GeoJSON.TYPE, GeoJSON.FEATURE_COLLECTION);
-            json.put("crs", createCRSObject(targetSRSName));
+            json.put("crs", geojsonWriter.writeCRSObject(targetSRSName));
 
             JSONArray features = new JSONArray(places.stream().map(place -> this.toGeoJSONFeature(place, targetSRSName)).collect(Collectors.toList()));
             json.put(GeoJSON.FEATURES, features);
@@ -258,22 +242,6 @@ public class MyPlacesFeaturesServiceMybatisImpl implements MyPlacesFeaturesServi
         return json;
      }
 
-     private JSONObject createCRSObject(String srsName) {
-        JSONObject crs = new JSONObject();
-        try {
-            crs.put("type", "name");
-            JSONObject crsProperties = new JSONObject();
-            crsProperties.put("name", srsName);
-            crs.put(GeoJSON.PROPERTIES, crsProperties);
-
-        } catch(JSONException e) {
-            LOG.warn("Failed to create crs object.");
-            return null;
-        }
-
-        return crs;
-     }
-
      private JSONObject toGeoJSONFeature(MyPlace place, String targetSRSName) {
         JSONObject feature = new JSONObject();
         JSONObject properties = new JSONObject();
@@ -283,7 +251,7 @@ public class MyPlacesFeaturesServiceMybatisImpl implements MyPlacesFeaturesServi
             feature.put(GeoJSON.TYPE, GeoJSON.FEATURE);
 
             String sourceSRSName = "EPSG:" + place.getDatabaseSRID();
-            Geometry transformed = wktToGeometry(place.getWkt(), sourceSRSName, targetSRSName);
+            Geometry transformed = WKTHelper.transform(parseWKT(place.getWkt()), sourceSRSName, targetSRSName);
             JSONObject geoJsonGeometry = geojsonWriter.writeGeometry(transformed);
             feature.put(GeoJSON.GEOMETRY, geoJsonGeometry);
 
