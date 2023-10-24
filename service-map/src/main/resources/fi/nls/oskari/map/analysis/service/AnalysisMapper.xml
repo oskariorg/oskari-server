@@ -27,6 +27,39 @@
         <result property="locale" column = "locale" />
     </resultMap>
 
+    <resultMap id="AnalysisDataResult" type="fi.nls.oskari.domain.map.analysis.AnalysisData">
+        <result property="id" column="id" />
+        <result property="analysisId" column="analysis_id" />
+        <result property="uuid" column="uuid" />
+        <result property="t1" column="t1" />
+        <result property="t2" column="t2" />
+        <result property="t3" column="t3" />
+        <result property="t4" column="t4" />
+        <result property="t5" column="t5" />
+        <result property="t6" column="t6" />
+        <result property="t7" column="t7" />
+        <result property="t8" column="t8" />
+        <result property="n1" column="n1" />
+        <result property="n2" column="n2" />
+        <result property="n3" column="n3" />
+        <result property="n4" column="n4" />
+        <result property="n5" column="n5" />
+        <result property="n6" column="n6" />
+        <result property="n7" column="n7" />
+        <result property="n8" column="n8" />
+        <result property="d1" column="d1"  jdbcType="TIMESTAMP" javaType="java.time.OffsetDateTime"/>
+        <result property="d2" column="d2"  jdbcType="TIMESTAMP" javaType="java.time.OffsetDateTime"/>
+        <result property="d3" column="d3"  jdbcType="TIMESTAMP" javaType="java.time.OffsetDateTime"/>
+        <result property="d4" column="d4"  jdbcType="TIMESTAMP" javaType="java.time.OffsetDateTime"/>
+
+        <result property="wkt" column="wkt" />
+        <result property="databaseSRID" column="srid" />
+        <result property="created" column = "created" jdbcType="TIMESTAMP" javaType="java.time.OffsetDateTime" />
+        <result property="updated" column = "updated" jdbcType="TIMESTAMP" javaType="java.time.OffsetDateTime" />
+    </resultMap>
+
+
+
     <select id="getAnalysisById" parameterType="long" resultMap="AnalysisResult">
         select
         id,
