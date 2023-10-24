@@ -4,6 +4,8 @@ import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.JSONHelper;
@@ -40,6 +42,7 @@ import java.util.Set;
 
 @Oskari
 public class UserLayerWFSHelper extends UserLayerService {
+    public static final Logger LOG = LogFactory.getLogger(UserLayerWFSHelper.class);
 
     public static final String PROP_USERLAYER_BASELAYER_ID = "userlayer.baselayer.id";
     public static final String PREFIX_USERLAYER = "userlayer_";
@@ -171,6 +174,7 @@ public class UserLayerWFSHelper extends UserLayerService {
 
             return postProcess(featureCollection);
         } catch(Exception e) {
+            LOG.error("Failed to get features. ", e);
             throw new ServiceException("Failed to get features. ", e);
         }
     }

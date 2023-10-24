@@ -5,6 +5,8 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.MyPlace;
 import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.myplaces.service.MyPlacesFeaturesService;
 import fi.nls.oskari.service.OskariComponentManager;
@@ -41,6 +43,7 @@ import java.util.List;
 
 @Oskari
 public class MyPlacesWFSHelper extends UserLayerService {
+    public static final Logger LOG = LogFactory.getLogger(MyPlacesWFSHelper.class);
 
     public static final String PROP_MYPLACES_BASELAYER_ID = "myplaces.baselayer.id";
 
@@ -231,6 +234,7 @@ public class MyPlacesWFSHelper extends UserLayerService {
                 SimpleFeatureCollection featureCollection = GeoJSONReader.toFeatureCollection(featureCollectionJSON);
                 return featureCollection != null ? featureCollection : new EmptyFeatureCollection(null);
             } catch (JSONException e) {
+                LOG.error("Failed to get features. ", e);
                 throw new ServiceException("GetFeatures failed.", e);
             }
     }
