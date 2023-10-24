@@ -42,7 +42,6 @@ import java.util.Set;
 
 @Oskari
 public class UserLayerWFSHelper extends UserLayerService {
-    public static final Logger LOG = LogFactory.getLogger(UserLayerWFSHelper.class);
 
     public static final String PROP_USERLAYER_BASELAYER_ID = "userlayer.baselayer.id";
     public static final String PREFIX_USERLAYER = "userlayer_";
@@ -174,7 +173,6 @@ public class UserLayerWFSHelper extends UserLayerService {
 
             return postProcess(featureCollection);
         } catch(Exception e) {
-            LOG.error("Failed to get features. ", e);
             throw new ServiceException("Failed to get features. ", e);
         }
     }

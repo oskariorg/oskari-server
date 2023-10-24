@@ -6,8 +6,6 @@ import fi.nls.oskari.cache.ComputeOnceCache;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.analysis.Analysis;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.service.AnalysisDataService;
 import fi.nls.oskari.map.analysis.service.AnalysisDbService;
 import fi.nls.oskari.map.analysis.service.AnalysisDbServiceMybatisImpl;
@@ -47,7 +45,6 @@ import java.util.Set;
 @Oskari
 public class AnalysisWFSHelper extends UserLayerService {
 
-    public static final Logger LOG = LogFactory.getLogger(AnalysisWFSHelper.class);
     public static final String PROP_ANALYSIS_BASELAYER_ID = "analysis.baselayer.id";
     public static final String PREFIX_ANALYSIS = "analysis_";
 
@@ -186,7 +183,6 @@ public class AnalysisWFSHelper extends UserLayerService {
                 GeoJSONReader.toFeatureCollection(featureCollectionJSON);
             return postProcess(featureCollection);
         } catch(Exception e) {
-            LOG.error("Failed to get features. ", e);
             throw new ServiceException("Failed to get features. ", e);
         }
     }
