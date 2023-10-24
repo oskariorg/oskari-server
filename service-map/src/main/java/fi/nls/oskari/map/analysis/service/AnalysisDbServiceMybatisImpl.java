@@ -5,11 +5,13 @@ import fi.nls.oskari.cache.Cache;
 import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.domain.map.analysis.Analysis;
+import fi.nls.oskari.domain.map.analysis.AnalysisData;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.geometry.WKTHelper;
 import fi.nls.oskari.mybatis.JSONObjectMybatisTypeHandler;
 import fi.nls.oskari.service.ServiceException;
-
+import fi.nls.oskari.util.PropertyUtil;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
@@ -17,12 +19,24 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
+import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.locationtech.jts.geom.Geometry;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.oskari.geojson.GeoJSON;
+import org.oskari.geojson.GeoJSONWriter;
 
 import javax.sql.DataSource;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import static fi.nls.oskari.map.geometry.ProjectionHelper.getSRID;
+import static fi.nls.oskari.map.geometry.WKTHelper.parseWKT;
 
 @Oskari
 public class AnalysisDbServiceMybatisImpl extends AnalysisDbService {
@@ -33,6 +47,8 @@ public class AnalysisDbServiceMybatisImpl extends AnalysisDbService {
     private final Cache<Analysis> cache;
 
     private SqlSessionFactory factory = null;
+
+    private static final GeoJSONWriter geojsonWriter = new GeoJSONWriter();
 
     public AnalysisDbServiceMybatisImpl() {
 
@@ -311,4 +327,99 @@ public class AnalysisDbServiceMybatisImpl extends AnalysisDbService {
         }
         return id;
     }
+
+    @Override
+    public JSONObject getFeatures(int layerId, ReferencedEnvelope bbox, CoordinateReferenceSystem crs) throws ServiceException {
+        try (SqlSession session = factory.openSession()) {
+            log.debug("getFeatures by bbox: ", bbox);
+
+            final AnalysisMapper mapper = session.getMapper(AnalysisMapper.class);
+            String nativeSrsName = PropertyUtil.get("oskari.native.srs", "EPSG:3857");
+            String targetSrsName = crs.getIdentifiers()
+                .stream()
+                .filter(identifier -> identifier.getCodeSpace().equals("EPSG"))
+                .map(identifier -> identifier.getCodeSpace() + ":" + identifier.getCode())
+                .findFirst()
+                .orElse(null);
+
+            int nativeSrid = getSRID(nativeSrsName);
+            List<AnalysisData> features = mapper.findAllByBBOX(layerId, bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY(), nativeSrid);
+
+            JSONObject featureCollection = this.toGeoJSONFeatureCollection(features, targetSrsName != null ? targetSrsName : nativeSrsName);
+            return featureCollection;
+        } catch (Exception e) {
+            log.warn(e, "Exception when trying to get features by bounding box ", bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY());
+            throw new ServiceException(e.getMessage());
+        }
+    }
+
+    private JSONObject toGeoJSONFeatureCollection(List<AnalysisData> features, String targetSRSName) throws ServiceException {
+        if (features == null || features.isEmpty()) {
+            return null;
+        }
+        JSONObject json = new JSONObject();
+        try {
+            json.put(GeoJSON.TYPE, GeoJSON.FEATURE_COLLECTION);
+            json.put("crs", geojsonWriter.writeCRSObject(targetSRSName));
+
+            JSONArray jsonFeatures = new JSONArray(features.stream().map(feature -> this.toGeoJSONFeature(feature, targetSRSName)).collect(Collectors.toList()));
+            json.put(GeoJSON.FEATURES, jsonFeatures);
+
+        } catch(JSONException ex) {
+            log.warn("Failed to create GeoJSON FeatureCollection");
+            throw new ServiceException("Failed to create GeoJSON FeatureCollection");
+        }
+        return json;
+    }
+
+     private JSONObject toGeoJSONFeature(AnalysisData feature, String targetSRSName) {
+        JSONObject jsonFeature = new JSONObject();
+        JSONObject properties = new JSONObject();
+        try {
+            jsonFeature.put("id", feature.getId());
+            jsonFeature.put("geometry_name", GeoJSON.GEOMETRY);
+            jsonFeature.put(GeoJSON.TYPE, GeoJSON.FEATURE);
+
+            String sourceSRSName = "EPSG:" + feature.getDatabaseSRID();
+            Geometry transformed = WKTHelper.transform(parseWKT(feature.getWkt()), sourceSRSName, targetSRSName);
+            JSONObject geoJsonGeometry = geojsonWriter.writeGeometry(transformed);
+            jsonFeature.put(GeoJSON.GEOMETRY, geoJsonGeometry);
+
+            properties.put("id", feature.getId());
+            properties.put("analysis_id", feature.getAnalysisId());
+            properties.put("uuid", feature.getUuid());
+            properties.put("t1", feature.getT1());
+            properties.put("t2", feature.getT2());
+            properties.put("t3", feature.getT3());
+            properties.put("t4", feature.getT4());
+            properties.put("t5", feature.getT5());
+            properties.put("t6", feature.getT6());
+            properties.put("t7", feature.getT7());
+            properties.put("t8", feature.getT8());
+
+            properties.put("n1", feature.getN1());
+            properties.put("n2", feature.getN2());
+            properties.put("n3", feature.getN3());
+            properties.put("n4", feature.getN4());
+            properties.put("n5", feature.getN5());
+            properties.put("n6", feature.getN6());
+            properties.put("n7", feature.getN7());
+            properties.put("n8", feature.getN8());
+
+            properties.put("d1", feature.getD1());
+            properties.put("d2", feature.getD2());
+            properties.put("d3", feature.getD3());
+            properties.put("d4", feature.getD4());
+
+            properties.put("created", feature.getCreated());
+            properties.put("updated", feature.getUpdated());
+            jsonFeature.put("properties", properties);
+
+        } catch(JSONException ex) {
+            log.warn("Failed to convert UserLayerData to GeoJSONFeature");
+        }
+
+        return jsonFeature;
+     }
+
 }

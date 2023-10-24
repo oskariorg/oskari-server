@@ -8,16 +8,19 @@ import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.map.analysis.service.AnalysisDataService;
 import fi.nls.oskari.map.analysis.service.AnalysisDbService;
+import fi.nls.oskari.map.analysis.service.AnalysisDbServiceMybatisImpl;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.PropertyUtil;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
+import org.geotools.data.store.EmptyFeatureCollection;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
+import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
@@ -26,6 +29,7 @@ import org.opengis.filter.FilterFactory;
 import org.opengis.filter.expression.Expression;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.geojson.GeoJSONFeatureCollection;
+import org.oskari.geojson.GeoJSONReader;
 import org.oskari.permissions.PermissionService;
 import org.oskari.permissions.model.PermissionType;
 import org.oskari.permissions.model.ResourceType;
@@ -55,6 +59,7 @@ public class AnalysisWFSHelper extends UserLayerService {
     private ComputeOnceCache<Set<String>> permissionsCache;
     private OskariWFSClient wfsClient = new CachingOskariWFSClient();
 
+    private AnalysisDbServiceMybatisImpl analysisDbService = new AnalysisDbServiceMybatisImpl();
     public AnalysisWFSHelper() {
         init();
     }
@@ -172,9 +177,11 @@ public class AnalysisWFSHelper extends UserLayerService {
     @Override
     public SimpleFeatureCollection getFeatures(String layerId, OskariLayer layer, ReferencedEnvelope bbox, CoordinateReferenceSystem crs) throws ServiceException {
         try {
-            Filter filter = this.getWFSFilter(layerId, bbox);
-            SimpleFeatureCollection sfc = wfsClient.getFeatures(layer, bbox, crs, filter);
-            return this.postProcess(sfc);
+            JSONObject featureCollectionJSON = analysisDbService.getFeatures(parseId(layerId), bbox, crs);
+            SimpleFeatureCollection featureCollection = featureCollectionJSON == null ?
+                new EmptyFeatureCollection(null) :
+                GeoJSONReader.toFeatureCollection(featureCollectionJSON);
+            return postProcess(featureCollection);
         } catch(Exception e) {
             throw new ServiceException("Failed to get features. ", e);
         }
