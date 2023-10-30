@@ -291,7 +291,7 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
                 .orElse(null);
 
             int nativeSrid = getSRID(nativeSrsName);
-            List<UserLayerData> features = mapper.findAllByBBOX(layerId, bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY(), nativeSrid);
+            List<UserLayerData> features = mapper.findAllByLooseBBOX(layerId, bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY(), nativeSrid);
 
             JSONObject featureCollection = this.toGeoJSONFeatureCollection(features, targetSrsName != null ? targetSrsName : nativeSrsName);
             return featureCollection;

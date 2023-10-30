@@ -26,6 +26,16 @@ public interface UserLayerMapper {
     void deleteUserLayerDataByLayerId (final long userLayerId);
     void deleteUserLayerData (final long id);
 
+    /**
+     * Returns features given a bbox and layer id.
+     * @param layerId
+     * @param minX
+     * @param minY
+     * @param maxX
+     * @param maxY
+     * @param srid
+     * @return
+     */
     @ResultMap("UserLayerDataResult")
     @Select("SELECT " +
             " id, " +
@@ -50,5 +60,41 @@ public interface UserLayerMapper {
                                 @Param("maxX") double maxX,
                                 @Param("maxY") double maxY,
                                 @Param("srid") int srid);
+
+    /**
+     * Returns features given a bbox and layer id.
+     * Imitates Geoserver/geotools "loose bbox" sql query.
+     * It should be faster than intersects as it relies on _feature bounding box_ intersecting with given
+     * bbox instead of the _actual feature geometry_.
+     * @param layerId
+     * @param minX
+     * @param minY
+     * @param maxX
+     * @param maxY
+     * @param srid
+     * @return
+     */
+    @ResultMap("UserLayerDataResult")
+    @Select("SELECT " +
+            " id, " +
+            " user_layer_id, " +
+            " uuid, " +
+            " feature_id, " +
+            " property_json, " +
+            " ST_ASTEXT(geometry) as wkt, " +
+            " ST_SRID(geometry) as srid, " +
+            " created, " +
+            " updated " +
+            " FROM user_layer_data " +
+            " WHERE "+
+            " user_layer_id = #{layerId} " +
+            " AND " +
+            " geometry && ST_MAKEENVELOPE(#{minX}, #{minY}, #{maxX}, #{maxY}, #{srid})")
+    List<UserLayerData> findAllByLooseBBOX(@Param("layerId") int layerId,
+                                      @Param("minX") double minX,
+                                      @Param("minY") double minY,
+                                      @Param("maxX") double maxX,
+                                      @Param("maxY") double maxY,
+                                      @Param("srid") int srid);
 
 }
