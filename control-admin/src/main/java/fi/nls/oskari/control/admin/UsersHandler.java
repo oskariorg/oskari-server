@@ -30,7 +30,7 @@ public class UsersHandler extends RestActionHandler {
     private static final String PARAM_FIRSTNAME = "firstName";
     private static final String PARAM_LASTNAME = "lastName";
     private static final String PARAM_SCREENNAME = "user";
-    private static final String PARAM_PASSWORD = "pass";
+    private static final String PARAM_PASSWORD = "password";
     private static final String PARAM_EMAIL = "email";
     private static final String PARAM_LIMIT = "limit";
     private static final String PARAM_OFFSET = "offset";
