@@ -25,14 +25,12 @@ import static org.junit.Assert.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringBufferInputStream;
-import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.sql.DataSource;
 
 import static org.mockito.Mockito.*;
 
