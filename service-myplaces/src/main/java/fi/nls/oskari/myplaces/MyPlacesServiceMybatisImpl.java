@@ -9,16 +9,15 @@ import fi.nls.oskari.domain.map.MyPlace;
 import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.mybatis.JSONObjectMybatisTypeHandler;
+import fi.nls.oskari.mybatis.MyBatisHelper;
+import fi.nls.oskari.ontology.domain.Keyword;
+import fi.nls.oskari.ontology.service.KeywordMapper;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.ConversionHelper;
-import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.apache.ibatis.transaction.TransactionFactory;
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.oskari.permissions.PermissionService;
 import org.oskari.permissions.model.Resource;
 import org.oskari.permissions.model.ResourceType;
@@ -40,7 +39,6 @@ public class MyPlacesServiceMybatisImpl extends MyPlacesService {
     private SqlSessionFactory factory = null;
 
     public MyPlacesServiceMybatisImpl() {
-
         final DatasourceHelper helper = DatasourceHelper.getInstance();
         final DataSource dataSource = helper.getDataSource(helper.getOskariDataSourceName("myplaces"));
         if(dataSource != null) {
@@ -73,15 +71,9 @@ public class MyPlacesServiceMybatisImpl extends MyPlacesService {
     }
 
     private SqlSessionFactory initializeMyBatis(final DataSource dataSource) {
-        final TransactionFactory transactionFactory = new JdbcTransactionFactory();
-        final Environment environment = new Environment("development", transactionFactory, dataSource);
-
-        final Configuration configuration = new Configuration(environment);
-        configuration.getTypeAliasRegistry().registerAlias(MyPlaceCategory.class);
-        configuration.getTypeAliasRegistry().registerAlias(MyPlace.class);
-        configuration.getTypeHandlerRegistry().register(JSONObjectMybatisTypeHandler.class);
-        configuration.setLazyLoadingEnabled(true);
-        configuration.addMapper(MyPlaceMapper.class);
+        final Configuration configuration = MyBatisHelper.getConfig(dataSource);
+        MyBatisHelper.addAliases(configuration, MyPlace.class, MyPlaceCategory.class);
+        MyBatisHelper.addMappers(configuration, MyPlaceMapper.class);
 
         return new SqlSessionFactoryBuilder().build(configuration);
     }

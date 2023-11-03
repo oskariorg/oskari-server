@@ -6,17 +6,13 @@ import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.mybatis.JSONArrayMybatisTypeHandler;
-import fi.nls.oskari.mybatis.JSONObjectMybatisTypeHandler;
+import fi.nls.oskari.mybatis.MyBatisHelper;
 import fi.nls.oskari.search.channel.WFSChannelProvider;
 import fi.nls.oskari.service.OskariComponentManager;
-import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.apache.ibatis.transaction.TransactionFactory;
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 
 import javax.sql.DataSource;
 
@@ -40,18 +36,9 @@ public class WFSSearchChannelsServiceMybatisImpl extends WFSSearchChannelsServic
     }
 
     private SqlSessionFactory initializeMyBatis(final DataSource dataSource) {
-        final TransactionFactory transactionFactory = new JdbcTransactionFactory();
-        final Environment environment = new Environment("development", transactionFactory, dataSource);
-
-        final Configuration configuration = new Configuration(environment);
-        configuration.setLazyLoadingEnabled(true);
-        configuration.getTypeAliasRegistry().registerAlias(WFSSearchChannelsConfiguration.class);
-        // typehandlers aren't found from classpath even when annotated.
-        // also important to register them before adding mappers
-        configuration.getTypeHandlerRegistry().register(JSONObjectMybatisTypeHandler.class);
-        configuration.getTypeHandlerRegistry().register(JSONArrayMybatisTypeHandler.class);
-
-        configuration.addMapper(WFSChannelConfigMapper.class);
+        final Configuration configuration = MyBatisHelper.getConfig(dataSource);
+        MyBatisHelper.addAliases(configuration, WFSSearchChannelsConfiguration.class);
+        MyBatisHelper.addMappers(configuration, WFSChannelConfigMapper.class);
 
         return new SqlSessionFactoryBuilder().build(configuration);
     }

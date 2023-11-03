@@ -13,13 +13,11 @@ import javax.sql.DataSource;
 
 import fi.nls.oskari.cache.Cache;
 import fi.nls.oskari.cache.CacheManager;
-import org.apache.ibatis.mapping.Environment;
+import fi.nls.oskari.mybatis.MyBatisHelper;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.apache.ibatis.transaction.TransactionFactory;
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.oskari.service.util.ServiceFactory;
 
 import fi.nls.oskari.annotation.Oskari;
@@ -30,8 +28,6 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLink;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkService;
-import fi.nls.oskari.mybatis.JSONObjectMybatisTypeHandler;
-import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 
 @Oskari("OskariLayerService")
@@ -43,7 +39,7 @@ public class OskariLayerServiceMybatisImpl extends OskariLayerService {
     private static OskariLayerGroupLinkService linkService = ServiceFactory.getOskariLayerGroupLinkService();
     private final Cache<OskariLayer> layerCache = CacheManager.getCache(OskariLayerService.class.getName());
 
-    private SqlSessionFactory factory = null;
+    private SqlSessionFactory factory;
 
     public OskariLayerServiceMybatisImpl() {
         final DatasourceHelper helper = DatasourceHelper.getInstance();
@@ -58,14 +54,9 @@ public class OskariLayerServiceMybatisImpl extends OskariLayerService {
     }
 
     private SqlSessionFactory initializeMyBatis(final DataSource dataSource) {
-        final TransactionFactory transactionFactory = new JdbcTransactionFactory();
-        final Environment environment = new Environment("development", transactionFactory, dataSource);
-
-        final Configuration configuration = new Configuration(environment);
-        configuration.getTypeAliasRegistry().registerAlias(OskariLayer.class);
-        configuration.setLazyLoadingEnabled(true);
-        configuration.getTypeHandlerRegistry().register(JSONObjectMybatisTypeHandler.class);
-        configuration.addMapper(OskariLayerMapper.class);
+        final Configuration configuration = MyBatisHelper.getConfig(dataSource);
+        MyBatisHelper.addAliases(configuration, OskariLayer.class);
+        MyBatisHelper.addMappers(configuration, OskariLayerMapper.class);
 
         return new SqlSessionFactoryBuilder().build(configuration);
     }
@@ -76,7 +67,7 @@ public class OskariLayerServiceMybatisImpl extends OskariLayerService {
         }
         if(data.get("id") == null) {
             // this will make the keys case insensitive (needed for hsqldb compatibility...)
-            final Map<String, Object> caseInsensitiveData = new TreeMap<String, Object>(String.CASE_INSENSITIVE_ORDER);
+            final Map<String, Object> caseInsensitiveData = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
             caseInsensitiveData.putAll(data);
             data = caseInsensitiveData;
         }

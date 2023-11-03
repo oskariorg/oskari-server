@@ -4,14 +4,13 @@ import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.mybatis.MyBatisHelper;
 import fi.nls.oskari.ontology.domain.Keyword;
-import org.apache.ibatis.mapping.Environment;
+import fi.nls.oskari.ontology.domain.Relation;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.apache.ibatis.transaction.TransactionFactory;
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 
 import javax.sql.DataSource;
 import java.util.Collections;
@@ -24,7 +23,7 @@ public class KeywordServiceMybatisImpl extends KeywordService {
 
     private static final Logger log = LogFactory.getLogger(KeywordServiceMybatisImpl.class);
 
-    private SqlSessionFactory factory = null;
+    private SqlSessionFactory factory;
 
     public KeywordServiceMybatisImpl() {
         final DatasourceHelper helper = DatasourceHelper.getInstance();
@@ -39,13 +38,9 @@ public class KeywordServiceMybatisImpl extends KeywordService {
     }
 
     private SqlSessionFactory initializeMyBatis(final DataSource dataSource) {
-        final TransactionFactory transactionFactory = new JdbcTransactionFactory();
-        final Environment environment = new Environment("development", transactionFactory, dataSource);
-
-        final Configuration configuration = new Configuration(environment);
-        configuration.getTypeAliasRegistry().registerAlias(Keyword.class);
-        configuration.setLazyLoadingEnabled(true);
-        configuration.addMapper(KeywordMapper.class);
+        final Configuration configuration = MyBatisHelper.getConfig(dataSource);
+        MyBatisHelper.addAliases(configuration, Keyword.class);
+        MyBatisHelper.addMappers(configuration, KeywordMapper.class);
 
         return new SqlSessionFactoryBuilder().build(configuration);
     }

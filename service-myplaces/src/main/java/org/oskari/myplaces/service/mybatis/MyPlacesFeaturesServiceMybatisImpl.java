@@ -8,18 +8,15 @@ import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.WKTHelper;
-import fi.nls.oskari.mybatis.JSONObjectMybatisTypeHandler;
+import fi.nls.oskari.mybatis.MyBatisHelper;
 import fi.nls.oskari.myplaces.MyPlaceMapper;
 import fi.nls.oskari.myplaces.service.MyPlacesFeaturesService;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.PropertyUtil;
-import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.apache.ibatis.transaction.TransactionFactory;
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
@@ -27,7 +24,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.io.WKTReader;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.oskari.geojson.GeoJSON;
@@ -44,7 +40,6 @@ public class MyPlacesFeaturesServiceMybatisImpl implements MyPlacesFeaturesServi
     private static final Logger LOG = LogFactory.getLogger(
             MyPlacesFeaturesServiceMybatisImpl.class);
 
-    private static final WKTReader wktReader = new WKTReader();
     private static final GeoJSONWriter geojsonWriter = new GeoJSONWriter();
     private SqlSessionFactory factory = null;
 
@@ -60,15 +55,9 @@ public class MyPlacesFeaturesServiceMybatisImpl implements MyPlacesFeaturesServi
     }
 
     private SqlSessionFactory initializeMyBatis(final DataSource dataSource) {
-        final TransactionFactory transactionFactory = new JdbcTransactionFactory();
-        final Environment environment = new Environment("development", transactionFactory, dataSource);
-
-        final Configuration configuration = new Configuration(environment);
-        configuration.getTypeAliasRegistry().registerAlias(MyPlaceCategory.class);
-        configuration.getTypeAliasRegistry().registerAlias(MyPlace.class);
-        configuration.getTypeHandlerRegistry().register(JSONObjectMybatisTypeHandler.class);
-        configuration.setLazyLoadingEnabled(true);
-        configuration.addMapper(MyPlaceMapper.class);
+        final Configuration configuration = MyBatisHelper.getConfig(dataSource);
+        MyBatisHelper.addAliases(configuration, MyPlace.class, MyPlaceCategory.class);
+        MyBatisHelper.addMappers(configuration, MyPlaceMapper.class);
 
         return new SqlSessionFactoryBuilder().build(configuration);
     }
