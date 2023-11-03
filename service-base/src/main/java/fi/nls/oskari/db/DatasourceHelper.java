@@ -5,7 +5,6 @@ import com.zaxxer.hikari.HikariDataSource;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.PropertyUtil;
-import org.apache.commons.dbcp2.BasicDataSource;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -228,10 +227,8 @@ public class DatasourceHelper {
         for (DataSource ds : localDataSources.values()) {
             try {
                 // try to close it
-                if (ds instanceof BasicDataSource) {
-                    ((BasicDataSource)ds).close();
-                } else if (ds instanceof Closeable) {
-                    ((AutoCloseable) ds).close();
+                if (ds instanceof Closeable) {
+                    ((Closeable) ds).close();
                 } else if (ds instanceof AutoCloseable) {
                     ((AutoCloseable) ds).close();
                 }
