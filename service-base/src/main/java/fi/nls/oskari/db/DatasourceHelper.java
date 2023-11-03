@@ -1,9 +1,10 @@
 package fi.nls.oskari.db;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.PropertyUtil;
-import org.apache.commons.dbcp2.BasicDataSource;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -138,22 +139,29 @@ public class DatasourceHelper {
     public DataSource createDataSource(final String prefix) {
         // check if we have the named connection already
         String poolName = getOskariDataSourceName(prefix);
-        BasicDataSource ds = (BasicDataSource) getDataSource(null, poolName);
+        DataSource ds = getDataSource(null, poolName);
         if (ds != null) {
             return ds;
         }
 
-        final BasicDataSource dataSource = new BasicDataSource();
         ConnectionInfo info = getPropsForDS(prefix);
 
-        dataSource.setDriverClassName(info.driver);
-        dataSource.setUrl(info.url);
-        dataSource.setUsername(info.user);
-        dataSource.setPassword(info.pass);
-        dataSource.setTimeBetweenEvictionRunsMillis(-1);
-        dataSource.setTestOnBorrow(true);
-        dataSource.setValidationQuery("SELECT 1");
-        dataSource.setValidationQueryTimeout(100);
+        HikariConfig config = new HikariConfig();
+        config.setPoolName(poolName);
+        config.setDriverClassName(info.driver);
+        config.setJdbcUrl(info.url);
+        config.setUsername(info.user);
+        config.setPassword(info.pass);
+        config.setMaximumPoolSize(10);
+        // config.addDataSourceProperty( "ApplicationName" , "should we provide one here or let users set this as part of the url?" );
+
+        // Setting this statement cache is crucial for queries using postgis geometries like on userlayers with
+        // WHERE user_layer_id = #{layerId} AND  geometry && ST_MAKEENVELOPE(#{minX}, #{minY}, #{maxX}, #{maxY}, #{srid})
+        // Otherwise calling the query repeatedly the performance crashes from 50ms to around 4 seconds or so
+        // https://stackoverflow.com/questions/64465108/spring-boot-jdbctemplate-disable-statement-cache
+        config.addDataSourceProperty( "preparedStatementCacheQueries" , "0" );
+
+        HikariDataSource dataSource = new HikariDataSource(config);
         try {
             registerDataSource(poolName, dataSource);
         } catch (SQLException e) {
@@ -219,10 +227,8 @@ public class DatasourceHelper {
         for (DataSource ds : localDataSources.values()) {
             try {
                 // try to close it
-                if (ds instanceof BasicDataSource) {
-                    ((BasicDataSource)ds).close();
-                } else if (ds instanceof Closeable) {
-                    ((AutoCloseable) ds).close();
+                if (ds instanceof Closeable) {
+                    ((Closeable) ds).close();
                 } else if (ds instanceof AutoCloseable) {
                     ((AutoCloseable) ds).close();
                 }

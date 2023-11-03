@@ -2,12 +2,11 @@ package fi.nls.oskari.control.statistics.plugins;
 
 import fi.nls.oskari.control.statistics.data.*;
 import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
-import org.apache.commons.dbcp2.BasicDataSource;
+import fi.nls.test.util.TestHelper;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -18,12 +17,10 @@ import fi.nls.oskari.util.PropertyUtil;
 
 import static org.junit.Assert.*;
 
-import java.lang.reflect.Field;
+import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import javax.sql.DataSource;
 
 import static org.hamcrest.CoreMatchers.*;
 
@@ -33,27 +30,10 @@ import static org.hamcrest.CoreMatchers.*;
 public class StatisticalDatasourcePluginManagerIT {
 
     final private StatisticalDatasourcePluginManager manager = StatisticalDatasourcePluginManager.getInstance();
-
-    public static class DatasourceHelperMock extends DatasourceHelper {
-        public DatasourceHelperMock() {
-            super();
-        }
-        @Override
-        public DataSource getDataSource(String name) {
-            BasicDataSource basicDataSource = new BasicDataSource();
-            basicDataSource.setDriverClassName("org.postgresql.Driver");
-            basicDataSource.setUrl(PropertyUtil.get("db.url"));
-            basicDataSource.setUsername(PropertyUtil.get("db.username"));
-            basicDataSource.setPassword(PropertyUtil.get("db.password"));
-            return basicDataSource;
-        }
-    }
     
     @BeforeClass
-    public static void init() throws IllegalArgumentException, IllegalAccessException {
-        PropertyUtil.loadProperties("/oskari-ext.properties");
-        Field field = PowerMockito.field(DatasourceHelper.class, "INSTANCE");
-        field.set(DatasourceHelper.class, new DatasourceHelperMock());
+    public static void init() throws IllegalArgumentException, IllegalAccessException, SQLException {
+        TestHelper.registerTestDataSource();
     }
     @AfterClass
     public static void tearDown() {
