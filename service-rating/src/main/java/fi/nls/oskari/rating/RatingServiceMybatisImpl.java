@@ -1,15 +1,15 @@
 package fi.nls.oskari.rating;
 
 import fi.nls.oskari.db.DatasourceHelper;
+import fi.nls.oskari.domain.map.MyPlace;
+import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import org.apache.ibatis.mapping.Environment;
+import fi.nls.oskari.mybatis.MyBatisHelper;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.apache.ibatis.transaction.TransactionFactory;
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 
 import javax.sql.DataSource;
 import java.util.Collections;
@@ -38,13 +38,9 @@ public class RatingServiceMybatisImpl extends RatingService {
     }
 
     private SqlSessionFactory initializeMyBatis(final DataSource dataSource) {
-        final TransactionFactory transactionFactory = new JdbcTransactionFactory();
-        final Environment environment = new Environment("development", transactionFactory, dataSource);
-
-        final Configuration configuration = new Configuration(environment);
-        configuration.getTypeAliasRegistry().registerAlias(Rating.class);
-        configuration.setLazyLoadingEnabled(true);
-        configuration.addMapper(RatingMapper.class);
+        final Configuration configuration = MyBatisHelper.getConfig(dataSource);
+        MyBatisHelper.addAliases(configuration, Rating.class);
+        MyBatisHelper.addMappers(configuration, RatingMapper.class);
 
         return new SqlSessionFactoryBuilder().build(configuration);
     }

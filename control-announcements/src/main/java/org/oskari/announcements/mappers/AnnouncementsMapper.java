@@ -1,6 +1,5 @@
 package org.oskari.announcements.mappers;
 
-import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
 

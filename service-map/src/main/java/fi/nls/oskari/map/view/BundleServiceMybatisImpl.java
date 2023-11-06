@@ -4,16 +4,16 @@ import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.cache.Cache;
 import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.db.DatasourceHelper;
+import fi.nls.oskari.domain.map.style.VectorStyle;
 import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import org.apache.ibatis.mapping.Environment;
+import fi.nls.oskari.map.style.VectorStyleMapper;
+import fi.nls.oskari.mybatis.MyBatisHelper;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.apache.ibatis.transaction.TransactionFactory;
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 
 import javax.sql.DataSource;
 
@@ -23,7 +23,7 @@ public class BundleServiceMybatisImpl extends BundleService {
     private static final Logger log = LogFactory.getLogger(BundleServiceMybatisImpl.class);
     private Cache<Bundle> bundleCache = CacheManager.getCache(getClass().getName());
 
-    private SqlSessionFactory factory = null;
+    private SqlSessionFactory factory;
 
     public BundleServiceMybatisImpl() {
         final DatasourceHelper helper = DatasourceHelper.getInstance();
@@ -38,13 +38,9 @@ public class BundleServiceMybatisImpl extends BundleService {
     }
 
     private SqlSessionFactory initializeMyBatis(final DataSource dataSource) {
-        final TransactionFactory transactionFactory = new JdbcTransactionFactory();
-        final Environment environment = new Environment("development", transactionFactory, dataSource);
-
-        final Configuration configuration = new Configuration(environment);
-        configuration.getTypeAliasRegistry().registerAlias(Bundle.class);
-        configuration.setLazyLoadingEnabled(true);
-        configuration.addMapper(BundleMapper.class);
+        final Configuration configuration = MyBatisHelper.getConfig(dataSource);
+        MyBatisHelper.addAliases(configuration, Bundle.class);
+        MyBatisHelper.addMappers(configuration, BundleMapper.class);
 
         return new SqlSessionFactoryBuilder().build(configuration);
     }

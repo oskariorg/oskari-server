@@ -9,16 +9,13 @@ import fi.nls.oskari.domain.map.analysis.AnalysisData;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.WKTHelper;
-import fi.nls.oskari.mybatis.JSONObjectMybatisTypeHandler;
+import fi.nls.oskari.mybatis.MyBatisHelper;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.PropertyUtil;
-import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.apache.ibatis.transaction.TransactionFactory;
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -67,18 +64,11 @@ public class AnalysisDbServiceMybatisImpl extends AnalysisDbService {
     }
 
     private SqlSessionFactory initializeMyBatis(final DataSource dataSource) {
-        final TransactionFactory transactionFactory = new JdbcTransactionFactory();
-        final Environment environment = new Environment("development", transactionFactory, dataSource);
-
-        final Configuration configuration = new Configuration(environment);
-        configuration.getTypeAliasRegistry().registerAlias(Analysis.class);
-        configuration.getTypeHandlerRegistry().register(JSONObjectMybatisTypeHandler.class);
-        configuration.setLazyLoadingEnabled(true);
-        configuration.addMapper(AnalysisMapper.class);
-
+        final Configuration configuration = MyBatisHelper.getConfig(dataSource);
+        MyBatisHelper.addAliases(configuration, Analysis.class);
+        MyBatisHelper.addMappers(configuration, AnalysisMapper.class);
         return new SqlSessionFactoryBuilder().build(configuration);
     }
-
 
     private Analysis getFromCache(long id) {
         return cache.get(Long.toString(id));

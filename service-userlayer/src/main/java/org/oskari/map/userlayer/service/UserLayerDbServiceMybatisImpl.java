@@ -10,18 +10,14 @@ import fi.nls.oskari.domain.map.userlayer.UserLayerData;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.WKTHelper;
-import fi.nls.oskari.mybatis.JSONArrayMybatisTypeHandler;
-import fi.nls.oskari.mybatis.JSONObjectMybatisTypeHandler;
+import fi.nls.oskari.mybatis.MyBatisHelper;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.PropertyUtil;
-import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.apache.ibatis.transaction.TransactionFactory;
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -66,16 +62,9 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
     }
 
     private SqlSessionFactory initializeMyBatis(final DataSource dataSource) {
-        final TransactionFactory transactionFactory = new JdbcTransactionFactory();
-        final Environment environment = new Environment("development", transactionFactory, dataSource);
-
-        final Configuration configuration = new Configuration(environment);
-        configuration.getTypeAliasRegistry().registerAlias(UserLayer.class);
-        configuration.getTypeAliasRegistry().registerAlias(UserLayerData.class);
-        configuration.setLazyLoadingEnabled(true);
-        configuration.getTypeHandlerRegistry().register(JSONObjectMybatisTypeHandler.class);
-        configuration.getTypeHandlerRegistry().register(JSONArrayMybatisTypeHandler.class);
-        configuration.addMapper(UserLayerMapper.class);
+        final Configuration configuration = MyBatisHelper.getConfig(dataSource);
+        MyBatisHelper.addAliases(configuration, UserLayer.class, UserLayerData.class);
+        MyBatisHelper.addMappers(configuration, UserLayerMapper.class);
         return new SqlSessionFactoryBuilder().build(configuration);
     }
 
@@ -292,9 +281,7 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
 
             int nativeSrid = getSRID(nativeSrsName);
             List<UserLayerData> features = mapper.findAllByLooseBBOX(layerId, bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY(), nativeSrid);
-
-            JSONObject featureCollection = this.toGeoJSONFeatureCollection(features, targetSrsName != null ? targetSrsName : nativeSrsName);
-            return featureCollection;
+            return this.toGeoJSONFeatureCollection(features, targetSrsName != null ? targetSrsName : nativeSrsName);
         } catch (Exception e) {
             log.warn(e, "Exception when trying to get features by bounding box ", bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY());
             throw new ServiceException(e.getMessage());

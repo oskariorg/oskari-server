@@ -3,19 +3,17 @@ package fi.nls.oskari.control.statistics.plugins;
 import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
 import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayerMapper;
 import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
+import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasourceMapper;
 import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.map.layer.OskariLayerService;
-import fi.nls.oskari.mybatis.JSONObjectMybatisTypeHandler;
+import fi.nls.oskari.mybatis.MyBatisHelper;
 import fi.nls.oskari.service.OskariComponent;
 import fi.nls.oskari.service.OskariComponentManager;
-import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.apache.ibatis.transaction.TransactionFactory;
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.oskari.permissions.PermissionService;
 import org.oskari.permissions.model.Permission;
 import org.oskari.permissions.model.PermissionExternalType;
@@ -78,16 +76,9 @@ public abstract class StatisticalDatasourceFactory extends OskariComponent {
     }
 
     private SqlSessionFactory initializeIBatis(final DataSource dataSource) {
-        final TransactionFactory transactionFactory = new JdbcTransactionFactory();
-        final Environment environment = new Environment("development", transactionFactory, dataSource);
-
-        final Configuration configuration = new Configuration(environment);
-        configuration.getTypeAliasRegistry().registerAlias(DatasourceLayer.class);
-        configuration.setLazyLoadingEnabled(true);
-        // typehandlers aren't found from classpath even when annotated.
-        // also important to register them before adding mappers
-        configuration.getTypeHandlerRegistry().register(JSONObjectMybatisTypeHandler.class);
-        configuration.addMapper(DatasourceLayerMapper.class);
+        final Configuration configuration = MyBatisHelper.getConfig(dataSource);
+        MyBatisHelper.addAliases(configuration, DatasourceLayer.class);
+        MyBatisHelper.addMappers(configuration, DatasourceLayerMapper.class);
 
         return new SqlSessionFactoryBuilder().build(configuration);
     }

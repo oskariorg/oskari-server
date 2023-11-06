@@ -3,13 +3,11 @@ package fi.nls.oskari.csw.dao;
 import fi.nls.oskari.csw.dto.OskariLayerMetadataDto;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import org.apache.ibatis.mapping.Environment;
+import fi.nls.oskari.mybatis.MyBatisHelper;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.apache.ibatis.transaction.TransactionFactory;
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 
 import javax.sql.DataSource;
 
@@ -25,14 +23,9 @@ public class OskariLayerMetadataDao {
     }
 
     private SqlSessionFactory initializeMyBatis(final DataSource dataSource) {
-        final TransactionFactory transactionFactory = new JdbcTransactionFactory();
-        final Environment environment = new Environment("development", transactionFactory, dataSource);
-
-        final Configuration configuration = new Configuration(environment);
-        configuration.setLazyLoadingEnabled(true);
-        configuration.getTypeAliasRegistry().registerAlias(OskariLayerMetadataDto.class);
-        configuration.addMapper(OskariLayerMetadataDto.Mapper.class);
-
+        final Configuration configuration = MyBatisHelper.getConfig(dataSource);
+        MyBatisHelper.addAliases(configuration, OskariLayerMetadataDto.class);
+        MyBatisHelper.addMappers(configuration, OskariLayerMetadataDto.Mapper.class);
         return new SqlSessionFactoryBuilder().build(configuration);
     }
 
