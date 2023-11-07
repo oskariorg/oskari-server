@@ -44,11 +44,11 @@ public class GetIndicatorMetadataHandler extends ActionHandler {
      */
     public JSONObject getIndicatorMetadataJSON(User user, long pluginId, String indicatorId) throws ActionException {
         StatisticalDatasourcePlugin plugin = pluginManager.getPlugin(pluginId);
-        if(plugin == null) {
+        if (plugin == null) {
             throw new ActionParamsException("No such datasource: " + pluginId);
         }
         StatisticalIndicator indicator = plugin.getIndicator(user, indicatorId);
-        if(indicator == null) {
+        if (indicator == null) {
             // indicator can be null if user doesn't have permission to it
             throw new ActionParamsException("No such indicator: " + indicatorId + " on datasource: " + pluginId);
         }
@@ -65,7 +65,7 @@ public class GetIndicatorMetadataHandler extends ActionHandler {
         }
         try {
             JSONObject indicatorMetadata = StatisticsHelper.toJSON(indicator);
-            // Note that there is an another layer of caches in the plugins doing the web queries.
+            // Note that there is another layer of caches in the plugins doing the web queries.
             // Two layers are necessary, because deserialization and conversion to the internal data model
             // is pretty heavy operation.
             if (plugin.canCache() && indicatorMetadata != null) {
