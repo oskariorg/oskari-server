@@ -354,7 +354,7 @@ public class MapfullHandler extends BundleHandler {
 
         // construct layers JSON
         final JSONArray prefetch = getLayersArray(struct);
-        appendMyPlacesLayers(prefetch, publishedMyPlaces, user, viewID, bundleIds, mapSRS, useDirectURLForMyplaces, modifyURLs, plugins);
+        appendMyPlacesLayers(prefetch, publishedMyPlaces, user, viewID, lang, bundleIds, mapSRS);
         appendAnalysisLayers(prefetch, publishedAnalysis, user, viewID, lang, bundleIds, mapSRS);
         appendUserLayers(prefetch, publishedUserLayers, user, viewID, lang, bundleIds, mapSRS);
         return prefetch;
@@ -411,11 +411,9 @@ public class MapfullHandler extends BundleHandler {
                                              final List<Long> publishedMyPlaces,
                                              final User user,
                                              final long viewID,
+                                             final String lang,
                                              final Set<String> bundleIds,
-                                             final String mapSrs,
-                                             final boolean useDirectURL,
-                                             final boolean modifyURLs,
-                                             final JSONArray plugins) {
+                                             final String mapSrs) {
         if (publishedMyPlaces.isEmpty()) {
             return;
         }
@@ -438,7 +436,7 @@ public class MapfullHandler extends BundleHandler {
                 continue;
             }
 
-            JSONObject myPlaceLayer = MyPlacesService.parseLayerToJSON(mpLayer, mapSrs);
+            JSONObject myPlaceLayer = MyPlacesService.parseLayerToJSON(mpLayer, mapSrs, lang);
             // Get as WFS layer
             JSONHelper.putValue(myPlaceLayer, LayerJSONFormatter.KEY_TYPE, OskariLayer.TYPE_WFS);
             layerList.put(myPlaceLayer);
