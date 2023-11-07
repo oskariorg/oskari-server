@@ -177,8 +177,15 @@ public abstract class StatisticalDatasourcePlugin {
     public StatisticalIndicator getIndicator(User user, String indicatorId) {
         try {
             String json = JedisManager.get(getIndicatorMetadataKey(indicatorId));
+            if (json == null) {
+                // someone requested an indicator we don't know about
+                // client might have a saved ref to id that is no longer available OR
+                // someone is fishing for data with crafted urls
+                // either way, we don't need the stack trace from Jackson parsing a null value
+                return null;
+            }
             StatisticalIndicator indicator = MAPPER.readValue(json, StatisticalIndicator.class);
-            if(hasPermission(indicator, user)) {
+            if (hasPermission(indicator, user)) {
                 // sort dimensions etc
                 try {
                     handleHints(indicator);
