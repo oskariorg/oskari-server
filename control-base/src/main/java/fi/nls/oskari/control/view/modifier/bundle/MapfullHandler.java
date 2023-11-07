@@ -355,7 +355,7 @@ public class MapfullHandler extends BundleHandler {
         // construct layers JSON
         final JSONArray prefetch = getLayersArray(struct);
         appendMyPlacesLayers(prefetch, publishedMyPlaces, user, viewID, bundleIds, mapSRS, useDirectURLForMyplaces, modifyURLs, plugins);
-        appendAnalysisLayers(prefetch, publishedAnalysis, user, viewID, lang, bundleIds, useDirectURLForMyplaces, modifyURLs);
+        appendAnalysisLayers(prefetch, publishedAnalysis, user, viewID, lang, bundleIds, mapSRS);
         appendUserLayers(prefetch, publishedUserLayers, user, viewID, lang, bundleIds, mapSRS);
         return prefetch;
     }
@@ -366,8 +366,7 @@ public class MapfullHandler extends BundleHandler {
                                              final long viewID,
                                              final String lang,
                                              final Set<String> bundleIds,
-                                             final boolean useDirectURL,
-                                             final boolean modifyURLs) {
+                                             final String mapSrs) {
         if (publishedAnalysis.isEmpty()) {
             return;
         }
@@ -375,11 +374,6 @@ public class MapfullHandler extends BundleHandler {
         final Set<String> permissions = permissionsService.getResourcesWithGrantedPermissions(
                 AnalysisLayer.TYPE, user, PermissionType.VIEW_PUBLISHED.name());
         LOGGER.debug("Analysis layer permissions for published view", permissions);
-        OskariLayer baseLayer = AnalysisDataService.getBaseLayer();
-        JSONObject baseOptions = new JSONObject();
-        if (baseLayer != null) {
-            baseOptions = baseLayer.getOptions();
-        }
         for (Long id : publishedAnalysis) {
             final Analysis analysis = analysisService.getAnalysisById(id);
             if(analysis == null){
@@ -397,8 +391,7 @@ public class MapfullHandler extends BundleHandler {
                         viewID, "Analysis id:", id);
                 continue;
             }
-            final JSONObject json = AnalysisHelper.getlayerJSON(analysis,baseOptions, lang,
-                    useDirectURL, user.getUuid(), modifyURLs);
+            final JSONObject json = AnalysisDataService.parseAnalysis2JSON(analysis, mapSrs, lang);
             if (json != null) {
                 layerList.put(json);
             }
