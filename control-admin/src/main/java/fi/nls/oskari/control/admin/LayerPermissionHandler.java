@@ -46,6 +46,8 @@ public class LayerPermissionHandler extends AbstractLayerAdminHandler {
     private static final String KEY_NAMES = "names";
     private static final String KEY_LAYERS = "layers";
     private static final String KEY_PERMISSION = "permissions";
+    private static final String KEY_LAYER_TYPE = "layerType";
+
 
     private final static Logger log = LogFactory.getLogger(LayerPermissionHandler.class);
 
@@ -102,6 +104,7 @@ public class LayerPermissionHandler extends AbstractLayerAdminHandler {
                 layerJSON.put(KEY_ID, layer.getId());
                 layerJSON.put(KEY_NAME, layer.getName(PropertyUtil.getDefaultLanguage()));
                 layerJSON.put(KEY_PERMISSION, getPermissionsForLayer(permissions, layer.getId()));
+                layerJSON.put(KEY_LAYER_TYPE, layer.getType());
                 layerPermission.put(layerJSON);
             } catch (JSONException e) {
                 throw new ActionException("Something is wrong with doPermissionResourcesJson ajax reguest", e);
