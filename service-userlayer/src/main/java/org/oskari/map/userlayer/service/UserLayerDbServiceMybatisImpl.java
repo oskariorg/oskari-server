@@ -318,7 +318,6 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
         SimpleFeatureType simpleFeatureType = featureTypeBuilder.buildFeatureType();
         SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(simpleFeatureType);
         featureBuilder.set(GEOM_ATTRIBUTE, geom);
-        featureBuilder.set("geometry_name", GEOM_ATTRIBUTE);
         featureBuilder.set("id", feature.getId());
         featureBuilder.set("user_layer_id", feature.getUser_layer_id());
         featureBuilder.set("uuid", feature.getUuid());
@@ -340,7 +339,6 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
             setFeatureTypeBuilderGeometry(featureTypeBuilder, geometry);
         }
 
-        featureTypeBuilder.add("geometry_name", String.class);
         featureTypeBuilder.add("id", Long.class);
         featureTypeBuilder.add("user_layer_id", String.class);
         featureTypeBuilder.add("uuid", String.class);
