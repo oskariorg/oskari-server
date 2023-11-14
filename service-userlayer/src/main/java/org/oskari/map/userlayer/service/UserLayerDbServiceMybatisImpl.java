@@ -9,7 +9,6 @@ import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.domain.map.userlayer.UserLayerData;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.geometry.WKTHelper;
 import fi.nls.oskari.mybatis.MyBatisHelper;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.PropertyUtil;
@@ -18,18 +17,29 @@ import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.store.EmptyFeatureCollection;
+import org.geotools.feature.DefaultFeatureCollection;
+import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryCollection;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.MultiLineString;
+import org.locationtech.jts.geom.MultiPoint;
+import org.locationtech.jts.geom.MultiPolygon;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.Polygon;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.geojson.GeoJSON;
 import org.oskari.geojson.GeoJSONWriter;
 
 import javax.sql.DataSource;
+import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static fi.nls.oskari.map.geometry.ProjectionHelper.getSRID;
 import static fi.nls.oskari.map.geometry.WKTHelper.parseWKT;
@@ -45,6 +55,7 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
     private final Cache<UserLayer> cache;
     private SqlSessionFactory factory = null;
 
+    private String GEOM_ATTRIBUTE = "geometry";
     private static final GeoJSONWriter geojsonWriter = new GeoJSONWriter();
 
     public UserLayerDbServiceMybatisImpl() {
@@ -266,74 +277,107 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
 	}
 
     @Override
-    public JSONObject getFeatures(int layerId, ReferencedEnvelope bbox, CoordinateReferenceSystem crs) throws ServiceException {
+    public SimpleFeatureCollection getFeatures(int layerId, ReferencedEnvelope bbox, CoordinateReferenceSystem crs) throws ServiceException {
         try (SqlSession session = factory.openSession()) {
             log.debug("getFeatures by bbox: ", bbox);
 
             final UserLayerMapper mapper = getMapper(session);
             String nativeSrsName = PropertyUtil.get("oskari.native.srs", "EPSG:3857");
-            String targetSrsName = crs.getIdentifiers()
-                .stream()
-                .filter(identifier -> identifier.getCodeSpace().equals("EPSG"))
-                .map(identifier -> identifier.getCodeSpace() + ":" + identifier.getCode())
-                .findFirst()
-                .orElse(null);
-
             int nativeSrid = getSRID(nativeSrsName);
             List<UserLayerData> features = mapper.findAllByLooseBBOX(layerId, bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY(), nativeSrid);
-            return this.toGeoJSONFeatureCollection(features, targetSrsName != null ? targetSrsName : nativeSrsName);
+            return this.toSimpleFeatureCollection(features);
         } catch (Exception e) {
             log.warn(e, "Exception when trying to get features by bounding box ", bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY());
             throw new ServiceException(e.getMessage());
         }
     }
 
-
-    private JSONObject toGeoJSONFeatureCollection(List<UserLayerData> features, String targetSRSName) throws ServiceException {
-        if (features == null || features.isEmpty()) {
-            return null;
-        }
-        JSONObject json = new JSONObject();
+    private SimpleFeatureCollection toSimpleFeatureCollection(List<UserLayerData> features) throws ServiceException {
         try {
-            json.put(GeoJSON.TYPE, GeoJSON.FEATURE_COLLECTION);
-            json.put("crs", geojsonWriter.writeCRSObject(targetSRSName));
+            if (features == null || features.isEmpty()) {
+                return new EmptyFeatureCollection(null);
+            }
 
-            JSONArray jsonFeatures = new JSONArray(features.stream().map(feature -> this.toGeoJSONFeature(feature, targetSRSName)).collect(Collectors.toList()));
-            json.put(GeoJSON.FEATURES, jsonFeatures);
+            DefaultFeatureCollection collection = new DefaultFeatureCollection();
+            for (UserLayerData feature: features) {
+                collection.add(toSimpleFeature(feature));
+            }
 
-        } catch(JSONException ex) {
-            log.warn("Failed to create GeoJSON FeatureCollection");
-            throw new ServiceException("Failed to create GeoJSON FeatureCollection");
+            return collection;
+        } catch (Exception e) {
+            log.warn(e, "Failed to create SimpleFeatureCollection");
+            throw new ServiceException("Failed to create SimpleFeatureCollection");
         }
-        return json;
     }
 
-     private JSONObject toGeoJSONFeature(UserLayerData feature, String targetSRSName) {
-        JSONObject jsonFeature = new JSONObject();
-        JSONObject properties = new JSONObject();
-        try {
-            jsonFeature.put("id", feature.getId());
-            jsonFeature.put("geometry_name", GeoJSON.GEOMETRY);
-            jsonFeature.put(GeoJSON.TYPE, GeoJSON.FEATURE);
+    private SimpleFeature toSimpleFeature(UserLayerData feature) {
 
-            String sourceSRSName = "EPSG:" + feature.getDatabaseSRID();
-            Geometry transformed = WKTHelper.transform(parseWKT(feature.getWkt()), sourceSRSName, targetSRSName);
-            JSONObject geoJsonGeometry = geojsonWriter.writeGeometry(transformed);
-            jsonFeature.put(GeoJSON.GEOMETRY, geoJsonGeometry);
+        Geometry geom = parseWKT(feature.getWkt());
+        SimpleFeatureTypeBuilder featureTypeBuilder = getFeatureTypeBuilder(geom);
 
-            properties.put("id", feature.getId());
-            properties.put("user_layer_id", feature.getUser_layer_id());
-            properties.put("uuid", feature.getUuid());
-            properties.put("feature_id", feature.getFeature_id());
-            properties.put("property_json", feature.getProperty_json());
-            properties.put("created", feature.getCreated());
-            properties.put("updated", feature.getUpdated());
-            jsonFeature.put("properties", properties);
+        SimpleFeatureType simpleFeatureType = featureTypeBuilder.buildFeatureType();
+        SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(simpleFeatureType);
+        featureBuilder.set(GEOM_ATTRIBUTE, parseWKT(feature.getWkt()));
+        featureBuilder.set("geometry_name", GEOM_ATTRIBUTE);
+        featureBuilder.set("id", feature.getId());
+        featureBuilder.set("user_layer_id", feature.getUser_layer_id());
+        featureBuilder.set("uuid", feature.getUuid());
+        featureBuilder.set("feature_id", feature.getFeature_id());
+        featureBuilder.set("property_json", feature.getProperty_json());
+        featureBuilder.set("created", feature.getCreated());
+        featureBuilder.set("updated", feature.getUpdated());
 
-        } catch(JSONException ex) {
-            log.warn("Failed to convert UserLayerData to GeoJSONFeature");
+        return featureBuilder.buildFeature(Long.valueOf(feature.getId()).toString());
+    }
+
+    private SimpleFeatureTypeBuilder getFeatureTypeBuilder(Geometry geometry) {
+        SimpleFeatureTypeBuilder featureTypeBuilder = new SimpleFeatureTypeBuilder();
+        featureTypeBuilder.setName("temp");
+        featureTypeBuilder.setNamespaceURI("http://oskari.org");
+        featureTypeBuilder.setDefaultGeometry(GEOM_ATTRIBUTE);
+
+        if (geometry != null) {
+            setFeatureTypeBuilderGeometry(featureTypeBuilder, geometry);
         }
 
-        return jsonFeature;
-     }
+        featureTypeBuilder.add("geometry_name", String.class);
+        featureTypeBuilder.add("id", Long.class);
+        featureTypeBuilder.add("user_layer_id", String.class);
+        featureTypeBuilder.add("uuid", String.class);
+        featureTypeBuilder.add("feature_id", String.class);
+        featureTypeBuilder.add("property_json", String.class);
+        featureTypeBuilder.add("created", OffsetDateTime.class);
+        featureTypeBuilder.add("updated", OffsetDateTime.class);
+
+        return featureTypeBuilder;
+
+    }
+    private void setFeatureTypeBuilderGeometry(SimpleFeatureTypeBuilder featureTypeBuilder, Geometry geometry) {
+        if (geometry != null) {
+            featureTypeBuilder.setDefaultGeometry(GEOM_ATTRIBUTE);
+            switch (geometry.getGeometryType()) {
+                case GeoJSON.POINT:
+                    featureTypeBuilder.add(GEOM_ATTRIBUTE, Point.class);
+                    break;
+                case GeoJSON.LINESTRING:
+                    featureTypeBuilder.add(GEOM_ATTRIBUTE, LineString.class);
+                    break;
+                case GeoJSON.POLYGON:
+                    featureTypeBuilder.add(GEOM_ATTRIBUTE, Polygon.class);
+                    break;
+                case GeoJSON.MULTI_POINT:
+                    featureTypeBuilder.add(GEOM_ATTRIBUTE, MultiPoint.class);
+                    break;
+                case GeoJSON.MULTI_LINESTRING:
+                    featureTypeBuilder.add(GEOM_ATTRIBUTE, MultiLineString.class);
+                    break;
+                case GeoJSON.MULTI_POLYGON:
+                    featureTypeBuilder.add(GEOM_ATTRIBUTE, MultiPolygon.class);
+                    break;
+                case GeoJSON.GEOMETRY_COLLECTION:
+                    featureTypeBuilder.add(GEOM_ATTRIBUTE, GeometryCollection.class);
+                    break;
+            }
+        }
+    }
 }
