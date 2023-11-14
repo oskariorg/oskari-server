@@ -300,7 +300,9 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
 
             DefaultFeatureCollection collection = new DefaultFeatureCollection();
             for (UserLayerData feature: features) {
-                collection.add(toSimpleFeature(feature));
+                if (feature.getWkt() != null) {
+                    collection.add(toSimpleFeature(feature));
+                }
             }
 
             return collection;
@@ -311,13 +313,11 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
     }
 
     private SimpleFeature toSimpleFeature(UserLayerData feature) {
-
         Geometry geom = parseWKT(feature.getWkt());
         SimpleFeatureTypeBuilder featureTypeBuilder = getFeatureTypeBuilder(geom);
-
         SimpleFeatureType simpleFeatureType = featureTypeBuilder.buildFeatureType();
         SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(simpleFeatureType);
-        featureBuilder.set(GEOM_ATTRIBUTE, parseWKT(feature.getWkt()));
+        featureBuilder.set(GEOM_ATTRIBUTE, geom);
         featureBuilder.set("geometry_name", GEOM_ATTRIBUTE);
         featureBuilder.set("id", feature.getId());
         featureBuilder.set("user_layer_id", feature.getUser_layer_id());
@@ -379,5 +379,7 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
                     break;
             }
         }
+
+
     }
 }
