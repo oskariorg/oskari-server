@@ -9,6 +9,7 @@ import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.domain.map.userlayer.UserLayerData;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.geometry.WKTHelper;
 import fi.nls.oskari.mybatis.MyBatisHelper;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.PropertyUtil;
@@ -24,17 +25,9 @@ import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.GeometryCollection;
-import org.locationtech.jts.geom.LineString;
-import org.locationtech.jts.geom.MultiLineString;
-import org.locationtech.jts.geom.MultiPoint;
-import org.locationtech.jts.geom.MultiPolygon;
-import org.locationtech.jts.geom.Point;
-import org.locationtech.jts.geom.Polygon;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.oskari.geojson.GeoJSON;
 import org.oskari.geojson.GeoJSONWriter;
 
 import javax.sql.DataSource;
@@ -42,6 +35,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 import static fi.nls.oskari.map.geometry.ProjectionHelper.getSRID;
+import static fi.nls.oskari.map.geometry.WKTHelper.GEOM_ATTRIBUTE;
 import static fi.nls.oskari.map.geometry.WKTHelper.parseWKT;
 
 @Oskari
@@ -55,7 +49,6 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
     private final Cache<UserLayer> cache;
     private SqlSessionFactory factory = null;
 
-    private String GEOM_ATTRIBUTE = "geometry";
     private static final GeoJSONWriter geojsonWriter = new GeoJSONWriter();
 
     public UserLayerDbServiceMybatisImpl() {
@@ -330,15 +323,7 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
     }
 
     private SimpleFeatureTypeBuilder getFeatureTypeBuilder(Geometry geometry) {
-        SimpleFeatureTypeBuilder featureTypeBuilder = new SimpleFeatureTypeBuilder();
-        featureTypeBuilder.setName("temp");
-        featureTypeBuilder.setNamespaceURI("http://oskari.org");
-        featureTypeBuilder.setDefaultGeometry(GEOM_ATTRIBUTE);
-
-        if (geometry != null) {
-            setFeatureTypeBuilderGeometry(featureTypeBuilder, geometry);
-        }
-
+        SimpleFeatureTypeBuilder featureTypeBuilder = WKTHelper.getFeatureTypeBuilder(geometry);
         featureTypeBuilder.add("id", Long.class);
         featureTypeBuilder.add("user_layer_id", String.class);
         featureTypeBuilder.add("uuid", String.class);
@@ -348,36 +333,6 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
         featureTypeBuilder.add("updated", OffsetDateTime.class);
 
         return featureTypeBuilder;
-
-    }
-    private void setFeatureTypeBuilderGeometry(SimpleFeatureTypeBuilder featureTypeBuilder, Geometry geometry) {
-        if (geometry != null) {
-            featureTypeBuilder.setDefaultGeometry(GEOM_ATTRIBUTE);
-            switch (geometry.getGeometryType()) {
-                case GeoJSON.POINT:
-                    featureTypeBuilder.add(GEOM_ATTRIBUTE, Point.class);
-                    break;
-                case GeoJSON.LINESTRING:
-                    featureTypeBuilder.add(GEOM_ATTRIBUTE, LineString.class);
-                    break;
-                case GeoJSON.POLYGON:
-                    featureTypeBuilder.add(GEOM_ATTRIBUTE, Polygon.class);
-                    break;
-                case GeoJSON.MULTI_POINT:
-                    featureTypeBuilder.add(GEOM_ATTRIBUTE, MultiPoint.class);
-                    break;
-                case GeoJSON.MULTI_LINESTRING:
-                    featureTypeBuilder.add(GEOM_ATTRIBUTE, MultiLineString.class);
-                    break;
-                case GeoJSON.MULTI_POLYGON:
-                    featureTypeBuilder.add(GEOM_ATTRIBUTE, MultiPolygon.class);
-                    break;
-                case GeoJSON.GEOMETRY_COLLECTION:
-                    featureTypeBuilder.add(GEOM_ATTRIBUTE, GeometryCollection.class);
-                    break;
-            }
-        }
-
 
     }
 }
