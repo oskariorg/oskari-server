@@ -16,23 +16,27 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.store.EmptyFeatureCollection;
+import org.geotools.feature.DefaultFeatureCollection;
+import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.locationtech.jts.geom.Geometry;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.oskari.geojson.GeoJSON;
 import org.oskari.geojson.GeoJSONWriter;
 
 import javax.sql.DataSource;
+import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static fi.nls.oskari.map.geometry.ProjectionHelper.getSRID;
+import static fi.nls.oskari.map.geometry.WKTHelper.GEOM_ATTRIBUTE;
 import static fi.nls.oskari.map.geometry.WKTHelper.parseWKT;
 
 @Oskari
@@ -319,97 +323,108 @@ public class AnalysisDbServiceMybatisImpl extends AnalysisDbService {
     }
 
     @Override
-    public JSONObject getFeatures(int layerId, ReferencedEnvelope bbox, CoordinateReferenceSystem crs) throws ServiceException {
+    public SimpleFeatureCollection getFeatures(int layerId, ReferencedEnvelope bbox, CoordinateReferenceSystem crs) throws ServiceException {
         try (SqlSession session = factory.openSession()) {
             log.debug("getFeatures by bbox: ", bbox);
 
             final AnalysisMapper mapper = session.getMapper(AnalysisMapper.class);
             String nativeSrsName = PropertyUtil.get("oskari.native.srs", "EPSG:3857");
-            String targetSrsName = crs.getIdentifiers()
-                .stream()
-                .filter(identifier -> identifier.getCodeSpace().equals("EPSG"))
-                .map(identifier -> identifier.getCodeSpace() + ":" + identifier.getCode())
-                .findFirst()
-                .orElse(null);
-
             int nativeSrid = getSRID(nativeSrsName);
             List<AnalysisData> features = mapper.findAllByBBOX(layerId, bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY(), nativeSrid);
-
-            JSONObject featureCollection = this.toGeoJSONFeatureCollection(features, targetSrsName != null ? targetSrsName : nativeSrsName);
-            return featureCollection;
+            return this.toSimpleFeatureCollection(features);
         } catch (Exception e) {
             log.warn(e, "Exception when trying to get features by bounding box ", bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY());
             throw new ServiceException(e.getMessage());
         }
     }
 
-    private JSONObject toGeoJSONFeatureCollection(List<AnalysisData> features, String targetSRSName) throws ServiceException {
-        if (features == null || features.isEmpty()) {
-            return null;
-        }
-        JSONObject json = new JSONObject();
+    private SimpleFeatureCollection toSimpleFeatureCollection(List<AnalysisData> features) throws ServiceException {
         try {
-            json.put(GeoJSON.TYPE, GeoJSON.FEATURE_COLLECTION);
-            json.put("crs", geojsonWriter.writeCRSObject(targetSRSName));
+            if (features == null || features.isEmpty()) {
+                return new EmptyFeatureCollection(null);
+            }
 
-            JSONArray jsonFeatures = new JSONArray(features.stream().map(feature -> this.toGeoJSONFeature(feature, targetSRSName)).collect(Collectors.toList()));
-            json.put(GeoJSON.FEATURES, jsonFeatures);
+            DefaultFeatureCollection collection = new DefaultFeatureCollection();
+            for (AnalysisData feature: features) {
+                if (feature.getWkt() != null) {
+                    collection.add(toSimpleFeature(feature));
+                }
+            }
 
-        } catch(JSONException ex) {
-            log.warn("Failed to create GeoJSON FeatureCollection");
-            throw new ServiceException("Failed to create GeoJSON FeatureCollection");
+            return collection;
+        } catch (Exception e) {
+            throw new ServiceException("Failed to create SimpleFeatureCollection");
         }
-        return json;
     }
 
-     private JSONObject toGeoJSONFeature(AnalysisData feature, String targetSRSName) {
-        JSONObject jsonFeature = new JSONObject();
-        JSONObject properties = new JSONObject();
-        try {
-            jsonFeature.put("id", feature.getId());
-            jsonFeature.put("geometry_name", GeoJSON.GEOMETRY);
-            jsonFeature.put(GeoJSON.TYPE, GeoJSON.FEATURE);
+    private SimpleFeature toSimpleFeature(AnalysisData feature) {
+        Geometry geom = parseWKT(feature.getWkt());
+        SimpleFeatureTypeBuilder featureTypeBuilder = getFeatureTypeBuilder(geom);
+        SimpleFeatureType simpleFeatureType = featureTypeBuilder.buildFeatureType();
+        SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(simpleFeatureType);
+        featureBuilder.set(GEOM_ATTRIBUTE, geom);
 
-            String sourceSRSName = "EPSG:" + feature.getDatabaseSRID();
-            Geometry transformed = WKTHelper.transform(parseWKT(feature.getWkt()), sourceSRSName, targetSRSName);
-            JSONObject geoJsonGeometry = geojsonWriter.writeGeometry(transformed);
-            jsonFeature.put(GeoJSON.GEOMETRY, geoJsonGeometry);
+        featureBuilder.set("id", feature.getId());
+        featureBuilder.set("analysis_id", feature.getAnalysisId());
+        featureBuilder.set("uuid", feature.getUuid());
+        featureBuilder.set("t1", feature.getT1());
+        featureBuilder.set("t2", feature.getT2());
+        featureBuilder.set("t3", feature.getT3());
+        featureBuilder.set("t4", feature.getT4());
+        featureBuilder.set("t5", feature.getT5());
+        featureBuilder.set("t6", feature.getT6());
+        featureBuilder.set("t7", feature.getT7());
+        featureBuilder.set("t8", feature.getT8());
 
-            properties.put("id", feature.getId());
-            properties.put("analysis_id", feature.getAnalysisId());
-            properties.put("uuid", feature.getUuid());
-            properties.put("t1", feature.getT1());
-            properties.put("t2", feature.getT2());
-            properties.put("t3", feature.getT3());
-            properties.put("t4", feature.getT4());
-            properties.put("t5", feature.getT5());
-            properties.put("t6", feature.getT6());
-            properties.put("t7", feature.getT7());
-            properties.put("t8", feature.getT8());
+        featureBuilder.set("n1", feature.getN1());
+        featureBuilder.set("n2", feature.getN2());
+        featureBuilder.set("n3", feature.getN3());
+        featureBuilder.set("n4", feature.getN4());
+        featureBuilder.set("n5", feature.getN5());
+        featureBuilder.set("n6", feature.getN6());
+        featureBuilder.set("n7", feature.getN7());
+        featureBuilder.set("n8", feature.getN8());
 
-            properties.put("n1", feature.getN1());
-            properties.put("n2", feature.getN2());
-            properties.put("n3", feature.getN3());
-            properties.put("n4", feature.getN4());
-            properties.put("n5", feature.getN5());
-            properties.put("n6", feature.getN6());
-            properties.put("n7", feature.getN7());
-            properties.put("n8", feature.getN8());
+        featureBuilder.set("d1", feature.getD1());
+        featureBuilder.set("d2", feature.getD2());
+        featureBuilder.set("d3", feature.getD3());
+        featureBuilder.set("d4", feature.getD4());
 
-            properties.put("d1", feature.getD1());
-            properties.put("d2", feature.getD2());
-            properties.put("d3", feature.getD3());
-            properties.put("d4", feature.getD4());
+        featureBuilder.set("created", feature.getCreated());
+        featureBuilder.set("updated", feature.getUpdated());
+        return featureBuilder.buildFeature(Long.valueOf(feature.getId()).toString());
+    }
 
-            properties.put("created", feature.getCreated());
-            properties.put("updated", feature.getUpdated());
-            jsonFeature.put("properties", properties);
+    private SimpleFeatureTypeBuilder getFeatureTypeBuilder(Geometry geometry) {
+        SimpleFeatureTypeBuilder featureTypeBuilder = WKTHelper.getFeatureTypeBuilder(geometry);
+        featureTypeBuilder.add("id", Long.class);
+        featureTypeBuilder.add("analysis_id", Long.class);
+        featureTypeBuilder.add("uuid", String.class);
+        featureTypeBuilder.add("t1", String.class);
+        featureTypeBuilder.add("t2", String.class);
+        featureTypeBuilder.add("t3", String.class);
+        featureTypeBuilder.add("t4", String.class);
+        featureTypeBuilder.add("t5", String.class);
+        featureTypeBuilder.add("t6", String.class);
+        featureTypeBuilder.add("t7", String.class);
+        featureTypeBuilder.add("t8", String.class);
 
-        } catch(JSONException ex) {
-            log.warn("Failed to convert UserLayerData to GeoJSONFeature");
-        }
+        featureTypeBuilder.add("n1", Long.class);
+        featureTypeBuilder.add("n2", Long.class);
+        featureTypeBuilder.add("n3", Long.class);
+        featureTypeBuilder.add("n4", Long.class);
+        featureTypeBuilder.add("n5", Long.class);
+        featureTypeBuilder.add("n6", Long.class);
+        featureTypeBuilder.add("n7", Long.class);
+        featureTypeBuilder.add("n8", Long.class);
 
-        return jsonFeature;
-     }
+        featureTypeBuilder.add("d1", OffsetDateTime.class);
+        featureTypeBuilder.add("d2", OffsetDateTime.class);
+        featureTypeBuilder.add("d3", OffsetDateTime.class);
+        featureTypeBuilder.add("d4", OffsetDateTime.class);
 
+        featureTypeBuilder.add("created", OffsetDateTime.class);
+        featureTypeBuilder.add("updated", OffsetDateTime.class);
+        return featureTypeBuilder;
+    }
 }

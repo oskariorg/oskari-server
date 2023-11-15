@@ -20,7 +20,6 @@ import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
-import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
@@ -29,7 +28,6 @@ import org.opengis.filter.FilterFactory;
 import org.opengis.filter.expression.Expression;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.geojson.GeoJSONFeatureCollection;
-import org.oskari.geojson.GeoJSONReader;
 import org.oskari.permissions.PermissionService;
 import org.oskari.permissions.model.PermissionType;
 import org.oskari.permissions.model.ResourceType;
@@ -177,10 +175,11 @@ public class AnalysisWFSHelper extends UserLayerService {
     @Override
     public SimpleFeatureCollection getFeatures(String layerId, OskariLayer layer, ReferencedEnvelope bbox, CoordinateReferenceSystem crs) throws ServiceException {
         try {
-            JSONObject featureCollectionJSON = analysisDbService.getFeatures(parseId(layerId), bbox, crs);
-            SimpleFeatureCollection featureCollection = featureCollectionJSON == null ?
-                new EmptyFeatureCollection(null) :
-                GeoJSONReader.toFeatureCollection(featureCollectionJSON);
+            SimpleFeatureCollection featureCollection = analysisDbService.getFeatures(parseId(layerId), bbox, crs);
+            if (featureCollection == null) {
+                return new EmptyFeatureCollection(null);
+            }
+
             return postProcess(featureCollection);
         } catch(Exception e) {
             throw new ServiceException("Failed to get features. ", e);

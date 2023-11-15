@@ -221,17 +221,8 @@ public class MyPlacesWFSHelper extends UserLayerService {
 
     @Override
     public SimpleFeatureCollection getFeatures(String layerId, OskariLayer layer, ReferencedEnvelope bbox, CoordinateReferenceSystem crs) throws ServiceException{
-            try {
-                int categoryId = parseId(layerId);
-                JSONObject featureCollectionJSON = featureService.getFeatures(categoryId, bbox, crs);
-
-                if (featureCollectionJSON == null) {
-                    return new EmptyFeatureCollection(null);
-                }
-                SimpleFeatureCollection featureCollection = GeoJSONReader.toFeatureCollection(featureCollectionJSON);
-                return featureCollection != null ? featureCollection : new EmptyFeatureCollection(null);
-            } catch (JSONException e) {
-                throw new ServiceException("GetFeatures failed.", e);
-            }
+        int categoryId = parseId(layerId);
+        SimpleFeatureCollection featureCollection = featureService.getFeatures(categoryId, bbox, crs);
+        return featureCollection != null ? featureCollection : new EmptyFeatureCollection(null);
     }
 }
