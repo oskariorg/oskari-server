@@ -54,7 +54,7 @@ import java.util.stream.Collectors;
  * You should also consider overriding hasPermission() as the default implementation always returns true.
  */
 public abstract class StatisticalDatasourcePlugin {
-    static final String CACHE_PREFIX = "oskari:stats:";
+    public static final String CACHE_PREFIX = "oskari:stats:";
     private static final String CACHE_POSTFIX_LIST = ":indicators";
     private static final String CACHE_POSTFIX_METADATA = ":metadata:";
 
