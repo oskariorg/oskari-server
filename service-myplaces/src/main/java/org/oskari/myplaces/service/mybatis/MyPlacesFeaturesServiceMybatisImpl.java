@@ -17,6 +17,11 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.store.EmptyFeatureCollection;
+import org.geotools.feature.DefaultFeatureCollection;
+import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
@@ -24,16 +29,20 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.locationtech.jts.geom.Geometry;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.oskari.geojson.GeoJSON;
 import org.oskari.geojson.GeoJSONWriter;
 
 import javax.sql.DataSource;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static fi.nls.oskari.map.geometry.ProjectionHelper.getSRID;
+import static fi.nls.oskari.map.geometry.WKTHelper.GEOM_ATTRIBUTE;
 import static fi.nls.oskari.map.geometry.WKTHelper.parseWKT;
 
 public class MyPlacesFeaturesServiceMybatisImpl implements MyPlacesFeaturesService {
@@ -105,28 +114,73 @@ public class MyPlacesFeaturesServiceMybatisImpl implements MyPlacesFeaturesServi
     }
 
     @Override
-    public JSONObject getFeatures(int categoryId, ReferencedEnvelope bbox, CoordinateReferenceSystem crs)  throws ServiceException{
+    public SimpleFeatureCollection getFeatures(int categoryId, ReferencedEnvelope bbox, CoordinateReferenceSystem crs)  throws ServiceException{
         try (SqlSession session = factory.openSession()) {
             LOG.debug("getFeatures by bbox: ", bbox);
 
             final MyPlaceMapper mapper = session.getMapper(MyPlaceMapper.class);
             String nativeSrsName = PropertyUtil.get("oskari.native.srs", "EPSG:3857");
-            String targetSrsName = crs.getIdentifiers()
-                .stream()
-                .filter(identifier -> identifier.getCodeSpace().equals("EPSG"))
-                .map(identifier -> identifier.getCodeSpace() + ":" + identifier.getCode())
-                .findFirst()
-                .orElse(null);
-
             int nativeSrid = getSRID(nativeSrsName);
             List<MyPlace> places = mapper.findAllByBBOX(categoryId, bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY(), nativeSrid);
-
-            JSONObject featureCollection = this.toGeoJSONFeatureCollection(places, targetSrsName != null ? targetSrsName : nativeSrsName);
-            return featureCollection;
+            return this.toSimpleFeatureCollection(places);
         } catch (Exception e) {
             LOG.warn(e, "Exception when trying to get features by bounding box ", bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY());
             throw new ServiceException(e.getMessage());
         }
+    }
+
+    private SimpleFeatureCollection toSimpleFeatureCollection(List<MyPlace> features) throws ServiceException {
+        try {
+            if (features == null || features.isEmpty()) {
+                return new EmptyFeatureCollection(null);
+            }
+
+            DefaultFeatureCollection collection = new DefaultFeatureCollection();
+            for (MyPlace feature: features) {
+                if (feature.getWkt() != null) {
+                    collection.add(toSimpleFeature(feature));
+                }
+            }
+
+            return collection;
+        } catch (Exception e) {
+            throw new ServiceException("Failed to create SimpleFeatureCollection");
+        }
+    }
+
+    private SimpleFeature toSimpleFeature(MyPlace feature) {
+        Geometry geom = parseWKT(feature.getWkt());
+        SimpleFeatureTypeBuilder featureTypeBuilder = getFeatureTypeBuilder(geom);
+        SimpleFeatureType simpleFeatureType = featureTypeBuilder.buildFeatureType();
+        SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(simpleFeatureType);
+        featureBuilder.set(GEOM_ATTRIBUTE, geom);
+
+        featureBuilder.set("id", feature.getId());
+        featureBuilder.set("uuid", feature.getUuid());
+        featureBuilder.set("categoryId", feature.getCategoryId());
+        featureBuilder.set("name", feature.getName());
+        featureBuilder.set("attention_text", feature.getAttentionText());
+        featureBuilder.set("created", feature.getCreated());
+        featureBuilder.set("updated", feature.getUpdated());
+        featureBuilder.set("place_desc", feature.getDesc());
+        featureBuilder.set("link", feature.getLink());
+        featureBuilder.set("image_url", feature.getImageUrl());
+        return featureBuilder.buildFeature(Long.valueOf(feature.getId()).toString());
+    }
+
+    private SimpleFeatureTypeBuilder getFeatureTypeBuilder(Geometry geometry) {
+        SimpleFeatureTypeBuilder featureTypeBuilder = WKTHelper.getFeatureTypeBuilder(geometry);
+        featureTypeBuilder.add("id", Long.class);
+        featureTypeBuilder.add("uuid", String.class);
+        featureTypeBuilder.add("categoryId", Long.class);
+        featureTypeBuilder.add("name", String.class);
+        featureTypeBuilder.add("attention_text", String.class);
+        featureTypeBuilder.add("created", OffsetDateTime.class);
+        featureTypeBuilder.add("updated", OffsetDateTime.class);
+        featureTypeBuilder.add("place_desc", String.class);
+        featureTypeBuilder.add("link", String.class);
+        featureTypeBuilder.add("image_url", String.class);
+        return featureTypeBuilder;
     }
 
     @Override
