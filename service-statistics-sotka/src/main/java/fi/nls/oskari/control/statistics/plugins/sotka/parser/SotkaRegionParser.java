@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.statistics.plugins.APIException;
+import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePlugin;
 import fi.nls.oskari.control.statistics.plugins.sotka.SotkaConfig;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -29,12 +30,10 @@ public class SotkaRegionParser {
     private String url;
     private SotkaConfig config;
 
-    private final static Logger LOG = LogFactory.getLogger(SotkaRegionParser.class);
-
     private Map<Integer, String> categoriesById;
 	private Map<String, Map<String, Integer>> idsByCategoryAndCode;
 	private Map<Integer, String> codesById;
-    private Map<Integer, Map<String,Object>> regionsObjectsById;
+    private static final TypeReference<Map<String, Object>> TYPE_REF_REGION = new TypeReference<Map<String, Object>>() { };
 
 	/**
 	 * Inits parser and maps.
@@ -43,7 +42,6 @@ public class SotkaRegionParser {
 		mapper = new ObjectMapper();
 		idsByCategoryAndCode = new HashMap<>();
 		codesById = new HashMap<>();
-        regionsObjectsById = new HashMap<>();
         categoriesById = new HashMap<>();
         this.config = config;
         url = config.getUrl() + "/1.1/regions";
@@ -55,35 +53,7 @@ public class SotkaRegionParser {
      * @return if in map returns the code, otherwise null
 	 */
     public String getCode(int id) {
-    	if(codesById.containsKey(id))
-    		return codesById.get(id);
-    	return null;
-    }
-
-    /**
-     * Gets id from the HashMap
-     * @param code
-     * @return if in map returns the id, otherwise -1
-     */
-    public int getId(String regionCategory, String code) {
-        if(regionCategory == null) {
-            for(String region : idsByCategoryAndCode.keySet()) {
-                final int id = getId(region, code);
-                if(id != -1) {
-                    return id;
-                }
-            }
-        }
-        if (idsByCategoryAndCode.containsKey(regionCategory)) {
-            Map<String, Integer> idsByCode = idsByCategoryAndCode.get(regionCategory);
-            if(idsByCode.containsKey(code)) {
-                return idsByCode.get(code);
-            }
-        } else {
-            LOG.error("Unknown region category: " + regionCategory + ", known ones: " +
-                idsByCategoryAndCode.keySet().toString());
-        }
-        return -1;
+        return codesById.get(id);
     }
 
     /**
@@ -92,18 +62,16 @@ public class SotkaRegionParser {
      * @return if exists returns the category, for example "KUNTA", otherwise null
      */
     public String getCategoryById(Integer id) {
-        if(categoriesById.containsKey(id))
-            return categoriesById.get(id);
-        return null;
+        return categoriesById.get(id);
     }
 
-    /**
-     * Gets id from the HashMap
-     * @param id
-     * @return if in map returns the region data else null
-     */
-    public Map<String,Object> getRegionById(int id) {
-        return regionsObjectsById.get(id);
+    public boolean isSotkanetInternalIdInRegionSet(Integer id, String regionType) {
+        if (id == null || regionType == null) {
+            return false;
+        }
+        String sotkanetCategory = categoriesById.get(id);
+        return regionType.equalsIgnoreCase(sotkanetCategory);
+
     }
 
     /**
@@ -122,7 +90,7 @@ public class SotkaRegionParser {
          }
      */
     public void getData() {
-        final String cacheKey = "stats:" + config.getId() + ":regions:" + url;
+        final String cacheKey = StatisticalDatasourcePlugin.CACHE_PREFIX + config.getId() + ":regions:" + url;
         String json = JedisManager.get(cacheKey);
 
         if (json == null) {
@@ -137,21 +105,33 @@ public class SotkaRegionParser {
             JsonFactory factory = new JsonFactory();
             JsonParser parser = factory.createParser(json);
 
-            Map<String,Object> region = null;
-
             parser.nextToken();
             while(parser.nextToken() == JsonToken.START_OBJECT) {
-                region = mapper.readValue(parser, new TypeReference<Map<String,Object>>() { });
-                regionsObjectsById.put((Integer) region.get(ID_FIELD), region);
-                if(region.containsKey(CATEGORY_FIELD)) {
-                    categoriesById.put((Integer) region.get(ID_FIELD), (String) region.get(CATEGORY_FIELD));
-                    String category = (String) region.get(CATEGORY_FIELD);
-                    if (!idsByCategoryAndCode.containsKey(category)) {
-                        idsByCategoryAndCode.put(category, new HashMap<String, Integer>());
-                    }
-                    idsByCategoryAndCode.get(category).put((String) region.get(CODE_FIELD), (Integer) region.get(ID_FIELD));
-                    codesById.put((Integer) region.get(ID_FIELD), (String) region.get(CODE_FIELD));
+                Map<String,Object> region = mapper.readValue(parser, TYPE_REF_REGION);
+                if (!region.containsKey(CATEGORY_FIELD)) {
+                    //  oskari statslayer is presented as category in sotkanet like "KUNTA"
+                    // each region has 3 things we are interested in:
+                    // - category that is used to links regionset layers
+                    // - sotkanet internal id
+                    // - code that is an id that is recognizable by the regionset layer as a region id (like municipality id)
+
+                    // if don't know the category, we don't know the regionset for this region -> ignore it
+                    continue;
                 }
+                Integer sotkaRegionId = (Integer) region.get(ID_FIELD);
+                String categoryName = (String) region.get(CATEGORY_FIELD);
+                // this is how we can get the regions set for sotkanet internal region id
+                // when we know the internal id and we need to get the region set reference
+                categoriesById.put(sotkaRegionId, categoryName);
+                if (!idsByCategoryAndCode.containsKey(categoryName)) {
+                    idsByCategoryAndCode.put(categoryName, new HashMap<>());
+                }
+                String regionCode = (String) region.get(CODE_FIELD);
+                // This is how we can map the layer feature id to a sotkanet region id (probably don't need it)
+                idsByCategoryAndCode.get(categoryName).put(regionCode, sotkaRegionId);
+                // This is the one we do need -> when requesting data we get the sotkanet internal region id
+                // and we need to get the feature id that the layer uses for that region
+                codesById.put(sotkaRegionId, regionCode);
             }
         } catch (Exception e) {
             // Converting to RuntimeException, because plugins are expected to throw undeclared exceptions.

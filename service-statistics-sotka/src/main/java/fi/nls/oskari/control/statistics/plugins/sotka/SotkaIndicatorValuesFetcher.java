@@ -39,23 +39,21 @@ public class SotkaIndicatorValuesFetcher {
     }
 
     /**
-     * @param selectors        Used to query SotkaNET with.
-     * @param indicator        The indicator we want.
-     * @param regionCategoryId The oskari layer we are interested in. For example: "KUNTA"
+     * @param selectors  Used to query SotkaNET with.
+     * @param indicator  The indicator we want.
+     * @param regionType The oskari layer we are interested in. For example "regionType": "KUNTA"
      * @return
      */
     public Map<String, IndicatorValue> get(StatisticalIndicatorDataModel selectors, String indicator,
-                                           String regionCategoryId) {
-        if(regionCategoryId == null) {
+                                           String regionType) {
+        if (regionType == null) {
             throw new ServiceRuntimeException("Unknown regionset");
         }
         Map<Integer, IndicatorValue> allValues = fetchDataForAllRegionsets(selectors, indicator);
         Map<String, IndicatorValue> filteredValues = new HashMap<>();
         for (Entry<Integer, IndicatorValue> entry : allValues.entrySet()) {
             Integer sotkaRegionId = entry.getKey();
-            // SotkaNET gives "Kunta" in some places, "KUNTA" in others... type is determined for each region
-            String category = regionParser.getCategoryById(sotkaRegionId);
-            if (!regionCategoryId.equalsIgnoreCase(category)) {
+            if (regionParser.isSotkanetInternalIdInRegionSet(sotkaRegionId, regionType)) {
                 // include only regions belonging to the requested regionset
                 continue;
             }

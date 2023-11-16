@@ -20,9 +20,9 @@ public class SotkaConfig {
         return datasourceId;
     }
     public String getUrl() {
-        if(url == null) {
+        if (url == null) {
             // default
-            return "http://www.sotkanet.fi/rest";
+            return "https://www.sotkanet.fi/rest";
         }
         return url;
     }
