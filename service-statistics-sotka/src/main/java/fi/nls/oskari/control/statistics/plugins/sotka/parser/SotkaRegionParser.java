@@ -30,7 +30,6 @@ public class SotkaRegionParser {
     private SotkaConfig config;
 
     private Map<Integer, String> categoriesById;
-	private Map<String, Map<String, Integer>> idsByCategoryAndCode;
 	private Map<Integer, String> codesById;
     private static final TypeReference<Map<String, Object>> TYPE_REF_REGION = new TypeReference<Map<String, Object>>() { };
 
@@ -39,7 +38,6 @@ public class SotkaRegionParser {
 	 */
 	public SotkaRegionParser(SotkaConfig config) {
 		mapper = new ObjectMapper();
-		idsByCategoryAndCode = new HashMap<>();
 		codesById = new HashMap<>();
         categoriesById = new HashMap<>();
         this.config = config;
@@ -117,16 +115,11 @@ public class SotkaRegionParser {
                     continue;
                 }
                 Integer sotkaRegionId = (Integer) region.get(ID_FIELD);
-                String categoryName = (String) region.get(CATEGORY_FIELD);
+                String regionType = (String) region.get(CATEGORY_FIELD);
                 // this is how we can get the regions set for sotkanet internal region id
                 // when we know the internal id and we need to get the region set reference
-                categoriesById.put(sotkaRegionId, categoryName);
-                if (!idsByCategoryAndCode.containsKey(categoryName)) {
-                    idsByCategoryAndCode.put(categoryName, new HashMap<>());
-                }
+                categoriesById.put(sotkaRegionId, regionType);
                 String regionCode = (String) region.get(CODE_FIELD);
-                // This is how we can map the layer feature id to a sotkanet region id (probably don't need it)
-                idsByCategoryAndCode.get(categoryName).put(regionCode, sotkaRegionId);
                 // This is the one we do need -> when requesting data we get the sotkanet internal region id
                 // and we need to get the feature id that the layer uses for that region
                 codesById.put(sotkaRegionId, regionCode);

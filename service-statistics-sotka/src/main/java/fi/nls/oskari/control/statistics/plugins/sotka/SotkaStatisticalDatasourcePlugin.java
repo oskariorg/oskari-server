@@ -66,8 +66,9 @@ public class SotkaStatisticalDatasourcePlugin extends StatisticalDatasourcePlugi
         layerToSotkaMappings = new HashMap<>();
 
         for (DatasourceLayer layer : layerRows) {
-            sotkaToLayerMappings.put(layer.getConfig("regionType").toLowerCase(), layer.getMaplayerId());
-            layerToSotkaMappings.put(layer.getMaplayerId(), layer.getConfig("regionType").toLowerCase());
+            String regionType = layer.getConfig("regionType").toLowerCase();
+            sotkaToLayerMappings.put(regionType, layer.getMaplayerId());
+            layerToSotkaMappings.put(layer.getMaplayerId(), regionType);
         }
         indicatorValuesFetcher.init(config);
         LOG.debug("SotkaNET layer mappings: ", sotkaToLayerMappings);
