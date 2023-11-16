@@ -113,14 +113,24 @@ public class SotkaIndicatorValuesFetcher {
      * @throws JSONException
      */
     private Map<Integer, IndicatorValue> parseJSON(String response) throws JSONException {
-        Map<Integer, IndicatorValue> indicatorMap = new HashMap<>();
         // The response is a String JSON array with JSONObjects
-        JSONArray responseArray = new JSONArray(response);
-        for (int i = 0; i < responseArray.length(); i++) {
+        JSONArray data = new JSONArray(response);
+        Map<Integer, IndicatorValue> indicatorMap = parseJSON(data, "value");
+        if (indicatorMap.isEmpty()) {
+            // if we don't get any values, get the absValue instead
+            indicatorMap = parseJSON(data, "absValue");
+        }
+        return indicatorMap;
+    }
+
+    private Map<Integer, IndicatorValue> parseJSON(JSONArray data, String valueKey) throws JSONException {
+        Map<Integer, IndicatorValue> indicatorMap = new HashMap<>();
+        for (int i = 0; i < data.length(); i++) {
             // Example row: {"indicator" : 4,"region": 231,"year": 2012,"gender": "total","value": 3.4,"absValue": 9}
-            JSONObject valueRow = responseArray.getJSONObject(i);
-            Double doubleValue = valueRow.optDouble("value");
+            JSONObject valueRow = data.getJSONObject(i);
+            Double doubleValue = valueRow.optDouble(valueKey);
             // sotkaRegionId is NOT the same as region id. It needs to be mapped to a region id later in the code
+            // the region id here is the internal id used by sotkanet that isn't municipality ids etc directly
             int sotkaRegionId = valueRow.optInt("region", -1);
             if (sotkaRegionId != -1 && Double.NaN != doubleValue) {
                 indicatorMap.put(sotkaRegionId, new IndicatorValueFloat(doubleValue));

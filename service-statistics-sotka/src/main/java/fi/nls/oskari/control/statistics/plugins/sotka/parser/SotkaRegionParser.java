@@ -10,8 +10,6 @@ import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.statistics.plugins.APIException;
 import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePlugin;
 import fi.nls.oskari.control.statistics.plugins.sotka.SotkaConfig;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.IOHelper;
 
 import java.io.IOException;
@@ -24,7 +22,7 @@ import java.util.Map;
 public class SotkaRegionParser {
 	private static final String ID_FIELD = "id";
 	private static final String CODE_FIELD = "code";
-	public static final String CATEGORY_FIELD = "category";
+    private static final String CATEGORY_FIELD = "category";
     
 	private ObjectMapper mapper;
     private String url;
@@ -57,14 +55,11 @@ public class SotkaRegionParser {
     }
 
     /**
-     * Gets the category for a certain id
-     * @param id
-     * @return if exists returns the category, for example "KUNTA", otherwise null
+     * Checks if the sotkanet internal id has the category that we are interested in
+     * @param id sotkanet internal id
+     * @param regionType regionType from statslayer config
+     * @return
      */
-    public String getCategoryById(Integer id) {
-        return categoriesById.get(id);
-    }
-
     public boolean isSotkanetInternalIdInRegionSet(Integer id, String regionType) {
         if (id == null || regionType == null) {
             return false;
