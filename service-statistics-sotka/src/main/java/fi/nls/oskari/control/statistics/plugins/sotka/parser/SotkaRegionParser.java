@@ -13,6 +13,7 @@ import fi.nls.oskari.control.statistics.plugins.sotka.SotkaConfig;
 import fi.nls.oskari.util.IOHelper;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -90,7 +91,9 @@ public class SotkaRegionParser {
 
         if (json == null) {
             try {
-                json = IOHelper.getURL(url);
+                HttpURLConnection con = IOHelper.getConnection(url);
+                IOHelper.addIdentifierHeaders(con);
+                json = IOHelper.readString(con);
             } catch (IOException e) {
                 throw new APIException("Couldn't read response from SotkaNET: " + url, e);
             }
