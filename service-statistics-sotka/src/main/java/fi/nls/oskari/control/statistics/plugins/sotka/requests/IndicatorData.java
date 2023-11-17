@@ -10,10 +10,6 @@ import java.io.StringWriter;
 public class IndicatorData extends SotkaRequest {
     public final static String NAME = "data";
 
-    public boolean isValid () {
-        return getIndicator() != null && !getIndicator().isEmpty();
-    }
-
     @Override
     public String getName() {
         return NAME;
