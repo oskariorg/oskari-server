@@ -53,7 +53,7 @@ public class SotkaIndicatorValuesFetcher {
         Map<String, IndicatorValue> filteredValues = new HashMap<>();
         for (Entry<Integer, IndicatorValue> entry : allValues.entrySet()) {
             Integer sotkaRegionId = entry.getKey();
-            if (regionParser.isSotkanetInternalIdInRegionSet(sotkaRegionId, regionType)) {
+            if (!regionParser.isSotkanetInternalIdInRegionSet(sotkaRegionId, regionType)) {
                 // include only regions belonging to the requested regionset
                 continue;
             }
