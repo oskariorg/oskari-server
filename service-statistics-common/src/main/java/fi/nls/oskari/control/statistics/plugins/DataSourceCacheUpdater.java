@@ -70,7 +70,7 @@ public final class DataSourceCacheUpdater extends DataSourceUpdater {
      * Returns a Redis key that should hold currently processed indicators of this datasource as list.
      */
     private String getIndicatorListWorkKey() {
-        return StatisticalDatasourcePlugin.CACHE_PREFIX + "worklist:" + plugin.getSource().getId();
+        return StatisticalDatasourcePlugin.CACHE_PREFIX + plugin.getSource().getId() +  ":worklist";
     }
 
     @Override

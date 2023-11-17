@@ -262,11 +262,6 @@
             </dependency>
             <dependency>
                 <groupId>org.oskari</groupId>
-                <artifactId>service-statistics-kapa</artifactId>
-                <version>${oskari.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.oskari</groupId>
                 <artifactId>service-statistics-pxweb</artifactId>
                 <version>${oskari.version}</version>
             </dependency>
@@ -1218,7 +1213,6 @@
         <module>service-statistics-common</module>
         <module>service-statistics</module>
         <module>service-statistics-sotka</module>
-        <module>service-statistics-kapa</module>
         <module>service-statistics-eurostat</module>
         <module>service-statistics-pxweb</module>
         <module>service-statistics-unsd</module>
