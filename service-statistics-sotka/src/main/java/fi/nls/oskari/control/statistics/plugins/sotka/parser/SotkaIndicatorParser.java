@@ -351,18 +351,19 @@ Parsing Sotkanet metadata/JSON like this:
             Map<String, String> limits = toLocalizationMap(json.optJSONObject("limits"));
             Map<String, String> legislation = toLocalizationMap(json.optJSONObject("legislation"));
             desc.keySet().forEach(lang -> {
+                // add as HTML as sotkanet includes HTML in description anyways
                 String langDesc = desc.get(lang);
                 String additionalDesc = interpretation.getOrDefault(lang, "");
                 if (!additionalDesc.isEmpty()) {
-                    langDesc += " \r\n\r\n" + additionalDesc;
+                    langDesc += "<p>" + additionalDesc + "</p>";
                 }
                 additionalDesc = limits.getOrDefault(lang, "");
                 if (!additionalDesc.isEmpty()) {
-                    langDesc += " \r\n\r\n" + additionalDesc;
+                    langDesc += "<p>" + additionalDesc + "</p>";
                 }
                 additionalDesc = legislation.getOrDefault(lang, "");
                 if (!additionalDesc.isEmpty()) {
-                    langDesc += " \r\n\r\n" + additionalDesc;
+                    langDesc += "<p>" + additionalDesc + "</p>";
                 }
                 desc.put(lang, langDesc);
             });
