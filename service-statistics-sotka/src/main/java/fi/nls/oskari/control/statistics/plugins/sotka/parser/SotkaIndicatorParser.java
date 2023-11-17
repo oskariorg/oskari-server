@@ -77,15 +77,23 @@ public class SotkaIndicatorParser {
                 LOG.error("Region missing from indicator: " + indicatorId + ": " + String.valueOf(ind.getName()));
                 return null;
             }
-            JSONArray sotkaRegionsets = json.getJSONObject("classifications").getJSONObject("region").getJSONArray("values");
-            for (int i = 0; i < sotkaRegionsets.length(); i++) {
-                String sotkaLayerName = sotkaRegionsets.getString(i);
-                Long oskariLayerId = sotkaLayersToOskariLayers.get(sotkaLayerName.toLowerCase());
-                if (oskariLayerId != null) {
-                    ind.addLayer(new StatisticalIndicatorLayer(oskariLayerId, indicatorId));
-                }
+            List<String> sotkaRegionsets = getDeclaredRegionsets(json.optJSONObject("classifications"));
+            if (sotkaRegionsets.isEmpty()) {
+                // if sotkanet doesn't specify any region set to have data -> assume it has data for all
+                // new indicators don't seem to have this defined anymore
+                // we can always show the user an error that we didn't get any data for the selection
+                // but if we don't do this we won't get data for "Hyvinvointialueet" as an example
+                sotkaLayersToOskariLayers.values()
+                        .forEach(oskariLayerId -> ind.addLayer(new StatisticalIndicatorLayer(oskariLayerId, indicatorId)));
+            } else {
+                sotkaRegionsets.forEach(regionType -> {
+                    Long oskariLayerId = sotkaLayersToOskariLayers.get(regionType);
+                    if (oskariLayerId != null) {
+                        ind.addLayer(new StatisticalIndicatorLayer(oskariLayerId, indicatorId));
+                    }
+                });
             }
-            if(ind.getLayers().isEmpty()) {
+            if (ind.getLayers().isEmpty()) {
                 return null;
             }
 
@@ -107,6 +115,44 @@ public class SotkaIndicatorParser {
         }
         return ind;
     }
+
+    /**
+     * Get values under classification.region.values:
+        "classifications": {
+            "sex": {
+                "values": ["male", "female", "total"]
+            },
+            "region": {
+               "values": ["Kunta", "Maakunta", "Erva", "Aluehallintovirasto", "Sairaanhoitopiiri", "Maa", "Suuralue", "Seutukunta", "Nuts1"]
+            }
+        }
+     * @param indicatorClassification
+     * @return
+     */
+    private List<String> getDeclaredRegionsets(JSONObject indicatorClassification) {
+        if (indicatorClassification == null ) {
+            return Collections.emptyList();
+        }
+        JSONObject regionClassification = indicatorClassification.optJSONObject("region");
+        if (regionClassification == null ) {
+            return Collections.emptyList();
+        }
+
+        JSONArray sotkaRegionsets = regionClassification.optJSONArray("values");
+        if (sotkaRegionsets == null ) {
+            return Collections.emptyList();
+        }
+        List<String> list = new ArrayList<>(sotkaRegionsets.length());
+        for (int i = 0; i < sotkaRegionsets.length(); i++) {
+            String sotkaRegionCategory = sotkaRegionsets.optString(i, null);
+            if (sotkaRegionCategory == null) {
+                continue;
+            }
+            list.add(sotkaRegionCategory.toLowerCase());
+        }
+        return list;
+    }
+
     private StatisticalIndicatorDataModel createModel(JSONObject jsonObject) throws JSONException {
         // Note that the key "region" must be skipped, because it was already serialized as layers.
         StatisticalIndicatorDataModel selectors = new StatisticalIndicatorDataModel();
