@@ -164,6 +164,20 @@ public class SotkaIndicatorParser {
             }
             list.add(sotkaRegionCategory.toLowerCase());
         }
+        if (sotkaRegionsets.length() != 0) {
+            return list;
+        }
+        // empty list of declared region sets
+        // -> fallback trying to detect region set from classification.region.title.fi
+        JSONObject titleObj = regionClassification.optJSONObject("title");
+        if (titleObj == null) {
+            return list;
+        }
+        // finnish service and our regionTypes are finnish so a fair assumption
+        String finnishTitle = titleObj.optString("fi", null);
+        if (finnishTitle != null) {
+            list.add(finnishTitle.toLowerCase());
+        }
         return list;
     }
 
