@@ -27,12 +27,7 @@ public class SotkaIndicatorParser {
 
     public StatisticalIndicator parse(JSONObject json, Map<String, Long> sotkaLayersToOskariLayers) {
         try {
-            StatisticalIndicator indicator = createIndicator(json, sotkaLayersToOskariLayers);
-            if(indicator == null) {
-                return null;
-            }
-            setupMetadata(indicator);
-            return indicator;
+            return createIndicator(json, sotkaLayersToOskariLayers);
         } catch (Exception e) {
             LOG.error("Error in mapping Sotka Indicators response to Oskari model: " + e.getMessage(), e);
         }
@@ -72,32 +67,6 @@ public class SotkaIndicatorParser {
             String indicatorId = String.valueOf(json.getInt("id"));
             ind.setId(indicatorId);
 
-            // parse layers first since if none match -> we don't need to parse the rest
-            JSONObject classificationObj = json.optJSONObject("classifications");
-            if (classificationObj == null || !classificationObj.has("region")) {
-                LOG.error("Region missing from indicator: " + indicatorId + ": " + String.valueOf(ind.getName()));
-                return null;
-            }
-            List<String> sotkaRegionsets = getDeclaredRegionsets(classificationObj);
-            if (sotkaRegionsets.isEmpty()) {
-                // if sotkanet doesn't specify any region set to have data -> assume it has data for all
-                // new indicators don't seem to have this defined anymore
-                // we can always show the user an error that we didn't get any data for the selection
-                // but if we don't do this we won't get data for "Hyvinvointialueet" as an example
-                sotkaLayersToOskariLayers.values()
-                        .forEach(oskariLayerId -> ind.addLayer(new StatisticalIndicatorLayer(oskariLayerId, indicatorId)));
-            } else {
-                sotkaRegionsets.forEach(regionType -> {
-                    Long oskariLayerId = sotkaLayersToOskariLayers.get(regionType);
-                    if (oskariLayerId != null) {
-                        ind.addLayer(new StatisticalIndicatorLayer(oskariLayerId, indicatorId));
-                    }
-                });
-            }
-            if (ind.getLayers().isEmpty()) {
-                return null;
-            }
-
             // layers ok - proceed with the rest of the data
             JSONObject nameJson = json.getJSONObject("title");
             Iterator<String> names = nameJson.keys();
@@ -107,14 +76,11 @@ public class SotkaIndicatorParser {
             }
             ind.setSource(toLocalizationMap(json.getJSONObject("organization").getJSONObject("title")));
 
-            // Note that the following will just skip the "region" part already projected into layers.
-            ind.setDataModel(createModel(json.getJSONObject("classifications")));
+            return setupMetadata(ind, sotkaLayersToOskariLayers);
         } catch (JSONException e) {
-            e.printStackTrace();
-            LOG.error("Could not read data from Sotka Indicator JSON.", e);
+            LOG.error(e, "Could not read data from Sotka Indicator JSON.");
             return null;
         }
-        return ind;
     }
     /**
      * Get values under classification.region.values:
@@ -349,7 +315,7 @@ Parsing Sotkanet metadata/JSON like this:
 	"groups": [200, 303, 730, 149, 103]
 }
  */
-    private void setupMetadata(StatisticalIndicator ind) throws APIException, JSONException {
+    private StatisticalIndicator setupMetadata(StatisticalIndicator ind, Map<String, Long> sotkaLayersToOskariLayers) throws APIException, JSONException {
 
         // fetch data
         SotkaRequest specificIndicatorRequest = SotkaRequest.getInstance(IndicatorMetadata.NAME);
@@ -358,11 +324,55 @@ Parsing Sotkanet metadata/JSON like this:
         String metadata = specificIndicatorRequest.getData();
         JSONObject json = new JSONObject(metadata);
 
+        // parse layers first since if none match -> we don't need to parse the rest
+        JSONObject classificationObj = json.optJSONObject("classifications");
+        if (classificationObj == null || !classificationObj.has("region")) {
+            LOG.error("Region missing from indicator: ", ind.getId(), ": ", ind.getName());
+            return null;
+        }
+        List<String> sotkaRegionsets = getDeclaredRegionsets(classificationObj);
+        sotkaRegionsets.forEach(regionType -> {
+            Long oskariLayerId = sotkaLayersToOskariLayers.get(regionType);
+            if (oskariLayerId != null) {
+                ind.addLayer(new StatisticalIndicatorLayer(oskariLayerId, ind.getId()));
+            }
+        });
+        if (ind.getLayers().isEmpty()) {
+            // we can't show this indicator since it doesn't link to any region set
+            // if at this point we don't have layers -> ignore the indicator by returning null
+            return null;
+        }
+
         // parse the data
         // Later on we might want to add information about the "interpretation", "limits", "legislation", and source "description" also here.
         if (json.has("description")) {
-            ind.setDescription(toLocalizationMap(json.getJSONObject("description")));
+            Map<String, String> desc = toLocalizationMap(json.optJSONObject("description"));
+            Map<String, String> interpretation = toLocalizationMap(json.optJSONObject("interpretation"));
+            Map<String, String> limits = toLocalizationMap(json.optJSONObject("limits"));
+            Map<String, String> legislation = toLocalizationMap(json.optJSONObject("legislation"));
+            desc.keySet().forEach(lang -> {
+                String langDesc = desc.get(lang);
+                String additionalDesc = interpretation.getOrDefault(lang, "");
+                if (!additionalDesc.isEmpty()) {
+                    langDesc += " \r\n\r\n" + additionalDesc;
+                }
+                additionalDesc = limits.getOrDefault(lang, "");
+                if (!additionalDesc.isEmpty()) {
+                    langDesc += " \r\n\r\n" + additionalDesc;
+                }
+                additionalDesc = legislation.getOrDefault(lang, "");
+                if (!additionalDesc.isEmpty()) {
+                    langDesc += " \r\n\r\n" + additionalDesc;
+                }
+                desc.put(lang, langDesc);
+            });
+            ind.setDescription(desc);
         }
+
+        // Parse the parameters that are used by the indicator
+        // Note that the data model will just skip the "region" part as it's the parameter for region sets/layers
+        ind.setDataModel(createModel(classificationObj));
+
         if (json.has("range")) {
             JSONObject range = json.getJSONObject("range");
             int start = range.getInt("start");
@@ -371,7 +381,8 @@ Parsing Sotkanet metadata/JSON like this:
             // TODO: Update this before the year 3000. Validating to prevent a DOS attack using insane numbers.
             if (start < 1000 || end > 3000) {
                 LOG.warn("Year range doesn't make sense, ignoring");
-                return;
+                // return it without the "year" dimension
+                return ind;
             }
             List<String> allowedYears = new ArrayList<>();
             for (int year = start; year <= end; year++) {
@@ -380,10 +391,14 @@ Parsing Sotkanet metadata/JSON like this:
             StatisticalIndicatorDataDimension yearSelector = new StatisticalIndicatorDataDimension("year", allowedYears);
             ind.getDataModel().addDimension(yearSelector);
         }
+        return ind;
     }
 
     private Map<String, String> toLocalizationMap(JSONObject json) throws JSONException {
         Map<String, String> localizationMap = new HashMap<>();
+        if (json == null) {
+            return localizationMap;
+        }
         @SuppressWarnings("unchecked")
         Iterator<String> names = json.keys();
         while (names.hasNext()) {
