@@ -73,11 +73,12 @@ public class SotkaIndicatorParser {
             ind.setId(indicatorId);
 
             // parse layers first since if none match -> we don't need to parse the rest
-            if (!json.getJSONObject("classifications").has("region")) {
+            JSONObject classificationObj = json.optJSONObject("classifications");
+            if (classificationObj == null || !classificationObj.has("region")) {
                 LOG.error("Region missing from indicator: " + indicatorId + ": " + String.valueOf(ind.getName()));
                 return null;
             }
-            List<String> sotkaRegionsets = getDeclaredRegionsets(json.optJSONObject("classifications"));
+            List<String> sotkaRegionsets = getDeclaredRegionsets(classificationObj);
             if (sotkaRegionsets.isEmpty()) {
                 // if sotkanet doesn't specify any region set to have data -> assume it has data for all
                 // new indicators don't seem to have this defined anymore
@@ -115,17 +116,30 @@ public class SotkaIndicatorParser {
         }
         return ind;
     }
-
     /**
      * Get values under classification.region.values:
         "classifications": {
-            "sex": {
-                "values": ["male", "female", "total"]
-            },
             "region": {
+               "title: {
+                    "fi": "Kunta, seutukunta, maakunta, hyvinvointialue, sairaanhoitopiiri, yhteistyöalue, aluehallintoviraston alue, suuralue, Manner-Suomi/Ahvenanmaa, erityisvastuualue, koko maa",
+                    ...
+                },
                "values": ["Kunta", "Maakunta", "Erva", "Aluehallintovirasto", "Sairaanhoitopiiri", "Maa", "Suuralue", "Seutukunta", "Nuts1"]
-            }
+            },
+            ...
         }
+
+     OR use title if values is empty?
+
+     "classifications": {
+        "region": {
+            "title: {
+                "fi": "Hyvinvointialue",
+                 ...
+            },
+            "values": []
+        }
+     }
      * @param indicatorClassification
      * @return
      */
