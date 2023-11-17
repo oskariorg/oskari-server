@@ -8,8 +8,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.statistics.plugins.APIException;
-import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePlugin;
 import fi.nls.oskari.control.statistics.plugins.sotka.SotkaConfig;
+import fi.nls.oskari.control.statistics.util.CacheKeys;
 import fi.nls.oskari.util.IOHelper;
 
 import java.io.IOException;
@@ -84,7 +84,7 @@ public class SotkaRegionParser {
          }
      */
     public void getData() {
-        final String cacheKey = StatisticalDatasourcePlugin.CACHE_PREFIX + config.getId() + ":regions:" + url;
+        final String cacheKey = CacheKeys.buildCacheKey(config.getId(), "regions", url);
         String json = JedisManager.get(cacheKey);
 
         if (json == null) {

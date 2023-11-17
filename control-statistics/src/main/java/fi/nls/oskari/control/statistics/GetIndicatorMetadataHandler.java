@@ -36,12 +36,7 @@ public class GetIndicatorMetadataHandler extends ActionHandler {
         JSONObject response = getIndicatorMetadataJSON(ap.getUser(), pluginId, indicatorId);
         ResponseHelper.writeResponse(ap, response);
     }
-    
-    /**
-     * Requests new data skipping the cache. Used for cache refresh before expiration.
-     * @return
-     * @throws ActionException
-     */
+
     public JSONObject getIndicatorMetadataJSON(User user, long pluginId, String indicatorId) throws ActionException {
         StatisticalDatasourcePlugin plugin = pluginManager.getPlugin(pluginId);
         if (plugin == null) {
@@ -65,9 +60,6 @@ public class GetIndicatorMetadataHandler extends ActionHandler {
         }
         try {
             JSONObject indicatorMetadata = StatisticsHelper.toJSON(indicator);
-            // Note that there is another layer of caches in the plugins doing the web queries.
-            // Two layers are necessary, because deserialization and conversion to the internal data model
-            // is pretty heavy operation.
             if (plugin.canCache() && indicatorMetadata != null) {
                 JedisManager.setex(cacheKey, JedisManager.EXPIRY_TIME_DAY, indicatorMetadata.toString());
             }
