@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.statistics.data.*;
-import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
