@@ -99,13 +99,9 @@ public class SotkaRegionParser {
                 HttpURLConnection con = IOHelper.getConnection(url);
                 IOHelper.addIdentifierHeaders(con);
                 int code = con.getResponseCode();
-                log.info(System.getProperties()
-                        .keySet()
-                        .stream()
-                        .map(key -> "\r\n  " + key + "=" + System.getProperty((String)key) +  "\r\n")
-                        .collect(Collectors.toList()));
                 if (code != 200) {
                     String error = IOHelper.readString(con.getErrorStream());
+                    // write this out to help with proxy-issues
                     log.error("Error response from sotkanet:", error);
                 }
                 json = IOHelper.readString(con);
