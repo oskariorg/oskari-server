@@ -107,7 +107,6 @@ public class SotkaRegionParser {
                 if (code != 200) {
                     String error = IOHelper.readString(con.getErrorStream());
                     log.error("Error response from sotkanet:", error);
-                    throw new IOException("Error getting regions from Sotkanet");
                 }
                 json = IOHelper.readString(con);
             } catch (IOException e) {
