@@ -10,6 +10,8 @@ import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.statistics.plugins.APIException;
 import fi.nls.oskari.control.statistics.plugins.sotka.SotkaConfig;
 import fi.nls.oskari.control.statistics.util.CacheKeys;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.IOHelper;
 
 import java.io.IOException;
@@ -32,6 +34,8 @@ public class SotkaRegionParser {
     private Map<Integer, String> categoriesById;
 	private Map<Integer, String> codesById;
     private static final TypeReference<Map<String, Object>> TYPE_REF_REGION = new TypeReference<Map<String, Object>>() { };
+
+    private Logger log = LogFactory.getLogger(SotkaRegionParser.class);
 
 	/**
 	 * Inits parser and maps.
@@ -91,6 +95,12 @@ public class SotkaRegionParser {
             try {
                 HttpURLConnection con = IOHelper.getConnection(url);
                 IOHelper.addIdentifierHeaders(con);
+                int code = con.getResponseCode();
+                if (code != 200) {
+                    String error = IOHelper.readString(con.getErrorStream());
+                    // write this out to help with proxy-issues
+                    log.error("Error response from sotkanet:", error);
+                }
                 json = IOHelper.readString(con);
             } catch (IOException e) {
                 throw new APIException("Couldn't read response from SotkaNET: " + url, e);
