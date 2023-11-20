@@ -69,7 +69,13 @@ public class IOHelper {
     public static String getUserAgent() {
         if (userAgent == null) {
             Package pkg = Manifest.class.getPackage();
-            userAgent = "Oskari/" + pkg.getImplementationVersion();
+            String implVersion = pkg.getImplementationVersion();
+            if (implVersion == null || implVersion.isEmpty() || implVersion.contains("null")) {
+                // Some clients respond with 403 Forbidden if this includes null as string
+                // If we can't get the version, default to 0.0
+                implVersion = "0.0";
+            }
+            userAgent = "Oskari/" + implVersion;
         }
         return userAgent;
     }
