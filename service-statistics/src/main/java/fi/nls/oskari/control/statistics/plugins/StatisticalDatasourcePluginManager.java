@@ -101,7 +101,7 @@ public class StatisticalDatasourcePluginManager {
             StatisticalDatasourcePlugin plugin = factory.create(source);
             plugins.put(source.getId(), plugin);
         } catch (APIException ex) {
-            LOG.error("Couldn't register a Statistical Datasource:", source.getId(),
+            LOG.error(ex, "Couldn't register a Statistical Datasource:", source.getId(),
                     "with plugin", source.getPlugin(), "Reason:", ex.getMessage());
         }
     }
