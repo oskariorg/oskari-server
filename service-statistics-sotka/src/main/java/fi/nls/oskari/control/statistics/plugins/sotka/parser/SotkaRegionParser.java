@@ -16,11 +16,8 @@ import fi.nls.oskari.util.IOHelper;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Parser (JSON) for getting Sotka region ids and codes
