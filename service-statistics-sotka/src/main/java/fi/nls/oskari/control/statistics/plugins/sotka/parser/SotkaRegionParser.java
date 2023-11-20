@@ -10,12 +10,17 @@ import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.statistics.plugins.APIException;
 import fi.nls.oskari.control.statistics.plugins.sotka.SotkaConfig;
 import fi.nls.oskari.control.statistics.util.CacheKeys;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.IOHelper;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Parser (JSON) for getting Sotka region ids and codes
@@ -32,6 +37,8 @@ public class SotkaRegionParser {
     private Map<Integer, String> categoriesById;
 	private Map<Integer, String> codesById;
     private static final TypeReference<Map<String, Object>> TYPE_REF_REGION = new TypeReference<Map<String, Object>>() { };
+
+    private Logger log = LogFactory.getLogger(SotkaRegionParser.class);
 
 	/**
 	 * Inits parser and maps.
@@ -91,6 +98,17 @@ public class SotkaRegionParser {
             try {
                 HttpURLConnection con = IOHelper.getConnection(url);
                 IOHelper.addIdentifierHeaders(con);
+                int code = con.getResponseCode();
+                log.info(System.getProperties()
+                        .keySet()
+                        .stream()
+                        .map(key -> "\r\n  " + key + "=" + System.getProperty((String)key) +  "\r\n")
+                        .collect(Collectors.toList()));
+                if (code != 200) {
+                    String error = IOHelper.readString(con.getErrorStream());
+                    log.error("Error response from sotkanet:", error);
+                    throw new IOException("Error getting regions from Sotkanet");
+                }
                 json = IOHelper.readString(con);
             } catch (IOException e) {
                 throw new APIException("Couldn't read response from SotkaNET: " + url, e);
