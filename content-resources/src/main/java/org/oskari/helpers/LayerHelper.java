@@ -12,6 +12,7 @@ import fi.nls.oskari.map.style.VectorStyleHelper;
 import fi.nls.oskari.map.style.VectorStyleService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.OskariRuntimeException;
 import org.oskari.admin.LayerCapabilitiesHelper;
@@ -55,11 +56,11 @@ public class LayerHelper {
                 // add info from capabilities if not from localhost (this is usually called when server starting == localhost doesn't work properly)
                 try {
                     LayerCapabilitiesHelper.updateCapabilities(oskariLayer);
-                } catch (ServiceException e) {
+                } catch (ServiceException | ServiceRuntimeException e) {
                     log.warn(e,"Error updating capabilities for service from", oskariLayer.getUrl());
                     if (OskariLayer.TYPE_WMTS.equals(oskariLayer.getType())) {
                         log.warn("The WMTS-layer", oskariLayer.getName(),
-                                "might work slower than normal with capabilities/tilegrids not cached. Try caching the capabilities later using the admin UI.");
+                                "might not work properly without capabilities/tilegrids. Try refreshing the capabilities later using the admin UI.");
                     }
                 }
             }
