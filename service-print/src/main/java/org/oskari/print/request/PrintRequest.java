@@ -1,12 +1,11 @@
 package org.oskari.print.request;
 
-import java.util.List;
-
+import fi.nls.oskari.domain.User;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import fi.nls.oskari.domain.User;
+import java.util.List;
 
 public class PrintRequest {
     
@@ -32,6 +31,7 @@ public class PrintRequest {
     private String time;
     private String formattedTime;
     private String timeseriesLabel;
+    private String coordinateInfo;
 
     public User getUser() {
         return user;
@@ -223,4 +223,12 @@ public class PrintRequest {
     public void setTimeseriesLabel(String timeseriesLabel) {
         this.timeseriesLabel = timeseriesLabel;
     }
+
+    public void setCoordinateInfo(String coordinateInfo) {
+        this.coordinateInfo = coordinateInfo;
+    }
+    public String getCoordinateInfo() {
+        return coordinateInfo;
+    }
+
 }

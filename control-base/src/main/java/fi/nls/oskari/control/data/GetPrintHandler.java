@@ -1,29 +1,5 @@
 package fi.nls.oskari.control.data;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import javax.imageio.ImageIO;
-
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import org.opengis.referencing.FactoryException;
-import org.oskari.print.PrintService;
-import org.oskari.print.request.PrintFormat;
-import org.oskari.print.request.PrintLayer;
-import org.oskari.print.request.PrintRequest;
-import org.oskari.print.request.PrintTile;
-import org.oskari.service.user.UserLayerService;
-import org.oskari.service.wfs.client.OskariWFSClient;
-
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
@@ -35,8 +11,31 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.ConversionHelper;
-import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.ResponseHelper;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.opengis.referencing.FactoryException;
+import org.oskari.print.PrintService;
+import org.oskari.print.request.PrintFormat;
+import org.oskari.print.request.PrintLayer;
+import org.oskari.print.request.PrintRequest;
+import org.oskari.print.request.PrintTile;
+import org.oskari.service.user.UserLayerService;
+import org.oskari.service.wfs.client.OskariWFSClient;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 @OskariActionRoute("GetPrint")
 public class GetPrintHandler extends AbstractWFSFeaturesHandler {
@@ -61,6 +60,8 @@ public class GetPrintHandler extends AbstractWFSFeaturesHandler {
     private static final String PARM_TIME = "time";
     private static final String PARM_FORMATTED_TIME = "formattedTime";
     private static final String PARM_TIMESERIES_LABEL = "timeseriesPrintLabel";
+
+    private static final String PARM_COORDINATE_INFO = "coordinateInfo";
 
     private static final String ALLOWED_FORMATS = Arrays.toString(new String[] {
             PrintFormat.PDF.contentType, PrintFormat.PNG.contentType
@@ -142,7 +143,7 @@ public class GetPrintHandler extends AbstractWFSFeaturesHandler {
         request.setTime(params.getHttpParam(PARM_TIME, ""));
         request.setFormattedTime(params.getHttpParam(PARM_FORMATTED_TIME, ""));
         request.setTimeseriesLabel(params.getHttpParam(PARM_TIMESERIES_LABEL, ""));
-
+        request.setCoordinateInfo(params.getHttpParam(PARM_COORDINATE_INFO, ""));
         setPagesize(params, request);
         setCoordinates(params.getRequiredParam(PARM_COORD), request);
         setFormat(params.getRequiredParam(PARM_FORMAT), request);
@@ -442,6 +443,7 @@ public class GetPrintHandler extends AbstractWFSFeaturesHandler {
             printService.getPDF(pr, doc);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             doc.save(baos);
+
             ResponseHelper.writeResponse(params, 200, PrintFormat.PDF.contentType, baos);
         } catch (IOException | ServiceException e) {
             throw new ActionException("Failed to create PDF", e);

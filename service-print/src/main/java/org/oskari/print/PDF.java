@@ -1,25 +1,8 @@
 package org.oskari.print;
 
-import java.awt.Color;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-
-import javax.imageio.ImageIO;
-
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.ServiceException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -42,6 +25,17 @@ import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.referencing.CRS;
 import org.json.JSONObject;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.CoordinateSequence;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryCollection;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.MultiLineString;
+import org.locationtech.jts.geom.MultiPoint;
+import org.locationtech.jts.geom.MultiPolygon;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.Polygon;
+import org.locationtech.jts.geom.util.AffineTransformation;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.expression.Expression;
@@ -58,23 +52,26 @@ import org.oskari.print.util.PDFBoxUtil;
 import org.oskari.print.util.StyleUtil;
 import org.oskari.print.util.Units;
 import org.oskari.service.wfs.client.OskariFeatureClient;
-
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.CoordinateSequence;
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.GeometryCollection;
-import org.locationtech.jts.geom.LineString;
-import org.locationtech.jts.geom.MultiLineString;
-import org.locationtech.jts.geom.MultiPoint;
-import org.locationtech.jts.geom.MultiPolygon;
-import org.locationtech.jts.geom.Point;
-import org.locationtech.jts.geom.Polygon;
-import org.locationtech.jts.geom.util.AffineTransformation;
-
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.service.ServiceException;
 import org.oskari.util.Customization;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 public class PDF {
 
@@ -150,6 +147,16 @@ public class PDF {
     
     private static final ResourceBundle rb = ResourceBundle.getBundle("messages");
 
+    private static enum COORDINATE_INFO {
+        CENTER("center"),
+        CORNERS("corners");
+
+        private final String info;
+        private COORDINATE_INFO(String info) {
+            this.info = info;
+        }
+    }
+
     static {
         PAGESIZES_LANDSCAPE = new PDRectangle[PAGESIZES.length];
         for (int i = 0; i < PAGESIZES.length; i++) {
@@ -208,10 +215,18 @@ public class PDF {
             drawLayers(doc, stream, request, layerImages, featureCollections,
                     x, y, mapWidth, mapHeight);
             drawBorder(stream, x, y, mapWidth, mapHeight);
-            drawCornerCoords(stream, request, x, y, mapHeight, mapWidth, pageSize);
-            
+            // TODO: cheggaa partsusta onko centterii vai middlee ja tee sen mukaan yo yo
+            String coordinateInfo = request.getCoordinateInfo();
+
+            if (COORDINATE_INFO.CENTER.info.equals(coordinateInfo)) {
+                drawCenterCoords(stream, request, x, y, mapHeight, mapWidth, pageSize);
+            } else if (COORDINATE_INFO.CORNERS.info.equals(coordinateInfo)) {
+                drawCornerCoords(stream, request, x, y, mapHeight, mapWidth, pageSize);
+            }
+
         }
     }
+
     protected static BufferedImage getVectorLayerImage (PrintLayer layer, Future<SimpleFeatureCollection> ffc, double [] bbox, int w, int h )
             throws IOException {
         float mapWidth = pixelsToPoints(w);
@@ -351,6 +366,32 @@ public class PDF {
         drawBottomCoords(stream, bottomLat, bottomLon, x, y, mapHeight, mapWidth); 
     }
     
+    private static void drawCenterCoords(PDPageContentStream stream, PrintRequest request, float x, float y, float mapHeight, float mapWidth, PDRectangle pageSize) throws IOException {
+        float centerX = (x + mapWidth) / 2; // pixels
+        float centerY = (y + mapHeight) / 2;
+
+        drawCenterCross(stream, centerX, centerY);
+
+        double east = request.getEast();
+        double north = request.getNorth();
+
+        float x1 = x;
+        float y2 = mapHeight + y;
+        float x2 = x1 - OFFSET_CROSS_TOP;
+        float y1 = y2 + OFFSET_CROSS_TOP;
+        float textX = x1 + OFFSET_TEXT_TOP;
+        float textY = y1 - OFFSET_TEXT_TOP;
+        float textY2 = textY - OFFSET_TEXT_Y;
+
+
+        String coordsText = rb.getString("coordinates.center") + ": " + east + ", " + north;
+        // check which projection this be from req
+        String projection = "ETRS-TM35FIN" + " " + rb.getString("coordinates");
+
+        PDFBoxUtil.drawText(stream, coordsText, PDPrintStyle.FONT, PDPrintStyle.FONT_SIZE_SCALE, textX, textY);
+        PDFBoxUtil.drawText(stream, projection, PDPrintStyle.FONT, PDPrintStyle.FONT_SIZE_SCALE, textX, textY2);
+    }
+
     private static void drawTopCoords(PDPageContentStream stream, int topLat, int topLon, float x, float y, float mapHeight, float mapWidth)
             throws IOException {
         float x1 = x;
@@ -358,7 +399,7 @@ public class PDF {
         float x2 = x1 - OFFSET_CROSS_TOP;
         float y1 = y2 + OFFSET_CROSS_TOP;
         
-        drawCross(stream, x1, x2, y1, y2);
+        drawCornerCross(stream, x1, x2, y1, y2);
         
         float textX = x1 + OFFSET_TEXT_TOP;
         float textY = y1 - OFFSET_TEXT_TOP;
@@ -370,7 +411,7 @@ public class PDF {
         PDFBoxUtil.drawText(stream, coords, PDPrintStyle.FONT, PDPrintStyle.FONT_SIZE_SCALE, textX, textY);
         PDFBoxUtil.drawText(stream, projection, PDPrintStyle.FONT, PDPrintStyle.FONT_SIZE_SCALE, textX, textY2);
     }
-    
+
     private static void drawBottomCoords(PDPageContentStream stream, int bottomLat, int bottomLon, float x, float y, float mapHeight, float mapWidth)
             throws IOException {
         float x1 = mapWidth + x;
@@ -378,7 +419,7 @@ public class PDF {
         float x2 = x1 + OFFSET_CROSS_BOTTOM;
         float y1 = y2 - OFFSET_CROSS_BOTTOM;
         
-        drawCross(stream, x1, x2, y1, y2);
+        drawCornerCross(stream, x1, x2, y1, y2);
         
         float textX = x1 - OFFSET_TEXT_BOTTOM_X;
         float textY = y1 + OFFSET_TEXT_BOTTOM_Y;
@@ -391,7 +432,19 @@ public class PDF {
         PDFBoxUtil.drawText(stream, projection, PDPrintStyle.FONT, PDPrintStyle.FONT_SIZE_SCALE, textX, textY2);  
     }
 
-    private static void drawCross(PDPageContentStream stream, float x1, float x2, float y1, float y2) throws IOException {
+    private static void drawCenterCross(PDPageContentStream stream, float centerX, float centerY) throws IOException {
+        // x axis
+        stream.moveTo(centerX - OFFSET_CROSS_TOP, centerY);
+        stream.lineTo(centerX + OFFSET_CROSS_TOP, centerY);
+
+        //y axis
+        stream.moveTo(centerX, centerY - OFFSET_CROSS_TOP);
+        stream.lineTo(centerX, centerY + OFFSET_CROSS_TOP);
+
+        stream.stroke();
+    }
+
+    private static void drawCornerCross(PDPageContentStream stream, float x1, float x2, float y1, float y2) throws IOException {
         stream.moveTo(x1, y1);
         stream.lineTo(x1, y2);
         stream.lineTo(x2, y2);
@@ -408,7 +461,7 @@ public class PDF {
         
         return intCornerCoords;
     }
-    
+
     private static void drawScale(PDPageContentStream stream, PrintRequest request, float logoWidth)
             throws IOException {
         if (!request.isShowScale()) {
