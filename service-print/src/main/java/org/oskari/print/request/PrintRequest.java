@@ -33,6 +33,7 @@ public class PrintRequest {
     private String timeseriesLabel;
     private String coordinateInfo;
 
+    private String lang;
     public User getUser() {
         return user;
     }
@@ -231,4 +232,11 @@ public class PrintRequest {
         return coordinateInfo;
     }
 
+    public String getLang() {
+        return lang;
+    }
+
+    public void setLang(String lang) {
+        this.lang = lang;
+    }
 }

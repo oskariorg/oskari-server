@@ -145,7 +145,7 @@ public class PDF {
 
     private static final FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
     
-    private static final ResourceBundle rb = ResourceBundle.getBundle("messages_fi");
+    private static ResourceBundle rb;
 
     private static enum COORDINATE_INFO {
         CENTER("center"),
@@ -183,6 +183,7 @@ public class PDF {
     protected static void getPDF(PrintRequest request,
             OskariFeatureClient featureClient,
             PDDocument doc) throws IOException, ServiceException {
+        rb = ResourceBundle.getBundle("messages_"+request.getLang());
         int mapWidthPx = request.getWidth();
         int mapHeightPx = request.getHeight();
 

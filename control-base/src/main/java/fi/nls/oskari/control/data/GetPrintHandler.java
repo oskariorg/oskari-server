@@ -147,6 +147,7 @@ public class GetPrintHandler extends AbstractWFSFeaturesHandler {
         setPagesize(params, request);
         setCoordinates(params.getRequiredParam(PARM_COORD), request);
         setFormat(params.getRequiredParam(PARM_FORMAT), request);
+        request.setLang(params.getHttpParam("lang", "en"));
 
         List<PrintLayer> layers = getLayers(params);
 
