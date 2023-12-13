@@ -145,7 +145,7 @@ public class PDF {
 
     private static final FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
     
-    private static final ResourceBundle rb = ResourceBundle.getBundle("messages");
+    private static final ResourceBundle rb = ResourceBundle.getBundle("messages_fi");
 
     private static enum COORDINATE_INFO {
         CENTER("center"),
@@ -343,8 +343,7 @@ public class PDF {
             return;
         }
 
-        float x = pageSize.getWidth() - OFFSET_TIMESERIES_RIGHT;
-
+        float x = (pageSize.getWidth() / 2);;
         PDFBoxUtil.drawText(stream, request.getTimeseriesLabel(), PDPrintStyle.FONT, PDPrintStyle.FONT_SIZE_TIMESERIES,
                 x, OFFSET_TIMESERIES_LABEL_BOTTOM);
         PDFBoxUtil.drawText(stream, request.getFormattedTime(), PDPrintStyle.FONT, PDPrintStyle.FONT_SIZE_TIMESERIES,
