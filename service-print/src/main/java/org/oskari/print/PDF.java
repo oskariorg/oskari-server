@@ -344,7 +344,7 @@ public class PDF {
             return;
         }
 
-        float x = (pageSize.getWidth() / 2);;
+        float x = pageSize.getWidth() / 2 - OFFSET_TIMESERIES_RIGHT / 2;
         PDFBoxUtil.drawText(stream, request.getTimeseriesLabel(), PDPrintStyle.FONT, PDPrintStyle.FONT_SIZE_TIMESERIES,
                 x, OFFSET_TIMESERIES_LABEL_BOTTOM);
         PDFBoxUtil.drawText(stream, request.getFormattedTime(), PDPrintStyle.FONT, PDPrintStyle.FONT_SIZE_TIMESERIES,
