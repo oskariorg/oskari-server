@@ -14,6 +14,9 @@ public class PrintRequest {
     private double north;
     private String srsName;
     private CoordinateReferenceSystem crs;
+
+    private String printoutSrsName;
+    private CoordinateReferenceSystem printoutCrs;
     private double resolution;
     private int width;
     private int height;
@@ -69,6 +72,19 @@ public class PrintRequest {
 
     public CoordinateReferenceSystem getCrs() {
         return crs;
+    }
+
+    public String getPrintoutSrsName() {
+        return printoutSrsName;
+    }
+
+    public void setPrintoutSrsName(String printoutSrsName) throws FactoryException {
+        this.printoutSrsName = printoutSrsName;
+        this.printoutCrs = CRS.decode(printoutSrsName, true);
+    }
+
+    public CoordinateReferenceSystem getPrintoutCrs() {
+        return printoutCrs;
     }
 
     public double getResolution() {

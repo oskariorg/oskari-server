@@ -48,6 +48,9 @@ public class GetPrintHandler extends AbstractWFSFeaturesHandler {
     private static final String PARM_MAPLAYERS = "mapLayers";
     private static final String PARM_FORMAT = "format";
     private static final String PARM_SRSNAME = "srs";
+
+    private static final String PARM_COORDINATE_SRSNAME = "coordinateSRS";
+
     private static final String PARM_TILES = "tiles";
     private static final String PARM_TITLE = "pageTitle";
     private static final String PARM_SCALE = "pageScale";
@@ -133,6 +136,13 @@ public class GetPrintHandler extends AbstractWFSFeaturesHandler {
         } catch (FactoryException e) {
             throw new ActionParamsException("Invalid value for param: " + PARM_SRSNAME);
         }
+
+        try {
+            request.setPrintoutSrsName(params.getRequiredParam(PARM_COORDINATE_SRSNAME));
+        } catch (FactoryException e) {
+            throw new ActionParamsException("Invalid value for param: " + PARM_COORDINATE_SRSNAME);
+        }
+
         request.setResolution(params.getRequiredParamDouble(PARM_RESOLUTION));
         request.setTitle(params.getHttpParam(PARM_TITLE));
         request.setShowLogo(params.getHttpParam(PARM_LOGO, true));
