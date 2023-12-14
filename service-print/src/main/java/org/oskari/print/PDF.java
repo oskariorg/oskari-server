@@ -70,12 +70,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+
+import static fi.nls.oskari.map.geometry.ProjectionHelper.isUnitDegrees;
 
 public class PDF {
 
@@ -151,10 +152,9 @@ public class PDF {
     
     private static ResourceBundle rb;
 
-    private static final Map<String, Integer> PROJECTION_DECIMALS = new HashMap<String, Integer>(){{
-        put("EPSG:3067", null);
-        put("EPSG:4326", 6);
-    }};
+    private static final int NUMBER_OF_DECIMALS_METRIC = 0;
+    private static final int NUMBER_OF_DECIMALS_DEGREES = 6;
+
     private static enum COORDINATE_INFO {
         CENTER("center"),
         CORNERS("corners");
@@ -390,7 +390,7 @@ public class PDF {
         float textY2 = textY - OFFSET_TEXT_Y;
 
 
-        String coordsText = getCoordinatesString("coordinates.center", transformed.getLon(), transformed.getLat(), request.getPrintoutSrsName());
+        String coordsText = getCoordinatesString("coordinates.center", transformed.getLon(), transformed.getLat(), request);
         // check which projection this be from req
         String projection = request.getPrintoutCrs().getName() + " " + rb.getString("coordinates");
 
@@ -411,7 +411,7 @@ public class PDF {
         float textY = y1 - OFFSET_TEXT_TOP;
         float textY2 = textY - OFFSET_TEXT_Y;
         
-        String coords = getCoordinatesString("coordinates.upper", topLon, topLat, request.getPrintoutSrsName());
+        String coords = getCoordinatesString("coordinates.upper", topLon, topLat, request);
         String projection = request.getPrintoutCrs().getName() + " " + rb.getString("coordinates");
 
         PDFBoxUtil.drawText(stream, coords, PDPrintStyle.FONT, PDPrintStyle.FONT_SIZE_SCALE, textX, textY);
@@ -431,20 +431,23 @@ public class PDF {
         float textY = y1 + OFFSET_TEXT_BOTTOM_Y;
         float textY2 = textY - OFFSET_TEXT_Y;
         
-        String coords = getCoordinatesString("coordinates.lower", bottomLon, bottomLat, request.getPrintoutSrsName());
+        String coords = getCoordinatesString("coordinates.lower", bottomLon, bottomLat, request);
 
         PDFBoxUtil.drawText(stream, coords, PDPrintStyle.FONT, PDPrintStyle.FONT_SIZE_SCALE, textX, textY);
     }
 
-    private static String getCoordinatesString(String key, double lon, double lat, String srsName) {
-        double formattedLon = formatDecimals(lon, srsName);
-        double formattedLat = formatDecimals(lat, srsName);
-        return  rb.getString(key) + ": " + formattedLon + ", " + formattedLat;
+    private static String getCoordinatesString(String key, double lon, double lat, PrintRequest request) {
+        double formattedLon = formatDecimals(lon, request.getPrintoutCrs());
+        double formattedLat = formatDecimals(lat, request.getPrintoutCrs());
+        boolean northFirst = ProjectionHelper.isFirstAxisNorth(request.getPrintoutCrs());
 
+        String projectionName = rb.getString(key);
+        String coordinatesString = northFirst ? formattedLat + ", " + formattedLon : formattedLon + ", " + formattedLat;
+        return projectionName + ": " + coordinatesString;
     }
 
-    private static double formatDecimals(double value, String srsName) {
-        int numberOfDecimals = PROJECTION_DECIMALS.get(srsName) != null ? PROJECTION_DECIMALS.get(srsName) : 0;
+    private static double formatDecimals(double value, CoordinateReferenceSystem crs) {
+        int numberOfDecimals = isUnitDegrees(crs) ? NUMBER_OF_DECIMALS_DEGREES : NUMBER_OF_DECIMALS_METRIC;
         BigDecimal bigDecimal = new BigDecimal(value);
         bigDecimal = bigDecimal.setScale(numberOfDecimals, RoundingMode.HALF_UP);
         return bigDecimal.doubleValue();
