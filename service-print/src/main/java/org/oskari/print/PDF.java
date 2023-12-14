@@ -137,7 +137,7 @@ public class PDF {
     private static final float OFFSET_CROSS_TOP = PDFBoxUtil.mmToPt(7);
     private static final float OFFSET_CROSS_BOTTOM = PDFBoxUtil.mmToPt(7);
     
-    private static final float OFFSET_TEXT_BOTTOM_X = PDFBoxUtil.mmToPt(60);
+    private static final float OFFSET_TEXT_BOTTOM_X = PDFBoxUtil.mmToPt(70);
     private static final float OFFSET_TEXT_BOTTOM_Y = PDFBoxUtil.mmToPt(1);
     private static final float OFFSET_TEXT_TOP = PDFBoxUtil.mmToPt(2);
     private static final float OFFSET_TEXT_Y = PDFBoxUtil.mmToPt(4);
