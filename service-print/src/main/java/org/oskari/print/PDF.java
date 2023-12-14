@@ -392,7 +392,7 @@ public class PDF {
 
         String coordsText = getCoordinatesString("coordinates.center", transformed.getLon(), transformed.getLat(), request.getPrintoutSrsName());
         // check which projection this be from req
-        String projection = "ETRS-TM35FIN" + " " + rb.getString("coordinates");
+        String projection = request.getPrintoutCrs().getName() + " " + rb.getString("coordinates");
 
         PDFBoxUtil.drawText(stream, coordsText, PDPrintStyle.FONT, PDPrintStyle.FONT_SIZE_SCALE, textX, textY);
         PDFBoxUtil.drawText(stream, projection, PDPrintStyle.FONT, PDPrintStyle.FONT_SIZE_SCALE, textX, textY2);
@@ -412,7 +412,7 @@ public class PDF {
         float textY2 = textY - OFFSET_TEXT_Y;
         
         String coords = getCoordinatesString("coordinates.upper", topLon, topLat, request.getPrintoutSrsName());
-        String projection = "ETRS-TM35FIN" + " " + rb.getString("coordinates");
+        String projection = request.getPrintoutCrs().getName() + " " + rb.getString("coordinates");
 
         PDFBoxUtil.drawText(stream, coords, PDPrintStyle.FONT, PDPrintStyle.FONT_SIZE_SCALE, textX, textY);
         PDFBoxUtil.drawText(stream, projection, PDPrintStyle.FONT, PDPrintStyle.FONT_SIZE_SCALE, textX, textY2);
@@ -432,10 +432,8 @@ public class PDF {
         float textY2 = textY - OFFSET_TEXT_Y;
         
         String coords = getCoordinatesString("coordinates.lower", bottomLon, bottomLat, request.getPrintoutSrsName());
-        String projection = "ETRS-TM35FIN" + " " + rb.getString("coordinates");
-                
+
         PDFBoxUtil.drawText(stream, coords, PDPrintStyle.FONT, PDPrintStyle.FONT_SIZE_SCALE, textX, textY);
-        PDFBoxUtil.drawText(stream, projection, PDPrintStyle.FONT, PDPrintStyle.FONT_SIZE_SCALE, textX, textY2);  
     }
 
     private static String getCoordinatesString(String key, double lon, double lat, String srsName) {
