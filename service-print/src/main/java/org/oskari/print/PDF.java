@@ -71,6 +71,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
@@ -181,6 +182,8 @@ public class PDF {
         }
     }
 
+    private static final String MESSAGES_BASENAME = "print-messages";
+
     public static int mmToPx(int mm) {
         return (int) Math.round((Units.OGC_DPI * mm) / Units.MM_PER_INCH);
     }
@@ -191,7 +194,7 @@ public class PDF {
     protected static void getPDF(PrintRequest request,
             OskariFeatureClient featureClient,
             PDDocument doc) throws IOException, ServiceException {
-        rb = ResourceBundle.getBundle("messages_"+request.getLang());
+        rb = ResourceBundle.getBundle(MESSAGES_BASENAME, new Locale(request.getLang()));
         int mapWidthPx = request.getWidth();
         int mapHeightPx = request.getHeight();
 
