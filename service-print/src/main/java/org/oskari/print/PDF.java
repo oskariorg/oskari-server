@@ -227,9 +227,9 @@ public class PDF {
             String coordinateInfo = request.getCoordinateInfo();
 
             if (COORDINATE_INFO.CENTER.info.equals(coordinateInfo)) {
-                drawCenterCoords(stream, request, x, y, mapHeight, mapWidth, pageSize);
+                drawCenterCoords(stream, request, x, y, mapHeight, mapWidth);
             } else if (COORDINATE_INFO.CORNERS.info.equals(coordinateInfo)) {
-                drawCornerCoords(stream, request, x, y, mapHeight, mapWidth, pageSize);
+                drawCornerCoords(stream, request, x, y, mapHeight, mapWidth);
             }
 
         }
@@ -358,12 +358,11 @@ public class PDF {
                 x, OFFSET_TIME_IN_TIMESERIES_BOTTOM);
     }
 
-    private static void drawCornerCoords(PDPageContentStream stream, PrintRequest request, float x, float y, float mapHeight, float mapWidth, PDRectangle pageSize)
+    private static void drawCornerCoords(PDPageContentStream stream, PrintRequest request, float x, float y, float mapHeight, float mapWidth)
             throws IOException {
 
         // get coordinates from bounding box
         double[] coords = getCornerCoords(request);
-        // lbrt
 
         double topLon = coords[0];
         double bottomLat = coords[1];
@@ -374,7 +373,7 @@ public class PDF {
         drawBottomCoords(stream, request, bottomLat, bottomLon, x, y, mapHeight, mapWidth);
     }
     
-    private static void drawCenterCoords(PDPageContentStream stream, PrintRequest request, float x, float y, float mapHeight, float mapWidth, PDRectangle pageSize) throws IOException {
+    private static void drawCenterCoords(PDPageContentStream stream, PrintRequest request, float x, float y, float mapHeight, float mapWidth) throws IOException {
         float centerX = (x + mapWidth) / 2; // pixels
         float centerY = (y + mapHeight) / 2;
 
