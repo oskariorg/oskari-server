@@ -33,6 +33,7 @@ public class ProjectionHelper implements PointTransformer {
     private static Logger log = LogFactory.getLogger(ProjectionHelper.class);
     private static String LONG_SRS_NAME_BASE = "urn:ogc:def:crs:EPSG::";
 
+    private static final String UNIT_DEGREES = "deg";
     public static Point transformPoint(final double lon, final double lat, final String sourceSRS, final String targetSRS) {
         return transformPoint(new Point(lon, lat), sourceSRS, targetSRS);
     }
@@ -125,6 +126,9 @@ public class ProjectionHelper implements PointTransformer {
                 crs.getCoordinateSystem().getAxis(0).getDirection().absolute() == AxisDirection.DISPLAY_UP;
     }
 
+    public static boolean isUnitDegrees(CoordinateReferenceSystem crs) {
+        return UNIT_DEGREES.equals(crs.getCoordinateSystem().getAxis(0).getUnit().toString());
+    }
     /**
      * Return epsg short
      * urn:ogc:def:crs:EPSG::32635  --> EPSG:32635

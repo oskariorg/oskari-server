@@ -1,12 +1,11 @@
 package org.oskari.print.request;
 
-import java.util.List;
-
+import fi.nls.oskari.domain.User;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import fi.nls.oskari.domain.User;
+import java.util.List;
 
 public class PrintRequest {
     
@@ -15,6 +14,9 @@ public class PrintRequest {
     private double north;
     private String srsName;
     private CoordinateReferenceSystem crs;
+
+    private String printoutSrsName;
+    private CoordinateReferenceSystem printoutCrs;
     private double resolution;
     private int width;
     private int height;
@@ -32,7 +34,9 @@ public class PrintRequest {
     private String time;
     private String formattedTime;
     private String timeseriesLabel;
+    private String coordinateInfo;
 
+    private String lang;
     public User getUser() {
         return user;
     }
@@ -68,6 +72,19 @@ public class PrintRequest {
 
     public CoordinateReferenceSystem getCrs() {
         return crs;
+    }
+
+    public String getPrintoutSrsName() {
+        return printoutSrsName;
+    }
+
+    public void setPrintoutSrsName(String printoutSrsName) throws FactoryException {
+        this.printoutSrsName = printoutSrsName;
+        this.printoutCrs = CRS.decode(printoutSrsName, true);
+    }
+
+    public CoordinateReferenceSystem getPrintoutCrs() {
+        return printoutCrs;
     }
 
     public double getResolution() {
@@ -222,5 +239,20 @@ public class PrintRequest {
 
     public void setTimeseriesLabel(String timeseriesLabel) {
         this.timeseriesLabel = timeseriesLabel;
+    }
+
+    public void setCoordinateInfo(String coordinateInfo) {
+        this.coordinateInfo = coordinateInfo;
+    }
+    public String getCoordinateInfo() {
+        return coordinateInfo;
+    }
+
+    public String getLang() {
+        return lang;
+    }
+
+    public void setLang(String lang) {
+        this.lang = lang;
     }
 }
