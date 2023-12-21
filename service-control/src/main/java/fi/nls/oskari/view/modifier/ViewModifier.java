@@ -46,6 +46,8 @@ public abstract class ViewModifier {
     public static final String BUNDLE_METADATAFLYOUT = "metadataflyout";
     public static final String BUNDLE_BACKEND_STATUS = "backendstatus";
 
+    public static final String BUNDLE_LAYERSWIPE = "layerswipe";
+
     public static final String KEY_EAST = "east";
     public static final String KEY_NORTH = "north";
     public static final String KEY_ZOOM = "zoom";
