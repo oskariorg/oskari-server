@@ -10,7 +10,7 @@ import fi.nls.oskari.view.modifier.ParamHandler;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-@OskariViewModifier("layerSwipe")
+@OskariViewModifier("swipe")
 public class LayerSwipeParamHandler  extends ParamHandler {
 
     @Override
@@ -26,9 +26,9 @@ public class LayerSwipeParamHandler  extends ParamHandler {
 
         try {
             final JSONObject state = getBundleState(params.getConfig(), BUNDLE_LAYERSWIPE);
-            boolean layerSwipe = ConversionHelper.getBoolean(params.getParamValue(), false);
-            state.put(KEY_LAYER_SWIPE, layerSwipe);
-            return true;
+            boolean swipeActive = ConversionHelper.getBoolean(params.getParamValue(), false);
+            state.put("active", swipeActive);
+            return false;
         } catch (JSONException je) {
             throw new ModifierException("Could not set layerSwipe from URL param.");
         }
