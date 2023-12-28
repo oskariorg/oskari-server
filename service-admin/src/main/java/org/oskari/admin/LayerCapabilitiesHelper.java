@@ -62,7 +62,7 @@ public class LayerCapabilitiesHelper {
                     })
                     .filter(l -> l != null)
                     .collect(Collectors.toList());
-            results.setStructure(parseStructureJson(list));
+            results.setStructure(parseStructureJson(list, new ArrayList<>()));
         }
 
         results.setCurrentSrs(currentSRS);
@@ -103,16 +103,22 @@ public class LayerCapabilitiesHelper {
         return ml;
     }
 
-    private static List<MapLayerStructure> parseStructureJson(Collection<LayerCapabilitiesWMS> caps) {
+    private static List<MapLayerStructure> parseStructureJson(Collection<LayerCapabilitiesWMS> caps, List<String> seen) {
         List<MapLayerStructure> layers = caps.stream()
                 .map(l -> {
                     if (!(l instanceof LayerCapabilitiesWMS)) {
                         return null;
                     }
+
+                    if (seen.contains(l.getName())) {
+                        return null;
+                    }
+
                     MapLayerStructure cap = new MapLayerStructure();
                     cap.setName(l.getName());
+                    seen.add(l.getName());
                     List<LayerCapabilitiesWMS> sublayers = l.getLayers();
-                    cap.setStructure(parseStructureJson(sublayers));
+                    cap.setStructure(parseStructureJson(sublayers, seen));
                     return cap;
                 })
                 .filter(l -> l != null)
