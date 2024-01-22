@@ -1,5 +1,20 @@
 # Migration guide
 
+## 2.13.0
+
+Logging dependencies updated. Oskari-based applications need to update this dependency:
+
+```
+<dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-slf4j-impl</artifactId>
+</dependency>
+```
+to:
+```
+    <artifactId>log4j-slf4j2-impl</artifactId>
+```
+
 ## 2.11.0
 
 PostgreSQL 11 is now the minimum version supported (FlywayDB dependency).
