@@ -859,12 +859,14 @@
             </dependency>
 
             <dependency>
-                <!-- Includes slf4j-api and log4j-api -->
+                <!-- Includes slf4j-api and log4j-api,
+                 but control-admin needs log4j stuff anyway for LoggerHandler
+                 so might as well declare them here -->
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-slf4j2-impl</artifactId>
                 <version>${log4j.version}</version>
             </dependency>
-            <!-- dependency>
+            <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j.version}</version>
@@ -873,7 +875,7 @@
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-api</artifactId>
                 <version>${log4j.version}</version>
-            </dependency -->
+            </dependency>
             <dependency>
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-core</artifactId>
