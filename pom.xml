@@ -73,6 +73,18 @@
         <commons-fileupload.version>1.5</commons-fileupload.version>
         <commons-dbcp2.version>2.11.0</commons-dbcp2.version>
 
+<!-- This will override commons-io to be packaged with version 2.15.0, otherwise
+- geotools 28.4 uses 2.10
+- fileupload 1.5 uses 2.11
+- poi-ooxml 5.2.5 uses 2.15
+The one packaged without this is 2.11, but poi-ooxml throws methodNotDefined or similar exception with it (requires 2.15).
+The 2.15 doesn't report any breaking changes so its backwards compatible with 2.10+
+  -->
+        <commons-io.version>2.15.0</commons-io.version>
+        <commons-csv.version>1.10.0</commons-csv.version>
+        <xmlgraphics-fop.version>2.9</xmlgraphics-fop.version>
+        <poi-ooxml.version>5.2.5</poi-ooxml.version>
+
         <jsoup.version>1.17.2</jsoup.version>
 
         <axiom.version>1.2.22</axiom.version>
@@ -456,6 +468,11 @@
             </dependency>
 
             <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-io.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.h2database</groupId>
                 <artifactId>h2</artifactId>
                 <version>${h2database.version}</version>
@@ -806,12 +823,12 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-csv</artifactId>
-                <version>1.10.0</version>
+                <version>${commons-csv.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi-ooxml</artifactId>
-                <version>5.2.5</version>
+                <version>${poi-ooxml.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.pdfbox</groupId>
@@ -821,7 +838,7 @@
             <dependency>
                 <groupId>org.apache.xmlgraphics</groupId>
                 <artifactId>fop</artifactId>
-                <version>2.9</version>
+                <version>${xmlgraphics-fop.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.netflix.hystrix</groupId>
