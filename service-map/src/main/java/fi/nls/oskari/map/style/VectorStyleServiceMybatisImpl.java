@@ -3,18 +3,17 @@ package fi.nls.oskari.map.style;
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.domain.User;
+import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.domain.map.style.VectorStyle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.mybatis.JSONObjectMybatisTypeHandler;
+import fi.nls.oskari.map.layer.DataProviderMapper;
+import fi.nls.oskari.mybatis.MyBatisHelper;
 import fi.nls.oskari.service.ServiceRuntimeException;
-import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.apache.ibatis.transaction.TransactionFactory;
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 
 import javax.sql.DataSource;
 import java.nio.file.AccessDeniedException;
@@ -23,7 +22,7 @@ import java.util.List;
 @Oskari
 public class VectorStyleServiceMybatisImpl extends VectorStyleService {
     private static final Logger log = LogFactory.getLogger(VectorStyleServiceMybatisImpl.class);
-    private SqlSessionFactory factory = null;
+    private SqlSessionFactory factory;
 
     public VectorStyleServiceMybatisImpl() {
         final DatasourceHelper helper = DatasourceHelper.getInstance();
@@ -37,14 +36,9 @@ public class VectorStyleServiceMybatisImpl extends VectorStyleService {
         factory = initializeMyBatis(dataSource);
     }
     private SqlSessionFactory initializeMyBatis(final DataSource dataSource) {
-        final TransactionFactory transactionFactory = new JdbcTransactionFactory();
-        final Environment environment = new Environment("development", transactionFactory, dataSource);
-
-        final Configuration configuration = new Configuration(environment);
-        configuration.getTypeAliasRegistry().registerAlias(VectorStyle.class);
-        configuration.setLazyLoadingEnabled(true);
-        configuration.getTypeHandlerRegistry().register(JSONObjectMybatisTypeHandler.class);
-        configuration.addMapper(VectorStyleMapper.class);
+        final Configuration configuration = MyBatisHelper.getConfig(dataSource);
+        MyBatisHelper.addAliases(configuration, VectorStyle.class);
+        MyBatisHelper.addMappers(configuration, VectorStyleMapper.class);
 
         return new SqlSessionFactoryBuilder().build(configuration);
     }
@@ -53,8 +47,9 @@ public class VectorStyleServiceMybatisImpl extends VectorStyleService {
             final VectorStyleMapper mapper = session.getMapper(VectorStyleMapper.class);
             return mapper.getDefaultStyle();
         } catch (Exception e) {
-            throw new ServiceRuntimeException("Failed to get instance default vector style");
+            log.warn("Failed to get instance default vector style");
         }
+        return null;
     }
     public VectorStyle getStyleById(final long id) {
         try (final SqlSession session = factory.openSession()) {
@@ -105,7 +100,9 @@ public class VectorStyleServiceMybatisImpl extends VectorStyleService {
                 throw new IllegalArgumentException("Tried to add vector style without layerId");
             }
             final VectorStyleMapper mapper = session.getMapper(VectorStyleMapper.class);
-            return mapper.saveStyle(style);
+            mapper.saveStyle(style);
+            session.commit();
+            return style.getId();
         } catch (Exception e) {
             throw new ServiceRuntimeException("Failed to save vector style", e);
         }
@@ -113,7 +110,9 @@ public class VectorStyleServiceMybatisImpl extends VectorStyleService {
     public long updateStyle(final VectorStyle style) {
         try (final SqlSession session = factory.openSession()) {
             final VectorStyleMapper mapper = session.getMapper(VectorStyleMapper.class);
-            return mapper.updateStyle(style);
+            mapper.updateStyle(style);
+            session.commit();
+            return style.getId();
         } catch (Exception e) {
             throw new ServiceRuntimeException("Failed to update vector style", e);
         }
@@ -150,7 +149,9 @@ public class VectorStyleServiceMybatisImpl extends VectorStyleService {
                 style.setCreator(null);
             }
             final VectorStyleMapper mapper = session.getMapper(VectorStyleMapper.class);
-            return mapper.saveStyle(style);
+            mapper.saveStyle(style);
+            session.commit();
+            return style.getId();
         } catch (Exception e) {
             throw new ServiceRuntimeException("Failed to save vector style", e);
         }
@@ -162,7 +163,9 @@ public class VectorStyleServiceMybatisImpl extends VectorStyleService {
                 style.setCreator(null);
             }
             final VectorStyleMapper mapper = session.getMapper(VectorStyleMapper.class);
-            return mapper.updateStyle(style);
+            mapper.updateStyle(style);
+            session.commit();
+            return style.getId();
         } catch (Exception e) {
             throw new ServiceRuntimeException("Failed to update vector style", e);
         }

@@ -27,8 +27,11 @@ public class CapabilitiesValidator {
             String xmlEncoding = xsr.getCharacterEncodingScheme();
             if (xmlEncoding != null) {
                 if (encoding != null && !xmlEncoding.equalsIgnoreCase(encoding)) {
-                    throw new ServiceException("Content-Type header specified a different encoding than XML prolog!");
+                    // this is not critical, but any special characters are probably going to be rendered wrong
+                    LOG.warn("Capabilities documents Content-Type header specified a different encoding (",
+                            encoding, ") than XML prolog (", xmlEncoding, ")!");
                 }
+                // favor xml encoding
                 encoding = xmlEncoding;
             }
             if (encoding == null) {

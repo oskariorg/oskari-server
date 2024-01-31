@@ -6,6 +6,7 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.UserService;
+import fi.nls.oskari.user.MybatisUserService;
 import org.oskari.log.AuditLog;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -25,6 +27,7 @@ import java.util.Set;
 public class OskariUserHelper {
 
     private static Logger log = LogFactory.getLogger(OskariUserHelper.class);
+    private MybatisUserService userService = new MybatisUserService();
 
     /**
      * Common code done for SAML and DB authentication on successful login
@@ -77,6 +80,11 @@ public class OskariUserHelper {
                 AuditLog.user(ActionParameters.getClientIp(httpRequest), loadedUser)
                         .withMsg("Login")
                         .updated(AuditLog.ResourceType.USER);
+
+                // update last login
+                User userToUpdate = UserService.getInstance().getUser(username);
+                userToUpdate.setLastLogin(OffsetDateTime.now());
+                userService.updateUser(userToUpdate);
             }
             else {
                 log.error("Login user check failed! Got user from principal, but can't find it in Oskari db:", username);

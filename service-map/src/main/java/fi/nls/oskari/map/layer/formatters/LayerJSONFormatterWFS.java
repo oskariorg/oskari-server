@@ -18,10 +18,8 @@ public class LayerJSONFormatterWFS extends LayerJSONFormatter {
 
         final JSONObject layerJson = getBaseJSON(layer, lang, isSecure, crs);
         JSONHelper.putValue(layerJson, KEY_ISQUERYABLE, true);
-        // This is temporal solution to add styles to options
-        if (!layer.isInternal()) {
-            addVectorStylesToOptions(layer.getId(), layerJson);
-        }
+        // getBaseJSON adds options but model builder isn't using it. Frontend uses DescribeLayer response
+        layerJson.remove(KEY_OPTIONS);
         return layerJson;
     }
 }

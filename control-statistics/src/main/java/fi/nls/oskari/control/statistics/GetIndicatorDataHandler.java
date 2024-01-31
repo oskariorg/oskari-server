@@ -85,9 +85,6 @@ public class GetIndicatorDataHandler extends ActionHandler {
             Map<String, IndicatorValue> values = plugin.getIndicatorValues(indicator, selectors, layer);
             JSONObject response = toJSON(values);
 
-            // Note that there is an another layer of caches in the plugins doing the web queries.
-            // Two layers are necessary, because deserialization and conversion to the internal data model
-            // is a pretty heavy operation.
             if (plugin.canCache()) {
                 JedisManager.setex(cacheKey, JedisManager.EXPIRY_TIME_DAY, response.toString());
             }

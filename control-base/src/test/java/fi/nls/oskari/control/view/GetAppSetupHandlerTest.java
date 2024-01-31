@@ -6,7 +6,6 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.view.modifier.bundle.MapfullHandler;
 import fi.nls.oskari.control.view.modifier.param.CoordinateParamHandler;
 import fi.nls.oskari.control.view.modifier.param.WFSHighlightParamHandler;
-import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.domain.map.view.View;
@@ -19,7 +18,6 @@ import fi.nls.oskari.map.view.BundleService;
 import fi.nls.oskari.map.view.BundleServiceMybatisImpl;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
-import fi.nls.oskari.service.OskariComponent;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.DuplicateException;
 import fi.nls.oskari.util.PropertyUtil;
@@ -27,7 +25,6 @@ import fi.nls.oskari.view.modifier.ViewModifier;
 import fi.nls.oskari.wfs.WFSSearchChannelsService;
 import fi.nls.oskari.wfs.WFSSearchChannelsServiceMybatisImpl;
 import fi.nls.test.control.JSONActionRouteTest;
-import fi.nls.test.util.ResourceHelper;
 import fi.nls.test.util.TestHelper;
 import fi.nls.test.view.BundleTestHelper;
 import fi.nls.test.view.ViewTestHelper;
@@ -152,7 +149,7 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
         verify(viewService, times(1)).getViewWithConf(2);
 
         // check that the guest view matches
-        verifyResponseContent(ResourceHelper.readJSONResource("GetAppSetupHandlerTest-view-guest.json", this));
+        GetAppSetupTestHelper.verifyResponseContent("GetAppSetupHandlerTest-view-guest.json", getResponseJSON());
     }
 
     @Test
@@ -164,7 +161,7 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
         verify(viewService, times(1)).getViewWithConf(1);
 
         // check that the user is written to the config
-        verifyResponseContent(ResourceHelper.readJSONResource("GetAppSetupHandlerTest-view-loggedin.json", this));
+        GetAppSetupTestHelper.verifyResponseContent("GetAppSetupHandlerTest-view-loggedin.json", getResponseJSON());
     }
 
     @Test
@@ -181,7 +178,7 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
         verify(viewService, times(1)).getViewWithConf(3);
 
         // check that the response matches expected
-        verifyResponseContent(ResourceHelper.readJSONResource("GetAppSetupHandlerTest-view-3.json", this));
+        GetAppSetupTestHelper.verifyResponseContent("GetAppSetupHandlerTest-view-3.json", getResponseJSON());
     }
 
 
@@ -195,12 +192,12 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
 
         final ActionParameters params = createActionParams(parameters);
         handler.handleAction(params);
-
-        JSONObject responseState = getResponseJSON().optJSONObject("configuration").optJSONObject("mapfull").optJSONObject("state");
+        JSONObject response = getResponseJSON();
+        JSONObject responseState = response.optJSONObject("configuration").optJSONObject("mapfull").optJSONObject("state");
         assertEquals("Should have requested east", "123", responseState.opt("east"));
         assertEquals("Should have requested north", "456", responseState.opt("north"));
         // coordinates should be set as in param and Oskari.mapframework.bundle.mapmodule.plugin.GeoLocationPlugin plugin should have been removed from config
-        verifyResponseContent(ResourceHelper.readJSONResource("GetAppSetupHandlerTest-coordinate-params.json", this));
+        GetAppSetupTestHelper.verifyResponseContent("GetAppSetupHandlerTest-coordinate-params.json", response);
     }
 
     @Test

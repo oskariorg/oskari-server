@@ -1,0 +1,7 @@
+### For getting regions listing from Sotkanet
+
+GET https://sotkanet.fi/rest/1.1/regions
+
+### For getting indicators listing from Sotkanet
+
+GET https://sotkanet.fi/rest/1.1/indicators

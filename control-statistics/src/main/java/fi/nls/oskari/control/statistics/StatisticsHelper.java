@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.statistics.data.*;
-import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.control.statistics.util.CacheKeys;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,23 +28,25 @@ public class StatisticsHelper {
     public static final String PARAM_INDICATOR_ID = "indicator"; // previously indicator_id
     public static final String PARAM_SELECTORS = "selectors";
     public static final String PARAM_REGIONSET = "regionset";
+    private static final String CACHE_KEY_METADATA = "metadata";
+    private static final String CACHE_KEY_DATA = "data";
 
     public static String getIndicatorMetadataCacheKey(long datasourceId, String indicatorId) {
-        return "oskari_get_indicator_metadata_handler_" + datasourceId + ":" + indicatorId;
+        return CacheKeys.buildCacheKey(datasourceId, CACHE_KEY_METADATA, indicatorId);
     }
 
     public static String getIndicatorDataCacheKey(long datasourceId, String indicatorId,
                                                   long layerId, JSONObject selectorJSON) {
-        StringBuilder cacheKey = new StringBuilder("oskari:stats:");
-        cacheKey.append(datasourceId);
-        cacheKey.append(":data:");
-        cacheKey.append(indicatorId);
-        cacheKey.append(':');
-        cacheKey.append(layerId);
+        StringBuilder cacheKey = new StringBuilder(
+                CacheKeys.buildCacheKey(datasourceId,
+                        CACHE_KEY_DATA,
+                        indicatorId,
+                        layerId));
+
         Iterator<String> it = selectorJSON.sortedKeys();
         while (it.hasNext()) {
             String key = it.next();
-            cacheKey.append(':');
+            cacheKey.append(CacheKeys.CACHE_KEY_SEPARATOR);
             cacheKey.append(key);
             cacheKey.append('=');
             try {

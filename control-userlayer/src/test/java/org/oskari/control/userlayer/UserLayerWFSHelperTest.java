@@ -1,16 +1,13 @@
 package org.oskari.control.userlayer;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.InputStream;
-import java.util.List;
-import java.util.Map;
-
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.referencing.CRS;
 import org.json.JSONObject;
 import org.junit.Test;
+import org.locationtech.jts.geom.MultiLineString;
 import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -18,9 +15,11 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.geojson.GeoJSONReader2;
 import org.oskari.geojson.GeoJSONSchemaDetector;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.locationtech.jts.geom.MultiLineString;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
 
 public class UserLayerWFSHelperTest {
 
@@ -91,10 +90,19 @@ public class UserLayerWFSHelperTest {
         SimpleFeatureCollection original = createCollection(geojson);
 
         SimpleFeatureCollection retyped = new UserLayerWFSHelper().postProcess(original);
+
+        // Check that the first feature has the same number of attributes as schema
+        SimpleFeature firstFeature = retyped.features().next();
+        assertEquals(4, firstFeature.getAttributeCount());
+        assertEquals(4, retyped.getSchema().getAttributeCount());
         try (SimpleFeatureIterator it = retyped.features()) {
             while (it.hasNext()) {
                 SimpleFeature feature = it.next();
-                assertEquals(4, feature.getAttributeCount());
+                // skip the first one.
+                if (feature.getID().equals(firstFeature.getID())) {
+                    continue;
+                }
+                assertEquals(5, feature.getAttributeCount());
             }
         }
     }
@@ -107,12 +115,20 @@ public class UserLayerWFSHelperTest {
         // when following features _don't_ have all attributes defined in schema
         addAttrToFirstFeature(geojson);
         SimpleFeatureCollection original = createCollection(geojson);
-
         SimpleFeatureCollection retyped = new UserLayerWFSHelper().postProcess(original);
+
+        // Check that the first feature has the same number of attributes as schema
+        SimpleFeature firstFeature = retyped.features().next();
+        assertEquals(6, firstFeature.getAttributeCount());
+        assertEquals(6, retyped.getSchema().getAttributeCount());
         try (SimpleFeatureIterator it = retyped.features()) {
             while (it.hasNext()) {
                 SimpleFeature feature = it.next();
-                assertEquals(6, feature.getAttributeCount());
+                // skip the first one.
+                if (feature.getID().equals(firstFeature.getID())) {
+                    continue;
+                }
+                assertEquals(5, feature.getAttributeCount());
             }
         }
     }

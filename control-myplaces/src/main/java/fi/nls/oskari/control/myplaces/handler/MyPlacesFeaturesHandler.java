@@ -1,34 +1,35 @@
 package fi.nls.oskari.control.myplaces.handler;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.List;
-
-import fi.nls.oskari.domain.map.MyPlaceCategory;
-import org.oskari.log.AuditLog;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.control.RestActionHandler;
+import fi.nls.oskari.control.myplaces.MyPlacesWFSHelper;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.MyPlace;
+import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.myplaces.service.MyPlacesFeaturesService;
-import fi.nls.oskari.myplaces.service.wfst.MyPlacesFeaturesServiceWFST;
-import fi.nls.oskari.myplaces.service.wfst.MyPlacesFeaturesWFSTRequestBuilder;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.oskari.geojson.GeoJSON;
+import org.oskari.log.AuditLog;
+import org.oskari.myplaces.service.mybatis.MyPlacesFeaturesServiceMybatisImpl;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
 
 @OskariActionRoute("MyPlacesFeatures")
 public class MyPlacesFeaturesHandler extends RestActionHandler {
@@ -42,12 +43,11 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
 
     private MyPlacesService service;
     private MyPlacesFeaturesService featureService;
-
     @Override
     public void init() {
         super.init();
         service = OskariComponentManager.getComponentOfType(MyPlacesService.class);
-        featureService = new MyPlacesFeaturesServiceWFST();
+        featureService = new MyPlacesFeaturesServiceMybatisImpl();
     }
 
     @Override
@@ -63,17 +63,32 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
 
         try {
             final JSONObject featureCollection = getFeatures(user, layerId, crs);
-            ResponseHelper.writeResponse(params, featureCollection);
+            ResponseHelper.writeResponse(params, featureCollection != null ? featureCollection : createEmptyFeatureCollection());
         } catch (ServiceException e) {
             LOG.warn(e);
             throw new ActionException("Failed to get features");
         }
     }
+
+    private JSONObject createEmptyFeatureCollection() throws ActionException{
+        JSONObject json = new JSONObject();
+        try {
+            json.put(GeoJSON.TYPE, GeoJSON.FEATURE_COLLECTION);
+            json.put(GeoJSON.FEATURES, new JSONArray());
+            return json;
+        } catch(JSONException ex) {
+            LOG.warn("Failed to create empty featurecollection json.");
+            throw new ActionException("Failed to create empty featurecollection json.");
+        }
+
+    }
     protected JSONObject getFeatures (User user, String layerId, String crs) throws ActionDeniedException, ServiceException {
         if (layerId == null || layerId.isEmpty()) {
             LOG.debug("Get MyPlaces by user uuid, uuid:", user.getUuid(),
                     "crs:", crs);
-            return featureService.getFeaturesByUserId(user.getUuid(), crs);
+
+            JSONObject features = featureService.getFeaturesByUserId(user.getUuid(), crs);
+            return features;
         }
         LOG.debug("Get MyPlaces by layer id, uuid:", user.getUuid(),
                 "layerId:", layerId, "crs:", crs);
@@ -200,7 +215,7 @@ public class MyPlacesFeaturesHandler extends RestActionHandler {
             } catch (IOException e) {
                 throw new ActionException("IOException occured");
             }
-            return MyPlacesFeaturesWFSTRequestBuilder.parseMyPlaces(payload, checkId);
+            return MyPlacesWFSHelper.parseMyPlaces(payload, checkId);
         } catch (JSONException e) {
             throw new ActionParamsException("Invalid input", e);
         }

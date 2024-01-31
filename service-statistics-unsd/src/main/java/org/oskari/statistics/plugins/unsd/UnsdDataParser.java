@@ -48,7 +48,14 @@ public class UnsdDataParser {
             JSONObject data = dataArray.getJSONObject(i);
             String valueType = data.optString(VALUE_TYPE_KEY);
             if(dataObjectValueTypeIsSupported(valueType)){
-                results.put(data.getString(GEO_AREA_CODE_KEY), new IndicatorValueFloat(data.getDouble("value")));
+                double value = data.optDouble("value");
+                if (Double.isNaN(value)) {
+                    // not a valid value
+                    // some indicators have "value":"NaN" or similar
+                    LOG.info(String.format("Skipping value for: ", data));
+                    continue;
+                }
+                results.put(data.getString(GEO_AREA_CODE_KEY), new IndicatorValueFloat(value));
             } else {
                 LOG.error(String.format("Not supported valueType %s received.",valueType));
             }

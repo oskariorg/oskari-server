@@ -5,24 +5,39 @@ import fi.nls.oskari.cache.Cache;
 import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.domain.map.analysis.Analysis;
+import fi.nls.oskari.domain.map.analysis.AnalysisData;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.mybatis.JSONObjectMybatisTypeHandler;
+import fi.nls.oskari.map.geometry.WKTHelper;
+import fi.nls.oskari.mybatis.MyBatisHelper;
 import fi.nls.oskari.service.ServiceException;
-
-import org.apache.ibatis.mapping.Environment;
+import fi.nls.oskari.util.PropertyUtil;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.apache.ibatis.transaction.TransactionFactory;
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.store.EmptyFeatureCollection;
+import org.geotools.feature.DefaultFeatureCollection;
+import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
+import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.locationtech.jts.geom.Geometry;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.oskari.geojson.GeoJSONWriter;
 
 import javax.sql.DataSource;
+import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static fi.nls.oskari.map.geometry.ProjectionHelper.getSRID;
+import static fi.nls.oskari.map.geometry.WKTHelper.GEOM_ATTRIBUTE;
+import static fi.nls.oskari.map.geometry.WKTHelper.parseWKT;
 
 @Oskari
 public class AnalysisDbServiceMybatisImpl extends AnalysisDbService {
@@ -33,6 +48,8 @@ public class AnalysisDbServiceMybatisImpl extends AnalysisDbService {
     private final Cache<Analysis> cache;
 
     private SqlSessionFactory factory = null;
+
+    private static final GeoJSONWriter geojsonWriter = new GeoJSONWriter();
 
     public AnalysisDbServiceMybatisImpl() {
 
@@ -51,18 +68,11 @@ public class AnalysisDbServiceMybatisImpl extends AnalysisDbService {
     }
 
     private SqlSessionFactory initializeMyBatis(final DataSource dataSource) {
-        final TransactionFactory transactionFactory = new JdbcTransactionFactory();
-        final Environment environment = new Environment("development", transactionFactory, dataSource);
-
-        final Configuration configuration = new Configuration(environment);
-        configuration.getTypeAliasRegistry().registerAlias(Analysis.class);
-        configuration.getTypeHandlerRegistry().register(JSONObjectMybatisTypeHandler.class);
-        configuration.setLazyLoadingEnabled(true);
-        configuration.addMapper(AnalysisMapper.class);
-
+        final Configuration configuration = MyBatisHelper.getConfig(dataSource);
+        MyBatisHelper.addAliases(configuration, Analysis.class);
+        MyBatisHelper.addMappers(configuration, AnalysisMapper.class);
         return new SqlSessionFactoryBuilder().build(configuration);
     }
-
 
     private Analysis getFromCache(long id) {
         return cache.get(Long.toString(id));
@@ -310,5 +320,111 @@ public class AnalysisDbServiceMybatisImpl extends AnalysisDbService {
             session.close();
         }
         return id;
+    }
+
+    @Override
+    public SimpleFeatureCollection getFeatures(int layerId, ReferencedEnvelope bbox, CoordinateReferenceSystem crs) throws ServiceException {
+        try (SqlSession session = factory.openSession()) {
+            log.debug("getFeatures by bbox: ", bbox);
+
+            final AnalysisMapper mapper = session.getMapper(AnalysisMapper.class);
+            String nativeSrsName = PropertyUtil.get("oskari.native.srs", "EPSG:3857");
+            int nativeSrid = getSRID(nativeSrsName);
+            List<AnalysisData> features = mapper.findAllByBBOX(layerId, bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY(), nativeSrid);
+            return this.toSimpleFeatureCollection(features);
+        } catch (Exception e) {
+            log.warn(e, "Exception when trying to get features by bounding box ", bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY());
+            throw new ServiceException(e.getMessage());
+        }
+    }
+
+    private SimpleFeatureCollection toSimpleFeatureCollection(List<AnalysisData> features) throws ServiceException {
+        try {
+            if (features == null || features.isEmpty()) {
+                return new EmptyFeatureCollection(null);
+            }
+
+            DefaultFeatureCollection collection = new DefaultFeatureCollection();
+            for (AnalysisData feature: features) {
+                if (feature.getWkt() != null) {
+                    collection.add(toSimpleFeature(feature));
+                }
+            }
+
+            return collection;
+        } catch (Exception e) {
+            throw new ServiceException("Failed to create SimpleFeatureCollection");
+        }
+    }
+
+    private SimpleFeature toSimpleFeature(AnalysisData feature) {
+        Geometry geom = parseWKT(feature.getWkt());
+        SimpleFeatureTypeBuilder featureTypeBuilder = getFeatureTypeBuilder(geom);
+        SimpleFeatureType simpleFeatureType = featureTypeBuilder.buildFeatureType();
+        SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(simpleFeatureType);
+        featureBuilder.set(GEOM_ATTRIBUTE, geom);
+
+        featureBuilder.set("id", feature.getId());
+        featureBuilder.set("analysis_id", feature.getAnalysisId());
+        featureBuilder.set("uuid", feature.getUuid());
+        featureBuilder.set("t1", feature.getT1());
+        featureBuilder.set("t2", feature.getT2());
+        featureBuilder.set("t3", feature.getT3());
+        featureBuilder.set("t4", feature.getT4());
+        featureBuilder.set("t5", feature.getT5());
+        featureBuilder.set("t6", feature.getT6());
+        featureBuilder.set("t7", feature.getT7());
+        featureBuilder.set("t8", feature.getT8());
+
+        featureBuilder.set("n1", feature.getN1());
+        featureBuilder.set("n2", feature.getN2());
+        featureBuilder.set("n3", feature.getN3());
+        featureBuilder.set("n4", feature.getN4());
+        featureBuilder.set("n5", feature.getN5());
+        featureBuilder.set("n6", feature.getN6());
+        featureBuilder.set("n7", feature.getN7());
+        featureBuilder.set("n8", feature.getN8());
+
+        featureBuilder.set("d1", feature.getD1());
+        featureBuilder.set("d2", feature.getD2());
+        featureBuilder.set("d3", feature.getD3());
+        featureBuilder.set("d4", feature.getD4());
+
+        featureBuilder.set("created", feature.getCreated());
+        featureBuilder.set("updated", feature.getUpdated());
+        return featureBuilder.buildFeature(Long.valueOf(feature.getId()).toString());
+    }
+
+    private SimpleFeatureTypeBuilder getFeatureTypeBuilder(Geometry geometry) {
+        SimpleFeatureTypeBuilder featureTypeBuilder = WKTHelper.getFeatureTypeBuilder(geometry);
+        featureTypeBuilder.add("id", Long.class);
+        featureTypeBuilder.add("analysis_id", Long.class);
+        featureTypeBuilder.add("uuid", String.class);
+        featureTypeBuilder.add("t1", String.class);
+        featureTypeBuilder.add("t2", String.class);
+        featureTypeBuilder.add("t3", String.class);
+        featureTypeBuilder.add("t4", String.class);
+        featureTypeBuilder.add("t5", String.class);
+        featureTypeBuilder.add("t6", String.class);
+        featureTypeBuilder.add("t7", String.class);
+        featureTypeBuilder.add("t8", String.class);
+
+        featureTypeBuilder.add("n1", Long.class);
+        featureTypeBuilder.add("n2", Long.class);
+        featureTypeBuilder.add("n3", Long.class);
+        featureTypeBuilder.add("n4", Long.class);
+        featureTypeBuilder.add("n5", Long.class);
+        featureTypeBuilder.add("n6", Long.class);
+        featureTypeBuilder.add("n7", Long.class);
+        featureTypeBuilder.add("n8", Long.class);
+
+        featureTypeBuilder.add("d1", OffsetDateTime.class);
+        featureTypeBuilder.add("d2", OffsetDateTime.class);
+        featureTypeBuilder.add("d3", OffsetDateTime.class);
+        featureTypeBuilder.add("d4", OffsetDateTime.class);
+
+        featureTypeBuilder.add("created", OffsetDateTime.class);
+        featureTypeBuilder.add("updated", OffsetDateTime.class);
+        return featureTypeBuilder;
     }
 }

@@ -1,12 +1,9 @@
 package fi.nls.oskari.map.layer.formatters;
 
 import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.domain.map.style.VectorStyle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.WKTHelper;
-import fi.nls.oskari.map.style.VectorStyleService;
-import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
@@ -44,6 +41,7 @@ public class LayerJSONFormatter {
     protected static final String KEY_LOCALIZED_NAME = "name"; // FIXME: title
     protected static final String KEY_SUBTITLE = "subtitle";
     protected static final String KEY_OPTIONS = "options";
+    protected static final String KEY_ATTRIBUTES = "attributes";
     protected static final String KEY_DATA_PROVIDER = "orgName";
     protected static final String[] STYLE_KEYS ={"name", "title", "legend"};
 
@@ -72,30 +70,6 @@ public class LayerJSONFormatter {
             return formatter;
         }
         return null;
-    }
-    // This is temporal solution to add styles to options
-    // For now styles are migrated to new table and frontend doesn't handle async DescribeLayer response properly
-    protected void addVectorStylesToOptions(int layerId, JSONObject layer) {
-        VectorStyleService service = OskariComponentManager.getComponentOfType(VectorStyleService.class);
-        JSONObject styles = new JSONObject();
-        JSONObject external = new JSONObject();
-        service.getAdminStyles(layerId).forEach(vs -> {
-            LOG.debug("setting style for:" , layerId, "with name", vs.getName());
-            JSONObject style = vs.getStyle();
-            String id = Long.toString(vs.getId());
-            String name = vs.getName();
-            if (vs.getType().equals(VectorStyle.TYPE_OSKARI)) {
-                JSONHelper.putValue(style, "title", name);
-                JSONHelper.putValue(styles, id, style);
-            } else {
-                JSONHelper.putValue(external, name, style);
-            }
-
-        });
-
-        JSONObject options = JSONHelper.getJSONObject(layer, "options");
-        JSONHelper.putValue(options, "styles", styles);
-        JSONHelper.putValue(options, "externalStyles", external);
     }
 
     /**
@@ -167,13 +141,12 @@ public class LayerJSONFormatter {
         if(layer.getMaxScale() != null && layer.getMaxScale() != -1) {
             JSONHelper.putValue(layerJson, "maxScale", layer.getMaxScale());
         }
-        JSONObject attributes = layer.getAttributes();
         if (!useProxy) {
             // don't write additional params for proxied urls
             JSONHelper.putValue(layerJson, "params", layer.getParams());
         }
         JSONHelper.putValue(layerJson, KEY_OPTIONS, layer.getOptions());
-        JSONHelper.putValue(layerJson, "attributes", attributes);
+        JSONHelper.putValue(layerJson, KEY_ATTRIBUTES, layer.getAttributes());
 
         JSONHelper.putValue(layerJson, "realtime", layer.getRealtime());
         JSONHelper.putValue(layerJson, "refreshRate", layer.getRefreshRate());

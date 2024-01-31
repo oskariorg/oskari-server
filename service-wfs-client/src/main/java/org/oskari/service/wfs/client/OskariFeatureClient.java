@@ -1,9 +1,11 @@
 package org.oskari.service.wfs.client;
 
-import java.util.Objects;
-import java.util.Optional;
-
-import fi.nls.oskari.domain.map.wfs.WFSLayerAttributes;
+import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.service.ServiceRuntimeException;
+import fi.nls.oskari.util.PropertyUtil;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
@@ -12,11 +14,11 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.service.user.UserLayerService;
 import org.oskari.service.wfs3.CoordinateTransformer;
 
-import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.service.ServiceRuntimeException;
-import fi.nls.oskari.util.PropertyUtil;
+import java.util.Objects;
+import java.util.Optional;
 
 public class OskariFeatureClient {
+    public static final Logger LOG = LogFactory.getLogger(OskariFeatureClient.class);
 
     protected static final String PROPERTY_NATIVE_SRS = "oskari.native.srs";
     protected static final String ERR_REPOJECTION_FAIL = "Reprojection failed";
@@ -75,15 +77,18 @@ public class OskariFeatureClient {
     private SimpleFeatureCollection getFeaturesNoTransform(String id, OskariLayer layer,
             ReferencedEnvelope bbox, CoordinateReferenceSystem crs,
             Optional<UserLayerService> processor) {
-        Filter filter = wfsClient.getWFSFilter(id, layer, bbox, processor);
-        SimpleFeatureCollection sfc = wfsClient.getFeatures(layer, bbox, crs, filter);
-
+        SimpleFeatureCollection sfc;
         if (processor.isPresent()) {
             try {
-                sfc = processor.get().postProcess(sfc);
-            } catch (Exception e) {
-                throw new ServiceRuntimeException("Failed to post-process user layer", e);
+                sfc = processor.get().getFeatures(id, layer, bbox, crs);
+            } catch(ServiceException e) {
+                // FIXME: for debugging purposes, remove once no longer needed.
+                LOG.error(e, "Failed to get features.");
+                throw new ServiceRuntimeException("Failed to get features for user layer", e);
             }
+        } else {
+            Filter filter = wfsClient.getWFSFilter(id, layer, bbox, processor);
+            sfc = wfsClient.getFeatures(layer, bbox, crs, filter);
         }
 
         return sfc;

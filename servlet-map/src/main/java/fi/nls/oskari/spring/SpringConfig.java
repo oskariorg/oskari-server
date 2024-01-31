@@ -22,6 +22,7 @@ import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
+import org.springframework.web.servlet.resource.PathResourceResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
@@ -127,9 +128,17 @@ public class SpringConfig implements WebMvcConfigurer, ApplicationListener<Conte
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/xhr-prioritizer.js").addResourceLocations("classpath:service-workers/xhr-prioritizer.js");
+        registry
+                .addResourceHandler("/xhr-prioritizer.js")
+                .addResourceLocations("classpath:service-workers/xhr-prioritizer.js")
+                .resourceChain(true)
+                .addResolver(new PathResourceResolver());
         String faviconPath = PropertyUtil.get("favicon.path", "classpath:favicon.ico");
-        registry.addResourceHandler("/favicon.ico").addResourceLocations(faviconPath);
+        registry
+                .addResourceHandler("/favicon.ico")
+                .addResourceLocations(faviconPath)
+                .resourceChain(true)
+                .addResolver(new PathResourceResolver());
     }
 
     @Bean

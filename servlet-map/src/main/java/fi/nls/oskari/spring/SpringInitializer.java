@@ -35,6 +35,7 @@ public class SpringInitializer extends AbstractHttpSessionApplicationInitializer
         dispatcher.setLoadOnStartup(1);
         dispatcher.addMapping("/");
         dispatcher.setAsyncSupported(true);
+        dispatcher.setInitParameter("throwExceptionIfNoHandlerFound", "true");
         if (isRedisSessionActived(context)) {
             // only start handling sessions if redis is used to store them.
             // Otherwise just use session tracking provided by the servlet container (Jetty/Tomcat)

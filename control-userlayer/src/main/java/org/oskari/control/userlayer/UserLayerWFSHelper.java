@@ -1,12 +1,13 @@
 package org.oskari.control.userlayer;
 
-import java.util.*;
-
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.domain.User;
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.service.OskariComponentManager;
+import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.factory.CommonFactoryFinder;
@@ -21,14 +22,19 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.expression.Expression;
-
-import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.util.PropertyUtil;
-
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.geojson.GeoJSONFeatureCollection;
 import org.oskari.map.userlayer.service.UserLayerDataService;
 import org.oskari.map.userlayer.service.UserLayerDbService;
 import org.oskari.service.user.UserLayerService;
+import org.oskari.service.wfs.client.CachingOskariWFSClient;
+import org.oskari.service.wfs.client.OskariWFSClient;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 @Oskari
 public class UserLayerWFSHelper extends UserLayerService {
@@ -43,6 +49,7 @@ public class UserLayerWFSHelper extends UserLayerService {
     private FilterFactory ff;
     private int userlayerLayerId;
     private UserLayerDbService service;
+    private OskariWFSClient wfsClient = new CachingOskariWFSClient();
 
     public UserLayerWFSHelper() {
         init();
@@ -90,33 +97,22 @@ public class UserLayerWFSHelper extends UserLayerService {
             return sfc;
         }
         List<SimpleFeature> fc = new ArrayList<>();
-        SimpleFeatureType schema;
+        SimpleFeatureType schema = null;
 
         String geomAttrName = sfc.getSchema().getGeometryDescriptor().getLocalName();
 
         try (SimpleFeatureIterator it = sfc.features()) {
-            SimpleFeature firstFeatureForSchemaGeneration = it.next();
-            // parse the _first feature_ AND _generate schema_ based on it
-            String property_json_for_first = (String) firstFeatureForSchemaGeneration.getAttribute(USERLAYER_ATTR_PROPERTY_JSON);
-            JSONObject properties_for_first = new JSONObject(property_json_for_first);
-            Set<String> featureAttributeNames = JSONHelper.getObjectAsMap(properties_for_first).keySet();
-
-            schema = createType(sfc.getSchema(), properties_for_first);
-            SimpleFeatureBuilder builder = new SimpleFeatureBuilder(schema);
-
-            // process and add the the first feature to the result collection
-            builder.set(geomAttrName, firstFeatureForSchemaGeneration.getDefaultGeometry());
-            for (String attrName : featureAttributeNames) {
-                builder.set(attrName, properties_for_first.get(attrName));
-            }
-            fc.add(builder.buildFeature(firstFeatureForSchemaGeneration.getID()));
-
-            // process and add the _remaining features_ to the result collection
             while (it.hasNext()) {
                 SimpleFeature feature = it.next();
+                String propertyJson = feature.getAttribute(USERLAYER_ATTR_PROPERTY_JSON).toString();
+                JSONObject properties = new JSONObject(propertyJson);
+                // use the first feature's featuretype as schema for the final collection
+                if (schema == null) {
+                    schema = createType(feature.getFeatureType(), properties);
+                }
+                SimpleFeatureBuilder builder = new SimpleFeatureBuilder(createType(feature.getFeatureType(), properties));
                 builder.set(geomAttrName, feature.getDefaultGeometry());
-                String property_json = (String) feature.getAttribute(USERLAYER_ATTR_PROPERTY_JSON);
-                JSONObject properties = new JSONObject(property_json);
+                Set<String> featureAttributeNames = JSONHelper.getObjectAsMap(properties).keySet();
                 for (String attrName : featureAttributeNames) {
                     builder.set(attrName, properties.opt(attrName));
                 }
@@ -162,4 +158,14 @@ public class UserLayerWFSHelper extends UserLayerService {
         return typeBuilder.buildFeatureType();
     }
 
+    @Override
+    public SimpleFeatureCollection getFeatures(String layerId, OskariLayer layer, ReferencedEnvelope bbox, CoordinateReferenceSystem crs) throws ServiceException {
+        try {
+            int id = parseId(layerId);
+            SimpleFeatureCollection featureCollection = service.getFeatures(id, bbox, crs);
+            return postProcess(featureCollection);
+        } catch(Exception e) {
+            throw new ServiceException("Failed to get features. ", e);
+        }
+    }
 }

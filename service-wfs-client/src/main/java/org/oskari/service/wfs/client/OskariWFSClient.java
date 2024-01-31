@@ -84,6 +84,9 @@ public class OskariWFSClient {
             url = IOHelper.constructUrl(endPoint, query);
             responseHeaders = OskariWFSClient.readResponseTo(endPoint, user, pass, query, baos);
             response = baos.toByteArray();
+            if (response.length == 0) {
+                throw new ServiceRuntimeException("Empty response from " + url);
+            }
             // TODO: Select parsing algorithm based on response headers (Content-Type)
             fc = parseGeoJSON(response, crs, url);
             if (fc != null) {
@@ -105,6 +108,9 @@ public class OskariWFSClient {
         baos.reset();
         responseHeaders = OskariWFSClient.readResponseTo(endPoint, user, pass, query, baos);
         response = baos.toByteArray();
+        if (response.length == 0) {
+            throw new ServiceRuntimeException("Empty response from " + url);
+        }
         fc = parseGML(response, crs, url, user, pass, gmlDecoder);
         if (fc != null) {
             return fc;

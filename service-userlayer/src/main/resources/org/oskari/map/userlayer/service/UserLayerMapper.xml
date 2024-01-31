@@ -19,6 +19,20 @@
         <result property="locale" column = "locale" />
         <result property="created" column = "created" jdbcType="TIMESTAMP" javaType="java.time.OffsetDateTime" />
     </resultMap>
+
+    <resultMap id="UserLayerDataResult" type="UserLayerData">
+        <result property="id" column="id" />
+        <result property="user_layer_id" column="user_layer_id" />
+        <result property="uuid" column="uuid" />
+        <result property="feature_id" column="feature_id" />
+        <result property="property_json" column="property_json" />
+        <result property="wkt" column="wkt" />
+        <result property="databaseSRID" column="srid"/>
+        <result property="created" column = "created" jdbcType="TIMESTAMP" javaType="java.time.OffsetDateTime" />
+        <result property="updated" column = "updated" jdbcType="TIMESTAMP" javaType="java.time.OffsetDateTime" />
+    </resultMap>
+
+
 	<!-- UserLayer related -->
 	<insert id="insertUserLayer" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
 		INSERT INTO user_layer (
@@ -127,7 +141,7 @@
             #{user_layer_data.uuid},
             #{user_layer_data.feature_id},
             CAST(#{user_layer_data.property_json} as json),
-            ST_GeomFromGeoJSON(#{user_layer_data.geometry})
+            ST_SetSRID(ST_GeomFromGeoJSON(#{user_layer_data.geometry}), #{srid})
         )
     </insert>
 

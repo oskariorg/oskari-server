@@ -1,17 +1,10 @@
 package org.oskari.geojson;
 
-import java.util.ArrayList;
-
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.opengis.feature.GeometryAttribute;
-import org.opengis.feature.Property;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.type.Name;
-
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateSequence;
 import org.locationtech.jts.geom.Geometry;
@@ -22,6 +15,12 @@ import org.locationtech.jts.geom.MultiPoint;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
+import org.opengis.feature.GeometryAttribute;
+import org.opengis.feature.Property;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.type.Name;
+
+import java.util.ArrayList;
 
 /**
  * Convert
@@ -238,6 +237,20 @@ public class GeoJSONWriter {
         return json;
     }
 
+    public JSONObject writeCRSObject(String srsName) {
+        JSONObject crs = new JSONObject();
+        try {
+            crs.put("type", "name");
+            JSONObject crsProperties = new JSONObject();
+            crsProperties.put("name", srsName);
+            crs.put(GeoJSON.PROPERTIES, crsProperties);
+        } catch(JSONException e) {
+            return null;
+        }
+
+        return crs;
+    }
+
     private JSONArray writeCoordinate(Coordinate c)
             throws JSONException {
         final double x = c.x;
@@ -268,5 +281,4 @@ public class GeoJSONWriter {
         }
         return arr;
     }
-
 }

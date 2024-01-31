@@ -3,20 +3,19 @@ package fi.nls.oskari.user;
 import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
+import fi.nls.oskari.domain.map.userlayer.UserLayer;
+import fi.nls.oskari.domain.map.userlayer.UserLayerData;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import org.apache.ibatis.mapping.Environment;
+import fi.nls.oskari.mybatis.MyBatisHelper;
+import fi.nls.oskari.service.ServiceException;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.apache.ibatis.transaction.TransactionFactory;
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 
 import javax.sql.DataSource;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class MybatisUserService {
     private MybatisRoleService roleService = new MybatisRoleService();
@@ -38,13 +37,9 @@ public class MybatisUserService {
     }
 
     private SqlSessionFactory initializeMyBatis(final DataSource dataSource) {
-        final TransactionFactory transactionFactory = new JdbcTransactionFactory();
-        final Environment environment = new Environment("development", transactionFactory, dataSource);
-
-        final Configuration configuration = new Configuration(environment);
-        configuration.getTypeAliasRegistry().registerAlias(User.class);
-        configuration.setLazyLoadingEnabled(true);
-        configuration.addMapper(UsersMapper.class);
+        final Configuration configuration = MyBatisHelper.getConfig(dataSource);
+        MyBatisHelper.addAliases(configuration, User.class);
+        MyBatisHelper.addMappers(configuration, UsersMapper.class);
 
         return new SqlSessionFactoryBuilder().build(configuration);
     }
@@ -67,10 +62,12 @@ public class MybatisUserService {
         try (SqlSession session = factory.openSession()) {
             log.debug("Find all users with limit, offset & search");
             final UsersMapper mapper = session.getMapper(UsersMapper.class);
-            if (query != null) {
+            if (!query.isEmpty()) {
                 userList = mapper.findAllPaginatedSearch(query, limit, offset);
-            } else {
+            } else if (limit > 0){
                 userList = mapper.findAllPaginated(limit, offset);
+            } else {
+                userList = mapper.findAll();
             }
         } catch (Exception e) {
             log.warn(e, "Exception when trying to find all users");
@@ -136,6 +133,15 @@ public class MybatisUserService {
         loadRoles(user);
         log.debug("Found user: " + user);
         return user;
+    }
+    public List<User> findByRoleId (long id) throws ServiceException {
+        try (SqlSession session = factory.openSession()) {
+            log.debug("Finding users role by id: ", id);
+            final UsersMapper mapper = session.getMapper(UsersMapper.class);
+            return mapper.findByRoleId(id);
+        } catch (Exception e) {
+            throw new ServiceException("Exception when trying to find users by role id: " + id, e);
+        }
     }
 
     /**

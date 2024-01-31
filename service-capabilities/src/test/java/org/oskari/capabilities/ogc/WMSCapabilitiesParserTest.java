@@ -153,6 +153,20 @@ public class WMSCapabilitiesParserTest {
         // System.out.println(json);
         assertTrue("JSON should match", JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)));
     }
+    @Test
+    public void parseNBA1_3_0() throws Exception {
+        String xml = ResourceHelper.readStringResource("WMSCapabilitiesParserTest-nba_1_3_0-input.xml", this);
+        String expected = ResourceHelper.readStringResource("WMSCapabilitiesParserTest-nba-expected.json", this);
+
+        WMSCapabilitiesParser parser = new WMSCapabilitiesParser();
+        parser.init();
+        Map<String, LayerCapabilities> layers = parser.parseLayers(xml);
+        assertEquals("Should find layers", 10, layers.size());
+        LayerCapabilitiesWMS layerCaps = (LayerCapabilitiesWMS) layers.get("1");
+        JSONObject json = CapabilitiesService.toJSON(layerCaps, SYSTEM_CRS);
+        // System.out.println(json);
+        assertTrue("JSON should match", JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)));
+    }
 
     @Test
     public void parseDummy() throws Exception {

@@ -1,0 +1,36 @@
+{
+  "maxScale": 50,
+  "defaultStyle": "default",
+  "bbox": {
+    "wkt": "POLYGON ((17.37582 59.671152, 17.37582 70.073969, 32.817161 70.073969, 32.817161 59.671152, 17.37582 59.671152))",
+    "minY": 59.671152,
+    "minX": 17.37582,
+    "srs": "EPSG:4326",
+    "maxY": 70.073969,
+    "maxX": 32.817161
+  },
+  "title": "Muinaisjäännökset",
+  "type": "wmslayer",
+  "version": "1.3.0",
+  "queryable": true,
+  "infoFormats": [
+    "text/html",
+    "text/xml",
+    "application/vnd.ogc.wms_xml",
+    "text/plain"
+  ],
+  "srs": [
+    "EPSG:3067"
+  ],
+  "name": "1",
+  "styles": [
+    {
+      "default": false,
+      "legend": "http://kartta.nba.fi/arcgis/services/WMS/MVWMS/MapServer/WmsServer?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=1",
+      "name": "default",
+      "title": "Muinaisjäännökset"
+    }
+  ],
+  "minScale": -1,
+  "desc": "Muinaisjäännökset"
+}

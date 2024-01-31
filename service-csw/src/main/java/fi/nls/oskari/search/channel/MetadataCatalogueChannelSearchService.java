@@ -20,8 +20,6 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.GeometryHelper;
 import fi.nls.oskari.map.geometry.WKTHelper;
-import fi.nls.oskari.map.layer.OskariLayerService;
-import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.oskari.xml.XmlHelper;
@@ -69,8 +67,6 @@ public class MetadataCatalogueChannelSearchService extends SearchChannel {
 
     private MetadataCatalogueResultParser RESULT_PARSER = null;
     private final MetadataCatalogueQueryHelper QUERY_HELPER = new MetadataCatalogueQueryHelper();
-
-    private OskariLayerService mapLayerService = OskariComponentManager.getComponentOfType(OskariLayerService.class);
 
     @Override
     public void init() {

@@ -38,12 +38,18 @@ public class PermissionHelper {
      * @throws ActionException
      */
     public OskariLayer getLayer(final int layerId, final User user) throws ActionException {
+        return getLayer(layerId, user, true);
+    }
+    public OskariLayer getLayer(final int layerId, final User user, boolean acceptInternal) throws ActionException {
 
         final OskariLayer layer = getLayer(layerId);
         if (layer == null) {
             throw new ActionParamsException("Layer not found for id: " + layerId);
         }
-        if(layer.isInternal()) {
+        if (layer.isInternal()) {
+            if (!acceptInternal) {
+                throw new ActionDeniedException("User doesn't have permissions for requested layer");
+            }
             // myplaces etc don't have resources
             return layer;
         }

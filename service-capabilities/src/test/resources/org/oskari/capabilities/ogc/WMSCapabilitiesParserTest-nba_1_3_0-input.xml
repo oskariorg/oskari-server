@@ -1,0 +1,491 @@
+
+<?xml version="1.0" encoding="UTF-8"?>
+
+<WMS_Capabilities version="1.3.0" xmlns="http://www.opengis.net/wms" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wms http://schemas.opengis.net/wms/1.3.0/capabilities_1_3_0.xsd">
+    <Service>
+        <Name>WMS</Name>
+        <Title>Museoviraston paikkatietoaineistot (WMS)</Title>
+        <Abstract>Museoviraston WMS-rajapinta kulttuuriympäristön suojelukohdetiedoille. Muinaisjäännösrekisteri, Rakennusperintörekisteri ja Maailmanperintökohteet.</Abstract>
+        <KeywordList>
+            <Keyword>muinaisjäännökset</Keyword>
+            <Keyword>rakennussuojelu</Keyword>
+            <Keyword>kulttuurimaisema</Keyword>
+            <Keyword>maailmanperintö</Keyword>
+        </KeywordList>
+        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://kartta.nba.fi/arcgis/services/WMS/MVWMS/MapServer/WMSServer?"/>
+        <ContactInformation>
+            <ContactPersonPrimary>
+                <ContactPerson>Miikka Haimila</ContactPerson>
+                <ContactOrganization>Museovirasto</ContactOrganization>
+            </ContactPersonPrimary>
+            <ContactPosition/>
+            <ContactAddress>
+                <AddressType/>
+                <Address/>
+                <City/>
+                <StateOrProvince/>
+                <PostCode/>
+                <Country/>
+            </ContactAddress>
+            <ContactVoiceTelephone/>
+            <ContactFacsimileTelephone/>
+            <ContactElectronicMailAddress>paikkatieto@nba.fi</ContactElectronicMailAddress>
+        </ContactInformation>
+        <Fees>ei käyttömaksua</Fees>
+        <AccessConstraints>ei käyttörajoituksia</AccessConstraints>
+    </Service>
+    <Capability>
+        <Request>
+            <GetCapabilities>
+                <Format>application/vnd.ogc.wms_xml</Format>
+                <Format>text/xml</Format>
+                <DCPType>
+                    <HTTP><Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://kartta.nba.fi/arcgis/services/WMS/MVWMS/MapServer/WMSServer?"/></Get></HTTP>
+                </DCPType>
+            </GetCapabilities>
+            <GetMap>
+                <Format>image/bmp</Format>
+                <Format>image/jpeg</Format>
+                <Format>image/tiff</Format>
+                <Format>image/png</Format>
+                <Format>image/gif</Format>
+                <Format>image/svg+xml</Format>
+                <DCPType>
+                    <HTTP><Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://kartta.nba.fi/arcgis/services/WMS/MVWMS/MapServer/WMSServer?"/></Get></HTTP>
+                </DCPType>
+            </GetMap>
+            <GetFeatureInfo>
+                <Format>application/vnd.ogc.wms_xml</Format>
+                <Format>text/xml</Format>
+                <Format>text/html</Format>
+                <Format>text/plain</Format>
+                <DCPType>
+                    <HTTP><Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://kartta.nba.fi/arcgis/services/WMS/MVWMS/MapServer/WMSServer?"/></Get></HTTP>
+                </DCPType>
+            </GetFeatureInfo>
+        </Request>
+        <Exception>
+            <Format>application/vnd.ogc.se_xml</Format>
+            <Format>application/vnd.ogc.se_inimage</Format>
+            <Format>application/vnd.ogc.se_blank</Format>
+            <Format>text/xml</Format>
+            <Format>XML</Format>
+        </Exception>
+        <Layer>
+            <Title>Museovirasto</Title>
+            <CRS>CRS:84</CRS>
+            <EX_GeographicBoundingBox>
+                <westBoundLongitude>15.274706</westBoundLongitude>
+                <eastBoundLongitude>33.809677</eastBoundLongitude>
+                <southBoundLatitude>58.847912</southBoundLatitude>
+                <northBoundLatitude>70.597375</northBoundLatitude>
+            </EX_GeographicBoundingBox>
+            <CRS>ESPG:4258</CRS>
+            <EX_GeographicBoundingBox>
+                <westBoundLongitude>17.384221</westBoundLongitude>
+                <eastBoundLongitude>32.426301</eastBoundLongitude>
+                <southBoundLatitude>58.570656</southBoundLatitude>
+                <northBoundLatitude>70.119429</northBoundLatitude>
+            </EX_GeographicBoundingBox>
+            <CRS>EPSG:3067</CRS>
+            <CRS>EPSG:3879</CRS>
+            <BoundingBox CRS="EPSG:3067" minx="59251.176595" miny="6576047.638350" maxx="753449.954505" maxy="7831249.796450"/>
+            <BoundingBox CRS="EPSG:3879" minx="6577267.391205" miny="24766183.670448" maxx="7868835.523621" maxy="26341604.236551"/>
+            <Layer>
+                <Title>Muinaisjäännösrekisteri</Title>
+                <Abstract>Muinaisjäännösrekisteri</Abstract>
+                <CRS>CRS:84</CRS>
+                <EX_GeographicBoundingBox>
+                    <westBoundLongitude>16.587317</westBoundLongitude>
+                    <eastBoundLongitude>32.819131</eastBoundLongitude>
+                    <southBoundLatitude>59.407596</southBoundLatitude>
+                    <northBoundLatitude>70.073969</northBoundLatitude>
+                </EX_GeographicBoundingBox>
+                <CRS>ESPG:4258</CRS>
+                <EX_GeographicBoundingBox>
+                    <westBoundLongitude>17.384221</westBoundLongitude>
+                    <eastBoundLongitude>32.426301</eastBoundLongitude>
+                    <southBoundLatitude>58.570656</southBoundLatitude>
+                    <northBoundLatitude>70.119429</northBoundLatitude>
+                </EX_GeographicBoundingBox>
+                <CRS>EPSG:3067</CRS>
+                <CRS>EPSG:3879</CRS>
+                <BoundingBox CRS="EPSG:3067" minx="170407.716000" miny="6633102.281900" maxx="721895.464600" maxy="7774195.152900"/>
+                <MinScaleDenominator>0.000000</MinScaleDenominator>
+                <MaxScaleDenominator>200.000000</MaxScaleDenominator>
+                <Layer queryable="1">
+                    <Name>1</Name>
+                    <Title>Muinaisjäännökset</Title>
+                    <Abstract>Muinaisjäännökset</Abstract>
+                    <CRS>CRS:84</CRS>
+                    <EX_GeographicBoundingBox>
+                        <westBoundLongitude>17.375820</westBoundLongitude>
+                        <eastBoundLongitude>32.817161</eastBoundLongitude>
+                        <southBoundLatitude>59.671152</southBoundLatitude>
+                        <northBoundLatitude>70.073969</northBoundLatitude>
+                    </EX_GeographicBoundingBox>
+                    <CRS>ESPG:4258</CRS>
+                    <EX_GeographicBoundingBox>
+                        <westBoundLongitude>17.384221</westBoundLongitude>
+                        <eastBoundLongitude>32.426301</eastBoundLongitude>
+                        <southBoundLatitude>58.570656</southBoundLatitude>
+                        <northBoundLatitude>70.119429</northBoundLatitude>
+                    </EX_GeographicBoundingBox>
+                    <CRS>EPSG:3067</CRS>
+                    <BoundingBox CRS="EPSG:3067" minx="170423.909200" miny="6633102.281900" maxx="721819.800400" maxy="7774195.152900"/>
+                    <Style>
+                        <Name>default</Name>
+                        <Title>Muinaisjäännökset</Title>
+                        <LegendURL width="25" height="25">
+                            <Format>image/png</Format>
+                            <OnlineResource xlink:href="http://kartta.nba.fi/arcgis/services/WMS/MVWMS/MapServer/WmsServer?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=1" xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+                        </LegendURL>
+                    </Style>
+                    <MinScaleDenominator>0.000000</MinScaleDenominator>
+                    <MaxScaleDenominator>50.000000</MaxScaleDenominator>
+                </Layer>
+                <Layer queryable="1">
+                    <Name>2</Name>
+                    <Title>Muinaisj.alakohteet</Title>
+                    <Abstract>Muinaisj.alakohteet</Abstract>
+                    <CRS>CRS:84</CRS>
+                    <EX_GeographicBoundingBox>
+                        <westBoundLongitude>17.375820</westBoundLongitude>
+                        <eastBoundLongitude>32.817161</eastBoundLongitude>
+                        <southBoundLatitude>59.671152</southBoundLatitude>
+                        <northBoundLatitude>70.073969</northBoundLatitude>
+                    </EX_GeographicBoundingBox>
+                    <CRS>ESPG:4258</CRS>
+                    <EX_GeographicBoundingBox>
+                        <westBoundLongitude>17.384221</westBoundLongitude>
+                        <eastBoundLongitude>32.426301</eastBoundLongitude>
+                        <southBoundLatitude>58.570656</southBoundLatitude>
+                        <northBoundLatitude>70.119429</northBoundLatitude>
+                    </EX_GeographicBoundingBox>
+                    <CRS>EPSG:3067</CRS>
+                    <BoundingBox CRS="EPSG:3067" minx="170423.909200" miny="6633102.281900" maxx="721819.800400" maxy="7774195.152900"/>
+                    <Style>
+                        <Name>default</Name>
+                        <Title>Muinaisj.alakohteet</Title>
+                        <LegendURL width="25" height="25">
+                            <Format>image/png</Format>
+                            <OnlineResource xlink:href="http://kartta.nba.fi/arcgis/services/WMS/MVWMS/MapServer/WmsServer?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=2" xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+                        </LegendURL>
+                    </Style>
+                    <MinScaleDenominator>0.000000</MinScaleDenominator>
+                    <MaxScaleDenominator>50.000000</MaxScaleDenominator>
+                </Layer>
+                <Layer queryable="1">
+                    <Name>3</Name>
+                    <Title>Muinaisjäännösalueet</Title>
+                    <Abstract>Muinaisjäännösalueet</Abstract>
+                    <CRS>CRS:84</CRS>
+                    <EX_GeographicBoundingBox>
+                        <westBoundLongitude>16.613296</westBoundLongitude>
+                        <eastBoundLongitude>32.804391</eastBoundLongitude>
+                        <southBoundLatitude>59.407596</southBoundLatitude>
+                        <northBoundLatitude>70.020810</northBoundLatitude>
+                    </EX_GeographicBoundingBox>
+                    <CRS>ESPG:4258</CRS>
+                    <EX_GeographicBoundingBox>
+                        <westBoundLongitude>17.384221</westBoundLongitude>
+                        <eastBoundLongitude>32.426301</eastBoundLongitude>
+                        <southBoundLatitude>58.570656</southBoundLatitude>
+                        <northBoundLatitude>70.119429</northBoundLatitude>
+                    </EX_GeographicBoundingBox>
+                    <CRS>EPSG:3067</CRS>
+                    <BoundingBox CRS="EPSG:3067" minx="170407.716000" miny="6635156.153700" maxx="721895.464600" maxy="7768266.623100"/>
+                    <Style>
+                        <Name>default</Name>
+                        <Title>Muinaisjäännösalueet</Title>
+                        <LegendURL width="25" height="25">
+                            <Format>image/png</Format>
+                            <OnlineResource xlink:href="http://kartta.nba.fi/arcgis/services/WMS/MVWMS/MapServer/WmsServer?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=3" xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+                        </LegendURL>
+                    </Style>
+                    <MinScaleDenominator>0.000000</MinScaleDenominator>
+                    <MaxScaleDenominator>50.000000</MaxScaleDenominator>
+                </Layer>
+            </Layer>
+            <Layer>
+                <Title>Rakennusperintörekisteri</Title>
+                <Abstract>Rakennusperintörekisteri</Abstract>
+                <CRS>CRS:84</CRS>
+                <EX_GeographicBoundingBox>
+                    <westBoundLongitude>16.390091</westBoundLongitude>
+                    <eastBoundLongitude>32.511030</eastBoundLongitude>
+                    <southBoundLatitude>59.599353</southBoundLatitude>
+                    <northBoundLatitude>70.020558</northBoundLatitude>
+                </EX_GeographicBoundingBox>
+                <CRS>ESPG:4258</CRS>
+                <EX_GeographicBoundingBox>
+                    <westBoundLongitude>17.384221</westBoundLongitude>
+                    <eastBoundLongitude>32.426301</eastBoundLongitude>
+                    <southBoundLatitude>58.570656</southBoundLatitude>
+                    <northBoundLatitude>70.119429</northBoundLatitude>
+                </EX_GeographicBoundingBox>
+                <CRS>EPSG:3067</CRS>
+                <BoundingBox CRS="EPSG:3067" minx="90805.666500" miny="6637418.554700" maxx="710597.230700" maxy="7755713.864700"/>
+                <MinScaleDenominator>0.000000</MinScaleDenominator>
+                <MaxScaleDenominator>200.000000</MaxScaleDenominator>
+                <Layer queryable="1">
+                    <Name>5</Name>
+                    <Title>Rakennukset</Title>
+                    <Abstract>Rakennukset</Abstract>
+                    <CRS>CRS:84</CRS>
+                    <EX_GeographicBoundingBox>
+                        <westBoundLongitude>16.390091</westBoundLongitude>
+                        <eastBoundLongitude>32.511030</eastBoundLongitude>
+                        <southBoundLatitude>59.599353</southBoundLatitude>
+                        <northBoundLatitude>70.020558</northBoundLatitude>
+                    </EX_GeographicBoundingBox>
+                    <CRS>ESPG:4258</CRS>
+                    <EX_GeographicBoundingBox>
+                        <westBoundLongitude>17.384221</westBoundLongitude>
+                        <eastBoundLongitude>32.426301</eastBoundLongitude>
+                        <southBoundLatitude>58.570656</southBoundLatitude>
+                        <northBoundLatitude>70.119429</northBoundLatitude>
+                    </EX_GeographicBoundingBox>
+                    <CRS>EPSG:3067</CRS>
+                    <BoundingBox CRS="EPSG:3067" minx="90805.666500" miny="6637418.554700" maxx="710597.230700" maxy="7755679.580600"/>
+                    <Style>
+                        <Name>default</Name>
+                        <Title>Rakennukset</Title>
+                        <LegendURL width="25" height="25">
+                            <Format>image/png</Format>
+                            <OnlineResource xlink:href="http://kartta.nba.fi/arcgis/services/WMS/MVWMS/MapServer/WmsServer?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=5" xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+                        </LegendURL>
+                    </Style>
+                    <MinScaleDenominator>0.000000</MinScaleDenominator>
+                    <MaxScaleDenominator>200.000000</MaxScaleDenominator>
+                </Layer>
+                <Layer queryable="1">
+                    <Name>6</Name>
+                    <Title>Rakennetut alueet</Title>
+                    <Abstract>Rakennetut alueet</Abstract>
+                    <CRS>CRS:84</CRS>
+                    <EX_GeographicBoundingBox>
+                        <westBoundLongitude>18.811916</westBoundLongitude>
+                        <eastBoundLongitude>31.295210</eastBoundLongitude>
+                        <southBoundLatitude>59.900126</southBoundLatitude>
+                        <northBoundLatitude>69.908251</northBoundLatitude>
+                    </EX_GeographicBoundingBox>
+                    <CRS>ESPG:4258</CRS>
+                    <EX_GeographicBoundingBox>
+                        <westBoundLongitude>17.384221</westBoundLongitude>
+                        <eastBoundLongitude>32.426301</eastBoundLongitude>
+                        <southBoundLatitude>58.570656</southBoundLatitude>
+                        <northBoundLatitude>70.119429</northBoundLatitude>
+                    </EX_GeographicBoundingBox>
+                    <CRS>EPSG:3067</CRS>
+                    <BoundingBox CRS="EPSG:3067" minx="183865.669900" miny="6653810.397300" maxx="664802.058300" maxy="7755713.864700"/>
+                    <Style>
+                        <Name>default</Name>
+                        <Title>Rakennetut alueet</Title>
+                        <LegendURL width="25" height="25">
+                            <Format>image/png</Format>
+                            <OnlineResource xlink:href="http://kartta.nba.fi/arcgis/services/WMS/MVWMS/MapServer/WmsServer?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=6" xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+                        </LegendURL>
+                    </Style>
+                    <MinScaleDenominator>0.000000</MinScaleDenominator>
+                    <MaxScaleDenominator>200.000000</MaxScaleDenominator>
+                </Layer>
+            </Layer>
+            <Layer>
+                <Title>Maailmanperintökohteet</Title>
+                <Abstract>Maailmanperintökohteet</Abstract>
+                <CRS>CRS:84</CRS>
+                <EX_GeographicBoundingBox>
+                    <westBoundLongitude>19.102840</westBoundLongitude>
+                    <eastBoundLongitude>26.664452</eastBoundLongitude>
+                    <southBoundLatitude>60.012158</southBoundLatitude>
+                    <northBoundLatitude>68.731805</northBoundLatitude>
+                </EX_GeographicBoundingBox>
+                <CRS>ESPG:4258</CRS>
+                <EX_GeographicBoundingBox>
+                    <westBoundLongitude>17.384221</westBoundLongitude>
+                    <eastBoundLongitude>32.426301</eastBoundLongitude>
+                    <southBoundLatitude>58.570656</southBoundLatitude>
+                    <northBoundLatitude>70.119429</northBoundLatitude>
+                </EX_GeographicBoundingBox>
+                <MinScaleDenominator>0.000000</MinScaleDenominator>
+                <MaxScaleDenominator>0.000000</MaxScaleDenominator>
+                <Layer queryable="1">
+                    <Name>8</Name>
+                    <Title>Maailmanperintö pisteet</Title>
+                    <Abstract>Maailmanperintö pisteet</Abstract>
+                    <CRS>CRS:84</CRS>
+                    <EX_GeographicBoundingBox>
+                        <westBoundLongitude>22.750357</westBoundLongitude>
+                        <eastBoundLongitude>26.606402</eastBoundLongitude>
+                        <southBoundLatitude>60.240289</southBoundLatitude>
+                        <northBoundLatitude>68.731577</northBoundLatitude>
+                    </EX_GeographicBoundingBox>
+                    <CRS>ESPG:4258</CRS>
+                    <EX_GeographicBoundingBox>
+                        <westBoundLongitude>17.384221</westBoundLongitude>
+                        <eastBoundLongitude>32.426301</eastBoundLongitude>
+                        <southBoundLatitude>58.570656</southBoundLatitude>
+                        <northBoundLatitude>70.119429</northBoundLatitude>
+                    </EX_GeographicBoundingBox>
+                    <CRS>EPSG:3067</CRS>
+                    <BoundingBox CRS="EPSG:3067" minx="178232.667700" miny="6666837.967300" maxx="481191.072200" maxy="7624593.355700"/>
+                    <Style>
+                        <Name>default</Name>
+                        <Title>Maailmanperintö pisteet</Title>
+                        <LegendURL width="25" height="25">
+                            <Format>image/png</Format>
+                            <OnlineResource xlink:href="http://kartta.nba.fi/arcgis/services/WMS/MVWMS/MapServer/WmsServer?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=8" xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+                        </LegendURL>
+                    </Style>
+                    <MinScaleDenominator>0.000000</MinScaleDenominator>
+                    <MaxScaleDenominator>0.000000</MaxScaleDenominator>
+                </Layer>
+                <Layer queryable="1">
+                    <Name>9</Name>
+                    <Title>Maailmanperintö alueet</Title>
+                    <Abstract>Maailmanperintö alueet</Abstract>
+                    <CRS>CRS:84</CRS>
+                    <EX_GeographicBoundingBox>
+                        <westBoundLongitude>20.541093</westBoundLongitude>
+                        <eastBoundLongitude>26.664452</eastBoundLongitude>
+                        <southBoundLatitude>60.012158</southBoundLatitude>
+                        <northBoundLatitude>63.606185</northBoundLatitude>
+                    </EX_GeographicBoundingBox>
+                    <CRS>ESPG:4258</CRS>
+                    <EX_GeographicBoundingBox>
+                        <westBoundLongitude>17.384221</westBoundLongitude>
+                        <eastBoundLongitude>32.426301</eastBoundLongitude>
+                        <southBoundLatitude>58.570656</southBoundLatitude>
+                        <northBoundLatitude>70.119429</northBoundLatitude>
+                    </EX_GeographicBoundingBox>
+                    <CRS>EPSG:3067</CRS>
+                    <BoundingBox CRS="EPSG:3067" minx="327498.633200" miny="6682262.516800" maxx="478058.803900" maxy="7624593.355700"/>
+                    <Style>
+                        <Name>default</Name>
+                        <Title>Maailmanperintö alueet</Title>
+                        <LegendURL width="25" height="25">
+                            <Format>image/png</Format>
+                            <OnlineResource xlink:href="http://kartta.nba.fi/arcgis/services/WMS/MVWMS/MapServer/WmsServer?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=9" xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+                        </LegendURL>
+                    </Style>
+                    <MinScaleDenominator>0.000000</MinScaleDenominator>
+                    <MaxScaleDenominator>0.000000</MaxScaleDenominator>
+                </Layer>
+            </Layer>
+            <Layer>
+                <Title>RKY</Title>
+                <Abstract>Valtakunnallisesti merkittävät rakennetut kulttuuriympäristöt</Abstract>
+                <CRS>CRS:84</CRS>
+                <EX_GeographicBoundingBox>
+                    <westBoundLongitude>19.102840</westBoundLongitude>
+                    <eastBoundLongitude>26.664452</eastBoundLongitude>
+                    <southBoundLatitude>60.012158</southBoundLatitude>
+                    <northBoundLatitude>68.731805</northBoundLatitude>
+                </EX_GeographicBoundingBox>
+                <CRS>ESPG:4258</CRS>
+                <EX_GeographicBoundingBox>
+                    <westBoundLongitude>17.384221</westBoundLongitude>
+                    <eastBoundLongitude>32.426301</eastBoundLongitude>
+                    <southBoundLatitude>58.570656</southBoundLatitude>
+                    <northBoundLatitude>70.119429</northBoundLatitude>
+                </EX_GeographicBoundingBox>
+                <MinScaleDenominator>0.000000</MinScaleDenominator>
+                <MaxScaleDenominator>0.000000</MaxScaleDenominator>
+                <Layer queryable="1">
+                    <Name>11</Name>
+                    <Title>RKY pisteet</Title>
+                    <Abstract>RKY pisteet</Abstract>
+                    <CRS>CRS:84</CRS>
+                    <EX_GeographicBoundingBox>
+                        <westBoundLongitude>22.750357</westBoundLongitude>
+                        <eastBoundLongitude>26.606402</eastBoundLongitude>
+                        <southBoundLatitude>60.240289</southBoundLatitude>
+                        <northBoundLatitude>68.731577</northBoundLatitude>
+                    </EX_GeographicBoundingBox>
+                    <CRS>ESPG:4258</CRS>
+                    <EX_GeographicBoundingBox>
+                        <westBoundLongitude>17.384221</westBoundLongitude>
+                        <eastBoundLongitude>32.426301</eastBoundLongitude>
+                        <southBoundLatitude>58.570656</southBoundLatitude>
+                        <northBoundLatitude>70.119429</northBoundLatitude>
+                    </EX_GeographicBoundingBox>
+                    <CRS>EPSG:3067</CRS>
+                    <BoundingBox CRS="EPSG:3067" minx="178232.667700" miny="6666837.967300" maxx="481191.072200" maxy="7624593.355700"/>
+                    <Style>
+                        <Name>default</Name>
+                        <Title>RKY pisteet</Title>
+                        <LegendURL width="25" height="25">
+                            <Format>image/png</Format>
+                            <OnlineResource xlink:href="http://kartta.nba.fi/arcgis/services/WMS/MVWMS/MapServer/WmsServer?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=11" xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+                        </LegendURL>
+                    </Style>
+                    <MinScaleDenominator>0.000000</MinScaleDenominator>
+                    <MaxScaleDenominator>0.000000</MaxScaleDenominator>
+                </Layer>
+                <Layer queryable="1">
+                    <Name>12</Name>
+                    <Title>RKY viivat</Title>
+                    <Abstract>RKY viivat</Abstract>
+                    <CRS>CRS:84</CRS>
+                    <EX_GeographicBoundingBox>
+                        <westBoundLongitude>22.750357</westBoundLongitude>
+                        <eastBoundLongitude>26.606402</eastBoundLongitude>
+                        <southBoundLatitude>60.240289</southBoundLatitude>
+                        <northBoundLatitude>68.731577</northBoundLatitude>
+                    </EX_GeographicBoundingBox>
+                    <CRS>ESPG:4258</CRS>
+                    <EX_GeographicBoundingBox>
+                        <westBoundLongitude>17.384221</westBoundLongitude>
+                        <eastBoundLongitude>32.426301</eastBoundLongitude>
+                        <southBoundLatitude>58.570656</southBoundLatitude>
+                        <northBoundLatitude>70.119429</northBoundLatitude>
+                    </EX_GeographicBoundingBox>
+                    <CRS>EPSG:3067</CRS>
+                    <BoundingBox CRS="EPSG:3067" minx="178232.667700" miny="6666837.967300" maxx="481191.072200" maxy="7624593.355700"/>
+                    <Style>
+                        <Name>default</Name>
+                        <Title>RKY viivat</Title>
+                        <LegendURL width="25" height="25">
+                            <Format>image/png</Format>
+                            <OnlineResource xlink:href="http://kartta.nba.fi/arcgis/services/WMS/MVWMS/MapServer/WmsServer?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=12" xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+                        </LegendURL>
+                    </Style>
+                    <MinScaleDenominator>0.000000</MinScaleDenominator>
+                    <MaxScaleDenominator>0.000000</MaxScaleDenominator>
+                </Layer>
+                <Layer queryable="1">
+                    <Name>13</Name>
+                    <Title>RKY alueet</Title>
+                    <Abstract>RKY alueet</Abstract>
+                    <CRS>CRS:84</CRS>
+                    <EX_GeographicBoundingBox>
+                        <westBoundLongitude>22.750357</westBoundLongitude>
+                        <eastBoundLongitude>26.606402</eastBoundLongitude>
+                        <southBoundLatitude>60.240289</southBoundLatitude>
+                        <northBoundLatitude>68.731577</northBoundLatitude>
+                    </EX_GeographicBoundingBox>
+                    <CRS>ESPG:4258</CRS>
+                    <EX_GeographicBoundingBox>
+                        <westBoundLongitude>17.384221</westBoundLongitude>
+                        <eastBoundLongitude>32.426301</eastBoundLongitude>
+                        <southBoundLatitude>58.570656</southBoundLatitude>
+                        <northBoundLatitude>70.119429</northBoundLatitude>
+                    </EX_GeographicBoundingBox>
+                    <CRS>EPSG:3067</CRS>
+                    <BoundingBox CRS="EPSG:3067" minx="178232.667700" miny="6666837.967300" maxx="481191.072200" maxy="7624593.355700"/>
+                    <Style>
+                        <Name>default</Name>
+                        <Title>RKY alueet</Title>
+                        <LegendURL width="25" height="25">
+                            <Format>image/png</Format>
+                            <OnlineResource xlink:href="http://kartta.nba.fi/arcgis/services/WMS/MVWMS/MapServer/WmsServer?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=13" xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+                        </LegendURL>
+                    </Style>
+                    <MinScaleDenominator>0.000000</MinScaleDenominator>
+                    <MaxScaleDenominator>0.000000</MaxScaleDenominator>
+                </Layer>
+            </Layer>
+        </Layer>
+    </Capability>
+</WMS_Capabilities>

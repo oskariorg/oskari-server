@@ -7,6 +7,7 @@
 <head>
     <title>Oskari - ${viewName}</title>
     <link rel="shortcut icon" href="${clientDomain}/Oskari${path}/logo.png" type="image/png" />
+    <meta name="format-detection" content="telephone=no" />
 
     <!-- ############# css ################# -->
     <link

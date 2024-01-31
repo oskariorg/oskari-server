@@ -1,5 +1,120 @@
 # Release Notes
 
+## 2.12.0
+
+For a full list of changes see: 
+https://github.com/oskariorg/oskari-server/milestone/47?closed=1
+
+### User management
+
+- Added param for `Users` route to get users by role.
+- Added paging for user queries to make user management usable on instances with a lot of users
+- `GetAllRoles` route has been deprecated since a more recent `ManageRoles` route basically does a better job for the same thing.
+- Frontend now receives a simple boolean flag if user is admin or not. Role name for admins can change between instances and now frontend has easy way of detecting admins.
+
+### Layer permissions
+
+- Added new route for getting and changing layer permissions `LayerPermission`.
+- Replaces `GetPermissionsLayerHandlers` that is now deprecated and will be removed in future release.
+- Replaces `SaveLayerPermission` that is now deprecated and will be removed in future release.
+- Output format/more details: https://github.com/oskariorg/oskari-server/pull/973
+
+### GetAppSetup route
+
+- The instance default vector style is now sent as part of the `GetAppSetup`` response.
+- Markers are now sent as templates with placeholders instead of hardcoded colors. This removes duplicated processing of markers in server / frontend.
+- Now accepts url-parameter `mobile` with boolean value. The server can be configured to add or remove bundles depending on this value to make mobile experience more user-friendly by removing functionality that doens't work well on mobile/small screens. Configuration described in: https://github.com/oskariorg/oskari-server/pull/995
+
+### DescribeLayer route
+
+- Added metadata about attributes available on WFS layers.
+- Added configuration of attributes like renaming, hiding and reordering properties and for formatting attribute values.
+- Added a simple type for layer geometry that allows optimizing frontend based on the geometry type (point/line/polygon).
+
+### Other changes
+
+- Fixed an axis order issue on VectorFeatureWriter: https://github.com/oskariorg/oskari-server/pull/976
+- Reduced unnecessary logging when a vector service doesn't respond with JSON/GML.
+- Allowed WMTS tile matrices to be passed to frontend even if there is no exact match for CRS. This allows OpenLayers to reproject the layer with proper configs: https://github.com/oskariorg/oskari-server/pull/991
+- Added order attribute for custom annotated components to control the initialization order: https://github.com/oskariorg/oskari-server/pull/992. Can be usedto fix issues where one component needs to be initialized before another.
+- Added new bundle registrations:
+    - `featuredata` (React.js replacement for current jQuery impl `featuredata2`)
+    - `admin-permissions`  (React.js replacement for current jQuery impl `admin-layerrights`)
+
+### Updated dependencies
+
+- Jetty 9.4.48.v20220622 -> 9.4.51.v20230217
+- GeoTools 28.2 -> 28.4
+- Spring 5.3.27 -> 5.3.28
+- Spring security 5.7.8 -> 5.7.9
+- Spring session 2021.2.0 -> 2021.2.2
+- Jackson 2.13.4 -> 2.15.2
+- JSoup 1.15.3 -> 1.16.1
+- Log4J 2.17.1 -> 2.20.0
+- SLFJ2 1.7.32 -> 1.7.36
+- commons-lang 3.12.0 -> 3.13.0
+- MVT 1.3.22 -> 1.3.23
+- h2 2.1.210 -> 2.2.220
+- GeoServer extensions updated 2.19 -> 2.22.4 
+
+## 2.11.0
+
+For a full list of changes see: 
+https://github.com/oskariorg/oskari-server/milestone/45?closed=1
+
+### Vector layer styles
+
+- End-users can now store styles for vector layers!
+- The styles users create are public/anyone can reference them. This makes them work with embedded maps in a way that users expect them to work. This doesn't mean that users styles are listed to other users in the geoportal UI.
+- New table for storing styles: `oskari_maplayer_style`
+- Styles have been migrated from `oskari_maplayer`.`options`
+- Instance default style is also stored in the table: https://github.com/oskariorg/oskari-server/pull/932
+- Styles have been removed from layer options from the layer listing functionality. Frontend is expected to fetch them by calling DescribeLayer route.
+- Printing functionality has been migrated to use styles from the database
+
+### User/role management
+
+- User listing is now fetched in pages so instances with lots of users can use this without crashing the browser
+- Users can now be searched as well as listed
+- Role names can now be edited
+- Admin user management now uses the same rules to validate users as end-user registration
+- Additional metadata about roles is sent for admin user interface to make admins life easier (can be used to hide guest role/disable edit and delete for built-in roles etc)
+- Instance admins can now configure oskari-ext.properties to disable editing user data. This is convenient if the user data in Oskari is updated using some external system. User roles can still be assigned for users (https://github.com/oskariorg/oskari-server/pull/944):
+```
+oskari.user.external=true
+```
+
+### Search channel options
+
+Search channels with code based adapters (non-WFS search channels) can now be configured with a localized name and desciption on oskari-ext.properties: https://github.com/oskariorg/oskari-server/pull/953 Localization is not required/these can be configured with or without specific language:
+```
+search.channel.OPENSTREETMAP_CHANNEL.label=OpenStreetMap
+search.channel.OPENSTREETMAP_CHANNEL.desc.fi=Hae paikkoja ja/tai osoitteita
+search.channel.OPENSTREETMAP_CHANNEL.desc.en=Search addresses and/or points of interest
+```
+
+### Other changes
+- DescribeLayer route has been improved so it can function as a source for frontend to get additional metadata for layers that are added on the map. This enables us to remove unnecessary data from the layer listing response. This allows us to remove some of the layer specific routes that have been previously created and now returns:
+    - coverage area for the layer data
+    - styles for vector layers
+    - vector layer properties
+    - tile matrix information for wmts layers
+
+- Fixed an issue with email validation. The original change was meant to add support for domains with dashes, but this prevented users from registering if their email did NOT have a dash in the domain.
+- Fixed an issue with proxying WMTS-layers through GetLayerTile
+- Fixed an issue where searching for metadata with filters but not giving a free text query resulted in an error
+- Fixed an issue in capabilities parsing where the service declared scale limit of 0
+- Capabilities parsing now allows adding layers where the capabilities header and XML content declares conflicting character encoding
+- Missing page (HTTP 404) is now handled in consistent way (and the page can be overridden in instances)
+
+- Dependency updates:
+    - Geotools 27.1 -> 28.2
+    - JTS 1.18.2 -> 1.19.0
+    - FlywayDB 6.5.7 -> 9.12.0 (Note! PostgreSQL 11 is now min supported version)
+    - Spring 5.3.20 -> 5.3.27
+    - Spring security 5.7.0 -> 5.7.8
+    
+
 ## 2.10.1
 
 For a full list of changes see: 

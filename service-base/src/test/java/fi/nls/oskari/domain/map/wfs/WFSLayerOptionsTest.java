@@ -58,17 +58,14 @@ public class WFSLayerOptionsTest {
 
     @Test
     public void testDefaultOptions() throws JSONException {
-        WFSLayerOptions opts = new WFSLayerOptions(null);
+        WFSLayerOptions opts = new WFSLayerOptions();
         assertTrue("No clustering by default", opts.getClusteringDistance() == -1);
         assertEquals("Default render mode should be vector", "vector", opts.getRenderMode());
-        JSONObject defaultStyle = opts.getNamedStyle(null);
-        assertTrue(defaultStyle.has("image"));
-        assertTrue(defaultStyle.has("fill"));
-        assertTrue(defaultStyle.has("stroke"));
-        assertFalse(defaultStyle.has("text"));
 
-        assertEquals("Oskari default style stroke width is 1", 1,defaultStyle.getJSONObject("stroke").getInt("width"));
-        assertTrue("Options should return oskari default style", JSONHelper.isEqual(defaultStyle, WFSLayerOptions.getDefaultOskariStyle()));
+        JSONObject style = opts.getDefaultFeatureStyle();
+        assertTrue("default style should have image", style.has("image"));
+        assertTrue("default style should have fill", style.has("fill"));
+        assertTrue("default style should have stroke", style.has("stroke"));
     }
     @Test
     public void testSetOptions () throws JSONException {
@@ -80,13 +77,11 @@ public class WFSLayerOptionsTest {
     }
     @Test
     public void testOverrideDefaultStyle () throws JSONException {
-        WFSLayerOptions opts = new WFSLayerOptions(null);
-        JSONObject style = new JSONObject(customStyle);
-        opts.setNamedStyle("custom", style);
-        JSONObject overrided = opts.getNamedStyle("custom");
-        JSONObject fill = overrided.getJSONObject("fill");
-        assertEquals("overrided color", "#652d90", fill.getString("color"));
-        assertEquals("default pattern is -1", -1, fill.getJSONObject("area").getInt("pattern"));
+        WFSLayerOptions opts = new WFSLayerOptions();
+        opts.setDefaultFeatureStyle(new JSONObject(customStyle));
+        JSONObject style = opts.getDefaultFeatureStyle();
+        JSONObject fill = style.getJSONObject("fill");
+        assertEquals("color", "#652d90", fill.getString("color"));
     }
     @Test
     public void testBaseOptions () throws JSONException {

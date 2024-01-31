@@ -21,5 +21,9 @@ public class LayerExtendedOutput extends LayerOutput {
     // can include ui labels for vector feature properties etc
     public Map<String, Object> attributes = new HashMap<>();
     public List<VectorStyle> styles;
+    public Map<String, Object> hover;
     public Map<String, Object> capabilities;
+
+    public List<FeatureProperties> properties;
+    public Map<String, Object> controlData;
 }

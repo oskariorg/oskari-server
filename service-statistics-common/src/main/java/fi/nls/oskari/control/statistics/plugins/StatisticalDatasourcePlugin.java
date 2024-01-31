@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.statistics.data.*;
 import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
+import fi.nls.oskari.control.statistics.util.CacheKeys;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -54,9 +55,6 @@ import java.util.stream.Collectors;
  * You should also consider overriding hasPermission() as the default implementation always returns true.
  */
 public abstract class StatisticalDatasourcePlugin {
-    static final String CACHE_PREFIX = "oskari:stats:";
-    private static final String CACHE_POSTFIX_LIST = ":indicators";
-    private static final String CACHE_POSTFIX_METADATA = ":metadata:";
 
     private StatisticalDatasource source = null;
     private DataSourceUpdater updater = null;
@@ -65,6 +63,9 @@ public abstract class StatisticalDatasourcePlugin {
     private static final ObjectMapper MAPPER = new ObjectMapper();
     // update at most 4 datasources at a time
     private static final ExecutorService UPDATE_SCHEDULER = Executors.newFixedThreadPool(4);
+    private static final String CACHE_KEY_LIST = "list";
+    private static final String CACHE_KEY_INDICATOR = "indicator";
+    private static final String CACHE_KEY_STATUS = "status";
 
     /**
      * This is called when datasource should start processing the indicators. Processed indicators
@@ -176,9 +177,16 @@ public abstract class StatisticalDatasourcePlugin {
 
     public StatisticalIndicator getIndicator(User user, String indicatorId) {
         try {
-            String json = JedisManager.get(getIndicatorMetadataKey(indicatorId));
+            String json = JedisManager.get(getIndicatorKey(indicatorId));
+            if (json == null) {
+                // someone requested an indicator we don't know about
+                // client might have a saved ref to id that is no longer available OR
+                // someone is fishing for data with crafted urls
+                // either way, we don't need the stack trace from Jackson parsing a null value
+                return null;
+            }
             StatisticalIndicator indicator = MAPPER.readValue(json, StatisticalIndicator.class);
-            if(hasPermission(indicator, user)) {
+            if (hasPermission(indicator, user)) {
                 // sort dimensions etc
                 try {
                     handleHints(indicator);
@@ -239,7 +247,7 @@ public abstract class StatisticalDatasourcePlugin {
     private void writeToCache(StatisticalIndicator indicator) {
         try {
             String json = MAPPER.writeValueAsString(indicator);
-            JedisManager.setex(getIndicatorMetadataKey(indicator.getId()), JedisManager.EXPIRY_TIME_DAY * 7, json);
+            JedisManager.setex(getIndicatorKey(indicator.getId()), JedisManager.EXPIRY_TIME_DAY * 7, json);
         } catch (JsonProcessingException ex) {
             LOG.error(ex, "Error updating indicator metadata");
         }
@@ -266,14 +274,14 @@ public abstract class StatisticalDatasourcePlugin {
      * @return
      */
     protected String getIndicatorListKey() {
-        return CACHE_PREFIX + getSource().getId() + CACHE_POSTFIX_LIST;
+        return CacheKeys.buildCacheKey(getSource().getId(), CACHE_KEY_LIST);
     }
     /**
      * Returns a Redis key that should hold client ready indicators as JSON
      * @return
      */
-    protected String getIndicatorMetadataKey(String id) {
-        return CACHE_PREFIX + getSource().getId() + CACHE_POSTFIX_METADATA + id;
+    protected String getIndicatorKey(String id) {
+        return CacheKeys.buildCacheKey(getSource().getId(), CACHE_KEY_INDICATOR, id);
     }
 
     /**
@@ -282,7 +290,7 @@ public abstract class StatisticalDatasourcePlugin {
      * @return
      */
     protected String getStatusKey() {
-        return CACHE_PREFIX + getSource().getId() + ":status";
+        return CacheKeys.buildCacheKey(getSource().getId(), CACHE_KEY_STATUS);
     }
 
     public DataStatus getStatus() {

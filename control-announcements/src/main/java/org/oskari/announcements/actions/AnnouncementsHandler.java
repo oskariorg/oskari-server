@@ -18,16 +18,20 @@ import java.util.List;
 public class AnnouncementsHandler extends RestActionHandler {
     private AnnouncementsService service = new AnnouncementsServiceMybatisImpl();
 
+    private static final String PARAM_NO_CACHE = "no-cache";
+
     // Handle get announcements
     @Override
     public void handleGet(ActionParameters params) throws ActionException {
-
         try {
             List<Announcement> announcements;
             if (params.getUser().isAdmin()) {
                 announcements = service.getAnnouncements();
             } else {
                 announcements = service.getActiveAnnouncements();
+            }
+            if (params.getHttpParam(PARAM_NO_CACHE, false)){
+                params.getResponse().addHeader("Cache-Control", "no-cache, no-store");
             }
             ResponseHelper.writeResponse(params, AnnouncementsHelper.writeJSON(announcements));
         } catch (Exception e) {
@@ -85,7 +89,9 @@ public class AnnouncementsHandler extends RestActionHandler {
             .withParam("beginDate", announcement.getBeginDate())
             .withParam("endDate", announcement.getEndDate())
             .withParam("options", announcement.getOptions());
-
+            if (params.getHttpParam(PARAM_NO_CACHE, false)){
+                params.getResponse().addHeader("Cache-Control", "no-cache, no-store");
+            }
             ResponseHelper.writeResponse(params, result);
         } catch (Exception e) {
             throw new ActionException("Cannot save announcement", e);

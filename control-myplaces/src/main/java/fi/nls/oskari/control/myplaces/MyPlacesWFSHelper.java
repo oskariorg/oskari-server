@@ -1,35 +1,43 @@
 package fi.nls.oskari.control.myplaces;
 
-import java.util.*;
-
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.domain.User;
+import fi.nls.oskari.domain.map.MyPlace;
 import fi.nls.oskari.domain.map.MyPlaceCategory;
-import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.myplaces.MyPlacesService;
+import fi.nls.oskari.myplaces.service.MyPlacesFeaturesService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
+import org.geotools.data.store.EmptyFeatureCollection;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+import org.locationtech.jts.geom.Geometry;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.expression.Expression;
-
-import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.util.PropertyUtil;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.geojson.GeoJSONFeatureCollection;
+import org.oskari.geojson.GeoJSONReader;
+import org.oskari.myplaces.service.mybatis.MyPlacesFeaturesServiceMybatisImpl;
 import org.oskari.service.user.UserLayerService;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Oskari
 public class MyPlacesWFSHelper extends UserLayerService {
@@ -47,6 +55,7 @@ public class MyPlacesWFSHelper extends UserLayerService {
     private int myPlacesLayerId;
     private MyPlacesService service;
 
+    private MyPlacesFeaturesService featureService = new MyPlacesFeaturesServiceMybatisImpl();
     public MyPlacesWFSHelper() {
         init();
     }
@@ -111,6 +120,7 @@ public class MyPlacesWFSHelper extends UserLayerService {
         return service.findCategory(id);
     }
 
+    // TODO: remove this and references
     public SimpleFeatureCollection postProcess(SimpleFeatureCollection sfc) throws Exception {
         List<SimpleFeature> fc = new ArrayList<>();
         SimpleFeatureType schema;
@@ -151,5 +161,68 @@ public class MyPlacesWFSHelper extends UserLayerService {
 
     private boolean isVisibleProperty(String name) {
         return WHITELISTED_PROPERTIES.stream().anyMatch(propName -> propName.equals(name));
+    }
+
+    public static List<MyPlace> parseMyPlaces(String input, boolean shouldSetId)
+            throws JSONException {
+        JSONObject featureCollection = new JSONObject(input);
+        // Expect custom key featureCollection.srsName to contain srid in pattern of 'EPSG:srid'
+        // if that doesn't exist or if we fail to parse the srid part out of it use 0 (unknown)
+        String srsName = JSONHelper.optString(featureCollection, "srsName");
+        int srid = getSrid(srsName, 0);
+        JSONArray features = featureCollection.getJSONArray("features");
+        final int n = features.length();
+        List<MyPlace> myPlaces = new ArrayList<>(n);
+        for (int i = 0; i < n; i++) {
+            JSONObject feature = features.getJSONObject(i);
+            myPlaces.add(parseMyPlace(feature, shouldSetId, srid));
+        }
+        return myPlaces;
+    }
+
+    private static int getSrid(String srsName, int defaultValue) {
+        if (srsName != null) {
+            int i = srsName.lastIndexOf(':');
+            if (i > 0) {
+                srsName = srsName.substring(i + 1);
+            }
+            try {
+                return Integer.parseInt(srsName);
+            } catch (NumberFormatException ignroe) {}
+        }
+        return defaultValue;
+    }
+
+    private static MyPlace parseMyPlace(JSONObject feature, boolean shouldSetId, int srid)
+            throws JSONException {
+        MyPlace myPlace = new MyPlace();
+
+        if (shouldSetId) {
+            myPlace.setId(feature.getLong("id"));
+        }
+        myPlace.setCategoryId(feature.getLong("category_id"));
+
+        JSONObject geomJSON = feature.getJSONObject("geometry");
+        Geometry geom = GeoJSONReader.toGeometry(geomJSON);
+        geom.setSRID(srid);
+        myPlace.setGeometry(geom);
+
+        JSONObject properties = feature.getJSONObject("properties");
+        myPlace.setName(JSONHelper.getString(properties, "name"));
+
+        // Optional fields
+        myPlace.setAttentionText(JSONHelper.optString(properties, "attention_text"));
+        myPlace.setDesc(JSONHelper.optString(properties, "place_desc"));
+        myPlace.setLink(JSONHelper.optString(properties, "link"));
+        myPlace.setImageUrl(JSONHelper.optString(properties, "image_url"));
+
+        return myPlace;
+    }
+
+    @Override
+    public SimpleFeatureCollection getFeatures(String layerId, OskariLayer layer, ReferencedEnvelope bbox, CoordinateReferenceSystem crs) throws ServiceException{
+        int categoryId = parseId(layerId);
+        SimpleFeatureCollection featureCollection = featureService.getFeatures(categoryId, bbox, crs);
+        return featureCollection != null ? featureCollection : new EmptyFeatureCollection(null);
     }
 }

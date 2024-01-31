@@ -12,9 +12,12 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import fi.nls.oskari.util.XmlHelper;
+
+import org.geotools.referencing.CRS;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -126,7 +129,7 @@ public class VectorFeatureWriterHandler extends AbstractFeatureHandler {
         }
     }
 
-    private String createWFSTMessageForUpdate(Feature feature)
+    static String createWFSTMessageForUpdate(Feature feature)
             throws ActionException {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -136,7 +139,8 @@ public class VectorFeatureWriterHandler extends AbstractFeatureHandler {
             throw new ActionException("Failed to create WFS-T request", e);
         }
     }
-    private String createWFSTMessageForInsert(Feature feature)
+
+    static String createWFSTMessageForInsert(Feature feature)
             throws ActionException {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();

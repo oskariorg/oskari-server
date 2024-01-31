@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
+import fi.nls.oskari.control.statistics.util.CacheKeys;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 
@@ -70,7 +71,7 @@ public final class DataSourceCacheUpdater extends DataSourceUpdater {
      * Returns a Redis key that should hold currently processed indicators of this datasource as list.
      */
     private String getIndicatorListWorkKey() {
-        return StatisticalDatasourcePlugin.CACHE_PREFIX + "worklist:" + plugin.getSource().getId();
+        return CacheKeys.buildCacheKey(plugin.getSource().getId(), "worklist");
     }
 
     @Override

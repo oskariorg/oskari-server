@@ -106,6 +106,17 @@ public abstract class UserService {
     public String modifyRole(String roleId, String userID) throws ServiceException{
     	throw new ServiceException("Not Implemented Yet");
     }
+
+    /**
+     * Updates existing role
+     * @param id
+     * @param name
+     * @return
+     * @throws ServiceException
+     */
+    public Role updateRole(long id, String name) throws ServiceException {
+        throw new ServiceException("Not Implemented Yet");
+    }
     
     /**
      * Returns all roles that exist in the system
@@ -195,6 +206,10 @@ public abstract class UserService {
      */
     public List<User> getUsers() throws ServiceException {
         return Collections.emptyList();
+    }
+
+    public List<User> getUsersByRole(long roleId) throws ServiceException {
+        throw new ServiceException("Not implemented");
     }
 
     /**

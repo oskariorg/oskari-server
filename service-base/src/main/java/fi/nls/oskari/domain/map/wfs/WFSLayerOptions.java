@@ -8,14 +8,14 @@ import org.json.JSONObject;
  *     "renderMode": "vector",
  *     "clusteringDistance": 10,
  *     "labelProperty": "name",
+ *     // only for UserData layers
  *     "styles": {
  *          "default": {
  *              "featureStyle": {
  *                  // oskari style
  *              },
  *              "optionalStyles: []
- *          },
- *          "anotherStyle": {...}
+ *          }
  *      },
  *      "hover": {
  *          featureStyle: {
@@ -30,8 +30,9 @@ import org.json.JSONObject;
  * }
  */
 public class WFSLayerOptions {
-    private static final String KEY_RENDER_MODE = "renderMode";
-    private static final String KEY_CLUSTER = "clusteringDistance";
+    public static final String KEY_RENDER_MODE = "renderMode";
+    public static final String KEY_CLUSTER = "clusteringDistance";
+    private static final String KEY_HOVER = "hover";
     private static final String KEY_LABEL = "labelProperty";
     private static final String KEY_STYLES = "styles";
     private static final String KEY_DEFAULT_STYLE = "default";
@@ -57,69 +58,47 @@ public class WFSLayerOptions {
         options = opts;
     }
 
-    /*-- UserDataLayer related --*/
+    /*-- UserDataLayer related styles --*/
     public void injectBaseLayerOptions (JSONObject baseLayerOptions) {
         setOptions(JSONHelper.merge(baseLayerOptions, getOptions()));
-        String labelProperty = getLabelProperty();
-        if (labelProperty != null) {
-            injectDefaultTextStyle(labelProperty);
+        String labelProperty =  options.optString(KEY_LABEL);
+        if (!labelProperty.isEmpty()) {
+            JSONHelper.putValue(getDefaultFeatureStyle(), "text", getTextStyle(labelProperty));
         }
-    }
-    public String getLabelProperty () {
-        return options.optString(KEY_LABEL, null);
     }
     public void setDefaultFeatureStyle(JSONObject style) {
-        JSONObject defaultStyle = getDefaultStyle();
-        JSONHelper.putValue(defaultStyle, KEY_FEATURE_STYLE, style);
-    }
-    public JSONObject getDefaultFeatureStyle () {
-        JSONObject defaultStyle = getDefaultStyle();
-        JSONObject featureStyle =  JSONHelper.getJSONObject(defaultStyle, KEY_FEATURE_STYLE);
-        if (featureStyle == null) {
-            featureStyle = new JSONObject();
-            JSONHelper.putValue(defaultStyle, KEY_FEATURE_STYLE, featureStyle);
-        }
-        return featureStyle;
-    }
-    public JSONObject getDefaultStyle() {
-        JSONObject styles = getStyles();
-        JSONObject defaultStyle = JSONHelper.getJSONObject(styles, KEY_DEFAULT_STYLE);
-        if (defaultStyle == null) {
-            defaultStyle = new JSONObject();
-            JSONHelper.putValue(styles, KEY_DEFAULT_STYLE, defaultStyle);
-        }
-        return defaultStyle;
-    }
-    /*-- WFS layer related --*/
-    // Note that merge makes copies and style name can be 'default'
-    public JSONObject getNamedStyle (String name) {
-        // named style overrides default style
-        JSONObject defaultStyle = getDefaultOskariStyle();
-        JSONObject styles = getStyles();
-        JSONObject namedStyle = JSONHelper.getJSONObject(styles, name);
-        if (namedStyle == null) {
-            return defaultStyle;
-        }
-        return JSONHelper.merge(defaultStyle, namedStyle);
-    }
-    public void setNamedStyle (String name, JSONObject style) {
-        JSONObject styles = getStyles();
-        JSONHelper.putValue(styles, name, style);
-    }
-
-    /*-- Common --*/
-    public void setProperty (String key, Object value) {
-        JSONHelper.putValue(options, key, value);
-    }
-
-    public JSONObject getStyles() {
         JSONObject styles = JSONHelper.getJSONObject(options, KEY_STYLES);
         if (styles == null) {
             styles = new JSONObject();
             JSONHelper.putValue(options, KEY_STYLES, styles);
         }
-        return styles;
+        JSONObject defaultStyle = JSONHelper.getJSONObject(styles, KEY_DEFAULT_STYLE);
+        if (defaultStyle == null) {
+            defaultStyle = new JSONObject();
+            JSONHelper.putValue(styles, KEY_DEFAULT_STYLE, defaultStyle);
+        }
+        JSONHelper.putValue(defaultStyle, KEY_FEATURE_STYLE, style);
     }
+    public JSONObject getDefaultStyle () {
+        JSONObject styles = JSONHelper.getJSONObject(options, KEY_STYLES);
+        JSONObject defaultStyle = JSONHelper.getJSONObject(styles, KEY_DEFAULT_STYLE);
+        if (defaultStyle != null) {
+            // all UserDataLayer should have one 'default' named style with featureStyle definitions
+            return defaultStyle;
+        }
+        return JSONHelper.createJSONObject(KEY_FEATURE_STYLE, getDefaultOskariStyle());
+    }
+    public JSONObject getDefaultFeatureStyle () {
+        JSONObject defaultStyle = getDefaultStyle();
+        return defaultStyle.has(KEY_FEATURE_STYLE)
+                ? JSONHelper.getJSONObject(defaultStyle, KEY_FEATURE_STYLE)
+                : getDefaultOskariStyle();
+    }
+    /*-- Common --*/
+    public void setProperty (String key, Object value) {
+        JSONHelper.putValue(options, key, value);
+    }
+
     public void setRenderMode (String renderMode) {
         JSONHelper.putValue(options, KEY_RENDER_MODE, renderMode);
     }
@@ -132,11 +111,9 @@ public class WFSLayerOptions {
     public void setClusteringDistance (int cluster) {
         JSONHelper.putValue(options, KEY_CLUSTER, cluster);
     }
+    public JSONObject getHover () { return options.optJSONObject(KEY_HOVER); }
 
-    /**
-     * Should match https://github.com/oskariorg/oskari-frontend/blob/master/src/react/components/StyleEditor/OskariDefaultStyle.js
-     * @return
-     */
+    // fallback for VectorStyleService and UserDataLayer getDefaultFeatureStyle
     public static JSONObject getDefaultOskariStyle () {
         JSONObject json = new JSONObject();
         // dot
@@ -170,10 +147,8 @@ public class WFSLayerOptions {
         JSONHelper.putValue(json, "fill", fill);
         return json;
     }
-    public void injectDefaultTextStyle(String labelProperty) {
-        JSONObject style = getDefaultFeatureStyle();
+    public JSONObject getTextStyle(String labelProperty) {
         JSONObject text = new JSONObject();
-        JSONHelper.putValue(style, "text", text);
 
         JSONObject textFill = new JSONObject();
         JSONHelper.putValue(textFill, "color", "#000000");
@@ -190,5 +165,6 @@ public class WFSLayerOptions {
         JSONHelper.putValue(text, "offsetY", 10);
 
         JSONHelper.putValue(text, "labelProperty", labelProperty);
+        return text;
     }
 }

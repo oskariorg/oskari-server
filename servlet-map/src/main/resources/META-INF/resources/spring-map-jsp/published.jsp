@@ -5,6 +5,7 @@
     <title>${viewName}</title>
     <link rel="shortcut icon" href="${clientDomain}/Oskari${path}/logo.png" type="image/png" />
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
 
     <!-- ############# css ################# -->
     <link

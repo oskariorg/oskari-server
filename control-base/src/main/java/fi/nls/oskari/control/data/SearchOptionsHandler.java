@@ -6,6 +6,7 @@ import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.User;
+import fi.nls.oskari.search.channel.SearchAutocomplete;
 import fi.nls.oskari.search.channel.SearchableChannel;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.JSONHelper;
@@ -52,7 +53,13 @@ public class SearchOptionsHandler extends ActionHandler {
             JSONObject json = new JSONObject();
             JSONHelper.putValue(json, "id", channel.getId());
             JSONHelper.putValue(json, "isDefault", channel.isDefaultChannel());
-            JSONHelper.putValue(json, "locale", channel.getUILabels().optJSONObject(params.getLocale().getLanguage()));
+            JSONHelper.putValue(json, "isSuggestions", channel instanceof SearchAutocomplete);
+            JSONObject labels = channel.getUILabels();
+            if (labels.has(params.getLocale().getLanguage())) {
+                JSONHelper.putValue(json, "locale", channel.getUILabels().optJSONObject(params.getLocale().getLanguage()));
+            } else {
+                JSONHelper.putValue(json, "locale", channel.getUILabels().optJSONObject(PropertyUtil.getDefaultLanguage()));
+            }
             channelsJSONArray.put(json);
         }
         JSONObject response = new JSONObject();
