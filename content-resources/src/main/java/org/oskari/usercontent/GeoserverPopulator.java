@@ -123,7 +123,6 @@ public class GeoserverPopulator {
         }
         // setup data producer/layergroup since original doesn't have one
         baseLayer.addDataprovider(LayerHelper.getDataprovider());
-        setupGeoserverConf(baseLayer, MyplacesHelper.MODULE_NAME);
         baseLayer.setSrs_name(srs);
         if (!doInsert) {
             LayerHelper.update(baseLayer);
@@ -284,7 +283,6 @@ public class GeoserverPopulator {
         }
         // setup data producer/layergroup since original doesn't have one
         baseLayer.addDataprovider(LayerHelper.getDataprovider());
-        setupGeoserverConf(baseLayer, UserlayerHelper.MODULE_NAME);
         baseLayer.setSrs_name(srs);
         if (!doInsert) {
             LayerHelper.update(baseLayer);
