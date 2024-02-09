@@ -2,12 +2,10 @@ package org.oskari.usercontent;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import org.locationtech.jts.geom.Coordinate;
 import feign.Feign;
 import feign.auth.BasicAuthRequestInterceptor;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
-import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -18,6 +16,7 @@ import fi.nls.oskari.util.PropertyUtil;
 import org.geotools.referencing.CRS;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.locationtech.jts.geom.Coordinate;
 import org.opengis.geometry.Envelope;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
@@ -35,36 +34,7 @@ public class GeoserverPopulator {
     public static final String KEY_USER = "user";
     public static final String KEY_PASSWD = "password";
 
-    public static void setupAll(final String srs)
-            throws Exception {
-
-        if (DatasourceHelper.isModuleEnabled("myplaces")) {
-            try {
-                MyplacesHelper.setupMyplaces(srs);
-            } catch(Exception e){
-                LOG.error(e, "Error when setting my places");
-                LOG.debug(e.getMessage());
-            }
-        }
-
-        if (DatasourceHelper.isModuleEnabled("analysis")) {
-            try {
-                AnalysisHelper.setupAnalysis(srs);
-            } catch(Exception e){
-                LOG.error(e, "Error when setting analysis");
-                LOG.debug(e.getMessage());
-            }
-        }
-
-        if (DatasourceHelper.isModuleEnabled("userlayer")) {
-            try {
-                UserlayerHelper.setupUserlayers(srs);
-            } catch(Exception e){
-                LOG.error(e, "Error when setting user layers");
-                LOG.debug(e.getMessage());
-            }
-        }
-    }
+    public static final String ANALYSIS_MODULE_NAME = "analysis";
 
     public static String getGeoserverProp(final String module, final String part) {
         final String preferProp = "geoserver." + module + "." + part;
@@ -107,6 +77,9 @@ public class GeoserverPopulator {
         layer.setPassword(getGeoserverProp(module, KEY_PASSWD));
     }
 
+    /*
+     * TODO: move me someplace else - nothing to do with geoserver
+     */
     public static int setupMyplacesLayer(final String srs) {
         final String name = NAMESPACE + ":my_places";
         OskariLayer baseLayer = LayerHelper.getLayerWithName(name);
@@ -123,7 +96,6 @@ public class GeoserverPopulator {
         }
         // setup data producer/layergroup since original doesn't have one
         baseLayer.addDataprovider(LayerHelper.getDataprovider());
-        setupGeoserverConf(baseLayer, MyplacesHelper.MODULE_NAME);
         baseLayer.setSrs_name(srs);
         if (!doInsert) {
             LayerHelper.update(baseLayer);
@@ -256,7 +228,7 @@ public class GeoserverPopulator {
         }
         // setup data producer/layergroup since original doesn't have one
         baseLayer.addDataprovider(LayerHelper.getDataprovider());
-        setupGeoserverConf(baseLayer, AnalysisHelper.MODULE_NAME);
+        setupGeoserverConf(baseLayer, ANALYSIS_MODULE_NAME);
         baseLayer.setSrs_name(srs);
         if (!doInsert) {
             LayerHelper.update(baseLayer);
@@ -267,6 +239,10 @@ public class GeoserverPopulator {
 
         return baseLayer.getId();
     }
+
+    /*
+     * TODO: move me someplace else - nothing to do with geoserver
+     */
 
     public static int setupUserLayer(final String srs) {
         final String name = NAMESPACE + ":vuser_layer_data";
@@ -284,7 +260,6 @@ public class GeoserverPopulator {
         }
         // setup data producer/layergroup since original doesn't have one
         baseLayer.addDataprovider(LayerHelper.getDataprovider());
-        setupGeoserverConf(baseLayer, UserlayerHelper.MODULE_NAME);
         baseLayer.setSrs_name(srs);
         if (!doInsert) {
             LayerHelper.update(baseLayer);

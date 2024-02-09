@@ -1242,9 +1242,6 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
         <!-- oskari map -->
         <module>servlet-map</module>
 
-        <!-- setup -->
-        <module>webapp-setup</module>
-
         <module>service-feedback</module>
         <module>service-feedback-open311</module>
         <module>download-basket</module>
