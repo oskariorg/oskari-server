@@ -1,11 +1,5 @@
 package org.oskari.usercontent;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import feign.Feign;
-import feign.auth.BasicAuthRequestInterceptor;
-import feign.jackson.JacksonDecoder;
-import feign.jackson.JacksonEncoder;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -49,27 +43,6 @@ public class GeoserverPopulator {
         return prop;
     }
 
-    public static Geoserver getGeoserver(String module) {
-
-        final String geoserverBaseUrl = getGeoserverProp(module, KEY_URL); // http://localhost:8080/geoserver
-        final String geoserverUser = getGeoserverProp(module, KEY_USER); // admin
-        final String geoserverPasswd = getGeoserverProp(module, KEY_PASSWD); // geoserver
-
-        if (geoserverBaseUrl == null || geoserverUser == null || geoserverPasswd == null) {
-            throw new OskariRuntimeException("Geoserver properties not configured!");
-        }
-
-        // https://github.com/Netflix/feign/wiki/Custom-error-handling
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, true);
-        return Feign.builder()
-                .decoder(new JacksonDecoder(mapper))
-                .encoder(new JacksonEncoder(mapper))
-                .logger(new feign.Logger.JavaLogger())
-                .logLevel(feign.Logger.Level.FULL)
-                .requestInterceptor(new BasicAuthRequestInterceptor(geoserverUser, geoserverPasswd))
-                .target(Geoserver.class, geoserverBaseUrl + "/rest");
-    }
 
     public static void setupGeoserverConf(OskariLayer layer, String module) {
         layer.setUrl(getGeoserverProp(module, KEY_URL) + "/" + NAMESPACE + "/ows");
