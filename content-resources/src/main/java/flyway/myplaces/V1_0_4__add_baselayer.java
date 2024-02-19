@@ -1,6 +1,6 @@
 package flyway.myplaces;
 
-import org.oskari.usercontent.GeoserverPopulator;
+import org.oskari.usercontent.UserDataLayerPopulator;
 import org.oskari.usercontent.LayerHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.flywaydb.core.api.migration.BaseJavaMigration;
@@ -15,6 +15,6 @@ public class V1_0_4__add_baselayer extends BaseJavaMigration {
             // already has base layer
             return;
         }
-        GeoserverPopulator.setupMyplacesLayer(PropertyUtil.get("oskari.native.srs", "EPSG:4326"));
+        UserDataLayerPopulator.setupMyplacesLayer(PropertyUtil.get("oskari.native.srs", "EPSG:4326"));
     }
 }

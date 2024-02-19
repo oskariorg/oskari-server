@@ -19,10 +19,11 @@ import java.util.Set;
 /**
  * Created by SMAKINEN on 1.9.2015.
  */
-public class GeoserverPopulator {
+
+public class UserDataLayerPopulator {
 
     public static final String NAMESPACE = "oskari";
-    private static final Logger LOG = LogFactory.getLogger(GeoserverPopulator.class);
+    private static final Logger LOG = LogFactory.getLogger(UserDataLayerPopulator.class);
 
     public static final String KEY_URL = "url";
     public static final String KEY_USER = "user";
@@ -50,9 +51,6 @@ public class GeoserverPopulator {
         layer.setPassword(getGeoserverProp(module, KEY_PASSWD));
     }
 
-    /*
-     * TODO: move me someplace else - nothing to do with geoserver
-     */
     public static int setupMyplacesLayer(final String srs) {
         final String name = NAMESPACE + ":my_places";
         OskariLayer baseLayer = LayerHelper.getLayerWithName(name);
@@ -212,10 +210,6 @@ public class GeoserverPopulator {
 
         return baseLayer.getId();
     }
-
-    /*
-     * TODO: move me someplace else - nothing to do with geoserver
-     */
 
     public static int setupUserLayer(final String srs) {
         final String name = NAMESPACE + ":vuser_layer_data";
