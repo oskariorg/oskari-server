@@ -1,7 +1,7 @@
 package flyway.myplaces;
 
 import fi.nls.oskari.db.DatasourceHelper;
-import org.oskari.usercontent.GeoserverPopulator;
+import org.oskari.usercontent.UserDataLayerPopulator;
 import org.flywaydb.core.api.migration.BaseJavaMigration;
 import org.flywaydb.core.api.migration.Context;
 import org.json.JSONObject;
@@ -20,7 +20,7 @@ public class V1_0_13__add_formatting_metadata extends BaseJavaMigration {
             ds = DatasourceHelper.getInstance().createDataSource();
         }
         Connection conn = ds.getConnection();
-        JSONObject attributes = GeoserverPopulator.addMyplacesAttributes(GeoserverPopulator.createUserContentAttributes());
+        JSONObject attributes = UserDataLayerPopulator.addMyplacesAttributes(UserDataLayerPopulator.createUserContentAttributes());
         final String sql = "update oskari_maplayer set attributes =? where name = 'oskari:my_places';";
 
         try (final PreparedStatement statement = conn.prepareStatement(sql)) {
