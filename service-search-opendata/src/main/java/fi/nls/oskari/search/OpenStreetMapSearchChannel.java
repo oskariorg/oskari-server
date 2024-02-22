@@ -31,6 +31,7 @@ public class OpenStreetMapSearchChannel extends SearchChannel {
     private Logger log = LogFactory.getLogger(this.getClass());
     private String serviceURL = null;
     private String reverseGeocodeURL = null;
+    private String nativeSrsName = null;
     public static final String ID = "OPENSTREETMAP_CHANNEL";
     public final static String SERVICE_SRS = "EPSG:4326";
 
@@ -43,6 +44,7 @@ public class OpenStreetMapSearchChannel extends SearchChannel {
         super.init();
         serviceURL = getProperty(PROPERTY_SERVICE_URL, "https://nominatim.openstreetmap.org/search");
         reverseGeocodeURL = getProperty(PROPERTY_SERVICE_REVERSE_GEOCODE_URL, "https://nominatim.openstreetmap.org/reverse");
+        nativeSrsName = PropertyUtil.get("oskari.native.srs", "EPSG:3857");
         log.debug("ServiceURL set to " + serviceURL + ", Reverse Geocode URL set to " + reverseGeocodeURL);
     }
 
@@ -109,11 +111,7 @@ public class OpenStreetMapSearchChannel extends SearchChannel {
      */
     public ChannelSearchResult doSearch(SearchCriteria searchCriteria) {
         ChannelSearchResult searchResultList = null;
-        
-        String srs = searchCriteria.getSRS();
-        if( srs == null ) {
-        	srs = "EPSG:3067";
-        }
+        String srs = getSearchCriteriaSRS(searchCriteria);
 
         try {
             // Lon,lat  (east coordinate is always first in transformation input and output
@@ -167,11 +165,8 @@ public class OpenStreetMapSearchChannel extends SearchChannel {
     @Override
     public ChannelSearchResult reverseGeocode(SearchCriteria searchCriteria) throws IllegalSearchCriteriaException {
         try {
-            String srs = searchCriteria.getSRS();
-            if( srs == null ) {
-                srs = "EPSG:3067";
-            }
 
+            String srs = getSearchCriteriaSRS(searchCriteria);
             // Lon,lat  (east coordinate is always first in transformation input and output
             CoordinateReferenceSystem sourceCrs = CRS.decode(srs, true);
             CoordinateReferenceSystem targetCrs = CRS.decode(SERVICE_SRS, true);
@@ -194,5 +189,14 @@ public class OpenStreetMapSearchChannel extends SearchChannel {
             log.error(e, "Failed to reverse geocode locations from register of OpenStreetMap");
             return null;
         }
+    }
+
+    private String getSearchCriteriaSRS(SearchCriteria searchCriteria) {
+        String srs = searchCriteria.getSRS();
+        if( srs == null ) {
+            srs = nativeSrsName;
+        }
+
+        return srs;
     }
 }
