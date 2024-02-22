@@ -30,22 +30,25 @@ public class OpenStreetMapSearchChannel extends SearchChannel {
     /** logger */
     private Logger log = LogFactory.getLogger(this.getClass());
     private String serviceURL = null;
+    private String reverseGeocodeURL = null;
     public static final String ID = "OPENSTREETMAP_CHANNEL";
     public final static String SERVICE_SRS = "EPSG:4326";
 
     private static final String PROPERTY_SERVICE_URL = "search.channel.OPENSTREETMAP_CHANNEL.service.url";
+    private static final String PROPERTY_SERVICE_REVERSE_GEOCODE_URL = "search.channel.OPENSTREETMAP_CHANNEL.reversegeocode.url";
     private static final String PROPERTY_BBOX = "search.channel.OPENSTREETMAP_CHANNEL.search.bbox";
 
     @Override
     public void init() {
         super.init();
         serviceURL = PropertyUtil.get(PROPERTY_SERVICE_URL, "https://nominatim.openstreetmap.org/search");
-        log.debug("ServiceURL set to " + serviceURL);
+        reverseGeocodeURL = PropertyUtil.get(PROPERTY_SERVICE_REVERSE_GEOCODE_URL, "https://nominatim.openstreetmap.org/reverse");
+        log.debug("ServiceURL set to " + serviceURL + ", Reverse Geocode URL set to " + reverseGeocodeURL);
     }
 
     @Override
     public Capabilities getCapabilities() {
-        return Capabilities.COORD;
+        return Capabilities.BOTH;
     }
 
     private String getUrl(SearchCriteria searchCriteria) throws UnsupportedEncodingException {
@@ -70,6 +73,15 @@ public class OpenStreetMapSearchChannel extends SearchChannel {
         return IOHelper.constructUrl(serviceURL, params);
     }
 
+    private String getReverseGeocodeURL(SearchCriteria searchCriteria, Point point) throws UnsupportedEncodingException {
+        Map<String, String> params = new HashMap<>();
+        params.put("format", "json");
+        params.put("addressdetails", "1");
+        params.put("accept-language", searchCriteria.getLocale());
+        params.put("lat", String.valueOf(point.getLat()));
+        params.put("lon", String.valueOf(point.getLon()));
+        return IOHelper.constructUrl(reverseGeocodeURL, params);
+    }
     /**
      * Returns the search raw results. 
      * @param searchCriteria Search criteria.
@@ -96,7 +108,7 @@ public class OpenStreetMapSearchChannel extends SearchChannel {
      * @return Search results.
      */
     public ChannelSearchResult doSearch(SearchCriteria searchCriteria) {
-        ChannelSearchResult searchResultList = new ChannelSearchResult();
+        ChannelSearchResult searchResultList = null;
         
         String srs = searchCriteria.getSRS();
         if( srs == null ) {
@@ -108,34 +120,7 @@ public class OpenStreetMapSearchChannel extends SearchChannel {
             CoordinateReferenceSystem sourceCrs = CRS.decode(SERVICE_SRS, true);
             CoordinateReferenceSystem targetCrs = CRS.decode(srs, true);
             final JSONArray data = getData(searchCriteria);
-            for (int i = 0; i < data.length(); i++) {
-                JSONObject dataItem = data.getJSONObject(i);
-                JSONObject address = dataItem.getJSONObject("address");
-                SearchResultItem item = new SearchResultItem();
-                item.setTitle(JSONHelper.getStringFromJSON(dataItem, "display_name", ""));
-                item.setDescription(JSONHelper.getStringFromJSON(dataItem, "display_name", ""));
-                item.setLocationTypeCode(JSONHelper.getStringFromJSON(dataItem, "class", ""));
-                item.setType(JSONHelper.getStringFromJSON(dataItem, "class", ""));
-                item.setRegion(JSONHelper.getStringFromJSON(address, "city", ""));
-                final double lat = dataItem.optDouble("lat");
-                final double lon = dataItem.optDouble("lon");
-
-                // convert to map projection
-                final Point point = ProjectionHelper.transformPoint(lon, lat, sourceCrs, targetCrs);
-                if (point == null) {
-                    continue;
-                }
-
-                item.setLon(point.getLon());
-                item.setLat(point.getLat());
-                // FIXME: add more automation on result rank scaling
-                try {
-                    item.setRank(100 * (int) Math.round(dataItem.getDouble("importance")));
-                } catch (JSONException e) {
-                    item.setRank(0);
-                }
-                searchResultList.addItem(item);
-            }
+            searchResultList = createChannelSearchResult(data, sourceCrs, targetCrs);
         } catch (Exception e) {
             log.error(e, "Failed to search locations from register of OpenStreetMap");
         }
@@ -194,13 +179,7 @@ public class OpenStreetMapSearchChannel extends SearchChannel {
             // from source to wgs84
             final Point point = ProjectionHelper.transformPoint(searchCriteria.getLon(), searchCriteria.getLat(), sourceCrs, targetCrs);
 
-            String url = "https://nominatim.openstreetmap.org/reverse?" +
-                "lat=" + point.getLat() +
-                "&lon=" + point.getLon() +
-                "&format=json" +
-                "&addressdetails=1" +
-                "&accept-language="+searchCriteria.getLocale();
-
+            String url = getReverseGeocodeURL(searchCriteria, point);
             HttpURLConnection connection = getConnection(url);
             IOHelper.addIdentifierHeaders(connection);
             String data = IOHelper.readString(connection);
