@@ -34,15 +34,15 @@ public class OpenStreetMapSearchChannel extends SearchChannel {
     public static final String ID = "OPENSTREETMAP_CHANNEL";
     public final static String SERVICE_SRS = "EPSG:4326";
 
-    private static final String PROPERTY_SERVICE_URL = "search.channel.OPENSTREETMAP_CHANNEL.service.url";
-    private static final String PROPERTY_SERVICE_REVERSE_GEOCODE_URL = "search.channel.OPENSTREETMAP_CHANNEL.reversegeocode.url";
+    private static final String PROPERTY_SERVICE_URL = "service.url";
+    private static final String PROPERTY_SERVICE_REVERSE_GEOCODE_URL = "reversegeocode.url";
     private static final String PROPERTY_BBOX = "search.channel.OPENSTREETMAP_CHANNEL.search.bbox";
 
     @Override
     public void init() {
         super.init();
-        serviceURL = PropertyUtil.get(PROPERTY_SERVICE_URL, "https://nominatim.openstreetmap.org/search");
-        reverseGeocodeURL = PropertyUtil.get(PROPERTY_SERVICE_REVERSE_GEOCODE_URL, "https://nominatim.openstreetmap.org/reverse");
+        serviceURL = getProperty(PROPERTY_SERVICE_URL, "https://nominatim.openstreetmap.org/search");
+        reverseGeocodeURL = getProperty(PROPERTY_SERVICE_REVERSE_GEOCODE_URL, "https://nominatim.openstreetmap.org/reverse");
         log.debug("ServiceURL set to " + serviceURL + ", Reverse Geocode URL set to " + reverseGeocodeURL);
     }
 
