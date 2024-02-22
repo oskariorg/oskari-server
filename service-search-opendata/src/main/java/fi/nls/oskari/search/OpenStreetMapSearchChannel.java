@@ -1,6 +1,7 @@
 package fi.nls.oskari.search;
 
 import fi.mml.portti.service.search.ChannelSearchResult;
+import fi.mml.portti.service.search.IllegalSearchCriteriaException;
 import fi.mml.portti.service.search.SearchCriteria;
 import fi.mml.portti.service.search.SearchResultItem;
 import fi.nls.oskari.annotation.Oskari;
@@ -40,6 +41,11 @@ public class OpenStreetMapSearchChannel extends SearchChannel {
         super.init();
         serviceURL = PropertyUtil.get(PROPERTY_SERVICE_URL, "https://nominatim.openstreetmap.org/search");
         log.debug("ServiceURL set to " + serviceURL);
+    }
+
+    @Override
+    public Capabilities getCapabilities() {
+        return Capabilities.COORD;
     }
 
     private String getUrl(SearchCriteria searchCriteria) throws UnsupportedEncodingException {
@@ -134,5 +140,80 @@ public class OpenStreetMapSearchChannel extends SearchChannel {
             log.error(e, "Failed to search locations from register of OpenStreetMap");
         }
         return searchResultList;
+    }
+
+    private ChannelSearchResult createChannelSearchResult(JSONArray data, CoordinateReferenceSystem sourceCrs, CoordinateReferenceSystem targetCrs) {
+        ChannelSearchResult searchResultList = new ChannelSearchResult();
+        try {
+            for (int i = 0; i < data.length(); i++) {
+                JSONObject dataItem = data.getJSONObject(i);
+                JSONObject address = dataItem.getJSONObject("address");
+                SearchResultItem item = new SearchResultItem();
+                item.setTitle(JSONHelper.getStringFromJSON(dataItem, "display_name", ""));
+                item.setDescription(JSONHelper.getStringFromJSON(dataItem, "display_name", ""));
+                item.setLocationTypeCode(JSONHelper.getStringFromJSON(dataItem, "class", ""));
+                item.setType(JSONHelper.getStringFromJSON(dataItem, "class", ""));
+                item.setRegion(JSONHelper.getStringFromJSON(address, "city", ""));
+                final double lat = dataItem.optDouble("lat");
+                final double lon = dataItem.optDouble("lon");
+
+                // convert to map projection
+                final Point point = ProjectionHelper.transformPoint(lon, lat, sourceCrs, targetCrs);
+                if (point == null) {
+                    continue;
+                }
+
+                item.setLon(point.getLon());
+                item.setLat(point.getLat());
+                // FIXME: add more automation on result rank scaling
+                try {
+                    item.setRank(100 * (int) Math.round(dataItem.getDouble("importance")));
+                } catch (JSONException e) {
+                    item.setRank(0);
+                }
+                searchResultList.addItem(item);
+            }
+        } catch(Exception e) {
+            log.error(e, "Failed to convert JSONArray to ChannelSearchResult");
+        }
+
+        return searchResultList;
+    }
+    @Override
+    public ChannelSearchResult reverseGeocode(SearchCriteria searchCriteria) throws IllegalSearchCriteriaException {
+        try {
+            String srs = searchCriteria.getSRS();
+            if( srs == null ) {
+                srs = "EPSG:3067";
+            }
+
+            // Lon,lat  (east coordinate is always first in transformation input and output
+            CoordinateReferenceSystem sourceCrs = CRS.decode(srs, true);
+            CoordinateReferenceSystem targetCrs = CRS.decode(SERVICE_SRS, true);
+
+            // from source to wgs84
+            final Point point = ProjectionHelper.transformPoint(searchCriteria.getLon(), searchCriteria.getLat(), sourceCrs, targetCrs);
+
+            String url = "https://nominatim.openstreetmap.org/reverse?" +
+                "lat=" + point.getLat() +
+                "&lon=" + point.getLon() +
+                "&format=json" +
+                "&addressdetails=1" +
+                "&accept-language="+searchCriteria.getLocale();
+
+            HttpURLConnection connection = getConnection(url);
+            IOHelper.addIdentifierHeaders(connection);
+            String data = IOHelper.readString(connection);
+            log.debug("DATA: " + data);
+            JSONArray jsonData = new JSONArray();
+            jsonData.put(JSONHelper.createJSONObject(data));
+
+            // convert back from wgs84 to map projection
+            return createChannelSearchResult(jsonData, targetCrs, sourceCrs);
+
+        } catch (Exception e) {
+            log.error(e, "Failed to reverse geocode locations from register of OpenStreetMap");
+            return null;
+        }
     }
 }
