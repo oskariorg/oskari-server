@@ -1,6 +1,7 @@
 package fi.nls.oskari.search;
 
 import fi.mml.portti.service.search.ChannelSearchResult;
+import fi.mml.portti.service.search.IllegalSearchCriteriaException;
 import fi.mml.portti.service.search.SearchCriteria;
 import fi.mml.portti.service.search.SearchResultItem;
 import fi.nls.oskari.annotation.Oskari;
@@ -29,17 +30,27 @@ public class OpenStreetMapSearchChannel extends SearchChannel {
     /** logger */
     private Logger log = LogFactory.getLogger(this.getClass());
     private String serviceURL = null;
+    private String reverseGeocodeURL = null;
+    private String nativeSrsName = null;
     public static final String ID = "OPENSTREETMAP_CHANNEL";
     public final static String SERVICE_SRS = "EPSG:4326";
 
-    private static final String PROPERTY_SERVICE_URL = "search.channel.OPENSTREETMAP_CHANNEL.service.url";
+    private static final String PROPERTY_SERVICE_URL = "service.url";
+    private static final String PROPERTY_SERVICE_REVERSE_GEOCODE_URL = "reversegeocode.url";
     private static final String PROPERTY_BBOX = "search.channel.OPENSTREETMAP_CHANNEL.search.bbox";
 
     @Override
     public void init() {
         super.init();
-        serviceURL = PropertyUtil.get(PROPERTY_SERVICE_URL, "https://nominatim.openstreetmap.org/search");
-        log.debug("ServiceURL set to " + serviceURL);
+        serviceURL = getProperty(PROPERTY_SERVICE_URL, "https://nominatim.openstreetmap.org/search");
+        reverseGeocodeURL = getProperty(PROPERTY_SERVICE_REVERSE_GEOCODE_URL, "https://nominatim.openstreetmap.org/reverse");
+        nativeSrsName = PropertyUtil.get("oskari.native.srs", "EPSG:3857");
+        log.debug("ServiceURL set to " + serviceURL + ", Reverse Geocode URL set to " + reverseGeocodeURL);
+    }
+
+    @Override
+    public Capabilities getCapabilities() {
+        return Capabilities.BOTH;
     }
 
     private String getUrl(SearchCriteria searchCriteria) throws UnsupportedEncodingException {
@@ -64,6 +75,15 @@ public class OpenStreetMapSearchChannel extends SearchChannel {
         return IOHelper.constructUrl(serviceURL, params);
     }
 
+    private String getReverseGeocodeURL(SearchCriteria searchCriteria, Point point) throws UnsupportedEncodingException {
+        Map<String, String> params = new HashMap<>();
+        params.put("format", "json");
+        params.put("addressdetails", "1");
+        params.put("accept-language", searchCriteria.getLocale());
+        params.put("lat", String.valueOf(point.getLat()));
+        params.put("lon", String.valueOf(point.getLon()));
+        return IOHelper.constructUrl(reverseGeocodeURL, params);
+    }
     /**
      * Returns the search raw results. 
      * @param searchCriteria Search criteria.
@@ -90,18 +110,24 @@ public class OpenStreetMapSearchChannel extends SearchChannel {
      * @return Search results.
      */
     public ChannelSearchResult doSearch(SearchCriteria searchCriteria) {
-        ChannelSearchResult searchResultList = new ChannelSearchResult();
-        
-        String srs = searchCriteria.getSRS();
-        if( srs == null ) {
-        	srs = "EPSG:3067";
-        }
+        ChannelSearchResult searchResultList = null;
+        String srs = getSearchCriteriaSRS(searchCriteria);
 
         try {
             // Lon,lat  (east coordinate is always first in transformation input and output
             CoordinateReferenceSystem sourceCrs = CRS.decode(SERVICE_SRS, true);
             CoordinateReferenceSystem targetCrs = CRS.decode(srs, true);
             final JSONArray data = getData(searchCriteria);
+            searchResultList = createChannelSearchResult(data, sourceCrs, targetCrs);
+        } catch (Exception e) {
+            log.error(e, "Failed to search locations from register of OpenStreetMap");
+        }
+        return searchResultList;
+    }
+
+    private ChannelSearchResult createChannelSearchResult(JSONArray data, CoordinateReferenceSystem sourceCrs, CoordinateReferenceSystem targetCrs) {
+        ChannelSearchResult searchResultList = new ChannelSearchResult();
+        try {
             for (int i = 0; i < data.length(); i++) {
                 JSONObject dataItem = data.getJSONObject(i);
                 JSONObject address = dataItem.getJSONObject("address");
@@ -130,9 +156,47 @@ public class OpenStreetMapSearchChannel extends SearchChannel {
                 }
                 searchResultList.addItem(item);
             }
-        } catch (Exception e) {
-            log.error(e, "Failed to search locations from register of OpenStreetMap");
+        } catch(Exception e) {
+            log.error(e, "Failed to convert JSONArray to ChannelSearchResult");
         }
+
         return searchResultList;
+    }
+    @Override
+    public ChannelSearchResult reverseGeocode(SearchCriteria searchCriteria) throws IllegalSearchCriteriaException {
+        try {
+
+            String srs = getSearchCriteriaSRS(searchCriteria);
+            // Lon,lat  (east coordinate is always first in transformation input and output
+            CoordinateReferenceSystem sourceCrs = CRS.decode(srs, true);
+            CoordinateReferenceSystem targetCrs = CRS.decode(SERVICE_SRS, true);
+
+            // from source to wgs84
+            final Point point = ProjectionHelper.transformPoint(searchCriteria.getLon(), searchCriteria.getLat(), sourceCrs, targetCrs);
+
+            String url = getReverseGeocodeURL(searchCriteria, point);
+            HttpURLConnection connection = getConnection(url);
+            IOHelper.addIdentifierHeaders(connection);
+            String data = IOHelper.readString(connection);
+            log.debug("DATA: " + data);
+            JSONArray jsonData = new JSONArray();
+            jsonData.put(JSONHelper.createJSONObject(data));
+
+            // convert back from wgs84 to map projection
+            return createChannelSearchResult(jsonData, targetCrs, sourceCrs);
+
+        } catch (Exception e) {
+            log.error(e, "Failed to reverse geocode locations from register of OpenStreetMap");
+            return null;
+        }
+    }
+
+    private String getSearchCriteriaSRS(SearchCriteria searchCriteria) {
+        String srs = searchCriteria.getSRS();
+        if( srs == null ) {
+            srs = nativeSrsName;
+        }
+
+        return srs;
     }
 }
