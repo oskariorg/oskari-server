@@ -49,7 +49,7 @@
         <!-- Value comes from profile when needed -->
         <module.build.config></module.build.config>
 
-        <spring.version>5.3.30</spring.version>
+        <spring.version>5.3.32</spring.version>
         <spring-security.version>5.7.11</spring-security.version>
         <!--
         session-bom 2021.2.3 uses 2.7.4 from session
