@@ -35,6 +35,7 @@ public class GetCSWDataHandler extends ActionHandler {
     
     private static final String LANG_PARAM = "lang";
     private static final String UUID_PARAM = "uuid";
+    private static final String METADATA_URL_PARAM = "metadataUrl";
     private final String baseUrl = PropertyUtil.getOptional(PROP_SERVICE_URL);
     private final String metadataRatingType = PropertyUtil.getOptional("service.metadata.rating");
     private final String licenseUrlPrefix = PropertyUtil.getOptional("search.channel.METADATA_CATALOGUE_CHANNEL.licenseUrlPrefix");
@@ -80,10 +81,13 @@ public class GetCSWDataHandler extends ActionHandler {
         final String uuid = params.getRequiredParam(UUID_PARAM);
         // TODO use default lang if not found?
         final String lang = params.getRequiredParam(LANG_PARAM);
+        
+        String url = params.getHttpParam(METADATA_URL_PARAM, baseUrl);
+
         CSWIsoRecord record;
         CSWService service;
         try {
-            service = new CSWService(baseUrl);
+            service = new CSWService(url);
         } catch (Exception e) {
             throw new ActionException("Failed to initialize CSWService:" + e.getMessage());
         }
