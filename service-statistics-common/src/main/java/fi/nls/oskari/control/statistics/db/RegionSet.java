@@ -56,6 +56,8 @@ public class RegionSet {
 
     public void setAttributes(String attributes) {
         this.attributes = attributes;
+        // force getStatsJSON to recalculate
+        this.stats = null;
     }
 
     public JSONObject asJSON() {
@@ -71,7 +73,7 @@ public class RegionSet {
     }
 
     public String getFeaturesUrl() {
-        return getStatsJSON().optString("featuresUrl");
+        return getStatsJSON().optString("featuresUrl", getUrl());
     }
 
     private JSONObject getStatsJSON() {
