@@ -4,16 +4,20 @@ import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.csw.domain.CSWIsoRecord;
 import fi.nls.oskari.csw.service.CSWService;
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.geo.Point;
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.map.geometry.WKTHelper;
+import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.rating.RatingService;
 import fi.nls.oskari.rating.RatingServiceMybatisImpl;
+import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
@@ -22,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.oskari.service.util.ServiceFactory;
 
 import static fi.nls.oskari.csw.service.CSWService.PROP_SERVICE_URL;
 
@@ -35,6 +40,7 @@ public class GetCSWDataHandler extends ActionHandler {
     
     private static final String LANG_PARAM = "lang";
     private static final String UUID_PARAM = "uuid";
+    private static final String LAYER_ID_PARAM = "layerId";
     private static final String METADATA_URL_PARAM = "metadataUrl";
     private final String baseUrl = PropertyUtil.getOptional(PROP_SERVICE_URL);
     private final String metadataRatingType = PropertyUtil.getOptional("service.metadata.rating");
@@ -56,6 +62,7 @@ public class GetCSWDataHandler extends ActionHandler {
     public static final String KEY_AMOUNT = "amount";
     public static final String KEY_ADMIN_RATING = "latestAdminRating";
 
+    private OskariLayerService layerService;
     private final RatingService ratingService = new RatingServiceMybatisImpl();
 
     /* images */
@@ -66,6 +73,8 @@ public class GetCSWDataHandler extends ActionHandler {
     public void init() {
         super.init();
         final List<String> imageKeys = PropertyUtil.getPropertyNamesStartingWith(PROPERTY_IMAGE_PREFIX);
+        layerService = ServiceFactory.getMapLayerService();
+
         final int imgPrefixLen = PROPERTY_IMAGE_PREFIX.length();
         for(String key : imageKeys) {
             final String langCode = key.substring(imgPrefixLen);
@@ -78,11 +87,31 @@ public class GetCSWDataHandler extends ActionHandler {
         if (baseUrl == null) {
             throw new ActionException("Service not configured.");
         }
-        final String uuid = params.getRequiredParam(UUID_PARAM);
+
+        String uuid = params.getHttpParam(UUID_PARAM);
+        String layerId = params.getHttpParam(LAYER_ID_PARAM);
+
+        if (uuid == null && layerId == null) {
+            throw new ActionException("No UUID or layer id found.");
+        }
+
+        String url = baseUrl;
+        if (layerId != null) {
+            OskariLayer layer = getLayer(layerId);
+            final JSONObject attributes = layer.getAttributes();
+            uuid = layer.getMetadataId();
+    
+            try {
+                if (attributes.has(METADATA_URL_PARAM)) {
+                    url = attributes.getString(METADATA_URL_PARAM);
+                }
+            } catch (Exception e) {
+                throw new ActionException("Failed to parse metadataUrl:" + e.getMessage());
+            }
+        }
+
         // TODO use default lang if not found?
         final String lang = params.getRequiredParam(LANG_PARAM);
-        
-        String url = params.getHttpParam(METADATA_URL_PARAM, baseUrl);
 
         CSWIsoRecord record;
         CSWService service;
@@ -206,4 +235,15 @@ public class GetCSWDataHandler extends ActionHandler {
     }
 
 
+    protected OskariLayer getLayer(String id) throws ActionParamsException {
+        return layerService.find(getLayerId(id));
+    }
+
+    protected int getLayerId(String layerId) throws ActionParamsException {
+        int id = ConversionHelper.getInt(layerId, -1);
+        if (id == -1) {
+            throw new ActionParamsException("Missing layer id");
+        }
+        return id;
+    }
 }
