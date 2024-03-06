@@ -1,5 +1,70 @@
 # Release Notes
 
+## 2.13.0
+
+For a full list of changes see:
+https://github.com/oskariorg/oskari-server/milestone/48?closed=1
+
+### Bundled GeoServer removed
+
+- `myplaces` and `userlayer` (= user-generated) content is now managed directly through the database connection without a need for a GeoServer to be run with oskari-server.
+- `analysis` functionality still uses GeoServer to make the analysis, but most instances don't use the analysis functionality so the bundled in GeoServer has been dropped from the download package.
+- Removed code related to initializing the bundled in GeoServer like the `setup.war` webapp and `geoserver-rest-client`.
+- See [Migration guide](MigrationGuide.md) for details about removing the GeoServer from an existing Oskari instance.
+
+### New functionality
+
+- Printouts can now include coordinates.
+- Added support for reverse geocoding for the OpenStreetMap search channel.
+- URL-parameter `swipe=true` can now be used to active layerswipe functionality on startup (on applications using layerswipe).
+
+### Statistical data sources
+
+- Statistical data adapter for SotkaNet now uses `absValue` for the indicator data from the API if any result doesn't have a `value` so user can get some data on screen instead of an error.
+- Improve region set matching for SotkaNet adapter for detecting data for `hyvinvointialue/wellbeing services counties`.
+- Made cache keys for statistical data consistent so it's easy to flush cached data from redis by using key-prefix `oskari:stats:[data source id]*`.
+- Removed the unused `service-statistics-kapa` module from statistics-data plugins. It was developed as PoC for allowing multiple data sources to be read using adapters but there is no known data source that would use this (developed against mock service) and we have actual data sources with `PXWeb` and `SotkaNet` that are used daily and demonstrate this.
+
+### New bundles
+
+Drop-in React-based replacements for jQuery implementations:
+- `metadatasearch` -> `metadatacatalogue`
+- `featuredata2` -> `featuredata`
+
+Both are allowed to be part of embedded maps by the `publisher` functionality and we also added `layerswipe` and `announcements` bundle to the default allowed list for publishing.
+
+### Improved error handling
+
+- Users now have created and last login timestamps on the db. Previously the user attributes was used to store these with instance specific code, but to make querying easier its best to have them in columns in the database. Custom login implementations should be updated to use these database columns as we now show the last login for the end user. For more details: https://github.com/oskariorg/oskari-server/pull/1000/files
+- Improved identifier headers that are sent as part of requests made by oskari-server. Previously the `User-Agent` header could result as `Oskari/null`. Now defaults to `Oskari/0.0` if we are unable to determine the version.
+- Fixed srid value in postgis for userlayer features (https://github.com/oskariorg/oskari-server/pull/1005).
+- Improved error handling while parsing layer capabilities to prevent an issue where the server might not start properly when running migrations that add layers from services that are unavailable during the migration (https://github.com/oskariorg/sample-server-extension/pull/55).
+- When querying for GFI, the server now checks if the user has permission to see the layer. Previously the GFI request was passed to the server without a check so knowing a layer id and a coordinate where features on that layer would be could possibly be used to handcraft a request that by-passes authorization for that layer.
+
+### Library updates
+
+Note! Apps will need to update these dependencies as well (See [Migration guide](MigrationGuide.md)).
+
+- Now uses `HikariCP` as built-in connection pool instead of `BasicDataSource` from `commons-dbcp2`
+- Spring 5.3.28 -> 5.3.32
+- Spring security 5.7.9 -> 5.7.11
+- Spring session bom 2021.2.2 -> 2021.2.3
+- org.apache.commons.commons-lang3 3.13.0 -> 3.14.0
+- org.apache.commons.commons-text 1.10.0 -> 1.11.0
+- org.apache.commons.commons-dbcp2 2.9.0 -> 2.11.0
+- org.apache.pdfbox.pdfbox 2.0.24 -> 2.0.30
+- org.apache.xmlgraphics.fop 2.3 -> 2.9
+- org.apache.poi.poi-ooxml 4.1.2 -> 5.2.5
+- commons-csv 1.8 -> 1.10.0
+- commons-codec 1.15 -> 1.16.0
+- jsoup 1.16.1 -> 1.17.2
+- jackson 2.15.2 -> 2.16.1
+- mybatis 3.5.13 -> 3.5.15
+- flywaydb 9.12.0 -> 9.22.3
+- Postgres jdbc 42.6.0 -> 42.7.2
+- SLF4J 1.7.36 -> 2.0.11
+- Log4J2 2.20.0 -> 2.22.1
+
 ## 2.12.0
 
 For a full list of changes see: 
