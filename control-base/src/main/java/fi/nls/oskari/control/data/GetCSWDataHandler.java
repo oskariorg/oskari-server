@@ -89,15 +89,15 @@ public class GetCSWDataHandler extends ActionHandler {
         }
 
         String uuid = params.getHttpParam(UUID_PARAM);
-        String layerId = params.getHttpParam(LAYER_ID_PARAM);
+        int layerId = params.getHttpParam(LAYER_ID_PARAM, -1);
 
-        if (uuid == null && layerId == null) {
-            throw new ActionException("No UUID or layer id found.");
+        if (uuid == null && layerId == -1) {
+            throw new ActionParamsException("No UUID or layer id found.");
         }
 
         String url = baseUrl;
-        if (layerId != null) {
-            OskariLayer layer = getLayer(layerId);
+        if (layerId != -1) {
+            OskariLayer layer = layerService.find(layerId);
             final JSONObject attributes = layer.getAttributes();
             uuid = layer.getMetadataId();
     
@@ -232,18 +232,5 @@ public class GetCSWDataHandler extends ActionHandler {
         } catch (Exception e) {
         }
         return null;
-    }
-
-
-    protected OskariLayer getLayer(String id) throws ActionParamsException {
-        return layerService.find(getLayerId(id));
-    }
-
-    protected int getLayerId(String layerId) throws ActionParamsException {
-        int id = ConversionHelper.getInt(layerId, -1);
-        if (id == -1) {
-            throw new ActionParamsException("Missing layer id");
-        }
-        return id;
     }
 }
