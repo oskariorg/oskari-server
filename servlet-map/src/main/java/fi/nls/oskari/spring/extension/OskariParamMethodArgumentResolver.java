@@ -4,7 +4,7 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.servlet.WebLocaleResolver;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebArgumentResolver;
@@ -25,7 +25,6 @@ public class OskariParamMethodArgumentResolver implements
         HandlerMethodArgumentResolver {
 
     private Logger log = LogFactory.getLogger(OskariParamMethodArgumentResolver.class);
-    private WebLocaleResolver localeResolver = new WebLocaleResolver();
 
     @Override
     public boolean supportsParameter(MethodParameter methodParameter) {
@@ -59,10 +58,7 @@ public class OskariParamMethodArgumentResolver implements
         final ActionParameters params = new ActionParameters();
         params.setRequest(request);
         params.setResponse(response);
-        // localeResolver validates the locale to supported one, but can result in
-        // spring components using different locale than Oskari components.
-        // TODO: replace with custom validating spring based localeResolver and use request.getLocale() here.
-        params.setLocale(localeResolver.resolveLocale(request, response));
+        params.setLocale(LocaleContextHolder.getLocale());
         HttpSession session = request.getSession(false);
         if (session != null) {
             params.setUser((User) session.getAttribute(User.class.getName()));
