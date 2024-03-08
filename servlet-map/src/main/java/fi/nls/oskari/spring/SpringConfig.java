@@ -63,6 +63,7 @@ public class SpringConfig implements WebMvcConfigurer, ApplicationListener<Conte
     public LocaleChangeInterceptor localeChangeInterceptor(){
         LocaleChangeInterceptor localeChangeInterceptor=new LocaleChangeInterceptor();
         localeChangeInterceptor.setParamName("lang");
+        localeChangeInterceptor.setIgnoreInvalidLocale(true);
         return localeChangeInterceptor;
     }
 
