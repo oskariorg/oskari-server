@@ -2,7 +2,27 @@
 
 ## 2.13.0
 
-Logging dependencies updated. Oskari-based applications need to update this dependency:
+### GeoServer dependency removed
+
+User-generated data no longer requires GeoServer to be run with oskari-server.
+If you are using the GeoServer that was bundled on our download package only for user-generated content in Oskari, you can just uninstall it/remove it from the webapps folder.
+
+Also you can remove these at least these properties from your `oskari-ext.properties` config:
+```
+# geoserver params for setup
+geoserver.url=http://localhost:8080/geoserver
+geoserver.user=admin
+geoserver.password=geoserver
+```
+
+See changes in:
+- https://github.com/oskariorg/sample-configs/commit/5a5e4ee52e023ca3534cf5000ac80863ff4acf6d
+- https://github.com/oskariorg/sample-configs/commit/8ac279bf915ad5f2e1d981e237b356d3aa4e6008
+- https://github.com/oskariorg/sample-configs/commit/75aa1e893e7684d9c34a3aa3f6a83ec050141bc2
+
+### Library updates required for webapps
+
+Logging dependencies have been updated. Oskari-based applications need to update this dependency on the webapp module:
 
 ```
 <dependency>
@@ -10,10 +30,11 @@ Logging dependencies updated. Oskari-based applications need to update this depe
     <artifactId>log4j-slf4j-impl</artifactId>
 </dependency>
 ```
-to:
+to use the `artifactId`:
 ```
     <artifactId>log4j-slf4j2-impl</artifactId>
 ```
+See example here: https://github.com/oskariorg/sample-server-extension/pull/56/files
 
 ## 2.11.0
 
