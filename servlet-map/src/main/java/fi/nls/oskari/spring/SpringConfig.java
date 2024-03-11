@@ -15,11 +15,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.*;
-import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 import org.springframework.web.servlet.resource.PathResourceResolver;
@@ -28,6 +28,7 @@ import org.springframework.web.servlet.view.JstlView;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.servlet.ServletContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -41,9 +42,15 @@ import java.util.Locale;
 @ComponentScan(
         excludeFilters = @ComponentScan.Filter(type= FilterType.ASSIGNABLE_TYPE, value={SpringConfig.class}),
         basePackages="fi.nls.oskari, org.oskari")
-public class SpringConfig implements WebMvcConfigurer, ApplicationListener<ContextRefreshedEvent> {
+public class SpringConfig implements WebMvcConfigurer, ServletContextAware, ApplicationListener<ContextRefreshedEvent> {
 
     private static final Logger LOG = LogFactory.getLogger(SpringConfig.class);
+
+    private ServletContext servletContext;
+
+    public void setServletContext(ServletContext context) {
+        this.servletContext = context;
+    }
 
     @PostConstruct
     public void oskariInit() {
@@ -52,7 +59,6 @@ public class SpringConfig implements WebMvcConfigurer, ApplicationListener<Conte
     }
 
     //  --------- locale handling -------------
-    // TODO: use this instead fi.nls.oskari.servlet.WebLocaleResolver
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(localeChangeInterceptor());
@@ -61,17 +67,23 @@ public class SpringConfig implements WebMvcConfigurer, ApplicationListener<Conte
 
     @Bean
     public LocaleChangeInterceptor localeChangeInterceptor(){
-        LocaleChangeInterceptor localeChangeInterceptor=new LocaleChangeInterceptor();
+        LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
         localeChangeInterceptor.setParamName("lang");
+        // this ignores calls like lang=$temp <- erronous values
+        localeChangeInterceptor.setIgnoreInvalidLocale(true);
         return localeChangeInterceptor;
     }
 
     @Bean(name = "localeResolver")
     public LocaleResolver localeResolver() {
-        CookieLocaleResolver resolver = new CookieLocaleResolver();
+        ValidatingCookieLocaleResolver resolver = new ValidatingCookieLocaleResolver();
         resolver.setDefaultLocale(new Locale(PropertyUtil.getDefaultLanguage()));
-        resolver.setCookieMaxAge(-1);
+        resolver.setSupportedLocales(PropertyUtil.getSupportedLocales());
+        resolver.setSupportedLanguages(PropertyUtil.getSupportedLanguages());
         resolver.setCookieName("oskari.language");
+        resolver.setCookieMaxAge(-1);
+        resolver.setCookiePath(servletContext.getContextPath());
+
         return resolver;
     }
     //  --------- /locale handling -------------
