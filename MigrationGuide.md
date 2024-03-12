@@ -36,6 +36,18 @@ to use the `artifactId`:
 ```
 See example here: https://github.com/oskariorg/sample-server-extension/pull/56/files
 
+### Bundle changes
+
+- `personaldata` bundle has been removed from the source code. The drop-in replacement is the `mydata` bundle that has been available for a couple of releases already. DB migration is included (2.13.2 under [Flyway migrations](content-resources/src/main/resources/flyway/oskari/V2_13_2__replace_personaldata_with_mydata.sql)), but requires linking the new implementation on frontend `main.js`.
+
+New bundles as parallel versions:
+- `featuredata` is a React-based drop-in replacement for jQuery-based `featuredata2` for feature data table.
+- `metadatasearch` is a React-based drop-in replacement for jQuery-based `metadatacatalogue` for searching metadata.
+
+Switching these requires db migration as well as linking the new implementation on frontend `main.js` as the bundle id changed, but the old version is also still available.
+
+- `statsgrid` has a full React rewrite for thematic maps/statistical data functionality https://github.com/oskariorg/oskari-frontend/pull/2599 Requires linking the new codebase on frontend `main.js` (https://github.com/oskariorg/sample-application/pull/33), but doesn't require db migration since bundle id remains the same.
+
 ## 2.11.0
 
 PostgreSQL 11 is now the minimum version supported (FlywayDB dependency).
