@@ -237,24 +237,4 @@ public class UserDataLayerPopulator {
 
         return baseLayer.getId();
     }
-
-    /**
-     * Calculate and set bounds for FeatureType based on it's CRS
-     * @param featureType
-     */
-    protected static void resolveCRS(FeatureType featureType, String srs) {
-        featureType.srs = srs;
-        featureType.nativeCRS = srs;
-        try {
-            CoordinateReferenceSystem sys = CRS.decode(featureType.srs);
-            Envelope bounds = CRS.getEnvelope(sys);
-            featureType.setBounds(bounds.getLowerCorner().getOrdinate(Coordinate.X),
-                    bounds.getUpperCorner().getOrdinate(Coordinate.X),
-                    bounds.getLowerCorner().getOrdinate(Coordinate.Y),
-                    bounds.getUpperCorner().getOrdinate(Coordinate.Y));
-        } catch (Exception e) {
-            LOG.warn(e, "Unable to setup native bounds for FeatureType:", featureType);
-        }
-    }
-
 }
