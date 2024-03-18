@@ -7,7 +7,10 @@ import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Used to preload and -process statistical indicator data from a datasource
@@ -54,13 +57,28 @@ public abstract class DataSourceUpdater implements Runnable {
         if (indicators.isEmpty()) {
             return;
         }
+        // Make sure we don't store duplicates of indicators
+        // This might happen when multiple nodes in cluster processes the list at the same time.
+        // One node might be faster and store an indicator while another still has it in it's workqueue.
+        // When the slower one saves, it combines the processed from redis + workqueue on its memory
+        // where processed already might contain indicators that are in the workqueue of the node that is saving/adding it's queue
+        List<StatisticalIndicator> nonDuplicates = new ArrayList<>(indicators.size());
+        Set<String> indicatorIds = new HashSet<>(indicators.size());
+        indicators.stream().forEach(ind -> {
+            if (indicatorIds.contains(ind.getId())) {
+                return;
+            }
+            nonDuplicates.add(ind);
+            indicatorIds.add(ind.getId());
+        });
+
 
         final ObjectMapper listMapper = new ObjectMapper();
         // skip f.ex. description and source when writing list
         listMapper.addMixIn(StatisticalIndicator.class, JacksonIndicatorListMixin.class);
         // write new indicator list
         try {
-            String result = listMapper.writeValueAsString(indicators);
+            String result = listMapper.writeValueAsString(nonDuplicates);
             JedisManager.setex(plugin.getIndicatorListKey(), JedisManager.EXPIRY_TIME_DAY * 7, result);
         } catch (JsonProcessingException ex) {
             LOG.error(ex, "Error updating indicator list");
