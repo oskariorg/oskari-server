@@ -6,13 +6,11 @@ import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import net.opengis.ows10.SectionsType;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Used to preload and -process statistical indicator data from a datasource
