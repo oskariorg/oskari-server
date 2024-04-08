@@ -247,7 +247,7 @@ public class IOHelper {
      * Copies data from InputStream to OutputStream
      * Does not close either of the streams
      * Does nothing if either InputStream or OutputStream is null
-     * 
+     *
      * @param in
      * @param out
      * @throws IOException
@@ -338,6 +338,7 @@ public class IOHelper {
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setConnectTimeout(getConnectionTimeoutMs());
         conn.setReadTimeout(getReadTimeoutMs());
+        conn.setInstanceFollowRedirects(true);
         conn.setRequestProperty(HEADER_ACCEPT_CHARSET, CHARSET_UTF8);
         if(getTrustAllCerts()) trustAllCerts(conn);
         if(getTrustAllHosts()) trustAllHosts(conn);
@@ -1139,10 +1140,10 @@ public class IOHelper {
     }
 
     /**
-     * Ignore HttpURLConnection response fully 
+     * Ignore HttpURLConnection response fully
      * Useful for example when the status code or the content type
      * wasn't what was expected. Allows HttpURLConnection
-     * pooling method to keep the underlying TCP connection alive 
+     * pooling method to keep the underlying TCP connection alive
      */
     public static void closeSilently(HttpURLConnection c) {
         try (InputStream in = getInputOrErrorStream(c)) {
