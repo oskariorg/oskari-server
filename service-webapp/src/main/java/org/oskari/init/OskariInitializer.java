@@ -12,18 +12,18 @@ import org.quartz.SchedulerException;
 
 import javax.naming.Context;
 
-public class ServiceInitializer {
+public class OskariInitializer {
 
     private static final DatasourceHelper DS_HELPER = DatasourceHelper.getInstance();
 
     private static final String STR_LOG_LINE = "#########################################################";
 
 
-    private static Logger LOG = LogFactory.getLogger(ServiceInitializer.class);
+    private static Logger LOG = LogFactory.getLogger(OskariInitializer.class);
     private static SchedulerService schedulerService;
     private static boolean propsLoaded = false;
 
-    private ServiceInitializer() {}
+    private OskariInitializer() {}
 
     public static void loadProperties() {
         // populate properties
@@ -32,7 +32,7 @@ public class ServiceInitializer {
         System.out.println("- loading /oskari-ext.properties");
         PropertyUtil.loadProperties("/oskari-ext.properties");
         // init logger after the properties so we get the correct logger impl
-        LOG = LogFactory.getLogger(ServiceInitializer.class);
+        LOG = LogFactory.getLogger(OskariInitializer.class);
         propsLoaded = true;
     }
 

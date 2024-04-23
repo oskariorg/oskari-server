@@ -6,7 +6,7 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.spring.extension.OskariParamMethodArgumentResolver;
 import fi.nls.oskari.spring.extension.OskariViewResolver;
 import fi.nls.oskari.util.PropertyUtil;
-import org.oskari.init.ServiceInitializer;
+import org.oskari.init.OskariInitializer;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -55,7 +55,7 @@ public class SpringConfig implements WebMvcConfigurer, ServletContextAware, Appl
     @PostConstruct
     public void oskariInit() {
         // check DB connections/content
-        ServiceInitializer.init();
+        OskariInitializer.init();
     }
 
     //  --------- locale handling -------------
@@ -135,7 +135,7 @@ public class SpringConfig implements WebMvcConfigurer, ServletContextAware, Appl
     public void tearDown() {
         LOG.info("Teardown");
         ActionControl.teardown();
-        ServiceInitializer.teardown();
+        OskariInitializer.teardown();
     }
 
     @Override
