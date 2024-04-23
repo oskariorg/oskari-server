@@ -2,18 +2,16 @@ package fi.nls.oskari.spring;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.servlet.WebappHelper;
 import fi.nls.oskari.spring.session.RedisSessionConfig;
 import fi.nls.oskari.util.PropertyUtil;
+import org.oskari.init.ServiceInitializer;
 import org.springframework.session.web.context.AbstractHttpSessionApplicationInitializer;
-import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 
 import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
 
 /**
@@ -26,7 +24,7 @@ public class SpringInitializer extends AbstractHttpSessionApplicationInitializer
     @Override
     public void onStartup(ServletContext servletContext) {
         // IMPORTANT! read properties at startup - needed for profile selection
-        WebappHelper.loadProperties();
+        ServiceInitializer.loadProperties();
         // re-init logger so we get the one configured in properties
         log = LogFactory.getLogger(SpringInitializer.class);
         final WebApplicationContext context = getContext();
