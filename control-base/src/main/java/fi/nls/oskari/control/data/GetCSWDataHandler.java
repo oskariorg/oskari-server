@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.oskari.capabilities.ogc.LayerCapabilitiesOGC;
 import org.oskari.service.util.ServiceFactory;
 
 import static fi.nls.oskari.csw.service.CSWService.PROP_SERVICE_URL;
@@ -99,7 +100,7 @@ public class GetCSWDataHandler extends ActionHandler {
         if (layerId != -1) {
             OskariLayer layer = layerService.find(layerId);
             final JSONObject attributes = layer.getAttributes();
-            uuid = layer.getMetadataId();
+            uuid = getMetadataIdForLayer(layer);
     
             try {
                 if (attributes.has(METADATA_URL_PARAM)) {
@@ -145,6 +146,16 @@ public class GetCSWDataHandler extends ActionHandler {
         }
 
         ResponseHelper.writeResponse(params, result);
+    }
+
+    private String getMetadataIdForLayer(OskariLayer layer) {
+        String uuid = layer.getMetadataId();
+        if (uuid != null && !uuid.trim().isEmpty()) {
+            // override metadataid
+            return uuid;
+        }
+        // uuid from capabilities
+        return layer.getCapabilities().optString(LayerCapabilitiesOGC.METADATA_UUID, null);
     }
     
     private void prefixImageFilenames(CSWIsoRecord record, final String uuid, final String locale) {
