@@ -83,6 +83,7 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
         <commons-io.version>2.15.0</commons-io.version>
         <commons-csv.version>1.10.0</commons-csv.version>
         <xmlgraphics-fop.version>2.9</xmlgraphics-fop.version>
+        <!-- Note! Check commons-compress override when updating this -->
         <poi-ooxml.version>5.2.5</poi-ooxml.version>
 
         <jsoup.version>1.17.2</jsoup.version>
