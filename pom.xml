@@ -143,6 +143,15 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
     <!-- Managed dependencies -->
     <dependencyManagement>
         <dependencies>
+            <!-- version 1.25.0 is transitive from org.apache.poi/poi-ooxml 5.2.5
+            It has a vulnerability that has been patched in comporess 1.26.1 -->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-compress</artifactId>
+                <version>1.26.1</version>
+            </dependency>
+
+
             <!-- Oskari -->
             <dependency>
                 <groupId>org.oskari</groupId>
