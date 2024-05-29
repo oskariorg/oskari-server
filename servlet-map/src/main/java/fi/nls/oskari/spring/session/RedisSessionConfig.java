@@ -5,10 +5,12 @@ import fi.nls.oskari.util.PropertyUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.redis.connection.RedisPassword;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import redis.clients.jedis.JedisClientConfig;
 
 // TODO: Check if maxInactiveIntervalInSeconds can be configured
 @Configuration
@@ -22,7 +24,13 @@ public class RedisSessionConfig extends WebMvcConfigurerAdapter {
     public JedisConnectionFactory connectionFactory() {
         RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(
                 JedisManager.getHost(), JedisManager.getPort());
+        JedisClientConfig clientConfig = JedisManager.getClientConfig();
+        config.setUsername(clientConfig.getUser());
+
+        RedisPassword pw = RedisPassword.of(clientConfig.getPassword());
+        config.setPassword(pw);
         JedisConnectionFactory jedis = new JedisConnectionFactory(config);
+        jedis.afterPropertiesSet();
         return jedis;
     }
 }
