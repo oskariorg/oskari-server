@@ -30,6 +30,7 @@ public class RedisSessionConfig extends WebMvcConfigurerAdapter {
         RedisPassword pw = RedisPassword.of(clientConfig.getPassword());
         config.setPassword(pw);
         JedisConnectionFactory jedis = new JedisConnectionFactory(config);
+        // for some reason a call to afterPropertiesSet() is required for user/passwd to be used
         jedis.afterPropertiesSet();
         return jedis;
     }
