@@ -4,8 +4,7 @@ import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.OskariRuntimeException;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPubSub;
+import redis.clients.jedis.*;
 
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -153,7 +152,7 @@ public class ClusterClient extends JedisPubSub {
     // NOTE!! create a new client for subscriptions instead of using pool to make sure clients don't conflict
     private Jedis createClient() {
         if (client == null) {
-            client = new Jedis(JedisManager.getHost(), JedisManager.getPort());
+            client = new Jedis(JedisManager.getHostAndPort(), JedisManager.getClientConfig());
         }
         return client;
     }

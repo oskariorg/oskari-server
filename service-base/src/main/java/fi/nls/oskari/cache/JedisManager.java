@@ -36,6 +36,19 @@ public class JedisManager {
      */
     private JedisManager() {}
 
+    public static HostAndPort getHostAndPort() {
+        return new HostAndPort(JedisManager.getHost(), JedisManager.getPort());
+    }
+
+    public static JedisClientConfig getClientConfig() {
+        return DefaultJedisClientConfig.builder()
+                .connectionTimeoutMillis(getConnectionTimeoutMs())
+                .user(getUser())
+                .password(getPassword())
+                .ssl(getUseSSL())
+                .build();
+    }
+
     public static String getHost() {
         return PropertyUtil.get(KEY_REDIS_HOSTNAME, "localhost");
     }
@@ -50,6 +63,9 @@ public class JedisManager {
     }
     private static String getPassword() {
         return PropertyUtil.get("redis.password", null);
+    }
+    private static String getUser() {
+        return PropertyUtil.get("redis.user", null);
     }
     private static boolean getUseSSL() {
         return PropertyUtil.getOptional("redis.ssl", false);
@@ -80,7 +96,7 @@ public class JedisManager {
         poolConfig.setTestOnBorrow(true);
         poolConfig.setBlockWhenExhausted(getBlockWhenExhausted());
         final JedisPool oldPool = pool;
-        pool = new JedisPool(poolConfig, host, port, getConnectionTimeoutMs(), getPassword(), getUseSSL());
+        pool = new JedisPool(poolConfig, host, port, getConnectionTimeoutMs(), getUser(), getPassword(), getUseSSL());
         // Should we use the long format to have an option to pass "client name" to Redis to help debugging issues with shared Redis instances?
         // pool = new JedisPool(poolConfig, host, port, getConnectionTimeoutMs(), getSocketReadTimeoutMs(), getPassword(), Protocol.DEFAULT_DATABASE, getClientName());
 
