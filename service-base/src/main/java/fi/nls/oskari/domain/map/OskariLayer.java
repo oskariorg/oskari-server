@@ -73,8 +73,8 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
     private Date created = null;
     private Date updated = null;
 
-    private Set<DataProvider> dataProviders = new HashSet<DataProvider>();
-    private List<OskariLayer> sublayers = new ArrayList<OskariLayer>();
+    private Set<DataProvider> dataProviders = new HashSet<>();
+    private List<OskariLayer> sublayers = new ArrayList<>();
 
     private Date capabilitiesLastUpdated;
     private int capabilitiesUpdateRateSec;
