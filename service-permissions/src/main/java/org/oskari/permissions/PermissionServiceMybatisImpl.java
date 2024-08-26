@@ -9,8 +9,10 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.mybatis.MyBatisHelper;
+import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.oskari.permissions.model.Permission;
 import org.oskari.permissions.model.PermissionExternalType;
 import org.oskari.permissions.model.Resource;
@@ -42,9 +44,16 @@ public class PermissionServiceMybatisImpl extends PermissionService {
             LOG.warn("DataSource was null, all future calls will throw NPEs!");
             factory = null;
         } else {
-            factory = MyBatisHelper.initMyBatis(ds, MAPPER);
+            factory = initializeMyBatis(ds);
         }
         cache = CacheManager.getCache(PermissionServiceMybatisImpl.class.getName());
+    }
+
+    private SqlSessionFactory initializeMyBatis(final DataSource dataSource) {
+        final Configuration configuration = MyBatisHelper.getConfig(dataSource);
+        MyBatisHelper.addAliases(configuration, Resource.class, Permission.class);
+        MyBatisHelper.addMappers(configuration, MAPPER);
+        return new SqlSessionFactoryBuilder().build(configuration);
     }
 
     public List<Resource> findResourcesByUser(User user, ResourceType type) {

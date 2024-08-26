@@ -3,6 +3,7 @@ package org.oskari.permissions;
 import java.util.List;
 import java.util.Set;
 
+import fi.nls.oskari.domain.map.userlayer.UserLayerData;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Many;
@@ -19,46 +20,15 @@ import org.oskari.permissions.model.Resource;
 
 public interface ResourceMapper {
 
-    // TODO: Join tables in SQL and map the result -> improves performance by ~5x
-    @Results(id = "ResourceResult", value = {
-            @Result(property="id", column="id", id=true),
-            @Result(property="type", column="resource_type"),
-            @Result(property="mapping", column="resource_mapping"),
-            @Result(property="permissions", column="id",
-                    javaType=List.class, many=@Many(select="findPermissionsByResourceId", fetchType= FetchType.EAGER))
-    })
-    @Select("SELECT id,"
-            + "resource_type,"
-            + "resource_mapping "
-            + "FROM oskari_resource "
-            + "WHERE id = #{id}")
     Resource findById(@Param("id") int id);
 
     @Select("SELECT EXISTS (SELECT 1 FROM oskari_resource WHERE id = #{id})")
     boolean existsById(@Param("id") int id);
 
-    @ResultMap("ResourceResult")
-    @Select("SELECT id,"
-            + "resource_type,"
-            + "resource_mapping "
-            + "FROM oskari_resource")
     List<Resource> findAll();
 
-    @ResultMap("ResourceResult")
-    @Select("SELECT id,"
-            + "resource_type,"
-            + "resource_mapping "
-            + "FROM oskari_resource "
-            + "WHERE resource_type = #{type}")
-    List<Resource> findByType(String type);
+    List<Resource> findByType(@Param("type") String type);
 
-    @ResultMap("ResourceResult")
-    @Select("SELECT id,"
-            + "resource_type,"
-            + "resource_mapping "
-            + "FROM oskari_resource "
-            + "WHERE resource_type = #{type} "
-            + "AND resource_mapping = #{mapping}")
     Resource findByTypeAndMapping(@Param("type") String type, @Param("mapping") String mapping);
 
     @Select("SELECT EXISTS (SELECT 1 FROM oskari_resource WHERE resource_type = #{type} AND resource_mapping = #{mapping})")
@@ -78,20 +48,6 @@ public interface ResourceMapper {
                                           @Param("externalType") PermissionExternalType externalType,
                                           @Param("permission") String permission,
                                           @Param("external_id") String external_id);
-
-    @Results({
-        @Result(property="id", column="id", id=true),
-        @Result(property="type", column="permission"),
-        @Result(property="externalType", column="external_type"),
-        @Result(property="externalId", column="external_id")
-    })
-    @Select("SELECT id,"
-            + "external_type,"
-            + "permission,"
-            + "external_id "
-            + "FROM oskari_resource_permission "
-            + "WHERE resource_id = #{resourceId}")
-    List<Permission> findPermissionsByResourceId(@Param("resourceId") int resourceId);
 
     @Insert("INSERT INTO oskari_resource (resource_type, resource_mapping) VALUES (#{type},#{mapping})")
     @Options(useGeneratedKeys=true, keyColumn="id", keyProperty="id")
