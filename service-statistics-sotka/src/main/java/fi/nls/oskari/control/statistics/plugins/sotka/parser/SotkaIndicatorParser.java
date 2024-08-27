@@ -77,7 +77,7 @@ public class SotkaIndicatorParser {
             ind.setSource(toLocalizationMap(json.getJSONObject("organization").getJSONObject("title")));
 
             return setupMetadata(ind, sotkaLayersToOskariLayers);
-        } catch (JSONException e) {
+        } catch (Exception e) {
             LOG.error(e, "Could not read data from Sotka Indicator JSON.");
             return null;
         }
@@ -340,6 +340,7 @@ Parsing Sotkanet metadata/JSON like this:
         if (ind.getLayers().isEmpty()) {
             // we can't show this indicator since it doesn't link to any region set
             // if at this point we don't have layers -> ignore the indicator by returning null
+            LOG.debug("Indicator:", ind.getId(), "doesn't have any of regionsets linked to datasource, ignoring");
             return null;
         }
 

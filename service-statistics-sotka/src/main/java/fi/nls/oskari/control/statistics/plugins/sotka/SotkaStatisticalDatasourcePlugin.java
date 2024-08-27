@@ -45,13 +45,15 @@ public class SotkaStatisticalDatasourcePlugin extends StatisticalDatasourcePlugi
             JSONArray responseJSON = new JSONArray(data);
             SotkaIndicatorParser parser = new SotkaIndicatorParser(config);
             LOG.info("Parsing indicator response of length: " + responseJSON.length());
+            int parsedIndicators = 0;
             for (int i = 0; i < responseJSON.length(); i++) {
                 StatisticalIndicator indicator = parser.parse(responseJSON.getJSONObject(i), sotkaToLayerMappings);
                 if(indicator != null) {
+                    parsedIndicators++;
                     onIndicatorProcessed(indicator);
                 }
             }
-            LOG.info("Parsed indicator response.");
+            LOG.info("Updated datasource:", config.getUrl(), "with parsed", parsedIndicators, "of", responseJSON.length(), "indicators.");
         } catch (JSONException e) {
             LOG.error("Error in mapping Sotka Indicators response to Oskari model: " + e.getMessage(), e);
         }
