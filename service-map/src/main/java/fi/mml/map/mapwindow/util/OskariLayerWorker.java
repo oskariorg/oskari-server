@@ -80,7 +80,20 @@ public class OskariLayerWorker {
      */
     public static JSONObject getListOfMapLayers(final List<OskariLayer> layers, final User user,
             final String lang, final String crs, final boolean isPublished, final boolean isSecure) {
-        List<Resource> resources = permissionService.findResourcesByUser(user, ResourceType.maplayer);
+        List<Resource> resources;
+        if (layers.size() < 20) {
+            // usually the case with loading the default app setup
+            resources = layers.stream()
+                    .map(OskariLayer::getId)
+                    .map(id -> Integer.toString(id))
+                    .map(id -> permissionService.findResource(ResourceType.maplayer, id))
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .collect(Collectors.toList());
+        } else {
+            // more than 20 layers, just get all the permissions
+            resources = permissionService.findResourcesByUser(user, ResourceType.maplayer);
+        }
         return getListOfMapLayers(layers, user, lang, isSecure, crs, isPublished, new PermissionSet(resources));
     }
 
