@@ -154,13 +154,13 @@ public class GetLayerTileHandler extends ActionHandler {
             // just throw it as is if we already handled it
             throw e;
         } catch (Exception e) {
-            LOG.info("Url in proxy error was:", url);
-            throw new ActionParamsException("Couldn't proxy request to actual service", e.getMessage(), e);
+            LOG.debug("Url in proxy error was:", url);
+            throw new ActionCommonException("Couldn't proxy request to actual service: " +  e.getMessage(), e);
         } finally {
-            if(actionTimer != null) {
+            if (actionTimer != null) {
                 actionTimer.stop();
             }
-            if(con != null) {
+            if (con != null) {
                 con.disconnect();
             }
         }
