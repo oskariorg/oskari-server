@@ -24,7 +24,6 @@ public class Permission {
 
     public void setType(String type) {
         this.type = type;
-
     }
 
     public void setType(PermissionType type) {
@@ -36,6 +35,10 @@ public class Permission {
     }
 
     public void setExternalType(String externalType) {
+        setExternalType(PermissionExternalType.valueOf(externalType));
+    }
+
+    public void setExternalTypeMybatis(String externalType) {
         setExternalType(PermissionExternalType.valueOf(externalType));
     }
 
@@ -54,6 +57,11 @@ public class Permission {
     public void setExternalId(String externalId) {
         setExternalId(Integer.parseInt(externalId));
     }
+
+    public void setExternalIdMybatis(String externalId) {
+        setExternalId(externalId);
+    }
+
 
     public void setRoleId(int roleId) {
         setExternalType(PermissionExternalType.ROLE);
