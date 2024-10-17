@@ -2,7 +2,15 @@
 
 ## 2.14.0
 
+### Frontend
+
+The AntD component library has been upgraded from version 4 to 5. You might need to update application specific components. See details in: https://ant.design/docs/react/migration-v5
+
 Frontend package.json scripts need to be updated due to webpack-cli upgrade. The scripts like start, build previously passed variables to build process like this `--env.appdef=applications`. These need to be modified by changing the dot to a space like this `--env appdef=applications`. Passing similar env-variables from command line also need to be passed without the dot.
+
+### service-webapp / WebappHelper
+
+Moved `fi.nls.oskari.servlet.WebappHelper` to new path `org.oskari.init.OskariInitializer`. This file is usually not customized so the change shouldn't have any effect on most instances. However if you have an override for the WebappHelper OR for example the `SpringInitializer` (that calls the WebappHelper) on your app you will need to update the references (it's a drop-in replacement). The new OskariInitializer allows overriding the database migration code with your own. See https://github.com/oskariorg/oskari-server/pull/1061 for details.
 
 ## 2.13.0
 
