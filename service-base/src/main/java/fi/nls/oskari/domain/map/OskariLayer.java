@@ -321,6 +321,13 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
         this.simplifiedUrl = null;
     }
 
+    /**
+     * Returns the override for metadata id. To get the one the service is referencing use:
+     *   getCapabilities().optString(LayerCapabilitiesOGC.METADATA_UUID, null);
+     * We can't override this to return the value from capabilities since the admin ui
+     * needs to know where the metadata id came from: capabilities or override
+     * @return
+     */
     public String getMetadataId() {
         return metadataId;
     }

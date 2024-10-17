@@ -53,7 +53,9 @@ public class Resource {
 
     public List<Permission> getPermissions() {
         if (permissions == null) {
-            return Collections.emptyList();
+            // mybatis calls get to fill in the results to
+            // -> we can't use Collections.emptyList() here
+            permissions = new ArrayList<>();
         }
         return permissions;
     }

@@ -1,5 +1,18 @@
 # Release Notes
 
+## 2.13.1
+
+For a full list of changes see:
+https://github.com/oskariorg/oskari-server/milestone/50?closed=1
+
+- Improved Redis credentials handling: https://github.com/oskariorg/oskari-server/pull/1065
+- Fixed an issue with csw-metadata fetching
+- Added a flag for server to follow redirects automatically
+- Updated libraries:
+    - Spring framework: 5.3.32 -> 5.3.35
+    - Spring security: 5.7.11 -> 5.7.12
+    - commons-compress: 1.25.0 -> 1.26.1
+
 ## 2.13.0
 
 For a full list of changes see:

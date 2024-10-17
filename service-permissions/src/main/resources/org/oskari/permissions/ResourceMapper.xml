@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.oskari.permissions.ResourceMapper">
+
+    <resultMap id="resourceWithPermissions" type="Resource">
+        <id property="id" column="id" />
+        <result property="type" column="resource_type" javaType="String" />
+        <result property="mapping" column="resource_mapping" javaType="String" />
+        <collection property="permissions" javaType="list" ofType="Permission">
+            <result property="id" column="permission_id" javaType="int"/>
+            <result property="type" column="permission" javaType="String" />
+            <result property="externalTypeMybatis" column="external_type" javaType="String"/>
+            <result property="externalIdMybatis" column="external_id" javaType="String" />
+        </collection>
+    </resultMap>
+
+    <select id="findAll" resultMap="resourceWithPermissions" useCache="false">
+        SELECT r.id, r.resource_type, r.resource_mapping, p.id as permission_id, p.external_type, p.permission, p.external_id
+        FROM oskari_resource r
+        LEFT JOIN oskari_resource_permission p
+        ON r.id = p.resource_id
+    </select>
+
+    <select id="findById" resultMap="resourceWithPermissions" useCache="false">
+        SELECT r.id, r.resource_type, r.resource_mapping, p.id as permission_id, p.resource_id, p.external_type, p.permission, p.external_id
+        FROM oskari_resource r
+         JOIN oskari_resource_permission p
+        ON r.id = p.resource_id
+        WHERE r.id = #{id}
+    </select>
+
+    <select id="findByType" resultMap="resourceWithPermissions" useCache="false">
+        SELECT r.id, r.resource_type, r.resource_mapping, p.id as permission_id, p.external_type, p.permission, p.external_id
+        FROM oskari_resource r
+        LEFT JOIN oskari_resource_permission p
+        ON r.id = p.resource_id
+        WHERE r.resource_type = #{type}
+    </select>
+
+    <select id="findByTypeAndMapping" resultMap="resourceWithPermissions" useCache="false">
+        SELECT r.id, r.resource_type, r.resource_mapping, p.id as permission_id, p.external_type, p.permission, p.external_id
+        FROM oskari_resource r
+        LEFT JOIN oskari_resource_permission p
+        ON r.id = p.resource_id
+        WHERE r.resource_type = #{type}
+        AND r.resource_mapping = #{mapping}
+    </select>
+
+
+</mapper>

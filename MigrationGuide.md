@@ -1,5 +1,9 @@
 # Migration guide
 
+## 2.14.0
+
+Frontend package.json scripts need to be updated due to webpack-cli upgrade. The scripts like start, build previously passed variables to build process like this `--env.appdef=applications`. These need to be modified by changing the dot to a space like this `--env appdef=applications`. Passing similar env-variables from command line also need to be passed without the dot.
+
 ## 2.13.0
 
 ### GeoServer dependency removed
