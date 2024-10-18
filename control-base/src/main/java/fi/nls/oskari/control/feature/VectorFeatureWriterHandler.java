@@ -11,25 +11,14 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
-import fi.nls.oskari.util.XmlHelper;
-
-import org.geotools.referencing.CRS;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.w3c.dom.Document;
+import org.oskari.xml.XmlHelper;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamException;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 
 @OskariActionRoute("VectorFeatureWriter")
 public class VectorFeatureWriterHandler extends AbstractFeatureHandler {
@@ -163,22 +152,9 @@ public class VectorFeatureWriterHandler extends AbstractFeatureHandler {
             throw new ActionParamsException("Didn't get the expected response from service " + response);
         }
 
-        try {
-            DocumentBuilderFactory factory = XmlHelper.newDocumentBuilderFactory();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-
-            ByteArrayInputStream input = new ByteArrayInputStream(response.getBytes("UTF-8"));
-            Document doc = builder.parse(input);
-
-            NodeList res = doc.getElementsByTagName("ogc:FeatureId");
-            Element res3 = (Element) res.item(0);
-            return res3.getAttribute("fid");
-        } catch (ParserConfigurationException ex) {
-            throw new ActionException("Parser configuration error", ex);
-        } catch (IOException ex) {
-            throw new ActionException("IO error", ex);
-        } catch (SAXException ex) {
-            throw new ActionException("SAX processing error", ex);
-        }
+        Element doc = XmlHelper.parseXML(response);
+        NodeList res = doc.getElementsByTagName("ogc:FeatureId");
+        Element res3 = (Element) res.item(0);
+        return res3.getAttribute("fid");
     }
 }
