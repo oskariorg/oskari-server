@@ -96,10 +96,10 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
 
         <fi.mml.nameregister.version>1.0</fi.mml.nameregister.version>
 
-        <jetty.version>9.4.51.v20230217</jetty.version>
+        <jetty.version>9.4.56.v20240826</jetty.version>
         <mybatis.version>3.5.15</mybatis.version>
         <flyway.version>9.22.3</flyway.version>
-        <postgresql.version>42.7.2</postgresql.version>
+        <postgresql.version>42.7.4</postgresql.version>
         <hikaricp.version>4.0.3</hikaricp.version>
 
         <!-- https://github.com/spring-projects/spring-data-redis/blob/2.7.x/pom.xml#L29
