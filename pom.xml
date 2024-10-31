@@ -49,8 +49,8 @@
         <!-- Value comes from profile when needed -->
         <module.build.config></module.build.config>
 
-        <spring.version>5.3.35</spring.version>
-        <spring-security.version>5.7.12</spring-security.version>
+        <spring.version>5.3.39</spring.version>
+        <spring-security.version>5.7.13</spring-security.version>
         <!--
         session-bom 2021.2.3 uses 2.7.4 from session
         https://github.com/spring-projects/spring-session/blob/2.7.4/gradle/dependency-management.gradle
