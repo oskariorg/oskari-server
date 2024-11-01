@@ -121,7 +121,7 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
         <xmlunit.version>1.6</xmlunit.version>
         <h2database.version>2.2.220</h2database.version>
 
-        <log4j.version>2.22.1</log4j.version>
+        <log4j.version>2.24.1</log4j.version>
 
         <slf4j.version>2.0.11</slf4j.version>
         <metrics.version>4.1.0</metrics.version>
