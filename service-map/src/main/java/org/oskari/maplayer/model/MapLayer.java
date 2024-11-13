@@ -1,6 +1,7 @@
 package org.oskari.maplayer.model;
 
 import fi.nls.oskari.domain.map.style.VectorStyle;
+import org.oskari.util.LayerUrlHelper;
 
 import java.util.*;
 
@@ -83,7 +84,7 @@ public class MapLayer {
     }
 
     public void setUrl(String url) {
-        this.url = url;
+        this.url = LayerUrlHelper.getSanitizedUrl(url);
     }
 
     public String getUsername() {

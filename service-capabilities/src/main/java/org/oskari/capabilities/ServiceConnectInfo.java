@@ -1,6 +1,7 @@
 package org.oskari.capabilities;
 
 import fi.nls.oskari.domain.map.OskariLayer;
+import org.oskari.util.LayerUrlHelper;
 
 import java.util.Objects;
 
@@ -13,10 +14,11 @@ public class ServiceConnectInfo {
     private String pass;
 
     public ServiceConnectInfo(String url, String type, String version) {
-        this.url = url;
+        this.url = LayerUrlHelper.getSanitizedUrl(url);
         this.type = type;
         this.version = version;
     }
+
 
     public void setCredentials(String user, String pass) {
         this.user = user;
