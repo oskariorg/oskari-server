@@ -1,13 +1,14 @@
 package org.oskari.capabilities;
 
+import java.time.Duration;
+import java.time.Period;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class TimeDimensionParser {
@@ -21,51 +22,44 @@ public class TimeDimensionParser {
             return Collections.emptyList();
         }
 
-        String intervalStr = parts[2];
+        TemporalAmount period = getTemporalAmount(parts[2]);
+        return getZonedDateTimes(parts[0], parts[1], period);
+    }
 
-        ChronoUnit unit;
-        int interval;
-
+    private static TemporalAmount getTemporalAmount(String intervalStr) {
         try {
-            if (intervalStr.startsWith("PT") && intervalStr.endsWith("H")) {
-                unit = ChronoUnit.HOURS;
-                interval = Integer.parseInt(intervalStr.substring(2, intervalStr.length() - 1));
-            } else if (intervalStr.startsWith("P") && intervalStr.endsWith("D")) {
-                unit = ChronoUnit.DAYS;
-                interval = Integer.parseInt(intervalStr.substring(1, intervalStr.length() - 1));
-            } else if (intervalStr.startsWith("P") && intervalStr.endsWith("M")) {
-                unit = ChronoUnit.MONTHS;
-                interval = Integer.parseInt(intervalStr.substring(1, intervalStr.length() - 1));
-            } else if (intervalStr.startsWith("P") && intervalStr.endsWith("Y")) {
-                unit = ChronoUnit.YEARS;
-                interval = Integer.parseInt(intervalStr.substring(1, intervalStr.length() - 1));
+            if (intervalStr.contains("T")) {
+                // time can in the start PT3H or in the middle P1DT5H
+                // and needs to be parsed with Duration instead of Period for some reason.
+                return Duration.parse(intervalStr);
             } else {
-                throw new IllegalArgumentException("Unsupported interval format: " + intervalStr);
+                return Period.parse(intervalStr);
             }
-        } catch (NumberFormatException e) {
+        }  catch (DateTimeParseException e) {
             throw new IllegalArgumentException("Unsupported interval format: " + intervalStr);
         }
+    }
 
+    private static List<ZonedDateTime> getZonedDateTimes(String startTime, String endTime, TemporalAmount period) {
         ZonedDateTime start;
         try {
-            start = ZonedDateTime.parse(parts[0]);
+            start = ZonedDateTime.parse(startTime);
         }  catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("Unable to parse start date from: " + parts[0]);
+            throw new IllegalArgumentException("Unable to parse start date from: " + startTime);
         }
         ZonedDateTime end;
         try {
-            end = ZonedDateTime.parse(parts[1]);
+            end = ZonedDateTime.parse(endTime);
         }  catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("Unable to parse end date from: " + parts[1]);
+            throw new IllegalArgumentException("Unable to parse end date from: " + endTime);
         }
 
         List<ZonedDateTime> times = new ArrayList<>();
         ZonedDateTime currentTime = start;
         while (!currentTime.isAfter(end)) {
             times.add(currentTime);
-            currentTime = currentTime.plus(interval, unit);
+            currentTime = currentTime.plus(period);
         }
-
         return times;
     }
 

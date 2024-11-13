@@ -14,11 +14,20 @@ public class TimeDimensionParserTest {
 
         List<String> timeList = TimeDimensionParser.parseTimeDimensionAsStrings(timeDimension);
         assertEquals("timeList should have x times", 81, timeList.size());
-
         assertEquals("timeList should have expected first time", "2024-11-13T00:00:00Z", timeList.get(0));
-
         assertEquals("timeList should have expected 10th time", "2024-11-14T03:00:00Z", timeList.get(9));
         assertEquals("timeList should have expected last time", "2024-11-23T00:00:00Z", timeList.get(80));
+    }
+    @Test
+    public void testWMSTIntervalParsingMinutes() {
+        String timeDimension = "2024-11-20T00:00:00Z/2024-11-23T00:00:00Z/PT10M";
+
+        List<String> timeList = TimeDimensionParser.parseTimeDimensionAsStrings(timeDimension);
+        assertEquals("timeList should have x times", 433, timeList.size());
+        assertEquals("timeList should have expected first time", "2024-11-20T00:00:00Z", timeList.get(0));
+        assertEquals("timeList should have expected 10th time", "2024-11-20T01:30:00Z", timeList.get(9));
+        assertEquals("timeList should have expected last time", "2024-11-23T00:00:00Z", timeList.get(432));
+
     }
 
     @Test
@@ -56,6 +65,8 @@ public class TimeDimensionParserTest {
 
     @Test
     public void testIntervalErrors() {
+        TimeDimensionParser.parseTimeDimensionAsStrings("2024-11-13T00:00:00Z/2024-11-23T00:00:00Z/PT10M");
+
         try {
             TimeDimensionParser.parseTimeDimensionAsStrings("2024-11-13T00:00:00Z/2024-11-23T00:00:00Z/PT3xH");
             fail("Should have raised exception for interval");
