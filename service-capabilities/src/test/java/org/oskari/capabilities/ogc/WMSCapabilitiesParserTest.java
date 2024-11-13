@@ -179,7 +179,7 @@ public class WMSCapabilitiesParserTest {
         assertEquals("Should find layers", 3, layers.size());
         LayerCapabilitiesWMS layerCaps = (LayerCapabilitiesWMS) layers.get("GDPS.ETA_TT");
         JSONObject json = CapabilitiesService.toJSON(layerCaps, SYSTEM_CRS);
-         System.out.println(json);
+        // System.out.println(json);
         assertTrue("JSON should match", JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)));
     }
 
