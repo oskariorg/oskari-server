@@ -1,31 +1,35 @@
 package org.oskari.print.loader;
 
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.Future;
-
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.geometry.ProjectionHelper;
+import fi.nls.oskari.map.layer.OskariLayerService;
+import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
+import org.geotools.referencing.CRS;
+import org.json.JSONObject;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.capabilities.CapabilitiesService;
 import org.oskari.capabilities.ogc.LayerCapabilitiesWMTS;
-import org.oskari.capabilities.ogc.wmts.*;
+import org.oskari.capabilities.ogc.wmts.ResourceUrl;
+import org.oskari.capabilities.ogc.wmts.TileMatrix;
+import org.oskari.capabilities.ogc.wmts.TileMatrixLink;
+import org.oskari.capabilities.ogc.wmts.TileMatrixSet;
 import org.oskari.print.request.PrintLayer;
 import org.oskari.print.util.Units;
 import org.oskari.print.wmts.GetTileRequestBuilder;
 import org.oskari.print.wmts.GetTileRequestBuilderKVP;
 import org.oskari.print.wmts.GetTileRequestBuilderREST;
 
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.geometry.ProjectionHelper;
-import fi.nls.oskari.map.layer.OskariLayerService;
-import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
-
-import org.geotools.referencing.CRS;
-import org.json.JSONObject;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 /**
  * HystrixCommand that loads tiles from a WMTS service and combines them to a
@@ -42,6 +46,8 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
         "image/jpeg"
     };
 
+    // Whitelisted "other" url params we might want to add from the given layer's url that do not exist in said layer's capabilities
+    private static final String[] ADDITIONAL_URL_PARAMS = new String[]{"apikey"};
     private final PrintLayer layer;
     private final int width;
     private final int height;
@@ -70,6 +76,8 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
     @Override
     public BufferedImage run() throws Exception {
         LayerCapabilitiesWMTS caps = getLayerCapabilities();
+        String layerAdditionalRequestParams = getLayerAdditionalRequestParams();
+
         TileMatrixSet tms = getTileMatrixSet(caps.getTileMatrixLinks());
         TileMatrix tm = getTileMatrix(tms);
 
@@ -147,6 +155,8 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
                 }
                 requestBuilder.tileCol(c);
                 String uri = requestBuilder.build();
+                uri = addLayerAdditionalRequestParams(uri, layerAdditionalRequestParams);
+
                 futureTiles.add(new CommandLoadImageFromURL(
                         Integer.toString(layer.getId()), uri,
                         layer.getUsername(), layer.getPassword()).queue());
@@ -199,6 +209,43 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
             }
         }
         throw new IllegalArgumentException("Could not find layer from Capabilities");
+    }
+
+    private String getLayerAdditionalRequestParams() {
+        String[] layerUrlParams = layer.getOskariLayer().getUrl().split("\\?");
+        String urlParams = null;
+
+        if (layerUrlParams != null && layerUrlParams.length == 2) {
+            urlParams = layerUrlParams[1];
+        }
+
+        Set<String> allowedKeys = new HashSet<>(Arrays.asList(ADDITIONAL_URL_PARAMS));
+
+        if (urlParams == null || allowedKeys == null) {
+            return null;
+        }
+
+        return Arrays.stream(urlParams.split("&"))
+                .map(param -> param.split("="))
+                .filter(parts -> parts != null && parts.length == 2 && allowedKeys.contains(parts[0]))
+                .map(parts -> parts[0] + "=" + parts[1])
+                .collect(Collectors.joining("&"));
+    }
+
+    private String addLayerAdditionalRequestParams(String uri, String layerAdditionalRequestParams) {
+        if (layerAdditionalRequestParams != null) {
+            if (uri.indexOf("?") == -1) {
+                uri += "?";
+            }
+
+            if (uri.charAt(uri.length() -1) != '&') {
+                uri += "&";
+            }
+
+            uri += layerAdditionalRequestParams;
+        }
+
+        return uri;
     }
 
     private TileMatrix getTileMatrix(TileMatrixSet tms) throws IllegalArgumentException {
