@@ -36,6 +36,7 @@ import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
+import org.oskari.maplayer.GeoJSONStringReader;
 
 public class RegionSetHelper {
 
@@ -84,21 +85,22 @@ public class RegionSetHelper {
         }
         LOG.debug("Trying to read GeoJSON resource file from:", path);
         DefaultFeatureCollection fc = new DefaultFeatureCollection();
-
-        try (InputStream in = RegionSetHelper.class.getResourceAsStream(path);
-             Reader utf8Reader = new InputStreamReader(in, IOHelper.CHARSET_UTF8)) {
-            if (in == null) {
-                LOG.warn("Could not find resource for path:", path);
-                throw new FileNotFoundException("Could not find resource");
+        SimpleFeatureCollection sfc;
+        CoordinateReferenceSystem sourceCRS = CRS.decode(regionset.getSrs_name());
+        try (InputStream in = RegionSetHelper.class.getResourceAsStream(path)) {
+            try {
+                sfc = GeoJSONStringReader.readGeoJSON(in, sourceCRS);
+            } catch (Exception e) {
+                throw new IOException("Error reading geojson to feature collection for region set: " + regionset.getId(), e);
             }
-            try (FeatureIterator<SimpleFeature> it = FJ.streamFeatureCollection(utf8Reader)) {
+            try (FeatureIterator<SimpleFeature> it = sfc.features()) {
                 while (it.hasNext()) {
                     SimpleFeature f = it.next();
                     try {
                         transform(f, transform);
                         fc.add(f);
                     } catch (Exception e) {
-                        LOG.debug(e, "Invalid region", f);
+                        LOG.debug(e, "Invalid region in region set: " + regionset.getId(), f);
                     }
                 }
             }
