@@ -153,9 +153,9 @@ public class RegionSetHelper {
 
     protected static List<Region> parse(SimpleFeatureCollection fc, String idProperty, String nameProperty)
             throws ServiceException {
-        final SimpleFeatureIterator it = fc.features();
-        try {
-            final List<Region> nameCodes = new ArrayList<>();
+        final List<String> duplicateIdCheckList = new ArrayList<>();
+        final List<Region> result = new ArrayList<>();
+        try (SimpleFeatureIterator it = fc.features()){
             while (it.hasNext()) {
                 final SimpleFeature feature = it.next();
                 // id might be numeric on source data
@@ -166,22 +166,26 @@ public class RegionSetHelper {
                             ") property for region. Properties are:", LOG.getAsString(feature.getProperties()));
                     continue;
                 }
+                if (duplicateIdCheckList.contains(id)) {
+                    LOG.info("Region with id (", id, ") and name(", name,
+                            ") has duplicates on the regions listing. Using the first one.");
+                    continue;
+                }
                 Region region = new Region(id, name);
                 try {
                     region.setPointOnSurface(getPointOnSurface(feature));
                     region.setGeojson(toGeoJSON((Geometry) feature.getDefaultGeometry(), id, name));
-                    nameCodes.add(region);
+                    result.add(region);
+                    duplicateIdCheckList.add(id);
                 } catch (Exception ex) {
                     LOG.warn("Region had invalid geometry:", region, "Error:", ex.getMessage());
                 }
             }
-            if (nameCodes.isEmpty()) {
+            if (result.isEmpty()) {
                 throw new ServiceException("Empty result, check configuration for region id-property=" +
                         idProperty + " and name-property=" + nameProperty);
             }
-            return nameCodes;
-        } finally {
-            it.close();
+            return result;
         }
     }
 
