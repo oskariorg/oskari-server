@@ -9,9 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * Internal model for user role.
@@ -87,6 +85,13 @@ public class Role implements Serializable {
                 getGuestUserRole(),
                 getDefaultUserRole(),
                 getAdminRole());
+    }
+    public static Map<String,String> getSystemRolesAsMap () {
+        final Map<String,String> systemRoles = new HashMap<>();
+        systemRoles.put("anonymous", getGuestUserRole().getName());
+        systemRoles.put("user", getDefaultUserRole().getName());
+        systemRoles.put("admin", getAdminRole().getName());
+        return systemRoles;
     }
 
     private static Role getRoleByName(final String rolename) {
