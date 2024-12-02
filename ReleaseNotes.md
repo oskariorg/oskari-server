@@ -7,24 +7,24 @@ https://github.com/oskariorg/oskari-server/milestone/49?closed=1
 
 ### Support for WMS-T intervals added
 
-Added parsing for WMS-T time dimension intervals. Layers with this kind of timeseries information should now work like ones that have explicit time dimension array. Note that these kinds of layers usually have very short time period and are updated very frequently. An example could be a weather forecast. So as the time dimension is parsed as capabilities, you should make the layer _automatically update capabilities on the layer admin UI_ AND look into running UpdateCapabilitiesJob more frequently than the default once per day. If you have these types of layers here's a cronline for oskari-ext.properties to run the update every 10 minutes:
+Added parsing for WMS-T time dimension intervals. Layers with this kind of timeseries information should now work like ones that have explicit time dimension list. Note that these kinds of layers might have very short time period and might require updating very frequently. An example could be a weather forecast. The time dimension is parsed as part of the capabilities and stored on the database soon these kinds of layers you should make the layer _automatically update capabilities on the layer admin UI_ AND look into running UpdateCapabilitiesJob more frequently than the default (once per day). If you have these types of layers, here's a cronline for oskari-ext.properties to run the capabilities updating scheduled job every 10 minutes:
 
 ```
 oskari.scheduler.job.UpdateCapabilitiesJob.cronLine=*/10 * * * * ?
 ```
 
-Note! These two settings work separately but together to achieve updating capabilities automatically. The scheduled job runs at certain pace that has been set to check any layers where difference between current time and the timestamp for last capabilities update is more than the value set for that layers capabilities update interval. In that case the capabilities are updated on the database and the timestamp is updated. Any value on the layer capabilities update that is smaller than the frequency of the scheduled job won't have a meaningful result as the capabilities update frequency is ultimately decided by when the scheduled job is run.
+Note! These two settings work separately but together to achieve updating capabilities automatically. The scheduled job runs at certain pace that has been set to check any layers where the difference between current time and the timestamp for last capabilities update is more than the value set for that layers capabilities update interval. In that case the capabilities are updated on the database and the timestamp is updated. Any value on the layer capabilities update that is smaller than the frequency of the scheduled job won't have a meaningful result as the capabilities update frequency is ultimately decided by when the scheduled job is run.
 
 ### Statistical data processing improvements
 
-- Statistical data parse for SotkaNet data now skips faulty indicators instead of stopping processing when encountering one.
+- Statistical data indicator list parsing for SotkaNet now skips faulty indicators instead of stopping processing entirely when encountering one.
 - Statistical regionsets are now processed by removing any duplicated regions: https://github.com/oskariorg/oskari-server/pull/1084
 - Statistical regionsets from resource files now support mixed geometries: https://github.com/oskariorg/oskari-server/pull/1085
 
 ### Performance and maintenance improvements
 
-- Refactored layer permission query on map startup. For instances with lots of layers this speeds up starting the application significantly (GetAppSetup might go from seconds to milliseconds: https://github.com/oskariorg/oskari-server/pull/1067).
-- Added a hook for allowing application to use custom code for running migrations like using a different user to run them etc: https://github.com/oskariorg/oskari-server/pull/1061
+- Refactored layer permission query on map startup. Instances with lots of layers may see significant boost on page loading time (GetAppSetup might go from seconds to milliseconds: https://github.com/oskariorg/oskari-server/pull/1067).
+- Added a hook that allows applications to use custom code for running migrations like using a different user to run them etc: https://github.com/oskariorg/oskari-server/pull/1061
 - Reduced noise in the logs by removing proxying errors from audit-logging.
 
 ### Updated libraries
