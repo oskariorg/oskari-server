@@ -1,5 +1,54 @@
 # Release Notes
 
+## 2.14.0
+
+For a full list of changes see:
+https://github.com/oskariorg/oskari-server/milestone/49?closed=1
+
+### Support for WMS-T intervals added
+
+Added parsing for WMS-T time dimension intervals. Layers with this kind of timeseries information should now work like ones that have explicit time dimension list. Note that these kinds of layers might have very short time period and might require updating very frequently. An example could be a weather forecast. The time dimension is parsed as part of the capabilities and stored on the database soon these kinds of layers you should make the layer _automatically update capabilities on the layer admin UI_ AND look into running UpdateCapabilitiesJob more frequently than the default (once per day). If you have these types of layers, here's a cronline for oskari-ext.properties to run the capabilities updating scheduled job every 10 minutes:
+
+```
+oskari.scheduler.job.UpdateCapabilitiesJob.cronLine=*/10 * * * * ?
+```
+
+Note! These two settings work separately but together to achieve updating capabilities automatically. The scheduled job runs at certain pace that has been set to check any layers where the difference between current time and the timestamp for last capabilities update is more than the value set for that layers capabilities update interval. In that case the capabilities are updated on the database and the timestamp is updated. Any value on the layer capabilities update that is smaller than the frequency of the scheduled job won't have a meaningful result as the capabilities update frequency is ultimately decided by when the scheduled job is run.
+
+### Statistical data processing improvements
+
+- Statistical data indicator list parsing for SotkaNet now skips faulty indicators instead of stopping processing entirely when encountering one.
+- Statistical regionsets are now processed by removing any duplicated regions: https://github.com/oskariorg/oskari-server/pull/1084
+- Statistical regionsets from resource files now support mixed geometries: https://github.com/oskariorg/oskari-server/pull/1085
+
+### Performance and maintenance improvements
+
+- Refactored layer permission query on map startup. Instances with lots of layers may see significant boost on page loading time (GetAppSetup might go from seconds to milliseconds: https://github.com/oskariorg/oskari-server/pull/1067).
+- Added a hook that allows applications to use custom code for running migrations like using a different user to run them etc: https://github.com/oskariorg/oskari-server/pull/1061
+- Reduced noise in the logs by removing proxying errors from audit-logging.
+
+### Updated libraries
+
+- Jetty (in the download package zip) 9.4.51.v2023021 -> 9.4.56.v20240826
+- Postgresql JDBC 42.7.2 -> 42.7.4
+- Spring framework: 5.3.35 -> 5.3.39
+- Spring security: 5.7.12 -> 5.7.13
+- mybatis 3.5.15 -> 3.5.16
+- log4j 2.22.1 -> 2.24.1
+- Geotools 28.4 -> 28.5
+- org.apache.xmlgraphics/fop 2.9 -> 2.10
+- org.apache.poi/poi-ooxml 5.2.5 -> 5.3.0
+- commons-io 2.15.0 -> 2.16.1
+- Jackson 2.16.1 -> 2.18.1
+- pdfbox 2.0.30 -> 2.0.32
+- h2database 2.2.220 -> 2.2.224
+
+Notes:
+- GeoTools 29.x requires Java 17+
+- Flyway 10.x requires Java 17+
+- HikariCP 5.x requires Java 11+
+- h2 v2.3.230+ requires Java 11+ 
+
 ## 2.13.1
 
 For a full list of changes see:
