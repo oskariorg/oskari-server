@@ -34,9 +34,6 @@ public class LayerAdminMetadataHandler extends RestActionHandler {
     private UserService userService = null;
     private PermissionService permissionsService = null;
 
-    private final static String JSKEY_ID = "id";
-    private final static String JSKEY_NAME = "name";
-
     private String capabilitiesCron = null;
 
     @Override
@@ -75,6 +72,7 @@ public class LayerAdminMetadataHandler extends RestActionHandler {
             JSONHelper.putValue(root, "permissionTypes", getPermissionTypes(params.getLocale().getLanguage()));
             JSONHelper.putValue(root, "layerTypes", getMandatoryFields());
             JSONHelper.putValue(root, "capabilitiesCron", getCapabilitiesUpdateCron());
+            JSONHelper.putValue(root, "systemRoles", Role.getSystemRolesAsMap());
             ResponseHelper.writeResponse(params, root);
         } catch (Exception e) {
             throw new ActionException("Something went wrong getting roles and permission types from the platform", e);
@@ -86,10 +84,7 @@ public class LayerAdminMetadataHandler extends RestActionHandler {
         final JSONArray rolesJSON = new JSONArray();
         if (roles != null) {
             for (Role role : roles) {
-                JSONObject external = new JSONObject();
-                external.put(JSKEY_ID, role.getId());
-                external.put(JSKEY_NAME, role.getName());
-                rolesJSON.put(external);
+                rolesJSON.put(role.toJSON());
             }
         }
         return rolesJSON;

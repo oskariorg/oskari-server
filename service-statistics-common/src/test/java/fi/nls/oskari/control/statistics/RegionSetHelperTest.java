@@ -74,6 +74,18 @@ public class RegionSetHelperTest {
     }
 
     @Test
+    public void testDuplicatedRegions() throws MismatchedDimensionException, FactoryException, TransformException, ServiceException, IOException, JSONException {
+        String endPoint = "resources://ely4500k.json";
+        RegionSet elyJson = new RegionSet();
+        elyJson.setId(-1);
+        elyJson.setName("oskari:ely4500k");
+        elyJson.setSrs_name("EPSG:3067");
+        elyJson.setAttributes(getAttributes("ely", "nimi", endPoint));
+        List<Region> regions = RegionSetHelper.getRegions(elyJson, "EPSG:3067");
+        assertEquals(16, regions.size());
+    }
+
+    @Test
     public void testFeaturesUrl() throws MismatchedDimensionException, FactoryException, TransformException, ServiceException, IOException, JSONException {
         String endPoint = "https://my.domain";
         String overridingEndPoint = endPoint + "/feat";

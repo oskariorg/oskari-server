@@ -1,5 +1,8 @@
 package org.oskari.capabilities.ogc.wms;
 
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+import org.oskari.capabilities.TimeDimensionParser;
 import org.oskari.capabilities.ogc.BoundingBox;
 import org.oskari.capabilities.ogc.LayerCapabilitiesWMS;
 import org.oskari.xml.XmlHelper;
@@ -14,6 +17,7 @@ public class WMSCapsParser1_3_0 extends WMSCapsParser {
 
     public static final String ROOT_EL = "WMS_Capabilities";
     public static final String VERSION = "1.3.0";
+    private static final Logger LOG = LogFactory.getLogger(WMSCapsParser1_3_0.class);
 
     public static  List<LayerCapabilitiesWMS> parseCapabilities(Element doc)
             throws IllegalArgumentException, XMLStreamException {
@@ -96,7 +100,20 @@ public class WMSCapsParser1_3_0 extends WMSCapsParser {
         if (content.trim().isEmpty()) {
             return null;
         }
-        return content.split("\\s*,\\s*");
+        String[] times = content.split("\\s*,\\s*");
+        if (times.length == 1 && content.contains("/")) {
+            // We get a single time that has the / separator? Might be an interval format
+            // <Dimension name="time" units="ISO8601" default="2024-11-13T09:00:00Z" nearestValue="0">2024-11-13T00:00:00Z/2024-11-23T00:00:00Z/PT3H</Dimension>
+            try {
+                List<String> timeList = TimeDimensionParser.parseTimeDimensionAsStrings(content);
+                return timeList.toArray(new String[0]);
+            } catch (IllegalArgumentException e) {
+                // Note, if we throw the exception, none of the layers will get parsed which is bad since failing just the time dimension is not critical
+                // however in here we don't know what layer we are processing so it's not easy to track what the problematic layer was on logs
+                LOG.warn("Error parsing time dimension as interval: ", e.getMessage());
+            }
+        }
+        return times;
     }
 
     /*

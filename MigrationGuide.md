@@ -1,5 +1,22 @@
 # Migration guide
 
+## 2.14.0
+
+### Frontend
+
+The AntD component library has been upgraded from version 4 to 5. You might need to update application specific components. See details in: https://ant.design/docs/react/migration-v5
+
+Frontend package.json scripts need to be updated due to webpack-cli upgrade. The scripts like start, build previously passed variables to build process like this `--env.appdef=applications`. These need to be modified by changing the dot to a space like this `--env appdef=applications`. Passing similar env-variables from command line also need to be passed without the dot: https://github.com/oskariorg/sample-application/pull/35
+
+A React implementation for `metadataflyout` bundle has been added. The bundle id hasn't changed so database migration is not needed. Update main.js to make the switch on your application: https://github.com/oskariorg/sample-application/pull/36/commits/67749457e045b2383ac7a361f5dc87699a8e1ddc
+
+Storybook dependency has been removed from oskari-frontend for now: https://github.com/oskariorg/oskari-frontend/pull/2662
+If you have any `*.stories.js` files you might need to adjust them: https://github.com/oskariorg/sample-application/pull/36/commits/8712dd55045a4956cc847287b5ac3ffcce7da088
+
+### service-webapp / WebappHelper
+
+Moved `fi.nls.oskari.servlet.WebappHelper` to new path `org.oskari.init.OskariInitializer`. This file is usually not customized so the change shouldn't have any effect on most instances. However if you have an override for the WebappHelper OR for example the `SpringInitializer` (that calls the WebappHelper) on your app you will need to update the references (it's a drop-in replacement). The new OskariInitializer allows overriding the database migration code with your own. See https://github.com/oskariorg/oskari-server/pull/1061 for details.
+
 ## 2.13.0
 
 ### GeoServer dependency removed

@@ -169,6 +169,23 @@ public class WMSCapabilitiesParserTest {
     }
 
     @Test
+    public void parseWeatherWMST1_3_0() throws Exception {
+        String xml = ResourceHelper.readStringResource("WMSCapabilitiesParserTest-weather-wms-t-1.3.0-input.xml", this);
+        String expected = ResourceHelper.readStringResource("WMSCapabilitiesParserTest-weather-wms-t-1.3.0-output.json", this);
+
+        WMSCapabilitiesParser parser = new WMSCapabilitiesParser();
+        parser.init();
+        Map<String, LayerCapabilities> layers = parser.parseLayers(xml);
+        assertEquals("Should find layers", 3, layers.size());
+        LayerCapabilitiesWMS layerCaps = (LayerCapabilitiesWMS) layers.get("GDPS.ETA_TT");
+        JSONObject json = CapabilitiesService.toJSON(layerCaps, SYSTEM_CRS);
+        // System.out.println(json);
+        assertTrue("JSON should match", JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)));
+    }
+
+
+
+    @Test
     public void parseDummy() throws Exception {
         String xml = ResourceHelper.readStringResource("WMSCapabilitiesParserTest-dummy_1_3_0-input.xml", this);
         String expected = ResourceHelper.readStringResource("WMSCapabilitiesParserTest-dummy-expected.json", this);

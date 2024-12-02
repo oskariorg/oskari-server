@@ -60,5 +60,10 @@
       "name": "DOWNLOAD",
       "id": "DOWNLOAD"
     }
-  ]
+  ],
+  "systemRoles": {
+    "anonymous": "Guest",
+    "user": "User",
+    "admin": "Admin"
+  }
 }
