@@ -48,13 +48,13 @@ public class ServiceRegistration {
      * this {@code Set} already contains a class-name, the name
      * won't be added to the {@link #lines} {@code List}.
      */
-    private final Set<String> classes = new HashSet<String>();
+    private final Set<String> classes = new HashSet<>();
 
     /**
      * This is the raw contents of the services file, that we
      * will eventually output to the class output directory.
      */
-    private final List<String> lines = new ArrayList<String>();
+    private final List<String> lines = new ArrayList<>();
 
     /**
      * Create a new, empty {@code ServiceRegistration} object, with a
@@ -137,17 +137,14 @@ public class ServiceRegistration {
                 read(reader);
                 reader.close();
             }
-        } catch(final IOException ioe) {
+        } catch (final IOException ioe) {
+            // ignored. This happens every time with the first annotation encountered
+        } catch (final Exception error) {
             environment.getMessager().printMessage(
                     Kind.WARNING,
-                    "I/O Error: I couldn't read " + fileName +
-                            " from location " + location.getName());
-        } catch(final Exception error) {
-            environment.getMessager().printMessage(
-                    Kind.WARNING,
-                    "I couldn't read " + fileName +
-                            " from location " + location.getName() +
-                            ". Error details: " + error.toString());
+                    "Couldn't read " + fileName +
+                            " from " + location.getName() +
+                            ". Error details: " + error);
         }
     }
 
