@@ -44,7 +44,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jdk.version>1.8</jdk.version>
+        <jdk.version>17</jdk.version>
         <oskari.version>${project.version}</oskari.version>
         <!-- Value comes from profile when needed -->
         <module.build.config></module.build.config>
