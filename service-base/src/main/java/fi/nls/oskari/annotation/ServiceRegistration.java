@@ -89,7 +89,7 @@ public class ServiceRegistration {
 
     /**
      * This is the read implementation used by the
-     * {@link #read(JavaFileManager.Location)} to consume the
+     * {@link #read(javax.tools.JavaFileManager.Location)} to consume the
      * contents of the {@code Reader}, while ensuring we don't
      * register a particular implementation more than once.
      *
@@ -156,7 +156,7 @@ public class ServiceRegistration {
      * @param className the fully qualified name of the class to add
      */
     public void addClass(final String className) {
-        if(classes.add(className)) {
+        if (classes.add(className)) {
             lines.add(className);
         }
     }
