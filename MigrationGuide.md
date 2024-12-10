@@ -1,5 +1,17 @@
 # Migration guide
 
+## 3.0.0
+
+In 3.0.0 the minimum Java version for Oskari is changed from Java 8 to 17.
+
+### Language code for Indonesia changed in Java 17.
+
+Old behavior can be restored with system property `-Djava.locale.useOldISOCodes=true`
+
+See details:
+- https://stackoverflow.com/questions/55955641/correct-locale-for-indonesia-id-id-vs-in-id/55965008
+- https://bugs.openjdk.org/browse/JDK-8267069
+
 ## 2.14.0
 
 ### Frontend
