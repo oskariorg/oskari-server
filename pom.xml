@@ -34,7 +34,7 @@
     </licenses>
 
     <issueManagement>
-        <url>https://github.com/oskariorg/oskari-docs/issues</url>
+        <url>https://github.com/oskariorg/oskari-documentation/issues</url>
         <system>GitHub Issues</system>
     </issueManagement>
 
@@ -977,6 +977,14 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
                     <!-- headless=true prevents forking java process from stealing window focus on Mac OS -->
                     <!-- syslog.level makes builds less verbose (defaults to system.out logger) -->
                     <argLine>
+                    --add-opens java.base/java.lang=ALL-UNNAMED
+                    --add-opens java.base/java.util=ALL-UNNAMED
+                    --add-opens java.base/java.util.concurrent=ALL-UNNAMED
+                    --add-opens java.base/java.util.stream=ALL-UNNAMED
+                    --add-opens java.base/java.net=ALL-UNNAMED
+                    --add-opens java.base/java.io=ALL-UNNAMED
+                    --add-opens java.base/jdk.internal.loader=ALL-UNNAMED
+                    --add-opens java.xml/jdk.xml.internal=ALL-UNNAMED
                         ${module.build.config}
                         -Djava.awt.headless=true
                         -Doskari.syslog.level=warn</argLine>
@@ -1149,25 +1157,6 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
     </pluginRepositories>
 
     <profiles>
-        <profile>
-            <id>javamodules</id>
-            <!-- required for build/mock libraries to work on Java 17 -->
-            <activation>
-                <jdk>[17,)</jdk>
-            </activation>
-            <properties>
-                <module.build.config>
-                    --add-opens java.base/java.lang=ALL-UNNAMED
-                    --add-opens java.base/java.util=ALL-UNNAMED
-                    --add-opens java.base/java.util.concurrent=ALL-UNNAMED
-                    --add-opens java.base/java.util.stream=ALL-UNNAMED
-                    --add-opens java.base/java.net=ALL-UNNAMED
-                    --add-opens java.base/java.io=ALL-UNNAMED
-                    --add-opens java.base/jdk.internal.loader=ALL-UNNAMED
-                    --add-opens java.xml/jdk.xml.internal=ALL-UNNAMED
-                </module.build.config>
-            </properties>
-        </profile>
         <profile>
             <id>owasp-check</id>
             <build>
