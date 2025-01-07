@@ -4,15 +4,11 @@ import fi.mml.portti.service.search.SearchResultItem;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.test.util.ResourceHelper;
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMXMLParserWrapper;
 import org.json.JSONArray;
 import org.junit.Test;
 import org.oskari.xml.XmlHelper;
 import org.w3c.dom.Element;
 
-import java.util.Iterator;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 
 import static org.junit.Assert.*;
