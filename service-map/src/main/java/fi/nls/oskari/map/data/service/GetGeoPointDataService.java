@@ -6,22 +6,21 @@ import fi.nls.oskari.map.data.domain.GFIRequestParams;
 import fi.nls.oskari.map.data.domain.GFIRestQueryParams;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.util.XmlHelper;
+import org.oskari.xml.XmlHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.oskari.util.HtmlDoc;
-import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.util.Collections;
@@ -144,7 +143,7 @@ public class GetGeoPointDataService {
                 log.debug("Nothing found on:", url);
                 return null;
             }
-            String gfiResponse = IOHelper.getURL(conn, Collections.EMPTY_MAP, IOHelper.DEFAULT_CHARSET);
+            String gfiResponse = IOHelper.getURL(conn, Collections.emptyMap(), IOHelper.DEFAULT_CHARSET);
             log.debug("Got GFI response:", gfiResponse);
             return gfiResponse;
         } catch (IOException e) {
@@ -155,63 +154,32 @@ public class GetGeoPointDataService {
     }
 
     protected String transformResponse(final String xslt, final String response) {
-
-        if (xslt == null || "".equals(xslt)) {
-            // if not found, return as is
-            return response;
+        if (xslt == null || xslt.trim().isEmpty()) {
+            // if xslt not defined, return response as is
+            return Jsoup.clean(response, Safelist.relaxed());
         }
 
-        ByteArrayInputStream respInStream = null;
-        ByteArrayInputStream xsltInStream = null;
-        Writer outWriter = null;
         try {
-            final DocumentBuilderFactory factory = XmlHelper.newDocumentBuilderFactory();
-            factory.setNamespaceAware(true);
-            final DocumentBuilder builder = factory.newDocumentBuilder();
-
-            respInStream = new ByteArrayInputStream(response.getBytes("UTF-8"));
-            final Document document = builder.parse(respInStream);
-            xsltInStream = new ByteArrayInputStream(xslt.getBytes());
-            final StreamSource stylesource = new StreamSource(xsltInStream);
-            final String transformedResponse = getFormattedJSONString(document, stylesource);
+            Element responseDoc = XmlHelper.parseXML(response, true);
+            Element xsltDoc = XmlHelper.parseXML(xslt, true);
+            final String transformedResponse = getFormattedJSONString(responseDoc, xsltDoc);
             
-            if (transformedResponse == null
-                    || transformedResponse.isEmpty()) {
-                log.info("got empty result from transform with:", xslt, " - Response:", response);
-                return response;
+            if (!transformedResponse.isEmpty()) {
+                return transformedResponse;
             }
-
-            return transformedResponse;
         } catch (Exception e) {
             log.error("Error transforming GFI response: ", response, "- with XSLT:", xslt,
                     "Error:", e.getMessage());
-        } finally {
-            if (respInStream != null) {
-                try {
-                    respInStream.close();
-                } catch (Exception ignored) {
-                }
-            }
-            if (xsltInStream != null) {
-                try {
-                    xsltInStream.close();
-                } catch (Exception ignored) {
-                }
-            }
-            if (outWriter != null) {
-                try {
-                    outWriter.close();
-                } catch (Exception ignored) {
-                }
-            }
         }
+        log.info("got empty result from transform with:", xslt, " - Response:", response);
         // Sanitize response
         return Jsoup.clean(response, Safelist.relaxed());
     }
 
-    public static String getFormattedJSONString(Document document, StreamSource stylesource) throws TransformerException {
+    public static String getFormattedJSONString(Node document, Node styleDoc) throws TransformerException {
         final TransformerFactory transformerFactory = XmlHelper.newTransformerFactory();
-        final Transformer transformer = transformerFactory.newTransformer(stylesource);
+        final DOMSource styleSource = new DOMSource(styleDoc);
+        final Transformer transformer = transformerFactory.newTransformer(styleSource);
 
         final DOMSource source = new DOMSource(document);
         final StringWriter outWriter = new StringWriter();
