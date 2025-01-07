@@ -13,16 +13,16 @@ import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.oskari.util.HtmlDoc;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
-import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
 public class GetGeoPointDataService {
@@ -119,7 +119,6 @@ public class GetGeoPointDataService {
 
             } else {
                 // Pick attributes as features
-
                 for (int i = 0; i < feas.length(); i++) {
                     JSONObject item = feas.optJSONObject(i);
                     attrs.put(item.optJSONObject(REST_KEY_ATTRIBUTES));
@@ -159,11 +158,14 @@ public class GetGeoPointDataService {
             return Jsoup.clean(response, Safelist.relaxed());
         }
 
-        try {
-            Element responseDoc = XmlHelper.parseXML(response, true);
-            Element xsltDoc = XmlHelper.parseXML(xslt, true);
-            final String transformedResponse = getFormattedJSONString(responseDoc, xsltDoc);
-            
+        try (InputStream responseStream = new ByteArrayInputStream(response.getBytes(StandardCharsets.UTF_8));
+             InputStream xsltInStream = new ByteArrayInputStream(xslt.getBytes(StandardCharsets.UTF_8))) {
+            // Use StreamSource so the params implementing classes are what the transformer expects
+            // Otherwise we might get an error like this:
+            //   class com.sun.org.apache.xerces.internal.dom.DeferredElementImpl cannot be cast to class org.w3c.dom.Document
+            String transformedResponse = getFormattedJSONString(
+                    new StreamSource(responseStream),
+                    new StreamSource(xsltInStream));
             if (!transformedResponse.isEmpty()) {
                 return transformedResponse;
             }
@@ -176,15 +178,13 @@ public class GetGeoPointDataService {
         return Jsoup.clean(response, Safelist.relaxed());
     }
 
-    public static String getFormattedJSONString(Node document, Node styleDoc) throws TransformerException {
+    public static String getFormattedJSONString(StreamSource docSource, StreamSource styleSource) throws TransformerException {
         final TransformerFactory transformerFactory = XmlHelper.newTransformerFactory();
-        final DOMSource styleSource = new DOMSource(styleDoc);
         final Transformer transformer = transformerFactory.newTransformer(styleSource);
 
-        final DOMSource source = new DOMSource(document);
         final StringWriter outWriter = new StringWriter();
         final StreamResult result = new StreamResult(outWriter);
-        transformer.transform(source, result);
+        transformer.transform(docSource, result);
         final String transformedResponse = outWriter.toString();
         return transformedResponse.trim();
     }
