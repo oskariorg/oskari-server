@@ -863,7 +863,13 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
                 <artifactId>junit</artifactId>
                 <version>${junit.version}</version>
             </dependency>
-
+            <!-- Override java assist (used by mock libraries) to latest version to work with Java 21 -->
+            <dependency>
+                <groupId>org.javassist</groupId>
+                <artifactId>javassist</artifactId>
+                <version>3.30.2-GA</version>
+                <scope>test</scope>
+            </dependency>
             <dependency>
                 <groupId>org.powermock</groupId>
                 <artifactId>powermock-core</artifactId>
