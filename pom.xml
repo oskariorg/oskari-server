@@ -121,8 +121,7 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
         <powermock.version>2.0.9</powermock.version>
         <junit.version>4.13.2</junit.version>
         <xmlunit.version>1.6</xmlunit.version>
-        <!-- h2 v2.3.230+ requires Java 11+ -->
-        <h2database.version>2.2.224</h2database.version>
+        <h2database.version>2.3.232</h2database.version>
 
         <log4j.version>2.24.1</log4j.version>
 
