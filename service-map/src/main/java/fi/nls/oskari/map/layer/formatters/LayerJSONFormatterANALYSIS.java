@@ -30,7 +30,6 @@ public class LayerJSONFormatterANALYSIS extends LayerJSONFormatterUSERDATA {
     private static final String JSKEY_TOP = "top";
     private static final String JSKEY_LEFT = "left";
     private static final String JSKEY_RIGHT = "right";
-    private static final String JSKEY_WPS_TYPE = "wpsInputType";
 
     public JSONObject getJSON(OskariLayer baseLayer, Analysis analysis, String srs, String lang) {
         final JSONObject layerJson = super.getJSON(baseLayer, analysis, srs, lang);

@@ -38,7 +38,6 @@ public class AnalysisLayer {
     private String method = "";
     private String result = "";
     private long wpsLayerId = 0;
-    private AnalysisMethodParams analysisMethodParams;
     private String filter;
     private boolean nodataCount = false;
     private List<Long> mergeAnalysisIds;
@@ -183,15 +182,6 @@ public class AnalysisLayer {
 
     public void setMethod(String method) {
         this.method = method;
-    }
-
-    public AnalysisMethodParams getAnalysisMethodParams() {
-        return analysisMethodParams;
-    }
-
-    public void setAnalysisMethodParams(
-            AnalysisMethodParams analysisMethodParams) {
-        this.analysisMethodParams = analysisMethodParams;
     }
 
     public String getStyle() {
