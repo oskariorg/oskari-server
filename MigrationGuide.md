@@ -4,6 +4,16 @@
 
 In 3.0.0 the minimum Java version for Oskari is changed from Java 8 to 17.
 
+### Generic proxy removed
+
+A proxy implementation was previously used to pass requests from
+oskari-frontend to the "internal" GeoServer through the oskari-server based webapp.
+As we don't use the GeoServer anymore for user generated content these have been removed. 
+
+If you have the `oskari.proxyservices` defined in oskari-ext.properties or any property starting 
+with `oskari.proxy.` you can remove all of those as they are no longer used.
+These have been removed from the new configs here: https://github.com/oskariorg/sample-configs/pull/29/files
+
 ### Language code for Indonesia changed in Java 17.
 
 Old behavior can be restored with system property `-Djava.locale.useOldISOCodes=true`
