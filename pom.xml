@@ -101,8 +101,7 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
         <!-- Flyway 10.x requires Java 17+ -->
         <flyway.version>9.22.3</flyway.version>
         <postgresql.version>42.7.4</postgresql.version>
-        <!-- hikaricp 5.x requires Java 11+ -->
-        <hikaricp.version>4.0.3</hikaricp.version>
+        <hikaricp.version>6.2.1</hikaricp.version>
 
         <!-- https://github.com/spring-projects/spring-data-redis/blob/2.7.x/pom.xml#L29
          https://github.com/spring-projects/spring-data-redis/blob/2.7.4/pom.xml#L28-->
@@ -122,8 +121,7 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
         <powermock.version>2.0.9</powermock.version>
         <junit.version>4.13.2</junit.version>
         <xmlunit.version>1.6</xmlunit.version>
-        <!-- h2 v2.3.230+ requires Java 11+ -->
-        <h2database.version>2.2.224</h2database.version>
+        <h2database.version>2.3.232</h2database.version>
 
         <log4j.version>2.24.1</log4j.version>
 
