@@ -101,8 +101,7 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
         <!-- Flyway 10.x requires Java 17+ -->
         <flyway.version>9.22.3</flyway.version>
         <postgresql.version>42.7.4</postgresql.version>
-        <!-- hikaricp 5.x requires Java 11+ -->
-        <hikaricp.version>4.0.3</hikaricp.version>
+        <hikaricp.version>6.2.1</hikaricp.version>
 
         <!-- https://github.com/spring-projects/spring-data-redis/blob/2.7.x/pom.xml#L29
          https://github.com/spring-projects/spring-data-redis/blob/2.7.4/pom.xml#L28-->
