@@ -27,10 +27,6 @@
             <artifactId>gt-main</artifactId>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.oskari</groupId>
             <artifactId>gt-geojson</artifactId>
             <scope>test</scope>

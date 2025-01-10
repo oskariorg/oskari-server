@@ -62,11 +62,6 @@
             <groupId>org.locationtech.jts.io</groupId>
             <artifactId>jts-io-common</artifactId>
         </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
         <!-- PowerMock can be used to mock static/private methods -->
         <dependency>
             <groupId>org.powermock</groupId>

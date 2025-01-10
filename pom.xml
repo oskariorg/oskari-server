@@ -118,7 +118,7 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
         <hystrix.version>1.5.18</hystrix.version>
         <!-- Test deps versions -->
         <powermock.version>2.0.9</powermock.version>
-        <junit.version>4.13.2</junit.version>
+        <junit.version>5.11.4</junit.version>
         <xmlunit.version>1.6</xmlunit.version>
         <h2database.version>2.3.232</h2database.version>
 
@@ -141,6 +141,23 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
             <artifactId>javax.annotation-api</artifactId>
             <version>1.2</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+           <groupId>org.junit.vintage</groupId>
+           <artifactId>junit-vintage-engine</artifactId>
+           <version>${junit.version}</version>
+           <scope>test</scope>
+        </dependency>
+
+
     </dependencies>
     <!-- Managed dependencies -->
     <dependencyManagement>
@@ -862,11 +879,6 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
                 <version>${oskari.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${junit.version}</version>
-            </dependency>
             <!-- Override java assist (used by mock libraries) to latest version to work with Java 21 -->
             <dependency>
                 <groupId>org.javassist</groupId>

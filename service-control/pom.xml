@@ -23,11 +23,6 @@
             <artifactId>javax.servlet-api</artifactId>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
         <!-- PowerMock can be used to mock static/private methods -->
         <dependency>
             <groupId>org.powermock</groupId>
