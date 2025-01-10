@@ -98,8 +98,7 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
 
         <jetty.version>9.4.56.v20240826</jetty.version>
         <mybatis.version>3.5.16</mybatis.version>
-        <!-- Flyway 10.x requires Java 17+ -->
-        <flyway.version>9.22.3</flyway.version>
+        <flyway.version>11.1.1</flyway.version>
         <postgresql.version>42.7.4</postgresql.version>
         <!-- hikaricp 5.x requires Java 11+ -->
         <hikaricp.version>4.0.3</hikaricp.version>
@@ -456,10 +455,17 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
             </dependency>
 
             <dependency>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-database-postgresql</artifactId>
+                <version>${flyway.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>com.zaxxer</groupId>
                 <artifactId>HikariCP</artifactId>
                 <version>${hikaricp.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>org.postgresql</groupId>
                 <artifactId>postgresql</artifactId>
