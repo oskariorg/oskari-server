@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 public class SystemLoggerTest {
 
     @AfterEach
-    public static void teardown() {
+    public void teardown() {
         System.clearProperty(SystemLogger.PROPERTY_LOG_LEVEL);
     }
 

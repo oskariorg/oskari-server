@@ -9,8 +9,8 @@ import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class RoutingServiceOpenTripPlannerImplTest {
@@ -21,13 +21,13 @@ public class RoutingServiceOpenTripPlannerImplTest {
     private static final String MAP_SRS = "EPSG:3067";
     private static final String JSON_ENCODING = "UTF-8";
 
-    @BeforeAll
-    public static void initialize()throws Exception{
+    @BeforeEach
+    public void initialize()throws Exception{
         PropertyUtil.addProperty("routing.srs", ROUTING_SRS);
     }
 
-    @AfterAll
-    public static void goAway() throws Exception{
+    @AfterEach
+    public void goAway() throws Exception{
         PropertyUtil.clearProperties();
     }
 
