@@ -12,8 +12,6 @@ import java.util.Map;
 
 public interface AnalysisMapper {
 
-    void insertAnalysisRow(final Analysis analysis);
-    void updateAnalysisCols(final Analysis analysis);
     Analysis getAnalysisById(long id);
     List<Analysis> getAnalysisByIdList(List<Long> idList);
     List<Analysis> getAnalysisByUid(String uid);
@@ -21,7 +19,6 @@ public interface AnalysisMapper {
     void deleteAnalysisById(final long id);
     void deleteAnalysisDataById(final long id);
     void updatePublisherName(final Map<String, Object> params);
-    void mergeAnalysisData(final Analysis analysis);
 
 
     @ResultMap("AnalysisDataResult")
