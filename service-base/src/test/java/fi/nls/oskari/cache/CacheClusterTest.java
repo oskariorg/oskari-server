@@ -1,12 +1,9 @@
 package fi.nls.oskari.cache;
 
 import fi.nls.oskari.util.PropertyUtil;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.oskari.cluster.ClusterManager;
-
-import java.util.UUID;
 
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -16,7 +13,7 @@ import static org.mockito.Mockito.spy;
  */
 public class CacheClusterTest {
 
-    @After
+    @AfterEach
     public void teardown() {
         PropertyUtil.clearProperties();
     }

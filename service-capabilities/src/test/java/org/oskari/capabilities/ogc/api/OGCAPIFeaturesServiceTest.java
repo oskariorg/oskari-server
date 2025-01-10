@@ -15,8 +15,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.oskari.ogcapi.features.FeaturesCollectionInfo;
 import org.oskari.ogcapi.features.FeaturesContent;
 import org.oskari.ogcapi.OGCAPIReqClasses;
@@ -25,7 +26,7 @@ public class OGCAPIFeaturesServiceTest {
 
     private OGCAPIFeaturesService service;
 
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
         OGCAPIReqClasses reqClasses;
         try (InputStream in = getClass().getResourceAsStream("OGCAPIFeatures_Conformance.json")) {
@@ -40,8 +41,8 @@ public class OGCAPIFeaturesServiceTest {
 
     @Test
     public void testToJsonFromJson() throws IOException {
-        assertEquals(service, OGCAPIFeaturesService.fromJSON(service.toJSON()));
-        assertEquals(service, OGCAPIFeaturesService.fromJSON(OGCAPIFeaturesService.toJSON(service)));
+        Assertions.assertEquals(service, OGCAPIFeaturesService.fromJSON(service.toJSON()));
+        Assertions.assertEquals(service, OGCAPIFeaturesService.fromJSON(OGCAPIFeaturesService.toJSON(service)));
     }
 
     @Test
@@ -96,10 +97,10 @@ public class OGCAPIFeaturesServiceTest {
         Iterator<T> expectedIter = expected.iterator();
         Iterator<T> actualIter = actual.iterator();
         while (expectedIter.hasNext()) {
-            assertTrue(actualIter.hasNext());
-            assertTrue(Objects.equals(expectedIter.next(), actualIter.next()));
+            Assertions.assertTrue(actualIter.hasNext());
+            Assertions.assertTrue(Objects.equals(expectedIter.next(), actualIter.next()));
         }
-        assertFalse(actualIter.hasNext());
+        Assertions.assertFalse(actualIter.hasNext());
     }
 
 }

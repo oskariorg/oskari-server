@@ -8,8 +8,9 @@ import fi.nls.oskari.map.view.util.ViewHelper;
 import fi.nls.test.control.JSONActionRouteTest;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -20,15 +21,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.*;
-
 public class ViewsHandlerTest extends JSONActionRouteTest {
 
     private BundleService bundleService;
     private ViewService viewService;
     private ViewsHandler views;
 
-    @Before
+    @BeforeEach
     public void init() throws ViewException {
         bundleService = new BundleServiceMemory();
         viewService = new ViewServiceMemory();
@@ -44,9 +43,9 @@ public class ViewsHandlerTest extends JSONActionRouteTest {
 
         try {
             views.handleAction(params);
-            fail("ActionDeniedException should have been thrown");
+            Assertions.fail("ActionDeniedException should have been thrown");
         } catch (ActionException e) {
-            assertEquals("Session expired", e.getMessage());
+            Assertions.assertEquals("Session expired", e.getMessage());
         }
     }
 
@@ -59,9 +58,9 @@ public class ViewsHandlerTest extends JSONActionRouteTest {
 
         try {
             views.handleAction(params);
-            fail("ActionDeniedException should have been thrown");
+            Assertions.fail("ActionDeniedException should have been thrown");
         } catch (ActionException e) {
-            assertEquals("Admin only", e.getMessage());
+            Assertions.assertEquals("Admin only", e.getMessage());
         }
     }
 
@@ -74,9 +73,9 @@ public class ViewsHandlerTest extends JSONActionRouteTest {
 
         try {
             views.handleAction(params);
-            fail("ActionException should have been thrown");
+            Assertions.fail("ActionException should have been thrown");
         } catch (ActionException e) {
-            assertEquals("Required parameter 'uuid' missing!", e.getMessage());
+            Assertions.assertEquals("Required parameter 'uuid' missing!", e.getMessage());
         }
     }
 
@@ -92,9 +91,9 @@ public class ViewsHandlerTest extends JSONActionRouteTest {
 
         try {
             views.handleAction(params);
-            fail("ActionException should have been thrown");
+            Assertions.fail("ActionException should have been thrown");
         } catch (ActionException e) {
-            assertEquals("View not found!", e.getMessage());
+            Assertions.assertEquals("View not found!", e.getMessage());
         }
     }
 
@@ -123,20 +122,20 @@ public class ViewsHandlerTest extends JSONActionRouteTest {
         views.handleAction(params);
 
         byte[] body = respOut.toByteArray();
-        assertNotNull(body);
-        assertTrue(body.length > 0);
+        Assertions.assertNotNull(body);
+        Assertions.assertTrue(body.length > 0);
         String jsonStr = new String(body, StandardCharsets.UTF_8);
         JSONObject viewJSON = new JSONObject(jsonStr);
         View view = ViewHelper.viewFromJson(bundleService, viewJSON);
 
         // id and uuid should not be copied over with export functionality
         // default id is -1, default uuid is null
-        assertEquals(-1L, view.getId());
-        assertNull(view.getUuid());
+        Assertions.assertEquals(-1L, view.getId());
+        Assertions.assertNull(view.getUuid());
 
         // name and type should be same as what we added to the service
-        assertEquals(foo.getName(), view.getName());
-        assertEquals(foo.getType(), view.getType());
+        Assertions.assertEquals(foo.getName(), view.getName());
+        Assertions.assertEquals(foo.getType(), view.getType());
 
         respOut.toByteArray();
     }
@@ -160,18 +159,18 @@ public class ViewsHandlerTest extends JSONActionRouteTest {
         views.handleAction(params);
 
         byte[] body = respOut.toByteArray();
-        assertNotNull(body);
-        assertTrue(body.length > 0);
+        Assertions.assertNotNull(body);
+        Assertions.assertTrue(body.length > 0);
 
         String bodyStr = new String(body, StandardCharsets.UTF_8);
         JSONObject json = new JSONObject(bodyStr);
 
-        assertTrue(json.has("id"));
-        assertTrue(json.getLong("id") > -1L);
-        assertTrue(json.has("uuid"));
+        Assertions.assertTrue(json.has("id"));
+        Assertions.assertTrue(json.getLong("id") > -1L);
+        Assertions.assertTrue(json.has("uuid"));
         String uuid = json.getString("uuid");
-        assertNotNull(uuid);
-        assertEquals(36, uuid.length());
+        Assertions.assertNotNull(uuid);
+        Assertions.assertEquals(36, uuid.length());
     }
 
     private static View getDummyView() {

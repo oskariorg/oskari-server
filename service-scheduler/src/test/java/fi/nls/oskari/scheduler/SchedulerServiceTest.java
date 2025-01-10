@@ -1,8 +1,8 @@
 package fi.nls.oskari.scheduler;
 
 import fi.nls.oskari.util.PropertyUtil;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -33,7 +33,7 @@ public class SchedulerServiceTest {
             ss.initializeScheduler();
             TimeUnit.SECONDS.sleep(2);
             ss.shutdownScheduler();
-            Assert.assertTrue("Quartz called the requested method", METHOD_CALLED.get());
+            Assertions.assertTrue(METHOD_CALLED.get(), "Quartz called the requested method");
         } finally {
             PropertyUtil.clearProperties();
         }

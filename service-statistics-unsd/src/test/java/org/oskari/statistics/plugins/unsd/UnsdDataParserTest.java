@@ -15,7 +15,8 @@ import java.util.Set;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import fi.nls.oskari.control.statistics.data.IdNamePair;
 import fi.nls.oskari.control.statistics.data.IndicatorValue;
@@ -78,66 +79,62 @@ public class UnsdDataParserTest {
     @Test
     public void testIndicators() throws JSONException {
         List<StatisticalIndicator> indicators = UnsdIndicatorParser.parseIndicators(targetResponse);
-        assertFalse("Did not parse any indicator codes from target response.", indicators.isEmpty());
+        Assertions.assertFalse(indicators.isEmpty(), "Did not parse any indicator codes from target response.");
     }
 
     @Test
     public void testIndicatorSource() throws JSONException {
         Map<String, String> sources = UnsdIndicatorParser.parseSource(dataResponseUnlimited);
-        assertNotNull("Indicator doesn't have source.", sources.get("en"));
+        Assertions.assertNotNull(sources.get("en"), "Indicator doesn't have source.");
     }
 
     @Test
     public void testIndicatorData() throws JSONException {
         Map<String, IndicatorValue> valuesByRegion = UnsdDataParser.parseIndicatorData(dataResponseUnlimited);
-        assertFalse("Did not parse any data from response.", valuesByRegion.isEmpty());
+        Assertions.assertFalse(valuesByRegion.isEmpty(), "Did not parse any data from response.");
     }
 
     @Test
     public void testIndicatorDataPages() throws JSONException {
         Boolean lastPage = UnsdDataParser.isLastPage(dataResponse2015AreaLimited);
-        assertNotNull("Could not parse page info", lastPage);
-        assertTrue("The response wasn't the last page.", lastPage);
+        Assertions.assertNotNull(lastPage, "Could not parse page info");
+        Assertions.assertTrue(lastPage, "The response wasn't the last page.");
 
         lastPage = UnsdDataParser.isLastPage(dataResponseUnlimited);
-        assertNotNull("Could not parse page info", lastPage);
-        assertFalse("The response was the last page.", lastPage);
+        Assertions.assertNotNull(lastPage, "Could not parse page info");
+        Assertions.assertFalse(lastPage, "The response was the last page.");
     }
 
     @Test
     public void testIndicatorDimensions() {
         StatisticalIndicatorDataModel m = UnsdIndicatorParser.parseDimensions(dataResponseUnlimited);
-        assertNotNull(m);
-        assertNotNull(m.getDimensions());
-        assertEquals(EXPECTED_DIMENSIONS_COUNT, m.getDimensions().size());
+        Assertions.assertNotNull(m);
+        Assertions.assertNotNull(m.getDimensions());
+        Assertions.assertEquals(EXPECTED_DIMENSIONS_COUNT, m.getDimensions().size());
         StatisticalIndicatorDataDimension d = m.getDimensions().get(0);
-        assertEquals(EXPECTED_DIMENSION_ID, d.getId());
+        Assertions.assertEquals(EXPECTED_DIMENSION_ID, d.getId());
         List<IdNamePair> dimensionsAllowedValues = d.getAllowedValues();
-        assertNotNull(dimensionsAllowedValues);
-        assertEquals(EXPECTED_DIMENSION_ALLOWED_VALUES.size(), dimensionsAllowedValues.size());
-        EXPECTED_DIMENSION_ALLOWED_VALUES.forEach(v -> assertTrue(
-                String.format("Expected key %s not found from dimensions parsed allowed values", v.getKey()),
-                dimensionsAllowedValues.contains(v)));
+        Assertions.assertNotNull(dimensionsAllowedValues);
+        Assertions.assertEquals(EXPECTED_DIMENSION_ALLOWED_VALUES.size(), dimensionsAllowedValues.size());
+        EXPECTED_DIMENSION_ALLOWED_VALUES.forEach(v -> Assertions.assertTrue(dimensionsAllowedValues.contains(v), String.format("Expected key %s not found from dimensions parsed allowed values", v.getKey())));
     }
 
     @Test
     public void testIndicatorTimePeriodDimensionValues() {
         Map<Integer, Set<Integer>> geoAreaCodesForYears = new HashMap<>();
         UnsdDataParser.parseTimePeriod(geoAreaCodesForYears, dataResponseUnlimited);
-        assertNotNull(geoAreaCodesForYears);
-        assertEquals(EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.size(), geoAreaCodesForYears.keySet().size());
+        Assertions.assertNotNull(geoAreaCodesForYears);
+        Assertions.assertEquals(EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.size(), geoAreaCodesForYears.keySet().size());
         EXPECTED_TIMEPERIOD_DIMENSION_ALLOWED_VALUES.entrySet().forEach(e -> {
-            assertTrue(String.format("Expected key %s not found", e.getKey()),
-                    geoAreaCodesForYears.containsKey(e.getKey()));
-            assertEquals(String.format("For year %s", e.getKey()),
-                    e.getValue(), geoAreaCodesForYears.get(e.getKey()));
+            Assertions.assertTrue(geoAreaCodesForYears.containsKey(e.getKey()), String.format("Expected key %s not found", e.getKey()));
+            Assertions.assertEquals(e.getValue(), geoAreaCodesForYears.get(e.getKey()), String.format("For year %s", e.getKey()));
         });
     }
     
     @Test
     public void testIndicatorTimePeriodFilteringAndSorting() {
         List <IdNamePair> result = UnsdDataParser.getSortedListOfYearsThatBelongToSeveralGeoAreas(TIMEPERIOD_FILTER_AND_SORT_TEST_INPUT);
-        assertNotNull(result);
-        assertEquals(EXPECTED_TIMEPERIOD_FILTERED_AND_SORTED_VALUES, result);
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(EXPECTED_TIMEPERIOD_FILTERED_AND_SORTED_VALUES, result);
     }
 }

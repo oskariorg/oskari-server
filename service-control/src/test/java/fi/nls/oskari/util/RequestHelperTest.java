@@ -1,6 +1,7 @@
 package fi.nls.oskari.util;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
@@ -30,9 +31,9 @@ public class RequestHelperTest {
         doReturn(Collections.enumeration(input.keySet())).when(req).getParameterNames();
 
         final Map<String, String> map = RequestHelper.parsePrefixedParamsMap (req, PREFIX);
-        assertEquals("Should have two entries", 2, map.size());
-        assertEquals("Should parse finnish", "test suomi", map.get("fi"));
-        assertEquals("Should parse english", "test english", map.get("en"));
+        Assertions.assertEquals(2, map.size(), "Should have two entries");
+        Assertions.assertEquals("test suomi", map.get("fi"), "Should parse finnish");
+        Assertions.assertEquals("test english", map.get("en"), "Should parse english");
 
     }
 }

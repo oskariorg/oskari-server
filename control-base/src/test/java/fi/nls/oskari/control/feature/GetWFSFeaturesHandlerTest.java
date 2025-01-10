@@ -7,9 +7,10 @@ import java.util.Optional;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import org.locationtech.jts.geom.Envelope;
@@ -21,14 +22,14 @@ public class GetWFSFeaturesHandlerTest {
 
     private GetWFSFeaturesHandler handler;
 
-    @Before
+    @BeforeEach
     public void init() {
         handler = new GetWFSFeaturesHandler();
         handler.init();
     }
 
     @Test
-    @Ignore("Depends on an outside resource")
+    @Disabled("Depends on an outside resource")
     public void testGetFeatures() throws Exception {
         String id = "10";
         OskariLayer layer = new OskariLayer();
@@ -44,7 +45,7 @@ public class GetWFSFeaturesHandlerTest {
         SimpleFeatureCollection sfc = handler.featureClient.getFeatures(id, layer, bbox, webMercator, Optional.empty());
 
         CoordinateReferenceSystem actualCRS = sfc.getSchema().getGeometryDescriptor().getCoordinateReferenceSystem();
-        assertTrue(CRS.equalsIgnoreMetadata(webMercator, actualCRS));
+        Assertions.assertTrue(CRS.equalsIgnoreMetadata(webMercator, actualCRS));
     }
 
 }

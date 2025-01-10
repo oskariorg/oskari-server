@@ -8,8 +8,9 @@ import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,13 +20,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.Assert.*;
-
 public class ViewHelperTest {
 
     private BundleService bundleService;
 
-    @Before
+    @BeforeEach
     public void init() {
         bundleService = new BundleServiceMemory();
     }
@@ -37,12 +36,12 @@ public class ViewHelperTest {
         // work around for static helper that uses property values that are set before this test and might result this test to fail
         ViewHelper.setInstanceAddress(null);
         ViewHelper.setUnrestrictedUsageDomains(PropertyUtil.getCommaSeparatedList("view.published.usage.unrestrictedDomains"));
-        assertTrue("Null-referer should be ok", ViewHelper.isRefererDomain(null, "http://testing.net"));
-        assertTrue("Instance domain as referer should be ok", ViewHelper.isRefererDomain("https://testdomain.org", "http://testing.net"));
-        assertTrue("Unrestricted domain 1 as referer should be ok", ViewHelper.isRefererDomain("https://legit.com", "http://testing.net"));
-        assertTrue("Unrestricted domain 2 as referer should be ok", ViewHelper.isRefererDomain("https://dummy.org", "http://testing.net"));
+        Assertions.assertTrue(ViewHelper.isRefererDomain(null, "http://testing.net"), "Null-referer should be ok");
+        Assertions.assertTrue(ViewHelper.isRefererDomain("https://testdomain.org", "http://testing.net"), "Instance domain as referer should be ok");
+        Assertions.assertTrue(ViewHelper.isRefererDomain("https://legit.com", "http://testing.net"), "Unrestricted domain 1 as referer should be ok");
+        Assertions.assertTrue(ViewHelper.isRefererDomain("https://dummy.org", "http://testing.net"), "Unrestricted domain 2 as referer should be ok");
 
-        assertFalse("Random referer should NOT be ok", ViewHelper.isRefererDomain("https://yay.com", "http://testing.net"));
+        Assertions.assertFalse(ViewHelper.isRefererDomain("https://yay.com", "http://testing.net"), "Random referer should NOT be ok");
         PropertyUtil.clearProperties();
     }
 
@@ -55,7 +54,7 @@ public class ViewHelperTest {
             b = IOHelper.readBytes(in);
         }
         if (b == null || b.length == 0) {
-            fail("Failed to read view-to-import.json");
+            Assertions.fail("Failed to read view-to-import.json");
             return;
         }
 
@@ -69,18 +68,18 @@ public class ViewHelperTest {
         bundleService.addBundleTemplate(foobar);
 
         View view = ViewHelper.viewFromJson(bundleService, viewJSON);
-        assertEquals("Default view", view.getName());
-        assertEquals("DEFAULT", view.getType());
-        assertEquals(true, view.isDefault());
-        assertEquals(true, view.isPublic());
-        assertEquals(false, view.isOnlyForUuId());
-        assertEquals("servlet", view.getApplication());
-        assertEquals("index", view.getPage());
+        Assertions.assertEquals("Default view", view.getName());
+        Assertions.assertEquals("DEFAULT", view.getType());
+        Assertions.assertEquals(true, view.isDefault());
+        Assertions.assertEquals(true, view.isPublic());
+        Assertions.assertEquals(false, view.isOnlyForUuId());
+        Assertions.assertEquals("servlet", view.getApplication());
+        Assertions.assertEquals("index", view.getPage());
 
         List<Bundle> bundles = view.getBundles();
-        assertNotNull(bundles);
-        assertEquals(1, bundles.size());
-        assertEquals(foobar.getName(), bundles.get(0).getName());
+        Assertions.assertNotNull(bundles);
+        Assertions.assertEquals(1, bundles.size());
+        Assertions.assertEquals(foobar.getName(), bundles.get(0).getName());
     }
 
     @Test
@@ -105,23 +104,23 @@ public class ViewHelperTest {
         JSONObject viewJSON = ViewHelper.viewToJson(bundleService, view1);
         View view2 = ViewHelper.viewFromJson(bundleService, viewJSON);
 
-        assertEquals(view1.getName(), view2.getName());
-        assertEquals(view1.getType(), view2.getType());
-        assertEquals(view1.isDefault(), view2.isDefault());
-        assertEquals(view1.isPublic(), view2.isPublic());
-        assertEquals(view1.isOnlyForUuId(), view2.isOnlyForUuId());
-        assertEquals(view1.getApplication(), view2.getApplication());
-        assertEquals(view1.getPage(), view2.getPage());
+        Assertions.assertEquals(view1.getName(), view2.getName());
+        Assertions.assertEquals(view1.getType(), view2.getType());
+        Assertions.assertEquals(view1.isDefault(), view2.isDefault());
+        Assertions.assertEquals(view1.isPublic(), view2.isPublic());
+        Assertions.assertEquals(view1.isOnlyForUuId(), view2.isOnlyForUuId());
+        Assertions.assertEquals(view1.getApplication(), view2.getApplication());
+        Assertions.assertEquals(view1.getPage(), view2.getPage());
 
         List<Bundle> bundles1 = view1.getBundles();
         List<Bundle> bundles2 = view2.getBundles();
-        assertNotNull(bundles1);
-        assertNotNull(bundles2);
-        assertEquals(bundles1.size(), bundles2.size());
+        Assertions.assertNotNull(bundles1);
+        Assertions.assertNotNull(bundles2);
+        Assertions.assertEquals(bundles1.size(), bundles2.size());
         for (int i = 0; i < bundles1.size(); i++) {
             Bundle b1 = bundles1.get(i);
             Bundle b2 = bundles2.get(i);
-            assertEquals(b1.getName(), b2.getName());
+            Assertions.assertEquals(b1.getName(), b2.getName());
         }
     }
 

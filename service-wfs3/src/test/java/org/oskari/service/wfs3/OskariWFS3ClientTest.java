@@ -12,8 +12,9 @@ import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.json.JSONArray;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.operation.predicate.RectangleIntersects;
 import org.opengis.feature.simple.SimpleFeature;
@@ -26,7 +27,7 @@ import fi.nls.oskari.util.JSONHelper;
 
 public class OskariWFS3ClientTest {
 
-    @Ignore("Depends on outside service, results might vary")
+    @Disabled("Depends on outside service, results might vary")
     @Test
     public void testGetFeaturesBbox() throws ServiceException, IOException {
         OskariLayer layer = new OskariLayer();
@@ -44,13 +45,13 @@ public class OskariWFS3ClientTest {
         // has to be packed into a single &filter=<...>
 
         sfc = OskariWFS3Client.getFeatures(layer, null, crs, Filter.INCLUDE);
-        assertEquals("Expect all twenty features if no bbox filter", 20, sfc.size());
+        Assertions.assertEquals(20, sfc.size(), "Expect all twenty features if no bbox filter");
         
         sfc = OskariWFS3Client.getFeatures(layer, bbox, crs, null);
-        assertEquals("Expect three features to hit our bbox", 3, sfc.size());
+        Assertions.assertEquals(3, sfc.size(), "Expect three features to hit our bbox");
     }
 
-    @Ignore("Depends on outside service, results might vary")
+    @Disabled("Depends on outside service, results might vary")
     @Test
     public void testGetFeaturesWebMercator() throws Exception {
         OskariLayer layer = new OskariLayer();
@@ -63,12 +64,12 @@ public class OskariWFS3ClientTest {
         RectangleIntersects ri = new RectangleIntersects(JTS.toGeometry(bbox));
 
         SimpleFeatureCollection sfc = OskariWFS3Client.getFeatures(layer, bbox, webmerc, null);
-        assertEquals("Expect three features to hit our bbox", 3, sfc.size());
+        Assertions.assertEquals(3, sfc.size(), "Expect three features to hit our bbox");
         try (SimpleFeatureIterator it = sfc.features()) {
             while (it.hasNext()) {
                 SimpleFeature f = it.next();
                 Geometry g = (Geometry) f.getDefaultGeometry();
-                assertTrue(ri.intersects(g));
+                Assertions.assertTrue(ri.intersects(g));
             }
         }
     }

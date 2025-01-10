@@ -12,7 +12,8 @@ import java.util.HashMap;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.CoordinateSequence;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -46,7 +47,7 @@ public class VectorFeatureWriterHandlerTest {
         String wfsTransaction = VectorFeatureWriterHandler.createWFSTMessageForUpdate(oskariFeature);
         double[] actual = readPosList(wfsTransaction);
 
-        assertArrayEquals(pts, actual, 1e-10);
+        Assertions.assertArrayEquals(pts, actual, 1e-10);
     }
 
     @Test
@@ -70,8 +71,8 @@ public class VectorFeatureWriterHandlerTest {
         String wfsTransaction = VectorFeatureWriterHandler.createWFSTMessageForInsert(oskariFeature);
         double[] actual = readPosList(wfsTransaction);
         for (int i = 0; i < pts.length / 2; i++) {
-            assertEquals(pts[i * 2 + 0], actual[i * 2 + 1], 1e-10);
-            assertEquals(pts[i * 2 + 1], actual[i * 2 + 0], 1e-10);
+            Assertions.assertEquals(pts[i * 2 + 0], actual[i * 2 + 1], 1e-10);
+            Assertions.assertEquals(pts[i * 2 + 1], actual[i * 2 + 0], 1e-10);
         }
     }
 

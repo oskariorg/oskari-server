@@ -6,7 +6,8 @@ import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.referencing.CRS;
 import org.json.JSONObject;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.MultiLineString;
 import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeature;
@@ -56,28 +57,28 @@ public class UserLayerWFSHelperTest {
             }
         }
 
-        assertEquals(5, f.getAttributeCount());
+        Assertions.assertEquals(5, f.getAttributeCount());
         Property defaultGeometry = f.getDefaultGeometryProperty();
         Property interpoloi = f.getProperty("INTERPOLOI");
         Property lahdeainei = f.getProperty("LAHDEAINEI");
         Property id = f.getProperty("ID");
         Property laji = f.getProperty("LAJI");
 
-        assertEquals(original.getSchema().getGeometryDescriptor().getName().getLocalPart(), defaultGeometry.getName().getLocalPart());
-        assertEquals(MultiLineString.class, defaultGeometry.getType().getBinding());
-        assertEquals(MultiLineString.class, defaultGeometry.getValue().getClass());
+        Assertions.assertEquals(original.getSchema().getGeometryDescriptor().getName().getLocalPart(), defaultGeometry.getName().getLocalPart());
+        Assertions.assertEquals(MultiLineString.class, defaultGeometry.getType().getBinding());
+        Assertions.assertEquals(MultiLineString.class, defaultGeometry.getValue().getClass());
 
-        assertEquals(Integer.class, interpoloi.getValue().getClass());
-        assertEquals(1, interpoloi.getValue());
+        Assertions.assertEquals(Integer.class, interpoloi.getValue().getClass());
+        Assertions.assertEquals(1, interpoloi.getValue());
 
-        assertEquals(String.class, lahdeainei.getValue().getClass());
-        assertEquals("0", lahdeainei.getValue());
+        Assertions.assertEquals(String.class, lahdeainei.getValue().getClass());
+        Assertions.assertEquals("0", lahdeainei.getValue());
 
-        assertEquals(Double.class, id.getValue().getClass());
-        assertEquals(1.48627129E8, ((Double) id.getValue()).doubleValue(), 1e-8);
+        Assertions.assertEquals(Double.class, id.getValue().getClass());
+        Assertions.assertEquals(1.48627129E8, ((Double) id.getValue()).doubleValue(), 1e-8);
 
-        assertEquals(String.class, laji.getValue().getClass());
-        assertEquals("696", laji.getValue());
+        Assertions.assertEquals(String.class, laji.getValue().getClass());
+        Assertions.assertEquals("696", laji.getValue());
     }
 
     @Test
@@ -93,8 +94,8 @@ public class UserLayerWFSHelperTest {
 
         // Check that the first feature has the same number of attributes as schema
         SimpleFeature firstFeature = retyped.features().next();
-        assertEquals(4, firstFeature.getAttributeCount());
-        assertEquals(4, retyped.getSchema().getAttributeCount());
+        Assertions.assertEquals(4, firstFeature.getAttributeCount());
+        Assertions.assertEquals(4, retyped.getSchema().getAttributeCount());
         try (SimpleFeatureIterator it = retyped.features()) {
             while (it.hasNext()) {
                 SimpleFeature feature = it.next();
@@ -102,7 +103,7 @@ public class UserLayerWFSHelperTest {
                 if (feature.getID().equals(firstFeature.getID())) {
                     continue;
                 }
-                assertEquals(5, feature.getAttributeCount());
+                Assertions.assertEquals(5, feature.getAttributeCount());
             }
         }
     }
@@ -119,8 +120,8 @@ public class UserLayerWFSHelperTest {
 
         // Check that the first feature has the same number of attributes as schema
         SimpleFeature firstFeature = retyped.features().next();
-        assertEquals(6, firstFeature.getAttributeCount());
-        assertEquals(6, retyped.getSchema().getAttributeCount());
+        Assertions.assertEquals(6, firstFeature.getAttributeCount());
+        Assertions.assertEquals(6, retyped.getSchema().getAttributeCount());
         try (SimpleFeatureIterator it = retyped.features()) {
             while (it.hasNext()) {
                 SimpleFeature feature = it.next();
@@ -128,7 +129,7 @@ public class UserLayerWFSHelperTest {
                 if (feature.getID().equals(firstFeature.getID())) {
                     continue;
                 }
-                assertEquals(5, feature.getAttributeCount());
+                Assertions.assertEquals(5, feature.getAttributeCount());
             }
         }
     }

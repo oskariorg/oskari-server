@@ -4,36 +4,36 @@ import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class XLSXStreamerTest {
 
     public XLSXStreamerTest() {
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpClass() {
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDownClass() {
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void testStreamToFile() throws Exception {
         XLSXStreamer streamer = new XLSXStreamer();
         

@@ -5,12 +5,13 @@ import static org.junit.Assert.assertTrue;
 
 import fi.nls.oskari.util.DuplicateException;
 import fi.nls.oskari.util.PropertyUtil;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
+import org.junit.jupiter.api.Test;
 
 public class ResourceTest {
 
@@ -19,7 +20,7 @@ public class ResourceTest {
 
 
 
-    @Before
+    @BeforeEach
     public void setup() throws DuplicateException {
         guest = new Role();
         guest.setId(1);
@@ -32,7 +33,7 @@ public class ResourceTest {
         PropertyUtil.addProperty("oskari.user.service", "fi.nls.oskari.service.DummyUserService", true);
     }
 
-    @After
+    @AfterEach
     public void teardown() {
         PropertyUtil.clearProperties();
     }
@@ -40,39 +41,39 @@ public class ResourceTest {
     @Test
     public void testHasPermission() {
         Resource resource = new Resource();
-        assertFalse(resource.hasPermission(guest, PermissionType.DOWNLOAD));
-        assertFalse(resource.hasPermission(guest, PermissionType.EDIT_LAYER));
+        Assertions.assertFalse(resource.hasPermission(guest, PermissionType.DOWNLOAD));
+        Assertions.assertFalse(resource.hasPermission(guest, PermissionType.EDIT_LAYER));
 
         resource.addPermission(getPermision(PermissionType.DOWNLOAD, guest));
         resource.addPermission(getPermision(PermissionType.DOWNLOAD, admin));
-        assertTrue(resource.hasPermission(guest, PermissionType.DOWNLOAD));
-        assertFalse(resource.hasPermission(guest, PermissionType.EDIT_LAYER));
+        Assertions.assertTrue(resource.hasPermission(guest, PermissionType.DOWNLOAD));
+        Assertions.assertFalse(resource.hasPermission(guest, PermissionType.EDIT_LAYER));
 
         resource.removePermissionsOfType(PermissionType.DOWNLOAD, PermissionExternalType.ROLE, (int) guest.getId());
-        assertFalse(resource.hasPermission(guest, PermissionType.DOWNLOAD));
-        assertFalse(resource.hasPermission(guest, PermissionType.EDIT_LAYER));
+        Assertions.assertFalse(resource.hasPermission(guest, PermissionType.DOWNLOAD));
+        Assertions.assertFalse(resource.hasPermission(guest, PermissionType.EDIT_LAYER));
 
         resource.addPermission(getPermision(PermissionType.EDIT_LAYER, guest));
-        assertFalse(resource.hasPermission(guest, PermissionType.DOWNLOAD));
-        assertTrue(resource.hasPermission(guest, PermissionType.EDIT_LAYER));
+        Assertions.assertFalse(resource.hasPermission(guest, PermissionType.DOWNLOAD));
+        Assertions.assertTrue(resource.hasPermission(guest, PermissionType.EDIT_LAYER));
 
         User user = new User();
         user.setId(1);
 
-        assertFalse(resource.hasPermission(user, PermissionType.EDIT_LAYER));
-        assertFalse(resource.hasPermission(user, PermissionType.DOWNLOAD));
+        Assertions.assertFalse(resource.hasPermission(user, PermissionType.EDIT_LAYER));
+        Assertions.assertFalse(resource.hasPermission(user, PermissionType.DOWNLOAD));
 
         user.addRole(guest);
-        assertFalse(resource.hasPermission(user, PermissionType.DOWNLOAD));
-        assertTrue(resource.hasPermission(user, PermissionType.EDIT_LAYER));
+        Assertions.assertFalse(resource.hasPermission(user, PermissionType.DOWNLOAD));
+        Assertions.assertTrue(resource.hasPermission(user, PermissionType.EDIT_LAYER));
 
         user.clearRoles();
-        assertFalse(resource.hasPermission(user, PermissionType.DOWNLOAD));
-        assertFalse(resource.hasPermission(user, PermissionType.EDIT_LAYER));
+        Assertions.assertFalse(resource.hasPermission(user, PermissionType.DOWNLOAD));
+        Assertions.assertFalse(resource.hasPermission(user, PermissionType.EDIT_LAYER));
 
         user.addRole(admin);
-        assertTrue(resource.hasPermission(user, PermissionType.DOWNLOAD));
-        assertTrue(resource.hasPermission(user, PermissionType.EDIT_LAYER));
+        Assertions.assertTrue(resource.hasPermission(user, PermissionType.DOWNLOAD));
+        Assertions.assertTrue(resource.hasPermission(user, PermissionType.EDIT_LAYER));
     }
 
     public Permission getPermision(PermissionType type, Role role) {

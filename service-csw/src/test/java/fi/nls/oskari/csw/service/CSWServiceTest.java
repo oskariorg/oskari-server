@@ -4,7 +4,8 @@ import fi.nls.oskari.csw.domain.CSWIsoRecord;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONObject;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -14,8 +15,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import java.io.InputStream;
-
-import static org.junit.Assert.*;
 
 public class CSWServiceTest {
 
@@ -55,7 +54,7 @@ public class CSWServiceTest {
         CSWIsoRecord rec = service.mapIsoRecordElementToObject(metadata, "fi");
         JSONObject actual = rec.toJSON();
         JSONObject expected = new JSONObject(IOHelper.readString(getClass().getResourceAsStream(testfile + "-expected.json")));
-        assertTrue("JSON should match", JSONHelper.isEqual(actual, expected));
+        Assertions.assertTrue(JSONHelper.isEqual(actual, expected), "JSON should match");
     }
 
     @Test
@@ -66,6 +65,6 @@ public class CSWServiceTest {
         CSWIsoRecord rec = service.mapIsoRecordElementToObject(metadata, "fi");
         JSONObject actual = rec.toJSON();
         JSONObject expected = new JSONObject(IOHelper.readString(getClass().getResourceAsStream(testfile + "-expected.json")));
-        assertTrue("JSON should match", JSONHelper.isEqual(actual, expected));
+        Assertions.assertTrue(JSONHelper.isEqual(actual, expected), "JSON should match");
     }
 }

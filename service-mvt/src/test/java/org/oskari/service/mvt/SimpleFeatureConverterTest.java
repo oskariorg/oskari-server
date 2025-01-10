@@ -9,7 +9,8 @@ import java.util.stream.Collectors;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
@@ -56,8 +57,8 @@ public class SimpleFeatureConverterTest {
 
         Map<String, Object> props = features.get(0).properties;
         Object value = props.get("$myComplexProperty");
-        assertTrue(value instanceof String);
-        assertEquals("{'cool-words':['foo','bar','baz']}".replace('\'', '"'), value);
+        Assertions.assertTrue(value instanceof String);
+        Assertions.assertEquals("{'cool-words':['foo','bar','baz']}".replace('\'', '"'), value);
     }
 
 }

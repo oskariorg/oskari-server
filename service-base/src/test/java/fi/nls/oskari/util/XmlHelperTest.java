@@ -3,7 +3,8 @@ package fi.nls.oskari.util;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import org.apache.axiom.om.OMElement;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
@@ -23,15 +24,15 @@ public class XmlHelperTest {
     @Test
     public void testXMLParsing() throws Exception {
         OMElement elem = XmlHelper.parseXML("<test><case name=\"my test\">testing</case></test>");
-        assertNotNull("Should have element", elem);
+        Assertions.assertNotNull(elem, "Should have element");
 
         OMElement caseElem = XmlHelper.getChild(elem, "case");
-        assertNotNull("Should have case element", caseElem);
+        Assertions.assertNotNull(caseElem, "Should have case element");
 
         final Map<String, String> attrs = XmlHelper.getAttributesAsMap(caseElem);
-        assertEquals("Should have one attribute", 1, attrs.size());
-        assertEquals("Should have attribute with name 'name'", "name", attrs.keySet().iterator().next());
+        Assertions.assertEquals(1, attrs.size(), "Should have one attribute");
+        Assertions.assertEquals("name", attrs.keySet().iterator().next(), "Should have attribute with name 'name'");
 
-        assertEquals("Name attribute should have correct value", "my test", XmlHelper.getAttributeValue(caseElem, "name"));
+        Assertions.assertEquals("my test", XmlHelper.getAttributeValue(caseElem, "name"), "Name attribute should have correct value");
     }
 }

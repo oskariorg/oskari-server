@@ -4,7 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.referencing.CRS;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 
@@ -23,7 +24,7 @@ public class OskariWFS110ClientTest {
                 + "<ogc:Literal>foo</ogc:Literal>"
                 + "</ogc:PropertyIsEqualTo>"
                 + "</ogc:Filter>";
-        assertEquals(expected, actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -41,7 +42,7 @@ public class OskariWFS110ClientTest {
                 "<ogc:And><ogc:PropertyIsEqualTo matchCase=\"true\"><ogc:PropertyName>bar</ogc:PropertyName><ogc:Literal>foo</ogc:Literal></ogc:PropertyIsEqualTo>" +
                 "<ogc:BBOX><ogc:PropertyName>geometry</ogc:PropertyName><gml:Envelope srsDimension=\"2\" srsName=\"urn:x-ogc:def:crs:EPSG:3067\">" +
                 "<gml:lowerCorner>382056 6670472</gml:lowerCorner><gml:upperCorner>388896 6674196</gml:upperCorner></gml:Envelope></ogc:BBOX></ogc:And></ogc:Filter>";
-        assertEquals(expected, actual);
+        Assertions.assertEquals(expected, actual);
     }
 
 }

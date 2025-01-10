@@ -4,14 +4,20 @@ import fi.nls.oskari.ontology.domain.Keyword;
 import fi.nls.oskari.ontology.service.KeywordServiceMybatisImpl;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.util.TestHelper;
-import org.junit.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static junit.framework.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
-@Ignore
+@Disabled
 public class KeywordServiceMybatisImplTest {
 
     private static KeywordServiceMybatisImpl keywordServiceMybatis = null;
@@ -19,12 +25,12 @@ public class KeywordServiceMybatisImplTest {
     private static String testLang = null;
     private static Keyword keyword = null;
 
-    @BeforeClass
+    @BeforeAll
     public static void init() {
-        assumeTrue(TestHelper.dbAvailable());
+        Assumptions.assumeTrue(TestHelper.dbAvailable());
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         keywordServiceMybatis = new KeywordServiceMybatisImpl();
         testKeyword = "testKeyword";
@@ -42,7 +48,7 @@ public class KeywordServiceMybatisImplTest {
         keywordServiceMybatis.addKeyword(keyword);
         Keyword exactKeyword = keywordServiceMybatis.findExactKeyword(testKeyword, testLang);
 
-        assertTrue("Keyword added and found", keyword.getValue().equals(exactKeyword.getValue()));
+        Assertions.assertTrue(keyword.getValue().equals(exactKeyword.getValue()), "Keyword added and found");
     }
 
     @Test
@@ -50,10 +56,10 @@ public class KeywordServiceMybatisImplTest {
         keywordServiceMybatis.addKeyword(keyword);
         List<Keyword> keywordList = keywordServiceMybatis.findKeywordsMatching(testKeyword);
 
-        assertTrue("Keyword added and found", keyword.getValue().equals(keywordList.get(0).getValue()));
+        Assertions.assertTrue(keyword.getValue().equals(keywordList.get(0).getValue()), "Keyword added and found");
     }
 
-    @AfterClass
+    @AfterAll
     public static void delete() {
         PropertyUtil.clearProperties();
     }

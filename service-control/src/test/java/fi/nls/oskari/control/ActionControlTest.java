@@ -1,18 +1,16 @@
 package fi.nls.oskari.control;
 
 import fi.nls.oskari.util.PropertyUtil;
-import org.junit.After;
-import org.junit.Test;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Created by SMAKINEN on 13.8.2015.
  */
 public class ActionControlTest {
 
-    @After
+    @AfterEach
     public void teardown() throws Exception {
         PropertyUtil.clearProperties();
         ActionControl.teardown();
@@ -26,8 +24,8 @@ public class ActionControlTest {
         ActionControl.addAction("blacklisted1", new DummyActionHandler());
         ActionControl.addAction("blacklisted32", new DummyActionHandler());
         ActionControl.addAction("dummy2", new DummyActionHandler());
-        assertTrue("Should have dummy actions", ActionControl.hasAction("dummy") && ActionControl.hasAction("dummy2"));
-        assertFalse("Shouldn't have blacklisted actions", ActionControl.hasAction("blacklisted1") || ActionControl.hasAction("blacklisted32"));
+        Assertions.assertTrue(ActionControl.hasAction("dummy") && ActionControl.hasAction("dummy2"), "Should have dummy actions");
+        Assertions.assertFalse(ActionControl.hasAction("blacklisted1") || ActionControl.hasAction("blacklisted32"), "Shouldn't have blacklisted actions");
 
     }
     @Test
@@ -38,8 +36,8 @@ public class ActionControlTest {
         ActionControl.addAction("white1", new DummyActionHandler());
         ActionControl.addAction("white32", new DummyActionHandler());
         ActionControl.addAction("dummy2", new DummyActionHandler());
-        assertFalse("Shouldn't have dummy actions", ActionControl.hasAction("dummy") || ActionControl.hasAction("dummy2"));
-        assertTrue("Should have whitelisted actions", ActionControl.hasAction("white1") && ActionControl.hasAction("white32"));
+        Assertions.assertFalse(ActionControl.hasAction("dummy") || ActionControl.hasAction("dummy2"), "Shouldn't have dummy actions");
+        Assertions.assertTrue(ActionControl.hasAction("white1") && ActionControl.hasAction("white32"), "Should have whitelisted actions");
 
     }
     @Test
@@ -49,10 +47,10 @@ public class ActionControlTest {
         ActionControl.addAction("white1", new DummyActionHandler());
         ActionControl.addAction("white32", new DummyActionHandler());
         ActionControl.addAction("dummy2", new DummyActionHandler());
-        assertTrue("Should have all actions", ActionControl.hasAction("dummy")
+        Assertions.assertTrue(ActionControl.hasAction("dummy")
                 && ActionControl.hasAction("white1")
                 && ActionControl.hasAction("white32")
-                && ActionControl.hasAction("dummy2"));
+                && ActionControl.hasAction("dummy2"), "Should have all actions");
 
     }
 
@@ -64,8 +62,8 @@ public class ActionControlTest {
         ActionControl.addAction("white1", new DummyActionHandler());
         ActionControl.addAction("white32", new DummyActionHandler());
         ActionControl.addAction("dummy2", new DummyActionHandler(), true);
-        assertFalse("Shouldn't have dummy action", ActionControl.hasAction("dummy"));
-        assertTrue("Should have whitelisted and forced actions", ActionControl.hasAction("white1") && ActionControl.hasAction("white32") && ActionControl.hasAction("dummy2"));
+        Assertions.assertFalse(ActionControl.hasAction("dummy"), "Shouldn't have dummy action");
+        Assertions.assertTrue(ActionControl.hasAction("white1") && ActionControl.hasAction("white32") && ActionControl.hasAction("dummy2"), "Should have whitelisted and forced actions");
 
     }
 }

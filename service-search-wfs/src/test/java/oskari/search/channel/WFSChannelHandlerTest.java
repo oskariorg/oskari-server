@@ -8,8 +8,9 @@ import fi.nls.test.util.ResourceHelper;
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.json.JSONArray;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.assertTrue;
 
@@ -20,7 +21,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class WFSChannelHandlerTest  {
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() {
         // use relaxed comparison settings
         XMLUnit.setIgnoreComments(true);
@@ -38,7 +39,7 @@ public class WFSChannelHandlerTest  {
 
         String expected = ResourceHelper.readStringResource("WFSFilter-simple.xml", this);
         Diff xmlDiff = new Diff(filter, expected);
-        assertTrue("Should get expected simple request" + xmlDiff, xmlDiff.similar());
+        Assertions.assertTrue(xmlDiff.similar(), "Should get expected simple request" + xmlDiff);
     }
 
     @Test
@@ -51,7 +52,7 @@ public class WFSChannelHandlerTest  {
 
         String expected = ResourceHelper.readStringResource("WFSFilter-multiple.xml", this);
         Diff xmlDiff = new Diff(filter, expected);
-        assertTrue("Should get expected simple request" + xmlDiff, xmlDiff.similar());
+        Assertions.assertTrue(xmlDiff.similar(), "Should get expected simple request" + xmlDiff);
     }
 
     @Test
@@ -64,7 +65,7 @@ public class WFSChannelHandlerTest  {
 
         String expected = ResourceHelper.readStringResource("WFSFilter-simple.xml", this);
         Diff xmlDiff = new Diff(filter, expected);
-        assertTrue("Should return same result as the normal handler for single search term" + xmlDiff, xmlDiff.similar());
+        Assertions.assertTrue(xmlDiff.similar(), "Should return same result as the normal handler for single search term" + xmlDiff);
     }
 
     @Test
@@ -79,7 +80,7 @@ public class WFSChannelHandlerTest  {
         // adding the test to see if updating the filter writing will break it so testing this case as well
         String expected = ResourceHelper.readStringResource("WFSFilter-address-weird.xml", this);
         Diff xmlDiff = new Diff(filter, expected);
-        assertTrue("Should return same result as the normal handler for single search term" + xmlDiff, xmlDiff.similar());
+        Assertions.assertTrue(xmlDiff.similar(), "Should return same result as the normal handler for single search term" + xmlDiff);
     }
 
     @Test
@@ -92,7 +93,7 @@ public class WFSChannelHandlerTest  {
         System.out.println(filter);
         String expected = ResourceHelper.readStringResource("WFSFilter-address-proper.xml", this);
         Diff xmlDiff = new Diff(filter, expected);
-        assertTrue("Should return same result as the normal handler for single search term" + xmlDiff, xmlDiff.similar());
+        Assertions.assertTrue(xmlDiff.similar(), "Should return same result as the normal handler for single search term" + xmlDiff);
     }
 
     SearchCriteria getCriteria(String query) {

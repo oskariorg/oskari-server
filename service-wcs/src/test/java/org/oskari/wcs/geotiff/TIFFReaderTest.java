@@ -8,7 +8,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class TIFFReaderTest {
 
@@ -19,20 +20,20 @@ public class TIFFReaderTest {
 
         TIFFReader r = new TIFFReader(readResource("int16_neg_32500.tif"));
         IFD ifd = r.getIFD(0);
-        assertEquals(1, r.getIFDCount());
-        assertEquals(1, ifd.getBitsPerSample().length);
-        assertEquals(2, ifd.getSampleFormat()[0]);
-        assertEquals(16, ifd.getBitsPerSample()[0]);
-        assertEquals(256, ifd.getTileWidth());
-        assertEquals(256, ifd.getTileHeight());
-        assertEquals(512, ifd.getWidth());
-        assertEquals(512, ifd.getHeight());
+        Assertions.assertEquals(1, r.getIFDCount());
+        Assertions.assertEquals(1, ifd.getBitsPerSample().length);
+        Assertions.assertEquals(2, ifd.getSampleFormat()[0]);
+        Assertions.assertEquals(16, ifd.getBitsPerSample()[0]);
+        Assertions.assertEquals(256, ifd.getTileWidth());
+        Assertions.assertEquals(256, ifd.getTileHeight());
+        Assertions.assertEquals(512, ifd.getWidth());
+        Assertions.assertEquals(512, ifd.getHeight());
 
         short[] expected = new short[256 * 256];
         Arrays.fill(expected, (short) expectedValue);
         for (int tileIndex = 0; tileIndex < 4; tileIndex++) {
             short[] actual = r.readTile(0, tileIndex, new short[256 * 256]);
-            assertArrayEquals(expected, actual);
+            Assertions.assertArrayEquals(expected, actual);
         }
     }
 
@@ -43,21 +44,21 @@ public class TIFFReaderTest {
 
         TIFFReader r = new TIFFReader(readResource("uint16_65500.tif"));
         IFD ifd = r.getIFD(0);
-        assertEquals(1, r.getIFDCount());
-        assertEquals(1, ifd.getBitsPerSample().length);
-        assertEquals(1, ifd.getSampleFormat()[0]);
-        assertEquals(16, ifd.getBitsPerSample()[0]);
-        assertEquals(256, ifd.getTileWidth());
-        assertEquals(256, ifd.getTileHeight());
-        assertEquals(512, ifd.getWidth());
-        assertEquals(512, ifd.getHeight());
+        Assertions.assertEquals(1, r.getIFDCount());
+        Assertions.assertEquals(1, ifd.getBitsPerSample().length);
+        Assertions.assertEquals(1, ifd.getSampleFormat()[0]);
+        Assertions.assertEquals(16, ifd.getBitsPerSample()[0]);
+        Assertions.assertEquals(256, ifd.getTileWidth());
+        Assertions.assertEquals(256, ifd.getTileHeight());
+        Assertions.assertEquals(512, ifd.getWidth());
+        Assertions.assertEquals(512, ifd.getHeight());
 
         short[] expected = new short[256 * 256];
         Arrays.fill(expected, (short) expectedValue);
         for (int tileIndex = 0; tileIndex < 4; tileIndex++) {
             short[] actual = r.readTile(0, tileIndex, new short[256 * 256]);
-            assertEquals(expectedValue, actual[0] & 0xFFFF);
-            assertArrayEquals(expected, actual);
+            Assertions.assertEquals(expectedValue, actual[0] & 0xFFFF);
+            Assertions.assertArrayEquals(expected, actual);
         }
     }
 
@@ -68,20 +69,20 @@ public class TIFFReaderTest {
 
         TIFFReader r = new TIFFReader(readResource("float32_neg_1337_125.tif"));
         IFD ifd = r.getIFD(0);
-        assertEquals(1, r.getIFDCount());
-        assertEquals(1, ifd.getBitsPerSample().length);
-        assertEquals(3, ifd.getSampleFormat()[0]);
-        assertEquals(32, ifd.getBitsPerSample()[0]);
-        assertEquals(256, ifd.getTileWidth());
-        assertEquals(256, ifd.getTileHeight());
-        assertEquals(512, ifd.getWidth());
-        assertEquals(512, ifd.getHeight());
+        Assertions.assertEquals(1, r.getIFDCount());
+        Assertions.assertEquals(1, ifd.getBitsPerSample().length);
+        Assertions.assertEquals(3, ifd.getSampleFormat()[0]);
+        Assertions.assertEquals(32, ifd.getBitsPerSample()[0]);
+        Assertions.assertEquals(256, ifd.getTileWidth());
+        Assertions.assertEquals(256, ifd.getTileHeight());
+        Assertions.assertEquals(512, ifd.getWidth());
+        Assertions.assertEquals(512, ifd.getHeight());
 
         float[] expected = new float[256 * 256];
         Arrays.fill(expected, expectedValue);
         for (int tileIndex = 0; tileIndex < 4; tileIndex++) {
             float[] actual = r.readTile(0, tileIndex, new float[256 * 256]);
-            assertArrayEquals(expected, actual, 0.0f);
+            Assertions.assertArrayEquals(expected, actual, 0.0f);
         }
     }
 

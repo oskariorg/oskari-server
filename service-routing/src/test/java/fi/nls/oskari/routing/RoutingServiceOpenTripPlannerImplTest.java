@@ -9,8 +9,9 @@ import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class RoutingServiceOpenTripPlannerImplTest {
     private static final Logger LOGGER = LogFactory.getLogger(RoutingServiceOpenTripPlannerImplTest.class);
@@ -20,17 +21,17 @@ public class RoutingServiceOpenTripPlannerImplTest {
     private static final String MAP_SRS = "EPSG:3067";
     private static final String JSON_ENCODING = "UTF-8";
 
-    @BeforeClass
+    @BeforeAll
     public static void initialize()throws Exception{
         PropertyUtil.addProperty("routing.srs", ROUTING_SRS);
     }
 
-    @AfterClass
+    @AfterAll
     public static void goAway() throws Exception{
         PropertyUtil.clearProperties();
     }
 
-    @org.junit.Test
+    @Test
     public void testParseRouteThatIsOk() throws Exception {
         RouteParser parser = new RouteParser();
         ObjectMapper mapper = new ObjectMapper();
@@ -67,7 +68,7 @@ public class RoutingServiceOpenTripPlannerImplTest {
 
     }
 
-    @org.junit.Test
+    @Test
     public void testParseRouteThatIsNok() throws Exception {
 
         RouteParser parser = new RouteParser();

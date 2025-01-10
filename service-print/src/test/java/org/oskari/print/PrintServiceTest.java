@@ -11,8 +11,8 @@ import javax.imageio.ImageIO;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.oskari.print.request.PrintFormat;
@@ -28,7 +28,7 @@ import fi.nls.oskari.util.PropertyUtil;
 public class PrintServiceTest {
 
     @Test
-    @Ignore("Depends on karttamoottori.maanmittauslaitos.fi, doesn't test anything")
+    @Disabled("Depends on karttamoottori.maanmittauslaitos.fi, doesn't test anything")
     public void testPNG() throws ServiceException, IOException, NoSuchAuthorityCodeException, FactoryException {
         PrintRequest request = new PrintRequest();
         request.setFormat(PrintFormat.PNG);
@@ -88,7 +88,7 @@ public class PrintServiceTest {
     }
 
     @Test
-    @Ignore("Depends on karttamoottori.maanmittauslaitos.fi, doesn't test anything")
+    @Disabled("Depends on karttamoottori.maanmittauslaitos.fi, doesn't test anything")
     public void testPDF() throws ServiceException, IOException, NoSuchAuthorityCodeException, FactoryException {
         PrintRequest request = new PrintRequest();
         request.setFormat(PrintFormat.PDF);
@@ -143,7 +143,7 @@ public class PrintServiceTest {
     }
 
     @Test
-    @Ignore("Depends on outside resources, doesn't test anything")
+    @Disabled("Depends on outside resources, doesn't test anything")
     public void testPDFVector() throws ServiceException, IOException, NoSuchAuthorityCodeException, FactoryException, DuplicateException, JSONException {
         PropertyUtil.addProperty("oskari.native.srs", "EPSG:3067", true);
 

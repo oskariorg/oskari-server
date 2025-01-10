@@ -12,7 +12,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.mockito.exceptions.base.MockitoAssertionError;
 
-import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;

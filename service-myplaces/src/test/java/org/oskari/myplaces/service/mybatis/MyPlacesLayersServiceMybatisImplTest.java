@@ -9,7 +9,8 @@ import java.util.UUID;
 import fi.nls.test.util.ResourceHelper;
 import fi.nls.test.util.TestHelper;
 import org.json.JSONObject;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.test.util.JSONTestHelper;
@@ -38,25 +39,25 @@ public class MyPlacesLayersServiceMybatisImplTest {
         expected.setOptions(options);
         expected.setLocale(new JSONObject());
 
-        assertEquals(0, expected.getId());
-        assertEquals(1, service.insert(Arrays.asList(expected)));
-        assertEquals("Insert should modify id of the object", 1, expected.getId());
+        Assertions.assertEquals(0, expected.getId());
+        Assertions.assertEquals(1, service.insert(Arrays.asList(expected)));
+        Assertions.assertEquals(1, expected.getId(), "Insert should modify id of the object");
 
         // Test getById
         MyPlaceCategory actual = service.getById(1).get();
-        assertEquals(1, actual.getId());
+        Assertions.assertEquals(1, actual.getId());
         assertEq(expected, actual);
 
         // Test getByIds
         List<MyPlaceCategory> actuals = service.getByIds(new long[] { 1, 2, 3 });
-        assertEquals("Only id 1 should exist", 1, actuals.size());
+        Assertions.assertEquals(1, actuals.size(), "Only id 1 should exist");
         actual = actuals.get(0);
-        assertEquals(1, actual.getId());
+        Assertions.assertEquals(1, actual.getId());
         assertEq(expected, actual);
 
         // Test getByUserId
         actuals = service.getByUserId(uuid);
-        assertEquals("User should have 1 category", 1, actuals.size());
+        Assertions.assertEquals(1, actuals.size(), "User should have 1 category");
         actual = actuals.get(0);
         assertEq(expected, actual);
 
@@ -64,27 +65,27 @@ public class MyPlacesLayersServiceMybatisImplTest {
         expected.setCategory_name("laalaa");
         expected.setPublisher_name("faxnax");
         expected.setDefault(false);
-        assertEquals(1, service.update(Arrays.asList(expected)));
+        Assertions.assertEquals(1, service.update(Arrays.asList(expected)));
         actual = service.getById(1).get();
         assertEq(expected, actual);
         // Sanity test to check assertEq(MyPlaceCategory, MyPlaceCategory) works
-        assertEquals(1, actual.getId());
-        assertEquals("laalaa", actual.getCategory_name());
-        assertEquals("faxnax", actual.getPublisher_name());
-        assertEquals(false, actual.isDefault());
+        Assertions.assertEquals(1, actual.getId());
+        Assertions.assertEquals("laalaa", actual.getCategory_name());
+        Assertions.assertEquals("faxnax", actual.getPublisher_name());
+        Assertions.assertEquals(false, actual.isDefault());
         JSONTestHelper.shouldEqual(actual.getOptions(), new JSONObject("{'foo': 'bar', 'qux': 112}".replace('\'', '"')));
 
         // Test delete
         service.delete(new long[] { 1 });
-        assertEquals("After delete id 1 should not be available", false, service.getById(1).isPresent());
-        assertEquals("After delete user should have no categories", 0, service.getByUserId(uuid).size());
+        Assertions.assertEquals(false, service.getById(1).isPresent(), "After delete id 1 should not be available");
+        Assertions.assertEquals(0, service.getByUserId(uuid).size(), "After delete user should have no categories");
     }
 
     private void assertEq(MyPlaceCategory expected, MyPlaceCategory actual) {
-        assertEquals(expected.getId(), actual.getId());
-        assertEquals(expected.getUuid(), actual.getUuid());
-        assertEquals(expected.getCategory_name(), actual.getCategory_name());
-        assertEquals(expected.getPublisher_name(), actual.getPublisher_name());
+        Assertions.assertEquals(expected.getId(), actual.getId());
+        Assertions.assertEquals(expected.getUuid(), actual.getUuid());
+        Assertions.assertEquals(expected.getCategory_name(), actual.getCategory_name());
+        Assertions.assertEquals(expected.getPublisher_name(), actual.getPublisher_name());
         JSONTestHelper.shouldEqual(actual.getOptions(), expected.getOptions());
     }
 

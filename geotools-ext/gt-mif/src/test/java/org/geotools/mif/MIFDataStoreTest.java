@@ -7,7 +7,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 import org.geotools.data.DataStore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class MIFDataStoreTest {
     
@@ -17,8 +18,8 @@ public class MIFDataStoreTest {
         File mid = new File(getClass().getResource("kenro_alue_maarajat.MID").toURI());
         DataStore store = new MIFDataStore(mif, mid);
         String[] names = store.getTypeNames();
-        assertEquals(1, names.length);
-        assertEquals("kenro_alue_maarajat", names[0]);
+        Assertions.assertEquals(1, names.length);
+        Assertions.assertEquals("kenro_alue_maarajat", names[0]);
     }
 
 }

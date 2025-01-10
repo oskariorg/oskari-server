@@ -1,8 +1,9 @@
 package fi.nls.oskari.cache;
 
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -10,13 +11,13 @@ import java.util.Set;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-@Ignore
+@Disabled
 public class JedisManagerTest {
     private static String key;
     private static String value;
     private static String hKey;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() {
         JedisManager.connect(10, "localhost", 6379);
 
@@ -32,36 +33,36 @@ public class JedisManagerTest {
     @Test
     public void testGet() {
         String test = JedisManager.get(key);
-        assertTrue("Should get 'lollol'", test.equals(value));
+        Assertions.assertTrue(test.equals(value), "Should get 'lollol'");
     }
 
     @Test
     public void testByteGet() {
         byte[] testBytes = JedisManager.get(key.getBytes());
-        assertTrue("Should get 'lollol'", Arrays.equals(testBytes, value.getBytes()));
+        Assertions.assertTrue(Arrays.equals(testBytes, value.getBytes()), "Should get 'lollol'");
     }
 
     @Test
     public void testSet() {
         Set<String> hSet = JedisManager.hkeys(hKey);
-        assertTrue("Should contain key 'lol'", hSet.contains(key));
+        Assertions.assertTrue(hSet.contains(key), "Should contain key 'lol'");
 
         String test = JedisManager.hget(hKey, key);
-        assertTrue("Should get 'lollol'", test.equals(value));
+        Assertions.assertTrue(test.equals(value), "Should get 'lollol'");
     }
 
     @Test
     public void testKeys() {
         Set<String> keys = JedisManager.keys("lo*");
-        assertTrue("Should contain key 'lol'", keys.contains(key));
+        Assertions.assertTrue(keys.contains(key), "Should contain key 'lol'");
     }
 
     @Test
     public void testCluster() {
-        assertFalse("Null input returns false ", JedisManager.hasClusterProfile(null));
-        assertFalse("Empty profile list returns false", JedisManager.hasClusterProfile(new String[]{}));
-        assertFalse("Profiles without Redis session returns false", JedisManager.hasClusterProfile(new String[]{"some", "other"}));
-        assertTrue("Redis session profile as single returns true", JedisManager.hasClusterProfile(new String[]{JedisManager.CLUSTERED_ENV_PROFILE}));
-        assertTrue("Redis session profile in list returns true", JedisManager.hasClusterProfile(new String[]{"some", JedisManager.CLUSTERED_ENV_PROFILE, "other"}));
+        Assertions.assertFalse(JedisManager.hasClusterProfile(null), "Null input returns false ");
+        Assertions.assertFalse(JedisManager.hasClusterProfile(new String[]{}), "Empty profile list returns false");
+        Assertions.assertFalse(JedisManager.hasClusterProfile(new String[]{"some", "other"}), "Profiles without Redis session returns false");
+        Assertions.assertTrue(JedisManager.hasClusterProfile(new String[]{JedisManager.CLUSTERED_ENV_PROFILE}), "Redis session profile as single returns true");
+        Assertions.assertTrue(JedisManager.hasClusterProfile(new String[]{"some", JedisManager.CLUSTERED_ENV_PROFILE, "other"}), "Redis session profile in list returns true");
     }
 }

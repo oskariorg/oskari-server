@@ -6,10 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONObject;
-import org.junit.Test;
-import org.oskari.maplayer.model.MapLayer;
-
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class MapLayerTest {
 
@@ -23,6 +21,6 @@ public class MapLayerTest {
 
         final String output = mapper.writeValueAsString(layer);
         final String expectedOutput = IOHelper.readString(getClass().getResourceAsStream("MapLayer-expected.json"));
-        assertTrue("Serializing should match expected output", JSONHelper.isEqual(new JSONObject(expectedOutput), new JSONObject(output)));
+        Assertions.assertTrue(JSONHelper.isEqual(new JSONObject(expectedOutput), new JSONObject(output)), "Serializing should match expected output");
     }
 }

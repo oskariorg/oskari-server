@@ -1,12 +1,13 @@
 package org.oskari.utils.common;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.HashSet;
 import java.util.Set;
-
-import org.junit.Test;
 
 public class SetsTest {
 
@@ -23,9 +24,9 @@ public class SetsTest {
         b.add("baz");
 
         Set<String> intersection = Sets.intersection(a, b);
-        assertEquals(2, intersection.size());
-        assertTrue(intersection.contains("bar"));
-        assertTrue(intersection.contains("baz"));
+        Assertions.assertEquals(2, intersection.size());
+        Assertions.assertTrue(intersection.contains("bar"));
+        Assertions.assertTrue(intersection.contains("baz"));
     }
 
 }
