@@ -14,7 +14,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.sql.SQLException;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore({"javax.management.*"})

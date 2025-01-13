@@ -1,7 +1,5 @@
 package org.oskari.service.wfs.client;
 
-import static org.junit.Assert.assertEquals;
-
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.referencing.CRS;
 import org.junit.jupiter.api.Assertions;

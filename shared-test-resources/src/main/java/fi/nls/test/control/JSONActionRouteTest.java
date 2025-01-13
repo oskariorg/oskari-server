@@ -8,19 +8,31 @@ import fi.nls.test.util.JSONTestHelper;
 import fi.nls.test.util.MapBuilder;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.mockito.exceptions.base.MockitoAssertionError;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.*;
-import java.util.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.Collections;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Vector;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * @author SMAKINEN
@@ -30,12 +42,12 @@ public class JSONActionRouteTest {
 
     private StringWriter response = new StringWriter();
 
-    @Before
+    @BeforeEach
     public void jsonActionRouteSetUp() throws Exception {
         response = new StringWriter();
     }
 
-    @After
+    @AfterEach
     public void jsonActionRouteTeardown() throws Exception {
         response.close();
     }

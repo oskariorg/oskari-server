@@ -1,9 +1,16 @@
 package org.oskari.statistics.plugins.unsd;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import fi.nls.oskari.control.statistics.data.IdNamePair;
+import fi.nls.oskari.control.statistics.data.IndicatorValue;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataDimension;
+import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataModel;
+import fi.nls.oskari.util.JSONHelper;
+import fi.nls.test.util.ResourceHelper;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,19 +19,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
-import fi.nls.oskari.control.statistics.data.IdNamePair;
-import fi.nls.oskari.control.statistics.data.IndicatorValue;
-import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
-import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataDimension;
-import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataModel;
-import fi.nls.oskari.util.JSONHelper;
-import fi.nls.test.util.ResourceHelper;
 
 public class UnsdDataParserTest {
 

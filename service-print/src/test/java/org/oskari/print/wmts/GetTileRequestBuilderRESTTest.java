@@ -1,19 +1,25 @@
 package org.oskari.print.wmts;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class GetTileRequestBuilderRESTTest {
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test()
     public void nullTemplateThrowsException() {
-        new GetTileRequestBuilderREST(null);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            new GetTileRequestBuilderREST(null);
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test()
     public void emptyTemplateThrowsException() {
-        new GetTileRequestBuilderREST("");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            new GetTileRequestBuilderREST("");
+        });
+
     }
 
     @Test

@@ -8,9 +8,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 /**
  * Created with IntelliJ IDEA.
  * User: SMAKINEN

@@ -9,8 +9,6 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-
 /**
  * @author SMAKINEN
  */

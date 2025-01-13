@@ -1,11 +1,8 @@
 package org.oskari.service.wfs3;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.io.IOException;
-import java.util.Arrays;
-
+import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.service.ServiceException;
+import fi.nls.oskari.util.JSONHelper;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.geometry.jts.JTS;
@@ -21,9 +18,8 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.service.ServiceException;
-import fi.nls.oskari.util.JSONHelper;
+import java.io.IOException;
+import java.util.Arrays;
 
 public class OskariWFS3ClientTest {
 

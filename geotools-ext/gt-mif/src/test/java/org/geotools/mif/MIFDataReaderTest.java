@@ -1,15 +1,12 @@
 package org.geotools.mif;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.locationtech.jts.geom.LineString;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.locationtech.jts.geom.LineString;
 
 public class MIFDataReaderTest {
 

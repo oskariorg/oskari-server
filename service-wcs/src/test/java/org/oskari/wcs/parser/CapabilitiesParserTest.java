@@ -1,14 +1,5 @@
 package org.oskari.wcs.parser;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.oskari.utils.xml.XML;
@@ -24,6 +15,11 @@ import org.oskari.wcs.extension.CRS;
 import org.oskari.wcs.extension.Interpolation;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 
 public class CapabilitiesParserTest {
 

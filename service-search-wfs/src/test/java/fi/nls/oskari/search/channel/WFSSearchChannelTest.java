@@ -1,8 +1,5 @@
 package fi.nls.oskari.search.channel;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
 import fi.nls.oskari.service.OskariComponentManager;
 import org.json.JSONObject;
 import org.junit.jupiter.api.AfterAll;

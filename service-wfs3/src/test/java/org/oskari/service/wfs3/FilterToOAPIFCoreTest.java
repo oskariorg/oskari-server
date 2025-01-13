@@ -1,13 +1,6 @@
 package org.oskari.service.wfs3;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-
+import fi.nls.oskari.domain.map.OskariLayer;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.referencing.CRS;
 import org.json.JSONArray;
@@ -26,7 +19,10 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import fi.nls.oskari.domain.map.OskariLayer;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 public class FilterToOAPIFCoreTest {
 

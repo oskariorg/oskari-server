@@ -1,21 +1,17 @@
 package org.oskari.myplaces.service.mybatis;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
-
+import fi.nls.oskari.domain.map.MyPlaceCategory;
+import fi.nls.test.util.JSONTestHelper;
 import fi.nls.test.util.ResourceHelper;
 import fi.nls.test.util.TestHelper;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import fi.nls.oskari.domain.map.MyPlaceCategory;
-import fi.nls.test.util.JSONTestHelper;
-
 import javax.sql.DataSource;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 public class MyPlacesLayersServiceMybatisImplTest {
 

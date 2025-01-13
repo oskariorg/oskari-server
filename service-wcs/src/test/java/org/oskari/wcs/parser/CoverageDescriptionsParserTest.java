@@ -1,14 +1,5 @@
 package org.oskari.wcs.parser;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.oskari.utils.xml.XML;
@@ -22,6 +13,11 @@ import org.oskari.wcs.gml.Point;
 import org.oskari.wcs.gml.RectifiedGrid;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 
 public class CoverageDescriptionsParserTest {
 

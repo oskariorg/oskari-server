@@ -1,31 +1,26 @@
 package org.oskari.map.userlayer.input;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
-
+import fi.nls.oskari.service.ServiceException;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.NoSuchAuthorityCodeException;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateSequence;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.geom.Polygon;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import fi.nls.oskari.service.ServiceException;
+import java.io.File;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SHPParserTest {
 

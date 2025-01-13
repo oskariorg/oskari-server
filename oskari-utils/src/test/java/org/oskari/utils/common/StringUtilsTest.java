@@ -1,10 +1,5 @@
 package org.oskari.utils.common;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

@@ -3,8 +3,6 @@ package org.oskari.service.mvt;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertArrayEquals;
-
 public class WFSTileGridTest {
 
     @Test

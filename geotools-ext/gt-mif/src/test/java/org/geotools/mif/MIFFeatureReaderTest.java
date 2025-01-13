@@ -1,25 +1,20 @@
 package org.geotools.mif;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.time.LocalDate;
-
 import org.geotools.data.DataStore;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.opengis.feature.simple.SimpleFeature;
-
 import org.locationtech.jts.geom.CoordinateSequence;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.geom.Polygon;
+import org.opengis.feature.simple.SimpleFeature;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.time.LocalDate;
 
 public class MIFFeatureReaderTest {
 

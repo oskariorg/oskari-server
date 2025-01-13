@@ -1,15 +1,12 @@
 package org.oskari.wcs.geotiff;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 
 public class TIFFReaderTest {
 

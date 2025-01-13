@@ -1,17 +1,6 @@
 package fi.nls.oskari.control.feature;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.HashMap;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
+import fi.nls.oskari.domain.map.Feature;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.CoordinateSequence;
@@ -21,7 +10,13 @@ import org.locationtech.jts.geom.Polygon;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import fi.nls.oskari.domain.map.Feature;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.HashMap;
 
 public class VectorFeatureWriterHandlerTest {
 

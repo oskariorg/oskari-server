@@ -1,8 +1,11 @@
 package org.oskari.capabilities.ogc.api;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.oskari.ogcapi.OGCAPIReqClasses;
+import org.oskari.ogcapi.features.FeaturesCollectionInfo;
+import org.oskari.ogcapi.features.FeaturesContent;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,13 +17,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.oskari.ogcapi.features.FeaturesCollectionInfo;
-import org.oskari.ogcapi.features.FeaturesContent;
-import org.oskari.ogcapi.OGCAPIReqClasses;
 
 public class OGCAPIFeaturesServiceTest {
 

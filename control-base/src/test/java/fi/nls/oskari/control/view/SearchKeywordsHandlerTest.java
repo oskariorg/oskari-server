@@ -20,8 +20,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
-import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeTrue;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;

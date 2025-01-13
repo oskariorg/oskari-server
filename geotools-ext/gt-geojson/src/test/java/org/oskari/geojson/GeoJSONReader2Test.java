@@ -1,16 +1,8 @@
 package org.oskari.geojson;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import fi.nls.test.util.ResourceHelper;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.referencing.CRS;
@@ -18,12 +10,6 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.Is;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateSequence;
 import org.locationtech.jts.geom.Geometry;
@@ -35,8 +21,13 @@ import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.io.WKTReader;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import fi.nls.test.util.ResourceHelper;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 public class GeoJSONReader2Test {
 

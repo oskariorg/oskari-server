@@ -1,13 +1,6 @@
 package org.oskari.map.userlayer.input;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
-import java.io.File;
-import java.net.URISyntaxException;
-import java.sql.Timestamp;
-import java.time.Instant;
-
+import fi.nls.oskari.service.ServiceException;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.referencing.CRS;
@@ -20,7 +13,10 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 
-import fi.nls.oskari.service.ServiceException;
+import java.io.File;
+import java.net.URISyntaxException;
+import java.sql.Timestamp;
+import java.time.Instant;
 
 public class GPKGParserTest {
 

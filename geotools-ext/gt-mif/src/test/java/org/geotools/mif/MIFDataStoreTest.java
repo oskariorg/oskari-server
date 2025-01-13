@@ -1,14 +1,12 @@
 package org.geotools.mif;
 
-import static org.junit.Assert.assertEquals;
+import org.geotools.data.DataStore;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-
-import org.geotools.data.DataStore;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 
 public class MIFDataStoreTest {
     

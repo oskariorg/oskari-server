@@ -16,7 +16,7 @@ import org.junit.Test;
 
 import java.util.*;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 /**
@@ -62,7 +62,7 @@ public class GetViewsHandlerTest extends JSONActionRouteTest {
         parameters.put(ViewTypes.VIEW_TYPE, ViewTypes.USER);
 
         final ActionParameters params = createActionParams(parameters);
-        assertEquals("Parameter is set correctly", ViewTypes.USER, params.getHttpParam(ViewTypes.VIEW_TYPE));
+        assertEquals(ViewTypes.USER, params.getHttpParam(ViewTypes.VIEW_TYPE), "Parameter is set correctly");
 
         verifyResponseNotWritten(params);
         handler.handleAction(params);
@@ -78,7 +78,7 @@ public class GetViewsHandlerTest extends JSONActionRouteTest {
         parameters.put(ViewTypes.VIEW_TYPE, ViewTypes.USER);
 
         final ActionParameters params = createActionParams(parameters,getLoggedInUser());
-        assertEquals("Parameter is set correctly", ViewTypes.USER, params.getHttpParam(ViewTypes.VIEW_TYPE));
+        assertEquals(ViewTypes.USER, params.getHttpParam(ViewTypes.VIEW_TYPE), "Parameter is set correctly");
 
         verifyResponseNotWritten(params);
         handler.handleAction(params);
@@ -124,7 +124,7 @@ public class GetViewsHandlerTest extends JSONActionRouteTest {
         parameters.put(ViewTypes.VIEW_TYPE, ViewTypes.USER);
 
         final ActionParameters params = createActionParams(parameters);
-        assertEquals("Parameter is set correctly", ViewTypes.USER, params.getHttpParam(ViewTypes.VIEW_TYPE));
+        assertEquals(ViewTypes.USER, params.getHttpParam(ViewTypes.VIEW_TYPE), "Parameter is set correctly");
 
         verifyResponseNotWritten(params);
         handler.handleAction(params);
@@ -141,7 +141,7 @@ public class GetViewsHandlerTest extends JSONActionRouteTest {
         parameters.put(ViewTypes.VIEW_TYPE, ViewTypes.USER);
 
         final ActionParameters params = createActionParams(parameters,getLoggedInUser());
-        assertEquals("Parameter is set correctly", ViewTypes.USER, params.getHttpParam(ViewTypes.VIEW_TYPE));
+        assertEquals(ViewTypes.USER, params.getHttpParam(ViewTypes.VIEW_TYPE), "Parameter is set correctly");
 
         verifyResponseNotWritten(params);
         handler.handleAction(params);

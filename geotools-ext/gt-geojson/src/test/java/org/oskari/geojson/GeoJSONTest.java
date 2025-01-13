@@ -1,16 +1,11 @@
 package org.oskari.geojson;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.io.IOException;
-
+import fi.nls.oskari.util.JSONHelper;
+import fi.nls.test.util.ResourceHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.opengis.feature.simple.SimpleFeature;
-
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateSequence;
 import org.locationtech.jts.geom.GeometryCollection;
@@ -20,9 +15,9 @@ import org.locationtech.jts.geom.MultiPoint;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
+import org.opengis.feature.simple.SimpleFeature;
 
-import fi.nls.oskari.util.JSONHelper;
-import fi.nls.test.util.ResourceHelper;
+import java.io.IOException;
 
 public class GeoJSONTest {
 

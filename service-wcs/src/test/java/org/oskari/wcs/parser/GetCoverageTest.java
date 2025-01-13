@@ -1,13 +1,5 @@
 package org.oskari.wcs.parser;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-import java.util.Map;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.oskari.utils.xml.XML;
@@ -16,6 +8,12 @@ import org.oskari.wcs.coverage.CoverageDescription;
 import org.oskari.wcs.request.GetCoverage;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
 
 public class GetCoverageTest {
 

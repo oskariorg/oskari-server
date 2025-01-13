@@ -1,26 +1,22 @@
 package org.oskari.map.userlayer.input;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.File;
-import java.net.URISyntaxException;
-
+import fi.nls.oskari.service.ServiceException;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateSequence;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.MultiLineString;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.LineString;
-import org.locationtech.jts.geom.MultiLineString;
-
-import fi.nls.oskari.service.ServiceException;
+import java.io.File;
+import java.net.URISyntaxException;
 
 public class GPXParserTest {
 

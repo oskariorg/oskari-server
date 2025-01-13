@@ -1,11 +1,7 @@
 package fi.nls.oskari.control.statistics;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import java.io.IOException;
-import java.util.List;
-
+import fi.nls.oskari.control.statistics.db.RegionSet;
+import fi.nls.oskari.service.ServiceException;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
@@ -16,8 +12,8 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 import org.oskari.geojson.GeoJSON;
 
-import fi.nls.oskari.control.statistics.db.RegionSet;
-import fi.nls.oskari.service.ServiceException;
+import java.io.IOException;
+import java.util.List;
 
 public class RegionSetHelperTest {
 

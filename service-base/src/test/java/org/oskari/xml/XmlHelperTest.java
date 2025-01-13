@@ -9,9 +9,6 @@ import org.w3c.dom.Element;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 public class XmlHelperTest {
     private static final Logger log = LogFactory.getLogger(XmlHelperTest.class);
 

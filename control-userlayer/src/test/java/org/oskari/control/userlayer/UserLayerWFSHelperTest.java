@@ -20,8 +20,6 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-
 public class UserLayerWFSHelperTest {
 
     private ObjectMapper OBJECT_MAPPER = new ObjectMapper();

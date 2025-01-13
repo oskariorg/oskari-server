@@ -3,8 +3,6 @@ package org.oskari.service.wfs.client;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.InputStream;
 
 public class ExceptionReportParserTest {

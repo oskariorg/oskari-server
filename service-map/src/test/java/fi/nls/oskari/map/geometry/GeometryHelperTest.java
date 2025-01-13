@@ -1,10 +1,5 @@
 package fi.nls.oskari.map.geometry;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import org.junit.jupiter.api.Assertions;
 import org.locationtech.jts.geom.CoordinateSequence;
 import org.locationtech.jts.geom.GeometryFactory;

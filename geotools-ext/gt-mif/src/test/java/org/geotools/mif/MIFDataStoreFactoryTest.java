@@ -1,14 +1,5 @@
 package org.geotools.mif;
 
-import static org.junit.Assert.assertTrue;
-
-import java.io.IOException;
-import java.io.Serializable;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.referencing.CRS;
@@ -17,6 +8,13 @@ import org.junit.jupiter.api.Test;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MIFDataStoreFactoryTest {
 
