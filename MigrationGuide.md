@@ -22,6 +22,12 @@ See details:
 - https://stackoverflow.com/questions/55955641/correct-locale-for-indonesia-id-id-vs-in-id/55965008
 - https://bugs.openjdk.org/browse/JDK-8267069
 
+### Removed deprecated action routes
+
+- `GetWFSLayerFields` and `GetLocalizedPropertyNames` have been replaced by `DescribeLayer` 
+- (`GetLayerCapabilities` is approaching the chopping block but is still used by admin UI)
+
+
 ## 2.14.0
 
 ### Frontend

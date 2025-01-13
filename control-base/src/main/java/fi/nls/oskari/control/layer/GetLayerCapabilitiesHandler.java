@@ -21,6 +21,7 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * Returns the Capabilities for layer in XML format if the user has permissions for requested layer.
+ * Used by admin functionality to show XML
  */
 @OskariActionRoute("GetLayerCapabilities")
 public class GetLayerCapabilitiesHandler extends ActionHandler {
