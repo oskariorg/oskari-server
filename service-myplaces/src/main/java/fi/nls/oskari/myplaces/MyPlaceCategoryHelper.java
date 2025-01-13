@@ -14,7 +14,6 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 
 import fi.nls.oskari.domain.map.MyPlaceCategory;
-import fi.nls.oskari.myplaces.service.wfst.CategoriesWFSTRequestBuilder;
 import fi.nls.oskari.util.JSONHelper;
 
 public class MyPlaceCategoryHelper {
@@ -41,7 +40,7 @@ public class MyPlaceCategoryHelper {
     private static long getLongFromIdObject(Object id)
             throws IllegalArgumentException {
         if (id instanceof String) {
-            return CategoriesWFSTRequestBuilder.removePrefixFromId((String) id);
+            return removePrefixFromId((String) id);
         } else if (id instanceof Integer) {
             return ((Integer) id).longValue();
         } else if (id instanceof Long) {
@@ -49,6 +48,10 @@ public class MyPlaceCategoryHelper {
         } else {
             throw new IllegalArgumentException("Invalid id");
         }
+    }
+
+    private static long removePrefixFromId(String prefixed) {
+        return Long.parseLong(prefixed.substring("categories.".length()));
     }
 
     public static MyPlaceCategory parseFromGeoJSON(JSONObject properties) throws JSONException {

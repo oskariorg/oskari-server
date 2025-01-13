@@ -1,14 +1,11 @@
 package fi.nls.oskari.control.layer;
 
-import fi.nls.oskari.analysis.AnalysisHelper;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.analysis.Analysis;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.service.AnalysisDataService;
 import fi.nls.oskari.map.analysis.service.AnalysisDbService;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterANALYSIS;
@@ -30,7 +27,6 @@ import java.util.Set;
 @OskariActionRoute("GetAnalysisLayers")
 public class GetAnalysisLayersHandler extends ActionHandler {
 
-    private static final Logger LOG = LogFactory.getLogger(GetAnalysisLayersHandler.class);
     private AnalysisDbService analysisService;
     private PermissionService permissionsService;
 
