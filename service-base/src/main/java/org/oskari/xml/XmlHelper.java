@@ -11,6 +11,9 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -24,6 +27,9 @@ public class XmlHelper {
     private static final Logger LOGGER = LogFactory.getLogger(XmlHelper.class);
 
     public static Element parseXML(final String xml) {
+        return parseXML(xml, false);
+    }
+    public static Element parseXML(final String xml, boolean nsAware) {
         if (xml == null) {
             return null;
         }
@@ -31,10 +37,10 @@ public class XmlHelper {
         // factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
         byte[] bytes = removeDocType(xml.trim()).getBytes(StandardCharsets.UTF_8);
         try (InputStream s = new ByteArrayInputStream(bytes)) {
-            return parseXML(s);
+            return parseXML(s, nsAware);
         } catch (Exception e) {
             String logged = xml.length() > 30 ? xml.substring(27) + "..." : xml;
-            LOGGER.error("Couldnt't parse XML", LOGGER.getCauseMessages(e), logged);
+            LOGGER.error("Couldn't parse XML", LOGGER.getCauseMessages(e), logged);
             LOGGER.debug("Unparseable xml:", xml);
         }
         return null;
@@ -71,7 +77,7 @@ public class XmlHelper {
         return builder.build();
     }
 
-    // if namespace declarations are missing the localname isn't working and we need to split it manually
+    // if namespace declarations are missing the local name isn't working and we need to split it manually
     public static String getLocalName(Node el) {
         String loc = el.getLocalName();
         if (loc != null) {
@@ -182,7 +188,7 @@ public class XmlHelper {
     //    "http://schemas.opengis.net/wms/1.1.0/capabilities_1_1_0.dtd"[ <!ELEMENT VendorSpecificCapabilities EMPTY>]>
     public static String removeDocType(String input) {
         if (input == null) {
-            return input;
+            return null;
         }
         String upper = input.toUpperCase();
         int index = upper.indexOf("<!DOCTYPE");
@@ -262,8 +268,8 @@ public class XmlHelper {
 
     /**
      * Helper function mostly for debugging to serialize the element back to string
-     * @param xml
-     * @return
+     * @param xml Element to serialize as string
+     * @return serialized xml
      */
     public static String toString(final Element xml) {
         try {
@@ -272,8 +278,43 @@ public class XmlHelper {
             serializer.getDomConfig().setParameter("xml-declaration", false);
             return serializer.writeToString(xml);
         } catch (Exception e) {
-            LOGGER.error("Couldnt't serialize XML to String", LOGGER.getCauseMessages(e), xml);
+            LOGGER.error("Couldn't serialize XML to String", LOGGER.getCauseMessages(e), xml);
         }
         return null;
+    }
+
+
+    /**
+     * Obtain a new instance of a TransformerFactory with security features enabled.
+     * This static method creates a new factory instance.
+     *
+     * @return new TransformerFactory instance, never null.
+     * @throws TransformerFactoryConfigurationError - Thrown in case of service configuration error or if
+     * the implementation is not available or cannot be instantiated.
+     */
+    public static TransformerFactory newTransformerFactory() throws TransformerFactoryConfigurationError {
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        try {
+            transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+        } catch (TransformerConfigurationException ex) {
+            LOGGER.debug("Unable to enable feature for secure processing for TransformerFactory", ex.getMessage());
+        }
+        // Empty protocol String to disable access to external resources
+        try {
+            transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+        } catch (Exception e) {
+            // https://www.owasp.org/index.php/XML_External_Entity_(XXE)_Prevention_Cheat_Sheet#JAXP_DocumentBuilderFactory.2C_SAXParserFactory_and_DOM4J
+            // https://stackoverflow.com/questions/27128578/set-feature-accessexternaldtd-in-transformerfactory#29021326
+
+            // Fox example Xalan is providing a custom TransformerFactory which doesn't support this so having it in the
+            // classpath will give you this error and getting the actual impl class name is a huge win for debugging the reason.
+            // You can check which dependency brings for example Xalan to classpath by running "mvn dependency:tree"
+            LOGGER.debug("Unable to disable external DTD and stylesheets for XML parsing. Transformer class impl is",
+                    transformerFactory.getClass().getCanonicalName(), ". Error was:", e.getMessage());
+        }
+        // Disable resolving of any kind of URIs, not sure if this is actually necessary
+        transformerFactory.setURIResolver((String href, String base) -> null);
+        return transformerFactory;
     }
 }
