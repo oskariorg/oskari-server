@@ -1,19 +1,15 @@
 package fi.nls.oskari.domain.map.analysis;
 
-
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.UserDataLayer;
 
 import java.lang.reflect.Method;
 import java.util.List;
 
-
 public class Analysis extends UserDataLayer {
-
-    private long id;
-    private String name;
+    public static final String ID_PREFIX =  "analysis";
     private long layer_id;
     private String analyse_json;
-    private long style_id;
     private String col1;
     private String col2;
     private String col3;
@@ -28,12 +24,15 @@ public class Analysis extends UserDataLayer {
     private String override_sld;
     private long old_id;
 
-    public long getId() {
-        return id;
+    @Override
+    public final String getType() {
+        return OskariLayer.TYPE_ANALYSIS;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    @Override
+    public String getPrefixedId() {
+        // OskariLayer.TYPE_ANALYSIS is 'analysislayer', Override getPrefixedId() to get correct prefix
+        return ID_PREFIX  + "_" + getId();
     }
 
     public long getOld_id() {
@@ -42,14 +41,6 @@ public class Analysis extends UserDataLayer {
 
     public void setOld_id(long old_id) {
         this.old_id = old_id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public long getLayer_id() {
@@ -66,14 +57,6 @@ public class Analysis extends UserDataLayer {
 
     public void setAnalyse_json(String analyseJson) {
         analyse_json = analyseJson;
-    }
-
-    public long getStyle_id() {
-        return style_id;
-    }
-
-    public void setStyle_id(long styleId) {
-        style_id = styleId;
     }
 
     public String getCol1() {

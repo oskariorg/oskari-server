@@ -73,12 +73,45 @@ public class RegionSetHelperTest {
         }
     }
 
+    @Test
+    public void testDuplicatedRegions() throws MismatchedDimensionException, FactoryException, TransformException, ServiceException, IOException, JSONException {
+        String endPoint = "resources://ely4500k.json";
+        RegionSet elyJson = new RegionSet();
+        elyJson.setId(-1);
+        elyJson.setName("oskari:ely4500k");
+        elyJson.setSrs_name("EPSG:3067");
+        elyJson.setAttributes(getAttributes("ely", "nimi", endPoint));
+        List<Region> regions = RegionSetHelper.getRegions(elyJson, "EPSG:3067");
+        assertEquals(16, regions.size());
+    }
+
+    @Test
+    public void testFeaturesUrl() throws MismatchedDimensionException, FactoryException, TransformException, ServiceException, IOException, JSONException {
+        String endPoint = "https://my.domain";
+        String overridingEndPoint = endPoint + "/feat";
+        RegionSet kunnatJSON = new RegionSet();
+        kunnatJSON.setId(-1);
+        kunnatJSON.setUrl(endPoint);
+        kunnatJSON.setName("oskari:kunnat2013");
+        kunnatJSON.setSrs_name("EPSG:3067");
+        assertEquals("Should return url when attributes NOT defined", endPoint, kunnatJSON.getFeaturesUrl());
+
+        kunnatJSON.setAttributes(getAttributes("kuntakoodi", "kuntanimi", overridingEndPoint));
+        assertEquals("Should return features url when attributes ARE defined", overridingEndPoint, kunnatJSON.getFeaturesUrl());
+
+        overridingEndPoint = null;
+        kunnatJSON.setAttributes(getAttributes("kuntakoodi", "kuntanimi", overridingEndPoint));
+        assertEquals("Should return url when attributes ARE defined WITHOUT features url", endPoint, kunnatJSON.getFeaturesUrl());
+    }
+
     private String getAttributes(String regionIdTag, String nameIdTag, String featuresUrl) throws JSONException {
         JSONObject attributes = new JSONObject();
         JSONObject statistics = new JSONObject();
         statistics.put("regionIdTag", regionIdTag);
         statistics.put("nameIdTag", nameIdTag);
-        statistics.put("featuresUrl", featuresUrl);
+        if (featuresUrl != null) {
+            statistics.put("featuresUrl", featuresUrl);
+        }
         attributes.put("statistics", statistics);
         return attributes.toString();
     }

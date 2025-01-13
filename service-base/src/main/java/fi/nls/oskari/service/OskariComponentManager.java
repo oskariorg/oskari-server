@@ -2,6 +2,7 @@ package fi.nls.oskari.service;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import org.oskari.component.ComponentSkippedRuntimeException;
 
 import java.util.*;
 
@@ -36,6 +37,9 @@ public class OskariComponentManager {
             COMPONENTS.add(handler);
             LOG.debug("OskariComponent added:", handler.getClass().getCanonicalName());
         }
+        catch (ComponentSkippedRuntimeException ex) {
+            LOG.warn("OskariComponent skipped:", handler.getClass().getCanonicalName(), "Msg:", ex.getMessage());
+        }
         catch (Exception ex) {
             LOG.error("OskariComponent init failed! Skipping", handler.getClass().getCanonicalName(), "Msg:", ex.getMessage());
             LOG.debug(ex);
@@ -56,15 +60,26 @@ public class OskariComponentManager {
      * Uses ServiceLoader to find all OskariComponents in classpath.
      */
     public synchronized static void addDefaultComponents() {
-
         ServiceLoader<OskariComponent> impl = ServiceLoader.load(OskariComponent.class);
-        for (OskariComponent loadedImpl : impl) {
-            if ( loadedImpl != null ) {
-                addComponent(loadedImpl);
+        List<OskariComponent> sortedList = new ArrayList<>();
+        for (OskariComponent loadedImpl: impl) {
+            if (loadedImpl == null) {
+                continue;
             }
+            sortedList.add(loadedImpl);
         }
+        sortedList.sort(Comparator.comparingInt(OskariComponent::getOrder));
+        sortedList.forEach(loadedImpl -> addComponent(loadedImpl));
+        /*
+        // After Java 9+ we can use stream
+        impl.stream()
+                .filter( h -> h != null)
+                .map(h -> h.get())
+                .sorted(Comparator.comparingInt(OskariComponent::getOrder))
+                .forEach(loadedImpl -> addComponent(loadedImpl));
+         */
     }
-    public static <MOD extends OskariComponent> MOD getComponentOfType(final Class<MOD> clazz) {
+    public synchronized static <MOD extends OskariComponent> MOD getComponentOfType(final Class<MOD> clazz) {
         Map<String, MOD> map = getComponentsOfType(clazz);
         if(map.isEmpty()) {
             throw new NoSuchElementException("Coudldn't find component of type " + clazz.getName());
@@ -79,7 +94,7 @@ public class OskariComponentManager {
      * @param clazz A OskariComponent subclass we are interested in
      * @return unmodifiable map of components matching the given type
      */
-    public static <MOD extends OskariComponent> Map<String, MOD> getComponentsOfType(final Class clazz) {
+    public synchronized static <MOD extends OskariComponent> Map<String, MOD> getComponentsOfType(final Class clazz) {
         if(COMPONENTS.isEmpty()) {
             addDefaultComponents();
         }
@@ -111,5 +126,6 @@ public class OskariComponentManager {
                 LOG.error(ex, "OskariComponent teardown failed! Skipping", comp.getClass().getCanonicalName());
             }
         }
+        COMPONENTS.clear();
     }
 }

@@ -1,26 +1,25 @@
 package fi.nls.oskari.util;
 
-import com.github.kevinsawicki.http.HttpRequest;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.ServiceRuntimeException;
 import org.apache.commons.codec.binary.Base64;
 
 import javax.net.ssl.*;
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
+import java.net.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.jar.Manifest;
 import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+import java.util.AbstractMap.SimpleImmutableEntry;
+
+import static java.util.stream.Collectors.toList;
 
 /*
 Methods using HttpRequest were moved from a class called wmshelper and are
@@ -36,42 +35,51 @@ public class IOHelper {
     public static final String HEADER_REFERER = "Referer";
     public static final String HEADER_ACCEPT = "Accept";
     public static final String HEADER_ACCEPT_CHARSET = "Accept-Charset";
+    public static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
 
     public static final String CHARSET_UTF8 = "UTF-8";
     public static final String DEFAULT_CHARSET = CHARSET_UTF8;
     public static final Charset DEFAULT_CHARSET_CS = StandardCharsets.UTF_8;
     public static final String CONTENTTYPE_FORM_URLENCODED = "application/x-www-form-urlencoded";
     public static final String CONTENT_TYPE_JSON = "application/json";
+    public static final String CONTENT_TYPE_GEOJSON = "application/geo+json";
     public static final String CONTENT_TYPE_XML = "application/xml";
+    public static final String ENCODING_GZIP = "gzip";
     private static final Logger log = LogFactory.getLogger(IOHelper.class);
 
     private static SSLSocketFactory TRUSTED_FACTORY;
     private static HostnameVerifier TRUSTED_VERIFIER;
-
-    private static int CONNECTION_TIMEOUT_MS = 3000;
-    private static int READ_TIMEOUT_MS = 60000;
-    private static String MY_DOMAIN = "http://localhost:8080";
-
-    private static boolean trustAllCerts = false;
-    private static boolean trustAllHosts = false;
-
-    static {
-        CONNECTION_TIMEOUT_MS = PropertyUtil.getOptional("oskari.connection.timeout", CONNECTION_TIMEOUT_MS);
-        READ_TIMEOUT_MS = PropertyUtil.getOptional("oskari.read.timeout", READ_TIMEOUT_MS);
-        trustAllCerts = "true".equals(PropertyUtil.getOptional("oskari.trustAllCerts"));
-        trustAllHosts = "true".equals(PropertyUtil.getOptional("oskari.trustAllHosts"));
-        MY_DOMAIN = PropertyUtil.get("oskari.domain", MY_DOMAIN);
-    }
+    private static String userAgent;
 
     public static int getConnectionTimeoutMs() {
-        return CONNECTION_TIMEOUT_MS;
+        return PropertyUtil.getOptional("oskari.connection.timeout", 3000);
     }
     public static int getReadTimeoutMs() {
-        return READ_TIMEOUT_MS;
+        return PropertyUtil.getOptional("oskari.read.timeout", 60000);
+    }
+    private static boolean getTrustAllCerts() {
+        return "true".equals(PropertyUtil.getOptional("oskari.trustAllCerts"));
+    }
+    private static boolean getTrustAllHosts() {
+        return "true".equals(PropertyUtil.getOptional("oskari.trustAllHosts"));
     }
     public static String getMyDomain() {
-        return MY_DOMAIN;
+        return PropertyUtil.get("oskari.domain", "http://localhost:8080");
     }
+    public static String getUserAgent() {
+        if (userAgent == null) {
+            Package pkg = Manifest.class.getPackage();
+            String implVersion = pkg.getImplementationVersion();
+            if (implVersion == null || implVersion.isEmpty() || implVersion.contains("null")) {
+                // Some clients respond with 403 Forbidden if this includes null as string
+                // If we can't get the version, default to 0.0
+                implVersion = "0.0";
+            }
+            userAgent = "Oskari/" + implVersion;
+        }
+        return userAgent;
+    }
+
     /**
      * Reads the given input stream and converts its contents to a string using #DEFAULT_CHARSET
      * @param is
@@ -83,28 +91,36 @@ public class IOHelper {
     }
 
     /**
-     * Reads the given input stream and converts its contents to a string using #DEFAULT_CHARSET
+     * Reads the InputStream of HttpURLConnection and converts its contents to a string using #DEFAULT_CHARSET
      * @param conn
      * @return
      * @throws IOException
      */
     public static String readString(HttpURLConnection conn) throws IOException {
+        try {
+            // addRequestProperty() will not overwrite if something else has been set so it's safe here
+            conn.addRequestProperty(HEADER_ACCEPT_ENCODING, ENCODING_GZIP);
+        } catch (IllegalStateException ignored) {
+            log.ignore("Tried to add gzip header but connection was opened already so we are too late", ignored);
+            // too late to add headers, something was posted as payload already.
+            // Just skip and move on to reading the response
+        }
         return readString(conn, DEFAULT_CHARSET);
     }
     /**
-     * Reads the given input stream and converts its contents to a string using given charset
+     * Reads the InputStream of HttpURLConnection and converts its contents to a string using given charset
      * @param conn connection used to get inputstream and detect gzip encoding
      * @param charset
      * @return
      * @throws IOException
      */
     public static String readString(HttpURLConnection conn, final String charset) throws IOException {
-        if("gzip".equals(conn.getContentEncoding())) {
-            return readString(new GZIPInputStream(conn.getInputStream()), charset);
+        try (InputStream in = conn.getInputStream()) {
+            try (InputStream inner = isResponseGZIPd(conn) ? new GZIPInputStream(in) : in) {
+                return readString(inner, charset);
+            }
         }
-        return readString(conn.getInputStream(), charset);
     }
-
 
     public static List<String> readLines(InputStream in) throws IOException {
         return readLines(in, StandardCharsets.UTF_8);
@@ -113,7 +129,7 @@ public class IOHelper {
     public static List<String> readLines(InputStream in, Charset cs) throws IOException {
         try (BufferedReader br = new BufferedReader(
                 new InputStreamReader(in, cs))) {
-            return br.lines().collect(Collectors.toList());
+            return br.lines().collect(toList());
         } finally {
             in.close();
         }
@@ -122,7 +138,7 @@ public class IOHelper {
     /**
      * Reads the given InputStream and converts its contents to a String using given charset
      * Also closes the InputStream
-     * @param in the InputStream, if null then an empty String is returned
+     * @param is the InputStream, if null then an empty String is returned
      * @param charset if null then DEFAULT_CHARSET is used
      * @return InputStream's contents as a String
      */
@@ -174,17 +190,36 @@ public class IOHelper {
     }
 
     /**
-     * Reads the given input stream and returns its contents as a byte array.
+     * Reads the InputStream of HttpURLConnection to a byte array and returns that
      * @param conn used to get inputstream and detect possible gzip encoding
      * @return
      * @throws IOException
      */
     public static byte[] readBytes(HttpURLConnection conn) throws IOException {
-        if("gzip".equals(conn.getContentEncoding())) {
-            return readBytes(new GZIPInputStream(conn.getInputStream()));
+        try (InputStream in = conn.getInputStream()) {
+            try (InputStream inner = isResponseGZIPd(conn) ? new GZIPInputStream(in) : in) {
+                return readBytes(inner);
+            }
         }
-        return readBytes(conn.getInputStream());
     }
+
+    /**
+     * Reads the InputStream of HttpURLConnection to given OutputStream
+     * @param conn used to get inputstream and detect possible gzip encoding
+     * @throws IOException
+     */
+    public static void readBytesTo(HttpURLConnection conn, OutputStream out) throws IOException {
+        try (InputStream in = conn.getInputStream()) {
+            try (InputStream inner = isResponseGZIPd(conn) ? new GZIPInputStream(in) : in) {
+                copy(inner, out);
+            }
+        }
+    }
+
+    private static boolean isResponseGZIPd(HttpURLConnection conn) {
+        return ENCODING_GZIP.equals(conn.getContentEncoding());
+    }
+
     /**
      * Reads the given input stream and returns its contents as a byte array.
      * @param is
@@ -212,21 +247,52 @@ public class IOHelper {
      * Copies data from InputStream to OutputStream
      * Does not close either of the streams
      * Does nothing if either InputStream or OutputStream is null
-     * 
+     *
      * @param in
      * @param out
      * @throws IOException
      */
     public static void copy(InputStream in, OutputStream out) throws IOException {
+        copy(in, out, -1);
+    }
+
+    /**
+     * Copies data from InputStream to OutputStream
+     * Does not close either of the streams
+     * Does nothing if either InputStream or OutputStream is null
+     *
+     * @param in
+     * @param out
+     * @param sizeLimit limit the amount of bytes we are willing to copy before failing (negative number for no limit)
+     * @throws IOException
+     */
+    public static void copy(InputStream in, OutputStream out, long sizeLimit) throws IOException {
         if (in == null || out == null) {
             return;
         }
-
-        final byte[] buffer = new byte[4096];
+        int BUFFER_SIZE = 4096;
+        long total = 0;
+        final byte[] buffer = new byte[BUFFER_SIZE];
         int read = 0;
-        while ((read = in.read(buffer, 0, 4096)) != -1) {
+        while ((read = in.read(buffer, 0, BUFFER_SIZE)) != -1) {
+            if (sizeLimit > -1 && total + read > sizeLimit) {
+                throw new EOFException("Size limit reached: " + humanReadableByteCount(sizeLimit));
+            }
             out.write(buffer, 0, read);
+            total += read;
         }
+    }
+
+    // FROM https://programming.guide/java/formatting-byte-size-to-human-readable-format.html
+    // 1024B == 1KB
+    protected static String humanReadableByteCount(long bytes) {
+        return bytes < 1024L ? bytes + " B"
+                : bytes < 0xfffccccccccccccL >> 40 ? String.format("%.1f KiB", bytes / 0x1p10)
+                : bytes < 0xfffccccccccccccL >> 30 ? String.format("%.1f MiB", bytes / 0x1p20)
+                : bytes < 0xfffccccccccccccL >> 20 ? String.format("%.1f GiB", bytes / 0x1p30)
+                : bytes < 0xfffccccccccccccL >> 10 ? String.format("%.1f TiB", bytes / 0x1p40)
+                : bytes < 0xfffccccccccccccL ? String.format("%.1f PiB", (bytes >> 10) / 0x1p40)
+                : String.format("%.1f EiB", (bytes >> 20) / 0x1p40);
     }
 
     /**
@@ -270,11 +336,12 @@ public class IOHelper {
         log.debug("Opening connection to", pUrl);
         final URL url = new URL(pUrl);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setConnectTimeout(CONNECTION_TIMEOUT_MS);
-        conn.setReadTimeout(READ_TIMEOUT_MS);
+        conn.setConnectTimeout(getConnectionTimeoutMs());
+        conn.setReadTimeout(getReadTimeoutMs());
+        conn.setInstanceFollowRedirects(true);
         conn.setRequestProperty(HEADER_ACCEPT_CHARSET, CHARSET_UTF8);
-        if(trustAllCerts) trustAllCerts(conn);
-        if(trustAllHosts) trustAllHosts(conn);
+        if(getTrustAllCerts()) trustAllCerts(conn);
+        if(getTrustAllHosts()) trustAllHosts(conn);
         return conn;
     }
 
@@ -360,12 +427,26 @@ public class IOHelper {
 
             log.info("Following redirect to", location);
             HttpURLConnection newConnection = getConnection(location, user, pass, query, headers);
+            IOHelper.addIdentifierHeaders(newConnection);
             return followRedirect(newConnection, user, pass, query, headers, redirectLatch);
         } else {
             return conn;
         }
     }
 
+    public static void validateResponse(HttpURLConnection conn, String expectedContentType)
+            throws ServiceRuntimeException, IOException {
+        if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
+            throw new ServiceRuntimeException("Unexpected status code " + conn.getResponseCode());
+        }
+
+        if (expectedContentType != null) {
+            String contentType = conn.getContentType();
+            if (contentType != null && !expectedContentType.equals(contentType)) {
+                throw new ServiceRuntimeException("Unexpected content type " + contentType);
+            }
+        }
+    }
     /**
      * If logger is set to debug this method reads the input stream, prints the response as text
      * and wraps it to another input stream for further consumption.
@@ -392,6 +473,9 @@ public class IOHelper {
 
     public static String getCharset(final HttpURLConnection con, final String defaultCharset) {
         final String contentType = con.getContentType();
+        if (contentType == null) {
+            return defaultCharset;
+        }
         final String[] values = contentType.split(";");
 
         for (String value : values) {
@@ -614,6 +698,20 @@ public class IOHelper {
     }
 
     /**
+     * Writes User-agent and Referer headers to the connection.
+     * @param con       connection to write to
+     * @throws IOException
+     */
+    public static void addIdentifierHeaders(final HttpURLConnection con) throws IOException {
+        try {
+            con.setRequestProperty(HEADER_USERAGENT, getUserAgent());
+            con.setRequestProperty(HEADER_REFERER, getMyDomain());
+        } catch (IllegalStateException e) {
+            log.warn("Couldn't write ident headers:", e.getMessage());
+        }
+    }
+
+    /**
      * Encodes the given String with base64
      * @param in
      * @return
@@ -641,82 +739,6 @@ public class IOHelper {
             }
         }
         return in;
-    }
-
-    /**
-     * HTTP request method with optional basic authentication and contentType
-     * definition
-     *
-     * @param url
-     * @param data          data to post (if empty, GET method otherwise POST)
-     * @param username
-     * @param password
-     * @param host          host name for header params (optional)
-     * @param authorization (optional)
-     * @param contentType
-     * @return response body
-     */
-    public static String httpRequestAction(String url, String data, String username,
-                                           String password, String host, String authorization,
-                                           String contentType) {
-        String response = null;
-
-        if (!data.isEmpty()) {
-            response = postRequest(url, contentType, data, username, password,
-                    host, authorization);
-
-        } else
-            response = getRequest(url, contentType, username, password, host,
-                    authorization);
-
-        return response;
-    }
-
-    /**
-     * HTTP GET method with optional basic authentication and contentType
-     * definition
-     *
-     * @param url
-     * @param contentType
-     * @param username
-     * @param password
-     * @return response body
-     */
-    public static String getRequest(String url, String contentType,
-                                    String username, String password, String host, String authorization) {
-        HttpRequest request = null;
-        try {
-
-            HttpRequest.keepAlive(false);
-            if (username != null && !username.isEmpty()) {
-                request = HttpRequest.get(url).basic(username, password)
-                        .accept(contentType).connectTimeout(30)
-                        .acceptGzipEncoding().uncompress(true).trustAllCerts()
-                        .trustAllHosts();
-            } else {
-                request = HttpRequest.get(url).contentType(contentType)
-                        .connectTimeout(30).acceptGzipEncoding().uncompress(
-                                true).trustAllCerts().trustAllHosts();
-            }
-            if (host != null && !host.isEmpty()) {
-                request.header("Host", host);
-            }
-
-            if (authorization != null && !authorization.isEmpty()) {
-                request.authorization(authorization);
-            }
-            if (request.ok() || request.code() == 304)
-                return request.body();
-            else {
-                handleHTTPError("GET", url, request.code());
-            }
-
-        } catch (HttpRequest.HttpRequestException e) {
-            handleHTTPRequestFail(url, e);
-        } catch (Exception e) {
-            handleHTTPRequestFail(url, e);
-        }
-        return null;
     }
 
     public static HttpURLConnection postForm(String url, Map<String, String> keyValuePairs)
@@ -784,69 +806,6 @@ public class IOHelper {
             baos.writeTo(out);
         }
         return conn;
-    }
-
-    public static String postRequest(String url) {
-        return postRequest(url, "", "", "", null, null, null);
-    }
-
-    /**
-     * HTTP POST method with optional basic authentication and contentType
-     * definition
-     *
-     * @param url
-     * @param contentType
-     * @param username
-     * @param password
-     * @return response body
-     */
-    public static String postRequest(String url, String contentType,
-                                     String data, String username, String password, String host,
-                                     String authorization) {
-        HttpRequest request = null;
-        String response = null;
-        try {
-
-            HttpRequest.keepAlive(false);
-            if (username != null && !username.isEmpty()) {
-                request = HttpRequest.post(url)
-                        .basic(username, password)
-                        .contentType(contentType)
-                        .connectTimeout(getConnectionTimeoutMs())
-                        .acceptGzipEncoding()
-                        .uncompress(true)
-                        .trustAllCerts()
-                        .trustAllHosts()
-                        .send(data);
-            } else {
-                request = HttpRequest.post(url)
-                        .contentType(contentType)
-                        .connectTimeout(getConnectionTimeoutMs())
-                        .acceptGzipEncoding()
-                        .uncompress(true)
-                        .trustAllCerts()
-                        .trustAllHosts()
-                        .send(data);
-            }
-            if (host != null && !host.isEmpty()) {
-                request.header("Host", host);
-            }
-
-            if (authorization != null && !authorization.isEmpty()) {
-                request.authorization(authorization);
-            }
-            if (request.ok() || request.code() == 304)
-                response = request.body();
-            else {
-                handleHTTPError("POST", url, request.code());
-            }
-
-        } catch (HttpRequest.HttpRequestException e) {
-            handleHTTPRequestFail(url, e);
-        } catch (Exception e) {
-            handleHTTPRequestFail(url, e);
-        }
-        return response;
     }
 
     /**
@@ -939,6 +898,70 @@ public class IOHelper {
     }
 
     /**
+     * Parses query string to map from URL
+     * @param url
+     * @return
+     */
+    public static Map<String, List<String>> parseQuerystring(String url) {
+        if (url == null) {
+            return Collections.emptyMap();
+        }
+        try {
+            return parseQuerystring(new URL(url));
+        } catch (MalformedURLException e) {
+            throw new ServiceRuntimeException("Malformed URL: " + url, e);
+        }
+    }
+
+    /**
+     * Parses query string to map from URL
+     * @param url
+     * @return
+     */
+    // Java 8 impl from from https://stackoverflow.com/questions/13592236/parse-a-uri-string-into-name-value-collection
+    public static Map<String, List<String>> parseQuerystring(URL url) {
+        if (url == null) {
+            return Collections.emptyMap();
+        }
+        String query = url.getQuery();
+        if (query == null || query.isEmpty()) {
+            return Collections.emptyMap();
+        }
+
+        return Arrays.stream(query.split("&"))
+                .map(IOHelper::splitQueryParameter)
+                .collect(Collectors.groupingBy(SimpleImmutableEntry::getKey, LinkedHashMap::new, Collectors.mapping(Map.Entry::getValue, Collectors.toList())));
+    }
+
+    private static SimpleImmutableEntry<String, String> splitQueryParameter(String it) {
+        final int idx = it.indexOf("=");
+        final String key = idx > 0 ? it.substring(0, idx) : it;
+        final String value = idx > 0 && it.length() > idx + 1 ? it.substring(idx + 1) : null;
+        return new SimpleImmutableEntry<>(key, value);
+    }
+
+    /**
+     * Returns the same url without querystring
+     * @param url
+     * @return
+     */
+    public static String removeQueryString(String url) {
+        if (url == null) {
+            return null;
+        }
+        try {
+            URL justForTestingSyntaxNotThrowingException = new URL(url);
+            int startIndex = url.indexOf("?");
+            if (startIndex == -1) {
+                return url;
+            }
+            return url.substring(0, startIndex);
+        } catch (MalformedURLException e) {
+            throw new ServiceRuntimeException("Malformed URI: " + url, e);
+        }
+    }
+
+    /**
      * Adds parameters to given base URL. URLEncodes parameter values.
      * Note that
      * @param url
@@ -957,6 +980,9 @@ public class IOHelper {
     public static String addQueryString(String url, String queryString) {
         if (queryString == null || queryString.trim().isEmpty()) {
             return url;
+        }
+        if (url == null || url.isEmpty()) {
+            return queryString;
         }
         final StringBuilder urlBuilder = new StringBuilder(url);
         char lastChar = urlBuilder.charAt(urlBuilder.length()-1);
@@ -980,6 +1006,7 @@ public class IOHelper {
         return parts[0] + "://" + parts[1].replaceAll("//", "/");
     }
 
+
     /**
      * Convenience method for just adding one param to an URL.
      * Using constructUrl(String, Map<String, String>) is more efficent with multiple params.
@@ -996,6 +1023,21 @@ public class IOHelper {
 
     }
 
+    /**
+     * Making parseQuerystring() work with existing methods...
+     * @param kvps
+     * @return
+     */
+    public static String createQuerystring(Map<String, List<String>> kvps) {
+        if(kvps == null) {
+            return "";
+        }
+        String[] array = new String[0];
+        Map<String, String[]> params = new HashMap<>();
+        kvps.forEach( (key, value) -> params.put(key, value.toArray(array)));
+        return getParamsMultiValue(params);
+    }
+
     public static String getParams(Map<String, String> kvps) {
         if (kvps == null || kvps.isEmpty()) {
             return "";
@@ -1007,6 +1049,9 @@ public class IOHelper {
             final String key = entry.getKey();
             final String value = entry.getValue();
             if (key == null || key.isEmpty()) {
+                continue;
+            }
+            if (value == null) {
                 continue;
             }
             final String keyEnc = urlEncodePayload(key);
@@ -1081,6 +1126,11 @@ public class IOHelper {
         return s;
     }
 
+    /**
+     * Deprecated, misleading name,
+     * use getInputOrErrorStream(HttpURLConnection) instead
+     */
+    @Deprecated
     public static InputStream getInputStream(HttpURLConnection conn) {
         try {
             return conn.getInputStream();
@@ -1090,16 +1140,24 @@ public class IOHelper {
     }
 
     /**
-     * Ignore HttpURLConnection response fully 
+     * Ignore HttpURLConnection response fully
      * Useful for example when the status code or the content type
      * wasn't what was expected. Allows HttpURLConnection
-     * pooling method to keep the underlying TCP connection alive 
+     * pooling method to keep the underlying TCP connection alive
      */
     public static void closeSilently(HttpURLConnection c) {
-        try (InputStream in = getInputStream(c)) {
+        try (InputStream in = getInputOrErrorStream(c)) {
             readFullyIgnoring(in);
         } catch (IOException ignore) {
             // Ignore
+        }
+    }
+
+    private static InputStream getInputOrErrorStream(HttpURLConnection conn) {
+        try {
+            return conn.getInputStream();
+        } catch (IOException e) {
+            return conn.getErrorStream();
         }
     }
 

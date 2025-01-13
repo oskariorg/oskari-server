@@ -3,7 +3,8 @@ package flyway.userlayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
-import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
+import org.flywaydb.core.api.migration.BaseJavaMigration;
+import org.flywaydb.core.api.migration.Context;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,14 +16,15 @@ import java.sql.ResultSet;
 /**
  * Add name and type to fields
  * [{"the_geom","MultiPolygon"},..] -> [{"name": "the_geom", "type":"MultiPolygon"},..]
- *
+ * <p>
  * Split java class name to simpleName format
  * java.lang.Long -> Long
  */
-public class V1_0_8__add_name_and_type_to_fields implements JdbcMigration {
+public class V1_0_8__add_name_and_type_to_fields extends BaseJavaMigration {
     private static final Logger LOG = LogFactory.getLogger(V1_0_8__add_name_and_type_to_fields.class);
 
-   public void migrate(Connection connection) throws Exception {
+    public void migrate(Context context) throws Exception {
+        Connection connection = context.getConnection();
         String select = "SELECT id, fields::text FROM user_layer";
         String update = "UPDATE user_layer SET fields=?::json WHERE id=?";
 
@@ -45,20 +47,20 @@ public class V1_0_8__add_name_and_type_to_fields implements JdbcMigration {
         }
     }
 
-    private JSONArray addNameAndType (JSONArray json){
+    private JSONArray addNameAndType(JSONArray json) {
         JSONArray jsonArr = new JSONArray();
-        try{
-            for (int i=0; i<json.length(); i++){
+        try {
+            for (int i = 0; i < json.length(); i++) {
                 String key = json.getJSONObject(i).keys().next().toString();
                 String type = json.getJSONObject(i).get(key).toString();
                 // simpleName
-                type = type.substring(type.lastIndexOf('.')+1);
+                type = type.substring(type.lastIndexOf('.') + 1);
                 JSONObject obj = new JSONObject();
                 obj.put("name", key);
                 obj.put("type", type);
                 jsonArr.put(obj);
             }
-        }catch (JSONException e){
+        } catch (JSONException e) {
             //LOG.error("Error on converting json", e);
             return new JSONArray();
         }

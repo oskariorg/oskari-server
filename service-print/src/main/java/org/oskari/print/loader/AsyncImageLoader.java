@@ -1,22 +1,24 @@
 package org.oskari.print.loader;
 
-import fi.nls.oskari.service.ServiceException;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Future;
+
 import org.oskari.print.request.PrintLayer;
 import org.oskari.print.request.PrintRequest;
-import org.oskari.print.wmts.WMTSCapabilitiesCache;
+
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.service.ServiceException;
 
 public class AsyncImageLoader {
 
     public static final String GROUP_KEY = "LoadImageFromURL";
 
-    public static List<Future<BufferedImage>> initLayers(PrintRequest request, WMTSCapabilitiesCache wmtsCapsCache)
+    public static Map<Integer, Future<BufferedImage>> initLayers(PrintRequest request)
             throws ServiceException {
-        final List<Future<BufferedImage>> images = new ArrayList<>();
+        final Map<Integer, Future<BufferedImage>> images = new HashMap<>();
 
         final List<PrintLayer> requestedLayers = request.getLayers();
         if (requestedLayers == null) {
@@ -25,60 +27,27 @@ public class AsyncImageLoader {
 
         final int width = request.getWidth();
         final int height = request.getHeight();
-        final double[] bbox = getBoundingBox(
-                request.getEast(), request.getNorth(),
-                request.getResolution(), width, height);
+        final double[] bbox = request.getBoundingBox();
         final String srsName = request.getSrsName();
 
         for (PrintLayer layer : requestedLayers) {
             switch (layer.getType()) { 
             case OskariLayer.TYPE_WMS:
-                images.add(new CommandLoadImageWMS(layer, 
-                        width, height, bbox, srsName).queue());
+                images.put(layer.getZIndex(), new CommandLoadImageWMS(layer, 
+                        width, height, bbox, srsName,request.getTime()).queue());
                 break;
             case OskariLayer.TYPE_WMTS:
-                images.add(new CommandLoadImageWMTS(layer, width, height, bbox, srsName,
-                        wmtsCapsCache.get(layer), request.getResolution()).queue());
-                break;
-            case OskariLayer.TYPE_WFS:
-                images.add(new CommandLoadImageWFS(layer, width, height, bbox).queue());
-                break;
-            case "myplaces":
-                images.add(new CommandLoadImageMyPlaces(request.getUser(),
-                        layer, width, height, bbox, srsName).queue());
-                break;
-            case OskariLayer.TYPE_USERLAYER:
-                images.add(new CommandLoadImageUserLayer(request.getUser(),
-                        layer, width, height, bbox, srsName).queue());
-                break;
-            case OskariLayer.TYPE_ANALYSIS:
-                images.add(new CommandLoadImageAnalysis(request.getUser(),
-                        layer, width, height, bbox, srsName).queue());
+                images.put(layer.getZIndex(), new CommandLoadImageWMTS(layer, width, height, bbox, srsName,
+                        request.getResolution()).queue());
                 break;
             case OskariLayer.TYPE_ARCGIS93:
-                images.add(new CommandLoadImageArcGISREST(layer,
+                images.put(layer.getZIndex(), new CommandLoadImageArcGISREST(layer,
                         width, height, bbox, srsName).queue());
                 break;
-            default:
-                throw new IllegalArgumentException("Invalid layer type!");
             }
+
         }
 
         return images;
     }
-
-    public static double[] getBoundingBox(double e, double n, double resolution, int width, int height) {
-        double halfResolution = resolution / 2;
-
-        double widthHalf = width * halfResolution;
-        double heightHalf = height * halfResolution;
-
-        return new double[] {
-                e - widthHalf,
-                n - heightHalf,
-                e + widthHalf,
-                n + heightHalf
-        };
-    }
-
 }

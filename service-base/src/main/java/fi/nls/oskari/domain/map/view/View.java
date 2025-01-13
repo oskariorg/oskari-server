@@ -2,10 +2,11 @@ package fi.nls.oskari.domain.map.view;
 
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import org.apache.commons.lang.text.StrSubstitutor;
+import org.apache.commons.text.StringSubstitutor;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,15 +18,17 @@ public class View implements Serializable {
     private String name = null;
     private String description = null;
     private String uuid = null;
-    private boolean onlyForUuId = false;
+    private boolean onlyForUuId = true;
     private JSONObject metadata = null;
+    private OffsetDateTime created;
+    private OffsetDateTime updated;
     private List<Bundle> bundles = new ArrayList<Bundle>();
 
     public String getUrl() {
         final Map<String, String> valuesMap = new HashMap();
         valuesMap.put("lang", getLang());
         valuesMap.put("uuid", getUuid());
-        final StrSubstitutor sub = new StrSubstitutor(valuesMap);
+        final StringSubstitutor sub = new StringSubstitutor(valuesMap);
 
         String baseUrl = getBaseUrlForView(getType().toLowerCase(), getLang());
         return sub.replace(baseUrl);
@@ -95,7 +98,6 @@ public class View implements Serializable {
 
     private String application = "full-map"; // app name
     private String page = "view"; // JSP
-    private String developmentPath = "/applications";
     private long creator = -1;
     private boolean isPublic = false;
     private boolean isDefault = false;
@@ -122,14 +124,6 @@ public class View implements Serializable {
 
     public String getLang() { return this.lang; }
     public void setLang(String lang) { this.lang = lang; }
-
-    public String getDevelopmentPath() {
-        return developmentPath;
-    }
-
-    public void setDevelopmentPath(String developmentPath) {
-        this.developmentPath = developmentPath;
-    }
 
     public String getType() { return this.type; }
     public void setType(String type) { this.type = type; }
@@ -257,13 +251,13 @@ public class View implements Serializable {
         view.setName(getName());
         view.setDescription(getDescription());
         view.setType(getType());
-        view.setDevelopmentPath(getDevelopmentPath());
         view.setApplication(getApplication());
         view.setIsPublic(isPublic());
         view.setLang(getLang());
         view.setPage(getPage());
         view.setPubDomain(getPubDomain());
         view.setIsDefault(isDefault());
+        view.setMetadata(getMetadata());
         for(Bundle bundle : getBundles()) {
             view.addBundle(bundle.clone());
         }
@@ -288,4 +282,19 @@ public class View implements Serializable {
         return JSONHelper.getStringFromJSON(mapOptions, "srsName", null);
     }
 
+    public OffsetDateTime getCreated() {
+        return this.created;
+    }
+
+    public void setCreated(OffsetDateTime created) {
+        this.created = created;
+    }
+
+    public OffsetDateTime getUpdated() {
+        return this.updated;
+    }
+
+    public void setUpdated(OffsetDateTime updated) {
+        this.updated = updated;
+    }
 }

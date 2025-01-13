@@ -7,29 +7,49 @@ import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.domain.map.userlayer.UserLayerData;
-import fi.nls.oskari.domain.map.UserDataStyle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.geometry.WKTHelper;
+import fi.nls.oskari.mybatis.MyBatisHelper;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.PropertyUtil;
-import org.apache.ibatis.mapping.Environment;
-import org.apache.ibatis.session.*;
-import org.apache.ibatis.transaction.TransactionFactory;
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
+import org.apache.ibatis.session.Configuration;
+import org.apache.ibatis.session.ExecutorType;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.store.EmptyFeatureCollection;
+import org.geotools.feature.DefaultFeatureCollection;
+import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
+import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.locationtech.jts.geom.Geometry;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.oskari.geojson.GeoJSONWriter;
 
 import javax.sql.DataSource;
+import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Optional;
+
+import static fi.nls.oskari.map.geometry.ProjectionHelper.getSRID;
+import static fi.nls.oskari.map.geometry.WKTHelper.GEOM_ATTRIBUTE;
+import static fi.nls.oskari.map.geometry.WKTHelper.parseWKT;
 
 @Oskari
 public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
 
     private static final Logger log = LogFactory.getLogger(UserLayerDbServiceMybatisImpl.class);
     private static final String USERLAYER_MYBATIS_BATCH_SIZE = "userlayer.mybatis.batch.size";
+    private static final String NATIVE_SRS = "oskari.native.srs";
     final int batchSize = PropertyUtil.getOptional(USERLAYER_MYBATIS_BATCH_SIZE, 1000);
+    private final int srid;
     private final Cache<UserLayer> cache;
     private SqlSessionFactory factory = null;
 
+    private static final GeoJSONWriter geojsonWriter = new GeoJSONWriter();
 
     public UserLayerDbServiceMybatisImpl() {
         final DatasourceHelper helper = DatasourceHelper.getInstance();
@@ -41,37 +61,30 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
             log.error("Couldn't get datasource for userlayer");
         }
         cache = CacheManager.getCache(getClass().getName());
+        String epsg = PropertyUtil.get(NATIVE_SRS, "EPSG:4326");
+        srid = Integer.parseInt(epsg.substring(epsg.indexOf(':') + 1));
     }
 
     private SqlSessionFactory initializeMyBatis(final DataSource dataSource) {
-        final TransactionFactory transactionFactory = new JdbcTransactionFactory();
-        final Environment environment = new Environment("development", transactionFactory, dataSource);
-
-        final Configuration configuration = new Configuration(environment);
-        configuration.getTypeAliasRegistry().registerAlias(UserLayer.class);
-        configuration.getTypeAliasRegistry().registerAlias(UserLayerData.class);
-        configuration.getTypeAliasRegistry().registerAlias(UserDataStyle.class);
-        configuration.setLazyLoadingEnabled(true);
-        configuration.addMapper(UserLayerMapper.class);
+        final Configuration configuration = MyBatisHelper.getConfig(dataSource);
+        MyBatisHelper.addAliases(configuration, UserLayer.class, UserLayerData.class);
+        MyBatisHelper.addMappers(configuration, UserLayerMapper.class);
         return new SqlSessionFactoryBuilder().build(configuration);
     }
 
-    public int insertUserLayer(final UserLayer userLayer, final List<UserLayerData> userLayerDataList) throws UserLayerException {
+    public int insertUserLayerAndData(final UserLayer userLayer, final List<UserLayerData> userLayerDataList) throws UserLayerException {
+        validateUserLayer(userLayer);
         try (SqlSession session = factory.openSession(ExecutorType.BATCH)) {
             int count = 0;
             final UserLayerMapper mapper = getMapper(session);
-            UserDataStyle userLayerStyle = userLayer.getStyle();
-            mapper.insertUserLayerStyleRow(userLayerStyle);
-            session.flushStatements();
-            log.debug("got style id", userLayerStyle.getId());
-            userLayer.setStyle_id(userLayerStyle.getId());
-            mapper.insertUserLayerRow(userLayer);
+            mapper.insertUserLayer(userLayer);
             session.flushStatements();
             long userLayerId = userLayer.getId();
+            final UserLayer inserted = mapper.findUserLayer(userLayerId);
+            userLayer.setCreated(inserted.getCreated());
             log.debug("got layer id", userLayerId);
-
             for (UserLayerData userLayerData : userLayerDataList) {
-                mapper.insertUserLayerDataRow(userLayerData, userLayerId);
+                mapper.insertUserLayerData(userLayerData, userLayerId, srid);
                 count++;
                 // Flushes batch statements and clears local session cache
                 if (count % batchSize == 0) {
@@ -99,15 +112,18 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
      *
      * @param userLayer
      */
-    public int updateUserLayerCols(final UserLayer userLayer) {
+    public int updateUserLayer(final UserLayer userLayer) throws UserLayerException {
+        validateUserLayer(userLayer);
         try (SqlSession session = factory.openSession()) {
             final UserLayerMapper mapper = getMapper(session);
-            int result = mapper.updateUserLayerCols(userLayer);
+            int result = mapper.updateUserLayer(userLayer);
             session.commit();
             return result;
         } catch (Exception e) {
-            log.error(e, "Failed to update userLayer col mapping", userLayer);
-            return 0;
+            log.error(e, "Failed to update userLayer", userLayer);
+            throw new UserLayerException("Failed to update userlayer", UserLayerException.ErrorType.STORE);
+        } finally {
+            cache.remove(Long.toString(userLayer.getId()));
         }
     }
 
@@ -121,7 +137,11 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
         }
         return layer;
     }
-
+    private void validateUserLayer (UserLayer layer) throws UserLayerException {
+        if (layer.getNames().isEmpty()) {
+            throw new UserLayerException("Couldn't find name for userlayer", UserLayerException.ErrorType.NO_NAME);
+        }
+    }
     /**
      * Get UserLayer row  by id
      *
@@ -171,8 +191,7 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
         try (SqlSession session = factory.openSession()) {
             final UserLayerMapper mapper = getMapper(session);
             mapper.deleteUserLayerDataByLayerId(userLayer.getId());
-            mapper.deleteUserLayerRow(userLayer.getId());
-            mapper.deleteUserLayerStyleRow(userLayer.getStyle_id());
+            mapper.deleteUserLayer(userLayer.getId());
             session.commit();
             cache.remove(Long.toString(userLayer.getId()));
         } catch (Exception e) {
@@ -214,7 +233,7 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
             // update data in cache
             UserLayer layer = getFromCache(id);
             if (layer != null && result > 0) {
-                layer.setPublisher_name(name);
+                cache.remove(Long.toString(id));
             }
             return result;
         } catch (Exception e) {
@@ -223,35 +242,14 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
         }
     }
 
-    public int updateUserLayerStyleCols(final UserDataStyle userLayerStyle) {
-        try (SqlSession session = factory.openSession()) {
-            final UserLayerMapper mapper = getMapper(session);
-            int result = mapper.updateUserLayerStyleCols(userLayerStyle);
-            session.commit();
-            return result;
-        } catch (Exception e) {
-            log.error(e, "Failed to update userlayerstyle col mapping", userLayerStyle);
-            return 0;
-        }
-    }
-
-    public UserDataStyle getUserLayerStyleById(long id) {
-        try (SqlSession session = factory.openSession()) {
-            return getMapper(session).findUserLayerStyle(id);
-        } catch (Exception e) {
-            log.error(e, "Failed to get userLayer with id:", id);
-            return null;
-        }
-    }
-
     /**
      * update UserLayerData table row field mapping
      *
      * @param userLayerData
      */
-    public int updateUserLayerDataCols(final UserLayerData userLayerData) {
+    public int updateUserLayerData(final UserLayerData userLayerData) {
         try (SqlSession session = factory.openSession()) {
-            return getMapper(session).updateUserLayerDataCols(userLayerData);
+            return getMapper(session).updateUserLayerData(userLayerData);
         } catch (Exception e) {
             log.error(e, "Failed to update userlayerdata col mapping", userLayerData);
             return 0;
@@ -271,4 +269,70 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
 	    return session.getMapper(UserLayerMapper.class);
 	}
 
+    @Override
+    public SimpleFeatureCollection getFeatures(int layerId, ReferencedEnvelope bbox, CoordinateReferenceSystem crs) throws ServiceException {
+        try (SqlSession session = factory.openSession()) {
+            log.debug("getFeatures by bbox: ", bbox);
+
+            final UserLayerMapper mapper = getMapper(session);
+            String nativeSrsName = PropertyUtil.get("oskari.native.srs", "EPSG:3857");
+            int nativeSrid = getSRID(nativeSrsName);
+            List<UserLayerData> features = mapper.findAllByLooseBBOX(layerId, bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY(), nativeSrid);
+            return this.toSimpleFeatureCollection(features);
+        } catch (Exception e) {
+            log.warn(e, "Exception when trying to get features by bounding box ", bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY());
+            throw new ServiceException(e.getMessage());
+        }
+    }
+
+    private SimpleFeatureCollection toSimpleFeatureCollection(List<UserLayerData> features) throws ServiceException {
+        try {
+            if (features == null || features.isEmpty()) {
+                return new EmptyFeatureCollection(null);
+            }
+
+            DefaultFeatureCollection collection = new DefaultFeatureCollection();
+            for (UserLayerData feature: features) {
+                if (feature.getWkt() != null) {
+                    collection.add(toSimpleFeature(feature));
+                }
+            }
+
+            return collection;
+        } catch (Exception e) {
+            log.warn(e, "Failed to create SimpleFeatureCollection");
+            throw new ServiceException("Failed to create SimpleFeatureCollection");
+        }
+    }
+
+    private SimpleFeature toSimpleFeature(UserLayerData feature) {
+        Geometry geom = parseWKT(feature.getWkt());
+        SimpleFeatureTypeBuilder featureTypeBuilder = getFeatureTypeBuilder(geom);
+        SimpleFeatureType simpleFeatureType = featureTypeBuilder.buildFeatureType();
+        SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(simpleFeatureType);
+        featureBuilder.set(GEOM_ATTRIBUTE, geom);
+        featureBuilder.set("id", feature.getId());
+        featureBuilder.set("user_layer_id", feature.getUser_layer_id());
+        featureBuilder.set("uuid", feature.getUuid());
+        featureBuilder.set("feature_id", feature.getFeature_id());
+        featureBuilder.set("property_json", feature.getProperty_json());
+        featureBuilder.set("created", feature.getCreated());
+        featureBuilder.set("updated", feature.getUpdated());
+
+        return featureBuilder.buildFeature(Long.valueOf(feature.getId()).toString());
+    }
+
+    private SimpleFeatureTypeBuilder getFeatureTypeBuilder(Geometry geometry) {
+        SimpleFeatureTypeBuilder featureTypeBuilder = WKTHelper.getFeatureTypeBuilder(geometry);
+        featureTypeBuilder.add("id", Long.class);
+        featureTypeBuilder.add("user_layer_id", String.class);
+        featureTypeBuilder.add("uuid", String.class);
+        featureTypeBuilder.add("feature_id", String.class);
+        featureTypeBuilder.add("property_json", String.class);
+        featureTypeBuilder.add("created", OffsetDateTime.class);
+        featureTypeBuilder.add("updated", OffsetDateTime.class);
+
+        return featureTypeBuilder;
+
+    }
 }

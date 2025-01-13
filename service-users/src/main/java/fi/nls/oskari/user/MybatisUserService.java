@@ -3,20 +3,19 @@ package fi.nls.oskari.user;
 import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.User;
+import fi.nls.oskari.domain.map.userlayer.UserLayer;
+import fi.nls.oskari.domain.map.userlayer.UserLayerData;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import org.apache.ibatis.mapping.Environment;
+import fi.nls.oskari.mybatis.MyBatisHelper;
+import fi.nls.oskari.service.ServiceException;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.apache.ibatis.transaction.TransactionFactory;
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 
 import javax.sql.DataSource;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class MybatisUserService {
     private MybatisRoleService roleService = new MybatisRoleService();
@@ -38,36 +37,67 @@ public class MybatisUserService {
     }
 
     private SqlSessionFactory initializeMyBatis(final DataSource dataSource) {
-        final TransactionFactory transactionFactory = new JdbcTransactionFactory();
-        final Environment environment = new Environment("development", transactionFactory, dataSource);
-
-        final Configuration configuration = new Configuration(environment);
-        configuration.getTypeAliasRegistry().registerAlias(User.class);
-        configuration.setLazyLoadingEnabled(true);
-        configuration.addMapper(UsersMapper.class);
+        final Configuration configuration = MyBatisHelper.getConfig(dataSource);
+        MyBatisHelper.addAliases(configuration, User.class);
+        MyBatisHelper.addMappers(configuration, UsersMapper.class);
 
         return new SqlSessionFactoryBuilder().build(configuration);
     }
 
     public List<User> findAll(){
-        final SqlSession session = factory.openSession();
         List<User> userList = null;
-        try {
+        try (SqlSession session = factory.openSession()) {
             log.debug("Find all users");
             final UsersMapper mapper = session.getMapper(UsersMapper.class);
             userList = mapper.findAll();
         } catch (Exception e) {
             log.warn(e, "Exception when trying to find all users");
-        } finally {
-            session.close();
         }
         log.debug("Finished finding all users");
         return userList;
     }
 
+    public List<User> findAll(int limit, int offset, String query) {
+        List<User> userList = null;
+        try (SqlSession session = factory.openSession()) {
+            log.debug("Find all users with limit, offset & search");
+            final UsersMapper mapper = session.getMapper(UsersMapper.class);
+            if (!query.isEmpty()) {
+                userList = mapper.findAllPaginatedSearch(query, limit, offset);
+            } else if (limit > 0){
+                userList = mapper.findAllPaginated(limit, offset);
+            } else {
+                userList = mapper.findAll();
+            }
+        } catch (Exception e) {
+            log.warn(e, "Exception when trying to find all users");
+        }
+        log.debug("Finished finding all users");
+        return userList;
+    }
+
+    public int findUserCount() {
+        try (SqlSession session = factory.openSession()) {
+            final UsersMapper mapper = session.getMapper(UsersMapper.class);
+            return mapper.findUserCount();
+        } catch (Exception e) {
+            log.warn(e, "Exception when trying to count users");
+        }
+        return -1;
+    }
+
+    public int findUserSearchCount(String search) {
+        try (SqlSession session = factory.openSession()) {
+            final UsersMapper mapper = session.getMapper(UsersMapper.class);
+            return mapper.findUserSearchCount(search);
+        } catch (Exception e) {
+            log.warn(e, "Exception when trying to count users");
+        }
+        return -1;
+    }
+
     public Long addUser(User user) {
-        final SqlSession session = factory.openSession();
-        try {
+        try (SqlSession session = factory.openSession()) {
             log.debug("Adding user: ", user);
             final UsersMapper mapper = session.getMapper(UsersMapper.class);
             mapper.addUser(user);
@@ -75,15 +105,12 @@ public class MybatisUserService {
             log.info("Added user id: ", user.getId());
         } catch (Exception e) {
             log.warn(e, "Exception when trying to add user: ", user);
-        } finally {
-            session.close();
         }
         return user.getId();
     }
 
     public void updateUser(User user) {
-        final SqlSession session = factory.openSession();
-        try {
+        try (SqlSession session = factory.openSession()) {
             log.debug("Updating user: ", user);
             final UsersMapper mapper = session.getMapper(UsersMapper.class);
             mapper.updateUser(user);
@@ -91,25 +118,30 @@ public class MybatisUserService {
             log.info("Updated user id: " + user.getId());
         } catch (Exception e) {
             log.warn(e, "Exception when trying to update user: ", user);
-        } finally {
-            session.close();
         }
     }
 
     public User find(long id) {
-        final SqlSession session = factory.openSession();
         User user = null;
-        try {
+        try (SqlSession session = factory.openSession()) {
             log.debug("Finding user by id: ", id);
             final UsersMapper mapper = session.getMapper(UsersMapper.class);
             user = mapper.find(id);
         } catch (Exception e) {
             log.warn(e, "Exception when trying to find user: ", user);
-        } finally {
-            session.close();
         }
+        loadRoles(user);
         log.debug("Found user: " + user);
         return user;
+    }
+    public List<User> findByRoleId (long id) throws ServiceException {
+        try (SqlSession session = factory.openSession()) {
+            log.debug("Finding users role by id: ", id);
+            final UsersMapper mapper = session.getMapper(UsersMapper.class);
+            return mapper.findByRoleId(id);
+        } catch (Exception e) {
+            throw new ServiceException("Exception when trying to find users by role id: " + id, e);
+        }
     }
 
     /**
@@ -120,51 +152,39 @@ public class MybatisUserService {
      * @return
      */
     public String login(final String username, final String password) {
-        final SqlSession session = factory.openSession();
         String login = null;
-        try {
+        try (SqlSession session = factory.openSession()) {
             log.debug("Login by username and password: ", username);
             final UsersMapper mapper = session.getMapper(UsersMapper.class);
-            Map<String, String> params = new HashMap<String, String>(2);
-            params.put("username", username);
-            params.put("password", password);
-            login = mapper.login(params);
+            login = mapper.login(username, password);
         } catch (Exception e) {
             log.warn(e, "Exception when trying to login with username: ", username);
-        } finally {
-            session.close();
         }
         log.info(login != null ? "Username " + login + " logged in." : "User not found with username: " + username);
         return login;
     }
 
     public String getPassword(final String username) {
-        final SqlSession session = factory.openSession();
         String password = null;
-        try {
+        try (SqlSession session = factory.openSession()) {
             log.debug("Finding password by username: ", username);
             final UsersMapper mapper = session.getMapper(UsersMapper.class);
             password = mapper.getPassword(username);
         } catch (Exception e) {
             log.warn(e, "Exception when trying to get password for username: ", username);
-        } finally {
-            session.close();
         }
         log.debug("Found password");
         return password;
     }
 
     public User findByUserName(String username) {
-        final SqlSession session = factory.openSession();
         User user = null;
-        try {
+        try (SqlSession session = factory.openSession()) {
             log.debug("Finding user by username: ", username);
             final UsersMapper mapper = session.getMapper(UsersMapper.class);
             user = mapper.findByUserName(username);
         } catch (Exception e) {
             log.warn(e, "Exception when trying to find user by email: ", username);
-        } finally {
-            session.close();
         }
         log.debug("Found user: " + user);
         loadRoles(user);
@@ -172,16 +192,13 @@ public class MybatisUserService {
     }
 
     public User findByEmail(String email) {
-        final SqlSession session = factory.openSession();
         User user = null;
-        try {
+        try (SqlSession session = factory.openSession()) {
             log.debug("Finding user by email: ", email);
             final UsersMapper mapper = session.getMapper(UsersMapper.class);
             user = mapper.findByEmail(email.toLowerCase());
         } catch (Exception e) {
             log.warn(e, "Exception when trying to find user by email: ", email);
-        } finally {
-            session.close();
         }
         log.debug("Found user: " + user);
         loadRoles(user);
@@ -199,67 +216,49 @@ public class MybatisUserService {
     }
 
     public void delete(long id) {
-        final SqlSession session = factory.openSession();
-        try {
+        try (SqlSession session = factory.openSession()) {
             log.debug("Deleting user by id: ", id);
             final UsersMapper mapper = session.getMapper(UsersMapper.class);
             mapper.delete(id);
             session.commit();
         } catch (Exception e) {
             log.warn(e, "Exception when trying to delete user by id: ", id);
-        } finally {
-            session.close();
         }
         log.info("Deleted user with id: " + id);
     }
 
     public void setPassword(String username, String password) {
-        final SqlSession session = factory.openSession();
-        try {
+        try (SqlSession session = factory.openSession()) {
             log.debug("Setting password to user: ", username);
             final UsersMapper mapper = session.getMapper(UsersMapper.class);
-            Map<String, String> params = new HashMap<String, String>(2);
-            params.put("username", username);
-            params.put("password", password);
-            mapper.setPassword(params);
+            mapper.addPassword(username, password);
             session.commit();
         } catch (Exception e) {
             log.warn(e, "Exception when trying to set password to username: ", username);
-        } finally {
-            session.close();
         }
         log.info("Set password for username: " + username);
     }
 
     public void updatePassword(String username, String password) {
-        final SqlSession session = factory.openSession();
-        try {
+        try (SqlSession session = factory.openSession()) {
             log.debug("Updating password to user: ", username);
             final UsersMapper mapper = session.getMapper(UsersMapper.class);
-            Map<String, String> params = new HashMap<String, String>(2);
-            params.put("username", username);
-            params.put("password", password);
-            mapper.updatePassword(params);
+            mapper.updatePassword(username, password);
             session.commit();
         } catch (Exception e) {
             log.warn(e, "Exception when trying to update password to username: ", username);
-        } finally {
-            session.close();
         }
         log.info("Updated password for username: " + username);
     }
 
     public void deletePassword(String username) {
-        final SqlSession session = factory.openSession();
-        try {
+        try (SqlSession session = factory.openSession()) {
             log.debug("Deleting password for username: ", username);
             final UsersMapper mapper = session.getMapper(UsersMapper.class);
             mapper.deletePassword(username);
             session.commit();
         } catch (Exception e) {
             log.warn(e, "Exception when trying to delete password for username: ", username);
-        } finally {
-            session.close();
         }
         log.info("Deleted password for username: " + username);
     }

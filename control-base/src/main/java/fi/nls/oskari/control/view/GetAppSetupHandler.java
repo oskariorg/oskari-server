@@ -82,14 +82,14 @@ public class GetAppSetupHandler extends ActionHandler {
        final String[] dynamicBundles = PropertyUtil.getCommaSeparatedList("actionhandler.GetAppSetup.dynamic.bundles");
 
         // Get roles for each dynamic bundle and retrieve bundles from db. Store bundles in <role,bundle> map.
-        Map <String, Bundle> requestedBundles = new HashMap<String, Bundle>();
+        Map <String, Bundle> requestedBundles = new HashMap<>();
         for(String bundleId : dynamicBundles) {
             final String[] rolesForBundle = PropertyUtil.getCommaSeparatedList("actionhandler.GetAppSetup.dynamic.bundle."
                                             + bundleId + ".roles");
 
             for(String roleName : rolesForBundle) {
                 if(!bundlesForRole.containsKey(roleName)) {
-                    bundlesForRole.put(roleName, new ArrayList<Bundle>());
+                    bundlesForRole.put(roleName, new ArrayList<>());
                 }
 
                 List<Bundle> list = bundlesForRole.get(roleName);
@@ -353,7 +353,7 @@ public class GetAppSetupHandler extends ActionHandler {
         if (myview == null) {
             return;
         }
-        log.info("[GetAppSetupHandler] Fetching View from cookie", myview);
+        log.debug("[GetAppSetupHandler] Fetching View from cookie", myview);
         // merge cookie state for mapfull
         try {
             JSONObject viewdata = myview.optJSONObject(VIEW_DATA);

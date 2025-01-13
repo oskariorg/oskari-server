@@ -3,6 +3,7 @@ package fi.nls.oskari;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.view.GetAppSetupHandler;
 import fi.nls.oskari.control.view.modifier.param.ParamControl;
+import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
 import fi.nls.oskari.log.LogFactory;
@@ -37,6 +38,8 @@ public class MapController {
     private final static Logger log = LogFactory.getLogger(MapController.class);
 
     private final static String PROPERTY_VERSION = "oskari.client.version";
+    private final static String PROPERTY_VERSION_REQUEST = "oskari.client.version.request";
+    private final static String PROPERTY_CLIENT_DOMAIN = "oskari.client.domain";
     private final static String KEY_PRELOADED = "preloaded";
     private final static String KEY_PATH = "path";
 
@@ -46,7 +49,9 @@ public class MapController {
     private final static String KEY_RESPONSE_HEADER_PREFIX = "oskari.page.header.";
 
     private final ViewService viewService = new AppSetupServiceMybatisImpl();
+    private String clientDomain = "";
     private String version = null;
+    private boolean allowVersionRequest = false;
     private final Set<String> paramHandlers = new HashSet<>();
 
     @Autowired
@@ -55,11 +60,13 @@ public class MapController {
     public MapController() {
         // Get version from properties
         version = PropertyUtil.get(PROPERTY_VERSION);
+        allowVersionRequest = PropertyUtil.getOptional(PROPERTY_VERSION_REQUEST, false);
+        clientDomain = PropertyUtil.get(PROPERTY_CLIENT_DOMAIN, "");
     }
 
     @RequestMapping("/")
     public String getMap(Model model, @OskariParam ActionParameters params) {
-        if(paramHandlers.isEmpty()) {
+        if (paramHandlers.isEmpty()) {
             // check control params to pass for getappsetup
             // setup on first call to allow more flexibility regarding timing issues
             paramHandlers.addAll(ParamControl.getHandlerKeys());
@@ -70,9 +77,10 @@ public class MapController {
 
         // JSP
         final String viewJSP = setupRenderParameters(params, model);
-        if(viewJSP == null) {
+        if (viewJSP == null) {
             // view not found
             log.debug("View not found, going to error/404");
+            params.getResponse().setStatus(HttpServletResponse.SC_NOT_FOUND);
             return "error/404";
         }
 
@@ -123,7 +131,6 @@ public class MapController {
             }
         }
     }
-
     /**
      * Sets up request attributes expected by JSP to link correct Oskari application based on view
      * and construct configuration elements for GetAppSetup action route.
@@ -150,10 +157,11 @@ public class MapController {
 
         log.debug("Loading view with id:", viewId);
 
-        final View view = getView(uuId, viewId, useDefault);
+        final View view = checkAccess(
+                getView(uuId, viewId, useDefault),
+                params.getUser());
         if (view == null) {
             log.debug("no such view");
-            ResponseHelper.writeError(params, "No such view (id:" + viewId + ")");
             return null;
         }
 
@@ -173,7 +181,7 @@ public class MapController {
 
 
         log.debug("Serving view with id:", view.getId());
-        log.debug("View:", view.getDevelopmentPath(), "/", view.getApplication(), "/", view.getPage());
+        log.debug("View:", view.getApplication(), "/", view.getPage());
         model.addAttribute("viewId", view.getId());
         model.addAttribute("appsetupId", view.getId());
         model.addAttribute("appsetupUUID", view.getUuid());
@@ -204,8 +212,13 @@ public class MapController {
         model.addAttribute(KEY_PRELOADED, true);
 
         // for figuring out paths for frontend files
-        model.addAttribute("version", version);
-        model.addAttribute(KEY_PATH, "/" + version + "/" + view.getApplication());
+        model.addAttribute("clientDomain", clientDomain);
+        String clientVersion = version;
+        if (allowVersionRequest) {
+            clientVersion = params.getHttpParam("v", version);
+        }
+        model.addAttribute("version", clientVersion);
+        model.addAttribute(KEY_PATH, "/" + clientVersion + "/" + view.getApplication());
         model.addAttribute("application", view.getApplication());
 
         // title of the page
@@ -230,6 +243,9 @@ public class MapController {
 
         log.debug("Using id to fetch a view:", viewId);
         View view = viewService.getViewWithConf(viewId);
+        if (view == null) {
+            return null;
+        }
         if(!isDefault && view.isOnlyForUuId()) {
             log.warn("View can only be loaded by uuid. ViewId:", viewId);
             return null;
@@ -237,6 +253,17 @@ public class MapController {
         return view;
     }
 
+    private View checkAccess(View view, User user) {
+        if (view == null) {
+            return null;
+        }
+        boolean canAccess = view.isPublic() || view.getCreator() == user.getId();
+        if (canAccess) {
+            return view;
+        }
+        log.info("Tried accessing private view. User:", user.getId(), "view:", view.getUuid());
+        return null;
+    }
     /**
      * Checks all viewmodifiers registered in the system that are handling parameters
      * and constructs a controlParams JSON to be passed on to GetAppSetup action route.

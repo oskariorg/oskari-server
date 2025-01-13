@@ -9,17 +9,14 @@ import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.mybatis.JSONObjectMybatisTypeHandler;
+import fi.nls.oskari.mybatis.MyBatisHelper;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.apache.ibatis.transaction.TransactionFactory;
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 
 import javax.sql.DataSource;
 import java.util.*;
@@ -39,14 +36,18 @@ public class AppSetupServiceMybatisImpl extends ViewService {
     private SqlSessionFactory factory = null;
 
     public AppSetupServiceMybatisImpl() {
-
-        final DatasourceHelper helper = DatasourceHelper.getInstance();
-        DataSource dataSource = helper.getDataSource();
+        this(null);
+    }
+    public AppSetupServiceMybatisImpl(DataSource dataSource) {
         if (dataSource == null) {
-            dataSource = helper.createDataSource();
-        }
-        if (dataSource == null) {
-            LOG.error("Couldn't get datasource for app setup service");
+            final DatasourceHelper helper = DatasourceHelper.getInstance();
+            dataSource = helper.getDataSource();
+            if (dataSource == null) {
+                dataSource = helper.createDataSource();
+            }
+            if (dataSource == null) {
+                LOG.error("Couldn't get datasource for app setup service");
+            }
         }
         factory = initializeMyBatis(dataSource);
 
@@ -57,16 +58,9 @@ public class AppSetupServiceMybatisImpl extends ViewService {
     }
 
     private SqlSessionFactory initializeMyBatis(final DataSource dataSource) {
-        final TransactionFactory transactionFactory = new JdbcTransactionFactory();
-        final Environment environment = new Environment("development", transactionFactory, dataSource);
-
-        final Configuration configuration = new Configuration(environment);
-        configuration.getTypeAliasRegistry().registerAlias(ViewService.class);
-        configuration.getTypeAliasRegistry().registerAlias(Bundle.class);
-        configuration.getTypeAliasRegistry().registerAlias(View.class);
-        configuration.getTypeHandlerRegistry().register(JSONObjectMybatisTypeHandler.class);
-        configuration.setLazyLoadingEnabled(true);
-        configuration.addMapper(AppSetupMapper.class);
+        final Configuration configuration = MyBatisHelper.getConfig(dataSource);
+        MyBatisHelper.addAliases(configuration, Bundle.class, View.class);
+        MyBatisHelper.addMappers(configuration, AppSetupMapper.class);
 
         return new SqlSessionFactoryBuilder().build(configuration);
     }
@@ -170,7 +164,9 @@ public class AppSetupServiceMybatisImpl extends ViewService {
         try (final SqlSession session = factory.openSession()) {
             final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
             View view = mapper.getViewWithConfByUuId(uuId);
-            view.setBundles(mapper.getBundlesByViewId(view.getId()));
+            if (view != null) {
+                view.setBundles(mapper.getBundlesByViewId(view.getId()));
+            }
             return view;
         } catch (Exception e) {
             LOG.warn(e, "Exception while getting view with config by uuid: " + uuId);
@@ -336,7 +332,6 @@ public class AppSetupServiceMybatisImpl extends ViewService {
         params.put("bundle_id", bundle.getBundleId());
 
         params.put("seqno", bundle.getSeqNo());
-        params.put("startup", bundle.getStartup());
         params.put("config", bundle.getConfig());
         params.put("state", bundle.getState());
         params.put("bundleinstance", bundle.getBundleinstance());

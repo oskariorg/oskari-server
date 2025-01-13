@@ -5,33 +5,36 @@
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>fi.nls.oskari</groupId>
-        <artifactId>oskari-parent</artifactId>
-        <version>1.53.0-SNAPSHOT</version>
+        <groupId>org.oskari</groupId>
+        <artifactId>oskari-server</artifactId>
+        <version>3.0.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>fi.nls.oskari.service</groupId>
     <artifactId>service-csw</artifactId>
     <packaging>jar</packaging>
     <name>CSW related functionality</name>
 
     <dependencies>
         <dependency>
-            <groupId>fi.nls.oskari</groupId>
-            <artifactId>content-resources</artifactId>
+            <groupId>org.oskari</groupId>
+            <artifactId>service-map</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.oskari</groupId>
+            <artifactId>service-search</artifactId>
         </dependency>
         <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>
         </dependency>
-		<dependency>
-			<groupId>fi.nls.oskari.service</groupId>
-			<artifactId>oskari-control</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>javax.vecmath</groupId>
-			<artifactId>vecmath</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.oskari</groupId>
+            <artifactId>service-control</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.vecmath</groupId>
+            <artifactId>vecmath</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>junit</groupId>
@@ -39,52 +42,25 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>xmlunit</groupId>
+            <artifactId>xmlunit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>test</scope>
         </dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-core</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+        </dependency>
 
-	</dependencies>
+        <dependency>
+            <groupId>org.oskari</groupId>
+            <artifactId>shared-test-resources</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
-    <build>
-    	<pluginManagement>
-    		<plugins>
-    			<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-    			<plugin>
-    				<groupId>org.eclipse.m2e</groupId>
-    				<artifactId>lifecycle-mapping</artifactId>
-    				<version>1.0.0</version>
-    				<configuration>
-    					<lifecycleMappingMetadata>
-    						<pluginExecutions>
-    							<pluginExecution>
-    								<pluginExecutionFilter>
-    									<groupId>
-    										pl.project13.maven
-    									</groupId>
-    									<artifactId>
-    										git-commit-id-plugin
-    									</artifactId>
-    									<versionRange>
-    										[2.0.4,)
-    									</versionRange>
-    									<goals>
-    										<goal>revision</goal>
-    									</goals>
-    								</pluginExecutionFilter>
-    								<action>
-    									<ignore></ignore>
-    								</action>
-    							</pluginExecution>
-    						</pluginExecutions>
-    					</lifecycleMappingMetadata>
-    				</configuration>
-    			</plugin>
-    		</plugins>
-    	</pluginManagement>
-    </build>
 </project>

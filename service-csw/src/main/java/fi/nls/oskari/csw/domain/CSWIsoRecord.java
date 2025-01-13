@@ -1,7 +1,7 @@
 package fi.nls.oskari.csw.domain;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vividsolutions.jts.geom.GeometryCollection;
+import org.locationtech.jts.geom.GeometryCollection;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -143,8 +143,8 @@ public class CSWIsoRecord {
         JSONHelper.putValue(ret, "fileIdentifier", fileIdentifier);
         JSONHelper.putValue(ret, "metadataLanguage", metadataLanguage);
         JSONHelper.putValue(ret, "metadataCharacterSet", metadataCharacterSet);
-        JSONHelper.putValue(ret, "scopeCodes", scopeCodes);
-        JSONHelper.putValue(ret, "referenceSystems", referenceSystems);
+        JSONHelper.putValue(ret, "scopeCodes", new JSONArray(scopeCodes));
+        JSONHelper.putValue(ret, "referenceSystems", new JSONArray(referenceSystems));
         JSONArray arr = new JSONArray();
         for (ResponsibleParty responsibleParty : metadataResponsibleParties) {
             arr.put(responsibleParty.toJSON());
@@ -477,7 +477,7 @@ public class CSWIsoRecord {
         public JSONObject toJSON() {
             JSONObject ret = new JSONObject();
             JSONHelper.putValue(ret, "organisationName", organisationName);
-            JSONHelper.putValue(ret, "electronicMailAddresses", electronicMailAddresses);
+            JSONHelper.putValue(ret, "electronicMailAddresses", new JSONArray(electronicMailAddresses));
             return ret;
         }
     }
@@ -608,11 +608,11 @@ public class CSWIsoRecord {
             }
             JSONHelper.putValue(ret, "browseGraphics", arr);
 
-            JSONHelper.putValue(ret, "descriptiveKeywords", descriptiveKeywords);
-            JSONHelper.putValue(ret, "accessConstraints", accessConstraints);
-            JSONHelper.putValue(ret, "otherConstraints", otherConstraints);
-            JSONHelper.putValue(ret, "classifications", classifications);
-            JSONHelper.putValue(ret, "useLimitations", useLimitations);
+            JSONHelper.putValue(ret, "descriptiveKeywords", new JSONArray(descriptiveKeywords));
+            JSONHelper.putValue(ret, "accessConstraints", new JSONArray(accessConstraints));
+            JSONHelper.putValue(ret, "otherConstraints", new JSONArray(otherConstraints));
+            JSONHelper.putValue(ret, "classifications", new JSONArray(classifications));
+            JSONHelper.putValue(ret, "useLimitations", new JSONArray(useLimitations));
             arr = new JSONArray();
             for (TemporalExtent temporalExtent : temporalExtents) {
                 arr.put(temporalExtent.toJSON());
@@ -839,11 +839,11 @@ public class CSWIsoRecord {
 
         public JSONObject toJSON() {
             JSONObject ret = super.toJSON();
-            JSONHelper.putValue(ret, "characterSets", characterSets);
-            JSONHelper.putValue(ret, "languages", languages);
-            JSONHelper.putValue(ret, "topicCategories", topicCategories);
-            JSONHelper.putValue(ret, "spatialResolutions", spatialResolutions);
-            JSONHelper.putValue(ret, "spatialRepresentationTypes", spatialRepresentationTypes);
+            JSONHelper.putValue(ret, "characterSets", new JSONArray(characterSets));
+            JSONHelper.putValue(ret, "languages", new JSONArray(languages));
+            JSONHelper.putValue(ret, "topicCategories", new JSONArray(topicCategories));
+            JSONHelper.putValue(ret, "spatialResolutions", new JSONArray(spatialResolutions));
+            JSONHelper.putValue(ret, "spatialRepresentationTypes", new JSONArray(spatialRepresentationTypes));
             JSONHelper.putValue(ret, "type", "data");
             return ret;
         }
@@ -883,7 +883,7 @@ public class CSWIsoRecord {
             JSONHelper.putValue(ret, "type", "service");
             JSONHelper.putValue(ret, "serviceType", serviceType);
             JSONHelper.putValue(ret, "serviceTypeVersion", serviceTypeVersion);
-            JSONHelper.putValue(ret, "operatesOn", operatesOn);
+            JSONHelper.putValue(ret, "operatesOn", new JSONArray(operatesOn));
             return ret;
         }
     }

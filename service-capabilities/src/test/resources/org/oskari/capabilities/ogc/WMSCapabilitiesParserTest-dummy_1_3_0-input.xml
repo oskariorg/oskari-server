@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WMS_Capabilities xmlns="http://www.opengis.net/wms"   xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.3.0" xsi:schemaLocation="http://www.opengis.net/wms http://schemas.opengis.net/wms/1.3.0/capabilities_1_3_0.xsd">
+    <Service>
+        <Name>WMS</Name>
+        <Title>INSPIRE WMS service</Title>
+        <Abstract>WMS abstract</Abstract>
+        <KeywordList>
+            <Keyword vocabulary="ISO">infoMapAccessService</Keyword>
+            <Keyword>INSPIRE</Keyword>
+            <Keyword>GEOSERVER</Keyword>
+        </KeywordList>
+        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://www.test.domain/wms?"/>
+        <MaxWidth>4096</MaxWidth>
+        <MaxHeight>4096</MaxHeight>
+    </Service>
+    <Capability>
+        <Request>
+            <GetCapabilities>
+                <Format>application/vnd.ogc.wms_xml</Format>
+                <Format>text/xml</Format>
+                <DCPType>
+                    <HTTP>
+                        <Get>
+                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://www.test.domain/wms?"/>
+                        </Get>
+                    </HTTP>
+                </DCPType>
+            </GetCapabilities>
+            <GetMap>
+                <Format>image/bmp</Format>
+                <Format>image/jpeg</Format>
+                <Format>image/tiff</Format>
+                <Format>image/png</Format>
+                <Format>image/png8</Format>
+                <Format>image/png24</Format>
+                <Format>image/png32</Format>
+                <Format>image/gif</Format>
+                <Format>image/svg+xml</Format>
+                <DCPType>
+                    <HTTP>
+                        <Get>
+                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://www.test.domain/wms?"/>
+                        </Get>
+                    </HTTP>
+                </DCPType>
+            </GetMap>
+            <GetFeatureInfo>
+                <Format>application/vnd.esri.wms_raw_xml</Format>
+                <Format>application/vnd.esri.wms_featureinfo_xml</Format>
+                <Format>application/vnd.ogc.wms_xml</Format>
+                <Format>application/geojson</Format>
+                <Format>text/xml</Format>
+                <Format>text/html</Format>
+                <Format>text/plain</Format>
+                <DCPType>
+                    <HTTP>
+                        <Get>
+                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="http://www.test.domain/wms?"/>
+                        </Get>
+                    </HTTP>
+                </DCPType>
+            </GetFeatureInfo>
+        </Request>
+        <Exception>
+            <Format>application/vnd.ogc.se_xml</Format>
+            <Format>application/vnd.ogc.se_inimage</Format>
+            <Format>application/vnd.ogc.se_blank</Format>
+            <Format>text/xml</Format>
+            <Format>XML</Format>
+        </Exception>
+        <Layer>
+            <Title>Layers</Title>
+            <CRS>CRS:84</CRS>
+            <CRS>EPSG:4326</CRS>
+            <CRS>EPSG:3067</CRS>
+            <CRS>EPSG:4258</CRS>
+            <CRS>EPSG:3034</CRS>
+            <CRS>EPSG:3035</CRS>
+            <CRS>EPSG:3046</CRS>
+            <CRS>EPSG:3047</CRS>
+            <CRS>EPSG:3048</CRS>
+            <CRS>EPSG:3873</CRS>
+            <CRS>EPSG:3874</CRS>
+            <CRS>EPSG:3875</CRS>
+            <CRS>EPSG:3876</CRS>
+            <CRS>EPSG:3877</CRS>
+            <CRS>EPSG:3878</CRS>
+            <CRS>EPSG:3879</CRS>
+            <CRS>EPSG:3880</CRS>
+            <CRS>EPSG:3881</CRS>
+            <CRS>EPSG:3882</CRS>
+            <CRS>EPSG:3883</CRS>
+            <CRS>EPSG:3884</CRS>
+            <CRS>EPSG:3885</CRS>
+            <EX_GeographicBoundingBox>
+                <westBoundLongitude>16.262269</westBoundLongitude>
+                <eastBoundLongitude>32.841294</eastBoundLongitude>
+                <southBoundLatitude>59.672742</southBoundLatitude>
+                <northBoundLatitude>70.094755</northBoundLatitude>
+            </EX_GeographicBoundingBox>
+            <BoundingBox CRS="CRS:84" minx="16.262269" miny="59.672742" maxx="32.841294" maxy="70.094755"/>
+            <BoundingBox CRS="EPSG:4326" minx="59.672742" miny="16.262269" maxx="70.094755" maxy="32.841294"/>
+            <BoundingBox CRS="EPSG:3067" minx="87429.945000" miny="6637805.902000" maxx="722684.189000" maxy="7776440.030000"/>
+            <BoundingBox CRS="EPSG:102139" minx="87429.945000" miny="6637805.902000" maxx="722684.189000" maxy="7776440.030000"/>
+            <BoundingBox CRS="EPSG:4258" minx="59.672742" miny="16.262269" maxx="70.094755" maxy="32.841294"/>
+            <BoundingBox CRS="EPSG:3034" minx="3663665.821416" miny="4249378.895374" maxx="4920244.545278" maxy="5135964.402043"/>
+            <BoundingBox CRS="EPSG:3035" minx="4100673.576365" miny="4565401.348277" maxx="5352676.738590" maxy="5480449.468442"/>
+            <BoundingBox CRS="EPSG:3046" minx="6615721.549499" miny="317307.105452" maxx="7809606.601562" maxy="1057870.352621"/>
+            <BoundingBox CRS="EPSG:3047" minx="6637805.902000" miny="87429.945000" maxx="7776440.030000" maxy="722684.189000"/>
+            <BoundingBox CRS="EPSG:3048" minx="6632869.236943" miny="-247723.999948" maxx="7828382.514172" maxy="493941.710213"/>
+            <BoundingBox CRS="EPSG:3873" minx="6617801.266803" miny="19394326.319925" maxx="7828775.253381" maxy="20169270.836766"/>
+            <BoundingBox CRS="EPSG:3874" minx="6617660.617315" miny="20355763.421535" maxx="7820442.802420" maxy="21113729.994960"/>
+            <BoundingBox CRS="EPSG:3875" minx="6618368.897058" miny="21317233.999052" maxx="7812731.694240" maxy="22058093.590057"/>
+            <BoundingBox CRS="EPSG:3876" minx="6619926.221078" miny="22278747.033802" maxx="7805642.708639" maxy="23002370.790014"/>
+            <BoundingBox CRS="EPSG:3877" minx="6622332.841891" miny="23240311.524791" maxx="7799176.550931" maxy="23946570.631754"/>
+            <BoundingBox CRS="EPSG:3878" minx="6625589.148526" miny="24201936.492323" maxx="7793333.854789" maxy="24890702.034173"/>
+            <BoundingBox CRS="EPSG:3879" minx="6629695.665062" miny="25163630.981562" maxx="7788115.184842" maxy="25834773.811186"/>
+            <BoundingBox CRS="EPSG:3880" minx="6634653.048619" miny="26125404.066017" maxx="7783521.039036" maxy="26778794.684818"/>
+            <BoundingBox CRS="EPSG:3881" minx="6640462.086835" miny="27087264.850940" maxx="7779551.850740" maxy="27722773.298319"/>
+            <BoundingBox CRS="EPSG:3882" minx="6637522.024061" miny="28031175.064445" maxx="7786644.196321" maxy="28684712.525500"/>
+            <BoundingBox CRS="EPSG:3883" minx="6635429.050701" miny="28975156.623212" maxx="7794364.890344" maxy="29646608.547763"/>
+            <BoundingBox CRS="EPSG:3884" minx="6634182.836471" miny="29919218.454154" maxx="7802713.188836" maxy="30608470.309250"/>
+            <BoundingBox CRS="EPSG:3885" minx="6633783.184191" miny="30863369.608365" maxx="7811688.272450" maxy="31570306.740382"/>
+            <Layer queryable="1">
+                <Name>LayerName</Name>
+                <Title>LayerTitle</Title>
+                <Abstract/>
+                <KeywordList>
+                    <Keyword>keyword</Keyword>
+                </KeywordList>
+                <CRS>CRS:84</CRS>
+                <CRS>EPSG:4326</CRS>
+                <CRS>EPSG:3067</CRS>
+                <CRS>EPSG:4258</CRS>
+                <CRS>EPSG:3034</CRS>
+                <CRS>EPSG:3035</CRS>
+                <CRS>EPSG:3046</CRS>
+                <CRS>EPSG:3047</CRS>
+                <CRS>EPSG:3048</CRS>
+                <CRS>EPSG:3873</CRS>
+                <CRS>EPSG:3874</CRS>
+                <CRS>EPSG:3875</CRS>
+                <CRS>EPSG:3876</CRS>
+                <CRS>EPSG:3877</CRS>
+                <CRS>EPSG:3878</CRS>
+                <CRS>EPSG:3879</CRS>
+                <CRS>EPSG:3880</CRS>
+                <CRS>EPSG:3881</CRS>
+                <CRS>EPSG:3882</CRS>
+                <CRS>EPSG:3883</CRS>
+                <CRS>EPSG:3884</CRS>
+                <CRS>EPSG:3885</CRS>
+                <EX_GeographicBoundingBox>
+                    <westBoundLongitude>19.158138</westBoundLongitude>
+                    <eastBoundLongitude>31.417899</eastBoundLongitude>
+                    <southBoundLatitude>59.756708</southBoundLatitude>
+                    <northBoundLatitude>68.910986</northBoundLatitude>
+                </EX_GeographicBoundingBox>
+                <BoundingBox CRS="CRS:84" minx="19.158138" miny="59.756708" maxx="31.417899" maxy="68.910986"/>
+                <BoundingBox CRS="EPSG:4326" minx="59.756708" miny="19.158138" maxx="68.910986" maxy="31.417899"/>
+                <BoundingBox CRS="EPSG:3067" minx="183251.284000" miny="6637805.902000" maxx="677734.276000" maxy="7644436.775000"/>
+                <BoundingBox CRS="EPSG:102139" minx="183251.284000" miny="6637805.902000" maxx="677734.276000" maxy="7644436.775000"/>
+                <BoundingBox CRS="EPSG:4258" minx="59.756708" miny="19.158138" maxx="68.910986" maxy="31.417899"/>
+                <BoundingBox CRS="EPSG:3034" minx="3685932.108698" miny="4378934.028234" maxx="4777560.625665" maxy="5093087.482821"/>
+                <BoundingBox CRS="EPSG:3035" minx="4124000.934198" miny="4694707.418189" maxx="5215280.148714" maxy="5436944.230836"/>
+                <BoundingBox CRS="EPSG:3046" minx="6624371.175751" miny="425441.144624" maxx="7673583.652550" maxy="1012970.497542"/>
+                <BoundingBox CRS="EPSG:3047" minx="6637805.902000" miny="183251.284000" maxx="7644436.775000" maxy="677734.276000"/>
+                <BoundingBox CRS="EPSG:3048" minx="6636933.135598" miny="-151882.737075" maxx="7687210.388725" maxy="436310.567883"/>
+                <BoundingBox CRS="EPSG:3873" minx="6629324.117643" miny="19506404.810980" maxx="7691603.073710" maxy="20124426.403123"/>
+                <BoundingBox CRS="EPSG:3874" minx="6627749.227306" miny="20465904.233953" maxx="7683802.411733" maxy="21068845.220997"/>
+                <BoundingBox CRS="EPSG:3875" minx="6627021.984545" miny="21425411.309148" maxx="7676654.314276" maxy="22013175.767850"/>
+                <BoundingBox CRS="EPSG:3876" minx="6627142.272941" miny="22384935.129985" maxx="7670159.320496" maxy="22957427.110467"/>
+                <BoundingBox CRS="EPSG:3877" minx="6628110.111760" miny="23344484.798326" maxx="7664317.910170" maxy="23901608.195215"/>
+                <BoundingBox CRS="EPSG:3878" minx="6629925.655876" miny="24304069.429037" maxx="7659130.506562" maxy="24845727.861058"/>
+                <BoundingBox CRS="EPSG:3879" minx="6632589.195181" miny="25263698.154512" maxx="7654597.479012" maxy="25789794.852613"/>
+                <BoundingBox CRS="EPSG:3880" minx="6636101.153475" miny="26223380.129157" maxx="7650719.145230" maxy="26733817.833240"/>
+                <BoundingBox CRS="EPSG:3881" minx="6640462.086835" miny="27183124.533814" maxx="7647495.773309" maxy="27677805.398159"/>
+                <BoundingBox CRS="EPSG:3882" minx="6638200.856457" miny="28127075.446306" maxx="7652986.628049" maxy="28637599.335629"/>
+                <BoundingBox CRS="EPSG:3883" minx="6636786.074434" miny="29071082.989024" maxx="7659134.490978" maxy="29597362.227824"/>
+                <BoundingBox CRS="EPSG:3884" minx="6636217.517865" miny="30015155.929334" maxx="7665938.929204" maxy="30557103.168427"/>
+                <BoundingBox CRS="EPSG:3885" minx="6636495.097033" miny="30959303.135752" maxx="7673399.453507" maxy="31516831.240294"/>
+                <Identifier authority="FI">1002017</Identifier>
+                <MetadataURL type="ISO19115:2003">
+                    <Format>text/xml</Format>
+                    <OnlineResource xlink:href="http://www.test.domain//csw?request=GetRecordById&amp;service=CSW&amp;id=AAAAA1234-1234-1234-1AAA-1A1A1A111A1&amp;elementSetName=full&amp;outputSchema=http%3A%2F%2Fwww.isotc211.org%2F2005%2Fgmd" xlink:type="simple"/>
+                </MetadataURL>
+                <MetadataURL type="ISO19115:2003">
+                    <Format>text/html</Format>
+                    <OnlineResource xlink:href="http://www.test.domain/geonetwork/srv/fi/metadata.show.portti?uuid=AAAAA1234-1234-1234-1AAA-1A1A1A111A1" xlink:type="simple"/>
+                </MetadataURL>
+                <Style>
+                    <Name>default</Name>
+                    <Title>LayerName</Title>
+                    <LegendURL width="16" height="16">
+                        <Format>image/png</Format>
+                        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://www.test.domain/wms?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=LayerName" xlink:type="simple"/>
+                    </LegendURL>
+                </Style>
+                <MinScaleDenominator>4724.702381</MinScaleDenominator>
+                <MaxScaleDenominator>18898809.523810</MaxScaleDenominator>
+                <Dimension name="time" default="1932-12-31T00:00:00Z" units="ISO8601">1931-12-31T00:00:00.000Z,1932-12-31T00:00:00.000Z,1933-12-31T00:00:00.000Z,1934-12-31T00:00:00.000Z</Dimension>
+            </Layer>
+        </Layer>
+    </Capability>
+</WMS_Capabilities>

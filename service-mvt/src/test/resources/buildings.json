@@ -1,0 +1,4658 @@
+{
+  "type": "FeatureCollection",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "EPSG:3067"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271748.41,
+          6711661.56
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "2007-10-30Z",
+        "POSTINUMERO": "21540",
+        "RAKENNUS": "577-407-1-157-1",
+        "KIINTEISTOTUNNUS": "577-407-0001-0157",
+        "POSTITOIMIPAIKKA": "PREITILÄ",
+        "KT_LUOKKA_SUOMI": "Vapaa-ajan asuinrakennukset",
+        "KOORD_POHJOINEN": 6707150,
+        "OSOITENUMERO": "168",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Isosuontie",
+        "KOORD_ITA": 23491538,
+        "KAYTTOTARKOITUS_SUOMI": "Vapaa-ajan asuinrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "101822396D",
+        "KAYTTOTARKOITUS": "041 vapaa-ajan asuinrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58db"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          272009.08,
+          6713573.71
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1970-12-31Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-407-1-195-1",
+        "KIINTEISTOTUNNUS": "577-407-0001-0195",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6709074,
+        "OSOITENUMERO": "80",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Perttalantie",
+        "KOORD_ITA": 23491682,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "101822424A",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58da"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270592.78,
+          6716432.71
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1935-12-31Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-492-2-9-1",
+        "KIINTEISTOTUNNUS": "577-492-0002-0009",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6711841,
+        "OSOITENUMERO": "457",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Taatilantie",
+        "KOORD_ITA": 23490095,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "102184616X",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58d9"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270520.94,
+          6705057.3
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "2015-07-01Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-448-3-1-4",
+        "KIINTEISTOTUNNUS": "577-448-0003-0001",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Maatalousrakennukset",
+        "KOORD_POHJOINEN": 6700485,
+        "OSOITENUMERO": "61",
+        "RAKENNUSTUNNUS": "004",
+        "KATU_SUOMI": "Syrjäläntie",
+        "KOORD_ITA": 23490714,
+        "KAYTTOTARKOITUS_SUOMI": "Viljankuivaamot ja viljan säilytysrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "102226544E",
+        "KAYTTOTARKOITUS": "891 viljankuivaamot ja viljan säilytysrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58d8"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271534.57,
+          6715919.42
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "2006-08-16Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-402-1-117-1",
+        "KIINTEISTOTUNNUS": "577-402-0001-0117",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6711386,
+        "OSOITENUMERO": "143",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Suomentie",
+        "KOORD_ITA": 23491066,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "1018125316",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58d7"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271557.26,
+          6715930.07
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "2009-06-14Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-402-1-117-2",
+        "KIINTEISTOTUNNUS": "577-402-0001-0117",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6711398,
+        "OSOITENUMERO": "143",
+        "RAKENNUSTUNNUS": "002",
+        "KATU_SUOMI": "Suomentie",
+        "KOORD_ITA": 23491088,
+        "KAYTTOTARKOITUS_SUOMI": "Talousrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "1018125327",
+        "KAYTTOTARKOITUS": "941 talousrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58d6"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270563.42,
+          6714419.28
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1961-12-31Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-402-1-118-1",
+        "KIINTEISTOTUNNUS": "577-402-0001-0118",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6709830,
+        "OSOITENUMERO": "729",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Kalevantie",
+        "KOORD_ITA": 23490188,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "1018125338",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58d5"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270576.69,
+          6714390.41
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1961-12-31Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-402-1-118-2",
+        "KIINTEISTOTUNNUS": "577-402-0001-0118",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6709802,
+        "OSOITENUMERO": "729",
+        "RAKENNUSTUNNUS": "002",
+        "KATU_SUOMI": "Kalevantie",
+        "KOORD_ITA": 23490203,
+        "KAYTTOTARKOITUS_SUOMI": "Talousrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "1018125349",
+        "KAYTTOTARKOITUS": "941 talousrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58d4"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270468.21,
+          6705805.06
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1991-06-30Z",
+        "POSTINUMERO": "21530",
+        "RAKENNUS": "577-404-1-5-2",
+        "KIINTEISTOTUNNUS": "577-404-0001-0005",
+        "POSTITOIMIPAIKKA": "PAIMIO",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6701228,
+        "OSOITENUMERO": "190",
+        "RAKENNUSTUNNUS": "002",
+        "KATU_SUOMI": "Pitkäportaantie",
+        "KOORD_ITA": 23490616,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "101812553W",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58d3"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271070.83,
+          6705679.22
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1921-12-31Z",
+        "POSTINUMERO": "21530",
+        "RAKENNUS": "577-404-1-12-1",
+        "KIINTEISTOTUNNUS": "577-404-0001-0012",
+        "POSTITOIMIPAIKKA": "PAIMIO",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6701139,
+        "OSOITENUMERO": "31",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Anttilantie",
+        "KOORD_ITA": 23491225,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "101812554X",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58d2"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271044.72,
+          6705694.84
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1923-12-31Z",
+        "POSTINUMERO": "21530",
+        "RAKENNUS": "577-404-1-12-2",
+        "KIINTEISTOTUNNUS": "577-404-0001-0012",
+        "POSTITOIMIPAIKKA": "PAIMIO",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6701153,
+        "OSOITENUMERO": "31",
+        "RAKENNUSTUNNUS": "002",
+        "KATU_SUOMI": "Anttilantie",
+        "KOORD_ITA": 23491198,
+        "KAYTTOTARKOITUS_SUOMI": "Talousrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "101812555Y",
+        "KAYTTOTARKOITUS": "941 talousrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58d1"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271115.74,
+          6705577.29
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1985-11-30Z",
+        "POSTINUMERO": "21530",
+        "RAKENNUS": "577-404-1-12-3",
+        "KIINTEISTOTUNNUS": "577-404-0001-0012",
+        "POSTITOIMIPAIKKA": "PAIMIO",
+        "KT_LUOKKA_SUOMI": "Maatalousrakennukset",
+        "KOORD_POHJOINEN": 6701040,
+        "OSOITENUMERO": "31",
+        "RAKENNUSTUNNUS": "003",
+        "KATU_SUOMI": "Anttilantie",
+        "KOORD_ITA": 23491276,
+        "KAYTTOTARKOITUS_SUOMI": "Viljankuivaamot ja viljan säilytysrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "1018125560",
+        "KAYTTOTARKOITUS": "891 viljankuivaamot ja viljan säilytysrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58d0"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271092.36,
+          6705753.07
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1919-12-31Z",
+        "POSTINUMERO": "21530",
+        "RAKENNUS": "577-404-1-14-1",
+        "KIINTEISTOTUNNUS": "577-404-0001-0014",
+        "POSTITOIMIPAIKKA": "PAIMIO",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6701214,
+        "OSOITENUMERO": "26",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Anttilantie",
+        "KOORD_ITA": 23491242,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "1018125571",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58cf"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271250.98,
+          6705856.66
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1985-06-30Z",
+        "POSTINUMERO": "21530",
+        "RAKENNUS": "577-404-1-14-2",
+        "KIINTEISTOTUNNUS": "577-404-0001-0014",
+        "POSTITOIMIPAIKKA": "PAIMIO",
+        "KT_LUOKKA_SUOMI": "Maatalousrakennukset",
+        "KOORD_POHJOINEN": 6701327,
+        "OSOITENUMERO": "26",
+        "RAKENNUSTUNNUS": "002",
+        "KATU_SUOMI": "Anttilantie",
+        "KOORD_ITA": 23491394,
+        "KAYTTOTARKOITUS_SUOMI": "Navetat, sikalat, kanalat yms",
+        "PYSYVA_RAKENNUSTUNNUS": "1018125582",
+        "KAYTTOTARKOITUS": "811 navetat, sikalat, kanalat yms"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58ce"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271233.35,
+          6705797.61
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "2004-09-06Z",
+        "POSTINUMERO": "21530",
+        "RAKENNUS": "577-404-1-14-3",
+        "KIINTEISTOTUNNUS": "577-404-0001-0014",
+        "POSTITOIMIPAIKKA": "PAIMIO",
+        "KT_LUOKKA_SUOMI": "Maatalousrakennukset",
+        "KOORD_POHJOINEN": 6701267,
+        "OSOITENUMERO": "26",
+        "RAKENNUSTUNNUS": "003",
+        "KATU_SUOMI": "Anttilantie",
+        "KOORD_ITA": 23491380,
+        "KAYTTOTARKOITUS_SUOMI": "Viljankuivaamot ja viljan säilytysrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "1018125593",
+        "KAYTTOTARKOITUS": "891 viljankuivaamot ja viljan säilytysrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58cd"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271391.79,
+          6706458.37
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1946-12-31Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-404-1-15-1",
+        "KIINTEISTOTUNNUS": "577-404-0001-0015",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6701936,
+        "OSOITENUMERO": "136",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Hangassuontie",
+        "KOORD_ITA": 23491498,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "1018125604",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58cc"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270379.73,
+          6705882.59
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "2012-05-23Z",
+        "POSTINUMERO": "21530",
+        "RAKENNUS": "577-404-1-18-5",
+        "KIINTEISTOTUNNUS": "577-404-0001-0018",
+        "POSTITOIMIPAIKKA": "PAIMIO",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6701300,
+        "OSOITENUMERO": "186",
+        "RAKENNUSTUNNUS": "005",
+        "KATU_SUOMI": "Pitkäportaantie",
+        "KOORD_ITA": 23490523,
+        "KAYTTOTARKOITUS_SUOMI": "Talousrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "1018125615",
+        "KAYTTOTARKOITUS": "941 talousrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58cb"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270357.8,
+          6705900.96
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "2014-04-14Z",
+        "POSTINUMERO": "21530",
+        "RAKENNUS": "577-404-1-18-3",
+        "KIINTEISTOTUNNUS": "577-404-0001-0018",
+        "POSTITOIMIPAIKKA": "PAIMIO",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6701317,
+        "OSOITENUMERO": "186",
+        "RAKENNUSTUNNUS": "003",
+        "KATU_SUOMI": "Pitkäportaantie",
+        "KOORD_ITA": 23490500,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "1018125626",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58ca"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270430.13,
+          6705854.48
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1990-10-31Z",
+        "POSTINUMERO": "21530",
+        "RAKENNUS": "577-404-1-21-1",
+        "KIINTEISTOTUNNUS": "577-404-0001-0021",
+        "POSTITOIMIPAIKKA": "PAIMIO",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6701275,
+        "OSOITENUMERO": "188",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Pitkäportaantie",
+        "KOORD_ITA": 23490575,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "1018125637",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58c9"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270419.88,
+          6705900.19
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1995-07-19Z",
+        "POSTINUMERO": "21530",
+        "RAKENNUS": "577-404-1-21-2",
+        "KIINTEISTOTUNNUS": "577-404-0001-0021",
+        "POSTITOIMIPAIKKA": "PAIMIO",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6701320,
+        "OSOITENUMERO": "188",
+        "RAKENNUSTUNNUS": "002",
+        "KATU_SUOMI": "Pitkäportaantie",
+        "KOORD_ITA": 23490562,
+        "KAYTTOTARKOITUS_SUOMI": "Saunarakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "1018125648",
+        "KAYTTOTARKOITUS": "931 saunarakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58c8"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271556.58,
+          6713284.59
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1919-12-31Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-405-1-3-1",
+        "KIINTEISTOTUNNUS": "577-405-0001-0003",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6708758,
+        "OSOITENUMERO": "827",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Kalevantie",
+        "KOORD_ITA": 23491248,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "1018125659",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58c7"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271852.29,
+          6714488.14
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1919-12-31Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-405-2-51-1",
+        "KIINTEISTOTUNNUS": "577-405-0002-0051",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6709977,
+        "OSOITENUMERO": "20",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Suomentie",
+        "KOORD_ITA": 23491470,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "1018125936",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58c6"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271869.38,
+          6714489.1
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1994-08-31Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-405-2-51-2",
+        "KIINTEISTOTUNNUS": "577-405-0002-0051",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6709979,
+        "OSOITENUMERO": "20",
+        "RAKENNUSTUNNUS": "002",
+        "KATU_SUOMI": "Suomentie",
+        "KOORD_ITA": 23491487,
+        "KAYTTOTARKOITUS_SUOMI": "Saunarakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "1018125947",
+        "KAYTTOTARKOITUS": "931 saunarakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58c5"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271389.24,
+          6715194.74
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1939-12-31Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-488-4-18-1",
+        "KIINTEISTOTUNNUS": "577-488-0004-0018",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6710654,
+        "OSOITENUMERO": "100",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Suomentie",
+        "KOORD_ITA": 23490965,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "102174931H",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58c4"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270824.77,
+          6714350.26
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1952-12-31Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-409-1-102-3",
+        "KIINTEISTOTUNNUS": "577-409-0001-0102",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6709777,
+        "OSOITENUMERO": "750",
+        "RAKENNUSTUNNUS": "003",
+        "KATU_SUOMI": "Kalevantie",
+        "KOORD_ITA": 23490453,
+        "KAYTTOTARKOITUS_SUOMI": "Saunarakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "103719643X",
+        "KAYTTOTARKOITUS": "931 saunarakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58c3"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270832.06,
+          6714321.76
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1951-12-31Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-409-1-102-4",
+        "KIINTEISTOTUNNUS": "577-409-0001-0102",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6709749,
+        "OSOITENUMERO": "750",
+        "RAKENNUSTUNNUS": "004",
+        "KATU_SUOMI": "Kalevantie",
+        "KOORD_ITA": 23490462,
+        "KAYTTOTARKOITUS_SUOMI": "Talousrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "103719662J",
+        "KAYTTOTARKOITUS": "941 talousrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58c2"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271305.29,
+          6716795.18
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1969-12-31Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-409-1-5-4",
+        "KIINTEISTOTUNNUS": "577-409-0001-0005",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6712246,
+        "OSOITENUMERO": "548",
+        "RAKENNUSTUNNUS": "004",
+        "KATU_SUOMI": "Taatilantie",
+        "KOORD_ITA": 23490784,
+        "KAYTTOTARKOITUS_SUOMI": "Talousrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "103719824S",
+        "KAYTTOTARKOITUS": "941 talousrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58c1"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271306.31,
+          6716779.08
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1961-12-31Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-409-1-5-6",
+        "KIINTEISTOTUNNUS": "577-409-0001-0005",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6712230,
+        "OSOITENUMERO": "548",
+        "RAKENNUSTUNNUS": "006",
+        "KATU_SUOMI": "Taatilantie",
+        "KOORD_ITA": 23490786,
+        "KAYTTOTARKOITUS_SUOMI": "Talousrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "1037198686",
+        "KAYTTOTARKOITUS": "941 talousrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58c0"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271267.98,
+          6716758.37
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1949-12-31Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-409-1-5-5",
+        "KIINTEISTOTUNNUS": "577-409-0001-0005",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Maatalousrakennukset",
+        "KOORD_POHJOINEN": 6712207,
+        "OSOITENUMERO": "548",
+        "RAKENNUSTUNNUS": "005",
+        "KATU_SUOMI": "Taatilantie",
+        "KOORD_ITA": 23490749,
+        "KAYTTOTARKOITUS_SUOMI": "Muut maa-, metsä- ja kalatalouden rakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "103719846F",
+        "KAYTTOTARKOITUS": "899 muut maa-, metsä- ja kalatalouden rakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58bf"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270116.79,
+          6705892.57
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1953-12-31Z",
+        "POSTINUMERO": "21530",
+        "RAKENNUS": "577-439-2-10-1",
+        "KIINTEISTOTUNNUS": "577-439-0002-0010",
+        "POSTITOIMIPAIKKA": "PAIMIO",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6701294,
+        "OSOITENUMERO": "150",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Pitkäportaantie",
+        "KOORD_ITA": 23490260,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "1020130385",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58be"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          269952.75,
+          6705930.61
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1974-12-31Z",
+        "POSTINUMERO": "21530",
+        "RAKENNUS": "577-439-2-11-1",
+        "KIINTEISTOTUNNUS": "577-439-0002-0011",
+        "POSTITOIMIPAIKKA": "PAIMIO",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6701322,
+        "OSOITENUMERO": "132",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Pitkäportaantie",
+        "KOORD_ITA": 23490094,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "1020130396",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58bd"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270247.9,
+          6705955.75
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1945-12-31Z",
+        "POSTINUMERO": "21530",
+        "RAKENNUS": "577-439-2-20-1",
+        "KIINTEISTOTUNNUS": "577-439-0002-0020",
+        "POSTITOIMIPAIKKA": "PAIMIO",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6701365,
+        "OSOITENUMERO": "170",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Pitkäportaantie",
+        "KOORD_ITA": 23490387,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "102013046D",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58bc"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271662.35,
+          6709818.95
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1945-12-31Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-477-1-4-2",
+        "KIINTEISTOTUNNUS": "577-477-0001-0004",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Maatalousrakennukset",
+        "KOORD_POHJOINEN": 6705306,
+        "OSOITENUMERO": "336",
+        "RAKENNUSTUNNUS": "002",
+        "KATU_SUOMI": "Vellontie",
+        "KOORD_ITA": 23491564,
+        "KAYTTOTARKOITUS_SUOMI": "Muut maa-, metsä- ja kalatalouden rakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "103670126L",
+        "KAYTTOTARKOITUS": "899 muut maa-, metsä- ja kalatalouden rakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58bb"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271658.09,
+          6709831.23
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1948-12-31Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-477-1-4-3",
+        "KIINTEISTOTUNNUS": "577-477-0001-0004",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Maatalousrakennukset",
+        "KOORD_POHJOINEN": 6705318,
+        "OSOITENUMERO": "336",
+        "RAKENNUSTUNNUS": "003",
+        "KATU_SUOMI": "Vellontie",
+        "KOORD_ITA": 23491559,
+        "KAYTTOTARKOITUS_SUOMI": "Muut maa-, metsä- ja kalatalouden rakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "1036701468",
+        "KAYTTOTARKOITUS": "899 muut maa-, metsä- ja kalatalouden rakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58ba"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271641.06,
+          6709831.26
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1954-12-31Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-477-1-4-4",
+        "KIINTEISTOTUNNUS": "577-477-0001-0004",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Maatalousrakennukset",
+        "KOORD_POHJOINEN": 6705317,
+        "OSOITENUMERO": "336",
+        "RAKENNUSTUNNUS": "004",
+        "KATU_SUOMI": "Vellontie",
+        "KOORD_ITA": 23491542,
+        "KAYTTOTARKOITUS_SUOMI": "Muut maa-, metsä- ja kalatalouden rakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "103670148A",
+        "KAYTTOTARKOITUS": "899 muut maa-, metsä- ja kalatalouden rakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58b9"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271670.11,
+          6709847.54
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1949-12-31Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-477-1-4-5",
+        "KIINTEISTOTUNNUS": "577-477-0001-0004",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Maatalousrakennukset",
+        "KOORD_POHJOINEN": 6705335,
+        "OSOITENUMERO": "336",
+        "RAKENNUSTUNNUS": "005",
+        "KATU_SUOMI": "Vellontie",
+        "KOORD_ITA": 23491570,
+        "KAYTTOTARKOITUS_SUOMI": "Muut maa-, metsä- ja kalatalouden rakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "103670159N",
+        "KAYTTOTARKOITUS": "899 muut maa-, metsä- ja kalatalouden rakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58b8"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271654.37,
+          6709852.5
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1967-12-31Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-477-1-4-6",
+        "KIINTEISTOTUNNUS": "577-477-0001-0004",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Maatalousrakennukset",
+        "KOORD_POHJOINEN": 6705339,
+        "OSOITENUMERO": "336",
+        "RAKENNUSTUNNUS": "006",
+        "KATU_SUOMI": "Vellontie",
+        "KOORD_ITA": 23491554,
+        "KAYTTOTARKOITUS_SUOMI": "Muut maa-, metsä- ja kalatalouden rakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "103670161R",
+        "KAYTTOTARKOITUS": "899 muut maa-, metsä- ja kalatalouden rakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58b7"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271445.41,
+          6714800.5
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1949-12-31Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-438-2-1-3",
+        "KIINTEISTOTUNNUS": "577-438-0002-0001",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6710264,
+        "OSOITENUMERO": "814",
+        "RAKENNUSTUNNUS": "003",
+        "KATU_SUOMI": "Kalevantie",
+        "KOORD_ITA": 23491045,
+        "KAYTTOTARKOITUS_SUOMI": "Talousrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "103781635N",
+        "KAYTTOTARKOITUS": "941 talousrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58b6"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271469.65,
+          6714820.07
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1949-12-31Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-438-2-1-4",
+        "KIINTEISTOTUNNUS": "577-438-0002-0001",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6710285,
+        "OSOITENUMERO": "814",
+        "RAKENNUSTUNNUS": "004",
+        "KATU_SUOMI": "Kalevantie",
+        "KOORD_ITA": 23491068,
+        "KAYTTOTARKOITUS_SUOMI": "Talousrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "1037820170",
+        "KAYTTOTARKOITUS": "941 talousrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58b5"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271482.03,
+          6714809.3
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1949-12-31Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-438-2-1-5",
+        "KIINTEISTOTUNNUS": "577-438-0002-0001",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6710275,
+        "OSOITENUMERO": "814",
+        "RAKENNUSTUNNUS": "005",
+        "KATU_SUOMI": "Kalevantie",
+        "KOORD_ITA": 23491081,
+        "KAYTTOTARKOITUS_SUOMI": "Talousrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "1037820823",
+        "KAYTTOTARKOITUS": "941 talousrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58b4"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          272649.57,
+          6705340.71
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1919-12-31Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-508-1-3-1",
+        "KIINTEISTOTUNNUS": "577-508-0001-0003",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6700897,
+        "OSOITENUMERO": "100",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Tankomäentie",
+        "KOORD_ITA": 23492821,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "102812905A",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58b3"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270412.33,
+          6707094.15
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1951-12-31Z",
+        "POSTINUMERO": "21530",
+        "RAKENNUS": "577-452-1-18-1",
+        "KIINTEISTOTUNNUS": "577-452-0001-0018",
+        "POSTITOIMIPAIKKA": "PAIMIO",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6702511,
+        "OSOITENUMERO": "123",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Naurisorkontie",
+        "KOORD_ITA": 23490482,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "102051206C",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58b2"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271545.5,
+          6707634.49
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1918-12-31Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-473-1-7-1",
+        "KIINTEISTOTUNNUS": "577-473-0001-0007",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Maatalousrakennukset",
+        "KOORD_POHJOINEN": 6703119,
+        "OSOITENUMERO": "300",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Hangassuontie",
+        "KOORD_ITA": 23491580,
+        "KAYTTOTARKOITUS_SUOMI": "Muut maa-, metsä- ja kalatalouden rakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "103707514N",
+        "KAYTTOTARKOITUS": "899 muut maa-, metsä- ja kalatalouden rakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58b1"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          272452.15,
+          6705455.93
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1919-12-31Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-508-1-9-1",
+        "KIINTEISTOTUNNUS": "577-508-0001-0009",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Vapaa-ajan asuinrakennukset",
+        "KOORD_POHJOINEN": 6701000,
+        "OSOITENUMERO": "80",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Tankomäentie",
+        "KOORD_ITA": 23492617,
+        "KAYTTOTARKOITUS_SUOMI": "Vapaa-ajan asuinrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "102812906B",
+        "KAYTTOTARKOITUS": "041 vapaa-ajan asuinrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58b0"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270621.57,
+          6713958.79
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1949-12-31Z",
+        "POSTINUMERO": "21530",
+        "RAKENNUS": "577-402-1-119-1",
+        "KIINTEISTOTUNNUS": "577-402-0001-0119",
+        "POSTITOIMIPAIKKA": "PAIMIO",
+        "KT_LUOKKA_SUOMI": "Maatalousrakennukset",
+        "KOORD_POHJOINEN": 6709374,
+        "OSOITENUMERO": "701",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Kalevantie",
+        "KOORD_ITA": 23490274,
+        "KAYTTOTARKOITUS_SUOMI": "Muut maa-, metsä- ja kalatalouden rakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "103910510X",
+        "KAYTTOTARKOITUS": "899 muut maa-, metsä- ja kalatalouden rakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58af"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          272376.41,
+          6705495.61
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1968-10-23Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-508-1-10-4",
+        "KIINTEISTOTUNNUS": "577-508-0001-0010",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Maatalousrakennukset",
+        "KOORD_POHJOINEN": 6701035,
+        "OSOITENUMERO": "53",
+        "RAKENNUSTUNNUS": "004",
+        "KATU_SUOMI": "Tankomäentie",
+        "KOORD_ITA": 23492539,
+        "KAYTTOTARKOITUS_SUOMI": "Viljankuivaamot ja viljan säilytysrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "1036710381",
+        "KAYTTOTARKOITUS": "891 viljankuivaamot ja viljan säilytysrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58ae"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270772.49,
+          6714808.39
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1929-12-31Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-409-1-4-4",
+        "KIINTEISTOTUNNUS": "577-409-0001-0004",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Maatalousrakennukset",
+        "KOORD_POHJOINEN": 6710231,
+        "OSOITENUMERO": "750",
+        "RAKENNUSTUNNUS": "004",
+        "KATU_SUOMI": "Kalevantie",
+        "KOORD_ITA": 23490373,
+        "KAYTTOTARKOITUS_SUOMI": "Navetat, sikalat, kanalat yms",
+        "PYSYVA_RAKENNUSTUNNUS": "103910511Y",
+        "KAYTTOTARKOITUS": "811 navetat, sikalat, kanalat yms"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58ad"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270775.72,
+          6714779.14
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1939-12-31Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-409-1-4-5",
+        "KIINTEISTOTUNNUS": "577-409-0001-0004",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6710202,
+        "OSOITENUMERO": "750",
+        "RAKENNUSTUNNUS": "005",
+        "KATU_SUOMI": "Kalevantie",
+        "KOORD_ITA": 23490378,
+        "KAYTTOTARKOITUS_SUOMI": "Talousrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "1039105120",
+        "KAYTTOTARKOITUS": "941 talousrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58ac"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270735.35,
+          6714856.75
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1971-12-29Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-409-1-4-6",
+        "KIINTEISTOTUNNUS": "577-409-0001-0004",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Maatalousrakennukset",
+        "KOORD_POHJOINEN": 6710277,
+        "OSOITENUMERO": "750",
+        "RAKENNUSTUNNUS": "006",
+        "KATU_SUOMI": "Kalevantie",
+        "KOORD_ITA": 23490333,
+        "KAYTTOTARKOITUS_SUOMI": "Navetat, sikalat, kanalat yms",
+        "PYSYVA_RAKENNUSTUNNUS": "103910525D",
+        "KAYTTOTARKOITUS": "811 navetat, sikalat, kanalat yms"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58ab"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270728.97,
+          6714867.16
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1849-12-31Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-409-1-4-7",
+        "KIINTEISTOTUNNUS": "577-409-0001-0004",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6710287,
+        "OSOITENUMERO": "750",
+        "RAKENNUSTUNNUS": "007",
+        "KATU_SUOMI": "Kalevantie",
+        "KOORD_ITA": 23490326,
+        "KAYTTOTARKOITUS_SUOMI": "Talousrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "103910526E",
+        "KAYTTOTARKOITUS": "941 talousrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58aa"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270883.01,
+          6714911.9
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1925-12-31Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-409-1-4-8",
+        "KIINTEISTOTUNNUS": "577-409-0001-0004",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Maatalousrakennukset",
+        "KOORD_POHJOINEN": 6710341,
+        "OSOITENUMERO": "750",
+        "RAKENNUSTUNNUS": "008",
+        "KATU_SUOMI": "Kalevantie",
+        "KOORD_ITA": 23490477,
+        "KAYTTOTARKOITUS_SUOMI": "Muut maa-, metsä- ja kalatalouden rakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "1039105142",
+        "KAYTTOTARKOITUS": "899 muut maa-, metsä- ja kalatalouden rakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58a9"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271522.54,
+          6713268.63
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1919-12-31Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-405-1-3-2",
+        "KIINTEISTOTUNNUS": "577-405-0001-0003",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6708740,
+        "OSOITENUMERO": "827",
+        "RAKENNUSTUNNUS": "002",
+        "KATU_SUOMI": "Kalevantie",
+        "KOORD_ITA": 23491215,
+        "KAYTTOTARKOITUS_SUOMI": "Saunarakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "1039106725",
+        "KAYTTOTARKOITUS": "931 saunarakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58a8"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271579.7,
+          6713302.22
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1919-12-31Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-405-1-3-3",
+        "KIINTEISTOTUNNUS": "577-405-0001-0003",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6708777,
+        "OSOITENUMERO": "827",
+        "RAKENNUSTUNNUS": "003",
+        "KATU_SUOMI": "Kalevantie",
+        "KOORD_ITA": 23491270,
+        "KAYTTOTARKOITUS_SUOMI": "Talousrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "1039107068",
+        "KAYTTOTARKOITUS": "941 talousrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58a7"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271528.2,
+          6713312.37
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1919-12-31Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-405-1-3-4",
+        "KIINTEISTOTUNNUS": "577-405-0001-0003",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6708784,
+        "OSOITENUMERO": "827",
+        "RAKENNUSTUNNUS": "004",
+        "KATU_SUOMI": "Kalevantie",
+        "KOORD_ITA": 23491218,
+        "KAYTTOTARKOITUS_SUOMI": "Talousrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "103910720P",
+        "KAYTTOTARKOITUS": "941 talousrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58a6"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271565.79,
+          6713337.14
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1919-12-31Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-405-1-3-5",
+        "KIINTEISTOTUNNUS": "577-405-0001-0003",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6708811,
+        "OSOITENUMERO": "827",
+        "RAKENNUSTUNNUS": "005",
+        "KATU_SUOMI": "Kalevantie",
+        "KOORD_ITA": 23491254,
+        "KAYTTOTARKOITUS_SUOMI": "Talousrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "103910719N",
+        "KAYTTOTARKOITUS": "941 talousrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58a5"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271956.25,
+          6706166.5
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1917-12-31Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-459-1-1-4",
+        "KIINTEISTOTUNNUS": "577-459-0001-0001",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6701679,
+        "OSOITENUMERO": "99",
+        "RAKENNUSTUNNUS": "004",
+        "KATU_SUOMI": "Hangassuontie",
+        "KOORD_ITA": 23492079,
+        "KAYTTOTARKOITUS_SUOMI": "Talousrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "1039110744",
+        "KAYTTOTARKOITUS": "941 talousrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58a4"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271994.98,
+          6706177.17
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1954-12-31Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-459-1-1-5",
+        "KIINTEISTOTUNNUS": "577-459-0001-0001",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6701692,
+        "OSOITENUMERO": "99",
+        "RAKENNUSTUNNUS": "005",
+        "KATU_SUOMI": "Hangassuontie",
+        "KOORD_ITA": 23492117,
+        "KAYTTOTARKOITUS_SUOMI": "Saunarakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "1039110777",
+        "KAYTTOTARKOITUS": "931 saunarakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58a3"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          272053.06,
+          6713917.76
+        ]
+      },
+      "properties": {
+        "RAKENNUS": "577-407-1-157-4",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KAYTTOTARKOITUS_SUOMI": "Talousrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58a2"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          272319.33,
+          6705446.97
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1911-12-31Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-508-1-10-1",
+        "KIINTEISTOTUNNUS": "577-508-0001-0010",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6700983,
+        "OSOITENUMERO": "53",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Tankomäentie",
+        "KOORD_ITA": 23492485,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "102812907C",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58a1"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          272349.53,
+          6705449.14
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1983-12-31Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-508-1-10-2",
+        "KIINTEISTOTUNNUS": "577-508-0001-0010",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6700987,
+        "OSOITENUMERO": "53",
+        "RAKENNUSTUNNUS": "002",
+        "KATU_SUOMI": "Tankomäentie",
+        "KOORD_ITA": 23492515,
+        "KAYTTOTARKOITUS_SUOMI": "Talousrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "102812908D",
+        "KAYTTOTARKOITUS": "941 talousrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-58a0"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          272616.77,
+          6705180.36
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "2002-05-07Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-508-1-11-1",
+        "KIINTEISTOTUNNUS": "577-508-0001-0011",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Vapaa-ajan asuinrakennukset",
+        "KOORD_POHJOINEN": 6700735,
+        "OSOITENUMERO": "30",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Hakalantie",
+        "KOORD_ITA": 23492798,
+        "KAYTTOTARKOITUS_SUOMI": "Vapaa-ajan asuinrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "102812909E",
+        "KAYTTOTARKOITUS": "041 vapaa-ajan asuinrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-589f"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          272563.81,
+          6705397.03
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1939-12-31Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-508-1-14-1",
+        "KIINTEISTOTUNNUS": "577-508-0001-0014",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6700948,
+        "OSOITENUMERO": "86",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Tankomäentie",
+        "KOORD_ITA": 23492732,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "102812910F",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-589e"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          272582.21,
+          6705402.92
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "2009-03-02Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-508-1-14-2",
+        "KIINTEISTOTUNNUS": "577-508-0001-0014",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6700955,
+        "OSOITENUMERO": "86",
+        "RAKENNUSTUNNUS": "002",
+        "KATU_SUOMI": "Tankomäentie",
+        "KOORD_ITA": 23492750,
+        "KAYTTOTARKOITUS_SUOMI": "Saunarakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "102812911H",
+        "KAYTTOTARKOITUS": "931 saunarakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-589d"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271086.75,
+          6705710.32
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1919-12-31Z",
+        "POSTINUMERO": "21530",
+        "RAKENNUS": "577-404-1-12-4",
+        "KIINTEISTOTUNNUS": "577-404-0001-0012",
+        "POSTITOIMIPAIKKA": "PAIMIO",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6701171,
+        "OSOITENUMERO": "31",
+        "RAKENNUSTUNNUS": "004",
+        "KATU_SUOMI": "Anttilantie",
+        "KOORD_ITA": 23491239,
+        "KAYTTOTARKOITUS_SUOMI": "Talousrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "103730730K",
+        "KAYTTOTARKOITUS": "941 talousrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-589c"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271035.71,
+          6705711.42
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1920-12-30Z",
+        "POSTINUMERO": "21530",
+        "RAKENNUS": "577-404-1-12-5",
+        "KIINTEISTOTUNNUS": "577-404-0001-0012",
+        "POSTITOIMIPAIKKA": "PAIMIO",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6701169,
+        "OSOITENUMERO": "31",
+        "RAKENNUSTUNNUS": "005",
+        "KATU_SUOMI": "Anttilantie",
+        "KOORD_ITA": 23491188,
+        "KAYTTOTARKOITUS_SUOMI": "Talousrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "103730795N",
+        "KAYTTOTARKOITUS": "941 talousrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-589b"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271067.03,
+          6705715.53
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1929-12-31Z",
+        "POSTINUMERO": "21530",
+        "RAKENNUS": "577-404-1-12-6",
+        "KIINTEISTOTUNNUS": "577-404-0001-0012",
+        "POSTITOIMIPAIKKA": "PAIMIO",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6701175,
+        "OSOITENUMERO": "31",
+        "RAKENNUSTUNNUS": "006",
+        "KATU_SUOMI": "Anttilantie",
+        "KOORD_ITA": 23491219,
+        "KAYTTOTARKOITUS_SUOMI": "Talousrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "103730827P",
+        "KAYTTOTARKOITUS": "941 talousrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-589a"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271131.9,
+          6705612.38
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1954-12-31Z",
+        "POSTINUMERO": "21530",
+        "RAKENNUS": "577-404-1-12-7",
+        "KIINTEISTOTUNNUS": "577-404-0001-0012",
+        "POSTITOIMIPAIKKA": "PAIMIO",
+        "KT_LUOKKA_SUOMI": "Maatalousrakennukset",
+        "KOORD_POHJOINEN": 6701076,
+        "OSOITENUMERO": "31",
+        "RAKENNUSTUNNUS": "007",
+        "KATU_SUOMI": "Anttilantie",
+        "KOORD_ITA": 23491290,
+        "KAYTTOTARKOITUS_SUOMI": "Muut maa-, metsä- ja kalatalouden rakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "1037308670",
+        "KAYTTOTARKOITUS": "899 muut maa-, metsä- ja kalatalouden rakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5899"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271143.94,
+          6705579.58
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1959-12-31Z",
+        "POSTINUMERO": "21530",
+        "RAKENNUS": "577-404-1-12-8",
+        "KIINTEISTOTUNNUS": "577-404-0001-0012",
+        "POSTITOIMIPAIKKA": "PAIMIO",
+        "KT_LUOKKA_SUOMI": "Maatalousrakennukset",
+        "KOORD_POHJOINEN": 6701044,
+        "OSOITENUMERO": "31",
+        "RAKENNUSTUNNUS": "008",
+        "KATU_SUOMI": "Anttilantie",
+        "KOORD_ITA": 23491304,
+        "KAYTTOTARKOITUS_SUOMI": "Muut maa-, metsä- ja kalatalouden rakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "1037308736",
+        "KAYTTOTARKOITUS": "899 muut maa-, metsä- ja kalatalouden rakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5898"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          269998.76,
+          6706028.02
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "2018-11-27Z",
+        "POSTINUMERO": "21530",
+        "RAKENNUS": "577-439-2-22-1",
+        "KIINTEISTOTUNNUS": "577-439-0002-0022",
+        "POSTITOIMIPAIKKA": "PAIMIO",
+        "KT_LUOKKA_SUOMI": "Varastorakennukset",
+        "KOORD_POHJOINEN": 6701422,
+        "OSOITENUMERO": "134",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Pitkäportaantie",
+        "KOORD_ITA": 23490134,
+        "KAYTTOTARKOITUS_SUOMI": "Muut varastorakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "103557662R",
+        "KAYTTOTARKOITUS": "719 muut varastorakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5897"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          272220.61,
+          6705570.22
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1960-07-01Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-484-1-2-2",
+        "KIINTEISTOTUNNUS": "577-484-0001-0002",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Maatalousrakennukset",
+        "KOORD_POHJOINEN": 6701100,
+        "OSOITENUMERO": "56",
+        "RAKENNUSTUNNUS": "002",
+        "KATU_SUOMI": "Tankomäentie",
+        "KOORD_ITA": 23492379,
+        "KAYTTOTARKOITUS_SUOMI": "Muut maa-, metsä- ja kalatalouden rakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "103606860S",
+        "KAYTTOTARKOITUS": "899 muut maa-, metsä- ja kalatalouden rakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5896"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271599.59,
+          6711142.51
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1992-12-31Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-481-1-56-3",
+        "KIINTEISTOTUNNUS": "577-481-0001-0056",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6706623,
+        "OSOITENUMERO": "167",
+        "RAKENNUSTUNNUS": "003",
+        "KATU_SUOMI": "Isosuontie",
+        "KOORD_ITA": 23491421,
+        "KAYTTOTARKOITUS_SUOMI": "Talousrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "1036402628",
+        "KAYTTOTARKOITUS": "941 talousrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5895"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271571.21,
+          6707628.92
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1909-12-31Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-473-1-13-2",
+        "KIINTEISTOTUNNUS": "577-473-0001-0013",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6703115,
+        "OSOITENUMERO": "303",
+        "RAKENNUSTUNNUS": "002",
+        "KATU_SUOMI": "Hangassuontie",
+        "KOORD_ITA": 23491606,
+        "KAYTTOTARKOITUS_SUOMI": "Talousrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "1036773078",
+        "KAYTTOTARKOITUS": "941 talousrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5894"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271437.26,
+          6706464.62
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1949-12-31Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-404-1-15-2",
+        "KIINTEISTOTUNNUS": "577-404-0001-0015",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6701945,
+        "OSOITENUMERO": "136",
+        "RAKENNUSTUNNUS": "002",
+        "KATU_SUOMI": "Hangassuontie",
+        "KOORD_ITA": 23491543,
+        "KAYTTOTARKOITUS_SUOMI": "Talousrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "103676550U",
+        "KAYTTOTARKOITUS": "941 talousrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5893"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271415.97,
+          6706476.94
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1948-12-31Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-404-1-15-3",
+        "KIINTEISTOTUNNUS": "577-404-0001-0015",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6701956,
+        "OSOITENUMERO": "136",
+        "RAKENNUSTUNNUS": "003",
+        "KATU_SUOMI": "Hangassuontie",
+        "KOORD_ITA": 23491521,
+        "KAYTTOTARKOITUS_SUOMI": "Talousrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "103676554Y",
+        "KAYTTOTARKOITUS": "941 talousrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5892"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          272260.49,
+          6714279.91
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "2013-06-19Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-438-1-53-2",
+        "KIINTEISTOTUNNUS": "577-438-0001-0053",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Vapaa-ajan asuinrakennukset",
+        "KOORD_POHJOINEN": 6709794,
+        "OSOITENUMERO": "907",
+        "RAKENNUSTUNNUS": "002",
+        "KATU_SUOMI": "Kalevantie",
+        "KOORD_ITA": 23491890,
+        "KAYTTOTARKOITUS_SUOMI": "Vapaa-ajan asuinrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "1033814073",
+        "KAYTTOTARKOITUS": "041 vapaa-ajan asuinrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5891"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270114.49,
+          6705920.77
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1953-12-31Z",
+        "POSTINUMERO": "21530",
+        "RAKENNUS": "577-439-2-10-2",
+        "KIINTEISTOTUNNUS": "577-439-0002-0010",
+        "POSTITOIMIPAIKKA": "PAIMIO",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6701322,
+        "OSOITENUMERO": "150",
+        "RAKENNUSTUNNUS": "002",
+        "KATU_SUOMI": "Pitkäportaantie",
+        "KOORD_ITA": 23490256,
+        "KAYTTOTARKOITUS_SUOMI": "Talousrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "103645701P",
+        "KAYTTOTARKOITUS": "941 talousrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5890"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270095.89,
+          6705927.91
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1953-12-31Z",
+        "POSTINUMERO": "21530",
+        "RAKENNUS": "577-439-2-10-3",
+        "KIINTEISTOTUNNUS": "577-439-0002-0010",
+        "POSTITOIMIPAIKKA": "PAIMIO",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6701328,
+        "OSOITENUMERO": "150",
+        "RAKENNUSTUNNUS": "003",
+        "KATU_SUOMI": "Pitkäportaantie",
+        "KOORD_ITA": 23490237,
+        "KAYTTOTARKOITUS_SUOMI": "Talousrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "103645703S",
+        "KAYTTOTARKOITUS": "941 talousrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-588f"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271631.25,
+          6715203.06
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "2009-12-03Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-512-1-3-2",
+        "KIINTEISTOTUNNUS": "577-512-0001-0003",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6710677,
+        "OSOITENUMERO": "87",
+        "RAKENNUSTUNNUS": "002",
+        "KATU_SUOMI": "Suomentie",
+        "KOORD_ITA": 23491206,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "1028129348",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-588e"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271649.03,
+          6707771.49
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1908-12-31Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-473-1-12-3",
+        "KIINTEISTOTUNNUS": "577-473-0001-0012",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6703262,
+        "OSOITENUMERO": "311",
+        "RAKENNUSTUNNUS": "003",
+        "KATU_SUOMI": "Hangassuontie",
+        "KOORD_ITA": 23491675,
+        "KAYTTOTARKOITUS_SUOMI": "Talousrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "103679213R",
+        "KAYTTOTARKOITUS": "941 talousrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-588d"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271669.12,
+          6707772.27
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1908-12-31Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-473-1-12-4",
+        "KIINTEISTOTUNNUS": "577-473-0001-0012",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6703264,
+        "OSOITENUMERO": "311",
+        "RAKENNUSTUNNUS": "004",
+        "KATU_SUOMI": "Hangassuontie",
+        "KOORD_ITA": 23491695,
+        "KAYTTOTARKOITUS_SUOMI": "Talousrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "1036792210",
+        "KAYTTOTARKOITUS": "941 talousrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-588c"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271577.96,
+          6705383.83
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "2014-08-05Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-484-2-18-3",
+        "KIINTEISTOTUNNUS": "577-484-0002-0018",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Maatalousrakennukset",
+        "KOORD_POHJOINEN": 6700875,
+        "OSOITENUMERO": "23",
+        "RAKENNUSTUNNUS": "003",
+        "KATU_SUOMI": "Hangassuontie",
+        "KOORD_ITA": 23491749,
+        "KAYTTOTARKOITUS_SUOMI": "Muut maa-, metsä- ja kalatalouden rakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "1034546902",
+        "KAYTTOTARKOITUS": "899 muut maa-, metsä- ja kalatalouden rakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-588b"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270561.96,
+          6705039.77
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1919-12-31Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-448-3-1-1",
+        "KIINTEISTOTUNNUS": "577-448-0003-0001",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6700470,
+        "OSOITENUMERO": "61",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Syrjäläntie",
+        "KOORD_ITA": 23490756,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "102041795T",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-588a"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270221.77,
+          6703054.27
+        ]
+      },
+      "properties": {
+        "RAKENNUS": "577-874-1-0-3",
+        "KT_LUOKKA_SUOMI": "Teollisuusrakennukset",
+        "KAYTTOTARKOITUS_SUOMI": "Voimalaitosrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5889"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270091.56,
+          6702973
+        ]
+      },
+      "properties": {
+        "RAKENNUS": "577-874-1-0-2",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KAYTTOTARKOITUS_SUOMI": "Muualla luokittelemattomat rakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5888"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271415.36,
+          6714635.99
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "2011-12-18Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-438-4-2-1",
+        "KIINTEISTOTUNNUS": "577-438-0004-0002",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6710098,
+        "OSOITENUMERO": "812",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Kalevantie",
+        "KOORD_ITA": 23491025,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "102012990L",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5887"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270484.43,
+          6705808.08
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1899-12-31Z",
+        "POSTINUMERO": "21530",
+        "RAKENNUS": "577-404-1-5-3",
+        "KIINTEISTOTUNNUS": "577-404-0001-0005",
+        "POSTITOIMIPAIKKA": "PAIMIO",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6701232,
+        "OSOITENUMERO": "190",
+        "RAKENNUSTUNNUS": "003",
+        "KATU_SUOMI": "Pitkäportaantie",
+        "KOORD_ITA": 23490632,
+        "KAYTTOTARKOITUS_SUOMI": "Talousrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "103646824X",
+        "KAYTTOTARKOITUS": "941 talousrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5886"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270562.72,
+          6715461.5
+        ]
+      },
+      "properties": {
+        "RAKENNUS": "577-409-1-141-2",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KAYTTOTARKOITUS_SUOMI": "Talousrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5885"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270534.34,
+          6715456.21
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1919-12-31Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-409-1-141-1",
+        "KIINTEISTOTUNNUS": "577-409-0001-0141",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6710863,
+        "OSOITENUMERO": "73",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Pajulantie",
+        "KOORD_ITA": 23490096,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "1031858626",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5884"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270689.8,
+          6716166.26
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1991-09-25Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-450-3-5-1",
+        "KIINTEISTOTUNNUS": "577-450-0003-0005",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Maatalousrakennukset",
+        "KOORD_POHJOINEN": 6711581,
+        "OSOITENUMERO": "455",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Taatilantie",
+        "KOORD_ITA": 23490208,
+        "KAYTTOTARKOITUS_SUOMI": "Muut maa-, metsä- ja kalatalouden rakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "102051149J",
+        "KAYTTOTARKOITUS": "899 muut maa-, metsä- ja kalatalouden rakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5883"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270750,
+          6716167.6
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1957-07-31Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-450-3-5-2",
+        "KIINTEISTOTUNNUS": "577-450-0003-0005",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6711586,
+        "OSOITENUMERO": "455",
+        "RAKENNUSTUNNUS": "002",
+        "KATU_SUOMI": "Taatilantie",
+        "KOORD_ITA": 23490268,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "102051150K",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5882"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270468.94,
+          6705817.04
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1899-12-31Z",
+        "POSTINUMERO": "21530",
+        "RAKENNUS": "577-404-1-5-4",
+        "KIINTEISTOTUNNUS": "577-404-0001-0005",
+        "POSTITOIMIPAIKKA": "PAIMIO",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6701240,
+        "OSOITENUMERO": "190",
+        "RAKENNUSTUNNUS": "004",
+        "KATU_SUOMI": "Pitkäportaantie",
+        "KOORD_ITA": 23490616,
+        "KAYTTOTARKOITUS_SUOMI": "Talousrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "103646812J",
+        "KAYTTOTARKOITUS": "941 talousrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5881"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          272266.05,
+          6714239.49
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1989-12-31Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-438-1-53-3",
+        "KIINTEISTOTUNNUS": "577-438-0001-0053",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6709754,
+        "OSOITENUMERO": "907",
+        "RAKENNUSTUNNUS": "003",
+        "KATU_SUOMI": "Kalevantie",
+        "KOORD_ITA": 23491898,
+        "KAYTTOTARKOITUS_SUOMI": "Talousrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "1036471105",
+        "KAYTTOTARKOITUS": "941 talousrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5880"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          272232.13,
+          6714225.52
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "2009-12-31Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-438-1-53-4",
+        "KIINTEISTOTUNNUS": "577-438-0001-0053",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6709738,
+        "OSOITENUMERO": "907",
+        "RAKENNUSTUNNUS": "004",
+        "KATU_SUOMI": "Kalevantie",
+        "KOORD_ITA": 23491865,
+        "KAYTTOTARKOITUS_SUOMI": "Talousrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "103647096P",
+        "KAYTTOTARKOITUS": "941 talousrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-587f"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271661.16,
+          6707756.72
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1919-12-31Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-473-1-12-1",
+        "KIINTEISTOTUNNUS": "577-473-0001-0012",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6703248,
+        "OSOITENUMERO": "311",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Hangassuontie",
+        "KOORD_ITA": 23491688,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "1021184972",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-587e"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271589,
+          6707624.83
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1982-11-30Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-473-1-13-1",
+        "KIINTEISTOTUNNUS": "577-473-0001-0013",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Vapaa-ajan asuinrakennukset",
+        "KOORD_POHJOINEN": 6703112,
+        "OSOITENUMERO": "303",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Hangassuontie",
+        "KOORD_ITA": 23491624,
+        "KAYTTOTARKOITUS_SUOMI": "Vapaa-ajan asuinrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "1021184994",
+        "KAYTTOTARKOITUS": "041 vapaa-ajan asuinrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-587d"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          272214.19,
+          6705530.52
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1950-12-31Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-484-1-2-1",
+        "KIINTEISTOTUNNUS": "577-484-0001-0002",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6701060,
+        "OSOITENUMERO": "56",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Tankomäentie",
+        "KOORD_ITA": 23492375,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "102137703L",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-587c"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271810.58,
+          6705484.92
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1986-07-31Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-484-1-3-2",
+        "KIINTEISTOTUNNUS": "577-484-0001-0003",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Maatalousrakennukset",
+        "KOORD_POHJOINEN": 6700990,
+        "OSOITENUMERO": "44",
+        "RAKENNUSTUNNUS": "002",
+        "KATU_SUOMI": "Hangassuontie",
+        "KOORD_ITA": 23491975,
+        "KAYTTOTARKOITUS_SUOMI": "Viljankuivaamot ja viljan säilytysrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "102137705N",
+        "KAYTTOTARKOITUS": "891 viljankuivaamot ja viljan säilytysrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-587b"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          272332.65,
+          6705616.51
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "2000-10-04Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-484-1-3-3",
+        "KIINTEISTOTUNNUS": "577-484-0001-0003",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Liikenteen rakennukset",
+        "KOORD_POHJOINEN": 6701153,
+        "OSOITENUMERO": "62",
+        "RAKENNUSTUNNUS": "003",
+        "KATU_SUOMI": "Tankomäentie",
+        "KOORD_ITA": 23492488,
+        "KAYTTOTARKOITUS_SUOMI": "Tietoliikenteen rakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "102137706P",
+        "KAYTTOTARKOITUS": "164 tietoliikenteen rakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-587a"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271715.52,
+          6705470.66
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "2003-11-19Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-484-1-3-4",
+        "KIINTEISTOTUNNUS": "577-484-0001-0003",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6700970,
+        "OSOITENUMERO": "44",
+        "RAKENNUSTUNNUS": "004",
+        "KATU_SUOMI": "Hangassuontie",
+        "KOORD_ITA": 23491881,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "102137707R",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5879"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271610.4,
+          6707251.75
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1974-12-31Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-484-2-4-1",
+        "KIINTEISTOTUNNUS": "577-484-0002-0004",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6702741,
+        "OSOITENUMERO": "258",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Hangassuontie",
+        "KOORD_ITA": 23491668,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "102137708S",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5878"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271566.63,
+          6707273.45
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1988-09-30Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-484-2-4-2",
+        "KIINTEISTOTUNNUS": "577-484-0002-0004",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Maatalousrakennukset",
+        "KOORD_POHJOINEN": 6702760,
+        "OSOITENUMERO": "258",
+        "RAKENNUSTUNNUS": "002",
+        "KATU_SUOMI": "Hangassuontie",
+        "KOORD_ITA": 23491623,
+        "KAYTTOTARKOITUS_SUOMI": "Muut maa-, metsä- ja kalatalouden rakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "102137709T",
+        "KAYTTOTARKOITUS": "899 muut maa-, metsä- ja kalatalouden rakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5877"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271621.66,
+          6707272.11
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1987-01-31Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-484-2-4-3",
+        "KIINTEISTOTUNNUS": "577-484-0002-0004",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6702762,
+        "OSOITENUMERO": "258",
+        "RAKENNUSTUNNUS": "003",
+        "KATU_SUOMI": "Hangassuontie",
+        "KOORD_ITA": 23491678,
+        "KAYTTOTARKOITUS_SUOMI": "Saunarakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "102137710U",
+        "KAYTTOTARKOITUS": "931 saunarakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5876"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271586.42,
+          6707302.31
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "2006-08-22Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-484-2-4-4",
+        "KIINTEISTOTUNNUS": "577-484-0002-0004",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Maatalousrakennukset",
+        "KOORD_POHJOINEN": 6702790,
+        "OSOITENUMERO": "258",
+        "RAKENNUSTUNNUS": "004",
+        "KATU_SUOMI": "Hangassuontie",
+        "KOORD_ITA": 23491641,
+        "KAYTTOTARKOITUS_SUOMI": "Viljankuivaamot ja viljan säilytysrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "102137711V",
+        "KAYTTOTARKOITUS": "891 viljankuivaamot ja viljan säilytysrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5875"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271524.32,
+          6705671.69
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1974-12-31Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-484-2-8-1",
+        "KIINTEISTOTUNNUS": "577-484-0002-0008",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6701159,
+        "OSOITENUMERO": "66",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Hangassuontie",
+        "KOORD_ITA": 23491678,
+        "KAYTTOTARKOITUS_SUOMI": "Talousrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "102137712W",
+        "KAYTTOTARKOITUS": "941 talousrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5874"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271502.48,
+          6705675.02
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1919-12-31Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-484-2-8-2",
+        "KIINTEISTOTUNNUS": "577-484-0002-0008",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6701161,
+        "OSOITENUMERO": "66",
+        "RAKENNUSTUNNUS": "002",
+        "KATU_SUOMI": "Hangassuontie",
+        "KOORD_ITA": 23491656,
+        "KAYTTOTARKOITUS_SUOMI": "Saunarakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "102137713X",
+        "KAYTTOTARKOITUS": "931 saunarakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5873"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271526.22,
+          6705653.53
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1989-06-30Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-484-2-8-3",
+        "KIINTEISTOTUNNUS": "577-484-0002-0008",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Vapaa-ajan asuinrakennukset",
+        "KOORD_POHJOINEN": 6701141,
+        "OSOITENUMERO": "66",
+        "RAKENNUSTUNNUS": "003",
+        "KATU_SUOMI": "Hangassuontie",
+        "KOORD_ITA": 23491681,
+        "KAYTTOTARKOITUS_SUOMI": "Vapaa-ajan asuinrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "102137714Y",
+        "KAYTTOTARKOITUS": "041 vapaa-ajan asuinrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5872"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          272015.58,
+          6705016.51
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1899-12-31Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-484-2-9-1",
+        "KIINTEISTOTUNNUS": "577-484-0002-0009",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6700535,
+        "OSOITENUMERO": "364",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Pitkäportaantie",
+        "KOORD_ITA": 23492208,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "1021377150",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5871"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          272024.09,
+          6705041.04
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1934-12-31Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-484-2-9-2",
+        "KIINTEISTOTUNNUS": "577-484-0002-0009",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6700560,
+        "OSOITENUMERO": "364",
+        "RAKENNUSTUNNUS": "002",
+        "KATU_SUOMI": "Pitkäportaantie",
+        "KOORD_ITA": 23492215,
+        "KAYTTOTARKOITUS_SUOMI": "Talousrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "102147073V",
+        "KAYTTOTARKOITUS": "941 talousrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5870"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271437.25,
+          6705541.7
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1954-12-31Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-484-2-11-1",
+        "KIINTEISTOTUNNUS": "577-484-0002-0011",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6701024,
+        "OSOITENUMERO": "22",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Hangassuontie",
+        "KOORD_ITA": 23491599,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "102147074W",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-586f"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271566.54,
+          6705459.68
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "2016-09-20Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-484-2-18-1",
+        "KIINTEISTOTUNNUS": "577-484-0002-0018",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6700950,
+        "OSOITENUMERO": "24",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Hangassuontie",
+        "KOORD_ITA": 23491733,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "102147076Y",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-586e"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271684.19,
+          6705400.42
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1919-12-31Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-484-2-18-2",
+        "KIINTEISTOTUNNUS": "577-484-0002-0018",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6700898,
+        "OSOITENUMERO": "31",
+        "RAKENNUSTUNNUS": "002",
+        "KATU_SUOMI": "Hangassuontie",
+        "KOORD_ITA": 23491854,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "1021470770",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-586d"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270561.8,
+          6713421.29
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1919-12-31Z",
+        "POSTINUMERO": "21540",
+        "RAKENNUS": "577-481-2-12-1",
+        "KIINTEISTOTUNNUS": "577-481-0002-0012",
+        "POSTITOIMIPAIKKA": "PREITILÄ",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6708834,
+        "OSOITENUMERO": "495",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Korvenalantie",
+        "KOORD_ITA": 23490247,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "102137573D",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-586c"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270747.14,
+          6714819.96
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1899-12-31Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-409-1-4-1",
+        "KIINTEISTOTUNNUS": "577-409-0001-0004",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6710241,
+        "OSOITENUMERO": "750",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Kalevantie",
+        "KOORD_ITA": 23490347,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "101831920M",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-586b"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270754.33,
+          6714773.42
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1986-01-31Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-409-1-4-2",
+        "KIINTEISTOTUNNUS": "577-409-0001-0004",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6710195,
+        "OSOITENUMERO": "750",
+        "RAKENNUSTUNNUS": "002",
+        "KATU_SUOMI": "Kalevantie",
+        "KOORD_ITA": 23490357,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "101831921N",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-586a"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270531.24,
+          6715635.78
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "2001-08-31Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-409-1-65-1",
+        "KIINTEISTOTUNNUS": "577-409-0001-0065",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Vapaa-ajan asuinrakennukset",
+        "KOORD_POHJOINEN": 6711042,
+        "OSOITENUMERO": "75",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Pajulantie",
+        "KOORD_ITA": 23490082,
+        "KAYTTOTARKOITUS_SUOMI": "Vapaa-ajan asuinrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "1018319387",
+        "KAYTTOTARKOITUS": "041 vapaa-ajan asuinrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5869"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          272225.12,
+          6714241.98
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1990-06-30Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-438-1-53-1",
+        "KIINTEISTOTUNNUS": "577-438-0001-0053",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Vapaa-ajan asuinrakennukset",
+        "KOORD_POHJOINEN": 6709754,
+        "OSOITENUMERO": "907",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Kalevantie",
+        "KOORD_ITA": 23491857,
+        "KAYTTOTARKOITUS_SUOMI": "Vapaa-ajan asuinrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "102012964S",
+        "KAYTTOTARKOITUS": "041 vapaa-ajan asuinrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5868"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270795.47,
+          6714757.89
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "2000-12-13Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-409-1-4-3",
+        "KIINTEISTOTUNNUS": "577-409-0001-0004",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Maatalousrakennukset",
+        "KOORD_POHJOINEN": 6710182,
+        "OSOITENUMERO": "750",
+        "RAKENNUSTUNNUS": "003",
+        "KATU_SUOMI": "Kalevantie",
+        "KOORD_ITA": 23490399,
+        "KAYTTOTARKOITUS_SUOMI": "Muut maa-, metsä- ja kalatalouden rakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "101831922P",
+        "KAYTTOTARKOITUS": "899 muut maa-, metsä- ja kalatalouden rakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5867"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271320.98,
+          6716740.11
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1921-12-31Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-409-1-5-1",
+        "KIINTEISTOTUNNUS": "577-409-0001-0005",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6712192,
+        "OSOITENUMERO": "548",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Taatilantie",
+        "KOORD_ITA": 23490803,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "101831923R",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5866"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271232.22,
+          6716796.62
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1984-07-31Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-409-1-5-2",
+        "KIINTEISTOTUNNUS": "577-409-0001-0005",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Maatalousrakennukset",
+        "KOORD_POHJOINEN": 6712243,
+        "OSOITENUMERO": "548",
+        "RAKENNUSTUNNUS": "002",
+        "KATU_SUOMI": "Taatilantie",
+        "KOORD_ITA": 23490711,
+        "KAYTTOTARKOITUS_SUOMI": "Viljankuivaamot ja viljan säilytysrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "101831924S",
+        "KAYTTOTARKOITUS": "891 viljankuivaamot ja viljan säilytysrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5865"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271300.95,
+          6716740.33
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1992-10-31Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-409-1-5-3",
+        "KIINTEISTOTUNNUS": "577-409-0001-0005",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6712191,
+        "OSOITENUMERO": "548",
+        "RAKENNUSTUNNUS": "003",
+        "KATU_SUOMI": "Taatilantie",
+        "KOORD_ITA": 23490783,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "101831925T",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5864"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271487.16,
+          6715832.12
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1992-08-31Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-402-1-98-1",
+        "KIINTEISTOTUNNUS": "577-402-0001-0098",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Vapaa-ajan asuinrakennukset",
+        "KOORD_POHJOINEN": 6711296,
+        "OSOITENUMERO": "141",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Suomentie",
+        "KOORD_ITA": 23491024,
+        "KAYTTOTARKOITUS_SUOMI": "Vapaa-ajan asuinrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "101802719N",
+        "KAYTTOTARKOITUS": "041 vapaa-ajan asuinrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5863"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          269900.91,
+          6705440.73
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1949-12-31Z",
+        "POSTINUMERO": "21530",
+        "RAKENNUS": "577-421-2-37-1",
+        "KIINTEISTOTUNNUS": "577-421-0002-0037",
+        "POSTITOIMIPAIKKA": "PAIMIO",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6700830,
+        "OSOITENUMERO": "68",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Palokankareentie",
+        "KOORD_ITA": 23490072,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "1026275460",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5862"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271702.7,
+          6714697.66
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1989-02-28Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-438-4-3-1",
+        "KIINTEISTOTUNNUS": "577-438-0004-0003",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6710177,
+        "OSOITENUMERO": "44",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Suomentie",
+        "KOORD_ITA": 23491308,
+        "KAYTTOTARKOITUS_SUOMI": "Saunarakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "1013035371",
+        "KAYTTOTARKOITUS": "931 saunarakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5861"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271687.16,
+          6714738.69
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "2001-12-10Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-438-4-3-2",
+        "KIINTEISTOTUNNUS": "577-438-0004-0003",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6710217,
+        "OSOITENUMERO": "44",
+        "RAKENNUSTUNNUS": "002",
+        "KATU_SUOMI": "Suomentie",
+        "KOORD_ITA": 23491290,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "1013035382",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5860"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271570.02,
+          6711101.22
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "2020-08-23Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-481-1-56-2",
+        "KIINTEISTOTUNNUS": "577-481-0001-0056",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6706580,
+        "OSOITENUMERO": "167",
+        "RAKENNUSTUNNUS": "002",
+        "KATU_SUOMI": "Isosuontie",
+        "KOORD_ITA": 23491394,
+        "KAYTTOTARKOITUS_SUOMI": "Saunarakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "1015918360",
+        "KAYTTOTARKOITUS": "931 saunarakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-585f"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270742.49,
+          6715221.08
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1999-06-08Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-402-1-63-1",
+        "KIINTEISTOTUNNUS": "577-402-0001-0063",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6710641,
+        "OSOITENUMERO": "750",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Kalevantie",
+        "KOORD_ITA": 23490318,
+        "KAYTTOTARKOITUS_SUOMI": "Saunarakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "1018026991",
+        "KAYTTOTARKOITUS": "931 saunarakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-585e"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271405.03,
+          6715503.42
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1998-01-27Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-402-1-81-1",
+        "KIINTEISTOTUNNUS": "577-402-0001-0081",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6710963,
+        "OSOITENUMERO": "129",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Suomentie",
+        "KOORD_ITA": 23490962,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "1018027035",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-585d"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271611.71,
+          6711127.75
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "2001-02-15Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-481-1-56-1",
+        "KIINTEISTOTUNNUS": "577-481-0001-0056",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Vapaa-ajan asuinrakennukset",
+        "KOORD_POHJOINEN": 6706609,
+        "OSOITENUMERO": "167",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Isosuontie",
+        "KOORD_ITA": 23491434,
+        "KAYTTOTARKOITUS_SUOMI": "Vapaa-ajan asuinrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "100895933H",
+        "KAYTTOTARKOITUS": "041 vapaa-ajan asuinrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-585c"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270804.83,
+          6714335.44
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1946-12-31Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-409-1-102-1",
+        "KIINTEISTOTUNNUS": "577-409-0001-0102",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6709761,
+        "OSOITENUMERO": "750",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Kalevantie",
+        "KOORD_ITA": 23490434,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "1018319631",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-585b"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          272081.23,
+          6714018.26
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1959-12-31Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-468-1-5-1",
+        "KIINTEISTOTUNNUS": "577-468-0001-0005",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6709522,
+        "OSOITENUMERO": "34",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Perttalantie",
+        "KOORD_ITA": 23491727,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "102080237V",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-585a"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          272026.06,
+          6713951.47
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1990-03-31Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-407-1-157-2",
+        "KIINTEISTOTUNNUS": "577-407-0001-0157",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Maatalousrakennukset",
+        "KOORD_POHJOINEN": 6709452,
+        "OSOITENUMERO": "34",
+        "RAKENNUSTUNNUS": "002",
+        "KATU_SUOMI": "Perttalantie",
+        "KOORD_ITA": 23491676,
+        "KAYTTOTARKOITUS_SUOMI": "Muut maa-, metsä- ja kalatalouden rakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "102080238W",
+        "KAYTTOTARKOITUS": "899 muut maa-, metsä- ja kalatalouden rakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5859"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          272102.61,
+          6713990.9
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1967-10-23Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-407-1-157-3",
+        "KIINTEISTOTUNNUS": "577-407-0001-0157",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Maatalousrakennukset",
+        "KOORD_POHJOINEN": 6709496,
+        "OSOITENUMERO": "34",
+        "RAKENNUSTUNNUS": "003",
+        "KATU_SUOMI": "Perttalantie",
+        "KOORD_ITA": 23491750,
+        "KAYTTOTARKOITUS_SUOMI": "Navetat, sikalat, kanalat yms",
+        "PYSYVA_RAKENNUSTUNNUS": "102080239X",
+        "KAYTTOTARKOITUS": "811 navetat, sikalat, kanalat yms"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5858"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271949.84,
+          6714279.78
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1929-12-31Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-468-1-10-1",
+        "KIINTEISTOTUNNUS": "577-468-0001-0010",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6709775,
+        "OSOITENUMERO": "5",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Perttalantie",
+        "KOORD_ITA": 23491580,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "102080240Y",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5857"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271437.63,
+          6704757.04
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1936-12-31Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-448-6-30-1",
+        "KIINTEISTOTUNNUS": "577-448-0006-0030",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6700241,
+        "OSOITENUMERO": "155",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Syrjäläntie",
+        "KOORD_ITA": 23491647,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "102041821M",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5856"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271409.43,
+          6704754.75
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1949-12-31Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-448-6-30-2",
+        "KIINTEISTOTUNNUS": "577-448-0006-0030",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Maatalousrakennukset",
+        "KOORD_POHJOINEN": 6700237,
+        "OSOITENUMERO": "155",
+        "RAKENNUSTUNNUS": "002",
+        "KATU_SUOMI": "Syrjäläntie",
+        "KOORD_ITA": 23491619,
+        "KAYTTOTARKOITUS_SUOMI": "Muut maa-, metsä- ja kalatalouden rakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "102041822N",
+        "KAYTTOTARKOITUS": "899 muut maa-, metsä- ja kalatalouden rakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5855"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271052.07,
+          6704958.86
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1951-12-31Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-448-6-33-1",
+        "KIINTEISTOTUNNUS": "577-448-0006-0033",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6700419,
+        "OSOITENUMERO": "111",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Syrjäläntie",
+        "KOORD_ITA": 23491250,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "102041823P",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5854"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271038.89,
+          6704972.69
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "2001-06-20Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-448-6-33-2",
+        "KIINTEISTOTUNNUS": "577-448-0006-0033",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6700432,
+        "OSOITENUMERO": "111",
+        "RAKENNUSTUNNUS": "002",
+        "KATU_SUOMI": "Syrjäläntie",
+        "KOORD_ITA": 23491236,
+        "KAYTTOTARKOITUS_SUOMI": "Saunarakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "102041824R",
+        "KAYTTOTARKOITUS": "931 saunarakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5853"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271274.82,
+          6704881.18
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1967-12-31Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-448-6-44-1",
+        "KIINTEISTOTUNNUS": "577-448-0006-0044",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6700355,
+        "OSOITENUMERO": "136",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Syrjäläntie",
+        "KOORD_ITA": 23491477,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "1020418342",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5852"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271922.52,
+          6714505.91
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1991-10-23Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-438-1-88-1",
+        "KIINTEISTOTUNNUS": "577-438-0001-0088",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6709999,
+        "OSOITENUMERO": "15",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Suomentie",
+        "KOORD_ITA": 23491539,
+        "KAYTTOTARKOITUS_SUOMI": "Talousrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "102012983C",
+        "KAYTTOTARKOITUS": "941 talousrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5851"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271940.58,
+          6714522.85
+        ]
+      },
+      "properties": {
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-438-1-88-2",
+        "KIINTEISTOTUNNUS": "577-438-0001-0088",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6710017,
+        "OSOITENUMERO": "15",
+        "RAKENNUSTUNNUS": "002",
+        "KATU_SUOMI": "Suomentie",
+        "KOORD_ITA": 23491556,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "102012984D",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5850"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271982.64,
+          6714752.77
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1993-06-30Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-438-1-90-1",
+        "KIINTEISTOTUNNUS": "577-438-0001-0090",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6710249,
+        "OSOITENUMERO": "52",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Rajakaari",
+        "KOORD_ITA": 23491584,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "102012985E",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-584f"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271471.82,
+          6714789.88
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1944-12-31Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-438-2-1-1",
+        "KIINTEISTOTUNNUS": "577-438-0002-0001",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6710255,
+        "OSOITENUMERO": "814",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Kalevantie",
+        "KOORD_ITA": 23491072,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "102012987H",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-584e"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271880.1,
+          6715076.68
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1979-10-17Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-438-3-0-1",
+        "KIINTEISTOTUNNUS": "577-438-0003-0000",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Vapaa-ajan asuinrakennukset",
+        "KOORD_POHJOINEN": 6710566,
+        "OSOITENUMERO": "49",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Suomentie",
+        "KOORD_ITA": 23491462,
+        "KAYTTOTARKOITUS_SUOMI": "Vapaa-ajan asuinrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "102012989K",
+        "KAYTTOTARKOITUS": "041 vapaa-ajan asuinrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-584d"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271988.11,
+          6706031.29
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1985-12-31Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-459-1-5-1",
+        "KIINTEISTOTUNNUS": "577-459-0001-0005",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6701546,
+        "OSOITENUMERO": "99",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Hangassuontie",
+        "KOORD_ITA": 23492119,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "102060643T",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-584c"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          272009.92,
+          6706159.23
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "2005-04-17Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-459-1-5-4",
+        "KIINTEISTOTUNNUS": "577-459-0001-0005",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Maatalousrakennukset",
+        "KOORD_POHJOINEN": 6701675,
+        "OSOITENUMERO": "99",
+        "RAKENNUSTUNNUS": "004",
+        "KATU_SUOMI": "Hangassuontie",
+        "KOORD_ITA": 23492133,
+        "KAYTTOTARKOITUS_SUOMI": "Muut maa-, metsä- ja kalatalouden rakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "102060646W",
+        "KAYTTOTARKOITUS": "899 muut maa-, metsä- ja kalatalouden rakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-584b"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271974.19,
+          6706148.38
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1919-12-31Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-459-1-1-1",
+        "KIINTEISTOTUNNUS": "577-459-0001-0001",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6701662,
+        "OSOITENUMERO": "99",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Hangassuontie",
+        "KOORD_ITA": 23492098,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "102060639N",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-584a"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271640.58,
+          6706479.31
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1987-01-31Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-459-1-2-2",
+        "KIINTEISTOTUNNUS": "577-459-0001-0002",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6701972,
+        "OSOITENUMERO": "164",
+        "RAKENNUSTUNNUS": "002",
+        "KATU_SUOMI": "Hangassuontie",
+        "KOORD_ITA": 23491745,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "102060642S",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5849"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271033.81,
+          6704576.17
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1919-12-31Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-448-4-18-1",
+        "KIINTEISTOTUNNUS": "577-448-0004-0018",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6700036,
+        "OSOITENUMERO": "139",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Syrjäläntie",
+        "KOORD_ITA": 23491255,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "1020418076",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5848"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270610.97,
+          6705021.76
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1969-10-15Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-448-3-1-2",
+        "KIINTEISTOTUNNUS": "577-448-0003-0001",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Maatalousrakennukset",
+        "KOORD_POHJOINEN": 6700455,
+        "OSOITENUMERO": "61",
+        "RAKENNUSTUNNUS": "002",
+        "KATU_SUOMI": "Syrjäläntie",
+        "KOORD_ITA": 23490806,
+        "KAYTTOTARKOITUS_SUOMI": "Muut maa-, metsä- ja kalatalouden rakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "102041796U",
+        "KAYTTOTARKOITUS": "899 muut maa-, metsä- ja kalatalouden rakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5847"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270482.27,
+          6705014.56
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1991-04-30Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-448-3-1-3",
+        "KIINTEISTOTUNNUS": "577-448-0003-0001",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Maatalousrakennukset",
+        "KOORD_POHJOINEN": 6700440,
+        "OSOITENUMERO": "61",
+        "RAKENNUSTUNNUS": "003",
+        "KATU_SUOMI": "Syrjäläntie",
+        "KOORD_ITA": 23490678,
+        "KAYTTOTARKOITUS_SUOMI": "Muut maa-, metsä- ja kalatalouden rakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "102041797V",
+        "KAYTTOTARKOITUS": "899 muut maa-, metsä- ja kalatalouden rakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5846"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271025.43,
+          6704553.63
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "2015-03-25Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-448-4-18-3",
+        "KIINTEISTOTUNNUS": "577-448-0004-0018",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6700013,
+        "OSOITENUMERO": "139",
+        "RAKENNUSTUNNUS": "003",
+        "KATU_SUOMI": "Syrjäläntie",
+        "KOORD_ITA": 23491248,
+        "KAYTTOTARKOITUS_SUOMI": "Talousrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "1020418098",
+        "KAYTTOTARKOITUS": "941 talousrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5845"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271410.67,
+          6715217.48
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1963-04-30Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-488-4-16-1",
+        "KIINTEISTOTUNNUS": "577-488-0004-0016",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Maatalousrakennukset",
+        "KOORD_POHJOINEN": 6710678,
+        "OSOITENUMERO": "100",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Suomentie",
+        "KOORD_ITA": 23490985,
+        "KAYTTOTARKOITUS_SUOMI": "Muut maa-, metsä- ja kalatalouden rakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "1036205468",
+        "KAYTTOTARKOITUS": "899 muut maa-, metsä- ja kalatalouden rakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5844"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270516.15,
+          6705011.49
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1963-09-16Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-448-3-1-5",
+        "KIINTEISTOTUNNUS": "577-448-0003-0001",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Maatalousrakennukset",
+        "KOORD_POHJOINEN": 6700439,
+        "OSOITENUMERO": "61",
+        "RAKENNUSTUNNUS": "005",
+        "KATU_SUOMI": "Syrjäläntie",
+        "KOORD_ITA": 23490712,
+        "KAYTTOTARKOITUS_SUOMI": "Viljankuivaamot ja viljan säilytysrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "103620562S",
+        "KAYTTOTARKOITUS": "891 viljankuivaamot ja viljan säilytysrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5843"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271655.15,
+          6709799.34
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1919-12-31Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-477-1-4-1",
+        "KIINTEISTOTUNNUS": "577-477-0001-0004",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6705286,
+        "OSOITENUMERO": "336",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Vellontie",
+        "KOORD_ITA": 23491558,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "102118568B",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5842"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          272079.4,
+          6709624.22
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1957-12-31Z",
+        "POSTINUMERO": "21540",
+        "RAKENNUS": "577-477-2-4-1",
+        "KIINTEISTOTUNNUS": "577-477-0002-0004",
+        "POSTITOIMIPAIKKA": "PREITILÄ",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6705137,
+        "OSOITENUMERO": "340",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Vellontie",
+        "KOORD_ITA": 23491992,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "102128307H",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5841"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          272351.29,
+          6705478.09
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1964-10-22Z",
+        "POSTINUMERO": "25240",
+        "RAKENNUS": "577-508-1-10-3",
+        "KIINTEISTOTUNNUS": "577-508-0001-0010",
+        "POSTITOIMIPAIKKA": "HAJALA",
+        "KT_LUOKKA_SUOMI": "Maatalousrakennukset",
+        "KOORD_POHJOINEN": 6701016,
+        "OSOITENUMERO": "53",
+        "RAKENNUSTUNNUS": "003",
+        "KATU_SUOMI": "Tankomäentie",
+        "KOORD_ITA": 23492515,
+        "KAYTTOTARKOITUS_SUOMI": "Navetat, sikalat, kanalat yms",
+        "PYSYVA_RAKENNUSTUNNUS": "1036210030",
+        "KAYTTOTARKOITUS": "811 navetat, sikalat, kanalat yms"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5840"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          269983.64,
+          6706191.28
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "2004-02-25Z",
+        "POSTINUMERO": "21530",
+        "RAKENNUS": "577-895-0-1-8",
+        "KIINTEISTOTUNNUS": "577-895-0000-0001",
+        "POSTITOIMIPAIKKA": "PAIMIO",
+        "KT_LUOKKA_SUOMI": "Liikenteen rakennukset",
+        "KOORD_POHJOINEN": 6701584,
+        "OSOITENUMERO": "1",
+        "RAKENNUSTUNNUS": "008",
+        "KATU_SUOMI": "Pitkäportaan eteläinen p-alue",
+        "KOORD_ITA": 23490109,
+        "KAYTTOTARKOITUS_SUOMI": "Muut liikenteen rakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "102822500U",
+        "KAYTTOTARKOITUS": "169 muut liikenteen rakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-583f"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270366.82,
+          6703099.56
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1994-01-31Z",
+        "POSTINUMERO": "21530",
+        "RAKENNUS": "577-874-1-0-1",
+        "KIINTEISTOTUNNUS": "577-874-0001-0000",
+        "POSTITOIMIPAIKKA": "PAIMIO",
+        "KT_LUOKKA_SUOMI": "Liikenteen rakennukset",
+        "KOORD_POHJOINEN": 6698522,
+        "OSOITENUMERO": "1463",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Valtatie",
+        "KOORD_ITA": 23490679,
+        "KAYTTOTARKOITUS_SUOMI": "Tietoliikenteen rakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "102822492K",
+        "KAYTTOTARKOITUS": "164 tietoliikenteen rakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-583e"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270043.22,
+          6706380.06
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "2004-02-25Z",
+        "POSTINUMERO": "21530",
+        "RAKENNUS": "577-895-0-1-4",
+        "KIINTEISTOTUNNUS": "577-895-0000-0001",
+        "POSTITOIMIPAIKKA": "PAIMIO",
+        "KT_LUOKKA_SUOMI": "Liikenteen rakennukset",
+        "KOORD_POHJOINEN": 6701776,
+        "OSOITENUMERO": "1",
+        "RAKENNUSTUNNUS": "004",
+        "KATU_SUOMI": "Pitkäportaan pohjoinen p-alue",
+        "KOORD_ITA": 23490157,
+        "KAYTTOTARKOITUS_SUOMI": "Muut liikenteen rakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "102822496P",
+        "KAYTTOTARKOITUS": "169 muut liikenteen rakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-583d"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270035.05,
+          6706377.55
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "2004-02-25Z",
+        "POSTINUMERO": "21530",
+        "RAKENNUS": "577-895-0-1-5",
+        "KIINTEISTOTUNNUS": "577-895-0000-0001",
+        "POSTITOIMIPAIKKA": "PAIMIO",
+        "KT_LUOKKA_SUOMI": "Liikenteen rakennukset",
+        "KOORD_POHJOINEN": 6701773,
+        "OSOITENUMERO": "1",
+        "RAKENNUSTUNNUS": "005",
+        "KATU_SUOMI": "Pitkäportaan pohjoinen p-alue",
+        "KOORD_ITA": 23490149,
+        "KAYTTOTARKOITUS_SUOMI": "Muut liikenteen rakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "102822497R",
+        "KAYTTOTARKOITUS": "169 muut liikenteen rakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-583c"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          269992.99,
+          6706196.72
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "2004-02-25Z",
+        "POSTINUMERO": "21530",
+        "RAKENNUS": "577-895-0-1-7",
+        "KIINTEISTOTUNNUS": "577-895-0000-0001",
+        "POSTITOIMIPAIKKA": "PAIMIO",
+        "KT_LUOKKA_SUOMI": "Liikenteen rakennukset",
+        "KOORD_POHJOINEN": 6701590,
+        "OSOITENUMERO": "1",
+        "RAKENNUSTUNNUS": "007",
+        "KATU_SUOMI": "Pitkäportaan eteläinen p-alue",
+        "KOORD_ITA": 23490118,
+        "KAYTTOTARKOITUS_SUOMI": "Muut liikenteen rakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "102822499T",
+        "KAYTTOTARKOITUS": "169 muut liikenteen rakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-583b"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271038.13,
+          6704976.74
+        ]
+      },
+      "properties": {
+        "RAKENNUS": "577-448-6-33-3",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KAYTTOTARKOITUS_SUOMI": "Saunarakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-583a"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270724.19,
+          6708398.94
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "2009-06-30Z",
+        "POSTINUMERO": "21530",
+        "RAKENNUS": "577-477-1-15-3",
+        "KIINTEISTOTUNNUS": "577-477-0001-0015",
+        "POSTITOIMIPAIKKA": "PAIMIO",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6703832,
+        "OSOITENUMERO": "333",
+        "RAKENNUSTUNNUS": "003",
+        "KATU_SUOMI": "Pirttikankareentie",
+        "KOORD_ITA": 23490714,
+        "KAYTTOTARKOITUS_SUOMI": "Muualla luokittelemattomat rakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "1036269959",
+        "KAYTTOTARKOITUS": "999 muualla luokittelemattomat rakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5839"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271988.24,
+          6713610.05
+        ]
+      },
+      "properties": {
+        "RAKENNUS": "577-407-1-195-3",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KAYTTOTARKOITUS_SUOMI": "Talousrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5838"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          272116.33,
+          6709704.14
+        ]
+      },
+      "properties": {
+        "RAKENNUS": "577-477-2-4-6",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KAYTTOTARKOITUS_SUOMI": "Talousrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5837"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          272056.89,
+          6709616.57
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "2017-04-02Z",
+        "POSTINUMERO": "21540",
+        "RAKENNUS": "577-477-2-4-5",
+        "KIINTEISTOTUNNUS": "577-477-0002-0004",
+        "POSTITOIMIPAIKKA": "PREITILÄ",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6705128,
+        "OSOITENUMERO": "340",
+        "RAKENNUSTUNNUS": "005",
+        "KATU_SUOMI": "Vellontie",
+        "KOORD_ITA": 23491970,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "103516435U",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5836"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270594.35,
+          6716425.6
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1971-12-21Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-492-2-9-2",
+        "KIINTEISTOTUNNUS": "577-492-0002-0009",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6711834,
+        "OSOITENUMERO": "457",
+        "RAKENNUSTUNNUS": "002",
+        "KATU_SUOMI": "Taatilantie",
+        "KOORD_ITA": 23490097,
+        "KAYTTOTARKOITUS_SUOMI": "Talousrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "103618231K",
+        "KAYTTOTARKOITUS": "941 talousrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5835"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          272129.97,
+          6709681.27
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "2001-08-31Z",
+        "POSTINUMERO": "21540",
+        "RAKENNUS": "577-477-2-4-3",
+        "KIINTEISTOTUNNUS": "577-477-0002-0004",
+        "POSTITOIMIPAIKKA": "PREITILÄ",
+        "KT_LUOKKA_SUOMI": "Maatalousrakennukset",
+        "KOORD_POHJOINEN": 6705197,
+        "OSOITENUMERO": "340",
+        "RAKENNUSTUNNUS": "003",
+        "KATU_SUOMI": "Vellontie",
+        "KOORD_ITA": 23492039,
+        "KAYTTOTARKOITUS_SUOMI": "Muut maa-, metsä- ja kalatalouden rakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "102128309K",
+        "KAYTTOTARKOITUS": "899 muut maa-, metsä- ja kalatalouden rakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5834"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          272103.44,
+          6709722.97
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "2004-06-23Z",
+        "POSTINUMERO": "21540",
+        "RAKENNUS": "577-477-2-4-4",
+        "KIINTEISTOTUNNUS": "577-477-0002-0004",
+        "POSTITOIMIPAIKKA": "PREITILÄ",
+        "KT_LUOKKA_SUOMI": "Liikerakennukset",
+        "KOORD_POHJOINEN": 6705237,
+        "OSOITENUMERO": "340",
+        "RAKENNUSTUNNUS": "004",
+        "KATU_SUOMI": "Vellontie",
+        "KOORD_ITA": 23492010,
+        "KAYTTOTARKOITUS_SUOMI": "Muut asuntolarakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "102128310L",
+        "KAYTTOTARKOITUS": "139 muut asuntolarakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5833"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          271665.74,
+          6707552.02
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1919-12-31Z",
+        "POSTINUMERO": "21530",
+        "RAKENNUS": "577-477-2-6-1",
+        "KIINTEISTOTUNNUS": "577-477-0002-0006",
+        "POSTITOIMIPAIKKA": "PAIMIO",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6703044,
+        "OSOITENUMERO": "285",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Hangassuontie",
+        "KOORD_ITA": 23491705,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "102128311M",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5832"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270685.81,
+          6709267.08
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1995-01-03Z",
+        "POSTINUMERO": "21540",
+        "RAKENNUS": "577-477-2-20-1",
+        "KIINTEISTOTUNNUS": "577-477-0002-0020",
+        "POSTITOIMIPAIKKA": "PREITILÄ",
+        "KT_LUOKKA_SUOMI": "Liikerakennukset",
+        "KOORD_POHJOINEN": 6704696,
+        "OSOITENUMERO": "205",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Vellontie",
+        "KOORD_ITA": 23490623,
+        "KAYTTOTARKOITUS_SUOMI": "Muut asuntolarakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "102128318V",
+        "KAYTTOTARKOITUS": "139 muut asuntolarakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5831"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270758.34,
+          6709289.73
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "2003-10-15Z",
+        "POSTINUMERO": "21540",
+        "RAKENNUS": "577-477-2-20-2",
+        "KIINTEISTOTUNNUS": "577-477-0002-0020",
+        "POSTITOIMIPAIKKA": "PREITILÄ",
+        "KT_LUOKKA_SUOMI": "Muut rakennukset",
+        "KOORD_POHJOINEN": 6704723,
+        "OSOITENUMERO": "205",
+        "RAKENNUSTUNNUS": "002",
+        "KATU_SUOMI": "Vellontie",
+        "KOORD_ITA": 23490694,
+        "KAYTTOTARKOITUS_SUOMI": "Saunarakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "102128319W",
+        "KAYTTOTARKOITUS": "931 saunarakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-5830"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270483.06,
+          6705175.85
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1988-10-31Z",
+        "POSTINUMERO": "21530",
+        "RAKENNUS": "577-448-8-42-2",
+        "KIINTEISTOTUNNUS": "577-448-0008-0042",
+        "POSTITOIMIPAIKKA": "PAIMIO",
+        "KT_LUOKKA_SUOMI": "Maatalousrakennukset",
+        "KOORD_POHJOINEN": 6700601,
+        "OSOITENUMERO": "51",
+        "RAKENNUSTUNNUS": "002",
+        "KATU_SUOMI": "Syrjäläntie",
+        "KOORD_ITA": 23490669,
+        "KAYTTOTARKOITUS_SUOMI": "Muut maa-, metsä- ja kalatalouden rakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "102041849J",
+        "KAYTTOTARKOITUS": "899 muut maa-, metsä- ja kalatalouden rakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-582f"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270529.31,
+          6705162.01
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1927-12-31Z",
+        "POSTINUMERO": "21530",
+        "RAKENNUS": "577-448-8-42-3",
+        "KIINTEISTOTUNNUS": "577-448-0008-0042",
+        "POSTITOIMIPAIKKA": "PAIMIO",
+        "KT_LUOKKA_SUOMI": "Omakotitalot",
+        "KOORD_POHJOINEN": 6700590,
+        "OSOITENUMERO": "51",
+        "RAKENNUSTUNNUS": "003",
+        "KATU_SUOMI": "Syrjäläntie",
+        "KOORD_ITA": 23490716,
+        "KAYTTOTARKOITUS_SUOMI": "Yhden asunnon talot",
+        "PYSYVA_RAKENNUSTUNNUS": "102041850K",
+        "KAYTTOTARKOITUS": "011 yhden asunnon talot"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-582e"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          270835.31,
+          6716235.56
+        ]
+      },
+      "properties": {
+        "VALMISTUMISPAIVA": "1956-12-31Z",
+        "POSTINUMERO": "21555",
+        "RAKENNUS": "577-450-2-3-1",
+        "KIINTEISTOTUNNUS": "577-450-0002-0003",
+        "POSTITOIMIPAIKKA": "TAATILA",
+        "KT_LUOKKA_SUOMI": "Maatalousrakennukset",
+        "KOORD_POHJOINEN": 6711659,
+        "OSOITENUMERO": "455",
+        "RAKENNUSTUNNUS": "001",
+        "KATU_SUOMI": "Taatilantie",
+        "KOORD_ITA": 23490349,
+        "KAYTTOTARKOITUS_SUOMI": "Viljankuivaamot ja viljan säilytysrakennukset",
+        "PYSYVA_RAKENNUSTUNNUS": "102051120L",
+        "KAYTTOTARKOITUS": "891 viljankuivaamot ja viljan säilytysrakennukset"
+      },
+      "id": "PAI_RAKENNUS_MVIEW_AVOINDATA.fid--6c7d13dd_17e445d649f_-582d"
+    }
+  ]
+}

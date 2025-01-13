@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Future;
 
+import fi.nls.oskari.domain.map.OskariLayer;
+import org.oskari.capabilities.CapabilitiesService;
+import org.oskari.capabilities.ogc.LayerCapabilitiesWMTS;
+import org.oskari.capabilities.ogc.wmts.*;
 import org.oskari.print.request.PrintLayer;
 import org.oskari.print.util.Units;
 import org.oskari.print.wmts.GetTileRequestBuilder;
@@ -18,12 +22,10 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
-import fi.nls.oskari.wmts.domain.ResourceUrl;
-import fi.nls.oskari.wmts.domain.TileMatrix;
-import fi.nls.oskari.wmts.domain.TileMatrixSet;
-import fi.nls.oskari.wmts.domain.WMTSCapabilities;
-import fi.nls.oskari.wmts.domain.WMTSCapabilitiesLayer;
+
+import org.geotools.referencing.CRS;
 import org.json.JSONObject;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 /**
  * HystrixCommand that loads tiles from a WMTS service and combines them to a
@@ -46,7 +48,6 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
     private final double[] bbox;
     private final double resolution;
     private final String srs;
-    private final WMTSCapabilities capabilities;
 
     private final OskariLayerService layerService = new OskariLayerServiceMybatisImpl();
 
@@ -55,7 +56,6 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
             int height,
             double[] bbox,
             String srs,
-            WMTSCapabilities capabilities,
             double resolution) {
         // Use Layers id as commandName
         super(Integer.toString(layer.getId()));
@@ -64,14 +64,13 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
         this.height = height;
         this.bbox = bbox;
         this.srs = srs;
-        this.capabilities = capabilities;
         this.resolution = resolution;
     }
 
     @Override
     public BufferedImage run() throws Exception {
-        WMTSCapabilitiesLayer layerCapabilities = getLayerCapabilities();
-        TileMatrixSet tms = getTileMatrixSet();
+        LayerCapabilitiesWMTS caps = getLayerCapabilities();
+        TileMatrixSet tms = getTileMatrixSet(caps.getTileMatrixLinks());
         TileMatrix tm = getTileMatrix(tms);
 
         int tileWidth = tm.getTileWidth();
@@ -80,6 +79,15 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
         double[] topLeft = tm.getTopLeftCorner();
         double minX = topLeft[0];
         double maxY = topLeft[1];
+        if (isAxisOrderNE(tms.getCrs())) {
+            // From the WMTS spec, topLeftCorner:
+            // Position in CRS coordinates of the top-left corner of this tile matrix
+            // Ordered sequence of double values
+            // CRS shall be inherited from the supportedCRS parameter of the parent TileMatrixSet
+            // The order of these axes, shall be as specified by the supportedCRS
+            minX = topLeft[1];
+            maxY = topLeft[0];
+        }
 
         // Round to the nearest px
         long minXPx = Math.round((bbox[0] - minX) / resolution);
@@ -109,14 +117,13 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
         }
 
         List<Future<BufferedImage>> futureTiles
-                = new ArrayList<Future<BufferedImage>>(countTileRows * countTileCols);
-
-        ResourceUrl tileResourceUrl = layerCapabilities.getResourceUrlByType("tile");
+                = new ArrayList<>(countTileRows * countTileCols);
+        ResourceUrl tileResourceUrl = caps.getResourceUrl("tile");
         GetTileRequestBuilder requestBuilder;
         if (tileResourceUrl != null) {
             requestBuilder = getTileRequestBuilderREST(tms.getId(), tm.getId(), tileResourceUrl);
         } else {
-            requestBuilder = getTileRequestBuilderKVP(tms.getId(), tm.getId(), layerCapabilities);
+            requestBuilder = getTileRequestBuilderKVP(tms.getId(), tm.getId(), caps.getFormats());
         }
 
         for (int row = 0; row < countTileRows; row++) {
@@ -172,10 +179,24 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
         return bi;
     }
 
-    private WMTSCapabilitiesLayer getLayerCapabilities() throws IllegalArgumentException {
-        WMTSCapabilitiesLayer layerCapabilities = capabilities.getLayer(layer.getName());
-        if (layerCapabilities != null) {
-            return layerCapabilities;
+    private static boolean isAxisOrderNE(String srs) {
+        try {
+            CoordinateReferenceSystem crs = CRS.decode(srs);
+            return ProjectionHelper.isFirstAxisNorth(crs);
+            // return CRS.getAxisOrder(crs) == CRS.AxisOrder.NORTH_EAST;
+        } catch (Exception e) {
+            LOG.info("Failed to decode crs from: " + srs);
+            return false;
+        }
+    }
+
+    private LayerCapabilitiesWMTS getLayerCapabilities() throws IllegalArgumentException {
+        OskariLayer oskariLayer = layer.getOskariLayer();
+        if (oskariLayer != null) {
+            JSONObject capabilies = layer.getOskariLayer().getCapabilities();
+            if (capabilies != null) {
+                return CapabilitiesService.fromJSON(layer.getOskariLayer().getCapabilities().toString(), OskariLayer.TYPE_WMTS);
+            }
         }
         throw new IllegalArgumentException("Could not find layer from Capabilities");
     }
@@ -194,10 +215,11 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
                 "Could not find TileMatrix with scaleDenominator: %f", wantedScale));
     }
 
-    private TileMatrixSet getTileMatrixSet() throws IllegalArgumentException {
+    private TileMatrixSet getTileMatrixSet(List<TileMatrixLink> tileMatrixLinks) throws IllegalArgumentException {
         List<TileMatrixSet> possibleTileMatrixSets = new ArrayList<>();
 
-        for (TileMatrixSet tms : capabilities.getTileMatrixSets()) {
+        for (TileMatrixLink link : tileMatrixLinks) {
+            TileMatrixSet tms = link.getTileMatrixSet();
             if (srs.equals(ProjectionHelper.shortSyntaxEpsg(tms.getCrs()))) {
                 possibleTileMatrixSets.add(tms);
             }
@@ -241,8 +263,8 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
                 .tileMatrix(tileMatrixId);
     }
 
-    private GetTileRequestBuilder getTileRequestBuilderKVP(String tileMatrixSetId, String tileMatrixId, WMTSCapabilitiesLayer layerCapabilities) {
-        String format = getFormat(layerCapabilities.getFormats());
+    private GetTileRequestBuilder getTileRequestBuilderKVP(String tileMatrixSetId, String tileMatrixId, Set<String> formats) {
+        String format = getFormat(formats);
         return new GetTileRequestBuilderKVP().endPoint(layer.getUrl())
                 .layer(layer.getName())
                 .style(layer.getStyle())

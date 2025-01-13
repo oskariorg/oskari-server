@@ -1,5 +1,915 @@
 # Release Notes
 
+## 2.14.0
+
+For a full list of changes see:
+https://github.com/oskariorg/oskari-server/milestone/49?closed=1
+
+### Support for WMS-T intervals added
+
+Added parsing for WMS-T time dimension intervals. Layers with this kind of timeseries information should now work like ones that have explicit time dimension list. Note that these kinds of layers might have very short time period and might require updating very frequently. An example could be a weather forecast. The time dimension is parsed as part of the capabilities and stored on the database soon these kinds of layers you should make the layer _automatically update capabilities on the layer admin UI_ AND look into running UpdateCapabilitiesJob more frequently than the default (once per day). If you have these types of layers, here's a cronline for oskari-ext.properties to run the capabilities updating scheduled job every 10 minutes:
+
+```
+oskari.scheduler.job.UpdateCapabilitiesJob.cronLine=*/10 * * * * ?
+```
+
+Note! These two settings work separately but together to achieve updating capabilities automatically. The scheduled job runs at certain pace that has been set to check any layers where the difference between current time and the timestamp for last capabilities update is more than the value set for that layers capabilities update interval. In that case the capabilities are updated on the database and the timestamp is updated. Any value on the layer capabilities update that is smaller than the frequency of the scheduled job won't have a meaningful result as the capabilities update frequency is ultimately decided by when the scheduled job is run.
+
+### Statistical data processing improvements
+
+- Statistical data indicator list parsing for SotkaNet now skips faulty indicators instead of stopping processing entirely when encountering one.
+- Statistical regionsets are now processed by removing any duplicated regions: https://github.com/oskariorg/oskari-server/pull/1084
+- Statistical regionsets from resource files now support mixed geometries: https://github.com/oskariorg/oskari-server/pull/1085
+
+### Performance and maintenance improvements
+
+- Refactored layer permission query on map startup. Instances with lots of layers may see significant boost on page loading time (GetAppSetup might go from seconds to milliseconds: https://github.com/oskariorg/oskari-server/pull/1067).
+- Added a hook that allows applications to use custom code for running migrations like using a different user to run them etc: https://github.com/oskariorg/oskari-server/pull/1061
+- Reduced noise in the logs by removing proxying errors from audit-logging.
+
+### Updated libraries
+
+- Jetty (in the download package zip) 9.4.51.v2023021 -> 9.4.56.v20240826
+- Postgresql JDBC 42.7.2 -> 42.7.4
+- Spring framework: 5.3.35 -> 5.3.39
+- Spring security: 5.7.12 -> 5.7.13
+- mybatis 3.5.15 -> 3.5.16
+- log4j 2.22.1 -> 2.24.1
+- Geotools 28.4 -> 28.5
+- org.apache.xmlgraphics/fop 2.9 -> 2.10
+- org.apache.poi/poi-ooxml 5.2.5 -> 5.3.0
+- commons-io 2.15.0 -> 2.16.1
+- Jackson 2.16.1 -> 2.18.1
+- pdfbox 2.0.30 -> 2.0.32
+- h2database 2.2.220 -> 2.2.224
+
+Notes:
+- GeoTools 29.x requires Java 17+
+- Flyway 10.x requires Java 17+
+- HikariCP 5.x requires Java 11+
+- h2 v2.3.230+ requires Java 11+ 
+
+## 2.13.1
+
+For a full list of changes see:
+https://github.com/oskariorg/oskari-server/milestone/50?closed=1
+
+- Improved Redis credentials handling: https://github.com/oskariorg/oskari-server/pull/1065
+- Fixed an issue with csw-metadata fetching
+- Added a flag for server to follow redirects automatically
+- Updated libraries:
+    - Spring framework: 5.3.32 -> 5.3.35
+    - Spring security: 5.7.11 -> 5.7.12
+    - commons-compress: 1.25.0 -> 1.26.1
+
+## 2.13.0
+
+For a full list of changes see:
+https://github.com/oskariorg/oskari-server/milestone/48?closed=1
+
+### Bundled GeoServer removed
+
+- `myplaces` and `userlayer` (= user-generated) content is now managed directly through the database connection without a need for a GeoServer to be run with oskari-server.
+- `analysis` functionality still uses GeoServer to make the analysis, but most instances don't use the analysis functionality so the bundled in GeoServer has been dropped from the download package.
+- Removed code related to initializing the bundled in GeoServer like the `setup.war` webapp and `geoserver-rest-client`.
+- See [Migration guide](MigrationGuide.md) for details about removing the GeoServer from an existing Oskari instance.
+
+### New functionality
+
+- Printouts can now include coordinates.
+- Added support for reverse geocoding for the OpenStreetMap search channel.
+- URL-parameter `swipe=true` can now be used to active layerswipe functionality on startup (on applications using layerswipe).
+
+### Statistical data sources
+
+- Statistical data adapter for SotkaNet now uses `absValue` for the indicator data from the API if any result doesn't have a `value` so user can get some data on screen instead of an error.
+- Improve region set matching for SotkaNet adapter for detecting data for `hyvinvointialue/wellbeing services counties`.
+- Made cache keys for statistical data consistent so it's easy to flush cached data from redis by using key-prefix `oskari:stats:[data source id]*`.
+- Removed the unused `service-statistics-kapa` module from statistics-data plugins. It was developed as PoC for allowing multiple data sources to be read using adapters but there is no known data source that would use this (developed against mock service) and we have actual data sources with `PXWeb` and `SotkaNet` that are used daily and demonstrate this.
+
+### New bundles
+
+Drop-in React-based replacements for jQuery implementations:
+- `metadatasearch` -> `metadatacatalogue`
+- `featuredata2` -> `featuredata`
+
+Both are allowed to be part of embedded maps by the `publisher` functionality and we also added `layerswipe` and `announcements` bundle to the default allowed list for publishing.
+
+### Improved error handling
+
+- Users now have created and last login timestamps on the db. Previously the user attributes was used to store these with instance specific code, but to make querying easier its best to have them in columns in the database. Custom login implementations should be updated to use these database columns as we now show the last login for the end user. For more details: https://github.com/oskariorg/oskari-server/pull/1000/files
+- Improved identifier headers that are sent as part of requests made by oskari-server. Previously the `User-Agent` header could result as `Oskari/null`. Now defaults to `Oskari/0.0` if we are unable to determine the version.
+- Fixed srid value in postgis for userlayer features (https://github.com/oskariorg/oskari-server/pull/1005).
+- Improved error handling while parsing layer capabilities to prevent an issue where the server might not start properly when running migrations that add layers from services that are unavailable during the migration (https://github.com/oskariorg/sample-server-extension/pull/55).
+- When querying for GFI, the server now checks if the user has permission to see the layer. Previously the GFI request was passed to the server without a check so knowing a layer id and a coordinate where features on that layer would be could possibly be used to handcraft a request that by-passes authorization for that layer.
+
+### Library updates
+
+Note! Apps will need to update these dependencies as well (See [Migration guide](MigrationGuide.md)).
+
+- Now uses `HikariCP` as built-in connection pool instead of `BasicDataSource` from `commons-dbcp2`
+- Spring 5.3.28 -> 5.3.32
+- Spring security 5.7.9 -> 5.7.11
+- Spring session bom 2021.2.2 -> 2021.2.3
+- org.apache.commons.commons-lang3 3.13.0 -> 3.14.0
+- org.apache.commons.commons-text 1.10.0 -> 1.11.0
+- org.apache.commons.commons-dbcp2 2.9.0 -> 2.11.0
+- org.apache.pdfbox.pdfbox 2.0.24 -> 2.0.30
+- org.apache.xmlgraphics.fop 2.3 -> 2.9
+- org.apache.poi.poi-ooxml 4.1.2 -> 5.2.5
+- commons-csv 1.8 -> 1.10.0
+- commons-codec 1.15 -> 1.16.0
+- jsoup 1.16.1 -> 1.17.2
+- jackson 2.15.2 -> 2.16.1
+- mybatis 3.5.13 -> 3.5.15
+- flywaydb 9.12.0 -> 9.22.3
+- Postgres jdbc 42.6.0 -> 42.7.2
+- SLF4J 1.7.36 -> 2.0.11
+- Log4J2 2.20.0 -> 2.22.1
+
+## 2.12.0
+
+For a full list of changes see: 
+https://github.com/oskariorg/oskari-server/milestone/47?closed=1
+
+### User management
+
+- Added param for `Users` route to get users by role.
+- Added paging for user queries to make user management usable on instances with a lot of users
+- `GetAllRoles` route has been deprecated since a more recent `ManageRoles` route basically does a better job for the same thing.
+- Frontend now receives a simple boolean flag if user is admin or not. Role name for admins can change between instances and now frontend has easy way of detecting admins.
+
+### Layer permissions
+
+- Added new route for getting and changing layer permissions `LayerPermission`.
+- Replaces `GetPermissionsLayerHandlers` that is now deprecated and will be removed in future release.
+- Replaces `SaveLayerPermission` that is now deprecated and will be removed in future release.
+- Output format/more details: https://github.com/oskariorg/oskari-server/pull/973
+
+### GetAppSetup route
+
+- The instance default vector style is now sent as part of the `GetAppSetup`` response.
+- Markers are now sent as templates with placeholders instead of hardcoded colors. This removes duplicated processing of markers in server / frontend.
+- Now accepts url-parameter `mobile` with boolean value. The server can be configured to add or remove bundles depending on this value to make mobile experience more user-friendly by removing functionality that doens't work well on mobile/small screens. Configuration described in: https://github.com/oskariorg/oskari-server/pull/995
+
+### DescribeLayer route
+
+- Added metadata about attributes available on WFS layers.
+- Added configuration of attributes like renaming, hiding and reordering properties and for formatting attribute values.
+- Added a simple type for layer geometry that allows optimizing frontend based on the geometry type (point/line/polygon).
+
+### Other changes
+
+- Fixed an axis order issue on VectorFeatureWriter: https://github.com/oskariorg/oskari-server/pull/976
+- Reduced unnecessary logging when a vector service doesn't respond with JSON/GML.
+- Allowed WMTS tile matrices to be passed to frontend even if there is no exact match for CRS. This allows OpenLayers to reproject the layer with proper configs: https://github.com/oskariorg/oskari-server/pull/991
+- Added order attribute for custom annotated components to control the initialization order: https://github.com/oskariorg/oskari-server/pull/992. Can be usedto fix issues where one component needs to be initialized before another.
+- Added new bundle registrations:
+    - `featuredata` (React.js replacement for current jQuery impl `featuredata2`)
+    - `admin-permissions`  (React.js replacement for current jQuery impl `admin-layerrights`)
+
+### Updated dependencies
+
+- Jetty 9.4.48.v20220622 -> 9.4.51.v20230217
+- GeoTools 28.2 -> 28.4
+- Spring 5.3.27 -> 5.3.28
+- Spring security 5.7.8 -> 5.7.9
+- Spring session 2021.2.0 -> 2021.2.2
+- Jackson 2.13.4 -> 2.15.2
+- JSoup 1.15.3 -> 1.16.1
+- Log4J 2.17.1 -> 2.20.0
+- SLFJ2 1.7.32 -> 1.7.36
+- commons-lang 3.12.0 -> 3.13.0
+- MVT 1.3.22 -> 1.3.23
+- h2 2.1.210 -> 2.2.220
+- GeoServer extensions updated 2.19 -> 2.22.4 
+
+## 2.11.0
+
+For a full list of changes see: 
+https://github.com/oskariorg/oskari-server/milestone/45?closed=1
+
+### Vector layer styles
+
+- End-users can now store styles for vector layers!
+- The styles users create are public/anyone can reference them. This makes them work with embedded maps in a way that users expect them to work. This doesn't mean that users styles are listed to other users in the geoportal UI.
+- New table for storing styles: `oskari_maplayer_style`
+- Styles have been migrated from `oskari_maplayer`.`options`
+- Instance default style is also stored in the table: https://github.com/oskariorg/oskari-server/pull/932
+- Styles have been removed from layer options from the layer listing functionality. Frontend is expected to fetch them by calling DescribeLayer route.
+- Printing functionality has been migrated to use styles from the database
+
+### User/role management
+
+- User listing is now fetched in pages so instances with lots of users can use this without crashing the browser
+- Users can now be searched as well as listed
+- Role names can now be edited
+- Admin user management now uses the same rules to validate users as end-user registration
+- Additional metadata about roles is sent for admin user interface to make admins life easier (can be used to hide guest role/disable edit and delete for built-in roles etc)
+- Instance admins can now configure oskari-ext.properties to disable editing user data. This is convenient if the user data in Oskari is updated using some external system. User roles can still be assigned for users (https://github.com/oskariorg/oskari-server/pull/944):
+```
+oskari.user.external=true
+```
+
+### Search channel options
+
+Search channels with code based adapters (non-WFS search channels) can now be configured with a localized name and desciption on oskari-ext.properties: https://github.com/oskariorg/oskari-server/pull/953 Localization is not required/these can be configured with or without specific language:
+```
+search.channel.OPENSTREETMAP_CHANNEL.label=OpenStreetMap
+search.channel.OPENSTREETMAP_CHANNEL.desc.fi=Hae paikkoja ja/tai osoitteita
+search.channel.OPENSTREETMAP_CHANNEL.desc.en=Search addresses and/or points of interest
+```
+
+### Other changes
+- DescribeLayer route has been improved so it can function as a source for frontend to get additional metadata for layers that are added on the map. This enables us to remove unnecessary data from the layer listing response. This allows us to remove some of the layer specific routes that have been previously created and now returns:
+    - coverage area for the layer data
+    - styles for vector layers
+    - vector layer properties
+    - tile matrix information for wmts layers
+
+- Fixed an issue with email validation. The original change was meant to add support for domains with dashes, but this prevented users from registering if their email did NOT have a dash in the domain.
+- Fixed an issue with proxying WMTS-layers through GetLayerTile
+- Fixed an issue where searching for metadata with filters but not giving a free text query resulted in an error
+- Fixed an issue in capabilities parsing where the service declared scale limit of 0
+- Capabilities parsing now allows adding layers where the capabilities header and XML content declares conflicting character encoding
+- Missing page (HTTP 404) is now handled in consistent way (and the page can be overridden in instances)
+
+- Dependency updates:
+    - Geotools 27.1 -> 28.2
+    - JTS 1.18.2 -> 1.19.0
+    - FlywayDB 6.5.7 -> 9.12.0 (Note! PostgreSQL 11 is now min supported version)
+    - Spring 5.3.20 -> 5.3.27
+    - Spring security 5.7.0 -> 5.7.8
+    
+
+## 2.10.1
+
+For a full list of changes see: 
+https://github.com/oskariorg/oskari-server/milestone/46?closed=1
+
+- An issue with caching in clustered environment was fixed.
+- Updated commons-fileupload dependency 1.4 -> 1.5
+- Updated java-vector-tile 1.3.16 -> 1.3.22
+
+## 2.10.0
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/44?closed=1
+
+### Service customization
+
+Appsetups can now have a `theme JSON` in the database table `oskari_maplayer.metadata` under the key `theme`. This enables embedded maps with user defined theme and it can also be used to customize the geoportal views. On the same note, the map tools no longer have "toolStyle" or "font" config and the previous selections made in publisher for embedded maps have been migrated to theme JSON in the database.
+
+The theme can now be provided as part of an initial appsetup JSON when initializing an Oskari-based application programmatically: https://github.com/oskariorg/oskari-server/pull/909 
+(See sample-server-extension https://github.com/oskariorg/sample-server-extension/blob/7f499fc51147be981108ef2536788c5cc811417c/app-resources/src/main/resources/json/apps/geoportal-3067.json#L12-L50).
+
+See migration notes for more information about theming changes.
+
+A centralized helper class `org.oskari.util.Customization` was added for getting markers and service logo and make customization easier.
+The logo can be customized for Oskari instance using `oskari-ext.properties` and we could enable overriding the markers in a similar way in the future.
+Previously markers were duplicated on the server code for frontend and printouts and service logo was also usually duplicated in frontend code as well.
+Added a new action route `Logo` that is used by frontend to get the service logo from server so customizing it doesn't require frontend modifications and CSS overrides.
+See details: https://github.com/oskariorg/oskari-server/pull/901
+
+Added initial implementation for frontend code versioning. The main audience for this are maintainers of RPC-based applications, but it can be used on geoportal as well.
+This allows the maintainer of an Oskari instance to provide parallel frontend code support on an Oskari instance that can be toggled with url-parameter.
+This could be used to provide more flexible update schedule for RPC-based applications.
+See: https://github.com/oskariorg/oskari-docs/issues/32 & https://github.com/oskariorg/oskari-server/pull/897
+
+The domain (/cdn where static code is hosted) for client code can be configured using `oskari-ext.properties`. 
+This enables running the same server-side code in environments using frontend code from a CDN/another domain and for example local dev environment:
+https://github.com/oskariorg/sample-server-extension/pull/33
+
+The link back to geoportal on the embedded map logo can now be disabled by configuring `plugin.logo.geoportalLink=false` in `oskari-ext.properties`.
+
+### Metadata search improvements
+
+The search is now requesting the result (`ElementSetName`) as `summary` instead of `full` so it contains less data to parse (and for the CSW-service to respond with).
+Also the query fields can now be configured to make the queries even lighter for the CSW-service (`csw:anyText` seems to be very heavy if there is a lot of data on the service):
+https://github.com/oskariorg/oskari-server/pull/912
+```
+# Valid values: summary, brief, full (defaults to "summary")
+search.channel.METADATA_CATALOGUE_CHANNEL.queryType=summary
+# comma-separated list - defaults to csw:anyText
+search.channel.METADATA_CATALOGUE_CHANNEL.queryFields=Title, Abstract
+```
+The `brief` setting is even lighter, but by using it the search results won't include the date or organization on them as it's not included in that data set.
+Setting the query fields seems to be more effective way of getting more performance if it is an issue for the search.
+
+The search configuration has been streamlined with just `service.metadata.url` in `oskari-ext.properties` used to configure the CSW endpoint.
+Many of the duplicated properties can be cleaned up/removed from `oskari-ext.properties` as listed in https://github.com/oskariorg/oskari-server/pull/910
+
+The search result parsing code has been rewritten to reduce dependencies and improve maintainability.
+Sanity checks have been added for data as some services might have invalid data for example on the bounding boxes:
+https://github.com/oskariorg/oskari-server/pull/917
+
+### Cloud compatibility improvements
+
+The database connection/pool is no longer using JNDI by default. Connection pool can still be passed through JNDI, but the code doesn't try creating a context if it's not available.
+Previously Oskari tried adding the database JNDI config to the context if it was not there to begin with. This led to problems with for example Tomcat environments where the JNDI-context is read-only.
+This forced using JNDI configuration on environments using Tomcat. Using JNDI in context required the JDBC driver to be on Tomcat classpath and the driver could not be bundled inside the webapp war-file
+which makes cloud deployment in for example Azure App Service more painful than it needs to be.
+
+Now the JDBC driver can be bundled in the war-file and the database configuration passed in `oskari-ext.properties` can be used to connect to the database even on Tomcat:
+https://github.com/oskariorg/oskari-server/pull/916
+
+New Redis integration configuration options have been added for `oskari-ext.properties`:
+```
+# Can be used to set password if connection requires one
+redis.password={your password or remove config to leave empty}
+# When using SSL-connections (defaults to false like previously)
+redis.ssl=true
+# Timeout for connection (2000ms is the default timeout in Jedis)
+redis.timeout.connect=2000
+```
+
+Redis-config `redis.pool.size` is now passed to connection pool `max-total` as expected. Previously it was only used to calculate and set the `max-idle`.
+
+Caching in clustered environment has been improved by implementing the "flush all" command for cluster cache communication: https://github.com/oskariorg/oskari-server/pull/902. 
+This fixes an issue where updates to map layers were not always reflected on all the nodes of a cluster until reboot.
+
+### Reduced noise on logs
+
+OskariComponent subclasses can now use `org.oskari.component.ComponentSkippedRuntimeException` (in `service-base` module) on the init method instead of using some other exception to signal that they are not configured properly to work/need to be skipped based on the instance config. This is used in `What3WordsSearchChannel` (in `service-search-opendata` module) as most instances don't use the channel (or don't have an apikey for it) it's unnecessary to log the stack trace for the channel just so we can disable it based on missing configuration. Now the startup of oskari-server has less misleading stack traces that the admin doesn't need to care about. See https://github.com/oskariorg/oskari-server/pull/888 for details.
+
+Also moved some common/spammy informational logging from log level `info` to `debug`.
+
+### Other improvements
+
+- Service logo configured for printouts can now be non-square. The scalebar in printout makes space for logo when required.
+- Fixed an issue with map legends for proxied map layers without legends
+- Fixed an issue with WTMS coordinate order: https://github.com/oskariorg/oskari-server/pull/920
+- Allow hyphen/dash in email domain name https://github.com/oskariorg/oskari-server/pull/924
+- Automatically disable the "no status available" tooltip for layers when the statuses are not available at all on an instance:
+https://github.com/oskariorg/oskari-server/pull/922
+
+- Allow list of bundles that can be part of an embedded map is now fully on server-side code. This makes it easier to enable custom bundles as part of publisher options:
+https://github.com/oskariorg/oskari-server/pull/921
+
+- Library updates:
+    - Spring 5.3.18 -> 5.3.20
+    - Spring security 5.6.2 -> 5.7.0
+    - Spring session BOM 2021.1.2 -> 2021.2.0
+    - commons-lang3 3.11 -> 3.12.0
+    - commons-text 1.9 -> 1.10.0
+    - commons-code 1.7 -> 1.15
+    - commons-dbcp2 2.8.0 -> 2.9.0
+    - PostgreSQL JDBC 42.5.0 -> 42.5.1
+    - MyBatis 3.5.7 -> 3.5.11
+    - Jackson 2.13.2 -> 2.13.4
+    - Jackson databind 2.13.4 -> 2.13.4.2 
+
+- Removed unused dependencies from managed dependencies (code using these have been removed/rewritten):
+    - org.apache.xmlbeans.xmlbeans
+    - org.codehaus.woodstox.stax2-api
+    - com.fasterxml.woodstox.woodstox-core
+
+## 2.9.0
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/42?closed=1
+
+- Allow users to include metadata flyout in embedded maps.
+- Allow admins to override capabilities based max features limit for vector sources with layer attributes.
+- Handle missing legend url for proxied layer to reduce noise in server logs.
+- Enable region mapping for search results in WFS search channels: https://github.com/oskariorg/oskari-server/pull/883
+- Handle timeseries layer with single time value and no resolution part as normal layer.
+- Pass user generated statistical indicators for frontend even when they don't have data (since user can add data for them later).
+- Library updates:
+  - GeoTools: 25.1 => 27.1
+  - JTS: 1.18.1 => 1.18.2
+  - MVT (no.ecc.vectortile): 1.3.15 => 1.3.16
+  - JSoup 1.14.2 -> 1.15.3
+  - postgres JDBC 42.3.3 -> 42.5.0
+  - Jetty 9.4.44.v20210927 -> 9.4.48.v20220622
+
+## 2.8.1
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/43?closed=1
+
+Fixed an issue with WMTS-layers that define limits on capabilities
+
+## 2.8.0
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/40?closed=1
+
+### My data frontend implementation changed
+
+A new bundle `mydata` has been added as (in most cases) drop-in replacement for `personaldata`. See [MigrationGuide](https://github.com/oskariorg/oskari-server/blob/master/MigrationGuide.md#280) for details.
+
+### Map layer capabilities rewrite
+
+All capabilities parsing have now been fully migrated to the rewritten implementation for all layer types that previously used layer capabilities parsing. The `oskari_capabilities_cache` database table has been dropped and all capabilities data is now stored per layer on `oskari_maplayer` table capabilities column as JSON. The `service-capabilities` Maven module now holds the logic for parsing capabilities and all functionalities use it when querying a service for its capabilities data.
+
+`org.oskari.capabilities.CapabilitiesService` has methods to query a service for layers including their capabilities per layer, update a single layer capabilities from the service, serialize the capabilities to JSON for `oskari_maplayer` and deserialize it from `oskari_maplayer` to get for example WMTS-layer matrix sets for printing.
+
+WFS/OGC API Features layers now also have the properties described in DescribeFeatureType included in the capabilities JSON.
+
+### Layer listing changes
+
+Data providers are now included in the layer list response similar to layer groups. Most if not all localizable values are now only returned in the current users language. All current admin tools can query a single editable item separately to get the localized values so this simplifies the code and makes admins use the same code for normal layer operations as other users.
+
+### Date handling
+
+Initial steps have been taken to make date handling more consistent on the database and server-side. For now the decisions for these have been documented in [oskari.org FAQ](https://oskari.org/documentation/faq) under "Handling dates and timestamps". In short this means using timestamps with time zone in database, java.time package in server code and ISO strings in JSON.
+
+Timestamp columns in database and server-side code have been updated for these for app setups and user generated content.
+
+### Metadata service integration
+
+When parsing capabilities for layers it is assumed that the metadata url/id referenced in capabilities is a link to the same service that the Oskari instance uses as metadata service (like GeoNetwork or other CSW-compliant service). This is not always the case and we added a new config for `oskari-ext.properties`. You can configure a comma-separated list that you want to enable metadata ids to be used from capabilities:
+
+```
+service.metadata.domains=paikkatietohakemisto.fi, geonetwork.nls.fi
+```
+
+If the url referenced in capabilities doesn't match the domain the metadata id parsing is skipped for that layer. If not configured this functions the same as before. If the list is configure, the value of `service.metadata.url` property is automatically added to the list.
+
+### Hiding mydata views/account info tab
+
+These can be configured in `oskari-ext.properties` with:
+```
+mydata.tabs.showUser=false
+mydata.tabs.showViews=false
+```
+
+### Other changes
+
+- Removed deprecated routes: `DeleteFeature`, `InsertFeature`, `SaveFeature` (replaced by `VectorFeatureWriter`)
+- Printing vector features with fill pattern is now visually closer to what is shown on the browser
+
+## 2.7.1
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/41?closed=1
+
+Bumped dependencies:
+- Spring 5.3.14 -> 5.3.18
+- Spring Security 5.6.1 -> 5.6.2
+- Spring Session 2021.1.1 -> 2021.1.2
+- Jackson 2.12.1 -> 2.13.2 (databind to 2.13.2.2)
+
+## 2.7.0
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/39?closed=1
+
+Capabilities parsing rewrite:
+- new module: service-capabilities
+- currently WMS and WMTS-layers have been migrated to the new parser/format
+- WFS/OGC API will be migrated in future/probably next release
+- admin functionality, programmatic initialization of layers and scheduled update for layers have been migrated to use the new service 
+- More details: https://github.com/oskariorg/oskari-server/pull/796
+
+Other fixes and improvements:
+- OGC API Features client now sends "Accept" header in requests to fix issues with services that respond with HTML if not requesting json
+- Added initial filtering capabilities for OGC API Features client: https://github.com/oskariorg/oskari-server/pull/816
+- TIFFReader improved in service-wcs: https://github.com/oskariorg/oskari-server/pull/813 
+- SaveLayer action route removed. LayerAdmin is used by the current admin functionalities.
+- Enabled userlayer layers to use localized value for name, description and source
+- Enabled myplaces layers to use localized value for name
+- Added layer analytics backend code for tracking problematic layers: https://github.com/oskariorg/oskari-server/pull/817
+- Improved MID-file parser to handle empty strings
+- Default vector feature stroke width for printing is now consistent with frontend map
+- Statistical data plugin for PXWeb has been refined regarding external metadata. See configuration doc at https://oskari.org/documentation/features/thematicmaps/config
+- Fixed an issue where saving statistical indicator while using UI language other than the instance default resulted in an error.
+- Download basket functionality now supports credentials for SMTP configuration: https://github.com/oskariorg/oskari-server/pull/814
+- Bumped h2 version 2.0.206 -> 2.1.210
+- PostgreSQL 42.2.16 -> 42.3.3
+
+## 2.6.0
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/35?closed=1
+
+- Configuration can now be passed with ENV variables to override values in `oskari-ext.properties`: https://github.com/oskariorg/oskari-docs/issues/262
+- Removed most restrictions for search queries. Programmatic usage can now request more results than the default limit. Introduced a config to define a hard limit (defaults to 10x default limit https://github.com/oskariorg/oskari-server/pull/765).
+- Allowed additional parameters to be passed from frontend to search channels through the common search API. Usage of the additional parameters are documented on the RPC as there's no user interface for these but allows more options for programmatically initiated searches.
+- Changed MVT encoder implementation (for WFS-features as MVT) to fix JTS version mismatch with the library and enable polygon/linestrings features to be encoded as MVT once again.
+- Statistical indicator metadata improvements:
+  - Generic API to allow additional metadata to be passed to frontend for indicators
+  - PXWeb specific implementation to allow a JSON-file to be used to provide metadata like localized names and descriptions, start/end years and information about last/next update for data: https://oskari.org/documentation/features/thematicmaps/config
+- Action routes can now be called with a cleaner URL. This is now enabled by server but the frontend still uses the longer URL. More details: https://github.com/oskariorg/oskari-server/pull/767
+- Updated libraries:
+  - Jetty 9.4.42.v20210604 -> 9.4.44.v20210927
+  - Log4J 2.16.0 -> 2.17.1
+  - Spring 5.3.11 -> 5.3.14
+  - Spring Security 5.5.3 -> 5.6.1
+  - Spring Session 2021.0.3 -> 2021.1.1
+  - Jedis 3.6.3 -> 3.8.0
+  - com.h2database.h2 1.4.199 -> 2.0.206
+
+## 2.5.3
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/38?closed=1
+
+- Upgrade Log4J 2.15.0 -> 2.16.0
+- Upgrade slf4j-api 1.7.30 -> 1.7.32
+- Fixed an issue that on rare cases prevented layers from being removed from the system due to misconfigured timeseries layer  
+
+## 2.5.2
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/37?closed=1
+
+- Upgrade Log4J 2.13.3 -> 2.15.0
+
+## 2.5.1
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/36?closed=1
+
+- Add error handling when parsing GetFeatureInfo from WMS capabilities
+- Upgrade MyBatis 3.5.6 -> 3.5.7
+
+## 2.5.0
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/34?closed=1
+
+- Layerlisting response from server has been streamlined and some of the layer 
+   metadata has been removed like coverage geometry. The frontend handles this
+   internally by fetching the data when needed instead of having it all in the listing response.
+   This reduces the size of the listing response dramatically and improves performance.
+- New action route DescribeLayer that is currently just used for returning coverage geometry
+   for layer when available. There are plans for doing more with this endpoint.
+   Possibly combining it responses from GetWFSLayerFields and GetLayerCapabilities to a single generic endpoint.
+- WTMS capabilities are parsed and now stored in JSON format for layers. 
+   This enables giving frontend only the tile matrix information it needs for 
+   showing the layer for the current projection that is used on the browser.
+   This reduces network traffic and can vastly improve performance for WMTS-services with large capabilities documents.
+   Note! This requires all WMTS-layer capabilities to be refreshed from the server and this is done automatically with an upgrade script as a Flyway-migration.
+- The common search functionality no longer overrides a zoom scale hint with generic config IF it has been set by a channel.
+- Default style options for printing vector features have been synced with defaults used on the frontend code.
+- GetWFSLayerFields route now recognizes WFS attributes of types
+   MultiLineStringPropertyType and MultiSurfacePropertyType as geometries
+   instead of "unknown" type.
+- New action route VectorFeatureWriter has been added as a replacement for combining 
+   existing routes: InsertFeature, SaveFeature and DeleteFeature.
+   The previous ones have been deprecated for removal at a later version.
+   The new endpoint takes GeoJSON as request payload for the feature to be inserted/updated.
+   This route is used by the content-editor bundle under oskari-frontend-contrib repository.
+- Libraries updated:
+  - Jetty 9.4.39.v20210325 -> 9.4.42.v20210604
+  - jsoup 1.13.1 -> 1.14.2
+  - pdfbox 2.0.16 -> 2.0.24
+
+## 2.4.0
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/30?closed=1
+
+- Cache layer listing results to improve performance as most users get the same result
+- Remove unused parts from layer listing response to improve performance
+- Added dataprovider identifiers for layers in listing response
+- Reduce unnecessary logging to remove clutter from logs
+- Improve MIF/MID parsing for imports
+- Add region filter to queries for PXWeb API 
+- Add support for HDEL and HINCRBY commands on Redis integration 
+- Upgrade libraries:
+    - GeoTools 24.2 -> 25.1
+    - JTS 1.17.1 -> 1.18.1
+
+## 2.3.3
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/33?closed=1
+
+Fixed an issue with object data/feature properties which were not shown correctly when there were multiple userlayer/analysis map layers on the map at the same time.
+
+## 2.3.2
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/32?closed=1
+
+- Small changes for userlayer/analysis migrations to make them compatible with Postgres 9.4 (previously required 9.6)
+
+## 2.3.1
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/31?closed=1
+
+- Small change to my places migration to make it compatible with Postgres 9.4 (previously required 9.6)
+- Make WFSclient accept features without geometries.
+- Enable additional parameters from oskari_maplayer.params to be passed to OGC API Features services.
+
+## 2.3.0
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/29?closed=1
+
+- Added support for GeoPackages for userlayer import (the UI doesn't say so but importing these should work).
+- When layer is loaded for editing the capabilities are now refreshed before the data is written out for frontend.
+- Metadata UUID is now included in the layer capabilities response
+- Added support for a new control parameter "timeseries" to pass URL-parameter as part of frontend state.
+- GetWFSLayerFields now returns "filter" and "geometryType" as part of it's response.
+- Fixed an issue where bundle states were not written for appsetups on saved views listing when bundle config was missing. Fixes for example saved map rotation on views. 
+- GFI requests now include identifier headers declaring that an Oskari instance is requesting the data.
+- Added a route that can be used to request a listing of users "my places" features as GeoJSON with a filename header.
+- Added support for localized layer names for user generated data.
+- Fixed an issue with global search result limit (defaulted to 100 because of timing issues instead of configured limit).
+- Added support for updating capabilities for layers based on data provider or group (previously available options were only by layer or all layers).
+- Improved user layer import parsing to allow folders inside zip for the imported files.
+- GeoServer artifacts updated for GeoServer 2.19 (updated bundled GeoServer as well/requires manual updating to update, but older installs work as well so update isn't necessary).
+- Fix for setup.war webapp (didn't work properly after some internal layers got removed).
+- Compiling oskari-server with latest Java 11 update works again.
+- Fixes for legend url proxying.
+- Added support for AWS ElastiCache Redis setup: https://github.com/oskariorg/oskari-server/pull/716
+- Updated dependencies:
+  - GeoTools 23.2 -> 24.2
+  - Spring 5.3.3 -> 5.3.5
+  - Spring-security 5.4.2 -> 5.4.6
+  - Session 2020.0.3 -> 2020.0.4
+    
+## 2.2.0
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/28?closed=1
+
+- Added server side handlers and registrations for new functionality called `announcements`.
+- Reduce logging for common errors like client disconnecting during response writing etc.
+- Fixes for analysis functionality.
+- Added a new handler for getting configured metadata for a Vector feature source/WFS/OAPIF:
+  https://github.com/oskariorg/oskari-server/pull/670.
+  Metadata includes things like:
+  - attribute names and value types
+  - localized names for attributes
+  - name of the geometry field
+
+  Note! There are multiple previous implementations that return parts of the same metadata
+  (listed in the PR) that will be deprecated and the frontend will be migrated to use the new one
+  on future releases.
+
+- Added logic for an option to show a WMS-layer with timeseries without the time controls (as regular layer).
+- Added support for GFI response type/info-format `application/json`.
+- The group hierarchy depth for hierarchical layer listing can now be configured in
+  `oskari-ext.properties` with `layerlist.hierarchy.maxdepth` instead of being hard-coded (defaults to 2).
+- Changed my places label from `Link` to `More information` to match the form label when adding/editing features.
+- Improved legend image handling for map layers:
+  - Admin can now override/add a legend image url for each style for the layer (previously there was just one field)
+  - Legend-related configs are now stored in `oskari_maplayer` table `options` column under `legends` key
+
+- Added a plugin mechanism for tracking proxied requests to map layer services.
+  This enables adding access audit logging on application code:
+  https://github.com/oskariorg/oskari-server/pull/687
+- Add initial implementation for checking if a map layer is used by some functionality so we
+  can notify admin about it when removing the layer etc.
+  Currently only checks if layer is used as a timeseries metadata layer, but this can be improved
+  in the future to include notifying usage in embedded maps, region sets in thematic maps etc.
+
+- Changed the Maven repository path for Oskari artifacts under oskari.org (The old one is redirected to the new one and works as well but we migrated away from Nexus so it makes sense to change the path to not reference it).
+- Upgraded libs:
+  - GeoTools 23.2 -> 24.2 fixing an issue with some Shapefile imports
+  - JTS 1.16.1 -> 1.17.1
+  - Spring framework 5.2.8.RELEASE -> 5.3.3
+  - Spring security 5.3.4.RELEASE -> 5.4.2
+  - Spring session Dragonfruit -> 2020.0.3
+  - Flyway 6.5.5 -> 6.5.7
+  - Jedis 3.3.0 -> 3.5.1
+  - MyBatis 3.5.5 -> 3.5.6
+  - commons-dbcp2 2.0.1 -> 2.8.0
+  - Removed unused com.googlecode.lambda/lambdaj
+  - Removed unused com.github.jsonld-java/jsonld-java
+
+## 2.1.0
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/26?closed=1
+
+WFS-layers can now have a filter for fetching features:
+- Admin users can set filter to layer "attributes" 
+- https://github.com/oskariorg/oskari-docs/issues/228
+- https://oskari.org/documentation/examples/oskari-filter
+
+Log levels can now be updated programmatically:
+- Admin users can set log levels at runtime (no UI for this yet)
+- Helps debugging issues in production
+- For details: https://github.com/oskariorg/oskari-server/pull/658
+
+Improved support for clustered server environment:
+- Caches communicate removals/flushes between cluster nodes
+- Programmatically setting log level is communicated between cluster nodes
+- Documentation available in https://oskari.org/documentation/features/server/clustering
+
+Redis PubSub integration rewrite:
+- fi.nls.oskari.cache.JedisSubscriber has been deprecated
+- Use org.oskari.cluster.ClusterManager instead
+
+Identifying Oskari instance in HTTP requests:
+- Added `IOHelper.addIdentifierHeaders(connection)` for identifying Oskari to services. Adds headers:
+  - User-agent header with Oskari/[version] based on metadata in jar-file
+  - Referer with value from oskari.domain in oskari-ext.properties
+- OSM Search channel and layer tile proxying now sends client identifiers to the service
+
+Other improvements and changes:
+- Improvements on WMS capabilities parsing
+- Improvements on MIF/MID file reading when importing datasets
+- Fix for feature data export on Excel format
+- Logging reduced in layer tile proxy and printing for HTTP 404 answers from service
+- Other improvements
+
+Library updates:
+- Updated commons-lang 3.8.1 -> 3.11
+- Dropped commons-lang 2 (updated code to use version 3)
+
+## 2.0.1
+
+Changes coordinates type from string to double on search channels and search results.
+Frontend assumes numbers on 2.0 and most of the code casts numbers to strings just for the SearchResultItem setter. 
+
+## 2.0.0
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/25?closed=1
+
+### Important note for the release!
+
+If you are migrating an older instance to 2.0.0 make sure you migrate to 1.56.0 first
+ and start your server at least once with a version based on Oskari 1.56.0. This is a required step as 
+ the database needs to be migrated to a specific state before migrating to 2.0.0 and beyond.
+
+This release aims to be functionally same as 1.56.0 but we have included a couple of bug fixes.
+
+### Maven naming changes
+ 
+GroupId for all Oskari Maven artifacts in oskari-server is now `org.oskari`.
+Much of the artifactIds have also been changed to match the folder they are in.
+Details can be found in [Migration Guide](https://github.com/oskariorg/oskari-server/blob/master/MigrationGuide.md). 
+
+### Library updates
+
+We have updated a bunch of libraries that require changes to applications based on Oskari. 
+The changes required are detailed in the [Migration Guide](https://github.com/oskariorg/oskari-server/blob/master/MigrationGuide.md)
+and you can also take a look at changes for the [sample-server-extension](https://github.com/oskariorg/sample-server-extension/milestone/5?closed=1)
+ to give you a better idea what these mean for your app.
+
+Bigger upgrades include:
+
+- GeoTools 19.2 -> 23.2
+- Java Topology Suite (JTS) 1.14.0 -> 1.16.1
+- Spring Framework 4.3.26 -> 
+- Spring Security etc 4.2.14 -> 5.2.8
+- Mapbox Vector Tile library 2.0.0 -> 3.1.0
+- Flyway 4.2 -> 6.5.5
+- GeoServer 2.13.2 -> 2.17.2 (WPS-modules updated in pre-built package)
+- Dropped Ibatis (everything now uses MyBatis instead)
+
+Spring is now managed with "Bill Of Materials" so it's easier for an application to use the same version as Oskari-server 
+without re-declaring the version (spring artifacts are in managed dependencies so you don't have to declare version for them on your app).
+ 
+The updates introduce a bunch of code changes that are required to be matched on applications based on Oskari.
+These include Java-package changes and even some API changes for Java classes. 
+Details can be found in [Migration Guide](https://github.com/oskariorg/oskari-server/blob/master/MigrationGuide.md). 
+
+### Applications and initial content
+
+Support for setup.json files have been dropped. While this might feel like a downgrade it actually makes creating 
+initial content for applications simpler and easier to understand. Everything is now done using Flyway-migrations and
+everything you could do with a setup.json you can do with migrations. For the oskari-server core modules this includes
+ creating database tables for empty database and populating them with initial content. We have dropped all the 1.x
+ migrations and with that have been able to cleanup the codebase a fair bit.
+
+We also improved the helpers that can be used with application specific Flyway-modules to make registering bundles, 
+map layer and appsetup inserts/updates easier in applications. We also renamed some of the database tables so table names are
+now consistent. 
+
+Because of Flyway API changes you will need to modify your application specific migrations.
+Details can be found in [Migration Guide](https://github.com/oskariorg/oskari-server/blob/master/MigrationGuide.md). 
+
+### Bug fixes
+
+- Line color for printing has been fixed (now uses defined style again)
+- Fixed a caching issue when printing user generated content after changing styling
+- Fixed an issue with creating PDF having solid lines  
+
+## 1.56.0
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/23?closed=1
+
+### Important note for the release!
+
+This release migrates the database migration status tables in preparation for updating to latest version of the Flyway library. This will bring Postgres 12 support for Oskari in the next release. This is also a required version step between versions so you will need to upgrade to this version before upgraging to the next one. We are currently planning on labeling the next version 2.0 as it will have some manual steps that are required when upgrading to it. We are also planning on keeping functional changes low or none for 2.0 to minimize the chance of something breaking as the main focus for the next release is massive library updates.
+
+### User generated content styling, imports (userlayer) and server installation change
+
+User generated content styling has been harmonized at DB level. The styles are now stored similar to styles for WFS-layers enabling more flexible styling in the future. This also adds clustering support for my places etc.
+
+The my places API has been partially changed (=layer metadata) from WFS-T to direct DB access. This gives us more flexibility and works towards removing the "internal" GeoServer we currently use with Oskari. The user content is/has been loaded through db -> GeoServer -> Oskari-server -> browser which adds more serialization/deserialization steps than it needs and creates unnecessary overhead for the functionality. Also we don't really need an internal GeoServer on Oskari for making this work as we are doing very simple things with it and it's one component more that is harder to update automatically with releases/bundled setup. Unfortunately we can't remove it for the 2.0 release but it's something we are working towards when we can for some future Oskari version.
+
+While we are working on removing the internal GeoServer there will be some layers configured automatically for the internal GeoServer that might not work properly. They don't hurt but it might look a bit messy. We will try removing the deprecated configuration for 2.0 version as well. These deprecated layers were used by Oskari when user generated content was loaded as WMS-layers to the browser. Now that they are used as WFS-layers we have cleaned up some views on the database but not the configuration on the GeoServer that tries using them. Again, not a problem but it might look a bit messy if you take a look inside the "internal" GeoServer.
+
+#### GDAL dependency removed
+
+Added MIF/MID-parser implementation! GDAL no longer needs to be installed and configured for Oskari to support this import file type and it was the last one to use it so it doesn't need to be installed at all anymore.
+
+Added GPX 1.0 support for userlayer import (previously only 1.1)
+
+### Other changes
+
+- GeoTools/GeoServer Maven repository has been updated. Builds should now work properly out of the box again (without configuring mirrors for geotools repositories yourself).
+- Improved styling support for printout
+- Added support for vector tile layers requiring credentials (proxy support)
+- Improved support for "capabilities"/describe feature type update for OGC API Features
+- OGC API Features conformance URL updated for the WFS-client
+- Fixed an issue with WMS-layers capabilities parsing where style was missing.
+- Capabilities caching improvements
+- Fix for analysis publish permission
+- Fix for "Clipping" analysis
+- Added configuration for my places GFI-formatting for making it work with WFS-formatters
+- Instance domain is now always included in embedded maps permitted domains
+- Library updates: Jackson, Log4j2, Flyway
+
+## 1.55.1
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/24?closed=1
+
+- Added bundle registrations for new bundles: admin-layereditor and layerlist
+- Fixed metadata id and legend image handling on server-side for admin-layereditor
+- Fixed user content/temporary features input for analysis
+- Additional permissions checks added for analysis
+
+## 1.55.0
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/21?closed=1
+
+WFS integrations:
+- Improvements for error handling on WFS integrations (missing schemas and handling unexpected output formats etc)
+- Transport related code has been mostly removed from the server code base and will continue to be removed
+- Database tables used by transport have been removed with relevant content migrated: https://github.com/oskariorg/oskari-server/pull/509
+
+Layer admininistration:
+- new helpers and action route (LayerAdmin) added for the new map layer admin functionality UI (Old ones will be deprecated and removed in a future release)
+- Adding layers with LayerHelper from Flyway migrations now uses the same JSON-format, validations and functionality as the new admin UI
+- We will continue refining these so they are subject to change in the near future still (at least capabilities handling needs some cleanup)
+- GetHierarchicalMapLayerGroups action route can now be used to fetch layers based on id (instead of always returning whole set of layers)
+- GetAllRolesAndPermissionTypes action route has been renamed LayerAdminMetadata
+
+Imported datasets (userlayer):
+- GPX imports are now read using custom parser implemented in Java (working towards removing an extra step of installing GDAL for Oskari-server)
+- Error handling improved for invalid userlayer imports, inconsistent data and styling improvements
+- Feature attributes are now sorted based on the imported dataset
+
+Statistical data integrations:
+- Multiple improvements for parsing statistical data from PXWeb data sources
+- Improvements on handling cached data for indicator lists
+
+Technical changes for enabling server clustering:
+- Allow persistent user sessions with Redis. Configuration: https://github.com/oskariorg/oskari-server/pull/491
+- Add health and status urls with customizable health checks: https://github.com/oskariorg/oskari-server/pull/493
+
+Other:
+- Bundle registrations and link param handlers for 3D related bundles added (enabling apps to use these more easily)
+- Fix properties configuration and added some URL-parsing methods for IOHelper
+- Layer coverage information improvements. We identified some problem points and added error handling.
+- Unnecessary logging removed
+- Removed dependencies that were no longer used
+- Updated libraries
+
+## 1.54.1
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/22?closed=1
+
+Fixes an issue with permissions handling and removes all EDIT_LAYER permissions from database. If you ARE using this permission
+you can skip the migration but its heavily recommended to run it. All layers with VIEW_LAYER permission have had this permission
+so it's unlikely that it is used properly at this moment.
+
+## 1.54.0
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/19?closed=1
+
+- Fixed an issue where cached data was not flushed after changes in permissions
+- Improved background processing for statistical maps functionality
+- The forced migration to the new WFS-system has been added (transport is no longer used)
+- Fixed an issue with filters in the new WFS-system that caused problems with GeoServer stability
+- Added support for arcs and surface geometries on the new WFS-system
+- Improved parsing for WFS-services that use mixed geometry types
+- Reduced logging for WFS-system on common error scenarios
+- Fixed an issue with user content label styling
+- Fixed an issue in data provider renaming
+- Enabled setup-scripts to insert appsetups that can be loaded with id-reference (instead of uuid)
+- Added a default schedule for background capabilities update worker (so configuring automatic updates as admin actually does something)
+- Added new action routes to get instance roles, permission types and layers in preparation for new admin functionality
+
+Note! The transport code has not been removed from this release but it hasn't been tested either.
+If you must and are willing to put in the effort to go around the forced migration you can try using it but know that it will be removed in the near future.
+
+## 1.53.1
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/20?closed=1
+
+- Fix WFS-based search channels permission checks
+- Fix backend for the content-editor functionality for services requiring authentication
+- Fix an issue with empty userlayer tiles
+- Allow admins to force the new WFS-backend to use GML as outputFormat instead of preferring JSON (usable for services that don't handle outputFormat parameter properly)
+
+## 1.53.0
+
+For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/18?closed=1
+
+- New WFS-integration backend is now the default replacing the transport webapp! Requires manual updates. See [migration guide](MigrationGuide.md)
+- Lots of improvements over 1.52 to the new WFS-integration backend
+- CSRF protection has been removed from the webapp as the implementation was problematic with 3rd party cookie blocking.
+  Instructions for configuring nginx to handle CSRF has been added.  See [migration guide](MigrationGuide.md)
+- Permissions system has been rewritten. Modifying layer url or technical name no longer loses permissions set for the layer
+- Added frontend request priority queue implementation using Service Worker (Service Worker code is in the server repository)
+- Audit log implementation has been added
+- AppSetups can now use specific publish template to override the global template
+- Printing WFS-layers now use true vector features for PDFs
+- Improvements on printing WMTS-layers
+- Oskari now has a default favicon (customizable in oskari-ext.properties)
+- More services migrated from Ibatis to Mybatis
+- Fixes to analysis functionality
+- User session timeout handling improvements
+- OpenStreetMap search channel now supports limiting queries to certain bbox
+- Server-side localizations are now in UTF-8 to support more languages
+- Improvements on parsing indicators from the thematic datasource UN stats (https://unstats.un.org/home/)
+- Improvements for handling problematic regions from statistical region sets
+- Library updates
+
 ## 1.52.0
 
 For a full list of changes see: https://github.com/oskariorg/oskari-server/milestone/16?closed=1

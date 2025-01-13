@@ -1,0 +1,329 @@
+
+<?xml version='1.0' encoding="UTF-8" standalone="no" ?>
+<WMS_Capabilities version="1.3.0" updateSequence="2024-11-13T08:00:01Z"  xmlns="http://www.opengis.net/wms"   xmlns:sld="http://www.opengis.net/sld"   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"   xmlns:ms="http://mapserver.gis.umn.edu/mapserver"   xsi:schemaLocation="http://www.opengis.net/wms http://schemas.opengis.net/wms/1.3.0/capabilities_1_3_0.xsd  http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/sld_capabilities.xsd  http://mapserver.gis.umn.edu/mapserver https://geo.weather.gc.ca/geomet?service=WMS&amp;version=1.3.0&amp;request=GetSchemaExtension">
+
+    <!-- MapServer version 7.6.4 OUTPUT=PNG OUTPUT=JPEG OUTPUT=KML SUPPORTS=PROJ SUPPORTS=AGG SUPPORTS=FREETYPE SUPPORTS=CAIRO SUPPORTS=SVG_SYMBOLS SUPPORTS=RSVG SUPPORTS=ICONV SUPPORTS=FRIBIDI SUPPORTS=WMS_SERVER SUPPORTS=WMS_CLIENT SUPPORTS=WFS_SERVER SUPPORTS=WFS_CLIENT SUPPORTS=WCS_SERVER SUPPORTS=SOS_SERVER SUPPORTS=FASTCGI SUPPORTS=THREADS SUPPORTS=GEOS SUPPORTS=POINT_Z_M SUPPORTS=PBF INPUT=JPEG INPUT=POSTGIS INPUT=OGR INPUT=GDAL INPUT=SHAPEFILE -->
+
+    <Service>
+        <Name>WMS</Name>
+        <Title>MSC GeoMet — GeoMet-Weather 2.30.0</Title>
+        <Abstract>GeoMet-Weather provides public access to the Meteorological Service of Canada (MSC) and Environment and Climate Change Canada (ECCC) data via interoperable web services and application programming interfaces (API). Through open standards, users can freely and quickly access thousands of real-time and archived weather, climate and water datasets and products and integrate them in their domain-specific applications and decision support systems. Users can build mobile apps, create interactive web maps, and display and animate MSC data in desktop software. MSC GeoMet also enables on demand raw data clipping and reprojection, on demand format conversion and custom visualization.</Abstract>
+        <KeywordList>
+            <Keyword>Weather</Keyword>
+            <Keyword>Meteorology</Keyword>
+            <Keyword>Climate</Keyword>
+            <Keyword>Forecasting</Keyword>
+            <Keyword>Floods</Keyword>
+            <Keyword>Weather alerts</Keyword>
+            <Keyword>Storms</Keyword>
+            <Keyword>Wind</Keyword>
+            <Keyword>Temperature</Keyword>
+            <Keyword>Precipitations</Keyword>
+            <Keyword>Snow</Keyword>
+            <Keyword>Ice</Keyword>
+        </KeywordList>
+        <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://eccc-msc.github.io/open-data/msc-geomet/readme_en/"/>
+        <ContactInformation>
+            <ContactPersonPrimary>
+                <ContactPerson>National Inquiry Response Team</ContactPerson>
+                <ContactOrganization>Government of Canada, Environment and Climate Change Canada, Meteorological Service of Canada</ContactOrganization>
+            </ContactPersonPrimary>
+            <ContactPosition>Service Channel</ContactPosition>
+            <ContactAddress>
+                <AddressType>postal</AddressType>
+                <Address>77 Westmorland Street, Suite 260</Address>
+                <City>Fredericton</City>
+                <StateOrProvince>New Brunswick</StateOrProvince>
+                <PostCode>E3B 6Z3</PostCode>
+                <Country>Canada</Country>
+            </ContactAddress>
+            <ContactVoiceTelephone>None</ContactVoiceTelephone>
+            <ContactFacsimileTelephone>+01-506-451-6010</ContactFacsimileTelephone>
+            <ContactElectronicMailAddress>ecweather-meteo@ec.gc.ca</ContactElectronicMailAddress>
+        </ContactInformation>
+        <Fees>None</Fees>
+        <AccessConstraints>None</AccessConstraints>
+        <MaxWidth>16384</MaxWidth>
+        <MaxHeight>16384</MaxHeight>
+    </Service>
+
+    <Capability>
+        <Request>
+            <GetCapabilities>
+                <Format>text/xml</Format>
+                <DCPType>
+                    <HTTP>
+                        <Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://geo.weather.gc.ca/geomet?"/></Get>
+                        <Post><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://geo.weather.gc.ca/geomet?"/></Post>
+                    </HTTP>
+                </DCPType>
+            </GetCapabilities>
+            <GetMap>
+                <Format>image/png</Format>
+                <Format>image/jpeg</Format>
+                <DCPType>
+                    <HTTP>
+                        <Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://geo.weather.gc.ca/geomet?"/></Get>
+                        <Post><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://geo.weather.gc.ca/geomet?"/></Post>
+                    </HTTP>
+                </DCPType>
+            </GetMap>
+            <GetFeatureInfo>
+                <Format>text/plain</Format>
+                <Format>application/json</Format>
+                <Format>application/vnd.ogc.gml</Format>
+                <DCPType>
+                    <HTTP>
+                        <Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://geo.weather.gc.ca/geomet?"/></Get>
+                        <Post><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://geo.weather.gc.ca/geomet?"/></Post>
+                    </HTTP>
+                </DCPType>
+            </GetFeatureInfo>
+            <sld:DescribeLayer>
+                <Format>text/xml</Format>
+                <DCPType>
+                    <HTTP>
+                        <Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://geo.weather.gc.ca/geomet?"/></Get>
+                        <Post><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://geo.weather.gc.ca/geomet?"/></Post>
+                    </HTTP>
+                </DCPType>
+            </sld:DescribeLayer>
+            <sld:GetLegendGraphic>
+                <Format>image/png</Format>
+                <Format>image/jpeg</Format>
+                <Format>image/png; mode=8bit</Format>
+                <Format>image/vnd.jpeg-png</Format>
+                <Format>image/vnd.jpeg-png8</Format>
+                <DCPType>
+                    <HTTP>
+                        <Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://geo.weather.gc.ca/geomet?"/></Get>
+                        <Post><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://geo.weather.gc.ca/geomet?"/></Post>
+                    </HTTP>
+                </DCPType>
+            </sld:GetLegendGraphic>
+            <ms:GetStyles>
+                <Format>text/xml</Format>
+                <DCPType>
+                    <HTTP>
+                        <Get><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://geo.weather.gc.ca/geomet?"/></Get>
+                        <Post><OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://geo.weather.gc.ca/geomet?"/></Post>
+                    </HTTP>
+                </DCPType>
+            </ms:GetStyles>
+        </Request>
+        <Exception>
+            <Format>XML</Format>
+            <Format>INIMAGE</Format>
+            <Format>BLANK</Format>
+        </Exception>
+        <sld:UserDefinedSymbolization SupportSLD="1" UserLayer="0" UserStyle="1" RemoteWFS="0" InlineFeature="0" RemoteWCS="0"/>
+        <Layer queryable="1">
+            <Title>MSC GeoMet — GeoMet-Weather 2.30.0</Title>
+            <Abstract>GeoMet-Weather provides public access to the Meteorological Service of Canada (MSC) and Environment and Climate Change Canada (ECCC) data via interoperable web services and application programming interfaces (API). Through open standards, users can freely and quickly access thousands of real-time and archived weather, climate and water datasets and products and integrate them in their domain-specific applications and decision support systems. Users can build mobile apps, create interactive web maps, and display and animate MSC data in desktop software. MSC GeoMet also enables on demand raw data clipping and reprojection, on demand format conversion and custom visualization.</Abstract>
+            <KeywordList>
+                <Keyword>Weather</Keyword>
+                <Keyword>Meteorology</Keyword>
+                <Keyword>Climate</Keyword>
+                <Keyword>Forecasting</Keyword>
+                <Keyword>Floods</Keyword>
+                <Keyword>Weather alerts</Keyword>
+                <Keyword>Storms</Keyword>
+                <Keyword>Wind</Keyword>
+                <Keyword>Temperature</Keyword>
+                <Keyword>Precipitations</Keyword>
+                <Keyword>Snow</Keyword>
+                <Keyword>Ice</Keyword>
+            </KeywordList>
+            <CRS>EPSG:4326</CRS>
+            <CRS>EPSG:2294</CRS>
+            <CRS>EPSG:2295</CRS>
+            <CRS>EPSG:2950</CRS>
+            <CRS>EPSG:3005</CRS>
+            <CRS>EPSG:3408</CRS>
+            <CRS>EPSG:3410</CRS>
+            <CRS>EPSG:3571</CRS>
+            <CRS>EPSG:3572</CRS>
+            <CRS>EPSG:3573</CRS>
+            <CRS>EPSG:3574</CRS>
+            <CRS>EPSG:3575</CRS>
+            <CRS>EPSG:3576</CRS>
+            <CRS>EPSG:3857</CRS>
+            <CRS>EPSG:3978</CRS>
+            <CRS>EPSG:3995</CRS>
+            <CRS>EPSG:4267</CRS>
+            <CRS>EPSG:4269</CRS>
+            <CRS>EPSG:26707</CRS>
+            <CRS>EPSG:26708</CRS>
+            <CRS>EPSG:26709</CRS>
+            <CRS>EPSG:26710</CRS>
+            <CRS>EPSG:26711</CRS>
+            <CRS>EPSG:26712</CRS>
+            <CRS>EPSG:26713</CRS>
+            <CRS>EPSG:26714</CRS>
+            <CRS>EPSG:26715</CRS>
+            <CRS>EPSG:26716</CRS>
+            <CRS>EPSG:26717</CRS>
+            <CRS>EPSG:26718</CRS>
+            <CRS>EPSG:26719</CRS>
+            <CRS>EPSG:26720</CRS>
+            <CRS>EPSG:26721</CRS>
+            <CRS>EPSG:26722</CRS>
+            <CRS>EPSG:26907</CRS>
+            <CRS>EPSG:26908</CRS>
+            <CRS>EPSG:26909</CRS>
+            <CRS>EPSG:26910</CRS>
+            <CRS>EPSG:26911</CRS>
+            <CRS>EPSG:26912</CRS>
+            <CRS>EPSG:26913</CRS>
+            <CRS>EPSG:26914</CRS>
+            <CRS>EPSG:26915</CRS>
+            <CRS>EPSG:26916</CRS>
+            <CRS>EPSG:26917</CRS>
+            <CRS>EPSG:26918</CRS>
+            <CRS>EPSG:26919</CRS>
+            <CRS>EPSG:26920</CRS>
+            <CRS>EPSG:26921</CRS>
+            <CRS>EPSG:26922</CRS>
+            <CRS>EPSG:32187</CRS>
+            <CRS>EPSG:32188</CRS>
+            <CRS>EPSG:32198</CRS>
+            <CRS>EPSG:32661</CRS>
+            <CRS>EPSG:42101</CRS>
+            <CRS>EPSG:42102</CRS>
+            <CRS>EPSG:42304</CRS>
+            <CRS>EPSG:102100</CRS>
+            <CRS>EPSG:102185</CRS>
+            <CRS>EPSG:900913</CRS>
+            <CRS>AUTO2:42003</CRS>
+            <EX_GeographicBoundingBox>
+                <westBoundLongitude>-180</westBoundLongitude>
+                <eastBoundLongitude>180</eastBoundLongitude>
+                <southBoundLatitude>-90</southBoundLatitude>
+                <northBoundLatitude>90</northBoundLatitude>
+            </EX_GeographicBoundingBox>
+            <BoundingBox CRS="EPSG:4326"
+                         minx="-90" miny="-180" maxx="90" maxy="180" />
+            <Attribution>
+                <Title>Government of Canada, Environment and Climate Change Canada, Meteorological Service of Canada</Title>
+                <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://www.canada.ca/en/services/environment/weather.html"/>
+                <LogoURL width="400" height="258">
+                    <Format>image/jpeg</Format>
+                    <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://ec.gc.ca/meteo-weather/C0D9B3D8-D256-407D-A68F-C606D703105E/X-20130131132801908.jpg"/>
+                </LogoURL>
+            </Attribution>
+            <Layer queryable="1">
+                <Name>Global Deterministic Prediction System (GDPS) [15 km]</Name>
+                <Title>Global Deterministic Prediction System (GDPS) [15 km]</Title>
+                <Layer queryable="1">
+                    <Name>GDPS</Name>
+                    <Title>GDPS</Title>
+                    <Layer queryable="1" opaque="0" cascaded="0">
+                        <Name>GDPS.ETA_TT</Name>
+                        <Title>GDPS.ETA - Air temperature at 2m above ground [°C]</Title>
+                        <Abstract>The Global Deterministic Prediction System (GDPS) is a coupled atmosphere (GEM), ocean and sea ice (NEMO-CICE) deterministic numerical weather prediction model. Forecasts are carried out twice a day for 10 days lead time. The geographical coverage is global on a native Yin-Yang grid at 15 km horizontal resolution. Data is available for 33 vertical levels and interpolated on a global latitude-longitude uniform grid with 0.2 degree horizontal resolution. Variables availability in number and time frequency is a function of forecast lead time.</Abstract>
+                        <KeywordList>
+                            <Keyword>Prediction</Keyword>
+                            <Keyword>Global</Keyword>
+                            <Keyword>Deterministic</Keyword>
+                            <Keyword>Weather forecasts</Keyword>
+                            <Keyword>Precipitation</Keyword>
+                            <Keyword>Air temperature</Keyword>
+                            <Keyword>Humidity</Keyword>
+                            <Keyword>Snow</Keyword>
+                            <Keyword>Wind</Keyword>
+                            <Keyword>Meteorological data</Keyword>
+                        </KeywordList>
+                        <EX_GeographicBoundingBox>
+                            <westBoundLongitude>-180</westBoundLongitude>
+                            <eastBoundLongitude>180</eastBoundLongitude>
+                            <southBoundLatitude>-90.24</southBoundLatitude>
+                            <northBoundLatitude>90</northBoundLatitude>
+                        </EX_GeographicBoundingBox>
+                        <Dimension name="time" units="ISO8601" default="2024-11-13T09:00:00Z" nearestValue="0">2024-11-13T00:00:00Z/2024-11-23T00:00:00Z/PT3H</Dimension>
+                        <Dimension name="reference_time" units="ISO8601" default="2024-11-13T00:00:00Z" multipleValues="1" nearestValue="0">2024-11-11T12:00:00Z/2024-11-13T00:00:00Z/PT12H</Dimension>
+                        <AuthorityURL name="msc">
+                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://dd.weather.gc.ca"/>
+                        </AuthorityURL>
+                        <Identifier authority="msc">urn:x-msc-smc:md:weather-meteo::nwp.gdps</Identifier>
+                        <MetadataURL type="TC211">
+                            <Format>text/xml</Format>
+                            <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://csw.open.canada.ca/geonetwork/srv/csw?service=CSW&amp;version=2.0.2&amp;request=GetRecordById&amp;outputschema=csw:IsoRecord&amp;elementsetname=full&amp;id=c041e79a-914a-5a4e-a485-9cbc506195df"/>
+                        </MetadataURL>
+                        <Style>
+                            <Name>TEMPERATURE-LINEAR</Name>
+                            <Title>TEMPERATURE-LINEAR</Title>
+                            <LegendURL width="76" height="275">
+                                <Format>image/png</Format>
+                                <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geo.weather.gc.ca/geomet?version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=GDPS.ETA_TT&amp;format=image/png&amp;STYLE=TEMPERATURE-LINEAR"/>
+                            </LegendURL>
+                        </Style>
+                        <Style>
+                            <Name>TEMPSUMMER</Name>
+                            <Title>TEMPSUMMER</Title>
+                            <LegendURL width="76" height="275">
+                                <Format>image/png</Format>
+                                <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geo.weather.gc.ca/geomet?version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=GDPS.ETA_TT&amp;format=image/png&amp;STYLE=TEMPSUMMER"/>
+                            </LegendURL>
+                        </Style>
+                        <Style>
+                            <Name>TEMPSUMMER-LINEAR</Name>
+                            <Title>TEMPSUMMER-LINEAR</Title>
+                            <LegendURL width="76" height="275">
+                                <Format>image/png</Format>
+                                <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geo.weather.gc.ca/geomet?version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=GDPS.ETA_TT&amp;format=image/png&amp;STYLE=TEMPSUMMER-LINEAR"/>
+                            </LegendURL>
+                        </Style>
+                        <Style>
+                            <Name>TEMPWINTER</Name>
+                            <Title>TEMPWINTER</Title>
+                            <LegendURL width="76" height="275">
+                                <Format>image/png</Format>
+                                <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geo.weather.gc.ca/geomet?version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=GDPS.ETA_TT&amp;format=image/png&amp;STYLE=TEMPWINTER"/>
+                            </LegendURL>
+                        </Style>
+                        <Style>
+                            <Name>TEMPWINTER-LINEAR</Name>
+                            <Title>TEMPWINTER-LINEAR</Title>
+                            <LegendURL width="76" height="275">
+                                <Format>image/png</Format>
+                                <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geo.weather.gc.ca/geomet?version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=GDPS.ETA_TT&amp;format=image/png&amp;STYLE=TEMPWINTER-LINEAR"/>
+                            </LegendURL>
+                        </Style>
+                        <Style>
+                            <Name>TEMPERATURE</Name>
+                            <Title>TEMPERATURE</Title>
+                            <LegendURL width="76" height="275">
+                                <Format>image/png</Format>
+                                <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geo.weather.gc.ca/geomet?version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=GDPS.ETA_TT&amp;format=image/png&amp;STYLE=TEMPERATURE"/>
+                            </LegendURL>
+                        </Style>
+                        <Style>
+                            <Name>AirTemp_High_Dis</Name>
+                            <Title>AirTemp_High_Dis</Title>
+                            <LegendURL width="76" height="275">
+                                <Format>image/png</Format>
+                                <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geo.weather.gc.ca/geomet?version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=GDPS.ETA_TT&amp;format=image/png&amp;STYLE=AirTemp_High_Dis"/>
+                            </LegendURL>
+                        </Style>
+                        <Style>
+                            <Name>Temperature_-25to45C_Dis</Name>
+                            <Title>Temperature_-25to45C_Dis</Title>
+                            <LegendURL width="76" height="275">
+                                <Format>image/png</Format>
+                                <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geo.weather.gc.ca/geomet?version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=GDPS.ETA_TT&amp;format=image/png&amp;STYLE=Temperature_-25to45C_Dis"/>
+                            </LegendURL>
+                        </Style>
+                        <Style>
+                            <Name>Temperature_-50to50C_Dis</Name>
+                            <Title>Temperature_-50to50C_Dis</Title>
+                            <LegendURL width="76" height="275">
+                                <Format>image/png</Format>
+                                <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://geo.weather.gc.ca/geomet?version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=GDPS.ETA_TT&amp;format=image/png&amp;STYLE=Temperature_-50to50C_Dis"/>
+                            </LegendURL>
+                        </Style>
+                    </Layer>
+                </Layer>
+            </Layer>
+        </Layer>
+    </Capability>
+</WMS_Capabilities>

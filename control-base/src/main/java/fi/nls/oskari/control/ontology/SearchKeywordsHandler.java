@@ -1,9 +1,6 @@
 package fi.nls.oskari.control.ontology;
 
-import fi.mml.map.mapwindow.service.wms.WebMapService;
-import fi.mml.map.mapwindow.service.wms.WebMapServiceFactory;
-import fi.mml.portti.service.db.permissions.PermissionsService;
-import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
+import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
@@ -17,12 +14,12 @@ import fi.nls.oskari.ontology.domain.Keyword;
 import fi.nls.oskari.ontology.service.KeywordService;
 import fi.nls.oskari.ontology.service.KeywordServiceMybatisImpl;
 import fi.nls.oskari.util.*;
-import fi.nls.oskari.wfs.WFSCapabilitiesParser;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.oskari.service.util.ServiceFactory;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author SMAKINEN
@@ -32,14 +29,10 @@ public class SearchKeywordsHandler extends ActionHandler {
 
     private static final Logger log = LogFactory.getLogger(SearchKeywordsHandler.class);
     private KeywordService service = null;
-    private PermissionsService permissionsService = null;
 
     public void init() {
         if (service == null) {
             setService(new KeywordServiceMybatisImpl());
-        }
-        if (permissionsService == null) {
-            setPermissionsService(new PermissionsServiceIbatisImpl());
         }
     }
 
@@ -47,9 +40,6 @@ public class SearchKeywordsHandler extends ActionHandler {
         this.service = service;
     }
 
-    public void setPermissionsService(PermissionsService permissionsService) {
-        this.permissionsService = permissionsService;
-    }
 
     private static boolean listsOverlap(List<Long> list1, List<Long> list2) {
         for (Long long1 : list1) {
@@ -76,11 +66,8 @@ public class SearchKeywordsHandler extends ActionHandler {
             throw new ActionParamsException("Lang was null!");
         }
 
-        List<Map<String,Object>> permittedLayers =  permissionsService.getListOfMaplayerIdsForViewPermissionByUser(params.getUser(), false);
-        List<Long> idList = new ArrayList<Long>();
-        for (Map<String,Object> entry : permittedLayers) {
-            idList.add(Long.parseLong(String.valueOf(entry.get("id"))));
-        }
+        List<Long> idList =  OskariLayerWorker.getLayersForUser(params.getUser(), false).stream()
+                .map(layer -> (long) layer.getId()).collect(Collectors.toList());
 
         log.debug("Permitted layers: ", idList);
 
@@ -234,7 +221,6 @@ public class SearchKeywordsHandler extends ActionHandler {
      * TODO: The following methods shouldn't be here, but on some timer class populating the keywords
      */
     private static OskariLayerService layerService = ServiceFactory.getMapLayerService();
-    private static final WFSCapabilitiesParser wfsCapabilitiesparser = new WFSCapabilitiesParser();
     private GetLayerKeywords getLayerKeywords = new GetLayerKeywords();
     private final String[] EMPTY_RESULT = new String[0];
 
@@ -262,15 +248,18 @@ public class SearchKeywordsHandler extends ActionHandler {
         Set<String> layerKeywords = new HashSet<>();
         try {
             if(OskariLayer.TYPE_WMS.equals(layer.getType())) {
-                WebMapService wms = WebMapServiceFactory.buildWebMapService(layer);
-                if (wms == null || wms.getKeywords() == null) {
-                    log.warn("Error parsing keywords for layer", layer);
+                JSONArray keywords = layer.getCapabilities().optJSONArray("keywords");
+                if (keywords == null || keywords.length() == 0) {
                     return EMPTY_RESULT;
                 }
-                layerKeywords.addAll(Arrays.asList(wms.getKeywords()));
+                layerKeywords.addAll(JSONHelper.getArrayAsList(keywords));
             }
             else if(OskariLayer.TYPE_WFS.equals(layer.getType())) {
-                layerKeywords.addAll(Arrays.asList(wfsCapabilitiesparser.getKeywordsForLayer(layer)));
+                JSONArray keywords = layer.getCapabilities().optJSONArray("keywords");
+                if (keywords == null || keywords.length() == 0) {
+                    return EMPTY_RESULT;
+                }
+                layerKeywords.addAll(JSONHelper.getArrayAsList(keywords));
             }
             if (layer.getMetadataId() != null) {
                 getLayerKeywords.updateLayerKeywords(layer.getId(), layer.getMetadataId());

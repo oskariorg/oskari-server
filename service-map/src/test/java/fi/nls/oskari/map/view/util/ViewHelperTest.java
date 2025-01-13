@@ -5,6 +5,7 @@ import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.map.view.BundleService;
 import fi.nls.oskari.map.view.BundleServiceMemory;
 import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
@@ -13,6 +14,8 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,6 +28,22 @@ public class ViewHelperTest {
     @Before
     public void init() {
         bundleService = new BundleServiceMemory();
+    }
+
+    @Test
+    public void testReferer() throws Exception {
+        PropertyUtil.addProperty("oskari.domain", "https://testdomain.org");
+        PropertyUtil.addProperty("view.published.usage.unrestrictedDomains", "legit.com, dummy.org");
+        // work around for static helper that uses property values that are set before this test and might result this test to fail
+        ViewHelper.setInstanceAddress(null);
+        ViewHelper.setUnrestrictedUsageDomains(PropertyUtil.getCommaSeparatedList("view.published.usage.unrestrictedDomains"));
+        assertTrue("Null-referer should be ok", ViewHelper.isRefererDomain(null, "http://testing.net"));
+        assertTrue("Instance domain as referer should be ok", ViewHelper.isRefererDomain("https://testdomain.org", "http://testing.net"));
+        assertTrue("Unrestricted domain 1 as referer should be ok", ViewHelper.isRefererDomain("https://legit.com", "http://testing.net"));
+        assertTrue("Unrestricted domain 2 as referer should be ok", ViewHelper.isRefererDomain("https://dummy.org", "http://testing.net"));
+
+        assertFalse("Random referer should NOT be ok", ViewHelper.isRefererDomain("https://yay.com", "http://testing.net"));
+        PropertyUtil.clearProperties();
     }
 
     @Test
@@ -57,7 +76,6 @@ public class ViewHelperTest {
         assertEquals(false, view.isOnlyForUuId());
         assertEquals("servlet", view.getApplication());
         assertEquals("index", view.getPage());
-        assertEquals("/applications/sample", view.getDevelopmentPath());
 
         List<Bundle> bundles = view.getBundles();
         assertNotNull(bundles);
@@ -80,7 +98,8 @@ public class ViewHelperTest {
         view1.setOnlyForUuId(false);
         view1.setApplication("foo");
         view1.setPage("bar");
-        view1.setDevelopmentPath("baz");
+        view1.setCreated(OffsetDateTime.parse("2022-05-18T12:00:00.00Z", DateTimeFormatter.ISO_DATE_TIME));
+        view1.setUpdated(OffsetDateTime.parse("2022-05-18T12:00:00.00Z", DateTimeFormatter.ISO_DATE_TIME));
         view1.addBundle(randomBundle);
 
         JSONObject viewJSON = ViewHelper.viewToJson(bundleService, view1);
@@ -93,7 +112,6 @@ public class ViewHelperTest {
         assertEquals(view1.isOnlyForUuId(), view2.isOnlyForUuId());
         assertEquals(view1.getApplication(), view2.getApplication());
         assertEquals(view1.getPage(), view2.getPage());
-        assertEquals(view1.getDevelopmentPath(), view2.getDevelopmentPath());
 
         List<Bundle> bundles1 = view1.getBundles();
         List<Bundle> bundles2 = view2.getBundles();

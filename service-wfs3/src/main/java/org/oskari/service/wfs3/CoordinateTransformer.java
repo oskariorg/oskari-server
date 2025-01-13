@@ -1,25 +1,26 @@
 package org.oskari.service.wfs3;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
+import org.locationtech.jts.geom.Geometry;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.geometry.MismatchedDimensionException;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
+import org.oskari.geojson.GeoJSON;
 import org.oskari.geojson.GeoJSONFeatureCollection;
 
-import com.vividsolutions.jts.geom.Geometry;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CoordinateTransformer {
 
@@ -57,13 +58,19 @@ public class CoordinateTransformer {
         }
 
         SimpleFeatureType newSchema = SimpleFeatureTypeBuilder.retype(sfc.getSchema(), to);
-        SimpleFeatureBuilder b = new SimpleFeatureBuilder(newSchema);
         List<SimpleFeature> fc = new ArrayList<>();
         try (SimpleFeatureIterator it = sfc.features()) {
             while (it.hasNext()) {
                 SimpleFeature f = it.next();
-                for (int i = 0; i < f.getAttributeCount(); i++) {
-                    b.set(i, f.getAttribute(i));
+                // need to create a new builder for each feature because of (possibly) varying geometry types.
+                SimpleFeatureBuilder b = new SimpleFeatureBuilder(f.getFeatureType());
+                for (int i = 0; i < newSchema.getAttributeCount(); i++) {
+                    AttributeDescriptor ad = newSchema.getDescriptor(i);
+                    if (ad.getLocalName().equals(GeoJSON.GEOMETRY)) {
+                        b.set(i, f.getFeatureType().getDescriptor(GeoJSON.GEOMETRY));
+                    } else {
+                        b.set(i, f.getAttribute(ad.getLocalName()));
+                    }
                 }
                 SimpleFeature copy = b.buildFeature(f.getID());
                 Object g = f.getDefaultGeometry();

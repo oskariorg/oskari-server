@@ -1,0 +1,80 @@
+{
+  "dataQualities": [{
+    "conformanceResultList": [{
+      "explanation": "",
+      "pass": true,
+      "specification": "Commission Regulation (EU) No 1089/2010 of 23 November 2010 implementing Directive 2007/2/EC of the European Parliament and of the Council as regards interoperability of spatial data sets and services"
+    }],
+    "dateTime": [],
+    "evaluationMethodDescription": null,
+    "evaluationMethodType": null,
+    "evaluationProcecdure": null,
+    "measureDescription": null,
+    "measureIdentificationAuthorization": null,
+    "measureIdentificationCode": null,
+    "nameOfMeasure": null,
+    "nodeName": "domainConsistency",
+    "quantitativeResultList": []
+  }],
+  "distributionFormats": [{
+    "name": "ESRI Shapefile",
+    "version": "1.0"
+  }],
+  "fileIdentifier": "821b33a7-35b3-489c-93ab-9ef8f4422f2a",
+  "identifications": [{
+    "abstractText": "This dataset represents the Integrated biodiversity status assessment for pelagic habitats using the BEAT tool. Status is shown in five categories based on the integrated assessment scores obtained in the tool. Biological Quality Ratios (BQR) above 0.6 correspond to good status. Open sea areas were assessed based on the core indicators \u2018Zooplankton mean size and total stock\u2019 and \u2018Chlorophyll-a\u2019, as well as the pre-core indicator \u2018Cyanobacterial bloom index\u2019 . Coastal areas were assessed by national indicators.\n\n                        This dataset displays the result of the integrated biodiversity status in HELCOM Assessment unit Scale 4 (Division of the Baltic Sea into 17 sub-basins and further division into coastal and off-shore areas and division of the coastal areas by WFD water types or water bodies).\n\n                        Attribute information:\n                        \"BQR\" = Biological Quality Ratio\n                        \"Confidence\" = Confidence of the assessment\n                        \"HELCOM_ID\" = Code of the HELCOM assessment unit\n                        \"Country\" = Country of coastal assessment unit/ open sea\n                        \"Level2\" = HELCOM sub-basins (name of the scale 2 assessment unit)\n                        \"Name\" = Name of the HELCOM scale 4 assessment unit\n                        \"Area_km2\" = Area of assessment unit\n                        \"AULEVEL\" = scale of the assessment unit\n                        \"HID\" = assessment unit ID by country\n                        \"SAUID\" =  ID number for the spatial assessment unit\n                        \"EcosystemC\" = Ecosystem component assessed\n                        \"Confiden_1\" = Confidence of the assessment (0-1, higher values mean higher confidence)\n                        \"Total_numb\" = Number of indicators used in assessment\n                        \"STATUS\" = Integrated status category (0-0.2 = not good (lowest score), 0.2-0.4 = not good (lower score), 0.4-0.6 = not good (low score), 0.6-0.8 = good (high score, 0.8-1.0 = good (highest score))",
+    "accessConstraints": ["otherRestrictions"],
+    "browseGraphics": [],
+    "characterSets": [],
+    "citation": {
+      "date": {
+        "date": "2018-06-28",
+        "dateType": "publication"
+      },
+      "resourceIdentifiers": [],
+      "title": "Integrated biodiversity status assessment - pelagic habitats 2018"
+    },
+    "classifications": [],
+    "descriptiveKeywords": [
+      "",
+      "",
+      "HOLAS2 2018 Core indicator",
+      "Core indicator"
+    ],
+    "envelopes": [{
+      "eastBoundLongitude": 30.251959,
+      "northBoundLatitude": 65.908764,
+      "southBoundLatitude": 53.605476,
+      "westBoundLongitude": 8.186121
+    }],
+    "languages": [],
+    "otherConstraints": ["Data can be used freely given that the source (HELCOM) is cited."],
+    "responsibleParties": [{
+      "electronicMailAddresses": ["joni.kaitaranta@helcom.fi"],
+      "organisationName": "HELCOM"
+    }],
+    "spatialRepresentationTypes": ["vector"],
+    "spatialResolutions": [],
+    "temporalExtents": [{
+      "begin": "2011-01-01",
+      "end": "2016-12-31"
+    }],
+    "topicCategories": ["environment"],
+    "type": "data",
+    "useLimitations": ["Data can be used freely given that the source (HELCOM) is cited."]
+  }],
+  "lineageStatements": ["Core and pre-core indicators that were used to calculate the integrated biodiversity status assessment - pelagic habitats (open sea areas):\n\n                                - <a href=\"http://metadata.helcom.fi/geonetwork/srv/eng/catalog.search#/metadata/70380178-28fd-4b10-abf7-fb2c07707917\" target=\"_blank\">Zooplankton mean size and total stock (MSTS) 2018<\/a>\n                                - <a href=\"http://metadata.helcom.fi/geonetwork/srv/eng/catalog.search#/metadata/a6f20ce1-8cef-482b-a4e4-aff52cb60f8e\" target=\"_blank\">Cyanobacterial bloom index 2018<\/a>\n                                - <a href=\"http://metadata.helcom.fi/geonetwork/srv/eng/catalog.search#/metadata/efaf6c9b-1f57-4c4d-b268-dfed0b3907e4\" target=\"_blank\">Chlorophyll-a 2018<\/a>\n\n                                Coastal areas were assessed by national indicators.\n\n                                Additional information in \"State of the Baltic Sea report\" and on the <a href=\"http://stateofthebalticsea.helcom.fi/\" target=\"_blank\">State of the Baltic Sea website<\/a>"],
+  "metadataDateStamp": "2021-09-09T11:58Z",
+  "metadataResponsibleParties": [{
+    "electronicMailAddresses": ["joni.kaitaranta@helcom.fi"],
+    "organisationName": "HELCOM"
+  }],
+  "metadataStandardName": "INSPIRE Metadata Implementing Rules",
+  "metadataStandardVersion": "Technical Guidelines based on EN ISO 19115 and EN ISO 19119 (Version 1.2)",
+  "onlineResources": [
+    {"url": "https://maps.helcom.fi/website/mapservice/?datasetID=821b33a7-35b3-489c-93ab-9ef8f4422f2a"},
+    {"url": "http://metadata.helcom.fi/geonetwork/srv/eng/resources.get?uuid=821b33a7-35b3-489c-93ab-9ef8f4422f2a&fname=pelagic_habitatComplete2018.zip&access=public"}
+  ],
+  "referenceSystems": ["http://www.opengis.net/def/crs/EPSG/0/3035"],
+  "scopeCodes": ["dataset"]
+}

@@ -49,7 +49,7 @@ public class JSONHelper {
         try {
             return new JSONObject(content);
         } catch (Exception e) {
-            log.info("Error generating JSONObject from ", content);
+            log.debug("Error generating JSONObject from ", content);
         }
         return null;
     }
@@ -57,7 +57,7 @@ public class JSONHelper {
         try {
             return new JSONObject(content);
         } catch (Exception e) {
-            log.info("Error generating JSONObject from JSONTokener ", content);
+            log.debug("Error generating JSONObject from JSONTokener ", content);
         }
         return null;
     }
@@ -68,7 +68,7 @@ public class JSONHelper {
         try {
             return content.getJSONObject(key);
         } catch (Exception e) {
-            log.info("Couldn't get JSONObject from ", content, " with key =", key);
+            log.debug("Couldn't get JSONObject from ", content, " with key =", key);
             return null;
         }
     }
@@ -79,7 +79,7 @@ public class JSONHelper {
         try {
             return content.get(key);
         } catch (Exception e) {
-            log.info("Couldn't get Object from ", content, " with key =", key);
+            log.debug("Couldn't get Object from ", content, " with key =", key);
             return null;
         }
     }
@@ -90,7 +90,7 @@ public class JSONHelper {
         try {
             return content.getJSONObject(key);
         } catch (Exception e) {
-            log.warn("Couldn't get JSONObject from ", content, " with key =", key, " - error: ", e);
+            log.debug("Couldn't get JSONObject from ", content, " with key =", key, " - error: ", e);
             return null;
         }
     }
@@ -101,7 +101,7 @@ public class JSONHelper {
         try {
             return content.getJSONArray(key);
         } catch (JSONException e) {
-            log.info("Couldn't get JSONArray from " + content + " with key = " + key);
+            log.debug("Couldn't get JSONArray from " + content + " with key = " + key);
             return null;
         }
     }
@@ -114,14 +114,18 @@ public class JSONHelper {
         while(it.hasNext()) {
             String key = (String)it.next();
             try {
-                if (obj.opt(key) instanceof JSONObject){
-                    map.put(key, (T) getObjectAsMap((JSONObject) obj.opt(key)));
+                Object value = obj.opt(key);
+                if (JSONObject.NULL.equals(value)){
+                    map.put(key, null);
                 }
-                else if (obj.opt(key) instanceof JSONArray){
-                    map.put(key, (T) getArrayAsList( (JSONArray) obj.opt(key)));
+                else if (value instanceof JSONObject){
+                    map.put(key, (T) getObjectAsMap((JSONObject) value));
+                }
+                else if (value instanceof JSONArray){
+                    map.put(key, (T) getArrayAsList( (JSONArray) value));
                 }
                 else {
-                    map.put(key, (T) obj.opt(key));
+                    map.put(key, (T) value);
                 }
             }
             catch (Exception e) {
@@ -275,6 +279,17 @@ public class JSONHelper {
             return true;
         } catch (Exception ignore) {
             log.warn("Can't put", key, "value", value, "to json");
+        }
+        return false;
+    }
+    public static final boolean putAll(final JSONArray toArray, JSONArray fromArray) {
+        try {
+            for (int i = 0; i < fromArray.length(); i++) {
+                toArray.put(fromArray.get(i));
+            }
+            return true;
+        } catch (Exception ignore) {
+            log.warn("Can't put values from json array to another json array");
         }
         return false;
     }

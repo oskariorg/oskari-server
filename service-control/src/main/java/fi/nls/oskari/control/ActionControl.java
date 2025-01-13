@@ -99,14 +99,24 @@ public class ActionControl {
      * returned by getName() method.
      */
     public synchronized static void addDefaultControls() {
-
         ServiceLoader<ActionHandler> impl = ServiceLoader.load(ActionHandler.class);
-
-        for (ActionHandler loadedImpl : impl) {
-            if ( loadedImpl != null ) {
-                addAction(loadedImpl.getName(), loadedImpl);
+        List<ActionHandler> sortedList = new ArrayList<>();
+        for (ActionHandler loadedImpl: impl) {
+            if (loadedImpl == null) {
+                continue;
             }
+            sortedList.add(loadedImpl);
         }
+        sortedList.sort(Comparator.comparingInt(ActionHandler::getOrder));
+        sortedList.forEach(loadedImpl -> addAction(loadedImpl.getName(), loadedImpl));
+        /*
+        // After Java 9+ we can use stream
+        impl.stream()
+                .filter( h -> h != null)
+                .map(h -> h.get())
+                .sorted(Comparator.comparingInt(ActionHandler::getOrder))
+                .forEach(loadedImpl -> addAction(loadedImpl.getName(), loadedImpl));
+         */
     }
 
     /**
@@ -130,13 +140,10 @@ public class ActionControl {
 
             try {
                 actions.get(action).handleAction(params);
+            } catch (ActionException ex) {
+                throw ex;
             } catch (Exception ex) {
-                if(ex instanceof ActionException) {
-                    throw (ActionException) ex;
-                }
-                else {
-                    throw new ActionException("Unhandled exception occured", ex);
-                }
+                throw new ActionException("Unhandled exception occured", ex);
             } finally {
                 if(actionTimer != null) {
                     actionTimer.stop();

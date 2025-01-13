@@ -28,7 +28,11 @@ public class MyBatisHelper {
         final TransactionFactory transactionFactory = new JdbcTransactionFactory();
         final Environment environment = new Environment("development", transactionFactory, ds);
         final Configuration configuration = new Configuration(environment);
-        configuration.setLazyLoadingEnabled(true);
+        configuration.setLazyLoadingEnabled(false);
+        // typehandlers aren't found from classpath even when annotated.
+        // also important to register them before adding mappers
+        configuration.getTypeHandlerRegistry().register(JSONObjectMybatisTypeHandler.class);
+        configuration.getTypeHandlerRegistry().register(JSONArrayMybatisTypeHandler.class);
         addMappers(configuration, mappers);
         return configuration;
     }

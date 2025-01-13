@@ -1,16 +1,19 @@
 package fi.nls.oskari.util;
 
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -20,6 +23,7 @@ import static org.junit.Assert.assertEquals;
  * To change this template use File | Settings | File Templates.
  */
 public class IOHelperTest {
+
     @Test
     public void testConstructUrl() throws Exception {
         String baseUrl = "/testing";
@@ -112,4 +116,37 @@ public class IOHelperTest {
         assertEquals(longString, actualLongString);
     }
 
+    @Test
+    public void testHumanReadableBytes() {
+        long hundredMegsInBytes = 1024*1024*100;
+        assertEquals("100,0 MiB", ignoreNumberFormatting(IOHelper.humanReadableByteCount(hundredMegsInBytes)));
+    }
+
+    private String ignoreNumberFormatting(String str) {
+        return str.replace('.', ',');
+    }
+
+    @Test
+    public void testCopy() throws IOException {
+        byte[] input = new byte[5000];
+        ByteArrayInputStream in = new ByteArrayInputStream(input);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        IOHelper.copy(in, out);
+        assertTrue(Arrays.equals(input, out.toByteArray()));
+    }
+
+    @Test(expected = IOException.class)
+    public void testCopySizeLimit() throws IOException {
+        try {
+            byte[] input = new byte[5000];
+            ByteArrayInputStream in = new ByteArrayInputStream(input);
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            IOHelper.copy(in, out, 400);
+            fail("Should have thrown IOException but did not!");
+        }
+        catch(IOException e) {
+            assertEquals("Size limit reached: 400 B", e.getMessage());
+            throw e;
+        }
+    }
 }

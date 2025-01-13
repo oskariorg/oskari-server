@@ -33,8 +33,18 @@ public class PxwebStatisticalDatasourcePlugin extends StatisticalDatasourcePlugi
     @Override
     public void update() {
         List<StatisticalIndicator> indicators = indicatorsParser.parse(getSource().getLayers());
+        int skippedIndicators = 0;
         for (StatisticalIndicator ind : indicators) {
+            if(!ind.getDataModel().isHasRegionInfo()) {
+                // skip indicators without region info
+                skippedIndicators++;
+                continue;
+            }
             onIndicatorProcessed(ind);
+        }
+        if (skippedIndicators > 0) {
+            LOG.info("Updated datasource:", config.getUrl(), "with", skippedIndicators,
+                    "of", indicators.size(), "indicators skipped for not having region info.");
         }
     }
 
@@ -112,13 +122,13 @@ public class PxwebStatisticalDatasourcePlugin extends StatisticalDatasourcePlugi
                                                           StatisticalIndicatorLayer regionset) {
         Map<String, IndicatorValue> values = new HashMap<>();
         String indicatorId = indicator.getId();
-        if(config.hasIndicatorKey()) {
+        if (config.hasIndicatorKey()) {
             // indicatorId will be something.px::[value of indicatorKey]
-            int separatorIndex = indicatorId.lastIndexOf("::");
+            int separatorIndex = indicatorId.lastIndexOf(PxwebConfig.ID_SEPARATOR);
             if(separatorIndex == -1) {
                 throw new ServiceRuntimeException("Unidentified indicator id: " + indicatorId);
             }
-            String indicatorSelector = indicatorId.substring(separatorIndex + 2);
+            String indicatorSelector = indicatorId.substring(separatorIndex + PxwebConfig.ID_SEPARATOR.length());
             indicatorId = indicatorId.substring(0, separatorIndex);
             params.addDimension(new StatisticalIndicatorDataDimension(config.getIndicatorKey(), indicatorSelector));
         }
@@ -126,17 +136,28 @@ public class PxwebStatisticalDatasourcePlugin extends StatisticalDatasourcePlugi
         JSONArray query = new JSONArray();
         JSONObject payload = JSONHelper.createJSONObject("query", query);
         final String regionKey = config.getRegionKey();
+        if (!params.getDimensions().stream().anyMatch(d -> d.getId().equalsIgnoreCase(regionKey))) {
+            // force include region key if it's not present
+            //  as of June 2021 it's required for TK API
+            params.addDimension(new StatisticalIndicatorDataDimension(regionKey));
+        }
         for (StatisticalIndicatorDataDimension selector : params.getDimensions()) {
-            if (regionKey.equalsIgnoreCase(selector.getId())) {
-                // skip the region property
-                continue;
-            }
             JSONObject param = new JSONObject();
             JSONHelper.putValue(param, "code", selector.getId());
             JSONObject selection = new JSONObject();
-            JSONHelper.putValue(selection, "filter", "item");
             JSONArray paramValues = new JSONArray();
-            paramValues.put(selector.getValue());
+
+            if (regionKey.equalsIgnoreCase(selector.getId())) {
+                // we could use item and list all region ids in paramValues for which we want results
+                // but for all cases we currently have it would increase the size of data moved
+                // through the network without benefits so just requesting all of them.
+                // This was not required before June 2021 on for example Tilastokeskus API.
+                JSONHelper.putValue(selection, "filter", "all");
+                paramValues.put("*");
+            } else {
+                JSONHelper.putValue(selection, "filter", "item");
+                paramValues.put(selector.getValue());
+            }
             JSONHelper.putValue(selection, "values", paramValues);
 
             JSONHelper.putValue(param, "selection", selection);
@@ -154,12 +175,13 @@ public class PxwebStatisticalDatasourcePlugin extends StatisticalDatasourcePlugi
             final HttpURLConnection con = IOHelper.getConnection(url);
             IOHelper.writeHeader(con, IOHelper.HEADER_CONTENTTYPE, IOHelper.CONTENT_TYPE_JSON + ";  charset=utf-8");
             IOHelper.writeToConnection(con, payload.toString().getBytes(IOHelper.CHARSET_UTF8));
-            if (con.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                throw new APIException("Couldn't connect to API at " + url);
+            int respCode = con.getResponseCode();
+            if (respCode != HttpURLConnection.HTTP_OK) {
+                throw new APIException("Couldn't connect to API. Got code '" + respCode + "' from " + url, new IOException());
             }
             final String data = IOHelper.readString(con);
             JSONObject json = JSONHelper.createJSONObject(data);
-            if(json == null) {
+            if (json == null) {
                 LOG.debug("Got non-json response:", data);
                 throw new APIException("Response wasn't JSON");
             }
@@ -173,6 +195,7 @@ public class PxwebStatisticalDatasourcePlugin extends StatisticalDatasourcePlugi
                     .ifPresent(v -> values.put(v.getRegion(), v.getValue()));
             }
         } catch (IOException e) {
+            LOG.info("Tried querying url:\n", url, "\n with payload:\n", payload);
             throw new APIException("Couldn't get data from service/parsing failed", e);
         }
 
@@ -181,7 +204,9 @@ public class PxwebStatisticalDatasourcePlugin extends StatisticalDatasourcePlugi
 
     private String createUrl(String baseUrl, String pathId) {
         if(!baseUrl.endsWith(".px")) {
-            return IOHelper.fixPath(baseUrl + "/" + IOHelper.urlEncode(pathId));
+            // URLencode id and replace any encoded / in path back from %2F
+            // Pxweb doesn't seem to like spaces as + so use payload encoding instead to change spaces to %20
+            return IOHelper.fixPath(baseUrl + "/" + IOHelper.urlEncodePayload(pathId).replace("%2F", "/"));
         }
         return baseUrl;
     }

@@ -3,10 +3,10 @@ package fi.nls.oskari.spring;
 import fi.nls.oskari.control.ActionControl;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.servlet.WebappHelper;
 import fi.nls.oskari.spring.extension.OskariParamMethodArgumentResolver;
 import fi.nls.oskari.spring.extension.OskariViewResolver;
 import fi.nls.oskari.util.PropertyUtil;
+import org.oskari.init.OskariInitializer;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -15,23 +15,20 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.util.ReflectionUtils;
+import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import org.springframework.web.servlet.i18n.CookieLocaleResolver;
+import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
+import org.springframework.web.servlet.resource.PathResourceResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import java.lang.reflect.Field;
+import javax.servlet.ServletContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -45,18 +42,23 @@ import java.util.Locale;
 @ComponentScan(
         excludeFilters = @ComponentScan.Filter(type= FilterType.ASSIGNABLE_TYPE, value={SpringConfig.class}),
         basePackages="fi.nls.oskari, org.oskari")
-public class SpringConfig extends WebMvcConfigurerAdapter implements ApplicationListener<ContextRefreshedEvent> {
+public class SpringConfig implements WebMvcConfigurer, ServletContextAware, ApplicationListener<ContextRefreshedEvent> {
 
     private static final Logger LOG = LogFactory.getLogger(SpringConfig.class);
+
+    private ServletContext servletContext;
+
+    public void setServletContext(ServletContext context) {
+        this.servletContext = context;
+    }
 
     @PostConstruct
     public void oskariInit() {
         // check DB connections/content
-        WebappHelper.init();
+        OskariInitializer.init();
     }
 
     //  --------- locale handling -------------
-    // TODO: use this instead fi.nls.oskari.servlet.WebLocaleResolver
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(localeChangeInterceptor());
@@ -65,17 +67,23 @@ public class SpringConfig extends WebMvcConfigurerAdapter implements Application
 
     @Bean
     public LocaleChangeInterceptor localeChangeInterceptor(){
-        LocaleChangeInterceptor localeChangeInterceptor=new LocaleChangeInterceptor();
+        LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
         localeChangeInterceptor.setParamName("lang");
+        // this ignores calls like lang=$temp <- erronous values
+        localeChangeInterceptor.setIgnoreInvalidLocale(true);
         return localeChangeInterceptor;
     }
 
     @Bean(name = "localeResolver")
     public LocaleResolver localeResolver() {
-        CookieLocaleResolver resolver = new CookieLocaleResolver();
+        ValidatingCookieLocaleResolver resolver = new ValidatingCookieLocaleResolver();
         resolver.setDefaultLocale(new Locale(PropertyUtil.getDefaultLanguage()));
-        resolver.setCookieMaxAge(-1);
+        resolver.setSupportedLocales(PropertyUtil.getSupportedLocales());
+        resolver.setSupportedLanguages(PropertyUtil.getSupportedLanguages());
         resolver.setCookieName("oskari.language");
+        resolver.setCookieMaxAge(-1);
+        resolver.setCookiePath(servletContext.getContextPath());
+
         return resolver;
     }
     //  --------- /locale handling -------------
@@ -127,13 +135,22 @@ public class SpringConfig extends WebMvcConfigurerAdapter implements Application
     public void tearDown() {
         LOG.info("Teardown");
         ActionControl.teardown();
-        WebappHelper.teardown();
-        cleanupIbatis();
+        OskariInitializer.teardown();
     }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/xhr-prioritizer.js").addResourceLocations("classpath:service-workers/xhr-prioritizer.js");
+        registry
+                .addResourceHandler("/xhr-prioritizer.js")
+                .addResourceLocations("classpath:service-workers/xhr-prioritizer.js")
+                .resourceChain(true)
+                .addResolver(new PathResourceResolver());
+        String faviconPath = PropertyUtil.get("favicon.path", "classpath:favicon.ico");
+        registry
+                .addResourceHandler("/favicon.ico")
+                .addResourceLocations(faviconPath)
+                .resourceChain(true)
+                .addResolver(new PathResourceResolver());
     }
 
     @Bean
@@ -155,21 +172,6 @@ public class SpringConfig extends WebMvcConfigurerAdapter implements Application
         }
 
         return messageSource;
-    }
-    /**
-     * Workaround for https://issues.apache.org/jira/browse/IBATIS-540
-     */
-    private static void cleanupIbatis() {
-        try {
-            final Class resultObjectFactoryUtilClazz = Class.forName("com.ibatis.sqlmap.engine.mapping.result.ResultObjectFactoryUtil");
-            final Field factorySettings = ReflectionUtils.findField(resultObjectFactoryUtilClazz, "factorySettings");
-            ReflectionUtils.makeAccessible(factorySettings);
-            factorySettings.set(null, null);
-        } catch (final IllegalAccessException e) {
-            LOG.error(e, "Could not clean up the iBatis ResultObjectFactoryUtil ThreadLocal memory leak");
-        } catch (final ClassNotFoundException e) {
-            LOG.error(e, "Did not need to clean up the IBATIS-540 memory leak, the relevant class wasn't around");
-        }
     }
 
 }

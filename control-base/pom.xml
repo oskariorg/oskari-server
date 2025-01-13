@@ -4,49 +4,52 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>fi.nls.oskari</groupId>
-		<artifactId>oskari-parent</artifactId>
-        <version>1.53.0-SNAPSHOT</version>
+        <groupId>org.oskari</groupId>
+        <artifactId>oskari-server</artifactId>
+        <version>3.0.0-SNAPSHOT</version>
 	</parent>
 
-    <groupId>fi.nls.oskari.service</groupId>
-    <artifactId>oskari-control-base</artifactId>
+    <artifactId>control-base</artifactId>
     <packaging>jar</packaging>
     <name>Control Service - Base Actions</name>
 
     <dependencies>
         <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-control</artifactId>
+            <groupId>org.oskari</groupId>
+            <artifactId>service-control</artifactId>
         </dependency>
         <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-search-wfs</artifactId>
+            <groupId>org.oskari</groupId>
+            <artifactId>service-search-wfs</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-myplaces</artifactId>
+            <groupId>org.oskari</groupId>
+            <artifactId>service-admin</artifactId>
         </dependency>
         <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-map</artifactId>
+            <groupId>org.oskari</groupId>
+            <artifactId>service-myplaces</artifactId>
         </dependency>
         <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-feedback</artifactId>
+            <groupId>org.oskari</groupId>
+            <artifactId>service-map</artifactId>
         </dependency>
         <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-feedback-open311</artifactId>
+            <groupId>org.oskari</groupId>
+            <artifactId>service-feedback</artifactId>
         </dependency>
         <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
+            <groupId>org.oskari</groupId>
+            <artifactId>service-feedback-open311</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.oskari</groupId>
             <artifactId>service-csw</artifactId>
         </dependency>
         <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-rating</artifactId>
+            <groupId>org.oskari</groupId>
+            <artifactId>service-rating</artifactId>
         </dependency>
         <dependency>
             <groupId>org.oskari</groupId>
@@ -57,24 +60,17 @@
             <artifactId>service-userlayer</artifactId>
         </dependency>
         <dependency>
-            <groupId>fi.nls.oskari</groupId>
+            <groupId>org.oskari</groupId>
             <artifactId>shared-test-resources</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-csv</artifactId>
-            <version>1.0</version>
         </dependency>
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-			<version>4.5.1</version>
-		</dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
-            <version>3.13</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -95,41 +91,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    <build>
-    	<pluginManagement>
-    		<plugins>
-    			<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-    			<plugin>
-    				<groupId>org.eclipse.m2e</groupId>
-    				<artifactId>lifecycle-mapping</artifactId>
-    				<version>1.0.0</version>
-    				<configuration>
-    					<lifecycleMappingMetadata>
-    						<pluginExecutions>
-    							<pluginExecution>
-    								<pluginExecutionFilter>
-    									<groupId>
-    										pl.project13.maven
-    									</groupId>
-    									<artifactId>
-    										git-commit-id-plugin
-    									</artifactId>
-    									<versionRange>
-    										[2.0.4,)
-    									</versionRange>
-    									<goals>
-    										<goal>revision</goal>
-    									</goals>
-    								</pluginExecutionFilter>
-    								<action>
-    									<ignore></ignore>
-    								</action>
-    							</pluginExecution>
-    						</pluginExecutions>
-    					</lifecycleMappingMetadata>
-    				</configuration>
-    			</plugin>
-    		</plugins>
-    	</pluginManagement>
-    </build>
 </project>

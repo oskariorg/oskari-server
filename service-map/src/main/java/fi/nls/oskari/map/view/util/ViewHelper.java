@@ -13,6 +13,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -22,8 +24,38 @@ public class ViewHelper {
 
     private static final Logger log = LogFactory.getLogger(ViewHelper.class);
     private static String[] UNRESTRICTED_USAGE_DOMAINS = PropertyUtil.getCommaSeparatedList("view.published.usage.unrestrictedDomains");
+    private static String myDomain;
 
     private ViewHelper() {}
+
+    protected static void setUnrestrictedUsageDomains(String[] domains) {
+        UNRESTRICTED_USAGE_DOMAINS = domains;
+    }
+
+    protected static void setInstanceAddress(String address) {
+        if (address == null) {
+            myDomain = null;
+            return;
+        }
+        String[] prop = address.split("//");
+        if (prop.length == 2) {
+            myDomain = prop[1];
+        } else {
+            myDomain = "http://localhost:8080";
+        }
+        myDomain = address;
+    }
+    /**
+     * Returns the configured domain without the protocol
+     * @return
+     */
+    protected static String getMyDomain() {
+        if (myDomain != null) {
+            return myDomain;
+        }
+        setInstanceAddress(PropertyUtil.get("oskari.domain"));
+        return myDomain;
+    }
 
     public static JSONArray getStartupSequence(final View view) throws ViewException {
         final JSONArray startupSequence = new JSONArray();
@@ -51,10 +83,16 @@ public class ViewHelper {
      * Checks if it's ok to continue loading requested map based on referer/views pubdomain.
      * @param referer from headers
      * @param pubdomain domain the map is published to
-     * @return true if referer doesn't exist, ends with domains in UNRESTRICTED_USAGE_DOMAINS or the domain defined for the view.
+     * @return true if referer or pubdomain doesn't exist,
+     *  ends with domains in UNRESTRICTED_USAGE_DOMAINS or the domain defined for the view.
      */
     public static boolean isRefererDomain(final String referer, final String pubdomain) {
-        if(referer == null || referer.isEmpty()) {
+        boolean refererExists = referer != null && !referer.isEmpty();
+        boolean domainRestrictionExists = pubdomain != null && !pubdomain.isEmpty();
+        if (!refererExists || !domainRestrictionExists) {
+            return true;
+        }
+        if (referer.endsWith(getMyDomain())) {
             return true;
         }
         log.debug("Unrestricted domains:", UNRESTRICTED_USAGE_DOMAINS);
@@ -83,14 +121,14 @@ public class ViewHelper {
                     bundle.put("conf", new JSONObject(conf));
                 }
                 else {
-                    log.info("Could not get configuration fragment for bundle '", name, "'");
+                    log.debug("Could not get configuration fragment for bundle '", name, "'");
                 }
                 // setup state for bundle
                 if (state != null) {
                     bundle.put("state", new JSONObject(state));
                 }
                 else {
-                    log.info("Could not get state fragment for bundle '", name, "'");
+                    log.debug("Could not get state fragment for bundle '", name, "'");
                 }
             } catch (Exception ex) {
                 log.error("Malformed JSON in configuration fragment for bundle", name, conf);
@@ -111,7 +149,8 @@ public class ViewHelper {
         viewJSON.put("metadata", view.getMetadata());
         viewJSON.put("application", view.getApplication());
         viewJSON.put("page", view.getPage());
-        viewJSON.put("developmentPath", view.getDevelopmentPath());
+        viewJSON.put("created", view.getCreated());
+        viewJSON.put("updated", view.getUpdated());
         viewJSON.put("bundles", createBundles(bundleService, view.getBundles()));
         return viewJSON;
     }
@@ -151,17 +190,17 @@ public class ViewHelper {
         view.setIsPublic(viewJSON.optBoolean("public", false));
         view.setOnlyForUuId(viewJSON.optBoolean("onlyUuid", true));
         view.setMetadata(viewJSON.optJSONObject("metadata"));
+        view.setCreated(OffsetDateTime.parse(viewJSON.getString("created"), DateTimeFormatter.ISO_DATE_TIME));
+        view.setUpdated(OffsetDateTime.parse(viewJSON.getString("updated"), DateTimeFormatter.ISO_DATE_TIME));
 
         if (viewJSON.has("oskari")) {
             // Support "old" format
             final JSONObject oskari = viewJSON.getJSONObject("oskari");
             view.setApplication(oskari.getString("application"));
             view.setPage(oskari.getString("page"));
-            view.setDevelopmentPath(oskari.getString("development_prefix"));
         } else {
             view.setApplication(viewJSON.getString("application"));
             view.setPage(viewJSON.getString("page"));
-            view.setDevelopmentPath(viewJSON.getString("developmentPath"));
         }
 
         addBundles(bundleService, view, viewJSON.getJSONArray("bundles"));
@@ -184,9 +223,6 @@ public class ViewHelper {
             }
             if (bJSON.has("instance")) {
                 bundle.setBundleinstance(bJSON.getString("instance"));
-            }
-            if (bJSON.has("startup")) {
-                bundle.setStartup(bJSON.getJSONObject("startup").toString());
             }
             if (bJSON.has("config")) {
                 bundle.setConfig(bJSON.getJSONObject("config").toString());

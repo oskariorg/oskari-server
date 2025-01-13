@@ -7,19 +7,22 @@ import java.util.Collection;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.dom.DOMSource;
 
-import org.geotools.GML;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.DefaultFeatureCollection;
-import org.geotools.xml.DOMParser;
+import org.geotools.gml3.GMLConfiguration;
+import org.geotools.wfs.GML;
+import org.geotools.xsd.Parser;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-import fi.nls.oskari.util.XmlHelper;
+import org.oskari.xml.XmlHelper;
 import net.opengis.wfs.FeatureCollectionType;
 
 /**
@@ -31,7 +34,7 @@ import net.opengis.wfs.FeatureCollectionType;
  * SimpleFeatureCollection simpleFeatureCollection(Collection<?>
  * are marked private in the GML class, so they are copy-pasted over
  */
-public class OskariGML extends GML {
+public class OskariGML extends GML implements OskariGMLDecoder {
 
     public OskariGML() {
         super(Version.WFS1_1);
@@ -57,11 +60,22 @@ public class OskariGML extends GML {
          * behind authorization there's no way for us to control the authorization
          * information done when fetching other <xsd:include>'d schemas
          */
-        root.removeAttribute("schemaLocation");
-        root.removeAttribute("xsi:schemaLocation");
+        //root.removeAttribute("schemaLocation");
+        //root.removeAttribute("xsi:schemaLocation");
+        OskariWFSConfiguration conf = new OskariWFSConfiguration(username, password);
+        for (Object dep : conf.allDependencies()) {
+            if (dep instanceof GMLConfiguration) {
+                ((GMLConfiguration) dep).setExtendedArcSurfaceSupport(true);
+            }
+        }
 
-        DOMParser parser = new DOMParser(new OskariWFSConfiguration(username, password), doc);
-        Object obj = parser.parse();
+        Parser parser = new Parser(conf);
+        Object obj = null;
+        try {
+            obj = parser.parse(new DOMSource(doc));
+        } catch (TransformerException e) {
+            new IOException(e.getCause());
+        }
         return toFeatureCollection(obj);
     }
 
@@ -95,7 +109,7 @@ public class OskariGML extends GML {
                     return collection;
                 }
             }
-            return null; // nothing found
+            return new DefaultFeatureCollection(); // nothing found, return empty collection
         } else {
             throw new ClassCastException(
                     obj.getClass()

@@ -4,33 +4,32 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>fi.nls.oskari</groupId>
-		<artifactId>oskari-parent</artifactId>
-        <version>1.53.0-SNAPSHOT</version>
+        <groupId>org.oskari</groupId>
+        <artifactId>oskari-server</artifactId>
+        <version>3.0.0-SNAPSHOT</version>
 	</parent>
 
-    <groupId>fi.nls.oskari.service</groupId>
-    <artifactId>oskari-control-users</artifactId>
+    <artifactId>control-users</artifactId>
     <packaging>jar</packaging>
     <name>Control Service - User registration</name>
 
     <dependencies>
 
         <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-control-base</artifactId>
+            <groupId>org.oskari</groupId>
+            <artifactId>control-base</artifactId>
         </dependency>
 
         <dependency>
             <!-- For the OskariParam annotation -->
-            <groupId>fi.nls.oskari</groupId>
+            <groupId>org.oskari</groupId>
             <artifactId>servlet-map</artifactId>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-users</artifactId>
+            <groupId>org.oskari</groupId>
+            <artifactId>service-users</artifactId>
         </dependency>
 
         <dependency>
@@ -50,7 +49,7 @@
         </dependency>
 
         <dependency>
-            <groupId>fi.nls.oskari</groupId>
+            <groupId>org.oskari</groupId>
             <artifactId>shared-test-resources</artifactId>
             <scope>test</scope>
         </dependency>
@@ -59,18 +58,19 @@
 			<groupId>javax.mail</groupId>
 			<artifactId>javax.mail-api</artifactId>
 			<version>1.5.4</version>
+			<exclusions>
+				<!-- Exclude activation to use newer classes from javax.activation-api (causing conflict if we have both) -->
+				<exclusion>
+					<groupId>javax.activation</groupId>
+					<artifactId>activation</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		 <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
         </dependency>
-
-        <dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-crypto</artifactId>
-			<version>4.0.3.RELEASE</version>
-		</dependency>
 
     </dependencies>
 </project>

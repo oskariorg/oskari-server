@@ -21,6 +21,13 @@ public abstract class ActionHandler {
         }
         return getClass().getSimpleName();
     }
+    public int getOrder () {
+        if(getClass().isAnnotationPresent(OskariActionRoute.class)) {
+            OskariActionRoute r = getClass().getAnnotation(OskariActionRoute.class);
+            return r.order();
+        }
+        return Integer.MAX_VALUE;
+    }
 	/**
 	 * Handler method for requests
 	 * @param params

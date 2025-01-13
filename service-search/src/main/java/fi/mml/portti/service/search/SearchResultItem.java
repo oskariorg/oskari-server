@@ -1,11 +1,13 @@
 package fi.mml.portti.service.search;
 
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
-import org.jsoup.safety.Whitelist;
+import org.jsoup.safety.Safelist;
 
 import java.io.Serializable;
 import java.util.*;
@@ -14,6 +16,8 @@ import java.util.*;
  * Search result item.
  */
 public class SearchResultItem implements Comparable<SearchResultItem>, Serializable {
+
+    private static final Logger LOG = LogFactory.getLogger(SearchResultItem.class);
     // JSON keys (see toJSON())
     public static final String KEY_ID = "id";
     public static final String KEY_NAME = "name";
@@ -25,9 +29,6 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
     public static final String KEY_LAT = "lat";
     public static final String KEY_ZOOMLEVEL = "zoomLevel";
     public static final String KEY_ZOOMSCALE = "zoomScale";
-	@Deprecated
-    public static final String KEY_VILLAGE = "village";
-	// region is the new "village"
 	public static final String KEY_REGION = "region";
 	public static final String KEY_CHANNELID = "channelId";
 
@@ -53,12 +54,12 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
     private String type;
 	private String lang;
 	private String locationName;
-	private String lon;
-	private String lat;
-	private String westBoundLongitude;
-	private String southBoundLatitude;
-	private String eastBoundLongitude;
-	private String northBoundLatitude;	
+	private Double lon;
+	private Double lat;
+	private Double westBoundLongitude;
+	private Double southBoundLatitude;
+	private Double eastBoundLongitude;
+	private Double northBoundLatitude;
 	private String mapURL;
 	private String zoomLevel;
     private double zoomScale = -1;
@@ -197,10 +198,12 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
         return this.zoomScale;
     }
 
+    @Deprecated
 	public String getMapURL() {
 		return mapURL;
 	}
 
+	@Deprecated
 	public void setMapURL(String mapURL) {
 		this.mapURL = mapURL;
 	}
@@ -224,6 +227,9 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
 		return description;
 	}
 	public void setDescription(String description) {
+		if (description == null) {
+			return;
+		}
 		
 		if (description.length() > TRUNCATE_DESCRIPTION_LENGTH) {
 			this.trunkateDescription = description.substring(0,TRUNCATE_DESCRIPTION_LENGTH-3) + "...";
@@ -261,69 +267,118 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
 		this.region = region;
 	}
 
-	/**
-	 * Deprecated, use getRegion() instead.
-	 * @return
-     */
-	@Deprecated
-	public String getVillage() {
-		return getRegion();
-	}
-	/**
-	 * Deprecated, use setRegion() instead.
-	 * @return
-	 */
-	@Deprecated
-	public void setVillage(String village) {
-		setRegion(village);
-	}
 	public String getLocationTypeCode() {
 		return locationTypeCode;
 	}
 	public void setLocationTypeCode(String locationTypeCode) {
 		this.locationTypeCode = locationTypeCode;
 	}
-	public String getLon() {
+
+	public Double getLon() {
 		return lon;
 	}
+
+	/**
+	 * @deprecated Use setLong(double) instead
+	 * @param lon
+	 */
+	@Deprecated
 	public void setLon(String lon) {
-		this.lon = lon;
+		try {
+			this.lon = Double.parseDouble(lon);
+		} catch (Exception ignored) {
+			this.lon = null;
+		}
 	}
 	public void setLon(double lon) {
-		this.lon = "" + lon;
+		this.lon = lon;
 	}
-	public String getWestBoundLongitude() {
+
+	public Double getWestBoundLongitude() {
 		return westBoundLongitude;
 	}
+	/**
+	 * @deprecated Use setWestBoundLongitude(double) instead
+	 */
+	@Deprecated
 	public void setWestBoundLongitude(String westBoundLongitude) {
+		try {
+			this.westBoundLongitude = Double.parseDouble(westBoundLongitude);
+		} catch (Exception ignored) {
+			this.westBoundLongitude = null;
+		}
+	}
+	public void setWestBoundLongitude(Double westBoundLongitude) {
 		this.westBoundLongitude = westBoundLongitude;
 	}
-	public String getSouthBoundLatitude() {
+	public Double getSouthBoundLatitude() {
 		return southBoundLatitude;
 	}
+	/**
+	 * @deprecated Use setSouthBoundLatitude(double) instead
+	 */
+	@Deprecated
 	public void setSouthBoundLatitude(String southBoundLatitude) {
+		try {
+			this.southBoundLatitude = Double.parseDouble(southBoundLatitude);
+		} catch (Exception ignored) {
+			this.southBoundLatitude = null;
+		}
+	}
+	public void setSouthBoundLatitude(Double southBoundLatitude) {
 		this.southBoundLatitude = southBoundLatitude;
 	}
-	public String getEastBoundLongitude() {
+	public Double getEastBoundLongitude() {
 		return eastBoundLongitude;
 	}
+	/**
+	 * @deprecated Use setEastBoundLongitude(double) instead
+	 */
+	@Deprecated
 	public void setEastBoundLongitude(String eastBoundLongitude) {
+		try {
+			this.eastBoundLongitude = Double.parseDouble(eastBoundLongitude);
+		} catch (Exception ignored) {
+			this.eastBoundLongitude = null;
+		}
+	}
+	public void setEastBoundLongitude(Double eastBoundLongitude) {
 		this.eastBoundLongitude = eastBoundLongitude;
 	}
-	public String getNorthBoundLatitude() {
+	public Double getNorthBoundLatitude() {
 		return northBoundLatitude;
 	}
+	/**
+	 * @deprecated Use setNorthBoundLatitude(double) instead
+	 */
+	@Deprecated
 	public void setNorthBoundLatitude(String northBoundLatitude) {
+		try {
+			this.northBoundLatitude = Double.parseDouble(northBoundLatitude);
+		} catch (Exception ignored) {
+			this.northBoundLatitude = null;
+		}
+	}
+	public void setNorthBoundLatitude(Double northBoundLatitude) {
 		this.northBoundLatitude = northBoundLatitude;
 	}
-	public String getLat() {
+
+	public Double getLat() {
 		return lat;
 	}
+	/**
+	 * @deprecated Use setLat(double) instead
+	 */
+	@Deprecated
 	public void setLat(String lat) {
-		this.lat = lat;
+		try {
+			this.lat = Double.parseDouble(lat);
+		} catch (Exception ignored) {
+			this.lat = null;
+		}
 	}
 	public void setLat(double lat) {
-		this.lat = "" + lat;
+		this.lat = lat;
 	}
 	public String getLocationName() {
 		return locationName;
@@ -404,7 +459,7 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
 	}
 
     public boolean hasNameAndLocation() {
-        return hasValue(getTitle()) && hasValue(getLat()) && hasValue(getLon());
+        return hasValue(getTitle()) && getLat() != null && getLon() != null;
     }
 
     private boolean hasValue(final String param) {
@@ -416,7 +471,11 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
      * @return
      */
     public JSONObject toJSON() {
-        return toJSON(getResourceId());
+        String id = getResourceId();
+        if (id == null || id.isEmpty()) {
+            id = Long.toString(System.nanoTime());
+        }
+        return toJSON(id);
     }
 
     /**
@@ -437,10 +496,7 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
 		JSONHelper.putValue(node, KEY_CHANNELID, getChannelId());
 
         String region = ConversionHelper.getString(getRegion(), "");
-		JSONHelper.putValue(node, KEY_REGION, Jsoup.clean(region, Whitelist.none()));
-		// TODO: Village has been deprecated on 1.42. Remove any time after 1.44.
-		// Note! This affects the frontend event/RPC API.
-		JSONHelper.putValue(node, KEY_VILLAGE, Jsoup.clean(region, Whitelist.none()));
+		JSONHelper.putValue(node, KEY_REGION, Jsoup.clean(region, Safelist.none()));
 
         // do the bbox if we have any of the bbox values (Should have all if has any one of these)
         if(getWestBoundLongitude() != null) {

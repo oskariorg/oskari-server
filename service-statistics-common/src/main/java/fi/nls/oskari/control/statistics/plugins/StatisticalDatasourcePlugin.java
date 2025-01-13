@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.statistics.data.*;
 import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
+import fi.nls.oskari.control.statistics.util.CacheKeys;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -14,9 +15,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -54,9 +55,6 @@ import java.util.stream.Collectors;
  * You should also consider overriding hasPermission() as the default implementation always returns true.
  */
 public abstract class StatisticalDatasourcePlugin {
-    static final String CACHE_PREFIX = "oskari:stats:";
-    private static final String CACHE_POSTFIX_LIST = ":indicators";
-    private static final String CACHE_POSTFIX_METADATA = ":metadata:";
 
     private StatisticalDatasource source = null;
     private DataSourceUpdater updater = null;
@@ -65,6 +63,9 @@ public abstract class StatisticalDatasourcePlugin {
     private static final ObjectMapper MAPPER = new ObjectMapper();
     // update at most 4 datasources at a time
     private static final ExecutorService UPDATE_SCHEDULER = Executors.newFixedThreadPool(4);
+    private static final String CACHE_KEY_LIST = "list";
+    private static final String CACHE_KEY_INDICATOR = "indicator";
+    private static final String CACHE_KEY_STATUS = "status";
 
     /**
      * This is called when datasource should start processing the indicators. Processed indicators
@@ -101,15 +102,18 @@ public abstract class StatisticalDatasourcePlugin {
     public boolean hasPermission(StatisticalIndicator indicator, User user) {
         return true;
     }
+
     /**
      * Trigger update on the data. Should refresh cached data for getIndicatorSet and track progress.
      */
-    private void startUpdater() {
-        if(updater == null) {
-            updater = new DataSourceUpdater(this);
-        }
+    private void startUpdater(boolean cacheEmpty) {
         // TODO: cancel previous if running?
-        UPDATE_SCHEDULER.submit(updater);
+        if (cacheEmpty) {
+            this.updater = new DataSourceCachePopulator(this);
+        } else {
+            this.updater = new DataSourceCacheUpdater(this);
+        }
+        UPDATE_SCHEDULER.execute(updater);
     }
 
     /**
@@ -128,37 +132,61 @@ public abstract class StatisticalDatasourcePlugin {
      */
     public IndicatorSet getIndicatorSet(User user) {
         DataStatus status = getStatus();
-        boolean updateRequired = status.shouldUpdate(getSource().getUpdateInterval());
-        if(updateRequired) {
-            // trigger update if not updated before
-            startUpdater();
+        List<StatisticalIndicator> indicators = getProcessedIndicators();
+        boolean cacheEmpty = indicators.isEmpty();
+
+        Duration maxUpdateDuration = Duration.ofMillis(getSource().getMaxUpdateDuration());
+        Duration updateInterval = Duration.ofMillis(getSource().getUpdateInterval());
+
+        Instant updateStarted = status.getUpdateStarted();
+        Instant lastUpdate = status.getLastUpdate();
+
+        if (updateStarted != null) {
+            // Update is already running - check that it hasn't lasted too long
+            if (Instant.now().isAfter(updateStarted.plus(maxUpdateDuration))) {
+                // Oh dear - hopefully we are just out of sync with Redis due to server restart or something
+                startUpdater(cacheEmpty);
+            }
+        } else if (lastUpdate == null || Instant.now().isAfter(lastUpdate.plus(updateInterval))) {
+            startUpdater(cacheEmpty);
+        } else if (cacheEmpty) {
+            /* Update isn't running and it's not time to run another one yet
+               still the cache remains empty. Most probably there was an error
+               with the service. Let it recover for a while before re-trying */
+            if (Instant.now().isAfter(lastUpdate.plus(Duration.ofSeconds(30)))) {
+                startUpdater(cacheEmpty);
+            }
         }
-        IndicatorSet set = new IndicatorSet();
-        set.setComplete(!updateRequired && !status.isUpdating());
-        final List<StatisticalIndicator> indicators = getProcessedIndicators();
-        if(indicators.isEmpty() && set.isComplete() && lastUpdateAtleastSecondsAgo(status.getLastUpdate(), 60)) {
-            // we might have an empty set of indicators cached and update isn't scheduled yet
-            // trigger a fail-safe update after 60 seconds of serving the empty list
-            set.setComplete(false);
-            startUpdater();
+        // If we aren't running an update - don't poll back for more complete list
+        boolean complete = true;
+        // Only poll back for more complete list if we are running a full update (cache was empty)
+        if (cacheEmpty && updater != null && updater.isFullUpdate()) {
+            complete = false;
         }
+
         // filter by user
         final List<StatisticalIndicator> result = indicators.stream()
                 .filter(ind -> hasPermission(ind, user))
                 .collect(Collectors.toList());
+
+        IndicatorSet set = new IndicatorSet();
+        set.setComplete(complete);
         set.setIndicators(result);
         return set;
     }
 
-    private boolean lastUpdateAtleastSecondsAgo(Date lastUpdate, int seconds) {
-        return lastUpdate != null && lastUpdate.toInstant().plusSeconds(seconds).isBefore(Instant.now());
-    }
-
     public StatisticalIndicator getIndicator(User user, String indicatorId) {
         try {
-            String json = JedisManager.get(getIndicatorMetadataKey(indicatorId));
+            String json = JedisManager.get(getIndicatorKey(indicatorId));
+            if (json == null) {
+                // someone requested an indicator we don't know about
+                // client might have a saved ref to id that is no longer available OR
+                // someone is fishing for data with crafted urls
+                // either way, we don't need the stack trace from Jackson parsing a null value
+                return null;
+            }
             StatisticalIndicator indicator = MAPPER.readValue(json, StatisticalIndicator.class);
-            if(hasPermission(indicator, user)) {
+            if (hasPermission(indicator, user)) {
                 // sort dimensions etc
                 try {
                     handleHints(indicator);
@@ -219,14 +247,10 @@ public abstract class StatisticalDatasourcePlugin {
     private void writeToCache(StatisticalIndicator indicator) {
         try {
             String json = MAPPER.writeValueAsString(indicator);
-            JedisManager.setex(getIndicatorMetadataKey(indicator.getId()), JedisManager.EXPIRY_TIME_DAY * 7, json);
+            JedisManager.setex(getIndicatorKey(indicator.getId()), JedisManager.EXPIRY_TIME_DAY * 7, json);
         } catch (JsonProcessingException ex) {
             LOG.error(ex, "Error updating indicator metadata");
         }
-    }
-
-    public boolean isCacheEmpty() {
-        return JedisManager.getValueStringLength(getIndicatorListKey()) < 1;
     }
 
     protected List<StatisticalIndicator> getProcessedIndicators() {
@@ -250,14 +274,14 @@ public abstract class StatisticalDatasourcePlugin {
      * @return
      */
     protected String getIndicatorListKey() {
-        return CACHE_PREFIX + getSource().getId() + CACHE_POSTFIX_LIST;
+        return CacheKeys.buildCacheKey(getSource().getId(), CACHE_KEY_LIST);
     }
     /**
      * Returns a Redis key that should hold client ready indicators as JSON
      * @return
      */
-    protected String getIndicatorMetadataKey(String id) {
-        return CACHE_PREFIX + getSource().getId() + CACHE_POSTFIX_METADATA + id;
+    protected String getIndicatorKey(String id) {
+        return CacheKeys.buildCacheKey(getSource().getId(), CACHE_KEY_INDICATOR, id);
     }
 
     /**
@@ -266,7 +290,7 @@ public abstract class StatisticalDatasourcePlugin {
      * @return
      */
     protected String getStatusKey() {
-        return CACHE_PREFIX + getSource().getId() + ":status";
+        return CacheKeys.buildCacheKey(getSource().getId(), CACHE_KEY_STATUS);
     }
 
     public DataStatus getStatus() {

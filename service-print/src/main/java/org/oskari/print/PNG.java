@@ -9,11 +9,15 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Future;
+
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.oskari.print.loader.AsyncFeatureLoader;
 import org.oskari.print.loader.AsyncImageLoader;
 import org.oskari.print.request.PrintLayer;
 import org.oskari.print.request.PrintRequest;
-import org.oskari.print.wmts.WMTSCapabilitiesCache;
+import org.oskari.service.wfs.client.OskariFeatureClient;
 
 public class PNG {
 
@@ -22,15 +26,16 @@ public class PNG {
     /**
      * This method should be called via PrintService
      */
-    protected static BufferedImage getBufferedImage(PrintRequest request, WMTSCapabilitiesCache tmsCache)
+    protected static BufferedImage getBufferedImage(PrintRequest request, OskariFeatureClient featureClient)
             throws ServiceException {
         final int width = request.getWidth();
         final int height = request.getHeight();
+        final double [] bbox = request.getBoundingBox();
 
         final List<PrintLayer> layers = request.getLayers();
 
-        List<Future<BufferedImage>> images = AsyncImageLoader.initLayers(request, tmsCache);
-
+        Map<Integer, Future<BufferedImage>> images = AsyncImageLoader.initLayers(request);
+        Map<Integer, Future<SimpleFeatureCollection>> featureCollections = AsyncFeatureLoader.initLayers(request, featureClient);
         BufferedImage canvas = new BufferedImage(width, height,
                 BufferedImage.TYPE_INT_ARGB);
 
@@ -38,13 +43,28 @@ public class PNG {
         try {
             for (int i = 0; i < layers.size(); i++) {
                 PrintLayer layer = layers.get(i);
-                Future<BufferedImage> image = images.get(i);
-                BufferedImage bi = image.get();
+                int zIndex = layer.getZIndex();
+                Future<BufferedImage> image = images.get(zIndex);
+                BufferedImage bi = null;
+                float alpha = 1f;
+                if (image == null) {
+                    // try vectorlayer, opacity handled in vector styles
+                    Future<SimpleFeatureCollection> futureFc = featureCollections.get(zIndex);
+                    bi = PDF.getVectorLayerImage(layer, futureFc, bbox, width, height);
+                } else {
+                    bi = image.get();
+                    alpha = getAlpha(layer.getOpacity());
+                }
+
                 if (bi == null) {
                     continue;
                 }
-                float alpha = getAlpha(layer.getOpacity());
                 g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+                g2d.drawImage(bi, 0, 0, null);
+            }
+            BufferedImage bi = PDF.getMarkersImage(request.getMarkers(), bbox, width, height);
+            if (bi != null) {
+                g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
                 g2d.drawImage(bi, 0, 0, null);
             }
         } catch (Exception e) {

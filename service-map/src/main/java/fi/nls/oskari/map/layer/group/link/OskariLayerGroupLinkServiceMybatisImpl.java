@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import fi.nls.oskari.annotation.Oskari;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -12,11 +13,11 @@ import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.mybatis.MyBatisHelper;
-import fi.nls.oskari.service.capabilities.CapabilitiesCacheServiceMybatisImpl;
 
-public class OskariLayerGroupLinkServiceMybatisImpl implements OskariLayerGroupLinkService {
+@Oskari("MaplayerGroupLinks")
+public class OskariLayerGroupLinkServiceMybatisImpl extends OskariLayerGroupLinkService {
 
-    private static final Logger LOG = LogFactory.getLogger(CapabilitiesCacheServiceMybatisImpl.class);
+    private static final Logger LOG = LogFactory.getLogger(OskariLayerGroupLinkServiceMybatisImpl.class);
 
     private final SqlSessionFactory factory;
 
@@ -117,4 +118,12 @@ public class OskariLayerGroupLinkServiceMybatisImpl implements OskariLayerGroupL
             return getMapper(session).hasLinks(groupId);
         }
     }
+
+	@Override
+	public void deleteLinksByGroupId(int groupId) {
+		 try (SqlSession session = factory.openSession()) {
+	            getMapper(session).deleteByGroupId(groupId);
+	            session.commit();
+	     }
+	}
 }

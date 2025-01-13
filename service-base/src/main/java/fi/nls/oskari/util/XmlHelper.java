@@ -24,6 +24,10 @@ import java.util.Iterator;
 import java.util.Map;
 import javax.xml.stream.XMLStreamException;
 
+/**
+ * @deprecated Use org.oskari.xml.XmlHelper instead
+ */
+@Deprecated
 public class XmlHelper {
 
     private static final Logger LOGGER = LogFactory.getLogger(XmlHelper.class);
@@ -224,7 +228,7 @@ public class XmlHelper {
         try {
             transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         } catch (TransformerConfigurationException ex) {
-            LOGGER.warn("Unable to enable feature for secure processing for TransformerFactory", ex.getMessage());
+            LOGGER.debug("Unable to enable feature for secure processing for TransformerFactory", ex.getMessage());
         }
         // Empty protocol String to disable access to external resources
         try {
@@ -237,7 +241,7 @@ public class XmlHelper {
             // Fox example Xalan is providing a custom TransformerFactory which doesn't support this so having it in the
             // classpath will give you this error and getting the actual impl class name is a huge win for debugging the reason.
             // You can check which dependency brings for example Xalan to classpath by running "mvn dependency:tree"
-            LOGGER.warn("Unable to disable external DTD and stylesheets for XML parsing. Transformer class impl is",
+            LOGGER.debug("Unable to disable external DTD and stylesheets for XML parsing. Transformer class impl is",
                     transformerFactory.getClass().getCanonicalName(), ". Error was:", e.getMessage());
         }
         // Disable resolving of any kind of URIs, not sure if this is actually necessary

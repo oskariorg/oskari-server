@@ -9,12 +9,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.*;
 
 /**
  * Internal model for user role.
  * Admin role name can be configured with property "oskari.user.role.admin" in PropertyUtil
- * and defaults to "Administrator".
+ * and defaults to "Admin".
  * Default logged in user role name can be configured with property "oskari.user.role.loggedIn" in PropertyUtil
  * and defaults to "User".
  */
@@ -23,8 +23,10 @@ public class Role implements Serializable {
     private static final Logger log = LogFactory.getLogger(Role.class);
     private static Role ADMIN_ROLE = null;
     private static Role USER_ROLE = null;
+    private static Role GUEST_ROLE = null;
     public static final String DEFAULT_ADMIN_ROLE_NAME = "Admin";
     public static final String DEFAULT_USER_ROLE_NAME = "User";
+    public static final String DEFAULT_GUEST_ROLE_NAME = "Guest";
     private final static String KEY_ROLE_ID = "id";
     private final static String KEY_ROLE_NAME = "name";
 
@@ -49,7 +51,6 @@ public class Role implements Serializable {
      */
     public static Role getAdminRole() {
         if(ADMIN_ROLE == null) {
-            // default to Administrator
             final String rolename = PropertyUtil.get("oskari.user.role.admin", DEFAULT_ADMIN_ROLE_NAME);
             ADMIN_ROLE = getRoleByName(rolename);
             if(ADMIN_ROLE == null) {
@@ -67,11 +68,30 @@ public class Role implements Serializable {
      */
     public static Role getDefaultUserRole() {
         if(USER_ROLE == null) {
-            // default to User
             final String rolename = PropertyUtil.get("oskari.user.role.loggedIn", DEFAULT_USER_ROLE_NAME).trim();
             USER_ROLE = getRoleByName(rolename);
         }
         return USER_ROLE;
+    }
+    public static Role getGuestUserRole() {
+        if(GUEST_ROLE == null) {
+            final String name = PropertyUtil.get("oskari.user.role.guest", DEFAULT_GUEST_ROLE_NAME).trim();
+            GUEST_ROLE = getRoleByName(name);
+        }
+        return GUEST_ROLE;
+    }
+    public static List<Role> getSystemRoles () {
+        return Arrays.asList(
+                getGuestUserRole(),
+                getDefaultUserRole(),
+                getAdminRole());
+    }
+    public static Map<String,String> getSystemRolesAsMap () {
+        final Map<String,String> systemRoles = new HashMap<>();
+        systemRoles.put("anonymous", getGuestUserRole().getName());
+        systemRoles.put("user", getDefaultUserRole().getName());
+        systemRoles.put("admin", getAdminRole().getName());
+        return systemRoles;
     }
 
     private static Role getRoleByName(final String rolename) {
@@ -95,12 +115,6 @@ public class Role implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-
-    /* deprecated
-    public boolean isAdminRole() {
-        return (getAdminRole().getName().equals(getName()));
-    }
-    */
 
     public JSONObject toJSON() {
         try {

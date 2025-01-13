@@ -1,7 +1,5 @@
 package fi.nls.oskari.control.statistics.data;
 
-import fi.nls.oskari.control.statistics.data.StatisticalIndicator;
-
 import java.util.Collections;
 import java.util.List;
 

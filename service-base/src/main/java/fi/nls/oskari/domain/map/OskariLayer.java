@@ -1,6 +1,7 @@
 package fi.nls.oskari.domain.map;
 
 import fi.nls.oskari.util.IOHelper;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONObject;
 
@@ -17,8 +18,14 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
     public static final String TYPE_STATS = "statslayer";
     public static final String TYPE_ANALYSIS = "analysislayer";
     public static final String TYPE_USERLAYER = "userlayer";
+    public static final String TYPE_MYPLACES = "myplaces";
+    // "ArcGIS rest"
     public static final String TYPE_ARCGIS93 = "arcgis93layer";
+    // "ArcGIS image cache"
+    public static final String TYPE_ARCGIS_CACHE = "arcgislayer";
+
     public static final String TYPE_3DTILES = "tiles3dlayer";
+    public static final String TYPE_BINGLAYER = "bingmapslayer";
     public static final String TYPE_VECTOR_TILE = "vectortilelayer";
 
     private int id = -1;
@@ -27,7 +34,7 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
 
     private boolean isBaseMap = false;
     private boolean isInternal = false;
-    private int dataproviderId;
+    private Integer dataproviderId;
 
     private String name;
     private String url;
@@ -42,7 +49,6 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
 	private Double minScale = -1d;
 	private Double maxScale = -1d;
 
-    private String legendImage;
     private String metadataId;
 
     private JSONObject params = new JSONObject();
@@ -90,6 +96,17 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
             dataProviders.add(dataProvider);
             setDataproviderId(dataProvider.getId());
         }
+    }
+    public void setDataprovider(final DataProvider dataProvider) {
+        dataProviders.clear();
+        if (dataProvider != null) {
+            dataProviders.add(dataProvider);
+            setDataproviderId(dataProvider.getId());
+        }
+    }
+    public void removeDataprovider(final int id) {
+        dataProviders.removeIf(d -> d.getId() == id);
+        setDataproviderId(null);
     }
 
     public int compareTo(OskariLayer l) {
@@ -207,11 +224,24 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
 	public void setStyle(String style) {
 		this.style = style;
 	}
+
+    @Deprecated
 	public String getLegendImage() {
-		return legendImage;
+        if (!options.has("legends")) {
+            return "";
+        }
+        return JSONHelper.getJSONObject(options, "legends").optString("legendImage", "");
 	}
+    @Deprecated
 	public void setLegendImage(String legendImage) {
-		this.legendImage = legendImage;
+        JSONObject legends;
+        if (!options.has("legends")) {
+            legends = new JSONObject();
+            JSONHelper.putValue(options, "legends", legends);
+        } else {
+            legends = JSONHelper.getJSONObject(options, "legends");
+        }
+        JSONHelper.putValue(legends, "legendImage", legendImage);
 	}
 
     public int getParentId() {
@@ -242,11 +272,11 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
         isInternal = internal;
     }
 
-    public int getDataproviderId() {
+    public Integer getDataproviderId() {
         return dataproviderId;
     }
 
-    public void setDataproviderId(int dataproviderId) {
+    public void setDataproviderId(Integer dataproviderId) {
         this.dataproviderId = dataproviderId;
     }
 
@@ -277,7 +307,7 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
                 return secureBaseUrl + getSimplifiedUrl();
             }
             // proxy layer url
-            Map<String, String> urlParams = new LinkedHashMap<String, String>();
+            Map<String, String> urlParams = new LinkedHashMap<>();
             urlParams.put("action_route", "GetLayerTile");
             urlParams.put("id", Integer.toString(getId()));
             return IOHelper.constructUrl(PropertyUtil.get(PROPERTY_AJAXURL), urlParams);
@@ -291,6 +321,13 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
         this.simplifiedUrl = null;
     }
 
+    /**
+     * Returns the override for metadata id. To get the one the service is referencing use:
+     *   getCapabilities().optString(LayerCapabilitiesOGC.METADATA_UUID, null);
+     * We can't override this to return the value from capabilities since the admin ui
+     * needs to know where the metadata id came from: capabilities or override
+     * @return
+     */
     public String getMetadataId() {
         return metadataId;
     }
@@ -313,6 +350,15 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
 
     public void setOptions(JSONObject options) {
         this.options = options;
+    }
+
+    public void addAttribute(String key, Object value) {
+        JSONObject attrib = getAttributes();
+        if (attrib == null) {
+            attrib = new JSONObject();
+        }
+        JSONHelper.putValue(attrib, key, value);
+        setAttributes(attrib);
     }
 
     public JSONObject getAttributes() {
@@ -356,9 +402,15 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
     }
 
     public String getGeometry() {
-        if(geometry == null) {
-            // geometry is from a CSW service. Capabilities "geom" is the coverage from layer capabilities
-            return getCapabilities().optString("geom");
+        // geometry is from a CSW service
+        if (geometry == null) {
+            // Capabilities "geom" is the coverage from layer capabilities
+            JSONObject cap = getCapabilities();
+            if (cap.has("geom")) {
+                return cap.optString("geom");
+            } else if (cap.has("bbox")) {
+                return cap.optJSONObject("bbox").optString("wkt");
+            }
         }
         return geometry;
     }

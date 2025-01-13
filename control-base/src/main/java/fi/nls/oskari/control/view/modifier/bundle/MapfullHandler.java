@@ -1,9 +1,6 @@
 package fi.nls.oskari.control.view.modifier.bundle;
 
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
-import fi.mml.portti.domain.permissions.Permissions;
-import fi.mml.portti.service.db.permissions.PermissionsService;
-import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.analysis.AnalysisHelper;
 import fi.nls.oskari.annotation.OskariViewModifier;
 import fi.nls.oskari.domain.User;
@@ -15,13 +12,15 @@ import fi.nls.oskari.domain.map.view.ViewTypes;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
+import fi.nls.oskari.map.analysis.service.AnalysisDataService;
 import fi.nls.oskari.map.analysis.service.AnalysisDbService;
-import fi.nls.oskari.map.analysis.service.AnalysisDbServiceMybatisImpl;
 import fi.nls.oskari.map.layer.OskariLayerService;
+import fi.nls.oskari.map.layer.formatters.LayerJSONFormatter;
 import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.view.modifier.ModifierException;
 import fi.nls.oskari.view.modifier.ModifierParams;
 import fi.nls.oskari.view.modifier.ViewModifier;
@@ -31,6 +30,9 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.oskari.map.userlayer.service.UserLayerDataService;
 import org.oskari.map.userlayer.service.UserLayerDbService;
+import org.oskari.permissions.PermissionService;
+import org.oskari.permissions.model.PermissionType;
+import org.oskari.service.util.ServiceFactory;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -43,7 +45,7 @@ import java.util.Set;
 public class MapfullHandler extends BundleHandler {
 
     private static final Logger LOGGER = LogFactory.getLogger(MapfullHandler.class);
-    private static PermissionsService permissionsService = new PermissionsServiceIbatisImpl();
+    private static PermissionService permissionsService;
 
     // FIXME: default srs is hardcoded into frontend if srs is not defined in mapOptions!!
     public static final String DEFAULT_MAP_SRS = "EPSG:3067";
@@ -61,6 +63,15 @@ public class MapfullHandler extends BundleHandler {
     private static final String KEY_PLUGINS = "plugins";
     public static final String KEY_CONFIG = "config";
     private static final String KEY_BASELAYERS = "baseLayers";
+    private static final String KEY_CENTER_MAP_AUTOMATICALLY = "centerMapAutomatically";
+
+    private static final String KEY_TERRAIN = "terrain";
+    private static final String KEY_TERRAIN_TOKEN = "ionAccessToken";
+    private static final String KEY_TERRAIN_ASSET = "ionAssetId";
+    private static final String KEY_TERRAIN_URL = "providerUrl";
+    private static final int TERRAIN_ASSET = PropertyUtil.getOptional("oskari.map.terrain.asset", -1);
+    private static final String TERRAIN_TOKEN = PropertyUtil.getOptional("oskari.map.terrain.token");
+    private static final String TERRAIN_URL = PropertyUtil.getOptional("oskari.map.terrain.url");
 
     private static final String PREFIX_MYPLACES = "myplaces_";
     private static final String PREFIX_ANALYSIS = "analysis_";
@@ -69,13 +80,14 @@ public class MapfullHandler extends BundleHandler {
 
     private static final String PLUGIN_LAYERSELECTION = "Oskari.mapframework.bundle.mapmodule.plugin.LayerSelectionPlugin";
     private static final String PLUGIN_GEOLOCATION = "Oskari.mapframework.bundle.mapmodule.plugin.GeoLocationPlugin";
-    public static final String PLUGIN_SEARCH = "Oskari.mapframework.bundle.mapmodule.plugin.SearchPlugin";
+    public static final String PLUGIN_WFSVECTORLAYER = "Oskari.wfsvector.WfsVectorLayerPlugin";
+    private static final String PLUGIN_MYLOCATION = "Oskari.mapframework.bundle.mapmodule.plugin.MyLocationPlugin";
+
     public static final String EPSG_PROJ4_FORMATS = "epsg_proj4_formats.json";
 
     private static MyPlacesService myPlaceService = null;
-    private static final AnalysisDbService analysisService = new AnalysisDbServiceMybatisImpl();
+    private static AnalysisDbService analysisService;
     private static UserLayerDbService userLayerService;
-    private static final UserLayerDataService userLayerDataService = new UserLayerDataService();
     private static OskariLayerService mapLayerService;
 
     private static JSONObject epsgMap = null;
@@ -86,6 +98,9 @@ public class MapfullHandler extends BundleHandler {
         myPlaceService = OskariComponentManager.getComponentOfType(MyPlacesService.class);
         userLayerService = OskariComponentManager.getComponentOfType(UserLayerDbService.class);
         mapLayerService = OskariComponentManager.getComponentOfType(OskariLayerService.class);
+        analysisService = OskariComponentManager.getComponentOfType(AnalysisDbService.class);
+        // to prevent mocking issues in JUnit tests....
+        permissionsService = ServiceFactory.getPermissionsService(); // OskariComponentManager.getComponentOfType(PermissionService.class);
         epsgInit();
         svgInit();
         pluginHandlers = new HashMap<>();
@@ -123,7 +138,8 @@ public class MapfullHandler extends BundleHandler {
                 useDirectURLForMyplaces,
                 params.isModifyURLs(),
                 mapSRS,
-                forceProxy);
+                forceProxy,
+                JSONHelper.getJSONArray(mapfullConfig, KEY_PLUGINS));
 
         setProjDefsForMapConfig(mapfullConfig, mapSRS);
         // overwrite layers
@@ -132,6 +148,8 @@ public class MapfullHandler extends BundleHandler {
         } catch (Exception e) {
             LOGGER.error(e, "Unable to overwrite layers");
         }
+        // init terrain profile from properties if given
+        setTerrainFromProperties (mapfullConfig);
 
         // dummyfix: because migration tool added layer selection to all migrated maps
         // remove it from old published maps if only one layer is selected
@@ -140,8 +158,9 @@ public class MapfullHandler extends BundleHandler {
         }
 
         if (params.isLocationModified()) {
-            LOGGER.info("locationModifiedByParams -> disabling GeoLocationPlugin");
+            LOGGER.debug("locationModifiedByParams -> disabling GeoLocationPlugin");
             removePlugin(PLUGIN_GEOLOCATION, mapfullConfig);
+            removeMyLocationPluginAutoCenter(mapfullConfig);
         }
 
         pluginHandlers.entrySet().stream().forEach(entry -> {
@@ -169,7 +188,7 @@ public class MapfullHandler extends BundleHandler {
                                                final String mapSRS) {
         return getFullLayerConfig(
                 layersArray, user, lang, viewID, viewType, bundleIds,
-                useDirectURLForMyplaces, modifyURLs, mapSRS, false);
+                useDirectURLForMyplaces, modifyURLs, mapSRS, false, null);
     }
 
     /**
@@ -247,6 +266,7 @@ public class MapfullHandler extends BundleHandler {
      * @param useDirectURLForMyplaces
      * @param modifyURLs              false to keep urls as is, true to modify them for easier proxy forwards
      * @param forceProxy              false to keep urls as is, true to proxy all layers
+     * @param plugins
      * @return
      */
     public static JSONArray getFullLayerConfig(final JSONArray layersArray,
@@ -255,7 +275,8 @@ public class MapfullHandler extends BundleHandler {
                                                final boolean useDirectURLForMyplaces,
                                                final boolean modifyURLs,
                                                final String mapSRS,
-                                               final boolean forceProxy) {
+                                               final boolean forceProxy,
+                                               final JSONArray plugins) {
 
         // Create a list of layer ids
         final List<Integer> layerIdList = new ArrayList<>();
@@ -333,9 +354,9 @@ public class MapfullHandler extends BundleHandler {
 
         // construct layers JSON
         final JSONArray prefetch = getLayersArray(struct);
-        appendMyPlacesLayers(prefetch, publishedMyPlaces, user, viewID, lang, bundleIds, useDirectURLForMyplaces, modifyURLs);
-        appendAnalysisLayers(prefetch, publishedAnalysis, user, viewID, lang, bundleIds, useDirectURLForMyplaces, modifyURLs);
-        appendUserLayers(prefetch, publishedUserLayers, user, viewID, bundleIds, mapSRS);
+        appendMyPlacesLayers(prefetch, publishedMyPlaces, user, viewID, lang, bundleIds, mapSRS);
+        appendAnalysisLayers(prefetch, publishedAnalysis, user, viewID, lang, bundleIds, mapSRS);
+        appendUserLayers(prefetch, publishedUserLayers, user, viewID, lang, bundleIds, mapSRS);
         return prefetch;
     }
 
@@ -345,32 +366,32 @@ public class MapfullHandler extends BundleHandler {
                                              final long viewID,
                                              final String lang,
                                              final Set<String> bundleIds,
-                                             final boolean useDirectURL,
-                                             final boolean modifyURLs) {
-
+                                             final String mapSrs) {
+        if (publishedAnalysis.isEmpty()) {
+            return;
+        }
         final boolean analyseBundlePresent = bundleIds.contains(BUNDLE_ANALYSE);
         final Set<String> permissions = permissionsService.getResourcesWithGrantedPermissions(
-                AnalysisLayer.TYPE, user, Permissions.PERMISSION_TYPE_VIEW_PUBLISHED);
+                AnalysisLayer.TYPE, user, PermissionType.VIEW_PUBLISHED.name());
         LOGGER.debug("Analysis layer permissions for published view", permissions);
-
         for (Long id : publishedAnalysis) {
             final Analysis analysis = analysisService.getAnalysisById(id);
             if(analysis == null){
                 continue;
             }
-            if (analyseBundlePresent && analysis.isOwnedBy(user.getUuid())) {
+            boolean ownLayer = analysis.isOwnedBy(user.getUuid());
+            if (analyseBundlePresent && ownLayer) {
                 // skip it's an own bundle and analysis bundle is present -> will be loaded via analysisbundle
                 continue;
             }
             final String permissionKey = "analysis+" + id;
             boolean containsKey = permissions.contains(permissionKey);
-            if (!containsKey) {
+            if (!ownLayer && !containsKey) {
                 LOGGER.info("Found analysis layer in selected that is no longer published. ViewID:",
                         viewID, "Analysis id:", id);
                 continue;
             }
-            final JSONObject json = AnalysisHelper.getlayerJSON(analysis, lang,
-                    useDirectURL, user.getUuid(), modifyURLs);
+            final JSONObject json = AnalysisDataService.parseAnalysis2JSON(analysis, mapSrs, lang);
             if (json != null) {
                 layerList.put(json);
             }
@@ -392,8 +413,7 @@ public class MapfullHandler extends BundleHandler {
                                              final long viewID,
                                              final String lang,
                                              final Set<String> bundleIds,
-                                             final boolean useDirectURL,
-                                             final boolean modifyURLs) {
+                                             final String mapSrs) {
         if (publishedMyPlaces.isEmpty()) {
             return;
         }
@@ -416,11 +436,10 @@ public class MapfullHandler extends BundleHandler {
                 continue;
             }
 
-            final JSONObject myPlaceLayer = myPlaceService.getCategoryAsWmsLayerJSON(
-                    mpLayer, lang, useDirectURL, user.getUuid(), modifyURLs);
-            if (myPlaceLayer != null) {
-                layerList.put(myPlaceLayer);
-            }
+            JSONObject myPlaceLayer = MyPlacesService.parseLayerToJSON(mpLayer, mapSrs, lang);
+            // Get as WFS layer
+            JSONHelper.putValue(myPlaceLayer, LayerJSONFormatter.KEY_TYPE, OskariLayer.TYPE_WFS);
+            layerList.put(myPlaceLayer);
         }
     }
 
@@ -428,10 +447,10 @@ public class MapfullHandler extends BundleHandler {
                                          final List<Long> publishedUserLayers,
                                          final User user,
                                          final long viewID,
+                                         final String lang,
                                          final Set<String> bundleIds,
                                          final String mapSrs) {
         final boolean userLayersBundlePresent = bundleIds.contains(BUNDLE_MYPLACESIMPORT);
-        final OskariLayer baseLayer = userLayerDataService.getBaseLayer();
         for (Long id : publishedUserLayers) {
             final UserLayer userLayer = userLayerService.getUserLayerById(id);
 
@@ -452,8 +471,7 @@ public class MapfullHandler extends BundleHandler {
                 // no longer published -> skip if isn't current users layer
                 continue;
             }
-
-            final JSONObject json = userLayerDataService.parseUserLayer2JSON(userLayer, baseLayer, mapSrs);
+            final JSONObject json = UserLayerDataService.parseUserLayer2JSON(userLayer, mapSrs, lang);
             if (json != null) {
                 layerList.put(json);
             }
@@ -527,6 +545,17 @@ public class MapfullHandler extends BundleHandler {
         return null;
     }
 
+    private void removeMyLocationPluginAutoCenter(final JSONObject mapfullConfig) {
+        JSONObject plugin = getPlugin(PLUGIN_MYLOCATION, mapfullConfig);
+        if (plugin == null) {
+            return;
+        }
+        JSONObject config = plugin.optJSONObject(KEY_CONFIG);
+        if(config != null && config.has(KEY_CENTER_MAP_AUTOMATICALLY)) {
+            config.remove(KEY_CENTER_MAP_AUTOMATICALLY);
+        }
+    }
+
     private void removePlugin(final String pluginClassName,
                               final JSONObject mapfullConfig) {
 
@@ -581,6 +610,27 @@ public class MapfullHandler extends BundleHandler {
             LOGGER.error("Problem trying to figure out whether "
                     + PLUGIN_LAYERSELECTION + " should be removed.", jsonex);
         }
+    }
+    private void setTerrainFromProperties (final JSONObject mapfullConfig) {
+        if (TERRAIN_URL == null && TERRAIN_TOKEN == null) {
+            return;
+        }
+        JSONObject options = mapfullConfig.optJSONObject(KEY_MAP_OPTIONS);
+        if (options == null) {
+            options = new JSONObject();
+            JSONHelper.putValue(mapfullConfig, KEY_MAP_OPTIONS, options);
+        }
+        JSONObject terrain = new JSONObject();
+        if (TERRAIN_URL != null) {
+            JSONHelper.putValue(terrain, KEY_TERRAIN_URL, TERRAIN_URL);
+        }
+        if (TERRAIN_TOKEN != null) {
+            JSONHelper.putValue(terrain, KEY_TERRAIN_TOKEN, TERRAIN_TOKEN);
+            if (TERRAIN_ASSET != -1) {
+                JSONHelper.putValue(terrain, KEY_TERRAIN_ASSET, TERRAIN_ASSET);
+            }
+        }
+        JSONHelper.putValue(options, KEY_TERRAIN, terrain);
     }
 
     void epsgInit() {

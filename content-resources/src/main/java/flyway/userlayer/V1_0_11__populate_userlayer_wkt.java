@@ -5,20 +5,29 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import fi.nls.oskari.db.DBHandler;
-import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
+import fi.nls.oskari.db.DatasourceHelper;
+import org.flywaydb.core.api.migration.BaseJavaMigration;
+import org.flywaydb.core.api.migration.Context;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.PropertyUtil;
 
-public class V1_0_11__populate_userlayer_wkt implements JdbcMigration {
+import javax.sql.DataSource;
+
+public class V1_0_11__populate_userlayer_wkt extends BaseJavaMigration {
 
     private static final Logger LOG = LogFactory.getLogger(V1_0_11__populate_userlayer_wkt.class);
     private static final int WGS84_SRID = 4326;
 
-    public void migrate(Connection connection) throws Exception {
-        String srsName = getSrsName(DBHandler.getConnection());
+    public void migrate(Context context) throws Exception {
+        // userlayers _can_ use other db than the default one
+        // -> Use connection to default db for this migration
+        DataSource ds = DatasourceHelper.getInstance().getDataSource();
+        if (ds == null) {
+            ds = DatasourceHelper.getInstance().createDataSource();
+        }
+        String srsName = getSrsName(ds.getConnection());
         if (srsName == null){
             LOG.error("Cannot get srs name for userlayer data");
             throw new IllegalArgumentException("Cannot get srs name for userlayer data");
@@ -33,7 +42,7 @@ public class V1_0_11__populate_userlayer_wkt implements JdbcMigration {
         String sql = "UPDATE user_layer a SET wkt = (" + subselect + ")";
         LOG.debug(sql);
 
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (PreparedStatement ps = context.getConnection().prepareStatement(sql)) {
             int updated = ps.executeUpdate();
             LOG.info("Updated wkt for ", updated, "user_layer rows");
         }

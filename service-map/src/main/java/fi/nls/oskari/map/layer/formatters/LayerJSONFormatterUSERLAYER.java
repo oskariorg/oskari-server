@@ -1,138 +1,98 @@
 package fi.nls.oskari.map.layer.formatters;
 
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.domain.map.UserDataLayer;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.domain.map.wfs.WFSLayerAttributes;
 import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.util.WFSConversionHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.*;
 
 /**
  * User layer to oskari layer json
  */
-public class LayerJSONFormatterUSERLAYER extends LayerJSONFormatter {
+public class LayerJSONFormatterUSERLAYER extends LayerJSONFormatterUSERDATA {
 
-    private static final String USERLAYER_RENDERING_URL = "userlayer.rendering.url";
-    private static final String USERLAYER_RENDERING_ELEMENT = "userlayer.rendering.element";
     private static final String DEFAULT_GEOMETRY_NAME = "the_geom";
-    private static final String DEFAULT_LOCALES_LANGUAGE = "en";
-    private static final String DEFAULT_RENDER_MODE = "vector";
 
-    private static final String PROPERTY_RENDERING_URL = PropertyUtil.getOptional(USERLAYER_RENDERING_URL);
-    final String userlayerRenderingElement = PropertyUtil.get(USERLAYER_RENDERING_ELEMENT);
-
-    private static Logger log = LogFactory.getLogger(LayerJSONFormatterUSERLAYER.class);
-
-    /**
-     * @param layer
-     * @param lang
-     * @param isSecure
-     * @param ulayer   data in user_layer table
-     * @return
-     */
-    public JSONObject getJSON(OskariLayer layer,
-                              final String lang,
-                              final boolean isSecure,
-                              final String crs,
-                              UserLayer ulayer) {
-        // set geometry before parsing layerJson
-        layer.setGeometry(ulayer.getWkt());
-        final JSONObject layerJson = getBaseJSON(layer, lang, isSecure, crs);
-        JSONHelper.putValue(layerJson, "isQueryable", true);
-        JSONHelper.putValue(layerJson, "name", ulayer.getLayer_name());
-        JSONHelper.putValue(layerJson, "description", ulayer.getLayer_desc());
-        JSONHelper.putValue(layerJson, "source", ulayer.getLayer_source());
-        JSONHelper.putValue(layerJson, "options",
-                JSONHelper.createJSONObject("styles", ulayer.getStyle().getStyleForLayerOptions()));
-        JSONArray fields = JSONHelper.createJSONArray(ulayer.getFields());
-        try {
-            JSONHelper.putValue(layerJson, "fields", getFieldsNames(fields));
-        } catch (IllegalArgumentException e) {
-            JSONHelper.putValue(layerJson, "fields", new JSONArray());
-            log.warn("Couldn't put fields array to layerJson", e);
-        }
-        try {
-            JSONHelper.putValue(layerJson, "fieldLocales", getLocalizedFields(lang, fields));
-        } catch (IllegalArgumentException e) {
-            // do nothing
-        }
-        // user layer rendering url - override DB url if property is defined
-        JSONHelper.putValue(layerJson, "url", getUserLayerTileUrl());
-        JSONHelper.putValue(layerJson, "renderingElement", userlayerRenderingElement);
-        JSONHelper.putValue(layerJson, "options", getOptionsWithRenderMode(layerJson));
+    public JSONObject getJSON(final OskariLayer baseLayer, UserLayer ulayer, String srs, String lang) {
+        final JSONObject layerJson = super.getJSON(baseLayer, ulayer, srs, lang);
+        JSONHelper.putValue(layerJson, "created", ulayer.getCreated());
         return layerJson;
     }
 
-    private static String getUserLayerTileUrl() {
-        if (PROPERTY_RENDERING_URL == null) {
-            // action_route name points to fi.nls.oskari.control.layer.UserLayerTileHandler
-            return PropertyUtil.get("oskari.ajax.url.prefix") + "action_route=UserLayerTile&id=";
-        }
-        return PROPERTY_RENDERING_URL + "&id=";
+    @Override
+    protected String getCoverage (UserDataLayer layer, String srs) {
+        UserLayer uLayer = (UserLayer) layer;
+        return getLayerCoverageWKT(uLayer.getWkt(), srs);
     }
 
-    // creates JSONArray from fields names [{"name": "the_geom", "type":"MultiPolygon},..]
-    private static JSONArray getFieldsNames(final JSONArray json) {
-        try {
-            JSONArray jsarray =  new JSONArray();
-            for(int i = 0; i < json.length(); i++){
-                JSONObject obj = json.getJSONObject(i);
-                String name = obj.getString("name");
-                // skip geometry
-                if (DEFAULT_GEOMETRY_NAME.equals(name)) {
-                    continue;
-                }
-                jsarray.put(name);
-            }
-            return jsarray;
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Couldn't create JSONArray from fields");
+    @Override
+    protected JSONArray getProperties (UserDataLayer layer, WFSLayerAttributes wfsAttr, String lang) {
+        UserLayer uLayer = (UserLayer) layer;
+        JSONArray fields = uLayer.getFields();
+        JSONArray props = new JSONArray();
+        for(int i = 0; i < fields.length(); i++) {
+            JSONObject field = JSONHelper.getJSONObject(fields, i); // {locales: {en}, name, type }
+            JSONObject prop = new JSONObject();
+            String rawType = field.optString("type");
+            JSONHelper.putValue(prop, "name", field.optString("name"));
+            JSONHelper.putValue(prop, "rawType", rawType);
+            JSONHelper.putValue(prop, "type", WFSConversionHelper.getSimpleType(rawType));
+            JSONHelper.putValue(prop, "label", getLabel(field));
+            props.put(prop);
         }
+        return props;
     }
-    private static JSONArray getLocalizedFields(final String lang, final JSONArray json) {
-        try {
-            if (json.length() == 0){
-                throw new IllegalArgumentException("No fields");
-            }
-            JSONArray jsarray =  new JSONArray();
-            jsarray.put("ID");
-            for(int i = 0; i < json.length(); i++){
-                JSONObject obj = json.getJSONObject(i);
-                String name = obj.getString("name");
-                // skip geometry
-                if (DEFAULT_GEOMETRY_NAME.equals(name)) {
-                    continue;
-                }
-                // if get fails throws exception and locales are not added to layer
-                JSONObject locales = obj.getJSONObject("locales");
-                if (locales.has(lang)) {
-                    name = locales.getString(lang);
-                } else if (locales.has(DEFAULT_LOCALES_LANGUAGE)){
-                    name = locales.getString(DEFAULT_LOCALES_LANGUAGE);
-                }
-                jsarray.put(name);
-            }
-            jsarray.put("X");
-            jsarray.put("Y");
-            return jsarray;
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Couldn't create locales JSONArray from fields");
+    private String getLabel (JSONObject field) {
+        JSONObject locales = field.optJSONObject("locales");
+        if (locales == null) {
+            return null;
         }
+        // For now UserLayerDataService.parseFields() adds only "en" localization
+        return locales.optString("en", null);
     }
-    private static JSONObject getOptionsWithRenderMode(JSONObject layerJson) {
-        try {
-            JSONObject options = layerJson.optJSONObject("options");
-            if (options == null) {
-                options = new JSONObject();
-            }
-            if (!options.has("renderMode")) {
-                options.put("renderMode", DEFAULT_RENDER_MODE);
-            }
-            return options;
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Couldn't set default render mode for user layer");
+
+    // parse fields like WFSLayerAttributes
+    protected static JSONObject parseAttributes(final JSONArray fields) {
+        JSONObject attributes = new JSONObject();
+        if (fields == null || fields.length() == 0){
+            return attributes;
         }
+        JSONObject data = new JSONObject();
+        JSONObject types = new JSONObject();
+        Map<String, JSONObject> locale = new HashMap<>();
+        JSONArray filteredFields = new JSONArray();
+        for(int i = 0; i < fields.length(); i++){
+            JSONObject field = JSONHelper.getJSONObject(fields, i);
+            String name = JSONHelper.optString(field, "name");
+            String type = JSONHelper.optString(field, "type");
+            if (DEFAULT_GEOMETRY_NAME.equals(name)) {
+                JSONHelper.putValue(data, "geometryName", name);
+                JSONHelper.putValue(data, "geometryType", type);
+                continue;
+            }
+            // add name to filtered fields to order/filter fields
+            filteredFields.put(name);
+            // locales
+            Map<String,String> locales = JSONHelper.getObjectAsMap(field.optJSONObject("locales"));
+            locales.keySet().forEach(lang -> {
+                locale.putIfAbsent(lang, new JSONObject());
+                JSONHelper.putValue(locale.get(lang), name, locales.get(lang));
+            });
+            // attribute types, like WFSGetLayerFields
+            JSONHelper.putValue(types, name, WFSConversionHelper.getSimpleType(type.toLowerCase()));
+        }
+
+        JSONHelper.putValue(attributes, "data", data);
+        JSONHelper.putValue(data, "filter", filteredFields);
+        JSONHelper.putValue(data, "types", types);
+        JSONObject loc = new JSONObject();
+        locale.keySet().forEach(lang -> JSONHelper.putValue(loc, lang, locale.get(lang)));
+        JSONHelper.putValue(data, "locale", loc);
+        return attributes;
     }
 }

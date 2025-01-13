@@ -1,5 +1,366 @@
 # Migration guide
 
+## 3.0.0
+
+In 3.0.0 the minimum Java version for Oskari is changed from Java 8 to 17.
+
+### Generic proxy removed
+
+A proxy implementation was previously used to pass requests from
+oskari-frontend to the "internal" GeoServer through the oskari-server based webapp.
+As we don't use the GeoServer anymore for user generated content these have been removed. 
+
+If you have the `oskari.proxyservices` defined in oskari-ext.properties or any property starting 
+with `oskari.proxy.` you can remove all of those as they are no longer used.
+These have been removed from the new configs here: https://github.com/oskariorg/sample-configs/pull/29/files
+
+### Language code for Indonesia changed in Java 17.
+
+Old behavior can be restored with system property `-Djava.locale.useOldISOCodes=true`
+
+See details:
+- https://stackoverflow.com/questions/55955641/correct-locale-for-indonesia-id-id-vs-in-id/55965008
+- https://bugs.openjdk.org/browse/JDK-8267069
+
+## 2.14.0
+
+### Frontend
+
+The AntD component library has been upgraded from version 4 to 5. You might need to update application specific components. See details in: https://ant.design/docs/react/migration-v5
+
+Frontend package.json scripts need to be updated due to webpack-cli upgrade. The scripts like start, build previously passed variables to build process like this `--env.appdef=applications`. These need to be modified by changing the dot to a space like this `--env appdef=applications`. Passing similar env-variables from command line also need to be passed without the dot: https://github.com/oskariorg/sample-application/pull/35
+
+A React implementation for `metadataflyout` bundle has been added. The bundle id hasn't changed so database migration is not needed. Update main.js to make the switch on your application: https://github.com/oskariorg/sample-application/pull/36/commits/67749457e045b2383ac7a361f5dc87699a8e1ddc
+
+Storybook dependency has been removed from oskari-frontend for now: https://github.com/oskariorg/oskari-frontend/pull/2662
+If you have any `*.stories.js` files you might need to adjust them: https://github.com/oskariorg/sample-application/pull/36/commits/8712dd55045a4956cc847287b5ac3ffcce7da088
+
+### service-webapp / WebappHelper
+
+Moved `fi.nls.oskari.servlet.WebappHelper` to new path `org.oskari.init.OskariInitializer`. This file is usually not customized so the change shouldn't have any effect on most instances. However if you have an override for the WebappHelper OR for example the `SpringInitializer` (that calls the WebappHelper) on your app you will need to update the references (it's a drop-in replacement). The new OskariInitializer allows overriding the database migration code with your own. See https://github.com/oskariorg/oskari-server/pull/1061 for details.
+
+## 2.13.0
+
+### GeoServer dependency removed
+
+User-generated data no longer requires GeoServer to be run with oskari-server.
+If you are using the GeoServer that was bundled on our download package only for user-generated content in Oskari, you can just uninstall it/remove it from the webapps folder.
+
+Also you can remove these at least these properties from your `oskari-ext.properties` config:
+```
+# geoserver params for setup
+geoserver.url=http://localhost:8080/geoserver
+geoserver.user=admin
+geoserver.password=geoserver
+```
+
+See changes in:
+- https://github.com/oskariorg/sample-configs/commit/5a5e4ee52e023ca3534cf5000ac80863ff4acf6d
+- https://github.com/oskariorg/sample-configs/commit/8ac279bf915ad5f2e1d981e237b356d3aa4e6008
+- https://github.com/oskariorg/sample-configs/commit/75aa1e893e7684d9c34a3aa3f6a83ec050141bc2
+
+### Library updates required for webapps
+
+Logging dependencies have been updated. Oskari-based applications need to update this dependency on the webapp module:
+
+```
+<dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-slf4j-impl</artifactId>
+</dependency>
+```
+to use the `artifactId`:
+```
+    <artifactId>log4j-slf4j2-impl</artifactId>
+```
+See example here: https://github.com/oskariorg/sample-server-extension/pull/56/files
+
+### Bundle changes
+
+- `personaldata` bundle has been removed from the source code. The drop-in replacement is the `mydata` bundle that has been available for a couple of releases already. DB migration is included (2.13.2 under [Flyway migrations](content-resources/src/main/resources/flyway/oskari/V2_13_2__replace_personaldata_with_mydata.sql)), but requires linking the new implementation on frontend `main.js`.
+
+New bundles as parallel versions:
+- `featuredata` is a React-based drop-in replacement for jQuery-based `featuredata2` for feature data table.
+- `metadatasearch` is a React-based drop-in replacement for jQuery-based `metadatacatalogue` for searching metadata.
+
+Switching these requires db migration as well as linking the new implementation on frontend `main.js` as the bundle id changed, but the old version is also still available.
+
+- `statsgrid` has a full React rewrite for thematic maps/statistical data functionality https://github.com/oskariorg/oskari-frontend/pull/2599 Requires linking the new codebase on frontend `main.js` (https://github.com/oskariorg/sample-application/pull/33), but doesn't require db migration since bundle id remains the same.
+
+## 2.11.0
+
+PostgreSQL 11 is now the minimum version supported (FlywayDB dependency).
+
+OpenStreetMap and What3Words search channels were removed from control-example dependencies.
+If you want to use these as your applications search backend you can add them in the app dependencies on pom.xml like this:
+
+```
+<dependency>
+    <groupId>org.oskari</groupId>
+    <artifactId>service-search-opendata</artifactId>
+</dependency>
+```
+
+This fixes an issue where (most) applications that have their own search backend implementations either need to black list the OSM channel OR exclude this depedency. This makes the choice of using the channel more explicit.
+
+Another common configuration that most instances would probably want to add to oskari-ext.properties is:
+```
+# Don't show metadata catalogue as option as it doesn't return locations as results
+actionhandler.SearchOptions.blacklist=METADATA_CATALOGUE_CHANNEL
+```
+
+This removes metadata search channel from SearchPlugin channel listing.
+As the channel is not returning locations it will never return anything useful for the location search UIs.
+
+## 2.10.0
+
+Sample-server-extension now includes JSTL dependency by default so the web app works out-of-the-box in for example Tomcat environment:
+https://github.com/oskariorg/sample-server-extension/pull/39
+
+A placeholder for favicon have been added on the sample-server-extension so it's easier to override by replacing the file with a custom one:
+https://github.com/oskariorg/sample-server-extension/pull/36
+
+### Base HTML changes!
+
+Unncessary elements and CSS have been removed from the base HTML templates. The HTML that has been previously used _should_ still work as before with one minor adjustment. The `margin-left: 170px;` on `#contentMap` element should be removed from the JSP: https://github.com/oskariorg/sample-server-extension/pull/35
+
+The frontend code now creates necessary elements for the map on it's own. The navigation block is still declared on the server side JSP but it will be moved to frontend in a future release.
+You can take a look at the new samples in here:
+https://github.com/oskariorg/sample-server-extension/tree/7f499fc51147be981108ef2536788c5cc811417c/webapp-map/src/main/webapp/WEB-INF/jsp
+
+If you want to have the navigation bar on the right side of the map you will still need to declare the map element on the HTML (see `geoportal_white.jsp`).
+The `geoportal_stylized.jsp` provides an example for adding additional elements around the space where Oskari renders itself (like service header etc).
+
+### Theme-related updates
+
+The navigation bar background color can now be configured in the theme JSON for application in the database (default color is the same as before). Navigation bar background-color CSS can be removed from JSP:
+https://github.com/oskariorg/sample-server-extension/pull/38
+
+
+## 2.8.0
+
+### My data frontend implementation changed
+
+A new bundle `mydata` has been added as (in most cases) drop-in replacement for `personaldata`. If you don't use any customized tabs in My data in your app (only using the ones included in oskari-frontend) you can safely update from personaldata to mydata. If you do have application specific tabs on personaldata see [frontend notes](https://github.com/oskariorg/oskari-frontend/blob/master/ReleaseNotes.md#280) for more details.
+
+For most apps you can and should add this migration for your app:
+```
+UPDATE oskari_appsetup_bundles
+ SET bundle_id = (select id from oskari_bundle where name='mydata'),
+     bundleinstance = 'mydata'
+ WHERE bundle_id = (select id from oskari_bundle where name='personaldata');
+```
+
+We might do a forced update on the next release when `personaldata` is removed.
+
+## 2.5.0
+
+### Userstyle bundle
+
+Userstyle functionality has been moved from wfsvector bundle to own bundle. You will need to add an import to the frontend code for your geoportal apps main.js:
+```
+import 'oskari-loader!oskari-frontend/packages/mapping/ol/userstyle/bundle.js';
+```
+The required changes have been made as pull requests for our demo app `sample-application` version 1.18.0:
+- https://github.com/oskariorg/sample-application/pull/17
+
+## 2.0.0
+
+The required changes have been made as pull requests for our demo app `sample-server-extension` version 1.4.0:
+- https://github.com/oskariorg/sample-server-extension/milestone/5?closed=1
+
+### Maven
+
+GroupId on all Oskari artifacts is now `org.oskari` (previously a mixture of `org.oskari`, `org.oskari.service`, `fi.nls.oskari` and `fi.nls.oskari.service`).
+ArtifactId on most Oskari artifacts changed as follows:
+
+- `oskari-parent` (parent pom) is now `oskari-server`
+- if artifactId started `oskari-control-*` it is now `control-*`
+- if artifactId started with `oskari-*` (where `*` is NOT `control-*`) it is now `service-*`
+
+### Database / Core migrations
+
+All the database services now use MyBatis. Ibatis has been dropped from the dependencies.
+
+In the core Flyway module we have dropped all of the 1.x Flyway migrations from oskari-server
+ which lets us clean up some of the code regarding these.
+
+For new installs the Flyway baseline version is set at 2.0.0. 
+For existing installs the status table is dropped (to drop references to previous migrations
+ that we have removed from oskari-server) as re-baselining is not allowed and the baseline
+ is set at 2.0.4. This lets us skip new migrations that will initialize the database tables
+ for empty database. 
+ 
+There are new shared migrations for both new and old installs that will rename some of the tables
+ in the database so naming is more consistent:
+
+- https://github.com/oskariorg/oskari-server/pull/618
+- https://github.com/oskariorg/oskari-server/pull/619
+
+After this all the database tables in the core module are prefixed with `oskari_`. 
+The user content modules (`myplaces`, `userlayer` etc) are not changed at this time.
+
+#### Flyway migrations
+
+The Flyway library has been updated to its latest version that includes an API change for all Java-based migrations.
+This requires manual work for changes that have been described here: 
+
+- https://github.com/oskariorg/oskari-server/pull/614
+
+You also have an option to just drop the current application Flyway-module assuming everyone that wants to use your app
+has a database dump for it. You can add a new module for future migrations with a different name (or same name but you will
+need to manually drop the database table for oskari_status_[your module name]). If you are not planning on the migrations to 
+work on an empty database this is the most cost-effective way to do this.
+
+Even if you want to upgrade your current migrations to work for an empty database you might want to clean them up and 
+combine them. It's possible to check in a migration if initial content needs to be inserted and only insert if needed etc.
+   
+#### Flyway Helpers
+
+Helpers for common Flyway operations have been updated for consistency in naming and parameter order.
+Setup-files are no longer supported (as it added unnecessary complexity). 
+Instead you can use `org.oskari.helpers.AppSetupHelper` to insert any appsetups/views to the
+ database directly that were previously referenced in setup-files.
+ You can also use `LayerHelper` to add initial map layers to the database as before.
+ The Java package has been changed from `fi.nls.oskari.db.LayerHelper` to `org.oskari.helpers.LayerHelper`
+ but methods remain unchanged. 
+
+Additional information:
+- https://github.com/oskariorg/oskari-server/pull/615
+
+1.56.0 allowed initializing content with "setup" files (not supported on 2.0+):
+```
+fi.nls.oskari.db.DBHandler.setupAppContent(conn, [ref to a file under "setup"]);
+```
+For 2.0.0 instead run SQL as normal Flyway migrations in application module and insert appsetups/layers with related helpers as Java-based Flyway migrations
+```
+org.oskari.helpers.AppSetupHelper.create(conn, [ref to a file under "json/views"])
+```
+
+1.56.0 -> 2.0.0 changes to migration helpers
+```
+fi.nls.oskari.db.ViewHelper -> org.oskari.helpers.AppSetupHelper
+ViewHelper.insertView("appsetup.json) -> AppSetupHelper.create("/json/appsetup.json")
+Inserts the appsetup like before but now you can give full path to the file instead of it being assumed to be prefixed.
+
+fi.nls.oskari.db.BundleHelper -> org.oskari.helpers.BundleHelper
+all method parameters with connection changed for consistency
+
+fi.nls.oskari.db.LayerHelper -> org.oskari.helpers.LayerHelper
+
+fi.nls.oskari.util.FlywayHelper -> org.oskari.helpers.AppSetupHelper
+FlywayHelper.getUserAndDefaultViewIds() -> AppSetupHelper.getSetupsForUserAndDefaultType() 
+FlywayHelper.viewContainsBundle() -> AppSetupHelper.appContainsBundle()
+FlywayHelper.addBundleWithDefaults() -> AppSetupHelper.addBundleToApp()
+FlywayHelper.getBundleFromView() -> AppSetupHelper.getAppBundle()
+```
+
+Added a new helper for easily adding a new bundle to the usual appsetup types (USER and DEFAULT):
+```
+AppSetupHelper.addBundleToApps(connection, bundlename)
+```
+
+### Spring framework upgraded
+
+If you have application-specific code that uses Spring you might need to adapt them to the 5.x version.
+
+Spring framework dependencies are now handled with a "Bill of materials" import to managed
+ dependencies so it's easier to use the same version of Spring artifacts that are used in Oskari.
+ This means you shouldn't have to (re)declare the version on any Spring artifacts on pom.xml of your application.
+
+### GeoTools/JTS upgraded
+
+We have updated the GeoTools library which introduces a change in JTS Java-packages.
+If you have used JTS classes in your application specific code you will need to update to the new packages:
+
+- https://github.com/locationtech/jts/blob/master/MIGRATION.md
+
+It might be as simple as:
+```
+import com.vividsolutions.jts.*' -> org.locationtech.jts.*;
+import org.geotools.xml.* -> org.geotools.xsd.*
+```
+
+When compiling your application Java will let you know if compilation fails because of these.
+
+### Updated Jetty and GeoServer
+
+The download package from Oskari.org has an updated Jetty version. If you are using nginx and the 
+configurations provided in sample-configs repository note that we have removed
+the X-Forwarded-Port header from the config as it messed with for example the logout functionality with the new Jetty:
+
+- https://github.com/oskariorg/sample-configs/commit/d3f36a33dd8dbaac475573a301b5d71af365b47d
+
+Updating services based on the zip-download on https://oskari.org/download you can:
+
+1) Replace the jetty-distribution folder with the new one (from for example the updated zip file): https://github.com/oskariorg/sample-configs/pull/8
+2) Replace oskari-server/webapps/geoserver directory with the new one (from for example the updated zip file): https://github.com/oskariorg/sample-configs/pull/7
+3) Update any systemctl or similar service/startup scripts to point to the new Jetty folder:
+
+- Replacing `java -jar ../jetty-distribution-9.4.12.v20180830/start.jar`
+- With:     `java -jar ../jetty-distribution-9.4.31.v20200723/start.jar`
+
+## 1.54.0
+
+### Bundle path changes related to OpenLayers map engine upgrade
+
+In this version OpenLayers map engine is upgraded to version 6.
+As a part of mentioned upgrade, version number is dropped from mapping bundle paths.
+All mapping bundle imports from oskari-frontend containing 'ol3' folder in import path needs to be fixed as follows:
+
+    // Example of old import containing 'ol3' in import path:
+    import 'oskari-loader!oskari-frontend/packages/mapping/ol3/mapmodule/bundle.js';
+    // Replace it with this row:
+    import 'oskari-loader!oskari-frontend/packages/mapping/ol/mapmodule/bundle.js';
+
+
+## 1.53.0
+
+### Migration to the new WFS integration backend
+
+This version includes a migration that will change the database migrating all apps to use a new WFS integration backend.
+The change is described here https://github.com/oskariorg/oskari-docs/issues/109
+
+You should backup your database before upgrading so you can restore it if you have some functionality in your app that is NOT
+compatible with the new system. Add this to oskari-ext.properties to continue using the transport for WFS-layers on this version:
+
+    flyway.1.53.wfs.optout=true
+
+It is heavily recommended that you migrate and report any problems you might encounter at this point.
+On this version you can still opt-out of the migration but the next version will force the migration and remove
+ references to the transport webapp. You can consider the transport webapp deprecated.
+
+Note! You also need to add an import to the frontend code for your apps main.js:
+
+    // this should already be there:
+    import 'oskari-loader!oskari-frontend/packages/mapping/ol3/mapwfs2/bundle.js';
+    // Replace it with this row:
+    import 'oskari-loader!oskari-frontend/packages/mapping/ol3/wfsvector/bundle.js';
+
+### Disabled CSRF protection on webapp level
+
+The previous cross-site request forgery protection used cookies and http headers to detect if a given request to the server
+was legit. Because certain browsers block 3rd party cookies by default this didn't really work on embedded maps.
+ Java libraries don't yet support adding SameSite-flag on cookies which is the current solution to protect against
+ CSRF attacks. You should configure your reverse-proxy to modify cookies to have SameSite=lax flag.
+
+Here's an example how to do this with nginx: https://github.com/oskariorg/sample-configs/commit/e3802ccd84d866dc1643f7dfc98f80bf6fe5cde9
+
+### PermissionService migrated to MyBatis
+
+Also class packages have been changed a bit so manual updates is required for server-extensions referencing PermissionService.
+
+- fi.nls.oskari.permission.domain.Permission is now org.oskari.permissions.model.Permission
+- fi.nls.oskari.permission.domain.Resource is now org.oskari.permissions.model.Resource
+- fi.nls.oskari.map.data.domain.OskariLayerResource is now org.oskari.permissions.model.OskariLayerResource and is now deprecated.
+
+See https://github.com/nls-oskari/kartta.paikkatietoikkuna.fi/pull/102 for example and
+https://github.com/oskariorg/oskari-server/pull/271 for details about the change.
+
+OskariLayerResource has been deprecated since it no longer serves any purpose. The mapping of layer permissions mapping
+ has been changed from type+url+name to use the layer id. Note that this might break some old migrations that use it
+ if run on an empty database
+
 ## 1.52.0
 
 ### Class renaming:

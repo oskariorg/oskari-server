@@ -5,6 +5,8 @@ import fi.nls.oskari.service.OskariComponent;
 
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.SupportedSourceVersion;
+import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
@@ -14,6 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @SupportedAnnotationTypes(OskariComponentAnnotationProcessor.ANNOTATION_TYPE)
+@SupportedSourceVersion(SourceVersion.RELEASE_17)
 public class OskariComponentAnnotationProcessor extends OskariBaseAnnotationProcessor {
     /**
      * This is the annotation we are going to process

@@ -1,14 +1,23 @@
 package fi.nls.oskari.domain.map.userlayer;
 
 
+import org.json.JSONObject;
+
+import java.time.OffsetDateTime;
+
 public class UserLayerData {
 
     private long id;
     private long user_layer_id;
     private String uuid;
     private String feature_id ;
-    private String property_json;
+    private JSONObject property_json;
     private String  geometry;
+
+    private String wkt;
+    private int databaseSRID;
+    private OffsetDateTime created;
+    private OffsetDateTime updated;
 
     public long getId() {
         return id;
@@ -42,12 +51,15 @@ public class UserLayerData {
         this.feature_id = feature_id;
     }
 
-    public String getProperty_json() {
+    public JSONObject getProperty_json() {
         return property_json;
     }
 
-    public void setProperty_json(String property_json) {
-        if(property_json == null) property_json="{}";
+    public void setProperty_json(JSONObject property_json) {
+        if(property_json == null) {
+            this.property_json = new JSONObject();
+            return;
+        }
         this.property_json = property_json;
     }
 
@@ -57,5 +69,38 @@ public class UserLayerData {
 
     public void setGeometry(String geometry) {
         this.geometry = geometry;
+        this.wkt = geometry;
+    }
+
+    public String getWkt() {
+        return wkt;
+    }
+
+    public void setWkt(String wkt) {
+        this.wkt = wkt;
+    }
+
+    public OffsetDateTime getCreated() {
+        return created;
+    }
+
+    public void setCreated(OffsetDateTime created) {
+        this.created = created;
+    }
+
+    public OffsetDateTime getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(OffsetDateTime updated) {
+        this.updated = updated;
+    }
+
+    public int getDatabaseSRID() {
+        return databaseSRID;
+    }
+
+    public void setDatabaseSRID(int databaseSRID) {
+        this.databaseSRID = databaseSRID;
     }
 }

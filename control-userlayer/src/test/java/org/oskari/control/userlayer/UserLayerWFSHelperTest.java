@@ -1,39 +1,48 @@
 package org.oskari.control.userlayer;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.InputStream;
-import java.util.Map;
-
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.referencing.CRS;
+import org.json.JSONObject;
 import org.junit.Test;
+import org.locationtech.jts.geom.MultiLineString;
 import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.oskari.control.userlayer.UserLayerWFSHelper;
 import org.oskari.geojson.GeoJSONReader2;
 import org.oskari.geojson.GeoJSONSchemaDetector;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vividsolutions.jts.geom.MultiLineString;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
 
 public class UserLayerWFSHelperTest {
 
-    @Test
-    public void testRetype() throws Exception {
-        ObjectMapper om = new ObjectMapper();
+    private ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+    private Map<String, Object> readResource(String filename) throws Exception {
         TypeReference<Map<String, Object>> typeRef = new TypeReference<Map<String,Object>>() {};
-        Map<String, Object> geojson;
-        try (InputStream in = getClass().getResourceAsStream("geojson.json")) {
-            geojson = om.readValue(in, typeRef);
+        try (InputStream in = getClass().getResourceAsStream(filename)) {
+            return OBJECT_MAPPER.readValue(in, typeRef);
         }
+    }
+
+    private SimpleFeatureCollection createCollection(Map<String, Object> geojson) throws Exception {
         CoordinateReferenceSystem crs = CRS.decode("EPSG:3067");
         SimpleFeatureType schema = GeoJSONSchemaDetector.getSchema(geojson, crs);
         SimpleFeatureCollection original = GeoJSONReader2.toFeatureCollection(geojson, schema);
+        return original;
+    }
+
+    @Test
+    public void testRetype() throws Exception {
+        Map<String, Object> geojson = readResource("geojson.json");
+        SimpleFeatureCollection original = createCollection(geojson);
 
         SimpleFeature f = null;
         SimpleFeatureCollection retyped = new UserLayerWFSHelper().postProcess(original);
@@ -69,5 +78,79 @@ public class UserLayerWFSHelperTest {
 
         assertEquals(String.class, laji.getValue().getClass());
         assertEquals("696", laji.getValue());
+    }
+
+    @Test
+    public void testTooManyAttributesOnFeatures() throws Exception {
+        Map<String, Object> geojson = readResource("geojson.json");
+        // the first feature is used to define schema for whole collection on retype
+        // remove an attribute from the _first_ feature to test if parsing fails
+        // when following features have _more_ attributes than defined in schema
+        dropAttrFromFirstFeature(geojson);
+        SimpleFeatureCollection original = createCollection(geojson);
+
+        SimpleFeatureCollection retyped = new UserLayerWFSHelper().postProcess(original);
+
+        // Check that the first feature has the same number of attributes as schema
+        SimpleFeature firstFeature = retyped.features().next();
+        assertEquals(4, firstFeature.getAttributeCount());
+        assertEquals(4, retyped.getSchema().getAttributeCount());
+        try (SimpleFeatureIterator it = retyped.features()) {
+            while (it.hasNext()) {
+                SimpleFeature feature = it.next();
+                // skip the first one.
+                if (feature.getID().equals(firstFeature.getID())) {
+                    continue;
+                }
+                assertEquals(5, feature.getAttributeCount());
+            }
+        }
+    }
+
+    @Test
+    public void testMissingAttributesOnFeatures() throws Exception {
+        Map<String, Object> geojson = readResource("geojson.json");
+        // the first feature is used to define schema for whole collection on retype
+        // add a attribute that is only on the first feature to test if parsing fails
+        // when following features _don't_ have all attributes defined in schema
+        addAttrToFirstFeature(geojson);
+        SimpleFeatureCollection original = createCollection(geojson);
+        SimpleFeatureCollection retyped = new UserLayerWFSHelper().postProcess(original);
+
+        // Check that the first feature has the same number of attributes as schema
+        SimpleFeature firstFeature = retyped.features().next();
+        assertEquals(6, firstFeature.getAttributeCount());
+        assertEquals(6, retyped.getSchema().getAttributeCount());
+        try (SimpleFeatureIterator it = retyped.features()) {
+            while (it.hasNext()) {
+                SimpleFeature feature = it.next();
+                // skip the first one.
+                if (feature.getID().equals(firstFeature.getID())) {
+                    continue;
+                }
+                assertEquals(5, feature.getAttributeCount());
+            }
+        }
+    }
+
+    private void dropAttrFromFirstFeature(Map<String, Object> geojson) throws Exception {
+        List<Map> features = (List<Map>) geojson.get("features");
+        Map<String, Object> firstFeature = features.get(0);
+        Map<String, Object> attributes = (Map<String, Object>) firstFeature.get("properties");
+        String userLayerAttributes = (String) attributes.get("property_json");
+        JSONObject props = new JSONObject(userLayerAttributes);
+        // other features will have _more_ attributes than schema defines
+        props.remove("LAJI");
+        attributes.put("property_json", props.toString());
+    }
+
+    private void addAttrToFirstFeature(Map<String, Object> geojson) throws Exception {
+        List<Map> features = (List<Map>) geojson.get("features");
+        Map<String, Object> firstFeature = features.get(0);
+        Map<String, Object> attributes = (Map<String, Object>) firstFeature.get("properties");
+        String userLayerAttributes = (String) attributes.get("property_json");
+        JSONObject props = new JSONObject(userLayerAttributes);
+        props.put("TESTING_SCHEMA", "other features will have less attributes than schema defines");
+        attributes.put("property_json", props.toString());
     }
 }

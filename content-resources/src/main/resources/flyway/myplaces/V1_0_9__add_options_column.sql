@@ -1,0 +1,1 @@
+ALTER TABLE categories ADD options json;

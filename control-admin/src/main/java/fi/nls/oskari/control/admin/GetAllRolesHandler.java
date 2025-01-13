@@ -15,9 +15,11 @@ import org.json.JSONObject;
 
 /**
  * Route returning all roles in the system.
+ * @deprecated Use ManageRoles instead
  * @author SMAKINEN
  */
 @OskariActionRoute("GetAllRoles")
+@Deprecated
 public class GetAllRolesHandler extends RestActionHandler {
 
     private Logger log = LogFactory.getLogger(GetAllRolesHandler.class);

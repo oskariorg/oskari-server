@@ -3,7 +3,6 @@ package fi.nls.oskari.rating;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by MHURME on 14.9.2015.

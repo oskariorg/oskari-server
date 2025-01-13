@@ -1,0 +1,43 @@
+{
+  "formats": [
+    "GML2",
+    "KML",
+    "SHAPE-ZIP",
+    "application/gml+xml; version=3.2",
+    "application/json",
+    "application/vnd.google-earth.kml xml",
+    "application/vnd.google-earth.kml+xml",
+    "csv",
+    "excel",
+    "excel2007",
+    "gml3",
+    "gml32",
+    "json",
+    "text/xml; subtype=gml/2.1.2",
+    "text/xml; subtype=gml/3.1.1",
+    "text/xml; subtype=gml/3.2"
+  ],
+  "keywords": [
+    "features",
+    "avi4500k"
+  ],
+  "bbox": {
+    "wkt": "POLYGON ((15.999210419254936 56.23928539106909, 15.999210419254936 73.5170461466599, 33.27697117484574 73.5170461466599, 33.27697117484574 56.23928539106909, 15.999210419254936 56.23928539106909))",
+    "minY": 56.23928539106909,
+    "minX": 15.999210419254936,
+    "srs": "EPSG:4326",
+    "maxY": 73.5170461466599,
+    "maxX": 33.27697117484574
+  },
+  "title": "AVI-alueet (1:4 500 000)",
+  "type": "wfslayer",
+  "maxFeatures": -1,
+  "metadataId": "b4693808-0f3b-4d5e-b366-c410b680ac19",
+  "metadataUrl": "http://www.paikkatietohakemisto.fi/geonetwork/srv/fi/csw?request=GetRecordById&service=CSW&id=b4693808-0f3b-4d5e-b366-c410b680ac19&elementSetName=full&outputSchema=http://www.isotc211.org/2005/gmd&version=2.0.2",
+  "srs": [
+    "EPSG:3067"
+  ],
+  "name": "tilastointialueet:avi4500k",
+  "namespaceUri": "http://www.tilastointialueet.fi",
+  "desc": "AVI-alueet (1:4 500 000)"
+}

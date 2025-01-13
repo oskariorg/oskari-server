@@ -1,18 +1,25 @@
 package fi.nls.oskari.map.geometry;
 
-import com.vividsolutions.jts.geom.CoordinateSequence;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.io.WKTReader;
-import com.vividsolutions.jts.io.WKTWriter;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
+import org.locationtech.jts.geom.CoordinateSequence;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryCollection;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.MultiLineString;
+import org.locationtech.jts.geom.MultiPoint;
+import org.locationtech.jts.geom.MultiPolygon;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.Polygon;
+import org.locationtech.jts.io.WKTReader;
+import org.locationtech.jts.io.WKTWriter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
+import org.oskari.geojson.GeoJSON;
 
 
 /**
@@ -23,6 +30,8 @@ public class WKTHelper {
     public final static String PROJ_EPSG_3067 = "EPSG:3067";
     private static final Logger log = LogFactory.getLogger(WKTHelper.class);
     public final static CoordinateReferenceSystem CRS_EPSG_4326 = getCRS(PROJ_EPSG_4326);
+
+    public final static String GEOM_ATTRIBUTE = "geometry";
 
     private static final double INTERPOLATE_THRESHOLD = 1.0;
     private static final double WGS84_LON_MIN = -180.0;
@@ -181,4 +190,47 @@ public class WKTHelper {
         log.debug("BBOX: " + bbox);
         return bbox;
     }
+
+    public static SimpleFeatureTypeBuilder getFeatureTypeBuilder(Geometry geometry) {
+        SimpleFeatureTypeBuilder featureTypeBuilder = new SimpleFeatureTypeBuilder();
+        featureTypeBuilder.setName("userdata");
+        featureTypeBuilder.setNamespaceURI("http://oskari.org");
+        featureTypeBuilder.setDefaultGeometry(GEOM_ATTRIBUTE);
+
+        if (geometry != null) {
+            setFeatureTypeBuilderGeometry(featureTypeBuilder, geometry);
+        }
+
+        return featureTypeBuilder;
+    }
+
+    private static void setFeatureTypeBuilderGeometry(SimpleFeatureTypeBuilder featureTypeBuilder, Geometry geometry) {
+        if (geometry != null) {
+            featureTypeBuilder.setDefaultGeometry(GEOM_ATTRIBUTE);
+            switch (geometry.getGeometryType()) {
+                case GeoJSON.POINT:
+                    featureTypeBuilder.add(GEOM_ATTRIBUTE, Point.class);
+                    break;
+                case GeoJSON.LINESTRING:
+                    featureTypeBuilder.add(GEOM_ATTRIBUTE, LineString.class);
+                    break;
+                case GeoJSON.POLYGON:
+                    featureTypeBuilder.add(GEOM_ATTRIBUTE, Polygon.class);
+                    break;
+                case GeoJSON.MULTI_POINT:
+                    featureTypeBuilder.add(GEOM_ATTRIBUTE, MultiPoint.class);
+                    break;
+                case GeoJSON.MULTI_LINESTRING:
+                    featureTypeBuilder.add(GEOM_ATTRIBUTE, MultiLineString.class);
+                    break;
+                case GeoJSON.MULTI_POLYGON:
+                    featureTypeBuilder.add(GEOM_ATTRIBUTE, MultiPolygon.class);
+                    break;
+                case GeoJSON.GEOMETRY_COLLECTION:
+                    featureTypeBuilder.add(GEOM_ATTRIBUTE, GeometryCollection.class);
+                    break;
+            }
+        }
+    }
+
 }

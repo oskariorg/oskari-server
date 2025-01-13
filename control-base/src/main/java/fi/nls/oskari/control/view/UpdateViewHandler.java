@@ -11,6 +11,10 @@ import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.RequestHelper;
 import fi.nls.oskari.util.ResponseHelper;
+import org.oskari.log.AuditLog;
+
+import java.time.OffsetDateTime;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -45,6 +49,7 @@ public class UpdateViewHandler extends RestActionHandler {
             view.setName(name);
             view.setDescription(description);
             view.setIsDefault(isDefault);
+            view.setUpdated(OffsetDateTime.now());
             //set is_default to false for all other this user's views.
             if (isDefault) {
                 LOG.debug("Reset the user's default views: " + user.getId());
@@ -52,6 +57,12 @@ public class UpdateViewHandler extends RestActionHandler {
             }
 
             vs.updateView(view);
+
+            AuditLog.user(params.getClientIp(), params.getUser())
+                    .withParam("id", view.getId())
+                    .withParam("name", view.getName())
+                    .withParam("default", view.isDefault())
+                    .updated(AuditLog.ResourceType.USER_VIEW);
     
             try {
                 JSONObject resp = new JSONObject();

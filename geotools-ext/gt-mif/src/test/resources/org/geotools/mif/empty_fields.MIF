@@ -1,0 +1,18 @@
+Version   750
+Charset "WindowsLatin1"
+Delimiter ","
+CoordSys Earth Projection 24, 1016, "m", 27, 0, 1, 3500000, 0 Bounds (2900000, 6000000) (4000000, 8000000)
+Columns 5
+  id Integer
+  foo Decimal(7, 0)
+  bar Float
+  baz Decimal(10, 5)
+  qux Logical
+Data
+
+Region 1
+4
+357517.2 6860602.8
+357539.1 6860613.8
+357556.1 6860578.1
+357533.8 6860567.8

@@ -28,8 +28,9 @@ public class OskariCommonSecurityConfig extends WebSecurityConfigurerAdapter {
 
         final String logoutUrl = env.getLogoutUrl();
 
-        // CSRF config is needed in this particular config even if it's not otherwise configured here...
-        http.csrf().ignoringAntMatchers(logoutUrl);
+        // 3rd party cookie blockers don't really work with cookie based CSRF protection on embedded maps.
+        // Configure nginx to attach SameSite-flag to cookies instead.
+        http.csrf().disable();
         http
             .headers().frameOptions().disable()
             .and()

@@ -3,20 +3,14 @@ package fi.nls.oskari.control.statistics.plugins;
 import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
 import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasourceMapper;
 import fi.nls.oskari.db.DatasourceHelper;
-import fi.nls.oskari.domain.map.JSONLocalized;
-import fi.nls.oskari.domain.map.JSONLocalizedName;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.service.OskariComponent;
+import fi.nls.oskari.mybatis.MyBatisHelper;
 import fi.nls.oskari.service.OskariComponentManager;
-import fi.nls.oskari.util.JSONHelper;
-import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.apache.ibatis.transaction.TransactionFactory;
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
@@ -117,23 +111,15 @@ public class StatisticalDatasourcePluginManager {
         final DatasourceHelper helper = DatasourceHelper.getInstance();
         final DataSource dataSource = helper.getDataSource(helper.getOskariDataSourceName());
         final SqlSessionFactory factory = initializeIBatis(dataSource);
-        final SqlSession session = factory.openSession();
-        try {
+        try (SqlSession session = factory.openSession()) {
             return session.getMapper(StatisticalDatasourceMapper.class).getAll();
-        }
-        finally {
-            session.close();
         }
     }
 
     private SqlSessionFactory initializeIBatis(final DataSource dataSource) {
-        final TransactionFactory transactionFactory = new JdbcTransactionFactory();
-        final Environment environment = new Environment("development", transactionFactory, dataSource);
-
-        final Configuration configuration = new Configuration(environment);
-        configuration.getTypeAliasRegistry().registerAlias(StatisticalDatasource.class);
-        configuration.setLazyLoadingEnabled(true);
-        configuration.addMapper(StatisticalDatasourceMapper.class);
+        final Configuration configuration = MyBatisHelper.getConfig(dataSource);
+        MyBatisHelper.addAliases(configuration, StatisticalDatasource.class);
+        MyBatisHelper.addMappers(configuration, StatisticalDatasourceMapper.class);
 
         return new SqlSessionFactoryBuilder().build(configuration);
     }

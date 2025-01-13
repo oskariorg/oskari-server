@@ -11,6 +11,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
+import org.oskari.log.AuditLog;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -41,6 +42,11 @@ public class CacheHandler extends RestActionHandler {
         Cache cache = CacheManager.getCache(params.getRequiredParam("name"));
         cache.flush(true);
         handleGet(params);
+
+        AuditLog.user(params.getClientIp(), params.getUser())
+                .withParam("name", cache.getName())
+                .withMsg("Flushed")
+                .updated("Cache");
     }
 
     private JSONObject getCacheJSON(Cache cache) {

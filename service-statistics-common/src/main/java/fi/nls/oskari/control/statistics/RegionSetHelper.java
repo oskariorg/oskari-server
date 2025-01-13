@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.geotools.GML;
+import org.geotools.wfs.GML;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.feature.DefaultFeatureCollection;
@@ -26,7 +26,7 @@ import org.opengis.referencing.operation.TransformException;
 import org.oskari.geojson.GeoJSON;
 import org.oskari.geojson.GeoJSONWriter;
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 
 import fi.nls.oskari.control.statistics.db.RegionSet;
 import fi.nls.oskari.domain.geo.Point;
@@ -36,6 +36,7 @@ import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
+import org.oskari.maplayer.GeoJSONStringReader;
 
 public class RegionSetHelper {
 
@@ -84,21 +85,22 @@ public class RegionSetHelper {
         }
         LOG.debug("Trying to read GeoJSON resource file from:", path);
         DefaultFeatureCollection fc = new DefaultFeatureCollection();
-
-        try (InputStream in = RegionSetHelper.class.getResourceAsStream(path);
-             Reader utf8Reader = new InputStreamReader(in, IOHelper.CHARSET_UTF8)) {
-            if (in == null) {
-                LOG.warn("Could not find resource for path:", path);
-                throw new FileNotFoundException("Could not find resource");
+        SimpleFeatureCollection sfc;
+        CoordinateReferenceSystem sourceCRS = CRS.decode(regionset.getSrs_name());
+        try (InputStream in = RegionSetHelper.class.getResourceAsStream(path)) {
+            try {
+                sfc = GeoJSONStringReader.readGeoJSON(in, sourceCRS);
+            } catch (Exception e) {
+                throw new IOException("Error reading geojson to feature collection for region set: " + regionset.getId(), e);
             }
-            try (FeatureIterator<SimpleFeature> it = FJ.streamFeatureCollection(utf8Reader)) {
+            try (FeatureIterator<SimpleFeature> it = sfc.features()) {
                 while (it.hasNext()) {
                     SimpleFeature f = it.next();
                     try {
                         transform(f, transform);
                         fc.add(f);
                     } catch (Exception e) {
-                        LOG.debug(e, "Invalid region", f);
+                        LOG.debug(e, "Invalid region in region set: " + regionset.getId(), f);
                     }
                 }
             }
@@ -153,9 +155,9 @@ public class RegionSetHelper {
 
     protected static List<Region> parse(SimpleFeatureCollection fc, String idProperty, String nameProperty)
             throws ServiceException {
-        final SimpleFeatureIterator it = fc.features();
-        try {
-            final List<Region> nameCodes = new ArrayList<>();
+        final List<String> duplicateIdCheckList = new ArrayList<>();
+        final List<Region> result = new ArrayList<>();
+        try (SimpleFeatureIterator it = fc.features()){
             while (it.hasNext()) {
                 final SimpleFeature feature = it.next();
                 // id might be numeric on source data
@@ -166,22 +168,26 @@ public class RegionSetHelper {
                             ") property for region. Properties are:", LOG.getAsString(feature.getProperties()));
                     continue;
                 }
+                if (duplicateIdCheckList.contains(id)) {
+                    LOG.info("Region with id (", id, ") and name(", name,
+                            ") has duplicates on the regions listing. Using the first one.");
+                    continue;
+                }
                 Region region = new Region(id, name);
                 try {
                     region.setPointOnSurface(getPointOnSurface(feature));
                     region.setGeojson(toGeoJSON((Geometry) feature.getDefaultGeometry(), id, name));
-                    nameCodes.add(region);
+                    result.add(region);
+                    duplicateIdCheckList.add(id);
                 } catch (Exception ex) {
                     LOG.warn("Region had invalid geometry:", region, "Error:", ex.getMessage());
                 }
             }
-            if (nameCodes.isEmpty()) {
+            if (result.isEmpty()) {
                 throw new ServiceException("Empty result, check configuration for region id-property=" +
                         idProperty + " and name-property=" + nameProperty);
             }
-            return nameCodes;
-        } finally {
-            it.close();
+            return result;
         }
     }
 
@@ -205,7 +211,7 @@ public class RegionSetHelper {
         Geometry geometry = (Geometry)feature.getDefaultGeometry();
         // " An interior point is guaranteed to lie in the interior of the Geometry, if it possible to
         // calculate such a point exactly. Otherwise, the point may lie on the boundary of the geometry."
-        com.vividsolutions.jts.geom.Point pos = geometry.getInteriorPoint();
+        org.locationtech.jts.geom.Point pos = geometry.getInteriorPoint();
         return new Point(pos.getX(), pos.getY());
     }
 

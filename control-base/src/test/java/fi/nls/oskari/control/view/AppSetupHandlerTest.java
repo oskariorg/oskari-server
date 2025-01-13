@@ -1,13 +1,12 @@
 package fi.nls.oskari.control.view;
 
-import fi.mml.portti.service.db.permissions.PermissionsService;
-import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.control.ActionConstants;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
+import fi.nls.oskari.map.analysis.service.AnalysisDbService;
 import fi.nls.oskari.map.view.BundleService;
 import fi.nls.oskari.map.view.BundleServiceMybatisImpl;
 import fi.nls.oskari.map.view.ViewService;
@@ -20,6 +19,7 @@ import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.view.modifier.ViewModifier;
 import fi.nls.test.control.JSONActionRouteTest;
 import fi.nls.test.util.ResourceHelper;
+import fi.nls.test.util.TestHelper;
 import fi.nls.test.view.ViewTestHelper;
 import org.json.JSONObject;
 import org.junit.AfterClass;
@@ -27,6 +27,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.oskari.map.userlayer.service.UserLayerDbService;
+import org.oskari.permissions.PermissionService;
+import org.oskari.permissions.PermissionServiceMybatisImpl;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -42,13 +45,15 @@ import static org.mockito.Mockito.mock;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(value = {UserService.class})
+// these are needed with PowerMock and Java 11. Haven't tried if Java 13+ still needs these:
+// https://github.com/powermock/powermock/issues/864
 @PowerMockIgnore({"com.sun.org.apache.xalan.*", "com.sun.org.apache.xerces.*", "javax.xml.*", "org.w3c.dom.*", "org.xml.*", "com.sun.org.apache.xml.*"})
 public class AppSetupHandlerTest extends JSONActionRouteTest {
 	
     private AppSetupHandler handler = null;
     private ViewService viewService = null;
     private MyPlacesService myPlaceService = null;
-    private PermissionsService permissionsService = null;
+    private PermissionService permissionsService = null;
     private UserService userService = null;
     private BundleService bundleService = null;
 
@@ -57,6 +62,7 @@ public class AppSetupHandlerTest extends JSONActionRouteTest {
 
     @BeforeClass
     public static void addProperties() throws Exception {
+        TestHelper.registerTestDataSource();
         PropertyUtil.addProperty("view.template.publish", "3", true);
         PropertyUtil.addProperty("oskari.domain", "//domain.com", true);
         PropertyUtil.addProperty("oskari.map.url", "/map", true);
@@ -69,13 +75,15 @@ public class AppSetupHandlerTest extends JSONActionRouteTest {
         handler = new AppSetupHandler();
     	mockViewService();
         myPlaceService = mock(MyPlacesServiceMybatisImpl.class);
-        permissionsService = mock(PermissionsServiceIbatisImpl.class);
+        permissionsService = mock(PermissionServiceMybatisImpl.class);
         mockBundleService();
         mockUserService();
 
         // set mocked services
         handler.setViewService(viewService);
         handler.setMyPlacesService(myPlaceService);
+        handler.setUserLayerService(mock(UserLayerDbService.class));
+        handler.setAnalysisService(mock(AnalysisDbService.class));
         handler.setPermissionsService(permissionsService);
         handler.setBundleService(bundleService);
 
@@ -85,6 +93,7 @@ public class AppSetupHandlerTest extends JSONActionRouteTest {
     @AfterClass
     public static void teardown() {
         PropertyUtil.clearProperties();
+        TestHelper.teardown();
     }
 
     private void mockViewService() {
@@ -175,5 +184,6 @@ public class AppSetupHandlerTest extends JSONActionRouteTest {
 
         assertNotNull("View should have bundle that has been whitelisted", view.getBundleByName(BUNDLE_WHITELISTED));
     }
-	
+
 }
+

@@ -1,32 +1,45 @@
 package fi.nls.oskari.domain.map;
 
-import org.json.JSONException;
+import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
 import org.json.JSONObject;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-
-import java.io.IOException;
 
 /**
  * Common model for layers consisting of user created data.
  */
-public class UserDataLayer {
-    private static final ObjectMapper OM;
-    static {
-        OM = new ObjectMapper();
-        OM.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    }
+public abstract class UserDataLayer extends JSONLocalizedName {
+
+    private long id;
+    private String name; // use name from locale
     private String uuid;
     private String publisher_name;
-    private UserDataStyle style;
+    private WFSLayerOptions options;
 
-    public UserDataLayer () {
-        style = new UserDataStyle();
+    public abstract String getType();
+    
+    public long getId() {
+        return id;
     }
 
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getPrefixedId() {
+        return getType() + "_" + getId();
+    }
+    @Deprecated
+    public String getName() {
+        return name;
+    }
+    @Deprecated
+    public void setName(String name) {
+        this.name = name;
+    }
+    
     public String getUuid() {
         return uuid;
     }
+    
     public void setUuid(String uuid) {
         this.uuid = uuid;
     }
@@ -49,21 +62,18 @@ public class UserDataLayer {
         }
         return getUuid().equals(uuid);
     }
-    public void setStyle (UserDataStyle style) {
-        this.style = style;
+    public void setOptions(JSONObject options) {
+        this.options = new WFSLayerOptions(options);
     }
 
-    public UserDataStyle getStyle () {
-        return style;
+    public JSONObject getOptions() {
+        return getWFSLayerOptions().getOptions();
     }
-    public void mapPropertiesToStyle (String properties) throws JSONException {
-        try {
-            style = OM.readValue(properties, UserDataStyle.class);
-        } catch (IOException e) {
-            throw new JSONException(e.getMessage());
+
+    public WFSLayerOptions getWFSLayerOptions() {
+        if (options == null) {
+            options = new WFSLayerOptions();
         }
-    }
-    public void mapPropertiesToStyle (JSONObject properties) throws JSONException {
-        mapPropertiesToStyle(properties.toString());
+        return options;
     }
 }

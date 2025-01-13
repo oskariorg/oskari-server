@@ -1,15 +1,22 @@
 package org.oskari.print.request;
 
+import fi.nls.oskari.domain.User;
+import org.geotools.referencing.CRS;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+
 import java.util.List;
 
-import fi.nls.oskari.domain.User;
-
 public class PrintRequest {
-
+    
     private User user;
     private double east;
     private double north;
     private String srsName;
+    private CoordinateReferenceSystem crs;
+
+    private String printoutSrsName;
+    private CoordinateReferenceSystem printoutCrs;
     private double resolution;
     private int width;
     private int height;
@@ -19,10 +26,17 @@ public class PrintRequest {
     private boolean showLogo;
     private boolean showScale;
     private boolean showDate;
+    private boolean showTimeSeriesTime;
     private String title;
     private List<PrintLayer> layers;
+    private String markers;
     private String scaleText;
+    private String time;
+    private String formattedTime;
+    private String timeseriesLabel;
+    private String coordinateInfo;
 
+    private String lang;
     public User getUser() {
         return user;
     }
@@ -51,8 +65,26 @@ public class PrintRequest {
         return srsName;
     }
 
-    public void setSrsName(String srsName) {
+    public void setSrsName(String srsName) throws FactoryException {
         this.srsName = srsName;
+        this.crs = CRS.decode(srsName, true);
+    }
+
+    public CoordinateReferenceSystem getCrs() {
+        return crs;
+    }
+
+    public String getPrintoutSrsName() {
+        return printoutSrsName;
+    }
+
+    public void setPrintoutSrsName(String printoutSrsName) throws FactoryException {
+        this.printoutSrsName = printoutSrsName;
+        this.printoutCrs = CRS.decode(printoutSrsName, true);
+    }
+
+    public CoordinateReferenceSystem getPrintoutCrs() {
+        return printoutCrs;
     }
 
     public double getResolution() {
@@ -119,6 +151,14 @@ public class PrintRequest {
         this.showDate = showDate;
     }
 
+    public boolean isShowTimeSeriesTime() {
+        return showTimeSeriesTime;
+    }
+
+    public void setShowTimeSeriesTime(boolean showTimeSeriesTime) {
+        this.showTimeSeriesTime = showTimeSeriesTime;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -133,6 +173,14 @@ public class PrintRequest {
 
     public void setLayers(List<PrintLayer> layers) {
         this.layers = layers;
+    }
+
+    public String getMarkers() {
+        return markers;
+    }
+
+    public void setMarkers(String markers) {
+        this.markers = markers;
     }
 
     public boolean isShowLogo() {
@@ -154,5 +202,57 @@ public class PrintRequest {
     public boolean isScaleText(){
         return (this.scaleText != null && !this.scaleText.isEmpty());
     }
+    
+    public double[] getBoundingBox() {
+        double halfResolution = resolution * 0.5;
 
+        double widthHalf = width * halfResolution;
+        double heightHalf = height * halfResolution;
+
+        return new double[] {
+                east - widthHalf,
+                north - heightHalf,
+                east + widthHalf,
+                north + heightHalf
+        };
+    }
+    
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public String getFormattedTime() {
+        return formattedTime;
+    }
+
+    public void setFormattedTime(String formattedTime) {
+        this.formattedTime = formattedTime;
+    }
+
+    public String getTimeseriesLabel() {
+        return timeseriesLabel;
+    }
+
+    public void setTimeseriesLabel(String timeseriesLabel) {
+        this.timeseriesLabel = timeseriesLabel;
+    }
+
+    public void setCoordinateInfo(String coordinateInfo) {
+        this.coordinateInfo = coordinateInfo;
+    }
+    public String getCoordinateInfo() {
+        return coordinateInfo;
+    }
+
+    public String getLang() {
+        return lang;
+    }
+
+    public void setLang(String lang) {
+        this.lang = lang;
+    }
 }

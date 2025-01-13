@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wfs:Transaction xmlns:wfs="http://www.opengis.net/wfs"
+	service="WFS" version="1.1.0"
+	xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:ogc="http://www.opengis.net/ogc"
+	xmlns:gml="http://www.opengis.net/gml"
+	xmlns:cgf="http://www.opengis.net/cite/geometry">
+	<wfs:Insert>
+		<feature:analysis_data
+			xmlns:feature="http://www.oskari.org">
+			<gml:geometry xmlns:feature="http://www.tieliikenne.fi">
+				<gml:MultiPolygon srsDimension="2"
+					srsName="http://www.opengis.net/gml/srs/epsg.xml#3067"
+					xmlns:gml="http://www.opengis.net/gml">
+					<gml:polygonMember>
+						<gml:Polygon srsDimension="2">
+							<gml:exterior>
+								<gml:LinearRing srsDimension="2">
+									<gml:posList>381211.7398 6673831.484 381209.818328
+										6673811.974968 381204.127753 6673793.215657 381194.886761
+										6673775.926977 381182.450478 6673760.773322 381167.296823
+										6673748.337039 381150.008143 6673739.096047 381131.248832
+										6673733.405472 381111.7398 6673731.484 381092.230768
+										6673733.405472 381073.471457 6673739.096047 381056.182777
+										6673748.337039 381041.029122 6673760.773322 381028.592839
+										6673775.926977 381019.351847 6673793.215657 381013.661272
+										6673811.974968 381011.7398 6673831.484 381013.661272
+										6673850.993032 381019.351847 6673869.752343 381028.592839
+										6673887.041023 381041.029122 6673902.194678 381056.182777
+										6673914.630961 381073.471457 6673923.871953 381092.230768
+										6673929.562528 381111.7398 6673931.484 381131.248832
+										6673929.562528 381150.008143 6673923.871953 381167.296823
+										6673914.630961 381182.450478 6673902.194678 381194.886761
+										6673887.041023 381204.127753 6673869.752343 381209.818328
+										6673850.993032 381211.7398 6673831.484</gml:posList>
+								</gml:LinearRing>
+							</gml:exterior>
+						</gml:Polygon>
+					</gml:polygonMember>
+				</gml:MultiPolygon>
+			</gml:geometry>
+			<feature:t1>07.00-07.59</feature:t1>
+			<feature:t2>2</feature:t2>
+			<feature:n1>4.0</feature:n1>
+			<feature:n2>2.0</feature:n2>
+			<feature:n3>0.0</feature:n3>
+			<feature:n4>0.0</feature:n4>
+			<feature:n5>0.0</feature:n5>
+			<feature:n6>0.0</feature:n6>
+			<feature:n7>0.0</feature:n7>
+			<feature:n8>0.0</feature:n8>
+			<feature:analysis_id>1</feature:analysis_id>
+			<feature:uuid>test-uuid</feature:uuid>
+		</feature:analysis_data>
+	</wfs:Insert>
+	<wfs:Insert>
+		<feature:analysis_data
+			xmlns:feature="http://www.oskari.org">
+			<gml:geometry xmlns:feature="http://www.tieliikenne.fi">
+				<gml:MultiPolygon srsDimension="2"
+					srsName="http://www.opengis.net/gml/srs/epsg.xml#3067"
+					xmlns:gml="http://www.opengis.net/gml">
+					<gml:polygonMember>
+						<gml:Polygon srsDimension="2">
+							<gml:exterior>
+								<gml:LinearRing srsDimension="2">
+									<gml:posList>380738.0138 6673558.9353 380736.092328
+										6673539.426268 380730.401753 6673520.666957 380721.160761
+										6673503.378277 380708.724478 6673488.224622 380693.570823
+										6673475.788339 380676.282143 6673466.547347 380657.522832
+										6673460.856772 380638.0138 6673458.9353 380618.504768
+										6673460.856772 380599.745457 6673466.547347 380582.456777
+										6673475.788339 380567.303122 6673488.224622 380554.866839
+										6673503.378277 380545.625847 6673520.666957 380539.935272
+										6673539.426268 380538.0138 6673558.9353 380539.935272
+										6673578.444332 380545.625847 6673597.203643 380554.866839
+										6673614.492323 380567.303122 6673629.645978 380582.456777
+										6673642.082261 380599.745457 6673651.323253 380618.504768
+										6673657.013828 380638.0138 6673658.9353 380657.522832
+										6673657.013828 380676.282143 6673651.323253 380693.570823
+										6673642.082261 380708.724478 6673629.645978 380721.160761
+										6673614.492323 380730.401753 6673597.203643 380736.092328
+										6673578.444332 380738.0138 6673558.9353</gml:posList>
+								</gml:LinearRing>
+							</gml:exterior>
+						</gml:Polygon>
+					</gml:polygonMember>
+				</gml:MultiPolygon>
+			</gml:geometry>
+			<feature:t1>17.00-17.59</feature:t1>
+			<feature:t2>0</feature:t2>
+			<feature:n1>6.0</feature:n1>
+			<feature:n2>3.0</feature:n2>
+			<feature:n3>0.0</feature:n3>
+			<feature:n4>0.0</feature:n4>
+			<feature:n5>0.0</feature:n5>
+			<feature:n6>0.0</feature:n6>
+			<feature:n7>0.0</feature:n7>
+			<feature:n8>0.0</feature:n8>
+			<feature:analysis_id>1</feature:analysis_id>
+			<feature:uuid>test-uuid</feature:uuid>
+		</feature:analysis_data>
+	</wfs:Insert>
+	<wfs:Insert>
+		<feature:analysis_data
+			xmlns:feature="http://www.oskari.org">
+			<gml:geometry xmlns:feature="http://www.tieliikenne.fi">
+				<gml:MultiPolygon srsDimension="2"
+					srsName="http://www.opengis.net/gml/srs/epsg.xml#3067"
+					xmlns:gml="http://www.opengis.net/gml">
+					<gml:polygonMember>
+						<gml:Polygon srsDimension="2">
+							<gml:exterior>
+								<gml:LinearRing srsDimension="2">
+									<gml:posList>381295.4129 6673904.4951 381293.491428
+										6673884.986068 381287.800853 6673866.226757 381278.559861
+										6673848.938077 381266.123578 6673833.784422 381250.969923
+										6673821.348139 381233.681243 6673812.107147 381214.921932
+										6673806.416572 381195.4129 6673804.4951 381175.903868
+										6673806.416572 381157.144557 6673812.107147 381139.855877
+										6673821.348139 381124.702222 6673833.784422 381112.265939
+										6673848.938077 381103.024947 6673866.226757 381097.334372
+										6673884.986068 381095.4129 6673904.4951 381097.334372
+										6673924.004132 381103.024947 6673942.763443 381112.265939
+										6673960.052123 381124.702222 6673975.205778 381139.855877
+										6673987.642061 381157.144557 6673996.883053 381175.903868
+										6674002.573628 381195.4129 6674004.4951 381214.921932
+										6674002.573628 381233.681243 6673996.883053 381250.969923
+										6673987.642061 381266.123578 6673975.205778 381278.559861
+										6673960.052123 381287.800853 6673942.763443 381293.491428
+										6673924.004132 381295.4129 6673904.4951</gml:posList>
+								</gml:LinearRing>
+							</gml:exterior>
+						</gml:Polygon>
+					</gml:polygonMember>
+				</gml:MultiPolygon>
+			</gml:geometry>
+			<feature:t1>08.00-08.59</feature:t1>
+			<feature:t2>4</feature:t2>
+			<feature:n1>8.0</feature:n1>
+			<feature:n2>1.0</feature:n2>
+			<feature:n3>0.0</feature:n3>
+			<feature:n4>0.0</feature:n4>
+			<feature:n5>1.0</feature:n5>
+			<feature:n6>0.0</feature:n6>
+			<feature:n7>0.0</feature:n7>
+			<feature:n8>0.0</feature:n8>
+			<feature:analysis_id>1</feature:analysis_id>
+			<feature:uuid>test-uuid</feature:uuid>
+		</feature:analysis_data>
+	</wfs:Insert>
+	<wfs:Insert>
+		<feature:analysis_data
+			xmlns:feature="http://www.oskari.org">
+			<gml:geometry xmlns:feature="http://www.tieliikenne.fi">
+				<gml:MultiPolygon srsDimension="2"
+					srsName="http://www.opengis.net/gml/srs/epsg.xml#3067"
+					xmlns:gml="http://www.opengis.net/gml">
+					<gml:polygonMember>
+						<gml:Polygon srsDimension="2">
+							<gml:exterior>
+								<gml:LinearRing srsDimension="2">
+									<gml:posList>380676.3348 6673545.8737 380674.413328
+										6673526.364668 380668.722753 6673507.605357 380659.481761
+										6673490.316677 380647.045478 6673475.163022 380631.891823
+										6673462.726739 380614.603143 6673453.485747 380595.843832
+										6673447.795172 380576.3348 6673445.8737 380556.825768
+										6673447.795172 380538.066457 6673453.485747 380520.777777
+										6673462.726739 380505.624122 6673475.163022 380493.187839
+										6673490.316677 380483.946847 6673507.605357 380478.256272
+										6673526.364668 380476.3348 6673545.8737 380478.256272
+										6673565.382732 380483.946847 6673584.142043 380493.187839
+										6673601.430723 380505.624122 6673616.584378 380520.777777
+										6673629.020661 380538.066457 6673638.261653 380556.825768
+										6673643.952228 380576.3348 6673645.8737 380595.843832
+										6673643.952228 380614.603143 6673638.261653 380631.891823
+										6673629.020661 380647.045478 6673616.584378 380659.481761
+										6673601.430723 380668.722753 6673584.142043 380674.413328
+										6673565.382732 380676.3348 6673545.8737</gml:posList>
+								</gml:LinearRing>
+							</gml:exterior>
+						</gml:Polygon>
+					</gml:polygonMember>
+				</gml:MultiPolygon>
+			</gml:geometry>
+			<feature:t1>16.00-16.59</feature:t1>
+			<feature:t2>0</feature:t2>
+			<feature:n1>8.0</feature:n1>
+			<feature:n2>5.0</feature:n2>
+			<feature:n3>0.0</feature:n3>
+			<feature:n4>0.0</feature:n4>
+			<feature:n5>0.0</feature:n5>
+			<feature:n6>0.0</feature:n6>
+			<feature:n7>0.0</feature:n7>
+			<feature:n8>0.0</feature:n8>
+			<feature:analysis_id>1</feature:analysis_id>
+			<feature:uuid>test-uuid</feature:uuid>
+		</feature:analysis_data>
+	</wfs:Insert>
+</wfs:Transaction>

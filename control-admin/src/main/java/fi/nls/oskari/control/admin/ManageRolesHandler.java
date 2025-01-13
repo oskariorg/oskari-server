@@ -1,7 +1,6 @@
 package fi.nls.oskari.control.admin;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.RestActionHandler;
@@ -12,6 +11,7 @@ import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
+import org.oskari.log.AuditLog;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,10 +58,25 @@ public class ManageRolesHandler extends RestActionHandler {
     public void handlePut(ActionParameters params) throws ActionException {
 
         final String roleName = params.getRequiredParam(ROLE_NAME);
+        final long id = params.getHttpParam(ROLE_ID, 0);
         log.debug("Inserting role with name:", roleName);
 
         try {
-            final Role role =  userService.insertRole(roleName);
+            Role role;
+            AuditLog audit = AuditLog.user(params.getClientIp(), params.getUser());
+            if (id > 0) {
+                role = userService.updateRole(id, roleName);
+                audit.withParam("id", role.getId())
+                    .withParam("name", role.getName())
+                    .withMsg("Role")
+                    .updated(AuditLog.ResourceType.USER);
+            } else {
+                role = userService.insertRole(roleName);
+                audit.withParam("id", role.getId())
+                    .withParam("name", role.getName())
+                    .withMsg("Role")
+                    .added(AuditLog.ResourceType.USER);
+            }
             ResponseHelper.writeResponse(params, role2Json(role));
         } catch (Exception se) {
             throw new ActionException(se.getMessage(), se);
@@ -77,6 +92,10 @@ public class ManageRolesHandler extends RestActionHandler {
         }
         try {
             userService.deleteRole(id);
+            AuditLog.user(params.getClientIp(), params.getUser())
+                    .withParam("id", id)
+                    .withMsg("Role")
+                    .deleted(AuditLog.ResourceType.USER);
         } catch (ServiceException se) {
             throw new ActionException(se.getMessage(), se);
         }
@@ -84,21 +103,22 @@ public class ManageRolesHandler extends RestActionHandler {
 
     @Override
     public void preProcess(ActionParameters params) throws ActionException {
-        if (!params.getUser().isAdmin()) {
-            throw new ActionDeniedException("Admin only");
-        }
+        params.requireAdminUser();
     }
 
     private JSONObject roles2JsonArray(Role[] roles) throws JSONException {
 
         final JSONArray roleValues = new JSONArray();
-        for(Role role : roles){
-            roleValues.put(role2Json(role));
+        if (roles != null) {
+            for (Role role : roles) {
+                roleValues.put(role2Json(role));
+            }
         }
 
         final JSONObject response = new JSONObject();
         JSONHelper.put(response, "rolelist", roleValues);
-        
+        JSONHelper.putValue(response, "systemRoles", Role.getSystemRolesAsMap());
+
         return response;
     }
     

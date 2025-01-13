@@ -3,22 +3,17 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>fi.nls.oskari</groupId>
-        <artifactId>oskari-parent</artifactId>
-        <version>1.53.0-SNAPSHOT</version>
+        <groupId>org.oskari</groupId>
+        <artifactId>oskari-server</artifactId>
+        <version>3.0.0-SNAPSHOT</version>
     </parent>
-    <groupId>fi.nls.oskari.service</groupId>
-    <artifactId>oskari-feedback</artifactId>
+    <artifactId>service-feedback</artifactId>
     <packaging>jar</packaging>
     <name>Feedback Service</name>
     <dependencies>
-    <dependency>
-        <groupId>org.geotools</groupId>
-        <artifactId>gt-main</artifactId>
-    </dependency>
         <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-base</artifactId>
+            <groupId>org.oskari</groupId>
+            <artifactId>service-base</artifactId>
         </dependency>
     </dependencies>
 

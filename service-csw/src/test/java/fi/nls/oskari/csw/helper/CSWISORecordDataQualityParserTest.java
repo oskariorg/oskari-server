@@ -26,7 +26,6 @@ public class CSWISORecordDataQualityParserTest {
 
     private String TARGET_CRS = "EPSG:4326";
     private String SOURCE_CRS = "EPSG:3067";
-    private String CSW_INPUT_FILE_NAME = "/fi/nls/oskari/csw/helper/csw.xml";
     private String METADATA_ID = "MD_Metadata";
     private String DATA_QUALITIES = "dataQualities"; 
     private String LINEAGE_STATEMENTS = "lineageStatements";
@@ -44,9 +43,11 @@ public class CSWISORecordDataQualityParserTest {
     }
 
     private Node getMetadataNode() {
+        // TODO: still need to use old XmlHelper since metadata utilizes a lot of xpath parsing
+        // xpaths don't seem to work that well with the new helper
         DocumentBuilderFactory dbf = XmlHelper.newDocumentBuilderFactory();
         dbf.setNamespaceAware(true);
-        InputStream xmlInputStream = getClass().getResourceAsStream(CSW_INPUT_FILE_NAME);
+        InputStream xmlInputStream = getClass().getResourceAsStream("csw.xml");
 
         NodeList children = null;
         try {

@@ -6,6 +6,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This is the value object for the statistical indicator data source definition rows in the database.
@@ -18,7 +19,8 @@ public class StatisticalDatasource {
     private String config;
     private String plugin;
     private List<DatasourceLayer> layers = new ArrayList<>();
-    private long updateInterval = 1000 * 60 * 60 * 24;
+    private long maxUpdateDuration = TimeUnit.HOURS.toMillis(6);
+    private long updateInterval = TimeUnit.HOURS.toMillis(24);
     private long cachePeriod = updateInterval * 7;
     private JSONObject hints;
 
@@ -28,6 +30,16 @@ public class StatisticalDatasource {
 
     public void setLayers(List<DatasourceLayer> layers) {
         this.layers = layers;
+    }
+
+    /**
+     * How long the update process is allowed to last before
+     * we can safely determine something horrible has happened
+     * 
+     * TODO: Remove hard-coded value
+     */
+    public long getMaxUpdateDuration() {
+        return maxUpdateDuration;
     }
 
     public long getUpdateInterval() {

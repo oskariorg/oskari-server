@@ -17,15 +17,12 @@ import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
 import fi.nls.oskari.map.view.util.ViewHelper;
 import fi.nls.oskari.service.ServiceException;
-import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
-import fi.nls.oskari.service.capabilities.CapabilitiesCacheServiceMybatisImpl;
 import fi.nls.oskari.worker.ScheduledJob;
 
 /**
  * ScheludedJob that updates Capabilities of layers
  * <ul>
- * <li>Updates oskari_capabilities_cache rows</li>
- * <li>Updates OskariLayer objects via #setCapabilities()</li>
+ * <li>Updates oskari_maplayer capabilities column</li>
  * </ul>
  */
 @Oskari("UpdateCapabilitiesJob")
@@ -34,21 +31,16 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
     private static final Logger LOG = LogFactory.getLogger(UpdateCapabilitiesJob.class);
 
     private final OskariLayerService layerService;
-    private final CapabilitiesUpdateService capabilitiesUpdateService;
     private final ViewService viewService;
 
     public UpdateCapabilitiesJob() {
         this(new OskariLayerServiceMybatisImpl(),
-                new CapabilitiesCacheServiceMybatisImpl(),
                 new AppSetupServiceMybatisImpl());
     }
 
     public UpdateCapabilitiesJob(OskariLayerService layerService,
-            CapabilitiesCacheService capabilitiesCacheService,
             ViewService viewService) {
         this.layerService = layerService;
-        this.capabilitiesUpdateService = new CapabilitiesUpdateService(
-                layerService, capabilitiesCacheService);
         this.viewService = viewService;
     }
 
@@ -68,7 +60,18 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
                 .filter(layer -> shouldUpdate(layer))
                 .collect(Collectors.toList());
 
-        capabilitiesUpdateService.updateCapabilities(layersToUpdate, systemCRSs);
+        List<CapabilitiesUpdateResult> result = CapabilitiesService.updateCapabilities(layersToUpdate, systemCRSs);
+        List<String> updatedLayers = result.stream()
+                .filter(res -> res.getErrorMessage() == null)
+                .map(l -> l.getLayerId())
+                .collect(Collectors.toList());
+
+        for (OskariLayer layer : layersToUpdate) {
+            if (!updatedLayers.contains("" + layer.getId())) {
+                continue;
+            }
+            layerService.update(layer);
+        }
     }
 
     protected static boolean shouldUpdate(OskariLayer layer) {
@@ -88,4 +91,14 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
         return false;
     }
 
+    @Override
+    public String getCronLine() {
+        String line = super.getCronLine();
+        if(line != null) {
+            // use property if specified
+            return line;
+        }
+        // default if not specified (daily)
+        return "0 0 0 * * ?";
+    }
 }

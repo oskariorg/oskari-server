@@ -22,14 +22,15 @@ import org.oskari.service.mvt.TileCoord;
 import org.oskari.service.mvt.WFSTileGrid;
 import org.oskari.service.user.UserLayerService;
 
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.MultiPoint;
-import com.vividsolutions.jts.geom.Point;
+import org.locationtech.jts.geom.Envelope;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.MultiPoint;
+import org.locationtech.jts.geom.Point;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.cache.ComputeOnceCache;
+import fi.nls.oskari.control.ActionCommonException;
 import fi.nls.oskari.control.ActionConstants;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
@@ -126,8 +127,8 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
             } else {
                 resp = tileCache.get(cacheKey, __ -> createTile(id, layer, crs, grid, targetZ, z, x, y, contentProcessor));
             }
-        } catch (ServiceRuntimeException e) {
-            throw new ActionException(e.getMessage());
+        } catch (Exception e) {
+            throw new ActionCommonException(e.getMessage(), e);
         }
         params.getResponse().addHeader("Access-Control-Allow-Origin", "*");
         params.getResponse().addHeader("Content-Encoding", "gzip");
@@ -174,13 +175,13 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
     private void validateScaleDenominator(OskariLayer layer, WFSTileGrid grid, int z)
             throws ActionParamsException {
         double scaleDenominator = getScaleDenominator(grid, z);
-        if (layer.getMinScale() != null) {
+        if (layer.getMinScale() != null && layer.getMinScale() != -1) {
             if (scaleDenominator > layer.getMinScale()) {
                 // Bigger denominator <=> Smaller scale
                 throw new ActionParamsException("z too low for layer");
             }
         }
-        if (layer.getMaxScale() != null) {
+        if (layer.getMaxScale() != null && layer.getMaxScale() != -1) {
             if (scaleDenominator < layer.getMaxScale()) {
                 // Smaller denominator <=> Bigger scale
                 throw new ActionParamsException("z too high for layer");
@@ -208,16 +209,13 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
      */
     private byte[] createTile(String id, OskariLayer layer, CoordinateReferenceSystem crs,
             WFSTileGrid grid, int targetZ, int z, int x, int y,
-            Optional<UserLayerService> contentProcessor) throws ServiceRuntimeException {
+            Optional<UserLayerService> contentProcessor) {
         List<TileCoord> tilesToLoad = getTilesToLoad(targetZ, z, x, y);
 
         DefaultFeatureCollection sfc = new DefaultFeatureCollection();
         for (TileCoord tile : tilesToLoad) {
             SimpleFeatureCollection tileFeatures = getFeatures(id, layer, crs, grid, tile, contentProcessor);
-            if (tileFeatures == null) {
-                throw new ServiceRuntimeException("Failed to get features from service");
-            }
-            addAll(sfc, tileFeatures);
+            sfc.addAll(tileFeatures);
         }
 
         String mvtLayer = layer.getName();
@@ -285,20 +283,11 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
 
     private SimpleFeatureCollection getFeatures(String id, OskariLayer layer,
             CoordinateReferenceSystem crs, WFSTileGrid grid, TileCoord tile,
-            Optional<UserLayerService> processor) throws ServiceRuntimeException {
+            Optional<UserLayerService> processor) {
         double[] box = grid.getTileExtent(tile);
         Envelope envelope = new Envelope(box[0], box[2], box[1], box[3]);
-        Envelope bufferedEnvelope = new Envelope(envelope);
-        ReferencedEnvelope bbox = new ReferencedEnvelope(bufferedEnvelope, crs);
+        ReferencedEnvelope bbox = new ReferencedEnvelope(envelope, crs);
         return featureClient.getFeatures(id, layer, bbox, crs, processor);
-    }
-
-    private static void addAll(DefaultFeatureCollection sfc, SimpleFeatureCollection toAdd) {
-        try (SimpleFeatureIterator it = toAdd.features()) {
-            while (it.hasNext()) {
-                sfc.add(it.next());
-            }
-        }
     }
 
     private boolean isOnlyPointFeatures(SimpleFeatureCollection sfc) {

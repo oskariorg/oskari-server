@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.control.statistics.data.*;
 import fi.nls.oskari.control.statistics.plugins.db.DatasourceLayer;
 import fi.nls.oskari.control.statistics.plugins.pxweb.PxwebConfig;
+import fi.nls.oskari.control.statistics.plugins.pxweb.json.MetadataItem;
 import fi.nls.oskari.control.statistics.plugins.pxweb.json.PxFolderItem;
 import fi.nls.oskari.control.statistics.plugins.pxweb.json.PxTableItem;
 import fi.nls.oskari.control.statistics.plugins.pxweb.json.VariablesItem;
@@ -41,14 +42,15 @@ public class PxwebIndicatorsParser {
         final String url = getUrl(path);
 
         Collection<String> languages = getLanguages();
-        List<StatisticalIndicator> indicatorList = null;
+        List<StatisticalIndicator> indicatorList;
         if(url.endsWith(".px")) {
             // No id for indicator, assume the service has a separate indicator key config.
             indicatorList = parsePxFileToMultipleIndicators(path, languages);
         } else {
-            indicatorList = parseStructuredService(null, languages);
+            indicatorList = parseStructuredService(path, languages);
         }
         setupLayers(indicatorList, layers, url);
+        setupMetadata(indicatorList, languages);
         return indicatorList;
     }
 
@@ -75,15 +77,18 @@ public class PxwebIndicatorsParser {
             languages.forEach(lang -> {
                 try {
                     PxTableItem table = getPxTable(path, lang, item.id);
-                    StatisticalIndicator ind = indicatorMap.get(item.id);
+                    String indicatorId = createIndicatorId(table);
+                    StatisticalIndicator ind = indicatorMap.get(indicatorId);
                     if (ind == null) {
                         ind = new StatisticalIndicator();
-                        ind.setId(item.id);
-                        indicatorMap.put(item.id, ind);
+                        ind.setId(indicatorId);
+                        indicatorMap.put(indicatorId, ind);
                         indicators.add(ind);
+                        // only populate model for first (== primary) language as it doesn't support localized labels for variables/selectors
+                        ind.setDataModel(getModel(table));
                     }
                     ind.addName(lang, item.text);
-                    ind.setDataModel(getModel(table));
+                    // TODO: add "mergeModels(lang, model)" that would populate localized labels for variable
                 } catch (IOException e) {
                     LOG.error(e, "Error getting indicators from Pxweb datasource:", config.getUrl());
                 }
@@ -149,6 +154,98 @@ public class PxwebIndicatorsParser {
         }
     }
 
+    private void setupMetadata(List<StatisticalIndicator> indicators, Collection<String> languages) {
+        indicators.forEach(ind -> {
+            String id = ind.getId();
+            MetadataItem meta = getMetadata(id);
+            if (meta == null) {
+                return;
+            }
+            languages.forEach(lang -> {
+                String name = meta.getName(lang);
+                if (name != null) {
+                    ind.addName(lang, name);
+                }
+                String src = meta.getSource(lang);
+                if (src != null) {
+                    ind.addSource(lang, src);
+                }
+                String desc = meta.getDesc(lang);
+                if (desc != null) {
+                    ind.addDescription(lang, desc);
+                }
+            });
+            ind.addMetadata("isRatio", meta.isRatio);
+            ind.addMetadata("base", meta.base);
+            ind.addMetadata("min", meta.min);
+            ind.addMetadata("max", meta.max);
+
+            ind.addMetadata("decimalCount", meta.decimalCount);
+            ind.addMetadata("updated", meta.updated);
+            ind.addMetadata("nextUpdate", meta.nextUpdate);
+            if (meta.timerange != null) {
+                StatisticalIndicatorDataDimension timeVar = ind.getDataModel().getDimension(ind.getDataModel().getTimeVariable());
+                List<IdNamePair> filteredValues = filterAvailableTimes(timeVar, meta);
+                if (filteredValues != null) {
+                    timeVar.setAllowedValues(filteredValues);
+                }
+                ind.addMetadata("time_start", meta.timerange.start);
+                ind.addMetadata("time_end", meta.timerange.end);
+            }
+        });
+    }
+    private MetadataItem getMetadata(String indicatorId) {
+        MetadataItem meta = config.getMetadata(indicatorId);
+        if (meta != null) {
+            return meta;
+        }
+        if (indicatorId.contains(PxwebConfig.ID_SEPARATOR)) {
+            String shortID = indicatorId.substring(indicatorId.indexOf(PxwebConfig.ID_SEPARATOR) + PxwebConfig.ID_SEPARATOR.length());
+            return config.getMetadata(shortID);
+        }
+        return null;
+    }
+
+    /**
+     * Returns a filtered allowed values list for time variable based on the metadata.
+     * Note! Assumes time values are ordered so timerange can be checked for "2000", "3/2000" or "January"
+     * @param timeVar the time dimension variable
+     * @param meta indicator specific metadata
+     * @return filtered list of time dimension values to replace current ones based on metadata
+     */
+    protected List<IdNamePair> filterAvailableTimes(StatisticalIndicatorDataDimension timeVar, MetadataItem meta) {
+        if (timeVar == null) {
+            return null;
+        }
+        if (meta == null) {
+            return timeVar.getAllowedValues();
+        }
+        if (meta.timerange == null) {
+            return timeVar.getAllowedValues();
+        }
+        final String timeStart = meta.timerange.start;
+        final String timeEnd = meta.timerange.end;
+        if (timeStart == null && timeEnd == null) {
+            return timeVar.getAllowedValues();
+        }
+        int startIndex = -1;
+        int endIndex = -1;
+        List<IdNamePair> timeValues = timeVar.getAllowedValues();
+        for (int idx = 0; idx < timeValues.size(); idx++) {
+            IdNamePair pair = timeValues.get(idx);
+            if (startIndex == -1 && pair.getKey().equals(timeStart)) {
+                startIndex = idx;
+            }
+            if (endIndex == -1 && pair.getKey().equals(timeEnd)) {
+                endIndex = idx + 1;
+            }
+        }
+        if (endIndex == -1) {
+            endIndex = timeValues.size();
+        }
+        return timeValues.subList(Math.max(0, startIndex), Math.min(endIndex, timeValues.size()));
+    }
+
     protected PxTableItem getPxTable(String path) throws IOException {
         return getPxTable(path, null);
     }
@@ -190,19 +287,36 @@ public class PxwebIndicatorsParser {
         final StatisticalIndicatorDataModel selectors = getModel(table);
         // actual indicators list is one of the "variables"
         VariablesItem indicatorList = table.getVariable(config.getIndicatorKey());
-        if(indicatorList == null) {
+        if (indicatorList == null) {
             return list;
         }
-        for(IdNamePair item: indicatorList.getLabels()) {
+        for (IdNamePair item: indicatorList.getLabels()) {
             StatisticalIndicator indicator = new StatisticalIndicator();
-            indicator.setId(table.getId() + "::" + item.getKey());
+            indicator.setId(createIndicatorId(table, item.getKey()));
             indicator.addName(lang, item.getValue());
             indicator.addDescription(lang, table.getTitle());
-            indicator.setDataModel(selectors);
+            // clone the model since we might need to modify it based on metadata
+            //  and without cloning the indicators share the reference
+            //  making changes to one bleed over to another one
+            indicator.setDataModel(selectors.clone());
             list.add(indicator);
         }
 
         return list;
+    }
+
+    private String createIndicatorId(PxTableItem table) {
+        if (table.getPath() != null) {
+            if (table.getPath().endsWith(".px")) {
+                return table.getPath();
+            }
+            return table.getPath() + "/" + table.getId();
+        }
+        return table.getId();
+    }
+
+    private String createIndicatorId(PxTableItem table, String item) {
+        return createIndicatorId(table) + PxwebConfig.ID_SEPARATOR + item;
     }
 
     protected StatisticalIndicatorDataModel getModel(PxTableItem table) {
@@ -210,6 +324,9 @@ public class PxwebIndicatorsParser {
         final StatisticalIndicatorDataModel selectors = new StatisticalIndicatorDataModel();
         selectors.setTimeVariable(config.getTimeVariableId());
         for (VariablesItem item: table.getSelectors()) {
+            if(item.getCode().equals(config.getRegionKey())) {
+                selectors.setHasRegionInfo(true);
+            }
             if(config.getIgnoredVariables().contains(item.getCode())) {
                 continue;
             }
@@ -244,12 +361,12 @@ public class PxwebIndicatorsParser {
         if(path == null) {
             return nextPart;
         }
-        String url = path + "/" +  IOHelper.urlEncode(nextPart).replace("+", "%20").replace("%2F", "/");
-        return url.replaceAll("//", "/");
+        return path + "/" + nextPart;
     }
 
     protected String loadUrl(String url) throws IOException {
-        return IOHelper.getURL(url);
+        // make sure there's no spaces
+        return IOHelper.getURL(url.replaceAll(" ", "%20"));
     }
 
     private Collection<String> getLanguages() {

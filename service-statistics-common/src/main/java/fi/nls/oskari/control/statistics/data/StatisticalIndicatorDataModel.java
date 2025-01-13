@@ -15,6 +15,7 @@ public class StatisticalIndicatorDataModel {
      * The dimensions have a defined order.
      */
     private List<StatisticalIndicatorDataDimension> dimensions = new ArrayList<>();
+    private boolean hasRegionInfo = false;
 
     // this is the id of the dimension that re-presents time -> enables time-series analyzes
     private String timeVariable;
@@ -51,6 +52,16 @@ public class StatisticalIndicatorDataModel {
     }
 
     @JsonIgnore
+    public void setHasRegionInfo(boolean hasRegionInfo) {
+        this.hasRegionInfo = hasRegionInfo;
+    }
+
+    @JsonIgnore
+    public boolean isHasRegionInfo() {
+        return hasRegionInfo;
+    }
+
+    @JsonIgnore
     public StatisticalIndicatorDataDimension getDimension(String id) {
         for(StatisticalIndicatorDataDimension dim : getDimensions()) {
             if(dim.getId().equalsIgnoreCase(id)) {
@@ -58,5 +69,14 @@ public class StatisticalIndicatorDataModel {
             }
         }
         return null;
+    }
+
+    @JsonIgnore
+    public StatisticalIndicatorDataModel clone() {
+        StatisticalIndicatorDataModel model = new StatisticalIndicatorDataModel();
+        model.setHasRegionInfo(hasRegionInfo);
+        model.setTimeVariable(timeVariable);
+        getDimensions().forEach(d -> model.addDimension(d.clone()));
+        return model;
     }
 }

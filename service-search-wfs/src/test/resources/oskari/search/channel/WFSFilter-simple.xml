@@ -1,0 +1,6 @@
+<Filter>
+    <PropertyIsLike wildCard='*' singleChar='.' escape='!' matchCase='false'>
+        <PropertyName>testParam</PropertyName>
+        <Literal>*testing*</Literal>
+    </PropertyIsLike>
+</Filter>

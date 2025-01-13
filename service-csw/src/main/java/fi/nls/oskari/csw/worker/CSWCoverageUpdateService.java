@@ -1,6 +1,6 @@
 package fi.nls.oskari.csw.worker;
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.csw.dao.OskariLayerMetadataDao;
 import fi.nls.oskari.csw.domain.CSWIsoRecord;

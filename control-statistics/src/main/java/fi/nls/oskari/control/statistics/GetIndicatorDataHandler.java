@@ -15,6 +15,7 @@ import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -80,17 +81,22 @@ public class GetIndicatorDataHandler extends ActionHandler {
         }
 
         StatisticalIndicatorDataModel selectors = StatisticsHelper.getIndicatorDataModel(selectorJSON);
-        Map<String, IndicatorValue> values = plugin.getIndicatorValues(indicator, selectors, layer);
-        JSONObject response = toJSON(values);
+        try {
+            Map<String, IndicatorValue> values = plugin.getIndicatorValues(indicator, selectors, layer);
+            JSONObject response = toJSON(values);
 
-        // Note that there is an another layer of caches in the plugins doing the web queries.
-        // Two layers are necessary, because deserialization and conversion to the internal data model
-        // is a pretty heavy operation.
-        if (plugin.canCache()) {
-            JedisManager.setex(cacheKey, JedisManager.EXPIRY_TIME_DAY, response.toString());
+            if (plugin.canCache()) {
+                JedisManager.setex(cacheKey, JedisManager.EXPIRY_TIME_DAY, response.toString());
+            }
+
+            return response;
+        } catch (APIException e) {
+            if (e.getCause() instanceof IOException) {
+                throw new ActionParamsException(e.getMessage());
+            } else {
+                throw new ActionException(e.getMessage(), e);
+            }
         }
-
-        return response;
     }
 
     private JSONObject getFromCache(String cacheKey) {

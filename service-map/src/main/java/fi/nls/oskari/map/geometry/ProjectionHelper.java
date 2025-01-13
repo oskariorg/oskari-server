@@ -1,8 +1,9 @@
 package fi.nls.oskari.map.geometry;
 
-import com.vividsolutions.jts.geom.CoordinateSequence;
-import com.vividsolutions.jts.geom.CoordinateSequenceFilter;
-import com.vividsolutions.jts.geom.Geometry;
+import fi.nls.oskari.service.ServiceRuntimeException;
+import org.locationtech.jts.geom.CoordinateSequence;
+import org.locationtech.jts.geom.CoordinateSequenceFilter;
+import org.locationtech.jts.geom.Geometry;
 import fi.nls.oskari.domain.geo.Point;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -32,6 +33,7 @@ public class ProjectionHelper implements PointTransformer {
     private static Logger log = LogFactory.getLogger(ProjectionHelper.class);
     private static String LONG_SRS_NAME_BASE = "urn:ogc:def:crs:EPSG::";
 
+    private static final String UNIT_DEGREES = "deg";
     public static Point transformPoint(final double lon, final double lat, final String sourceSRS, final String targetSRS) {
         return transformPoint(new Point(lon, lat), sourceSRS, targetSRS);
     }
@@ -124,6 +126,9 @@ public class ProjectionHelper implements PointTransformer {
                 crs.getCoordinateSystem().getAxis(0).getDirection().absolute() == AxisDirection.DISPLAY_UP;
     }
 
+    public static boolean isUnitDegrees(CoordinateReferenceSystem crs) {
+        return UNIT_DEGREES.equals(crs.getCoordinateSystem().getAxis(0).getUnit().toString());
+    }
     /**
      * Return epsg short
      * urn:ogc:def:crs:EPSG::32635  --> EPSG:32635
@@ -141,12 +146,16 @@ public class ProjectionHelper implements PointTransformer {
         } catch (Exception e) {
             log.debug("EPSG geotools decoding failed", e);
         }
-        // try own parsing
+        // try own parsing for something like
+        //  "urn:ogc:def:crs:EPSG:6.3:3067"
+        //  "urn:ogc:def:crs:EPSG:6.18:3:3857"
+        //  "urn:ogc:def:crs:EPSG::3575"
         String[] epsg = crs.toUpperCase().split("EPSG");
         if (epsg.length > 1) {
             String[] code = epsg[1].split(":");
             if (code.length > 2) {
-                return "EPSG:" + code[2];
+                // get the last token
+                return "EPSG:" + code[code.length - 1];
             }
         }
         return crs;
@@ -189,6 +198,19 @@ public class ProjectionHelper implements PointTransformer {
         return null;
     }
 
+    /**
+     * Get the numeric SRID of an EPSG-code
+     * @param srsName The String representation of the EPSG-code (e.g. EPSG:3857)
+     * @return the (int) id part of the string e.g. 3857
+     */
+    public static int getSRID(String srsName) {
+        try {
+            String srid = srsName.substring(srsName.lastIndexOf(':') + 1);
+            return Integer.parseInt(srid);
+        } catch(Exception e) {
+            throw new ServiceRuntimeException("Failed to parse SRID from srsName " + srsName, e);
+        }
+    }
 
     /**
      * Transforms geojson geometry coordinates

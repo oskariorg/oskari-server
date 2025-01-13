@@ -7,7 +7,7 @@ import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.spring.SpringContextHolder;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import org.apache.commons.lang.text.StrSubstitutor;
+import org.apache.commons.text.StringSubstitutor;
 import org.springframework.context.MessageSource;
 
 import javax.mail.Message;
@@ -152,7 +152,7 @@ public class MailSenderService {
 
 
     private String constructMail(String template, Map params) {
-        StrSubstitutor emailValuesSubstitutor = new StrSubstitutor(params);
+        StringSubstitutor emailValuesSubstitutor = new StringSubstitutor(params);
         return emailValuesSubstitutor.replace(template);
     }
 

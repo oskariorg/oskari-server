@@ -1,19 +1,19 @@
 package fi.nls.oskari.control.data;
 
 import fi.nls.oskari.control.*;
+import fi.nls.oskari.service.OskariComponentManager;
+import org.oskari.log.AuditLog;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupService;
-import fi.mml.map.mapwindow.service.db.OskariMapLayerGroupServiceIbatisImpl;
+import org.oskari.service.maplayer.OskariMapLayerGroupService;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.domain.map.MaplayerGroup;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLink;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkService;
-import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkServiceMybatisImpl;
 
 /**
  * CRUD for layer and group order handling. Methods require admin user.
@@ -45,10 +45,10 @@ public class LayerAndGroupOrderHandler extends RestActionHandler {
     public void init() {
         // setup service if it hasn't been initialized
         if (groupService == null) {
-            setGroupService(new OskariMapLayerGroupServiceIbatisImpl());
+            setGroupService(OskariComponentManager.getComponentOfType(OskariMapLayerGroupService.class));
         }
         if (linkService == null) {
-            setLinkService(new OskariLayerGroupLinkServiceMybatisImpl());
+            setLinkService(OskariComponentManager.getComponentOfType(OskariLayerGroupLinkService.class));
         }
     }
 
@@ -72,6 +72,9 @@ public class LayerAndGroupOrderHandler extends RestActionHandler {
             } else {
                 updateLayerAndGroupOrders(orders, parentID);
             }
+            AuditLog.user(params.getClientIp(), params.getUser())
+                    .withMsg("Changed order")
+                    .updated(AuditLog.ResourceType.MAPLAYER_GROUP);
         } catch (JSONException e) {
             log.warn(e);
             throw new ActionParamsException("Cannot save orders!");

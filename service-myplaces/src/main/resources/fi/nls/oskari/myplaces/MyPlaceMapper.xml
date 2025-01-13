@@ -10,7 +10,8 @@
         <result property="uuid" column="uuid" />
         <result property="publisher_name" column="publisher_name" />
         <result property="category_name" column="category_name" />
-        <association property="style" column = "id" select = "findCategoryStyle" fetchType="eager"/>
+        <result property="options" column="options" />
+        <result property="locale" column="locale" />
     </resultMap>
 
     <resultMap id="PlaceResult" type="MyPlace">
@@ -22,6 +23,21 @@
         <result property="link" column="link" />
         <result property="imageUrl" column="image_url" />
         <result property="attentionText" column="attention_text" />
+    </resultMap>
+
+    <resultMap id="MyPlacesResult" type="MyPlace">
+        <result property="id" column="id" />
+        <result property="uuid" column="uuid" />
+        <result property="categoryId" column="category_id" />
+        <result property="name" column="name" />
+        <result property="desc" column="place_desc" />
+        <result property="link" column="link" />
+        <result property="imageUrl" column="image_url" />
+        <result property="attentionText" column="attention_text" />
+        <result property="wkt" column="wkt" />
+        <result property="databaseSRID" column="srid"/>
+        <result property="created" column="created" jdbcType="TIMESTAMP" javaType="java.time.OffsetDateTime"/>
+        <result property="updated" column="updated" jdbcType="TIMESTAMP" javaType="java.time.OffsetDateTime"/>
     </resultMap>
 
     <select id="findPlace"
@@ -46,7 +62,9 @@
             id, 
             category_name,
             uuid,
-            publisher_name
+            publisher_name,
+            options,
+            locale
 	    from 
 	        categories 
 	    where id = #{id}
@@ -59,7 +77,9 @@
             id, 
             category_name,
             uuid,
-            publisher_name
+            publisher_name,
+            options,
+            locale
         from 
             categories 
         where id in
@@ -74,72 +94,11 @@
             id, 
             category_name,
             uuid,
-            publisher_name
+            publisher_name,
+            options,
+            locale
         from 
             categories
          where publisher_name is not null
-    </select>
-    
-     <select id="freeFind"
-        resultMap="CategoryResult">
-         <![CDATA[
-        select 
-            id, 
-            category_name,
-            stroke_width,
-            stroke_color,
-            fill_color,
-            uuid,
-            dot_color,
-            dot_size,
-            border_width,
-            border_color,
-            publisher_name
-        from 
-            categories 
-         WHERE 
-            to_tsvector(category_name  || ' ' || publisher_name) @@ to_tsquery(#{searchKey}) AND
-            categories.publisher_name is not null UNION 
-                SELECT 
-                   categories.id, 
-                   categories.category_name,
-                   categories.stroke_width,
-                   categories.stroke_color,
-                   categories.fill_color,
-                   categories.uuid,
-                   categories.dot_color,
-                   categories.dot_size,
-                   categories.border_width,
-                   categories.border_color,
-                   categories.publisher_name
-                FROM 
-                   my_places,categories
-                WHERE 
-                    to_tsvector(name || ' ' || place_desc) @@ to_tsquery(#{searchKey}) AND
-                    my_places.category_id = categories.id and
-                    categories.publisher_name is not null
-          ]]>       
-    </select>
-    <select id="findCategoryStyle" resultType="UserDataStyle" useCache="false">
-        SELECT
-            id,
-            stroke_width,
-            stroke_color,
-            fill_color,
-            dot_color,
-            dot_size,
-            border_width,
-            border_color,
-            dot_shape,
-            stroke_linejoin,
-            fill_pattern,
-            stroke_linecap,
-            stroke_dasharray,
-            border_linejoin,
-            border_dasharray
-        FROM
-            categories
-        WHERE
-            id = #{id}
     </select>
 </mapper>

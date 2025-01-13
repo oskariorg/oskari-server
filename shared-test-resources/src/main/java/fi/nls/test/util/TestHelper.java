@@ -6,10 +6,15 @@ import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.PropertyUtil;
 import org.h2.jdbcx.JdbcDataSource;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.naming.OperationNotSupportedException;
 import javax.sql.DataSource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Connection;
@@ -25,6 +30,7 @@ import java.util.Properties;
 public class TestHelper {
 
     public static final String DB_PROPS_KEY = "oskari_db_test_props";
+
     public static final String TEST_URL = "http://httpbin.org/ip";
     private static enum STATUS {
         NONE,
@@ -115,10 +121,39 @@ public class TestHelper {
         return null;
     }
 
-    public static DataSource createMemDBforUnitTest(List<String> sqlStatementsForInit) throws SQLException {
+    public static DataSource createMemDBforUnitTest() throws SQLException {
         JdbcDataSource ds = new JdbcDataSource();
-        ds.setURL("jdbc:h2:mem:test;MODE=PostgreSQL;DB_CLOSE_DELAY=-1");
-        if (sqlStatementsForInit != null ) {
+        ds.setURL("jdbc:h2:mem:test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH;DB_CLOSE_DELAY=-1");
+        // in theory we should be able to initialize database schema/tables by calling
+        // FlywaydbMigrator.migrate(ds);
+        // BUT there's an issue with cyclic dependencies for Maven that we need to
+        // deal with first to get this running
+        return ds;
+    }
+
+
+    public static void registerTestDataSource() throws SQLException {
+        registerTestDataSource(createMemDBforUnitTest());
+    }
+
+    public static void registerTestDataSource(final DataSource ds) {
+        try {
+            DatasourceHelper.getInstance()
+                    .registerDataSource(
+                            DatasourceHelper.DEFAULT_DATASOURCE_NAME, ds);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public static void teardown() {
+        DatasourceHelper.getInstance().teardown();
+    }
+
+
+    public static DataSource createMemDBforUnitTest(List<String> sqlStatementsForInit) throws SQLException {
+        DataSource ds = createMemDBforUnitTest();
+        if (sqlStatementsForInit != null) {
             try (Connection c = ds.getConnection();
                  Statement s = c.createStatement()) {
                 for (String sql : sqlStatementsForInit) {

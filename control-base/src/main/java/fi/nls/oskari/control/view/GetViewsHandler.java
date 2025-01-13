@@ -32,6 +32,8 @@ public class GetViewsHandler extends ActionHandler {
     public static final String KEY_VIEWS = "views";
     public static final String KEY_METADATA = "metadata";
     public static final String KEY_SRSNAME = "srsName";
+    public static final String KEY_CREATED = "created";
+    public static final String KEY_UPDATED = "updated";
 
     private static final Logger log = LogFactory.getLogger(GetViewsHandler.class);
 
@@ -85,6 +87,8 @@ public class GetViewsHandler extends ActionHandler {
             viewJson.put(KEY_URL, view.getUrl());
             viewJson.put(KEY_METADATA, view.getMetadata());
             viewJson.put(KEY_SRSNAME, view.getSrsName());
+            viewJson.put(KEY_CREATED, view.getCreated());
+            viewJson.put(KEY_UPDATED, view.getUpdated());
             viewJson.put(KEY_STATE, bundlesToJSONObject(view.getBundles()));
             return Optional.of(viewJson);
         } catch (Exception ex) {
@@ -98,25 +102,21 @@ public class GetViewsHandler extends ActionHandler {
         // The old publisher and normal view listing need them.
         final JSONObject state = new JSONObject();
         for (Bundle bundle : bundles) {
-            JSONObject bundleNode = bundleToJSONObjet(bundle);
+            JSONObject bundleNode = bundleToJSONObject(bundle);
             // If bundleNode is null putValue will actually eventually call remove, which is fine here
             JSONHelper.putValue(state, bundle.getBundleinstance(), bundleNode);
         }
         return state;
     }
 
-    private JSONObject bundleToJSONObjet(Bundle bundle) {
+    private JSONObject bundleToJSONObject(Bundle bundle) {
         JSONObject state = JSONHelper.createJSONObject(bundle.getState());
         if (state == null) {
             return null;
         }
-        JSONObject config = JSONHelper.createJSONObject(bundle.getConfig());
-        if (config == null) {
-            return null;
-        }
         JSONObject bundleNode = new JSONObject();
         JSONHelper.putValue(bundleNode, KEY_STATE, state);
-        JSONHelper.putValue(bundleNode, KEY_CONFIG, config);
+        JSONHelper.putValue(bundleNode, KEY_CONFIG, JSONHelper.createJSONObject(bundle.getConfig()));
         return bundleNode;
     }
 

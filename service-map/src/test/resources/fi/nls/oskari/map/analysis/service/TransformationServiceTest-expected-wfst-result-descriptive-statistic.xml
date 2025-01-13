@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wfs:Transaction xmlns:wfs="http://www.opengis.net/wfs"
+	service="WFS" version="1.1.0"
+	xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:ogc="http://www.opengis.net/ogc"
+	xmlns:gml="http://www.opengis.net/gml"
+	xmlns:cgf="http://www.opengis.net/cite/geometry">
+	<wfs:Insert>
+		<feature:analysis_data
+			xmlns:feature="http://www.oskari.org">
+			<gml:geometry xmlns:feature="http://www.opengis.net/gml">
+				<gml:MultiPoint srsDimension="2"
+					srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+					<gml:pointMember>
+						<gml:Point srsDimension="2">
+							<gml:pos>391820.455 6673185.7874</gml:pos>
+						</gml:Point>
+					</gml:pointMember>
+					<gml:pointMember>
+						<gml:Point srsDimension="2">
+							<gml:pos>391892.8962 6673138.0936</gml:pos>
+						</gml:Point>
+					</gml:pointMember>
+					<gml:pointMember>
+						<gml:Point srsDimension="2">
+							<gml:pos>391810.529 6673237.9559</gml:pos>
+						</gml:Point>
+					</gml:pointMember>
+				</gml:MultiPoint>
+			</gml:geometry>
+			<feature:t1>391810.529 6673138.0936 391892.8962 6673237.9559</feature:t1>
+			<feature:t2>kkonn</feature:t2>
+			<feature:n1>3.0</feature:n1>
+			<feature:n2>14.0</feature:n2>
+			<feature:n3>2.0</feature:n3>
+			<feature:n4>10.0</feature:n4>
+			<feature:n5>4.666666666666667</feature:n5>
+			<feature:n6>3.7712361663282534</feature:n6>
+			<feature:n7>2.0</feature:n7>
+			<feature:analysis_id>1</feature:analysis_id>
+			<feature:uuid>test-uuid</feature:uuid>
+		</feature:analysis_data>
+	</wfs:Insert>
+	<wfs:Insert>
+		<feature:analysis_data
+			xmlns:feature="http://www.oskari.org">
+			<gml:geometry xmlns:feature="http://www.opengis.net/gml">
+				<gml:MultiPoint srsDimension="2"
+					srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+					<gml:pointMember>
+						<gml:Point srsDimension="2">
+							<gml:pos>391820.455 6673185.7874</gml:pos>
+						</gml:Point>
+					</gml:pointMember>
+					<gml:pointMember>
+						<gml:Point srsDimension="2">
+							<gml:pos>391892.8962 6673138.0936</gml:pos>
+						</gml:Point>
+					</gml:pointMember>
+					<gml:pointMember>
+						<gml:Point srsDimension="2">
+							<gml:pos>391810.529 6673237.9559</gml:pos>
+						</gml:Point>
+					</gml:pointMember>
+				</gml:MultiPoint>
+			</gml:geometry>
+			<feature:t1>391810.529 6673138.0936 391892.8962 6673237.9559</feature:t1>
+			<feature:t2>lkmhapa</feature:t2>
+			<feature:n1>3.0</feature:n1>
+			<feature:n2>5.0</feature:n2>
+			<feature:n3>1.0</feature:n3>
+			<feature:n4>3.0</feature:n4>
+			<feature:n5>1.6666666666666667</feature:n5>
+			<feature:n6>0.9428090415820634</feature:n6>
+			<feature:n7>1.0</feature:n7>
+			<feature:analysis_id>1</feature:analysis_id>
+			<feature:uuid>test-uuid</feature:uuid>
+		</feature:analysis_data>
+	</wfs:Insert>
+	<wfs:Insert>
+		<feature:analysis_data
+			xmlns:feature="http://www.oskari.org">
+			<gml:geometry xmlns:feature="http://www.opengis.net/gml">
+				<gml:MultiPoint srsDimension="2"
+					srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+					<gml:pointMember>
+						<gml:Point srsDimension="2">
+							<gml:pos>391820.455 6673185.7874</gml:pos>
+						</gml:Point>
+					</gml:pointMember>
+					<gml:pointMember>
+						<gml:Point srsDimension="2">
+							<gml:pos>391892.8962 6673138.0936</gml:pos>
+						</gml:Point>
+					</gml:pointMember>
+					<gml:pointMember>
+						<gml:Point srsDimension="2">
+							<gml:pos>391810.529 6673237.9559</gml:pos>
+						</gml:Point>
+					</gml:pointMember>
+				</gml:MultiPoint>
+			</gml:geometry>
+			<feature:t1>391810.529 6673138.0936 391892.8962 6673237.9559</feature:t1>
+			<feature:t2>lkmjk</feature:t2>
+			<feature:n1>3.0</feature:n1>
+			<feature:n2>1.0</feature:n2>
+			<feature:n3>0.0</feature:n3>
+			<feature:n4>1.0</feature:n4>
+			<feature:n5>0.3333333333333333</feature:n5>
+			<feature:n6>0.4714045207910317</feature:n6>
+			<feature:n7>0.0</feature:n7>
+			<feature:analysis_id>1</feature:analysis_id>
+			<feature:uuid>test-uuid</feature:uuid>
+		</feature:analysis_data>
+	</wfs:Insert>
+	<wfs:Insert>
+		<feature:analysis_data
+			xmlns:feature="http://www.oskari.org">
+			<gml:geometry xmlns:feature="http://www.opengis.net/gml">
+				<gml:MultiPoint srsDimension="2"
+					srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+					<gml:pointMember>
+						<gml:Point srsDimension="2">
+							<gml:pos>391820.455 6673185.7874</gml:pos>
+						</gml:Point>
+					</gml:pointMember>
+					<gml:pointMember>
+						<gml:Point srsDimension="2">
+							<gml:pos>391892.8962 6673138.0936</gml:pos>
+						</gml:Point>
+					</gml:pointMember>
+					<gml:pointMember>
+						<gml:Point srsDimension="2">
+							<gml:pos>391810.529 6673237.9559</gml:pos>
+						</gml:Point>
+					</gml:pointMember>
+				</gml:MultiPoint>
+			</gml:geometry>
+			<feature:t1>391810.529 6673138.0936 391892.8962 6673237.9559</feature:t1>
+			<feature:t2>lkmlaka</feature:t2>
+			<feature:n1>3.0</feature:n1>
+			<feature:n2>0.0</feature:n2>
+			<feature:n3>0.0</feature:n3>
+			<feature:n4>0.0</feature:n4>
+			<feature:n5>0.0</feature:n5>
+			<feature:n6>0.0</feature:n6>
+			<feature:n7>0.0</feature:n7>
+			<feature:analysis_id>1</feature:analysis_id>
+			<feature:uuid>test-uuid</feature:uuid>
+		</feature:analysis_data>
+	</wfs:Insert>
+	<wfs:Insert>
+		<feature:analysis_data
+			xmlns:feature="http://www.oskari.org">
+			<gml:geometry xmlns:feature="http://www.opengis.net/gml">
+				<gml:MultiPoint srsDimension="2"
+					srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+					<gml:pointMember>
+						<gml:Point srsDimension="2">
+							<gml:pos>391820.455 6673185.7874</gml:pos>
+						</gml:Point>
+					</gml:pointMember>
+					<gml:pointMember>
+						<gml:Point srsDimension="2">
+							<gml:pos>391892.8962 6673138.0936</gml:pos>
+						</gml:Point>
+					</gml:pointMember>
+					<gml:pointMember>
+						<gml:Point srsDimension="2">
+							<gml:pos>391810.529 6673237.9559</gml:pos>
+						</gml:Point>
+					</gml:pointMember>
+				</gml:MultiPoint>
+			</gml:geometry>
+			<feature:t1>391810.529 6673138.0936 391892.8962 6673237.9559</feature:t1>
+			<feature:t2>lkmmo</feature:t2>
+			<feature:n1>3.0</feature:n1>
+			<feature:n2>0.0</feature:n2>
+			<feature:n3>0.0</feature:n3>
+			<feature:n4>0.0</feature:n4>
+			<feature:n5>0.0</feature:n5>
+			<feature:n6>0.0</feature:n6>
+			<feature:n7>0.0</feature:n7>
+			<feature:analysis_id>1</feature:analysis_id>
+			<feature:uuid>test-uuid</feature:uuid>
+		</feature:analysis_data>
+	</wfs:Insert>
+	<wfs:Insert>
+		<feature:analysis_data
+			xmlns:feature="http://www.oskari.org">
+			<gml:geometry xmlns:feature="http://www.opengis.net/gml">
+				<gml:MultiPoint srsDimension="2"
+					srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+					<gml:pointMember>
+						<gml:Point srsDimension="2">
+							<gml:pos>391820.455 6673185.7874</gml:pos>
+						</gml:Point>
+					</gml:pointMember>
+					<gml:pointMember>
+						<gml:Point srsDimension="2">
+							<gml:pos>391892.8962 6673138.0936</gml:pos>
+						</gml:Point>
+					</gml:pointMember>
+					<gml:pointMember>
+						<gml:Point srsDimension="2">
+							<gml:pos>391810.529 6673237.9559</gml:pos>
+						</gml:Point>
+					</gml:pointMember>
+				</gml:MultiPoint>
+			</gml:geometry>
+			<feature:t1>391810.529 6673138.0936 391892.8962 6673237.9559</feature:t1>
+			<feature:t2>lkmmp</feature:t2>
+			<feature:n1>3.0</feature:n1>
+			<feature:n2>0.0</feature:n2>
+			<feature:n3>0.0</feature:n3>
+			<feature:n4>0.0</feature:n4>
+			<feature:n5>0.0</feature:n5>
+			<feature:n6>0.0</feature:n6>
+			<feature:n7>0.0</feature:n7>
+			<feature:analysis_id>1</feature:analysis_id>
+			<feature:uuid>test-uuid</feature:uuid>
+		</feature:analysis_data>
+	</wfs:Insert>
+	<wfs:Insert>
+		<feature:analysis_data
+			xmlns:feature="http://www.oskari.org">
+			<gml:geometry xmlns:feature="http://www.opengis.net/gml">
+				<gml:MultiPoint srsDimension="2"
+					srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+					<gml:pointMember>
+						<gml:Point srsDimension="2">
+							<gml:pos>391820.455 6673185.7874</gml:pos>
+						</gml:Point>
+					</gml:pointMember>
+					<gml:pointMember>
+						<gml:Point srsDimension="2">
+							<gml:pos>391892.8962 6673138.0936</gml:pos>
+						</gml:Point>
+					</gml:pointMember>
+					<gml:pointMember>
+						<gml:Point srsDimension="2">
+							<gml:pos>391810.529 6673237.9559</gml:pos>
+						</gml:Point>
+					</gml:pointMember>
+				</gml:MultiPoint>
+			</gml:geometry>
+			<feature:t1>391810.529 6673138.0936 391892.8962 6673237.9559</feature:t1>
+			<feature:t2>lkmmuukulk</feature:t2>
+			<feature:n1>3.0</feature:n1>
+			<feature:n2>0.0</feature:n2>
+			<feature:n3>0.0</feature:n3>
+			<feature:n4>0.0</feature:n4>
+			<feature:n5>0.0</feature:n5>
+			<feature:n6>0.0</feature:n6>
+			<feature:n7>0.0</feature:n7>
+			<feature:analysis_id>1</feature:analysis_id>
+			<feature:uuid>test-uuid</feature:uuid>
+		</feature:analysis_data>
+	</wfs:Insert>
+	<wfs:Insert>
+		<feature:analysis_data
+			xmlns:feature="http://www.oskari.org">
+			<gml:geometry xmlns:feature="http://www.opengis.net/gml">
+				<gml:MultiPoint srsDimension="2"
+					srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+					<gml:pointMember>
+						<gml:Point srsDimension="2">
+							<gml:pos>391820.455 6673185.7874</gml:pos>
+						</gml:Point>
+					</gml:pointMember>
+					<gml:pointMember>
+						<gml:Point srsDimension="2">
+							<gml:pos>391892.8962 6673138.0936</gml:pos>
+						</gml:Point>
+					</gml:pointMember>
+					<gml:pointMember>
+						<gml:Point srsDimension="2">
+							<gml:pos>391810.529 6673237.9559</gml:pos>
+						</gml:Point>
+					</gml:pointMember>
+				</gml:MultiPoint>
+			</gml:geometry>
+			<feature:t1>391810.529 6673138.0936 391892.8962 6673237.9559</feature:t1>
+			<feature:t2>lkmpp</feature:t2>
+			<feature:n1>3.0</feature:n1>
+			<feature:n2>0.0</feature:n2>
+			<feature:n3>0.0</feature:n3>
+			<feature:n4>0.0</feature:n4>
+			<feature:n5>0.0</feature:n5>
+			<feature:n6>0.0</feature:n6>
+			<feature:n7>0.0</feature:n7>
+			<feature:analysis_id>1</feature:analysis_id>
+			<feature:uuid>test-uuid</feature:uuid>
+		</feature:analysis_data>
+	</wfs:Insert>
+	<wfs:Insert>
+		<feature:analysis_data
+			xmlns:feature="http://www.oskari.org">
+			<gml:geometry xmlns:feature="http://www.opengis.net/gml">
+				<gml:MultiPoint srsDimension="2"
+					srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+					<gml:pointMember>
+						<gml:Point srsDimension="2">
+							<gml:pos>391820.455 6673185.7874</gml:pos>
+						</gml:Point>
+					</gml:pointMember>
+					<gml:pointMember>
+						<gml:Point srsDimension="2">
+							<gml:pos>391892.8962 6673138.0936</gml:pos>
+						</gml:Point>
+					</gml:pointMember>
+					<gml:pointMember>
+						<gml:Point srsDimension="2">
+							<gml:pos>391810.529 6673237.9559</gml:pos>
+						</gml:Point>
+					</gml:pointMember>
+				</gml:MultiPoint>
+			</gml:geometry>
+			<feature:t1>391810.529 6673138.0936 391892.8962 6673237.9559</feature:t1>
+			<feature:t2>x</feature:t2>
+			<feature:n1>3.0</feature:n1>
+			<feature:n2>1175523.8802</feature:n2>
+			<feature:n3>391810.529</feature:n3>
+			<feature:n4>391892.8962</feature:n4>
+			<feature:n5>391841.2934</feature:n5>
+			<feature:n6>36.71301399487297</feature:n6>
+			<feature:n7>391820.455</feature:n7>
+			<feature:analysis_id>1</feature:analysis_id>
+			<feature:uuid>test-uuid</feature:uuid>
+		</feature:analysis_data>
+	</wfs:Insert>
+	<wfs:Insert>
+		<feature:analysis_data
+			xmlns:feature="http://www.oskari.org">
+			<gml:geometry xmlns:feature="http://www.opengis.net/gml">
+				<gml:MultiPoint srsDimension="2"
+					srsName="http://www.opengis.net/gml/srs/epsg.xml#3067">
+					<gml:pointMember>
+						<gml:Point srsDimension="2">
+							<gml:pos>391820.455 6673185.7874</gml:pos>
+						</gml:Point>
+					</gml:pointMember>
+					<gml:pointMember>
+						<gml:Point srsDimension="2">
+							<gml:pos>391892.8962 6673138.0936</gml:pos>
+						</gml:Point>
+					</gml:pointMember>
+					<gml:pointMember>
+						<gml:Point srsDimension="2">
+							<gml:pos>391810.529 6673237.9559</gml:pos>
+						</gml:Point>
+					</gml:pointMember>
+				</gml:MultiPoint>
+			</gml:geometry>
+			<feature:t1>391810.529 6673138.0936 391892.8962 6673237.9559</feature:t1>
+			<feature:t2>y</feature:t2>
+			<feature:n1>3.0</feature:n1>
+			<feature:n2>2.0019561836900003E7</feature:n2>
+			<feature:n3>6673138.0936</feature:n3>
+			<feature:n4>6673237.9559</feature:n4>
+			<feature:n5>6673187.278966668</feature:n5>
+			<feature:n6>40.78225364591238</feature:n6>
+			<feature:n7>6673185.7874</feature:n7>
+			<feature:analysis_id>1</feature:analysis_id>
+			<feature:uuid>test-uuid</feature:uuid>
+		</feature:analysis_data>
+	</wfs:Insert>
+</wfs:Transaction>

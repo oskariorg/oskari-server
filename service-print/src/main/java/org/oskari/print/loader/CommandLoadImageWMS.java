@@ -17,18 +17,21 @@ public class CommandLoadImageWMS extends CommandLoadImageBase {
     private final int height;
     private final double[] bbox;
     private final String srsName;
+    private final String time;
 
     public CommandLoadImageWMS(PrintLayer layer,
             int width,
             int height,
             double[] bbox,
-            String srsName) {
+            String srsName,
+            String time) {
         super(Integer.toString(layer.getId()));
         this.layer = layer;
         this.width = width;
         this.height = height;
         this.bbox = bbox;
         this.srsName = srsName;
+        this.time = time;
     }
 
     @Override
@@ -42,6 +45,7 @@ public class CommandLoadImageWMS extends CommandLoadImageBase {
                 .height(height)
                 .format(FORMAT)
                 .transparent(true)
+                .time(time)
                 .toKVP();
 
         return CommandLoadImageFromURL.load(request, layer.getUsername(), layer.getPassword());

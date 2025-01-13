@@ -1,8 +1,5 @@
 package fi.nls.oskari.control.layer;
 
-import fi.mml.portti.domain.permissions.Permissions;
-import fi.mml.portti.service.db.permissions.PermissionsService;
-import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.control.ActionConstants;
 import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionException;
@@ -10,10 +7,6 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
-import fi.nls.oskari.permission.domain.Permission;
-import fi.nls.oskari.permission.domain.Resource;
-import fi.nls.oskari.service.OskariComponentManager;
-import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.control.JSONActionRouteTest;
 import fi.nls.test.util.TestHelper;
@@ -21,20 +14,22 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.oskari.permissions.PermissionService;
+import org.oskari.permissions.PermissionServiceMybatisImpl;
+import org.oskari.permissions.model.*;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-/**
- * Created by SMAKINEN on 28.8.2015.
- */
 @RunWith(PowerMockRunner.class)
 public class GetLayerCapabilitiesHandlerTest extends JSONActionRouteTest {
 
@@ -45,11 +40,7 @@ public class GetLayerCapabilitiesHandlerTest extends JSONActionRouteTest {
     public void setup() {
         assumeTrue(TestHelper.dbAvailable());
         OskariLayerService layerService = getOskariLayerService();
-        PermissionsService permissionsService = getPermissionsService();
-        // replace the cache service with a test service
-        OskariComponentManager.removeComponentsOfType(CapabilitiesCacheService.class);
-        OskariComponentManager.addComponent(new CapabilitiesCacheServiceMock(TEST_DATA));
-        //CapabilitiesCacheService service = OskariComponentManager.getComponentOfType(CapabilitiesCacheService.class);
+        PermissionService permissionsService = getPermissionsService();
         handler = new GetLayerCapabilitiesHandler();
 
         PermissionHelper helper = new PermissionHelper(layerService, permissionsService);
@@ -106,17 +97,17 @@ public class GetLayerCapabilitiesHandlerTest extends JSONActionRouteTest {
         doReturn(errorLayer).when(layerService).find(2);
         return layerService;
     }
-    private PermissionsService getPermissionsService() {
+    private PermissionService getPermissionsService() {
 
-        PermissionsService service = mock(PermissionsServiceIbatisImpl.class);
+        PermissionService service = mock(PermissionServiceMybatisImpl.class);
 
         Resource res = new Resource();
         Permission p = new Permission();
-        p.setType(Permissions.PERMISSION_TYPE_VIEW_LAYER);
-        p.setExternalType(Permissions.EXTERNAL_TYPE_ROLE);
+        p.setType(PermissionType.VIEW_LAYER);
+        p.setExternalType(PermissionExternalType.ROLE);
         p.setExternalId("" + getLoggedInUser().getRoles().iterator().next().getId());
         res.addPermission(p);
-        doReturn(res).when(service).findResource(any(Resource.class));
+        doReturn(Optional.of(res)).when(service).findResource(eq(ResourceType.maplayer), any(String.class));
         return service;
     }
 
@@ -124,5 +115,4 @@ public class GetLayerCapabilitiesHandlerTest extends JSONActionRouteTest {
     public static void delete() {
         PropertyUtil.clearProperties();
     }
-
 }

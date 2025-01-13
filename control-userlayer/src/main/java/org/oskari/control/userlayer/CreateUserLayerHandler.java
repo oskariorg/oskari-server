@@ -1,10 +1,6 @@
 package org.oskari.control.userlayer;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -20,6 +16,7 @@ import java.util.zip.ZipInputStream;
 import javax.servlet.http.HttpServletRequest;
 
 import fi.nls.oskari.control.*;
+import org.oskari.log.AuditLog;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -35,11 +32,9 @@ import org.oskari.map.userlayer.service.UserLayerDbService;
 import org.oskari.map.userlayer.service.UserLayerDbServiceMybatisImpl;
 import org.oskari.map.userlayer.service.UserLayerException;
 
-import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.domain.map.userlayer.UserLayerData;
-import fi.nls.oskari.domain.map.UserDataStyle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
@@ -81,12 +76,10 @@ public class CreateUserLayerHandler extends RestActionHandler {
     };
 
     private static final String PARAM_SOURCE_EPSG_KEY = "sourceEpsg";
-    private static final String KEY_NAME = "layer-name";
-    private static final String KEY_DESC = "layer-desc";
-    private static final String KEY_SOURCE = "layer-source";
-    private static final String KEY_STYLE = "layer-style";
+    private static final String KEY_STYLE = "style";
+    private static final String KEY_LOCALE = "locale";
 
-    private static final int KB = 1024 * 1024;
+    private static final int KB = 1024;
     private static final int MB = 1024 * KB;
 
     // Store files smaller than 128kb in memory instead of writing them to disk
@@ -95,8 +88,9 @@ public class CreateUserLayerHandler extends RestActionHandler {
     private static final int MAX_RETRY_RANDOM_UUID = 100;
 
     private final DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory(MAX_SIZE_MEMORY, null);
-    private final String targetEPSG = PropertyUtil.get(PROPERTY_TARGET_EPSG, "EPSG:4326");
-    private final int userlayerMaxFileSize = PropertyUtil.getOptional(PROPERTY_USERLAYER_MAX_FILE_SIZE_MB, 10) * MB;
+    private String targetEPSG = "EPSG:4326";
+    private int userlayerMaxFileSize = -1;
+    private long unzippiedFileSizeLimit = -1;
 
     private UserLayerDbService userLayerService;
 
@@ -114,6 +108,13 @@ public class CreateUserLayerHandler extends RestActionHandler {
     @Override
     public void handlePost(ActionParameters params) throws ActionException {
         params.requireLoggedInUser();
+
+        if (userlayerMaxFileSize == -1) {
+            // initialized here to workaround timing issue for reading config from properties
+            userlayerMaxFileSize = PropertyUtil.getOptional(PROPERTY_USERLAYER_MAX_FILE_SIZE_MB, 10) * MB;
+            unzippiedFileSizeLimit = 15 * userlayerMaxFileSize; // Max size of unzipped data, 15 * the zip size
+            targetEPSG = PropertyUtil.get(PROPERTY_TARGET_EPSG, targetEPSG);
+        }
 
         String sourceEPSG = params.getHttpParam(PARAM_SOURCE_EPSG_KEY);
         List<FileItem> fileItems = getFileItems(params.getRequest());
@@ -135,6 +136,12 @@ public class CreateUserLayerHandler extends RestActionHandler {
             formParams = getFormParams(fileItems);
             log.debug("Parsed form parameters:", formParams);
             UserLayer userLayer = store(fc, params.getUser().getUuid(), formParams);
+
+            AuditLog.user(params.getClientIp(), params.getUser())
+                    .withParam("filename", zipFile.getName())
+                    .withParam("id", userLayer.getId())
+                    .added(AuditLog.ResourceType.USERLAYER);
+
             writeResponse(params, userLayer);
         } catch (UserLayerException e) {
             if (!validFiles.isEmpty()){ // avoid to override with empty list
@@ -143,6 +150,12 @@ public class CreateUserLayerHandler extends RestActionHandler {
             log.error("User uuid:", params.getUser().getUuid(),
                     "zip:", zipFile == null ? "no file" : zipFile.getName(),
                     "info:", e.getOptions().toString());
+
+            AuditLog.user(params.getClientIp(), params.getUser())
+                    .withParam("filename", zipFile.getName())
+                    .withMsg(e.getMessage())
+                    .errored(AuditLog.ResourceType.USERLAYER);
+
             throw new ActionParamsException(e.getMessage(), e.getOptions());
         } catch (ActionException e) {
             log.error("User uuid:", params.getUser().getUuid(),
@@ -233,11 +246,6 @@ public class CreateUserLayerHandler extends RestActionHandler {
             return null;
         }
         String name = ze.getName();
-        if (name.indexOf('/') >= 0) {
-            ignored.put(name, "folder");
-            log.debug(name, "is inside a directory, ignoring");
-            return null;
-        }
         if (name.indexOf('.') == 0) {
             ignored.put(name, "hidden");
             log.debug(name, "starts with '.', ignoring");
@@ -360,7 +368,7 @@ public class CreateUserLayerHandler extends RestActionHandler {
                 name = "a" + name.substring(name.lastIndexOf('.'));
                 File file = new File(dir, name);
                 try (FileOutputStream fos = new FileOutputStream(file)) {
-                    IOHelper.copy(zis, fos);
+                    IOHelper.copy(zis, fos, unzippiedFileSizeLimit);
                 }
                 if (mainFile == null) {
                     String ext = getFileExt(name);
@@ -370,6 +378,8 @@ public class CreateUserLayerHandler extends RestActionHandler {
                 }
             }
             return mainFile;
+        } catch (EOFException e) {
+            throw new ServiceException("File too large. " + e.getMessage());
         } catch (IOException e) {
             throw new ServiceException("Failed to unzip file: " + zipFile.getName());
         }
@@ -391,28 +401,17 @@ public class CreateUserLayerHandler extends RestActionHandler {
     private UserLayer store(SimpleFeatureCollection fc, String uuid, Map<String, String> formParams)
             throws UserLayerException {
             UserLayer userLayer = createUserLayer(fc, uuid, formParams);
-            userLayer.setStyle(createUserLayerStyle(formParams));
             List<UserLayerData> userLayerDataList = UserLayerDataService.createUserLayerData(fc, uuid);
             userLayer.setFeatures_count(userLayerDataList.size());
             userLayer.setFeatures_skipped(fc.size() - userLayerDataList.size());
-            userLayerService.insertUserLayer(userLayer, userLayerDataList);
+            userLayerService.insertUserLayerAndData(userLayer, userLayerDataList);
             return userLayer;
     }
 
     private UserLayer createUserLayer(SimpleFeatureCollection fc, String uuid, Map<String, String> formParams) {
-        String name = formParams.get(KEY_NAME);
-        String desc = formParams.get(KEY_DESC);
-        String source = formParams.get(KEY_SOURCE);
-        return UserLayerDataService.createUserLayer(fc, uuid, name, desc, source);
-    }
-
-    private UserDataStyle createUserLayerStyle(Map<String, String> formParams)
-            throws UserLayerException {
-        JSONObject styleObject = null;
-        if (formParams.containsKey(KEY_STYLE)) {
-            styleObject = JSONHelper.createJSONObject(formParams.get(KEY_STYLE));
-        }
-        return UserLayerDataService.createUserLayerStyle(styleObject);
+        JSONObject locale = JSONHelper.createJSONObject(formParams.get(KEY_LOCALE));
+        JSONObject style = JSONHelper.createJSONObject(formParams.get(KEY_STYLE));
+        return UserLayerDataService.createUserLayer(fc, uuid, locale, style);
     }
 
     private void writeResponse(ActionParameters params, UserLayer ulayer) {
@@ -420,7 +419,7 @@ public class CreateUserLayerHandler extends RestActionHandler {
         JSONObject userLayer = UserLayerDataService.parseUserLayer2JSON(ulayer, mapSrs);
 
         JSONHelper.putValue(userLayer, "featuresCount", ulayer.getFeatures_count());
-        JSONObject permissions = OskariLayerWorker.getAllowedPermissions();
+        JSONObject permissions = UserLayerHandlerHelper.getPermissions();
         JSONHelper.putValue(userLayer, "permissions", permissions);
         //add warning if features were skipped
         if (ulayer.getFeatures_skipped() > 0) {

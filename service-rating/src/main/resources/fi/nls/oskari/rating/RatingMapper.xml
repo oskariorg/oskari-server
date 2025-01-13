@@ -17,24 +17,18 @@
 
     <select id="findAllFor"
             resultType="Rating">
-        select *
-        from
-            ratings
+        select * from oskari_ratings
         where category = #{category} and categoryItem = #{categoryItem}
     </select>
 
     <select id="find"
             resultMap="RatingResult">
-        select *
-        from
-            ratings
+        select * from oskari_ratings
         where id = #{id}
     </select>
 
     <select id="findLatestAdminRating" resultType="String">
-        SELECT rating
-        from
-            ratings
+        SELECT rating FROM oskari_ratings
         where category = #{category} and categoryItem = #{categoryItem} and userrole = #{adminRole}
         order by created DESC
         LIMIT 1
@@ -43,13 +37,13 @@
             parameterType="Rating"
             useGeneratedKeys="true"
             keyProperty="id">
-        insert into ratings (userId,rating,category,categoryItem,comment,userRole)
+        insert into oskari_ratings (userId,rating,category,categoryItem,comment,userRole)
         values (#{userId},#{rating},#{category},#{categoryItem},#{comment},#{userRole})
     </insert>
 
     <update id="updateRating"
             parameterType="Rating">
-        update ratings set
+        update oskari_ratings set
         userId = #{userId},
         rating = #{rating},
         category = #{category},

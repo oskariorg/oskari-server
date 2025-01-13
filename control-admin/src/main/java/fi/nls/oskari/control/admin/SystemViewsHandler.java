@@ -1,8 +1,5 @@
 package fi.nls.oskari.control.admin;
 
-import fi.mml.portti.domain.permissions.Permissions;
-import fi.mml.portti.service.db.permissions.PermissionsService;
-import fi.mml.portti.service.db.permissions.PermissionsServiceIbatisImpl;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.Role;
@@ -10,23 +7,24 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.View;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.data.domain.OskariLayerResource;
 import fi.nls.oskari.map.layer.OskariLayerService;
-import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.map.view.ViewException;
 import fi.nls.oskari.map.view.ViewService;
-import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
-import fi.nls.oskari.permission.domain.Resource;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
+import org.oskari.log.AuditLog;
 import fi.nls.oskari.view.modifier.ViewModifier;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.oskari.permissions.PermissionService;
+import org.oskari.permissions.model.PermissionType;
+import org.oskari.permissions.model.ResourceType;
+import org.oskari.service.util.ServiceFactory;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,20 +35,17 @@ import static fi.nls.oskari.control.ActionConstants.*;
 @OskariActionRoute("SystemViews")
 public class SystemViewsHandler extends RestActionHandler {
 
-    private Logger log = LogFactory.getLogger(SystemViewsHandler.class);
     private ViewService viewService;
     private OskariLayerService layerService;
-    private PermissionsService permissionsService;
+    private PermissionService permissionsService;
 
     private static final String ERROR_CODE_GUEST_NOT_AVAILABLE = "guest_not_available";
-    // is the default in frontend code
-    private final static String DEFAULT_SRS = "EPSG:3067";
+    private final static String DEFAULT_SRS = PropertyUtil.get("oskari.native.srs", "EPSG:4326");
 
     public void init() {
-        viewService = new AppSetupServiceMybatisImpl();
-
-        layerService = new OskariLayerServiceMybatisImpl();
-        permissionsService = new PermissionsServiceIbatisImpl();
+        viewService = OskariComponentManager.getComponentOfType(ViewService.class);
+        layerService = OskariComponentManager.getComponentOfType(OskariLayerService.class);
+        permissionsService = OskariComponentManager.getComponentOfType(PermissionService.class);
     }
 
     /**
@@ -76,16 +71,18 @@ public class SystemViewsHandler extends RestActionHandler {
         } catch (ServiceException e) {
             throw new ActionException("Couldn't get roles listing", e);
         }
-        for (Role role : roles) {
-            final JSONObject json = new JSONObject();
-            JSONHelper.putValue(json, PARAM_ID, role.getId());
-            JSONHelper.putValue(json, "name", role.getName());
+        if (roles != null) {
+            for (Role role : roles) {
+                final JSONObject json = new JSONObject();
+                JSONHelper.putValue(json, PARAM_ID, role.getId());
+                JSONHelper.putValue(json, "name", role.getName());
 
-            final long viewId = viewService.getDefaultViewIdForRole(role.getName());
-            if (viewId != globalDefaultViewId) {
-                JSONHelper.putValue(json, "viewId", viewId);
+                final long viewId = viewService.getDefaultViewIdForRole(role.getName());
+                if (viewId != globalDefaultViewId) {
+                    JSONHelper.putValue(json, "viewId", viewId);
+                }
+                list.put(json);
             }
-            list.put(json);
         }
 
         JSONHelper.putValue(response, "roles", list);
@@ -149,6 +146,10 @@ public class SystemViewsHandler extends RestActionHandler {
 
         try {
             viewService.updateBundleSettingsForView(view.getId(), mapfull);
+
+            AuditLog.user(params.getClientIp(), params.getUser())
+                    .withParam("id", view.getId())
+                    .updated(AuditLog.ResourceType.SYSTEM_VIEW);
         } catch (ViewException ex) {
             throw new ActionException("Error updating view settings", ex);
         }
@@ -197,8 +198,9 @@ public class SystemViewsHandler extends RestActionHandler {
         try {
             User guest = UserService.getInstance().getGuestUser();
             for(OskariLayer layer : layers) {
-                final Resource resource = permissionsService.findResource(new OskariLayerResource(layer));
-                if(!resource.hasPermission(guest, Permissions.PERMISSION_TYPE_VIEW_LAYER)) {
+                boolean notAvailableForGuestUsers = permissionsService.findResource(ResourceType.maplayer, Integer.toString(layer.getId()))
+                        .filter(r -> !r.hasPermission(guest, PermissionType.VIEW_LAYER)).isPresent();
+                if(notAvailableForGuestUsers) {
                     notAvailable.add(Integer.toString(layer.getId()));
                 }
             }
@@ -211,9 +213,6 @@ public class SystemViewsHandler extends RestActionHandler {
 
     @Override
     public void preProcess(ActionParameters params) throws ActionException {
-        if (!params.getUser().isAdmin()) {
-            throw new ActionDeniedException("Admin only");
-        }
+        params.requireAdminUser();
     }
-
 }

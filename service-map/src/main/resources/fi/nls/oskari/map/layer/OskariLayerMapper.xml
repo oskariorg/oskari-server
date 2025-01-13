@@ -5,7 +5,6 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="fi.nls.oskari.map.layer.OskariLayerMapper">
-
     <select id="findByUrlAndName"
             parameterType="java.util.HashMap"
             resultType="java.util.HashMap">
@@ -27,7 +26,6 @@
         l.minscale,
         l.maxscale,
 
-        l.legend_image,
         l.metadataId,
 
         l.params,
@@ -83,7 +81,6 @@
         l.minscale,
         l.maxscale,
 
-        l.legend_image,
         l.metadataId,
 
         l.params,
@@ -150,7 +147,6 @@
         l.minscale,
         l.maxscale,
 
-        l.legend_image,
         l.metadataId,
 
         l.params,
@@ -184,7 +180,7 @@
 
     </select>
 
-    <select id="findByUuId"
+    <select id="findByUuid"
             parameterType="String"
             resultType="java.util.HashMap">
 
@@ -206,7 +202,6 @@
         l.minscale,
         l.maxscale,
 
-        l.legend_image,
         l.metadataId,
 
         l.params,
@@ -261,7 +256,6 @@
         l.minscale,
         l.maxscale,
 
-        l.legend_image,
         l.metadataId,
 
         l.params,
@@ -314,7 +308,6 @@
         l.minscale,
         l.maxscale,
 
-        l.legend_image,
         l.metadataId,
 
         l.params,
@@ -371,7 +364,6 @@
         l.minscale,
         l.maxscale,
 
-        l.legend_image,
         l.metadataId,
 
         l.params,
@@ -420,7 +412,6 @@
         minscale = #{minScale},
         maxscale = #{maxScale},
 
-        legend_image = #{legendImage},
         metadataId = #{metadataId},
 
         params = #{params},
@@ -466,7 +457,6 @@
         minscale,
         maxscale,
 
-        legend_image,
         metadataId,
 
         params,
@@ -494,7 +484,7 @@
         capabilities_update_rate_sec)
 
         values (#{parentId},#{type},#{baseMap},#{internal},#{dataproviderId},#{name},#{url},#{locale},
-        #{opacity},#{style},#{minScale},#{maxScale},#{legendImage},#{metadataId},#{params},#{options},
+        #{opacity},#{style},#{minScale},#{maxScale},#{metadataId},#{params},#{options},
         #{attributes},#{capabilities},#{gfiXslt},#{gfiType},#{gfiContent},#{realtime},#{refreshRate},
         #{username},#{password},#{version},#{srs_name},#{created},#{updated},#{capabilitiesLastUpdated},
         #{capabilitiesUpdateRateSec})

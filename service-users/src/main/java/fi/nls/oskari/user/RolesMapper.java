@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -21,11 +22,14 @@ public interface RolesMapper {
     @Select("select id, name from oskari_roles where is_guest is true")
     List<Role> findGuestRoles();
 
-    @Insert("INSERT INTO oskari_role_oskari_user (role_id, user_id) " +
+    @Insert("INSERT INTO oskari_users_roles (role_id, user_id) " +
             "VALUES (#{roleId}, #{userId})")
     void linkRoleToNewUser(@Param("roleId") long roleId, @Param("userId") long userId);
 
-    @Delete("DELETE FROM oskari_role_oskari_user WHERE user_id = #{userId}")
+    @Update("UPDATE oskari_roles SET name = #{name} WHERE id = #{id}")
+    void update(@Param("id") long id, @Param("name") String name);
+
+    @Delete("DELETE FROM oskari_users_roles WHERE user_id = #{userId}")
     void deleteUsersRoles(long userId);
 
     @Delete("DELETE FROM oskari_roles WHERE id = #{userId}")

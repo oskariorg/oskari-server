@@ -1,6 +1,5 @@
 package fi.nls.oskari.control.statistics.plugins.sotka.requests;
 
-
 import fi.nls.oskari.util.IOHelper;
 
 import java.util.HashMap;
@@ -13,10 +12,6 @@ import java.util.Map;
  */
 public class IndicatorDataJSON extends SotkaRequest {
     public final static String NAME = "jsondata";
-
-    public boolean isValid () {
-        return getIndicator() != null && !getIndicator().isEmpty();
-    }
 
     @Override
     public String getName() {

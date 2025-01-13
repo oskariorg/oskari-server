@@ -1,6 +1,6 @@
 package fi.nls.oskari.search.channel;
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 import fi.mml.portti.service.search.SearchCriteria;
 import fi.nls.oskari.control.metadata.MetadataField;
 import fi.nls.oskari.log.LogFactory;
@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static org.oskari.csw.request.GetRecords.DEFAULT_QUERY_TYPE;
+
 /**
  * Helper class for creating search queries for MetadataCatalogue
  */
@@ -35,6 +37,7 @@ public class MetadataCatalogueQueryHelper {
     public final static String WILDCARD_CHARACTER = "*";
     public final static String SINGLE_WILDCARD_CHARACTER = "?";
     public final static String ESCAPE_CHARACTER = "/";
+    private static final String[] DEFAULT_QUERY_FIELDS = new String[] { "csw:anyText" };
 
     private static final Logger log = LogFactory.getLogger(MetadataCatalogueQueryHelper.class);
     private FilterFactory2 filterFactory;
@@ -45,7 +48,10 @@ public class MetadataCatalogueQueryHelper {
     }
 
     public String getQueryPayload(SearchCriteria searchCriteria) {
-        final List<Filter> filters = getFiltersForQuery(searchCriteria);
+        return getQueryPayload(searchCriteria, DEFAULT_QUERY_TYPE, DEFAULT_QUERY_FIELDS);
+    }
+    public String getQueryPayload(SearchCriteria searchCriteria, String queryType, String... queryFields) {
+        final List<Filter> filters = getFiltersForQuery(searchCriteria, queryFields);
         if (filters.isEmpty()) {
             // no point in making the query without GetRecords, but throw exception instead?
             //throw new ServiceRuntimeException("Can't create GetRecords request without filters");
@@ -58,19 +64,30 @@ public class MetadataCatalogueQueryHelper {
             filter = filterFactory.and(filters);
         }
 
-        return GetRecords.createRequest(filter);
+        return GetRecords.createRequest(filter, queryType);
     }
 
-    private List<Filter> getFiltersForQuery(SearchCriteria searchCriteria) {
+    private List<Filter> getFiltersForQuery(SearchCriteria searchCriteria, String... queryFields) {
         final List<Filter> list = new ArrayList<>();
         final List<Filter> theOrList = new ArrayList<>();
 
         // user input
-        Filter userInput = createLikeFilter(searchCriteria.getSearchString(), "csw:anyText");
-        if (userInput != null) {
-            list.add(userInput);
+        if (queryFields == null || queryFields.length == 0) {
+            queryFields = DEFAULT_QUERY_FIELDS;
         }
-
+        List<Filter> queryFilters = new ArrayList<>();
+        for (String field: queryFields) {
+            Filter query = createLikeFilter(searchCriteria.getSearchString(), field);
+            if (query != null) {
+                queryFilters.add(query);
+            }
+        }
+        if (queryFilters.size() == 1) {
+            list.add(queryFilters.get(0));
+        } else if (queryFilters.size() > 1) {
+            list.add(filterFactory.or(queryFilters));
+        }
+        // "advanced fields"
         for (MetadataField field : MetadataCatalogueChannelSearchService.getFields()) {
             final Filter operation = getFilterForField(searchCriteria, field);
             if (operation == null) {

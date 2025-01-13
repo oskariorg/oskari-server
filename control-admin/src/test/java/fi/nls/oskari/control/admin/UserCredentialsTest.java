@@ -3,8 +3,14 @@ package fi.nls.oskari.control.admin;
 import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.domain.Role;
+import fi.nls.oskari.service.DummyUserService;
+import fi.nls.oskari.service.OskariComponent;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.UserService;
+import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.control.JSONActionRouteTest;
+import fi.nls.test.util.TestHelper;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,20 +28,21 @@ import static org.mockito.Mockito.mock;
 /**
  * Simple user-credentials check for handlers listed in getAdminHandlers().
  */
-@PrepareForTest(value = {UserService.class})
 @RunWith(Parameterized.class)
 public class UserCredentialsTest extends JSONActionRouteTest {
 
     private ActionHandler handler = null;
 
     @BeforeClass
-    public static void setup() {
-
-        UserService userService = mock(UserService.class);
-        Role role = new Role();
-        role.setName("Admin");
-        doReturn(role).when(userService).getRoleByName(role.getName());
-        Whitebox.setInternalState(UserService.class, "instance", userService);
+    public static void setup() throws Exception {
+        TestHelper.registerTestDataSource();
+        PropertyUtil.addProperty("oskari.user.service", DummyUserService.class.getCanonicalName(), true);
+    }
+    @AfterClass
+    public static void tearDown() {
+        PropertyUtil.clearProperties();
+        OskariComponentManager.teardown();
+        TestHelper.teardown();
     }
 
     @Parameterized.Parameters
@@ -45,7 +52,8 @@ public class UserCredentialsTest extends JSONActionRouteTest {
                 {CacheHandler.class},
                 {ManageRolesHandler.class},
                 {SystemViewsHandler.class},
-                {UsersHandler.class}
+                {UsersHandler.class},
+                {LayerAdminMetadataHandler.class}
         });
     }
 

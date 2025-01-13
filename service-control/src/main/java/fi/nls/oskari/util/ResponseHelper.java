@@ -35,8 +35,8 @@ public class ResponseHelper {
             }
             params.getResponse().getWriter().print(response);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOG.info("Couldn't write answer:", e.getMessage());
+            LOG.debug(e);
         }
     }
 
@@ -69,7 +69,8 @@ public class ResponseHelper {
         try (OutputStream out = resp.getOutputStream()) {
             out.write(b, 0, len);
         } catch (IOException e) {
-            LOG.warn(e);
+            LOG.info("Couldn't write answer:", e.getMessage());
+            LOG.debug(e);
         }
     }
 
@@ -93,7 +94,8 @@ public class ResponseHelper {
         try (OutputStream out = resp.getOutputStream()) {
             baos.writeTo(out);
         } catch (IOException e) {
-            LOG.warn(e);
+            LOG.info("Couldn't write answer:", e.getMessage());
+            LOG.debug(e);
         }
     }
 
@@ -160,8 +162,8 @@ public class ResponseHelper {
             // we dont want that 
             //params.getResponse().sendError(errorCode, error.toString());
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOG.info("Couldn't write answer:", e.getMessage());
+            LOG.debug(e);
         }
     }
 

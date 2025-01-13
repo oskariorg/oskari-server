@@ -1,0 +1,69 @@
+{
+  "capabilitiesCron": "0 0 0 * * ?",
+  "layerTypes": {
+    "wmtslayer": [
+      "name",
+      "url"
+    ],
+    "vectortilelayer": [
+      "url"
+    ],
+    "wmslayer": [
+      "name",
+      "url",
+      "version"
+    ],
+    "arcgislayer": [
+      "url"
+    ],
+    "bingmapslayer": [
+      "options.apiKey"
+    ],
+    "wfslayer": [
+      "name",
+      "url",
+      "version"
+    ],
+    "arcgis93layer": [
+      "url"
+    ],
+    "tiles3dlayer": []
+  },
+  "roles": [
+    {
+      "name": "Guest",
+      "id": 1
+    },
+    {
+      "name": "User",
+      "id": 2
+    },
+    {
+      "name": "Admin",
+      "id": 3
+    }
+  ],
+  "permissionTypes": [
+    {
+      "name": "VIEW_LAYER",
+      "id": "VIEW_LAYER"
+    },
+    {
+      "name": "VIEW_PUBLISHED",
+      "id": "VIEW_PUBLISHED"
+    },
+    {
+      "name": "PUBLISH",
+      "id": "PUBLISH"
+    },
+    {
+      "name": "DOWNLOAD",
+      "id": "DOWNLOAD"
+    }
+  ],
+  "systemRoles": {
+    "anonymous": "Guest",
+    "user": "User",
+    "admin": "Admin"
+  }
+}

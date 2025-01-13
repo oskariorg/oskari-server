@@ -26,6 +26,7 @@ public abstract class ViewModifier {
     public static final String BUNDLE_TOOLBAR = "toolbar";
     public static final String BUNDLE_PUBLISHEDMYPLACES2 = "publishedmyplaces2";
     public static final String BUNDLE_FEATUREDATA2 = "featuredata2";
+    public static final String BUNDLE_FEATUREDATA = "featuredata";
     public static final String BUNDLE_ANALYSE = "analyse";
     public static final String BUNDLE_DIVMANAZER = "divmanazer";
     public static final String BUNDLE_MYPLACESIMPORT = "myplacesimport";
@@ -37,6 +38,16 @@ public abstract class ViewModifier {
     public static final String BUNDLE_TIMESERIES = "timeseries";
     public static final String BUNDLE_GUIDEDTOUR = "guidedtour";
     public static final String BUNDLE_MAPROTATOR = "maprotator";
+    public static final String BUNDLE_MAPLEGEND = "maplegend";
+    public static final String BUNDLE_METADATACATALOGUE = "metadatacatalogue";
+
+    public static final String BUNDLE_METADATASEARCH = "metadatasearch";
+    public static final String BUNDLE_CAMERA_CONTROLS_3D = "camera-controls-3d";
+    public static final String BUNDLE_METADATAFLYOUT = "metadataflyout";
+    public static final String BUNDLE_BACKEND_STATUS = "backendstatus";
+
+    public static final String BUNDLE_LAYERSWIPE = "layerswipe";
+    public static final String BUNDLE_ANNOUNCEMENTS = "announcements";
 
     public static final String KEY_EAST = "east";
     public static final String KEY_NORTH = "north";
@@ -174,14 +185,17 @@ public abstract class ViewModifier {
      * @return Set of bundles listed in the startupsequence
      */
     public Set<String> getBundleIds(final JSONArray startupSeq) {
-        final Set<String> bundles = new HashSet<String>();
+        final Set<String> bundles = new HashSet<>();
         if(startupSeq == null) {
             return bundles;
         }
         for (int i = 0; i < startupSeq.length(); i++) {
-            final JSONObject bundle = (JSONObject) startupSeq.opt(i);
-            final String startupBundleid = bundle.optString("bundlename");
-            if(startupBundleid != null) {
+            JSONObject bundle = startupSeq.optJSONObject(i);
+            if (bundle == null) {
+                continue;
+            }
+            final String startupBundleid = bundle.optString("bundlename", null);
+            if (startupBundleid != null) {
                 bundles.add(startupBundleid);
             }
         }

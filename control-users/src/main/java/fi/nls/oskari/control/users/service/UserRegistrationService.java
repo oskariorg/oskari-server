@@ -4,16 +4,16 @@ import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.control.users.RegistrationUtil;
 import fi.nls.oskari.control.users.model.EmailToken;
 import fi.nls.oskari.db.DatasourceHelper;
+import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.analysis.service.AnalysisMapper;
+import fi.nls.oskari.mybatis.MyBatisHelper;
 import fi.nls.oskari.service.OskariComponent;
-import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.apache.ibatis.transaction.TransactionFactory;
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 
 import javax.sql.DataSource;
 import java.util.UUID;
@@ -36,6 +36,13 @@ public class UserRegistrationService extends OskariComponent {
         }
     }
 
+    private SqlSessionFactory initializeMyBatis(final DataSource dataSource) {
+        final Configuration configuration = MyBatisHelper.getConfig(dataSource);
+        MyBatisHelper.addAliases(configuration, EmailToken.class);
+        MyBatisHelper.addMappers(configuration, EmailMapper.class);
+        return new SqlSessionFactoryBuilder().build(configuration);
+    }
+
     public EmailToken setupToken(String email) {
         EmailToken token = findTokenByEmail(email);
         if(token != null) {
@@ -56,17 +63,6 @@ public class UserRegistrationService extends OskariComponent {
     }
 
 
-    private SqlSessionFactory initializeMyBatis(final DataSource dataSource) {
-        final TransactionFactory transactionFactory = new JdbcTransactionFactory();
-        final Environment environment = new Environment("development", transactionFactory, dataSource);
-
-        final Configuration configuration = new Configuration(environment);
-        configuration.getTypeAliasRegistry().registerAlias(EmailToken.class);
-        configuration.setLazyLoadingEnabled(true);
-        configuration.addMapper(EmailMapper.class);
-
-        return new SqlSessionFactoryBuilder().build(configuration);
-    }
 
     public Long addToken(EmailToken emailToken) {
         try (SqlSession session = factory.openSession()) {

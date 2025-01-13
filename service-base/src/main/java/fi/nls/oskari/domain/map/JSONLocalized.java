@@ -19,7 +19,7 @@ public abstract class JSONLocalized {
 
     private Logger log = LogFactory.getLogger(JSONLocalized.class);
 
-    public static final String LOCALE_ABSTRACT = "abstract";
+    public static final String LOCALE_DESCRIPTION = "desc";
     public static final String LOCALE_NAME = "name";
     public static final String LOCALE_SUBTITLE = "subtitle";
 

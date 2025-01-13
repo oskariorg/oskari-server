@@ -1,31 +1,33 @@
 package org.oskari.control.mvt;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.control.*;
+import fi.nls.oskari.control.ActionConstants;
+import fi.nls.oskari.control.ActionException;
+import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.feature.AbstractWFSFeaturesHandler;
 import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.domain.map.wfs.WFSLayerConfiguration;
-import fi.nls.oskari.service.ServiceRuntimeException;
+import fi.nls.oskari.domain.map.wfs.WFSLayerAttributes;
+import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
-import fi.nls.oskari.wfs.WFSLayerConfigurationService;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.oskari.service.user.UserLayerService;
-import org.oskari.service.util.ServiceFactory;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
+/*
+ * @deprecated As of release 2.3.0, use fi.nls.oskari.control.layer.GetWFSLayerFields action route instead for WFS layers
+ * For Analysis, Myplaces and Userlayer use values returned from GetXXLayers action route (JSONFormatter handles)
+ */
+@Deprecated
 @OskariActionRoute("GetLocalizedPropertyNames")
 public class GetLocalizedPropertyNamesHandler extends AbstractWFSFeaturesHandler {
-
-    private WFSLayerConfigurationService wfsLayerService;
 
     @Override
     public void init() {
         super.init();
-        this.wfsLayerService = ServiceFactory.getWfsLayerService();
     }
 
     @Override
@@ -33,29 +35,23 @@ public class GetLocalizedPropertyNamesHandler extends AbstractWFSFeaturesHandler
         final String layerId = params.getRequiredParam(ActionConstants.PARAM_ID);
         Optional<UserLayerService> contentProcessor = getUserContentProsessor(layerId);
         OskariLayer layer = findLayer(layerId, params.getUser(), contentProcessor);
-        WFSLayerConfiguration layerConf = wfsLayerService.findConfiguration(layer.getId());
+
+        String language = params.getHttpParam(ActionConstants.PARAM_LANGUAGE, PropertyUtil.getDefaultLanguage());
+        WFSLayerAttributes attributes = new WFSLayerAttributes(layer.getAttributes());
+        List<String> filter = attributes.getSelectedAttributes(language);
         JSONArray response = new JSONArray();
-        if (layerConf == null) {
+        if (filter.isEmpty()) {
+            // TODO: change API so layer can have locale without filter!
             ResponseHelper.writeResponse(params, response);
             return;
         }
-
-        String language = params.getHttpParam(ActionConstants.PARAM_LANGUAGE, PropertyUtil.getDefaultLanguage());
-        List<String> propNames = layerConf.getSelectedFeatureParams(language);
-        List<String> localizedPropNames = layerConf.getFeatureParamsLocales(language);
-        if (localizedPropNames.isEmpty() && !propNames.isEmpty() && language != PropertyUtil.getDefaultLanguage()) {
-            localizedPropNames = layerConf.getFeatureParamsLocales(PropertyUtil.getDefaultLanguage());
-        }
-        for (int i = 0; i < propNames.size() && i < localizedPropNames.size(); i++) {
-            try {
-                JSONObject prop = new JSONObject();
-                prop.put("name", propNames.get(i));
-                prop.put("locale", localizedPropNames.get(i));
-                response.put(prop);
-            } catch (JSONException ex) {
-                throw new ServiceRuntimeException("Unexpected JSONException occurred");
-            }
-        }
+        JSONObject locale = attributes.getLocalization(language).orElse(attributes.getLocalization().orElse(new JSONObject()));
+        attributes.getSelectedAttributes(language).stream().forEach(attr -> {
+            JSONObject resp = new JSONObject();
+            JSONHelper.putValue(resp, "name", attr);
+            JSONHelper.putValue(resp, "locale", locale.optString(attr, attr));
+            response.put(resp);
+        });
         ResponseHelper.writeResponse(params, response);
     }
 }

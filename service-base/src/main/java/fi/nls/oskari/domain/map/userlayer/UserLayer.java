@@ -1,66 +1,63 @@
 package fi.nls.oskari.domain.map.userlayer;
 
-
+import fi.nls.oskari.domain.map.JSONLocalizedName;
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.UserDataLayer;
+import org.json.JSONArray;
+import java.time.OffsetDateTime;
 
 public class UserLayer extends UserDataLayer {
-    public static final String TYPE = "userlayer";
-    private long id;
-    private String layer_name;
+    private static final String LOCALE_DESC = "desc";
+    private static final String LOCALE_SOURCE = "source";
+
     private String layer_desc;
     private String layer_source;
-    private String fields;
-    private long style_id;
+    private JSONArray fields;
     private int features_count;
     private int features_skipped; //if geojson feature doesn't have geometry object or it's null, feature is skipped
     private String wkt;
+    private OffsetDateTime created;
 
-    public long getId() {
-        return id;
+    @Override
+    public final String getType() {
+        return OskariLayer.TYPE_USERLAYER;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
+    @Deprecated
     public String getLayer_name() {
-        return layer_name;
+        return getName();
     }
-
+    @Deprecated
     public void setLayer_name(String layer_name) {
-        this.layer_name = layer_name;
+        setName(layer_name);
     }
-
+    @Deprecated
     public String getLayer_desc() {
         return layer_desc;
     }
-
+    @Deprecated
     public void setLayer_desc(String layer_desc) {
         this.layer_desc = layer_desc;
     }
-
+    @Deprecated
     public String getLayer_source() {
         return layer_source;
     }
-
+    @Deprecated
     public void setLayer_source(String layer_source) {
         this.layer_source = layer_source;
     }
 
-    public String getFields() {
+    public JSONArray getFields() {
         return fields;
     }
 
-    public void setFields(String fields) {
+    public void setFields(JSONArray fields) {
+        if (fields == null) {
+            this.fields = new JSONArray();
+            return;
+        }
         this.fields = fields;
-    }
-
-    public long getStyle_id() {
-        return style_id;
-    }
-
-    public void setStyle_id(long style_id) {
-        this.style_id = style_id;
     }
 
     public int getFeatures_count (){
@@ -84,6 +81,27 @@ public class UserLayer extends UserDataLayer {
 
     public void setWkt(String wkt) {
         this.wkt = wkt;
+    }
+
+
+    public String getDesc(final String language) {
+        return getLocalizedValue(language, LOCALE_DESC);
+    }
+    public void setDesc(final String language, final String desc) {
+        setLocalizedValue(language, LOCALE_DESC, desc);
+    }
+
+    public String getSource(final String language) {
+        return getLocalizedValue(language, LOCALE_SOURCE);
+    }
+    public void setSource(final String language, final String source) { setLocalizedValue(language, LOCALE_SOURCE, source); }
+
+    public OffsetDateTime getCreated() {
+        return this.created;
+    }
+
+    public void setCreated(OffsetDateTime created) {
+        this.created = created;
     }
 
 }

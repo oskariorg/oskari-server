@@ -1,14 +1,17 @@
 package fi.nls.oskari.analysis;
 
+import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.domain.map.analysis.Analysis;
+import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.analysis.service.AnalysisDataService;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
+import fi.nls.oskari.util.WFSConversionHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.oskari.permissions.model.PermissionType;
 
 /**
  * Provides utility methods for analysis
@@ -25,8 +28,11 @@ public class AnalysisHelper {
     private static final String JSKEY_OPACITY = "opacity";
     private static final String JSKEY_MINSCALE = "minScale";
     private static final String JSKEY_MAXSCALE = "maxScale";
-    private static final String JSKEY_FIELDS = "fields";
-    private static final String JSKEY_LOCALES = "locales";
+    private static final String JSKEY_ATTRIBUTES = "attributes";
+    private static final String JSKEY_DATA = "data";
+    private static final String JSKEY_FILTER = "filter";
+    private static final String JSKEY_LOCALE = "locale";
+    private static final String JSKEY_TYPES = "types";
 
     private static final String JSKEY_BBOX = "bbox";
     private static final String JSKEY_GEOM = "geom";
@@ -36,23 +42,14 @@ public class AnalysisHelper {
     private static final String JSKEY_RIGHT = "right";
 
     private static final String JSKEY_ID = "id";
-    private static final String JSKEY_SUBTITLE = "subtitle";
-    private static final String JSKEY_ORGNAME = "orgname";
-    private static final String JSKEY_INSPIRE = "inspire";
     private static final String JSKEY_WPSURL = "wpsUrl";
     private static final String JSKEY_WPSNAME = "wpsName";
-    private static final String JSKEY_RESULT = "result";
     private static final String JSKEY_METHOD = "method";
-    private static final String JSKEY_OVERRIDE_SLD = "override_sld";
-    private static final String JSKEY_WPS_PARAMS = "wps_params";
+    private static final String JSKEY_WPS_PARAMS = "wpsParams";
     private static final String JSKEY_NO_DATA = "no_data";
     private static final String JSKEY_METHODPARAMS = "methodParams";
     private static final String LAYER_PREFIX = "analysis_";
     private static final String JSKEY_OPTIONS = "options";
-    private static final String JSKEY_STYLES = "styles";
-
-    private static final String ANALYSIS_ORGNAME = ""; // managed in front
-    private static final String ANALYSIS_INSPIRE = ""; // managed in front
 
     private static final String ANALYSIS_BASELAYER_ID = PropertyUtil.get("analysis.baselayer.id");
     private static final String PROPERTY_RENDERING_URL = PropertyUtil.getOptional("analysis.rendering.url");
@@ -79,166 +76,52 @@ public class AnalysisHelper {
         final String analysisId = layerIdSplitted[layerIdSplitted.length - 1];
         return ConversionHelper.getLong(analysisId, -1);
     }
+    @Deprecated
+    public static JSONObject getAnalysisPermissions(boolean hasPublish, boolean hasDownload) {
 
-    /**
-     * Generate a layer object for frontend.
-     * @param al analyse object
-     * @return analysis layer data for front mapservice
-     * @throws org.json.JSONException
-     */
-    public static JSONObject getlayerJSON(final Analysis al) {
-        return getlayerJSON(al, PropertyUtil.getDefaultLanguage(), false, null, false);
-    }
-
-    public static JSONObject getlayerJSON(final Analysis al,
-                                          final String lang, final boolean useDirectURL,
-                                          final String uuid, final boolean modifyURLs) {
-        // TODO: make use of params, see MyPlacesServiceIbatisImpl.getCategoryAsWmsLayerJSON for example
-        // TODO: create layer JSON with LayerJSONFormatter
-        JSONObject json = new JSONObject();
-        // Add correct analyse layer_id to json
-        try {
-            final JSONObject analyse_js = JSONHelper.createJSONObject(al
-                    .getAnalyse_json());
-            Long wpsid = al.getId();
-            String newid = "-1";
-            if (analyse_js.has(JSKEY_LAYERID)) {
-                if (analyse_js.getString(JSKEY_LAYERID).indexOf(LAYER_PREFIX) == 0)
-                // analyse in Analysislayer (prefix + base analysis wfs layer id
-                // +
-                // analysis_id)
-                {
-                    newid = LAYER_PREFIX + ANALYSIS_BASELAYER_ID + "_"
-                            + String.valueOf(wpsid);
-                } else {
-                    // analyse in wfs layer (prefix + wfs layer id +
-                    // analysis_id)
-                    newid = LAYER_PREFIX + analyse_js.getString(JSKEY_LAYERID)
-                            + "_" + String.valueOf(wpsid);
-                }
-
-            }
-
-            json.put(JSKEY_ID, newid);
-            json.put(JSKEY_TYPE, ANALYSIS_LAYERTYPE);
-
-            json.put(JSKEY_NAME, JSONHelper.getStringFromJSON(analyse_js,
-                    JSKEY_NAME, "n/a"));
-            json.put(JSKEY_SUBTITLE, "");
-            json.put(JSKEY_ORGNAME, ANALYSIS_ORGNAME);
-            json.put(JSKEY_INSPIRE, ANALYSIS_INSPIRE);
-
-            json.put(JSKEY_OPACITY, ConversionHelper.getInt(JSONHelper
-                    .getStringFromJSON(analyse_js, JSKEY_OPACITY, "80"), 80));
-            json.put(JSKEY_MINSCALE, ConversionHelper.getDouble(JSONHelper
-                    .getStringFromJSON(analyse_js, JSKEY_MINSCALE, "15000000"),
-                    15000000));
-            json.put(JSKEY_MAXSCALE, ConversionHelper.getDouble(JSONHelper
-                    .getStringFromJSON(analyse_js, JSKEY_MAXSCALE, "1"), 1));
-            json.put(JSKEY_FIELDS, getAnalyseNativeFields(al));
-            json.put(JSKEY_LOCALES, getAnalyseFields(al));
-            json.put(JSKEY_WPSURL, ANALYSIS_RENDERING_URL);
-            json.put(JSKEY_WPSNAME, ANALYSIS_RENDERING_ELEMENT);
-            json.put(JSKEY_WPSLAYERID, wpsid);
-            json.put(JSKEY_METHOD, JSONHelper.getStringFromJSON(analyse_js,
-                    JSKEY_METHOD, "n/a"));
-            json.put(JSKEY_RESULT, "");
-            json.put(JSKEY_OPTIONS, JSONHelper.createJSONObject(JSKEY_STYLES, al.getStyle().getStyleForLayerOptions()));
-            if (analyse_js.has(JSKEY_METHODPARAMS)) {
-                // Put nodata value to analysis layer, if it was in analysis source layer
-                JSONObject params = JSONHelper.getJSONObject(analyse_js, JSKEY_METHODPARAMS);
-                try {
-                    if (params.has(JSKEY_NO_DATA)) {
-                        json.put(JSKEY_WPS_PARAMS, JSONHelper.createJSONObject(JSKEY_NO_DATA, params.get(JSKEY_NO_DATA)));
-                    }
-
-                } catch (Exception ex) {
-                    log.debug("Unable to get analysis layer method params", ex);
-                }
-
-            }
-
-            if (analyse_js.has(JSKEY_OVERRIDE_SLD))json.put(JSKEY_OVERRIDE_SLD, analyse_js.optString(JSKEY_OVERRIDE_SLD));
-            //
-                if (analyse_js.has(JSKEY_BBOX)) {
-                JSONObject bbox = JSONHelper.getJSONObject(analyse_js, JSKEY_BBOX);
-                try {
-                    String bottom = Double.toString(bbox.getDouble(JSKEY_BOTTOM));
-                    String top = Double.toString(bbox.getDouble(JSKEY_TOP));
-                    String left = Double.toString(bbox.getDouble(JSKEY_LEFT));
-                    String right = Double.toString(bbox.getDouble(JSKEY_RIGHT));
-                    String geom = "POLYGON (("+left+" "+bottom+", "+right+" "+bottom+", "+
-                            right+" "+top+", "+left+" "+top+", "+left+" "+bottom+"))";
-                    json.put(JSKEY_GEOM, geom);
-                } catch (Exception ex) {
-                    log.debug("Unable to get analysis layer bbox", ex);
-                }
-            }
-        } catch (Exception ex) {
-            log.debug("Unable to get analysis layer json", ex);
+        final JSONObject permissions = new JSONObject();
+        if (hasPublish) {
+            JSONHelper.putValue(permissions, PermissionType.PUBLISH.getJsonKey(), OskariLayerWorker.PUBLICATION_PERMISSION_OK);
         }
-
-        return json;
-    }
-
-    private static JSONArray getAnalyseFields(Analysis analysis) {
-        JSONArray fm = new JSONArray();
-        try {
-            if (analysis != null) {
-                // Fixed 1st is ID
-                fm.put("ID");
-                for (int j = 1; j < 11; j++) {
-                    String colx = analysis.getColx(j);
-                    if (colx != null && !colx.isEmpty()) {
-                        if (colx.indexOf("=") != -1) {
-                            fm.put(colx.split("=")[1]);
-                        }
-                    }
-
-                }
-                // Add geometry for filter and for highlight
-                fm.put(AnalysisDataService.ANALYSIS_GEOMETRY_FIELD);
-                fm.put("x");
-                fm.put("y");
-            }
-        } catch (Exception ex) {
-            log.debug("Unable to get analysis field layer json", ex);
+        if (hasDownload) {
+            JSONHelper.putValue(permissions, PermissionType.DOWNLOAD.getJsonKey(), OskariLayerWorker.DOWNLOAD_PERMISSION_OK);
         }
-        return fm;
+        return permissions;
     }
-
-    /**
-     * Get native field names
-     *
-     * @param analysis
-     * @return
-     */
-    private  static JSONArray getAnalyseNativeFields(Analysis analysis) {
-        JSONArray fm = new JSONArray();
-        try {
-            if (analysis != null) {
-                // Fixed 1st is ID
-                fm.put("__fid");
-                for (int j = 1; j < 11; j++) {
-                    String colx = analysis.getColx(j);
-                    if (colx != null && !colx.isEmpty()) {
-                        if (colx.indexOf("=") != -1) {
-                            fm.put(colx.split("=")[0]);
-                        }
-                    }
-
-                }
-                // Add geometry for filter and for highlight.
-                // ...or maybe not since Transport will add it anyway.
-                // This prevents the geometry text from polluting the GFI and feature data.
-                //fm.put(AnalysisDataService.ANALYSIS_GEOMETRY_FIELD);
-                fm.put("__centerX");
-                fm.put("__centerY");
+    @Deprecated
+    private static JSONObject getAttributes (Analysis analysis, JSONObject analysisJSON, String lang) {
+        JSONObject attributes = new JSONObject();
+        JSONObject params = JSONHelper.getJSONObject(analysisJSON, JSKEY_METHODPARAMS);
+        if (params != null) {
+            Object noData = JSONHelper.get(params, JSKEY_NO_DATA);
+            if (noData != null) {
+                JSONHelper.putValue(attributes, JSKEY_WPS_PARAMS, JSONHelper.createJSONObject(JSKEY_NO_DATA, noData));
             }
-        } catch (Exception ex) {
-            log.debug("Unable to get analysis field layer json", ex);
         }
-        return fm;
+        String method = JSONHelper.optString(analysisJSON, JSKEY_METHOD);
+        JSONHelper.putValue(attributes, JSKEY_METHOD, method);
+
+        JSONArray filter = new JSONArray();
+        JSONObject locale = new JSONObject();
+        JSONObject types = new JSONObject();
+        for (int j = 1; j < 11; j++) {
+            String colx = analysis.getColx(j);
+            if (colx != null && colx.contains("=")) {
+                String[] splitted = colx.split("=");
+                String field = splitted[0];
+                String name = splitted[1];
+                filter.put(field);
+                JSONHelper.putValue(locale, field, name);
+                String type = field.startsWith("n") ? WFSConversionHelper.NUMBER : WFSConversionHelper.STRING;
+                JSONHelper.putValue(types, field, type);
+            }
+        }
+        JSONObject data = new JSONObject();
+        JSONHelper.put(data, JSKEY_FILTER, filter);
+        JSONHelper.putValue(data, JSKEY_TYPES, types);
+        JSONHelper.putValue(data, JSKEY_LOCALE, JSONHelper.createJSONObject(lang, locale));
+        JSONHelper.putValue(attributes, JSKEY_DATA, data);
+        return attributes;
     }
 
     public static String getAnalysisRenderingUrl() {

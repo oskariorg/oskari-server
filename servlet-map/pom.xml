@@ -2,9 +2,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>fi.nls.oskari</groupId>
-        <artifactId>oskari-parent</artifactId>
-        <version>1.53.0-SNAPSHOT</version>
+        <groupId>org.oskari</groupId>
+        <artifactId>oskari-server</artifactId>
+        <version>3.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>servlet-map</artifactId>
     <packaging>jar</packaging>
@@ -12,18 +12,23 @@
 
     <dependencies>
         <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-webapp-helpers</artifactId>
+            <groupId>org.oskari</groupId>
+            <artifactId>service-webapp</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-users</artifactId>
+            <groupId>org.oskari</groupId>
+            <artifactId>service-users</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>fi.nls.oskari.service</groupId>
-            <artifactId>oskari-control-base</artifactId>
+            <groupId>org.oskari</groupId>
+            <artifactId>control-base</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.oskari</groupId>
+            <artifactId>control-mvt</artifactId>
         </dependency>
 
         <dependency>
@@ -42,6 +47,14 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-config</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-data-redis</artifactId>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>

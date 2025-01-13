@@ -1,0 +1,41 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "id": 1,
+            "properties": {
+                "fid": 1,
+                "attr-1": "str-value",
+                "attr-2": null,
+                "attr-3": null,
+                "attr-4": null
+            },
+            "geometry": ""
+        },
+        {
+            "type": "Feature",
+            "id": 2,
+            "properties": {
+                "fid": 2,
+                "attr-1": "str-value",
+                "attr-2": 10,
+                "attr-3": true,
+                "attr-4": null
+            },
+            "geometry": ""
+        },
+        {
+            "type": "Feature",
+            "id": 1,
+            "properties": {
+                "fid": 3,
+                "attr-1": "str-value",
+                "attr-2": 20,
+                "attr-3": null,
+                "attr-4": null
+            },
+            "geometry": ""
+        }
+    ]
+}

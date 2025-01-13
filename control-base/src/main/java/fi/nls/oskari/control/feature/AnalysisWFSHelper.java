@@ -1,17 +1,20 @@
 package fi.nls.oskari.control.feature;
 
-import fi.mml.portti.domain.permissions.Permissions;
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.cache.ComputeOnceCache;
 import fi.nls.oskari.domain.User;
+import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.analysis.Analysis;
-import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
+import fi.nls.oskari.map.analysis.service.AnalysisDataService;
 import fi.nls.oskari.map.analysis.service.AnalysisDbService;
 import fi.nls.oskari.map.analysis.service.AnalysisDbServiceMybatisImpl;
+import fi.nls.oskari.service.OskariComponentManager;
+import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.PropertyUtil;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
+import org.geotools.data.store.EmptyFeatureCollection;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
@@ -23,9 +26,14 @@ import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.expression.Expression;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.geojson.GeoJSONFeatureCollection;
+import org.oskari.permissions.PermissionService;
+import org.oskari.permissions.model.PermissionType;
+import org.oskari.permissions.model.ResourceType;
 import org.oskari.service.user.UserLayerService;
-import org.oskari.service.util.ServiceFactory;
+import org.oskari.service.wfs.client.CachingOskariWFSClient;
+import org.oskari.service.wfs.client.OskariWFSClient;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,7 +55,9 @@ public class AnalysisWFSHelper extends UserLayerService {
     private int analysisLayerId;
     private AnalysisDbService service;
     private ComputeOnceCache<Set<String>> permissionsCache;
+    private OskariWFSClient wfsClient = new CachingOskariWFSClient();
 
+    private AnalysisDbServiceMybatisImpl analysisDbService = new AnalysisDbServiceMybatisImpl();
     public AnalysisWFSHelper() {
         init();
     }
@@ -106,16 +116,19 @@ public class AnalysisWFSHelper extends UserLayerService {
     private Set<String> getPermissionsForUser(User user) {
         return permissionsCache.get(Long.toString(user.getId()),
                 __ ->
-                        ServiceFactory.getPermissionsService().getResourcesWithGrantedPermissions(
-                                AnalysisLayer.TYPE, user, Permissions.PERMISSION_TYPE_VIEW_PUBLISHED));
+                        OskariComponentManager.getComponentOfType(PermissionService.class).getResourcesWithGrantedPermissions(
+                                ResourceType.analysislayer, user, PermissionType.VIEW_PUBLISHED));
     }
 
-    private Analysis getLayer(int id) {
+    protected Analysis getLayer(int id) {
         if (service == null) {
             // might cause problems with timing of components being initialized if done in init/constructor
-            service = new AnalysisDbServiceMybatisImpl();
+            service = OskariComponentManager.getComponentOfType(AnalysisDbService.class);
         }
         return service.getAnalysisById(id);
+    }
+    protected OskariLayer getBaseLayer() {
+        return AnalysisDataService.getBaseLayer();
     }
 
     public SimpleFeatureCollection postProcess(SimpleFeatureCollection sfc) throws Exception {
@@ -157,5 +170,19 @@ public class AnalysisWFSHelper extends UserLayerService {
 
     private boolean isVisibleProperty(String name) {
         return HIDDEN_PROPERTIES.stream().noneMatch(propName -> propName.equals(name));
+    }
+
+    @Override
+    public SimpleFeatureCollection getFeatures(String layerId, OskariLayer layer, ReferencedEnvelope bbox, CoordinateReferenceSystem crs) throws ServiceException {
+        try {
+            SimpleFeatureCollection featureCollection = analysisDbService.getFeatures(parseId(layerId), bbox, crs);
+            if (featureCollection == null) {
+                return new EmptyFeatureCollection(null);
+            }
+
+            return postProcess(featureCollection);
+        } catch(Exception e) {
+            throw new ServiceException("Failed to get features. ", e);
+        }
     }
 }

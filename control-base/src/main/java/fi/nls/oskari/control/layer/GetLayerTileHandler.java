@@ -3,18 +3,27 @@ package fi.nls.oskari.control.layer;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 import fi.nls.oskari.annotation.OskariActionRoute;
+import fi.nls.oskari.cache.Cache;
+import fi.nls.oskari.cache.CacheManager;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.layer.formatters.LayerJSONFormatter;
-import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterWMS;
+import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterVectorTile;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 
+import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import org.oskari.capabilities.CapabilitiesService;
+import org.oskari.capabilities.ogc.LayerCapabilitiesWMTS;
+import org.oskari.capabilities.ogc.wmts.ResourceUrl;
+import org.oskari.permissions.PermissionService;
+import org.oskari.service.user.LayerAccessHandler;
 import org.oskari.service.util.ServiceFactory;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,7 +31,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.net.HttpURLConnection;
 import java.util.*;
 
+import fi.nls.oskari.service.capabilities.CapabilitiesConstants;
 import static fi.nls.oskari.control.ActionConstants.KEY_ID;
+import static fi.nls.oskari.map.layer.formatters.LayerJSONFormatter.KEY_LEGENDS;
+import static fi.nls.oskari.map.layer.formatters.LayerJSONFormatter.KEY_GLOBAL_LEGEND;
+
 
 @OskariActionRoute("GetLayerTile")
 public class GetLayerTileHandler extends ActionHandler {
@@ -36,6 +49,8 @@ public class GetLayerTileHandler extends ActionHandler {
     private static final boolean GATHER_METRICS = PropertyUtil.getOptional("GetLayerTile.metrics", true);
     private static final String METRICS_PREFIX = "Oskari.GetLayerTile";
     private PermissionHelper permissionHelper;
+    private Collection<LayerAccessHandler> layerAccessHandlers;
+    private Cache<String> cache_WMTS_URL;
 
     // WMTS rest layers params
     private static final String KEY_STYLE = "STYLE";
@@ -48,7 +63,11 @@ public class GetLayerTileHandler extends ActionHandler {
      *  Init method
      */
     public void init() {
-        permissionHelper = new PermissionHelper(ServiceFactory.getMapLayerService(),ServiceFactory.getPermissionsService());
+        permissionHelper = new PermissionHelper(ServiceFactory.getMapLayerService(), OskariComponentManager.getComponentOfType(PermissionService.class));
+
+        Map<String, LayerAccessHandler> handlerComponents = OskariComponentManager.getComponentsOfType(LayerAccessHandler.class);
+        this.layerAccessHandlers = handlerComponents.values();
+        cache_WMTS_URL = CacheManager.getCache(GetLayerTileHandler.class.getSimpleName() + "_WMTS_URL");
     }
 
     /**
@@ -63,14 +82,6 @@ public class GetLayerTileHandler extends ActionHandler {
         final int layerId = params.getRequiredParamInt(KEY_ID);
         final OskariLayer layer = permissionHelper.getLayer(layerId, params.getUser());
 
-        final MetricRegistry metrics = ActionControl.getMetrics();
-
-        Timer.Context actionTimer = null;
-        if(GATHER_METRICS) {
-            final com.codahale.metrics.Timer timer = metrics.timer(METRICS_PREFIX + "." + layerId);
-            actionTimer = timer.time();
-        }
-
         String httpMethod = params.getRequest().getMethod();
         String url;
         String postParams = null;
@@ -81,8 +92,24 @@ public class GetLayerTileHandler extends ActionHandler {
         } else {
             url = getURL(params, layer);
         }
+        if (url == null || url.trim().isEmpty() || url.startsWith("/")) {
+            // For example legend url for proxied layers can be empty
+            // -> not an error really, but we don't want to go any further either
+            ResponseHelper.writeError(params, "No URL configured", HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+
+        final MetricRegistry metrics = ActionControl.getMetrics();
+
+        Timer.Context actionTimer = null;
+        if (GATHER_METRICS) {
+            final com.codahale.metrics.Timer timer = metrics.timer(METRICS_PREFIX + "." + layerId);
+            actionTimer = timer.time();
+        }
         // TODO: we should handle redirects here or in IOHelper or start using a lib that handles 301/302 properly
         HttpURLConnection con = getConnection(url, layer);
+
+        layerAccessHandlers.forEach(handler -> handler.handle(layer, params.getUser()));
 
         try {
             con.setRequestMethod(httpMethod);
@@ -92,6 +119,8 @@ public class GetLayerTileHandler extends ActionHandler {
             con.setDoInput(true);
             con.setFollowRedirects(true);
             con.setUseCaches(false);
+            // tell the service who is making the requests
+            IOHelper.addIdentifierHeaders(con);
             con.connect();
 
             if (doOutPut) {
@@ -99,8 +128,14 @@ public class GetLayerTileHandler extends ActionHandler {
             }
 
             final int responseCode = con.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_NOT_FOUND) {
+                // prevent excessive logging by handling a common case where service responds with 404
+                params.getResponse().sendError(HttpServletResponse.SC_NOT_FOUND);
+                LOG.debug("URL reported 404:", url);
+                return;
+            }
             final String contentType = con.getContentType().toLowerCase();
-            if(responseCode != HttpURLConnection.HTTP_OK || !contentType.startsWith("image/")) {
+            if(responseCode != HttpURLConnection.HTTP_OK || !isContentTypeOK(contentType)) {
                 LOG.warn("URL", url, "returned HTTP response code", responseCode,
                         "with message", con.getResponseMessage(), "and content-type:", contentType);
                 String msg = IOHelper.readString(con);
@@ -119,26 +154,33 @@ public class GetLayerTileHandler extends ActionHandler {
             // just throw it as is if we already handled it
             throw e;
         } catch (Exception e) {
-            throw new ActionParamsException("Couldn't proxy request to actual service", e.getMessage(), e);
+            LOG.debug("Url in proxy error was:", url);
+            throw new ActionCommonException("Couldn't proxy request to actual service: " +  e.getMessage(), e);
         } finally {
-            if(actionTimer != null) {
+            if (actionTimer != null) {
                 actionTimer.stop();
             }
-            if(con != null) {
+            if (con != null) {
                 con.disconnect();
             }
         }
     }
 
-    private String getURL(final ActionParameters params, final OskariLayer layer) {
+    private boolean isContentTypeOK(String contentType) {
+        return contentType.startsWith("image/")
+                || contentType.startsWith("application/octet-stream")
+                || contentType.startsWith("application/vnd.mapbox-vector-tile");
+    }
+
+    private String getURL(final ActionParameters params, final OskariLayer layer) throws ActionParamsException {
         if (params.getHttpParam(LEGEND, false)) {
-            return this.getLegendURL(layer, params.getHttpParam(LayerJSONFormatterWMS.KEY_STYLE, null));
+            return this.getLegendURL(layer, params.getHttpParam(CapabilitiesConstants.KEY_STYLE, null));
         }
         final HttpServletRequest httpRequest = params.getRequest();
-        if(OskariLayer.TYPE_WMTS.equalsIgnoreCase(layer.getType())) {
+        if (OskariLayer.TYPE_WMTS.equalsIgnoreCase(layer.getType())) {
             // check for rest url
-            final String urlTemplate = JSONHelper.getStringFromJSON(layer.getOptions(), "urlTemplate", null);
-            if(urlTemplate != null) {
+            final String urlTemplate = getWMTSUrl(layer);
+            if (!urlTemplate.isEmpty()) {
                 LOG.debug("REST WMTS layer proxy");
                 HashMap<String, String> capsParams = new HashMap<>();
                 Enumeration<String> paramNames = httpRequest.getParameterNames();
@@ -154,10 +196,40 @@ public class GetLayerTileHandler extends ActionHandler {
                         .replaceFirst("\\{TileRow\\}", capsParams.get(KEY_TILEROW) != null ? capsParams.get(KEY_TILEROW) : KEY_TILEROW)
                         .replaceFirst("\\{TileCol\\}", capsParams.get(KEY_TILECOL) != null ? capsParams.get(KEY_TILECOL) : KEY_TILECOL);
             }
+        } else if (OskariLayer.TYPE_VECTOR_TILE.equalsIgnoreCase(layer.getType())) {
+            // TODO: Figure out CRS
+            int x = params.getRequiredParamInt(LayerJSONFormatterVectorTile.URL_PARAM_X);
+            int y = params.getRequiredParamInt(LayerJSONFormatterVectorTile.URL_PARAM_Y);
+            int z = params.getRequiredParamInt(LayerJSONFormatterVectorTile.URL_PARAM_Z);
+            return layer.getUrl()
+                    .replaceFirst("\\{x\\}", String.valueOf(x))
+                    .replaceFirst("\\{y\\}", String.valueOf(y))
+                    .replaceFirst("\\{z\\}", String.valueOf(z));
         }
 
         Map<String, String> urlParams = getUrlParams(httpRequest);
         return IOHelper.constructUrl(layer.getUrl(),urlParams);
+    }
+
+    private String getWMTSUrl(OskariLayer layer) {
+        String cacheKey = "" + layer.getId();
+        String resourceUrl = cache_WMTS_URL.get(cacheKey);
+        if (resourceUrl != null) {
+            // empty means we parsed and there was no resource url
+            return resourceUrl;
+        }
+        LayerCapabilitiesWMTS caps = CapabilitiesService.fromJSON(layer.getCapabilities().toString(), OskariLayer.TYPE_WMTS);
+        ResourceUrl url = caps.getResourceUrl("tile");
+        String valueToCache = "";
+        if (url != null) {
+            valueToCache = url.getTemplate();
+        }
+        if (valueToCache == null) {
+            // just in case we have something wonky going on in the capabilities
+            valueToCache = "";
+        }
+        cache_WMTS_URL.put(cacheKey, valueToCache);
+        return valueToCache;
     }
 
     private Map<String, String> getUrlParams(HttpServletRequest httpRequest) {
@@ -176,28 +248,44 @@ public class GetLayerTileHandler extends ActionHandler {
     /**
      * Get Legend image url
      * @param layer  Oskari layer
-     * @param style_name  style name for legend
+     * @param styleName  style name for legend
      * @return
      */
-    private String getLegendURL(final OskariLayer layer, String style_name) {
-        String lurl = layer.getLegendImage();
-        if (style_name != null) {
-            // Get Capabilities style url
-            JSONObject json = layer.getCapabilities();
-            if (json.has(LayerJSONFormatter.KEY_STYLES)) {
+    private String getLegendURL(final OskariLayer layer, String styleName) {
+        // Get overridden legends
+        Map<String,String> legends = JSONHelper.getObjectAsMap(layer.getOptions().optJSONObject(KEY_LEGENDS));
+        String lurl = legends.getOrDefault(KEY_GLOBAL_LEGEND, "");
+        if (styleName == null) {
+            return lurl;
+        }
+        if (legends.containsKey(styleName)) {
+            // override for legend added by admin
+            return legends.get(styleName);
+        }
+        if (!lurl.isEmpty()) {
+            // use global legend url
+            return lurl;
+        }
+        // Get Capabilities style url
+        JSONObject json = layer.getCapabilities();
+        if (!json.has(CapabilitiesConstants.KEY_STYLES)) {
+            return lurl;
+        }
 
-                JSONArray styles = JSONHelper.getJSONArray(json, LayerJSONFormatter.KEY_STYLES);
-                for (int i = 0; i < styles.length(); i++) {
-                    final JSONObject style = JSONHelper.getJSONObject(styles, i);
-                    if (JSONHelper.getStringFromJSON(style, NAME, "").equals(style_name)) {
-                        return style.optString(LEGEND);
-                    }
-                }
-
+        JSONArray styles = JSONHelper.getJSONArray(json, CapabilitiesConstants.KEY_STYLES);
+        for (int i = 0; i < styles.length(); i++) {
+            final JSONObject style = JSONHelper.getJSONObject(styles, i);
+            if (!JSONHelper.getStringFromJSON(style, NAME, "").equals(styleName)) {
+                continue;
+            }
+            // found the style in question
+            if (!style.isNull(LEGEND)) {
+                // without null check optString() returns null value as string "null"
+                // if the value is missing completely it returns empty string as default value
+                return style.optString(LEGEND);
             }
         }
         return lurl;
-
     }
     /**
      * Creates connection
@@ -211,8 +299,9 @@ public class GetLayerTileHandler extends ActionHandler {
         try {
             final String username = layer.getUsername();
             final String password = layer.getPassword();
-            LOG.debug("Getting layer tile from url:", url);
-            return IOHelper.getConnection(url, username, password);
+            String urlWithExtraParams = IOHelper.constructUrl(url, JSONHelper.getObjectAsMap(layer.getParams()));
+            LOG.debug("Getting layer tile from url:", urlWithExtraParams);
+            return IOHelper.getConnection(urlWithExtraParams, username, password);
         } catch (Exception e) {
             throw new ActionException("Couldn't get connection to service", e);
         }

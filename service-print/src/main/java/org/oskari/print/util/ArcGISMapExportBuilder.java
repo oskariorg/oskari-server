@@ -74,8 +74,9 @@ public class ArcGISMapExportBuilder {
         params.put("FORMAT", "PNG32");
         params.put("BBOX", String.format("%f,%f,%f,%f", bbox[0], bbox[1], bbox[2], bbox[3]));
         params.put("BBOXSR", Integer.toString(bboxsr));
+        params.put("IMAGESR", Integer.toString(bboxsr));
         params.put("SIZE", String.format("%d,%d", width, height));
-        params.put("LAYER", String.format("show:%s", layer));
+        params.put("LAYERS", String.format("show:%s", layer));
         params.put("TRANSPARENT", transparent ? "TRUE" : "FALSE");
         params.put("DPI", Integer.toString(90));
 

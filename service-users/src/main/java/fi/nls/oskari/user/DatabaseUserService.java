@@ -11,7 +11,15 @@ import fi.nls.oskari.service.db.UserContentService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+
 
 public class DatabaseUserService extends UserService {
     private MybatisRoleService roleService = new MybatisRoleService();
@@ -36,7 +44,7 @@ public class DatabaseUserService extends UserService {
             if (expectedHashedPassword == null) {
                 return null;
             }
-            
+
             final String username;
             if (expectedHashedPassword.startsWith("MD5:")) {
                 final String hashedPass = "MD5:" + DigestUtils.md5Hex(pass);
@@ -45,22 +53,19 @@ public class DatabaseUserService extends UserService {
                 if (username == null) {
                     return null;
                 }
-            }
-            else if (expectedHashedPassword.length() == BCRYPT_PASSWORD_LENGTH) {
+            } else if (expectedHashedPassword.length() == BCRYPT_PASSWORD_LENGTH) {
                 log.debug("Tried to login user:", user, "/", pass, " with BCrypt password");
                 if (!BCrypt.checkpw(pass, expectedHashedPassword)) {
                     return null;
                 }
                 username = user;
-            }
-            else {
+            } else {
                 log.error("Unknown password hash format for user ", user);
                 return null;
             }
-            
-           	return getUser(username);
-        }
-        catch (Exception ex) {
+
+            return getUser(username);
+        } catch (Exception ex) {
             throw new ServiceException("Unable to handle login", ex);
         }
     }
@@ -88,88 +93,118 @@ public class DatabaseUserService extends UserService {
 
     @Override
     public List<User> getUsers() throws ServiceException {
-        log.info("getUsers");
+        log.debug("getUsers");
         return userService.findAll();
     }
 
     @Override
+    public List<User> getUsersByRole(long roleId) throws ServiceException {
+        return userService.findByRoleId(roleId);
+    }
+
+    @Override
     public List<User> getUsersWithRoles() throws ServiceException {
-        log.info("getUsersWithRoles");
+        log.debug("getUsersWithRoles");
         List<User> users = userService.findAll();
-        
-        List<User> newUserList = new ArrayList<User>();
-        
-        for(User user : users){
-        	log.debug("userid: " + user.getId());
-        	List<Role> roles = roleService.findByUserId(user.getId());
-        	Set<Role> hashsetRoles = new HashSet<Role>(roles);
-        	user.setRoles(hashsetRoles);
-        	newUserList.add(user);
+
+        List<User> newUserList = new ArrayList<>();
+
+        for (User user : users) {
+            log.debug("userid: " + user.getId());
+            List<Role> roles = roleService.findByUserId(user.getId());
+            Set<Role> hashsetRoles = new HashSet<>(roles);
+            user.setRoles(hashsetRoles);
+            newUserList.add(user);
         }
-        
+
         return newUserList;
+    }
+
+    @Override
+    public List<User> getUsersWithRoles(int limit, int offset, String query) throws ServiceException {
+        log.debug("getUsersWithRoles");
+        List<User> users = userService.findAll(limit, offset, query);
+
+        List<User> newUserList = new ArrayList<>();
+
+        for (User user : users) {
+            log.debug("userid: " + user.getId());
+            List<Role> roles = roleService.findByUserId(user.getId());
+            Set<Role> hashsetRoles = new HashSet<>(roles);
+            user.setRoles(hashsetRoles);
+            newUserList.add(user);
+        }
+
+        return newUserList;
+    }
+
+    @Override
+    public int getUserCount() throws ServiceException {
+        return userService.findUserCount();
+    }
+
+    @Override
+    public int getUserSearchCount(String search) throws ServiceException {
+        return userService.findUserSearchCount(search);
     }
 
     @Override
     public User createUser(User user) throws ServiceException {
         log.debug("createUser #######################");
-        if(user.getUuid() == null || user.getUuid().isEmpty()) {
+        if (user.getUuid() == null || user.getUuid().isEmpty()) {
             user.setUuid(generateUuid());
         }
         Long id = userService.addUser(user);
-        for(Role r : user.getRoles()) {
+        Set<Role> roles = ensureRolesInDB(user.getRoles());
+        for (Role r : roles) {
             roleService.linkRoleToNewUser(r.getId(), id);
         }
         return userService.find(id);
     }
-    
-    
+
+
     @Override
     public User createUser(User user, String[] roleIds) throws ServiceException {
-        log.debug("createUser #######################");
-        if(user == null) {
-            throw new ServiceException(ERR_USER_MISSING);
+        User newUser = createUser(user);
+        Long id = newUser.getId();
+        Set<Role> roles = ensureRolesInDB(roleIds);
+        for (Role r : roles) {
+            log.debug("roleId: " + r.getId() + " userId: " + id);
+            roleService.linkRoleToNewUser(r.getId(), id);
         }
-        if(user.getUuid() == null || user.getUuid().isEmpty()) {
-            user.setUuid(generateUuid());
-        }
-        Long id = userService.addUser(user);
-        
-        for(String roleId : roleIds){
-        	log.debug("roleId: " + roleId + " userId: " + id);
-            roleService.linkRoleToUser(Long.valueOf(roleId), id);
-        }    
-        
-        return userService.find(id);
+        return newUser;
     }
 
 
     /**
      * Only updates user information, NOT roles!
+     *
      * @param user Modified user
      * @return
      * @throws ServiceException
      */
     @Override
     public User modifyUser(User user) throws ServiceException {
-        if(user == null) {
+        if (user == null) {
             throw new ServiceException(ERR_USER_MISSING);
         }
         log.debug("modifyUser");
         userService.updateUser(user);
         User retUser = userService.find(user.getId());
         List<Role> roles = roleService.findByUserId(user.getId());
-        retUser.setRoles(new HashSet<Role>(roles));
+        retUser.setRoles(new HashSet<>(roles));
         return retUser;
     }
+
     /**
      * Updates user information AND roles based on screenname! Creating both roles and user if they are not found in database.
+     *
      * @param user User details
      * @return saved user with populated role/user IDs.
      * @throws ServiceException if given user is null or something went wrong while updating the database
      */
     public User saveUser(final User user) throws ServiceException {
-        if(user == null) {
+        if (user == null) {
             throw new ServiceException(ERR_USER_MISSING);
         }
         log.debug("Saving user:", user, "with roles:", user.getRoles());
@@ -178,7 +213,7 @@ public class DatabaseUserService extends UserService {
         user.setRoles(roles);
         // check if user details exist in DB
         final User dbUser = getUser(user.getScreenname());
-        if(dbUser == null) {
+        if (dbUser == null) {
             // not found from DB -> add user
             return createUser(user);
         }
@@ -192,7 +227,7 @@ public class DatabaseUserService extends UserService {
     private User modifyUserwithRoles(User user, Set<Role> roles) throws ServiceException {
         final String[] roleIds = new String[roles.size()];
         final Iterator<Role> it = roles.iterator();
-        for(int i = 0; i < roleIds.length; ++i) {
+        for (int i = 0; i < roleIds.length; ++i) {
             Role role = it.next();
             roleIds[i] = "" + role.getId();
         }
@@ -203,22 +238,19 @@ public class DatabaseUserService extends UserService {
     public User modifyUserwithRoles(User user, String[] roleIds) throws ServiceException {
         log.debug("modifyUserWithRoles");
         userService.updateUser(user);
-        
-        if(roleIds != null){
-        	log.debug("starting to delete roles from a user");
-            roleService.deleteUsersRoles(user.getId());
-            log.debug("users roles deleted");
-            for(String roleId : roleIds){
-            	log.debug("roleId: " + roleId + " userId: " + user.getId());
-                roleService.linkRoleToUser(Long.valueOf(roleId), user.getId());
-            }
-        }else{
-        	log.debug("roleIds == null");
+
+        log.debug("starting to delete roles from a user");
+        roleService.deleteUsersRoles(user.getId());
+        log.debug("users roles deleted");
+        Set<Role> roles = ensureRolesInDB(roleIds);
+        for (Role role : roles) {
+            log.debug("roleId: " + role.getId() + " userId: " + user.getId());
+            roleService.linkRoleToUser(role.getId(), user.getId());
         }
-        
+
         return userService.find(user.getId());
-    }    
-    
+    }
+
     @Override
     public void deleteUser(long id) throws ServiceException {
         log.debug("deleteUser");
@@ -234,8 +266,7 @@ public class DatabaseUserService extends UserService {
                 userService.deletePassword(user.getScreenname());
                 roleService.deleteUsersRoles(id);
                 userService.delete(id);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.error("Deleting user data failed in service:", serviceClass);
                 throw new ServiceException("Deleting user data failed in service: " + serviceClass);
             }
@@ -254,54 +285,86 @@ public class DatabaseUserService extends UserService {
         userService.updatePassword(username, hashed);
     }
 
-    
+
     @Override
     public Role insertRole(String roleName) throws ServiceException {
-    	log.debug("insertRole");
-    	Role role = new Role();
-    	role.setName(roleName);
-    	log.debug("rolename: " + role.getName());
-    	long id = roleService.insert(role);
-    	role.setId(id);
-    	return role;
-    }
-    
-    
-    @Override
-    public String deleteRole(int roleId) throws ServiceException {
-    	log.debug("deleteRole");
-    	roleService.delete(roleId);
-    	return null;
-    }
-   
-    @Override
-    public String modifyRole(String roleId, String userID) throws ServiceException {
-    	log.debug("modifyRole");
-    	return null;
+        log.debug("insertRole");
+        Role role = new Role();
+        role.setName(roleName);
+        log.debug("rolename: " + role.getName());
+        long id = roleService.insert(role);
+        role.setId(id);
+        return role;
     }
 
-    private Set<Role> ensureRolesInDB(final Set<Role> userRoles) throws ServiceException {
+
+    @Override
+    public String deleteRole(int roleId) throws ServiceException {
+        log.debug("deleteRole");
+        roleService.delete(roleId);
+        return null;
+    }
+
+    @Override
+    public String modifyRole(String roleId, String userID) throws ServiceException {
+        log.debug("modifyRole");
+        return null;
+    }
+
+    @Override
+    public Role updateRole(long id, String name) throws ServiceException {
+        log.debug("updateRole");
+        roleService.update(id, name);
+        Role role = new Role();
+        role.setId(id);
+        role.setName(name);
+        return role;
+    }
+    protected Set<Role> ensureRolesInDB (final String[] roleIds) throws ServiceException {
+        if (roleIds == null) {
+            return Collections.emptySet();
+        }
+        // map ids to roles
+        Set <Role> roles = new HashSet<>();
+        for (String id: roleIds) {
+            Role role = new Role();
+            role.setId(Long.valueOf(id));
+            roles.add(role);
+        }
+        return ensureRolesInDB(roles);
+    }
+
+    protected Set<Role> ensureRolesInDB(final Set<Role> userRoles) throws ServiceException {
         final Role[] systemRoles = getRoles();
-        final Set<Role> rolesToInsert = new HashSet<Role>(userRoles.size());
-        for(Role userRole : userRoles) {
+        final Set<Role> rolesToInsert = new HashSet<>(userRoles.size());
+        for (Role userRole : userRoles) {
             boolean found = false;
-            for(Role role : systemRoles) {
-                if(role.getName().equals(userRole.getName())) {
+            for (Role role : systemRoles) {
+                if (role.getName().equals(userRole.getName())) {
                     // assign ID from role with same name in db
                     userRole.setId(role.getId());
                     found = true;
                 }
+                if (role.getId() == userRole.getId()) {
+                    userRole.setName(role.getName());
+                    found = true;
+                }
             }
-            if(!found) {
+            if (!found) {
                 rolesToInsert.add(userRole);
             }
         }
         // insert missing roles to DB and assign ID
-        for(Role role : rolesToInsert) {
-            Role dbRole = insertRole(role.getName());
-            role.setId(dbRole.getId());
+        for (Role role : rolesToInsert) {
+            String roleName = role.getName();
+            if (roleName != null) {
+                Role dbRole = insertRole(roleName);
+                role.setId(dbRole.getId());
+            } else {
+                // Role not found and can't insert without name
+                userRoles.remove(role);
+            }
         }
         return userRoles;
     }
-    
 }

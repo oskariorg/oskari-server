@@ -2,12 +2,11 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>fi.nls.oskari</groupId>
-        <artifactId>oskari-parent</artifactId>
-        <version>1.53.0-SNAPSHOT</version>
+        <groupId>org.oskari</groupId>
+        <artifactId>oskari-server</artifactId>
+        <version>3.0.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>org.oskari</groupId>
     <artifactId>service-mvt</artifactId>
 
     <properties>
@@ -16,12 +15,12 @@
 
     <dependencies>
         <dependency>
-            <groupId>fi.nls.oskari</groupId>
+            <groupId>org.oskari</groupId>
             <artifactId>service-logging</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.wdtinc</groupId>
-            <artifactId>mapbox-vector-tile</artifactId>
+            <groupId>no.ecc.vectortile</groupId>
+            <artifactId>java-vector-tile</artifactId>
         </dependency>
         <dependency>
             <groupId>org.geotools</groupId>
@@ -33,7 +32,7 @@
         </dependency>
         <dependency>
             <groupId>org.oskari</groupId>
-            <artifactId>oskari-geojson</artifactId>
+            <artifactId>gt-geojson</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

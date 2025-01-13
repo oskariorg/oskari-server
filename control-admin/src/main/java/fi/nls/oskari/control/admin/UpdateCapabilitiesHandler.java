@@ -3,24 +3,24 @@ package fi.nls.oskari.control.admin;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import fi.nls.oskari.control.*;
-import fi.nls.oskari.util.ConversionHelper;
+import fi.nls.oskari.util.PropertyUtil;
+import org.oskari.capabilities.CapabilitiesService;
+import org.oskari.capabilities.CapabilitiesUpdateResult;
+import org.oskari.log.AuditLog;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.oskari.capabilities.CapabilitiesUpdateResult;
-import org.oskari.capabilities.CapabilitiesUpdateService;
 import org.oskari.service.util.ServiceFactory;
 
-import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.util.ViewHelper;
 import fi.nls.oskari.service.ServiceException;
-import fi.nls.oskari.service.capabilities.CapabilitiesCacheService;
 import fi.nls.oskari.util.ResponseHelper;
 
 /**
@@ -43,10 +43,9 @@ import fi.nls.oskari.util.ResponseHelper;
  */
 @OskariActionRoute("UpdateCapabilities")
 public class UpdateCapabilitiesHandler extends RestActionHandler {
-
+    private static final String KEY_DATAPROVIDER_ID = "dataprovider_id";
+    private static final String KEY_GROUP_ID = "group_id";
     private OskariLayerService layerService;
-    private CapabilitiesCacheService capabilitiesCacheService;
-    private CapabilitiesUpdateService capabilitiesUpdateService;
     private ViewService viewService;
 
     public UpdateCapabilitiesHandler() {
@@ -54,11 +53,9 @@ public class UpdateCapabilitiesHandler extends RestActionHandler {
     }
 
     public UpdateCapabilitiesHandler(OskariLayerService layerService,
-            CapabilitiesCacheService capabilitiesCacheService,
             ViewService viewService) {
         // Full-param constructor if one is required
         this.layerService = layerService;
-        this.capabilitiesCacheService = capabilitiesCacheService;
         this.viewService = viewService;
     }
 
@@ -68,13 +65,6 @@ public class UpdateCapabilitiesHandler extends RestActionHandler {
         if (layerService == null) {
             layerService = ServiceFactory.getMapLayerService();
         }
-        if (capabilitiesCacheService == null) {
-            capabilitiesCacheService = ServiceFactory.getCapabilitiesCacheService();
-        }
-        if (capabilitiesUpdateService == null) {
-            capabilitiesUpdateService = new CapabilitiesUpdateService(
-                    layerService, capabilitiesCacheService);
-        }
         if (viewService == null) {
             viewService = ServiceFactory.getViewService();
         }
@@ -83,29 +73,50 @@ public class UpdateCapabilitiesHandler extends RestActionHandler {
     @Override
     public void handlePost(ActionParameters params) throws ActionException {
         params.requireAdminUser();
+        List<OskariLayer> layers = getLayersToUpdate(params);
 
-        String layerId = params.getHttpParam(ActionConstants.KEY_ID);
-        List<OskariLayer> layers = getLayersToUpdate(layerId);
-        Set<String> systemCRSs = getSystemCRSs();
+        List<CapabilitiesUpdateResult> result = CapabilitiesService.updateCapabilities(layers, getSystemCRSs());
+        List<String> updatedLayers = result.stream()
+                .filter(res -> res.getErrorMessage() == null)
+                .map(l -> l.getLayerId())
+                .collect(Collectors.toList());
 
-        List<CapabilitiesUpdateResult> result =
-                capabilitiesUpdateService.updateCapabilities(layers, systemCRSs);
-
-        JSONObject response = createResponse(result, layerId, params);
+        for (OskariLayer layer : layers) {
+            if (!updatedLayers.contains("" + layer.getId())) {
+                continue;
+            }
+            layerService.update(layer);
+            AuditLog.user(params.getClientIp(), params.getUser())
+                    .withParam("id", layer.getId())
+                    .withParam("name", layer.getName(PropertyUtil.getDefaultLanguage()))
+                    .withParam("url", layer.getUrl())
+                    .withParam("name", layer.getName())
+                    .withMsg("Capabilities update")
+                    .updated(AuditLog.ResourceType.MAPLAYER);
+        }
+        JSONObject response = createResponse(result, params);
         ResponseHelper.writeResponse(params, response);
     }
 
-    private List<OskariLayer> getLayersToUpdate(String layerId)
+    private List<OskariLayer> getLayersToUpdate(ActionParameters params)
             throws ActionParamsException {
-        if (layerId == null) {
-            return layerService.findAll();
+        int layerId = params.getHttpParam(ActionConstants.KEY_ID, -1);
+        if (layerId > 0) {
+            OskariLayer layer = layerService.find(layerId);
+            if (layer == null) {
+                throw new ActionParamsException("Unknown layer id:" + layerId);
+            }
+            return Collections.singletonList(layer);
         }
-        int id = getId(layerId);
-        OskariLayer layer = layerService.find(id);
-        if (layer == null) {
-            throw new ActionParamsException("Unknown layer id:" + id);
+        int dataProviderId = params.getHttpParam(KEY_DATAPROVIDER_ID, -1);
+        if (dataProviderId > 0) {
+            return layerService.findByDataProviderId(dataProviderId);
         }
-        return Collections.singletonList(layer);
+        int groupId = params.getHttpParam(KEY_GROUP_ID, -1);
+        if (groupId > 0) {
+            return layerService.findByGroupId(groupId);
+        }
+        return layerService.findAll();
     }
 
     private int getId(String layerId) throws ActionParamsException {
@@ -124,7 +135,7 @@ public class UpdateCapabilitiesHandler extends RestActionHandler {
         }
     }
 
-    private JSONObject createResponse(List<CapabilitiesUpdateResult> result, String layerId, ActionParameters params)
+    private JSONObject createResponse(List<CapabilitiesUpdateResult> result, ActionParameters params)
             throws ActionException {
         try {
             JSONArray success = new JSONArray();
@@ -141,16 +152,13 @@ public class UpdateCapabilitiesHandler extends RestActionHandler {
             JSONObject response = new JSONObject();
             response.put("success", success);
             response.put("error", errors);
-
+            String layerId = params.getHttpParam(ActionConstants.KEY_ID);
             if (layerId != null && success.length() == 1) {
                 // If this is a update-single-layer request then add the updated information 
                 // Fetch the OskariLayer again to make sure we have all the fields updated in the object
                 OskariLayer layer = layerService.find(getId(layerId));
-                JSONObject layerJSON = OskariLayerWorker.getMapLayerJSON(layer,
-                        params.getUser(),
-                        params.getLocale().getLanguage(),
-                        params.getHttpParam(ActionConstants.PARAM_SRS));
-                response.put("layerUpdate", layerJSON);
+                // relying that this route is only callable by admins (check handlePost()) for requireAdminUser()
+                response.put("layerUpdate", layer.getCapabilities());
             }
 
             return response;
