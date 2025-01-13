@@ -149,15 +149,6 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
-
-        <dependency>
-           <groupId>org.junit.vintage</groupId>
-           <artifactId>junit-vintage-engine</artifactId>
-           <version>${junit.version}</version>
-           <scope>test</scope>
-        </dependency>
-
-
     </dependencies>
     <!-- Managed dependencies -->
     <dependencyManagement>
