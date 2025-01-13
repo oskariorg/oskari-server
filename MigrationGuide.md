@@ -26,7 +26,12 @@ See details:
 
 - `GetWFSLayerFields` and `GetLocalizedPropertyNames` have been replaced by `DescribeLayer` 
 - (`GetLayerCapabilities` is approaching the chopping block but is still used by admin UI)
+- `GetPermissionsLayerHandlers` and `SaveLayerPermission` have been replaced by `LayerPermission`
+- `GetAllRoles` has been replaced by `ManageRoles`
 
+### TODO
+
+- `GetPermissionsLayerHandlers`, `GetAllRoles` and `SaveLayerPermission` are still used by admin-layerrights bundle, remove the bundle from 3.0 (replaced by admin-permissions)
 
 ## 2.14.0
 
