@@ -117,8 +117,10 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
         <pdfbox.version>2.0.32</pdfbox.version>
         <hystrix.version>1.5.18</hystrix.version>
         <!-- Test deps versions -->
-        <powermock.version>2.0.9</powermock.version>
+<!--        <powermock.version>2.0.9</powermock.version>-->
+        <mockito.version>5.15.2</mockito.version>
         <junit.version>5.11.4</junit.version>
+        <hamcrest.version>2.2</hamcrest.version>
         <xmlunit.version>1.6</xmlunit.version>
         <h2database.version>2.3.232</h2database.version>
 
@@ -149,6 +151,28 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito.version}</version>
+        </dependency>
+
+
+        <!--
+            Bringing this back so that sample-server-application and others will continue to build.
+            This is the same version that powermock-module-junit4 uses
+
+            Get rid of this and powermock and add junit-juniper to apps
+        -->
+        <!--
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+-->
     </dependencies>
     <!-- Managed dependencies -->
     <dependencyManagement>
@@ -877,15 +901,18 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
                 <version>3.30.2-GA</version>
                 <scope>test</scope>
             </dependency>
+<!--
             <dependency>
                 <groupId>org.powermock</groupId>
                 <artifactId>powermock-core</artifactId>
                 <version>${powermock.version}</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.powermock</groupId>
                 <artifactId>powermock-module-junit4</artifactId>
                 <version>${powermock.version}</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.powermock</groupId>
@@ -893,7 +920,14 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
                 <version>${powermock.version}</version>
                 <scope>test</scope>
             </dependency>
-
+-->
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest-library</artifactId>
+                <version>${hamcrest.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.mockito/mockito-core -->
             <dependency>
                 <!-- Includes slf4j-api and log4j-api,
                  but control-admin needs log4j stuff anyway for LoggerHandler
