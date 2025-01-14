@@ -18,9 +18,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static junit.framework.Assert.assertTrue;
-import static org.junit.Assume.assumeTrue;
-
 @Disabled
 public class KeywordRelationServiceMybatisImplTest {
 

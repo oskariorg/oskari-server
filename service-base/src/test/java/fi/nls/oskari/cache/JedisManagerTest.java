@@ -8,9 +8,6 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.Set;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 @Disabled
 public class JedisManagerTest {
     private static String key;

@@ -1,8 +1,5 @@
 package org.oskari.permissions.model;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import fi.nls.oskari.util.DuplicateException;
 import fi.nls.oskari.util.PropertyUtil;
 import org.junit.jupiter.api.AfterEach;

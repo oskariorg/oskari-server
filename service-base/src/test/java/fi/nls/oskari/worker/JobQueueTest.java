@@ -3,8 +3,6 @@ package fi.nls.oskari.worker;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertTrue;
-
 public class JobQueueTest {
 	private class TestJob extends AbstractJob<String> {
 		private int id;

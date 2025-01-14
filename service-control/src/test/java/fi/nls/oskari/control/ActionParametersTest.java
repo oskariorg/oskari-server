@@ -5,23 +5,24 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.service.DummyUserService;
 import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.util.PropertyUtil;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Simple tests for ActionParameters.require<LoggedIn|Admin>User()
  */
 public class ActionParametersTest {
 
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
         PropertyUtil.addProperty("oskari.user.service", DummyUserService.class.getName(), true);
     }
-    @After
+    @AfterEach
     public void teardown() throws Exception {
         PropertyUtil.clearProperties();
     }
@@ -40,11 +41,13 @@ public class ActionParametersTest {
         return user;
     }
 
-    @Test(expected = ActionDeniedException.class)
+    @Test()
     public void testRequireLoggedInUserWithGuest() throws Exception {
-        ActionParameters params = new ActionParameters();
-        params.setUser(getGuestUser());
-        params.requireLoggedInUser();
+        assertThrows(ActionDeniedException.class, () -> {
+            ActionParameters params = new ActionParameters();
+            params.setUser(getGuestUser());
+            params.requireLoggedInUser();
+        });
     }
     @Test
     public void testRequireLoggedInUserWithUser() throws Exception {
@@ -53,20 +56,24 @@ public class ActionParametersTest {
         params.requireLoggedInUser();
     }
 
-    @Test(expected = ActionDeniedException.class)
+    @Test()
     public void testRequireAdminUserWithGuest() throws Exception {
-        ActionParameters params = new ActionParameters();
-        params.setUser(getGuestUser());
-        params.requireAdminUser();
+        assertThrows(ActionDeniedException.class, () -> {
+            ActionParameters params = new ActionParameters();
+            params.setUser(getGuestUser());
+            params.requireAdminUser();
+        });
     }
-    @Test(expected = ActionDeniedException.class)
+    @Test()
     public void testRequireAdminUserWithUser() throws Exception {
-        ActionParameters params = new ActionParameters();
-        params.setUser(getLoggedInUser());
-        params.requireAdminUser();
+        assertThrows(ActionDeniedException.class, () -> {
+            ActionParameters params = new ActionParameters();
+            params.setUser(getLoggedInUser());
+            params.requireAdminUser();
+        });
     }
     @Test
-    @Ignore("FIXME: mock UserService.getInstance().getRoles() -> return atleast Role.getAdminRole()")
+    @Disabled("FIXME: mock UserService.getInstance().getRoles() -> return atleast Role.getAdminRole()")
     public void testRequireAdminUserWithAdmin() throws Exception {
         ActionParameters params = new ActionParameters();
         params.setUser(getAdminUser());

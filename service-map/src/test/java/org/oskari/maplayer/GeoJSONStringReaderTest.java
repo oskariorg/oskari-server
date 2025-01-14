@@ -2,37 +2,50 @@ package org.oskari.maplayer;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.referencing.CRS;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import java.io.InputStream;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 
 public class GeoJSONStringReaderTest {
 
-    @Test (expected = IllegalArgumentException.class)
+    @Test()
     public void testGeoJSONasNull() throws Exception {
-        GeoJSONStringReader.readGeoJSON((String) null, "EPSG:4326");
+        assertThrows(IllegalArgumentException.class, () -> {
+            GeoJSONStringReader.readGeoJSON((String) null, "EPSG:4326");
+        });
     }
-    @Test (expected = IllegalArgumentException.class)
+    @Test ()
     public void testInputStreamasNull() throws Exception {
-        CoordinateReferenceSystem sourceCRS = CRS.decode("EPSG:4326");
-        GeoJSONStringReader.readGeoJSON((InputStream) null, sourceCRS);
+        assertThrows(IllegalArgumentException.class, () -> {
+            CoordinateReferenceSystem sourceCRS = CRS.decode("EPSG:4326");
+            GeoJSONStringReader.readGeoJSON((InputStream) null, sourceCRS);
+        });
     }
 
-    @Test (expected = IllegalArgumentException.class)
+    @Test ()
     public void testGeoJSONasEmptyString() throws Exception {
-        GeoJSONStringReader.readGeoJSON("", "EPSG:4326");
+        assertThrows(IllegalArgumentException.class, () -> {
+            GeoJSONStringReader.readGeoJSON("", "EPSG:4326");
+        });
     }
-    @Test (expected = IllegalArgumentException.class)
+    @Test ()
     public void testGeoJSONasEmptyObject() throws Exception {
-        GeoJSONStringReader.readGeoJSON("{}", "EPSG:4326");
+        assertThrows(IllegalArgumentException.class, () -> {
+            GeoJSONStringReader.readGeoJSON("{}", "EPSG:4326");
+        });
     }
-    @Test (expected = IllegalArgumentException.class)
+    @Test ()
     public void testGeoJSONWithEmptyFeatures() throws Exception {
-        SimpleFeatureCollection col = GeoJSONStringReader.readGeoJSON("{ \"type\": \"FeatureCollection\"}", "EPSG:4326");
-        assertNotNull("Parse should complete", col);
-        assertTrue("Should get an empty collection", col.isEmpty());
+        assertThrows(IllegalArgumentException.class, () -> {
+            SimpleFeatureCollection col = GeoJSONStringReader.readGeoJSON("{ \"type\": \"FeatureCollection\"}", "EPSG:4326");
+            assertNotNull(col, "Parse should complete");
+            assertTrue(col.isEmpty(), "Should get an empty collection");
+        });
     }
 }

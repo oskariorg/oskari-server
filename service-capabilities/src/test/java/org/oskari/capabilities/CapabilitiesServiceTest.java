@@ -2,7 +2,6 @@ package org.oskari.capabilities;
 
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.test.util.ResourceHelper;
-import junit.framework.TestCase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.oskari.capabilities.ogc.LayerCapabilitiesWFS;
@@ -13,7 +12,7 @@ import org.oskari.capabilities.ogc.wmts.ResourceUrl;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CapabilitiesServiceTest extends TestCase {
+public class CapabilitiesServiceTest {
 
     @Test
     public void testShortSyntax()  {

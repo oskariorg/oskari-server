@@ -35,6 +35,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
+
  * @author SMAKINEN
  * Base junit test class for ActionHandlers responding with JSON. Convenience methods for mocking ActionParams and getting the written response
  */

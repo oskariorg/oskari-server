@@ -12,8 +12,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertTrue;
-
 /**
  * These test cases might not make sense (or the filter impl).
  * But the tests have been added after the implementation so we can update the code and make sure it works the same way.

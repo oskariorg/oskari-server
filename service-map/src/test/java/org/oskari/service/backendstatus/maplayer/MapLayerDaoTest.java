@@ -1,14 +1,10 @@
 package org.oskari.service.backendstatus.maplayer;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.List;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.postgresql.ds.PGSimpleDataSource;
+
+import java.util.List;
 
 public class MapLayerDaoTest {
 

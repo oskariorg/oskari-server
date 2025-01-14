@@ -1,8 +1,5 @@
 package fi.nls.oskari.control.data;
 
-import fi.nls.oskari.service.OskariComponentManager;
-import org.junit.BeforeClass;
-import org.oskari.service.maplayer.OskariMapLayerGroupService;
 import fi.nls.oskari.control.ActionConstants;
 import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionParameters;
@@ -12,21 +9,22 @@ import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.control.JSONActionRouteTest;
 import fi.nls.test.util.ResourceHelper;
 import fi.nls.test.util.TestHelper;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.oskari.service.maplayer.OskariMapLayerGroupService;
 import org.oskari.service.maplayer.OskariMapLayerGroupServiceMybatisImpl;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeTrue;
-import static org.mockito.Matchers.any;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-
 /**
  * Created with IntelliJ IDEA.
  * User: SMAKINEN
@@ -38,16 +36,16 @@ public class MapLayerGroupsHandlerTest extends JSONActionRouteTest {
 
     private OskariMapLayerGroupService oskariMapLayerGroupService;
     private MapLayerGroupsHandler handler = new MapLayerGroupsHandler();
-    @BeforeClass
+    @BeforeAll
     public static void setup() throws Exception {
         TestHelper.registerTestDataSource();
         assumeTrue(TestHelper.dbAvailable());
     }
-    @AfterClass
+    @AfterAll
     public static void teardown() {
         TestHelper.teardown();
     }
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         oskariMapLayerGroupService = mock(OskariMapLayerGroupServiceMybatisImpl.class);
         MaplayerGroup theme1 = new MaplayerGroup();
@@ -85,17 +83,19 @@ public class MapLayerGroupsHandlerTest extends JSONActionRouteTest {
         verifyResponseContent(ResourceHelper.readJSONResource("MapLayerGroupsHandlerTest-find-expected.json", this));
     }
 
-    @Test(expected = ActionDeniedException.class)
+    @Test()
     public void testHandlePutGuest() throws Exception {
-        ActionParameters params = createActionParams(createDummyLocale());
-        handler.handlePut(params);
-        fail("Should have thrown denied exception");
+        assertThrows(ActionDeniedException.class, () -> {
+            ActionParameters params = createActionParams(createDummyLocale());
+            handler.handlePut(params);
+        }, "Should have thrown denied exception");
     }
-    @Test(expected = ActionDeniedException.class)
+    @Test()
     public void testHandlePostGuest() throws Exception {
-        ActionParameters params = createActionParams(createDummyLocale());
-        handler.handlePost(params);
-        fail("Should have thrown denied exception");
+        assertThrows(ActionDeniedException.class, () -> {
+            ActionParameters params = createActionParams(createDummyLocale());
+            handler.handlePost(params);
+        }, "Should have thrown denied exception");
     }
     @Test
     public void testHandlePutAdmin() throws Exception {
@@ -104,11 +104,12 @@ public class MapLayerGroupsHandlerTest extends JSONActionRouteTest {
         verifyResponseContent(ResourceHelper.readJSONResource("MapLayerGroupsHandlerTest-insert-expected.json", this));
     }
 
-    @Test(expected = ActionParamsException.class)
+    @Test()
     public void testHandlePostNoId() throws Exception {
-        ActionParameters params = createActionParams(createDummyLocale(), getAdminUser());
-        handler.handlePost(params);
-        fail("Should have thrown params exception");
+        assertThrows(ActionParamsException.class, () -> {
+            ActionParameters params = createActionParams(createDummyLocale(), getAdminUser());
+            handler.handlePost(params);
+        }, "Should have thrown params exception");
     }
 
     @Test
@@ -120,17 +121,19 @@ public class MapLayerGroupsHandlerTest extends JSONActionRouteTest {
         verifyResponseContent(ResourceHelper.readJSONResource("MapLayerGroupsHandlerTest-update-expected.json", this));
     }
 
-    @Test(expected = ActionDeniedException.class)
+    @Test()
     public void testHandleDeleteGuest() throws Exception {
-        ActionParameters params = createActionParams(createDummyLocale());
-        handler.handleDelete(params);
-        fail("Should have thrown denied exception");
+        assertThrows(ActionDeniedException.class, () -> {
+            ActionParameters params = createActionParams(createDummyLocale());
+            handler.handleDelete(params);
+        }, "Should have thrown denied exception");
     }
-    @Test(expected = ActionDeniedException.class)
+    @Test()
     public void testHandleDeleteLoggedIn() throws Exception {
-        ActionParameters params = createActionParams(createDummyLocale(), getLoggedInUser());
-        handler.handleDelete(params);
-        fail("Should have thrown denied exception");
+        assertThrows(ActionDeniedException.class, () -> {
+            ActionParameters params = createActionParams(createDummyLocale(), getLoggedInUser());
+            handler.handleDelete(params);
+        }, "Should have thrown denied exception");
     }
 
     @Test
@@ -148,7 +151,7 @@ public class MapLayerGroupsHandlerTest extends JSONActionRouteTest {
         return map;
     }
 
-    @AfterClass
+    @AfterAll
     public static void delete() {
         PropertyUtil.clearProperties();
     }
