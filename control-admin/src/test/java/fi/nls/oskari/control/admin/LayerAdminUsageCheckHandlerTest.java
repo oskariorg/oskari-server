@@ -5,12 +5,6 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.test.util.ResourceHelper;
 import org.json.JSONObject;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.*;
 
