@@ -282,11 +282,6 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
             </dependency>
             <dependency>
                 <groupId>org.oskari</groupId>
-                <artifactId>service-statistics-eurostat</artifactId>
-                <version>${oskari.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.oskari</groupId>
                 <artifactId>service-statistics-unsd</artifactId>
                 <version>${oskari.version}</version>
             </dependency>
@@ -1254,7 +1249,6 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
         <module>service-statistics-common</module>
         <module>service-statistics</module>
         <module>service-statistics-sotka</module>
-        <module>service-statistics-eurostat</module>
         <module>service-statistics-pxweb</module>
         <module>service-statistics-unsd</module>
         <module>control-statistics</module>
