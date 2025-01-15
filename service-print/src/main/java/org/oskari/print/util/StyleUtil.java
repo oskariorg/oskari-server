@@ -14,6 +14,7 @@ import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.fop.svg.PDFTranscoder;
 import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.multipdf.LayerUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -188,7 +189,7 @@ public class StyleUtil {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         TranscoderOutput out = new TranscoderOutput(os);
         transcoder.transcode(in, out);
-        try (PDDocument tempDoc = PDDocument.load(os.toByteArray())) {
+        try (PDDocument tempDoc = Loader.loadPDF(os.toByteArray())) {
             PDPage page = tempDoc.getPage(0);
 
             double d = page.getBBox().getHeight() / ICON_SIZE;

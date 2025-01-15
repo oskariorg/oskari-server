@@ -7,6 +7,7 @@ import java.util.function.Function;
 
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.color.PDColor;
 import org.apache.pdfbox.pdmodel.graphics.color.PDDeviceRGB;
@@ -15,8 +16,8 @@ import org.oskari.print.util.PDFBoxUtil;
 
 public class PDPrintStyle {
 
-    public static final PDFont FONT = PDType1Font.HELVETICA;
-    public static final PDFont FONT_BOLD = PDType1Font.HELVETICA_BOLD;
+    public static final PDFont FONT = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
+    public static final PDFont FONT_BOLD = new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD);
     public static final float FONT_SIZE = 12f;
     public static final float FONT_SIZE_SCALE = 10f;
     public static final float FONT_SIZE_TIMESERIES = 10f;

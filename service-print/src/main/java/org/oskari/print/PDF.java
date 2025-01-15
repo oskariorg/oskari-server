@@ -18,6 +18,7 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.pdmodel.graphics.optionalcontent.PDOptionalContentGroup;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 import org.apache.pdfbox.pdmodel.graphics.state.RenderingMode;
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceStream;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.apache.pdfbox.util.Matrix;
@@ -682,7 +683,7 @@ public class PDF {
         }
 
         // Create a Form XObject
-        PDFormXObject form = new PDFormXObject(doc);
+        PDAppearanceStream form = new PDAppearanceStream(doc);
         PDResources resources = new PDResources();
         form.setResources(resources);
 
@@ -719,7 +720,7 @@ public class PDF {
                                         AffineTransformation transform, float x, float y, float w, float h) throws IOException {
         if (markers == null || markers.isEmpty()) return;
         // Create a Form XObject
-        PDFormXObject form = new PDFormXObject(doc);
+        PDAppearanceStream form = new PDAppearanceStream(doc);
         PDResources resources = new PDResources();
         form.setResources(resources);
 
