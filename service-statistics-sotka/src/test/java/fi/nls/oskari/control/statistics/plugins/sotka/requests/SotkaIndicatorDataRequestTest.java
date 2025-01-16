@@ -1,20 +1,17 @@
 package fi.nls.oskari.control.statistics.plugins.sotka.requests;
 
-import org.junit.runner.RunWith;
-import org.powermock.modules.junit4.PowerMockRunner;
-
-import fi.nls.oskari.control.statistics.plugins.sotka.requests.IndicatorData;
-import fi.nls.oskari.control.statistics.plugins.sotka.requests.SotkaRequest;
 import fi.nls.test.util.ResourceHelper;
-
-import static org.junit.Assert.*;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class)public class SotkaIndicatorDataRequestTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+@ExtendWith(MockitoExtension.class)
+public class SotkaIndicatorDataRequestTest {
     private static String testResponse = ResourceHelper.readStringResource("SotkaIndicatorData.csv",
             SotkaIndicatorDataRequestTest.class);
     private static String expectedParsingResult = ResourceHelper.readStringResource("SotkaIndicatorData.json",

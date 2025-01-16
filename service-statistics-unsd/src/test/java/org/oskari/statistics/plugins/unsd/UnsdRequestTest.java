@@ -2,15 +2,13 @@ package org.oskari.statistics.plugins.unsd;
 
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.test.util.TestHelper;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.Disabled;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.powermock.utils.Asserts;
 
 public class UnsdRequestTest {
 
@@ -32,7 +30,7 @@ public class UnsdRequestTest {
         Assumptions.assumeTrue(TestHelper.redisAvailable());
 
         String json = request.getTargets();
-        Asserts.assertNotNull(json, "Targets response is null.");
+        Assertions.assertNotNull(json, "Targets response is null.");
         Assertions.assertNotEquals("", json, "Targets response is empty.");
 
         JSONObject goal = getFirstObject(json);
