@@ -172,14 +172,12 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
 
             Get rid of this and powermock and add junit-juniper to apps
         -->
-        <!--
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
             <scope>test</scope>
         </dependency>
--->
     </dependencies>
     <!-- Managed dependencies -->
     <dependencyManagement>
@@ -908,26 +906,6 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
                 <version>3.30.2-GA</version>
                 <scope>test</scope>
             </dependency>
-<!--
-            <dependency>
-                <groupId>org.powermock</groupId>
-                <artifactId>powermock-core</artifactId>
-                <version>${powermock.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.powermock</groupId>
-                <artifactId>powermock-module-junit4</artifactId>
-                <version>${powermock.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.powermock</groupId>
-                <artifactId>powermock-api-mockito2</artifactId>
-                <version>${powermock.version}</version>
-                <scope>test</scope>
-            </dependency>
--->
             <dependency>
                 <groupId>org.hamcrest</groupId>
                 <artifactId>hamcrest-library</artifactId>
