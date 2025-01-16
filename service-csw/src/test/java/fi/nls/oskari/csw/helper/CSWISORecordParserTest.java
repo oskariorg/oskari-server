@@ -1,7 +1,7 @@
 package fi.nls.oskari.csw.helper;
 
 import fi.nls.oskari.csw.domain.CSWIsoRecord;
-import fi.nls.oskari.util.XmlHelper;
+import org.oskari.xml.XmlHelper;
 import org.geotools.referencing.CRS;
 import org.json.JSONObject;
 import org.junit.Test;
@@ -37,8 +37,7 @@ public class CSWISORecordParserTest {
     }
 
     private Node getMetadataNode() {
-        DocumentBuilderFactory dbf = XmlHelper.newDocumentBuilderFactory();
-        dbf.setNamespaceAware(true);
+        DocumentBuilderFactory dbf = XmlHelper.newDocumentBuilderFactory(true);
         InputStream xmlInputStream = getClass().getResourceAsStream(CSW_INPUT_FILE_NAME);
 
         NodeList children = null;

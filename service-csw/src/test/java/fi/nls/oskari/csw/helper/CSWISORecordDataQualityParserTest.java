@@ -5,7 +5,7 @@ import fi.nls.oskari.csw.domain.CSWIsoRecord.DataQuality;
 import fi.nls.oskari.csw.domain.CSWIsoRecord.DataQualityConformanceResult;
 import fi.nls.oskari.csw.domain.CSWIsoRecord.DataQualityObject;
 import fi.nls.oskari.csw.domain.CSWIsoRecord.DataQualityQuantitativeResult;
-import fi.nls.oskari.util.XmlHelper;
+import org.oskari.xml.XmlHelper;
 import org.geotools.referencing.CRS;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -43,10 +43,7 @@ public class CSWISORecordDataQualityParserTest {
     }
 
     private Node getMetadataNode() {
-        // TODO: still need to use old XmlHelper since metadata utilizes a lot of xpath parsing
-        // xpaths don't seem to work that well with the new helper
-        DocumentBuilderFactory dbf = XmlHelper.newDocumentBuilderFactory();
-        dbf.setNamespaceAware(true);
+        DocumentBuilderFactory dbf = XmlHelper.newDocumentBuilderFactory(true);
         InputStream xmlInputStream = getClass().getResourceAsStream("csw.xml");
 
         NodeList children = null;

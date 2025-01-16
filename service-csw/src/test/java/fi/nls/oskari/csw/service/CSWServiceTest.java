@@ -3,6 +3,7 @@ package fi.nls.oskari.csw.service;
 import fi.nls.oskari.csw.domain.CSWIsoRecord;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
+import org.oskari.xml.XmlHelper;
 import org.json.JSONObject;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -23,16 +24,15 @@ public class CSWServiceTest {
     // but this is the usage of revised version of XMLHelper
     private Node getMetadataElementFuture(String file) throws Exception {
         InputStream in = getClass().getResourceAsStream(file);
-        Element ret = org.oskari.xml.XmlHelper.parseXML(in, true);
-        Element metadata = org.oskari.xml.XmlHelper.getFirstChild(ret, "MD_Metadata");
+        Element ret = XmlHelper.parseXML(in, true);
+        Element metadata = XmlHelper.getFirstChild(ret, "MD_Metadata");
         return metadata;
     }
 
     private Node getMetadataElementCurrent(String file) throws Exception {
         InputStream in = getClass().getResourceAsStream(file);
 
-        DocumentBuilderFactory dbf = fi.nls.oskari.util.XmlHelper.newDocumentBuilderFactory();
-        dbf.setNamespaceAware(true);
+        DocumentBuilderFactory dbf = XmlHelper.newDocumentBuilderFactory(true);
         DocumentBuilder db = dbf.newDocumentBuilder();
         Document doc = db.parse(in);
         Node root = doc.getDocumentElement();
