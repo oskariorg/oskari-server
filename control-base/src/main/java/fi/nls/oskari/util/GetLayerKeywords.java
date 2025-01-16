@@ -5,6 +5,7 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.ontology.domain.Keyword;
 import fi.nls.oskari.ontology.service.KeywordService;
 import fi.nls.oskari.ontology.service.KeywordServiceMybatisImpl;
+import org.oskari.xml.XmlHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -250,8 +251,7 @@ public class GetLayerKeywords {
             log.warn("Couldn't create metadata URL for layer " + layerId);
             return null;
         }
-        DocumentBuilderFactory factory = XmlHelper.newDocumentBuilderFactory();
-        factory.setNamespaceAware(true);
+        DocumentBuilderFactory factory = XmlHelper.newDocumentBuilderFactory(true);
         DocumentBuilder builder = null;
         try {
             builder = factory.newDocumentBuilder();
