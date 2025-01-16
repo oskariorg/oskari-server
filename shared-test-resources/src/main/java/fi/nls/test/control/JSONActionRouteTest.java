@@ -23,7 +23,6 @@ import java.io.StringWriter;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Vector;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -106,10 +105,12 @@ public class JSONActionRouteTest {
         // response handler
         HttpServletResponse resp = mock(HttpServletResponse.class);
         PrintWriter output = new PrintWriter(response);
-        try {
-            doReturn(output).when(resp).getWriter();
-        }
-        catch (IOException ignored ) {}
+        //try {
+            // TODO: fix the unnecessary stubbing issue here -> is destroying a ****load of tests
+            //https://stackoverflow.com/questions/42947613/how-to-resolve-unneccessary-stubbing-exception
+//            when(resp.getWriter()).thenReturn(output);
+//        }
+//        catch (IOException ignored ) {}
 
         params.setRequest(req);
         params.setResponse(resp);
@@ -137,19 +138,19 @@ public class JSONActionRouteTest {
         HttpServletRequest req = mock(HttpServletRequest.class);
 
         if (parameters != null) {
-            doReturn(new Vector<>(parameters.keySet()).elements()).when(req).getParameterNames();
+//            doReturn(new Vector<>(parameters.keySet()).elements()).when(req).getParameterNames();
             for (String key : parameters.keySet()) {
                 when(req.getParameter(key)).thenReturn(parameters.get(key));
             }
         }
 
         HttpSession session = mock(HttpSession.class);
-        doReturn("testkey").when(session).getId();
-        doReturn(session).when(req).getSession();
+//        doReturn("testkey").when(session).getId();
+//        doReturn(session).when(req).getSession();
 
-        if (method != null) {
-            doReturn(method).when(req).getMethod();
-        }
+//        if (method != null) {
+//            doReturn(method).when(req).getMethod();
+//        }
 
         if (contentType != null) {
             doReturn(contentType).when(req).getContentType();

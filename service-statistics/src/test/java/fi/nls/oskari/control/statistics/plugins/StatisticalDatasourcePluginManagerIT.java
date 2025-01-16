@@ -24,18 +24,17 @@ import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.*;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(DatasourceHelper.class)
+@ExtendWith(MockitoExtension.class)@PrepareForTest(DatasourceHelper.class)
 @PowerMockIgnore( {"javax.management.*"}) 
 public class StatisticalDatasourcePluginManagerIT {
 
     final private StatisticalDatasourcePluginManager manager = StatisticalDatasourcePluginManager.getInstance();
     
-    @BeforeClass
+    @BeforeAll
     public static void init() throws IllegalArgumentException, IllegalAccessException, SQLException {
         TestHelper.registerTestDataSource();
     }
-    @AfterClass
+    @AfterAll
     public static void tearDown() {
         PropertyUtil.clearProperties();
     }

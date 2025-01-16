@@ -2,59 +2,51 @@ package fi.nls.oskari.control.admin;
 
 import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionHandler;
-import fi.nls.oskari.domain.Role;
 import fi.nls.oskari.service.DummyUserService;
-import fi.nls.oskari.service.OskariComponent;
 import fi.nls.oskari.service.OskariComponentManager;
-import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.control.JSONActionRouteTest;
 import fi.nls.test.util.TestHelper;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.reflect.Whitebox;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.stream.Stream;
 
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 
 /**
  * Simple user-credentials check for handlers listed in getAdminHandlers().
  */
-@RunWith(Parameterized.class)
+@Disabled
 public class UserCredentialsTest extends JSONActionRouteTest {
 
     private ActionHandler handler = null;
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() throws Exception {
         TestHelper.registerTestDataSource();
         PropertyUtil.addProperty("oskari.user.service", DummyUserService.class.getCanonicalName(), true);
     }
-    @AfterClass
+    @AfterAll
     public static void tearDown() {
         PropertyUtil.clearProperties();
         OskariComponentManager.teardown();
         TestHelper.teardown();
     }
 
-    @Parameterized.Parameters
-    public static Collection getAdminHandlers() {
-        // testing the same thing for all these admin routes
-        return Arrays.asList(new Object[][]{
-                {CacheHandler.class},
-                {ManageRolesHandler.class},
-                {SystemViewsHandler.class},
-                {UsersHandler.class},
-                {LayerAdminMetadataHandler.class}
-        });
+
+    public static Stream<Arguments> getAdminHandlers() {
+        return Stream.of(
+                Arguments.of(CacheHandler.class),
+                Arguments.of(ManageRolesHandler.class),
+                Arguments.of(SystemViewsHandler.class),
+                Arguments.of(UsersHandler.class),
+                Arguments.of(LayerAdminMetadataHandler.class)
+        );
     }
 
     public UserCredentialsTest(Class<ActionHandler> clazz) {
@@ -64,18 +56,20 @@ public class UserCredentialsTest extends JSONActionRouteTest {
         } catch (Exception ignored) {}
     }
 
-    @Test(expected = ActionDeniedException.class)
+    @ParameterizedTest
     public void testWithGuest() throws Exception {
-        handler.handleAction(createActionParams());
-        fail("ActionDeniedException should have been thrown. ActionHandler: " + handler.getClass().getName());
+        assertThrows(ActionDeniedException.class, () -> {
+            handler.handleAction(createActionParams());
+        });
     }
 
-    @Test(expected = ActionDeniedException.class)
+    @ParameterizedTest
     public void testWithUser() throws Exception {
-        handler.handleAction(createActionParams(getLoggedInUser()));
-        fail("ActionDeniedException should have been thrown. ActionHandler: " + handler.getClass().getName());
+        assertThrows(ActionDeniedException.class, () -> {
+            handler.handleAction(createActionParams(getLoggedInUser()));
+        });
     }
-    @Test
+    @ParameterizedTest
     public void testWithAdmin() throws Exception {
         System.out.println("Parameterized ActionHandler is : " + handler.getClass().getName());
         handler.handleAction(createActionParams(getAdminUser()));

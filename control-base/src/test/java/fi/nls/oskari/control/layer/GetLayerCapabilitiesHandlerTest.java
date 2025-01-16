@@ -2,7 +2,6 @@ package fi.nls.oskari.control.layer;
 
 import fi.nls.oskari.control.ActionConstants;
 import fi.nls.oskari.control.ActionDeniedException;
-import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.map.layer.OskariLayerService;
@@ -10,34 +9,39 @@ import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.control.JSONActionRouteTest;
 import fi.nls.test.util.TestHelper;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.oskari.permissions.PermissionService;
 import org.oskari.permissions.PermissionServiceMybatisImpl;
-import org.oskari.permissions.model.*;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.oskari.permissions.model.Permission;
+import org.oskari.permissions.model.PermissionExternalType;
+import org.oskari.permissions.model.PermissionType;
+import org.oskari.permissions.model.Resource;
+import org.oskari.permissions.model.ResourceType;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-@RunWith(PowerMockRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class GetLayerCapabilitiesHandlerTest extends JSONActionRouteTest {
 
     private static final String TEST_DATA = "test data";
     private GetLayerCapabilitiesHandler handler = null;
 
-    @Before
+    @BeforeEach
     public void setup() {
+        // TODO: why is db not available, tha's the quest Chan.
         assumeTrue(TestHelper.dbAvailable());
         OskariLayerService layerService = getOskariLayerService();
         PermissionService permissionsService = getPermissionsService();
@@ -47,16 +51,16 @@ public class GetLayerCapabilitiesHandlerTest extends JSONActionRouteTest {
         handler.setPermissionHelper(helper);
         handler.init();
     }
-    @Test(expected = ActionDeniedException.class)
+    @Test()
     public void testHandleActionGuest()
             throws Exception {
-        Map<String, String> httpParams = new HashMap<>();
-        httpParams.put(ActionConstants.KEY_ID, "1");
-        ActionParameters params = createActionParams(httpParams);
-        // only gave logged in user role permission so this should throw ActionDeniedException
-        handler.handleAction(params);
-
-        fail("Should have thrown exception");
+        assertThrows(ActionDeniedException.class, () -> {
+            Map<String, String> httpParams = new HashMap<>();
+            httpParams.put(ActionConstants.KEY_ID, "1");
+            ActionParameters params = createActionParams(httpParams);
+            // only gave logged in user role permission so this should throw ActionDeniedException
+            handler.handleAction(params);
+        });
     }
 
     @Test
@@ -70,15 +74,15 @@ public class GetLayerCapabilitiesHandlerTest extends JSONActionRouteTest {
         verifyResponseContent(TEST_DATA);
     }
 
-    @Test(expected = ActionException.class)
+    @Test
     public void testHandleServiceException()
             throws Exception {
-        Map<String, String> httpParams = new HashMap<>();
-        httpParams.put(ActionConstants.KEY_ID, "2");
-        ActionParameters params = createActionParams(httpParams, getLoggedInUser());
-        handler.handleAction(params);
-
-        fail("Should have thrown exception");
+        assertThrows(ActionDeniedException.class, () -> {
+            Map<String, String> httpParams = new HashMap<>();
+            httpParams.put(ActionConstants.KEY_ID, "2");
+            ActionParameters params = createActionParams(httpParams, getLoggedInUser());
+            handler.handleAction(params);
+        });
     }
 
     /* *********************************************
@@ -111,7 +115,7 @@ public class GetLayerCapabilitiesHandlerTest extends JSONActionRouteTest {
         return service;
     }
 
-    @AfterClass
+    @AfterAll
     public static void delete() {
         PropertyUtil.clearProperties();
     }

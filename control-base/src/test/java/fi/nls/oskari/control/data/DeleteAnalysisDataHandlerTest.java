@@ -92,7 +92,6 @@ public class DeleteAnalysisDataHandlerTest extends JSONActionRouteTest {
             handler.handlePost(createActionParams());
             checkDeleteNotCalled();
         });
-        fail("ActionDeniedException should have been thrown");
     }
 
     /**

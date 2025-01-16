@@ -14,8 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
 
-@RunWith(PowerMockRunner.class)
-public class SotkaIndicatorDataRequestTest {
+@ExtendWith(MockitoExtension.class)public class SotkaIndicatorDataRequestTest {
     private static String testResponse = ResourceHelper.readStringResource("SotkaIndicatorData.csv",
             SotkaIndicatorDataRequestTest.class);
     private static String expectedParsingResult = ResourceHelper.readStringResource("SotkaIndicatorData.json",

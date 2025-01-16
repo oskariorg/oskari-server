@@ -1,9 +1,7 @@
 package fi.nls.oskari.control.feature;
 
-import static org.junit.Assert.assertTrue;
-
-import java.util.Optional;
-
+import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.util.PropertyUtil;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
@@ -11,12 +9,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.locationtech.jts.geom.Envelope;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import org.locationtech.jts.geom.Envelope;
-
-import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.util.PropertyUtil;
+import java.util.Optional;
 
 public class GetWFSFeaturesHandlerTest {
 

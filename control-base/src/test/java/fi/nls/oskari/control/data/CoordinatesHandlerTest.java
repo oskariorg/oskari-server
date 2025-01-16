@@ -1,21 +1,24 @@
 package fi.nls.oskari.control.data;
 
-import static fi.nls.oskari.control.ActionConstants.*;
-
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.test.control.JSONActionRouteTest;
-import org.junit.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static fi.nls.oskari.control.ActionConstants.PARAM_LAT;
+import static fi.nls.oskari.control.ActionConstants.PARAM_LON;
+import static fi.nls.oskari.control.ActionConstants.PARAM_SRS;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CoordinatesHandlerTest extends JSONActionRouteTest {
 
     private CoordinatesHandler handler = new CoordinatesHandler();
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         handler.init();
     }
@@ -30,44 +33,54 @@ public class CoordinatesHandlerTest extends JSONActionRouteTest {
         return params;
     }
 
-    @Test(expected = ActionParamsException.class)
+    @Test()
     public void testHandleActionNoParams()
             throws Exception {
-        handler.handleAction(createActionParams());
+        assertThrows(ActionParamsException.class, () -> {
+            handler.handleAction(createActionParams());
+        });
     }
 
-    @Test(expected = ActionParamsException.class)
+    @Test()
     public void testHandleActionNoCoordinates()
             throws Exception {
-        Map<String, String> params = getValidParams();
-        params.remove(PARAM_LAT);
-        handler.handleAction(createActionParams(params));
+        assertThrows(ActionParamsException.class, () -> {
+            Map<String, String> params = getValidParams();
+            params.remove(PARAM_LAT);
+            handler.handleAction(createActionParams(params));
+        });
     }
 
-    @Test(expected = ActionParamsException.class)
+    @Test()
     public void testHandleActionNoSourceSRS()
             throws Exception {
-        Map<String, String> params = getValidParams();
-        params.remove(PARAM_SRS);
-        handler.handleAction(createActionParams(params));
+        assertThrows(ActionParamsException.class, () -> {
+            Map<String, String> params = getValidParams();
+            params.remove(PARAM_SRS);
+            handler.handleAction(createActionParams(params));
+        });
     }
 
-    @Test(expected = ActionParamsException.class)
+    @Test()
     public void testHandleActionNoTargetSRS()
             throws Exception {
-        Map<String, String> params = getValidParams();
-        params.remove(handler.TARGET_SRS);
-        handler.handleAction(createActionParams(params));
+        assertThrows(ActionParamsException.class, () -> {
+            Map<String, String> params = getValidParams();
+            params.remove(handler.TARGET_SRS);
+            handler.handleAction(createActionParams(params));
+        });
     }
 
     @Test
     public void testHandleAction4326to3067()
             throws Exception {
+        // TODO: fix me and a bunch of others with the same problem:
+        // fi.nls.oskari.control.ActionParamsException: Cannot invoke "java.io.PrintWriter.print(Object)" because the return value of "javax.servlet.http.HttpServletResponse.getWriter()" is null
         Map<String, String> params = getValidParams();
         handler.handleAction(createActionParams(params));
 
-        assertEquals(PARAM_LAT, 6822546.781459001, getResponseJSON().getDouble(PARAM_LAT), 0.0);
-        assertEquals(PARAM_LON, 327578.78108392254, getResponseJSON().getDouble(PARAM_LON), 1e-9);
+        assertEquals(6822546.781459001, getResponseJSON().getDouble(PARAM_LAT), 0.0, PARAM_LAT);
+        assertEquals(327578.78108392254, getResponseJSON().getDouble(PARAM_LON), 1e-9, PARAM_LON);
     }
     @Test
     public void testHandleAction3067to4326()
@@ -79,8 +92,8 @@ public class CoordinatesHandlerTest extends JSONActionRouteTest {
         params.put(handler.TARGET_SRS, "EPSG:4326");
         handler.handleAction(createActionParams(params));
 
-        assertEquals(PARAM_LAT, 61.4980214, getResponseJSON().getDouble(PARAM_LAT), 0.00001);
-        assertEquals(PARAM_LON, 23.7603118, getResponseJSON().getDouble(PARAM_LON), 0.00001);
+        assertEquals(61.4980214, getResponseJSON().getDouble(PARAM_LAT), 0.00001, PARAM_LAT);
+        assertEquals(23.7603118, getResponseJSON().getDouble(PARAM_LON), 0.00001, PARAM_LON);
 
     }
 }

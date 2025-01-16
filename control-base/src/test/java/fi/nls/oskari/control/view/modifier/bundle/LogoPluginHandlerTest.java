@@ -4,7 +4,6 @@ import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.util.JSONTestHelper;
 import fi.nls.test.util.ResourceHelper;
-import junit.framework.TestCase;
 import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -13,7 +12,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Created by SMAKINEN on 29.5.2015.
  */
-public class LogoPluginHandlerTest extends TestCase {
+public class LogoPluginHandlerTest {
 
     private LogoPluginHandler handler = new LogoPluginHandler();
 

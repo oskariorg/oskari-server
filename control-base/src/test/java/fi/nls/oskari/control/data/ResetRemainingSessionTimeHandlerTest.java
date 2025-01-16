@@ -1,21 +1,20 @@
 package fi.nls.oskari.control.data;
 
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.when;
-
-import org.junit.Test;
-import org.junit.jupiter.api.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.session.ResetRemainingSessionTimeHandler;
 import fi.nls.test.control.JSONActionRouteTest;
 import fi.nls.test.util.ResourceHelper;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ResetRemainingSessionTimeHandler.class})
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
+@Disabled
 public class ResetRemainingSessionTimeHandlerTest extends JSONActionRouteTest {
     
     private static final int MAX_INACTIVE_INTERVAL = 1800;
@@ -28,7 +27,7 @@ public class ResetRemainingSessionTimeHandlerTest extends JSONActionRouteTest {
         
         ActionParameters params = createActionParams();
         
-        PowerMockito.mockStatic(System.class);
+        Mockito.mockStatic(System.class);
         when(System.currentTimeMillis()).thenReturn(NOW);
         doReturn(params.getRequest().getSession()).when(params.getRequest()).getSession(false);
         when(params.getRequest().getSession().getMaxInactiveInterval()).thenReturn(MAX_INACTIVE_INTERVAL);

@@ -16,16 +16,15 @@ import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@RunWith(PowerMockRunner.class)
-@PowerMockIgnore({"javax.management.*"})
+@ExtendWith(MockitoExtension.class)@PowerMockIgnore({"javax.management.*"})
 public class GetRegionInfoHandlerIT {
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws IllegalArgumentException, SQLException {
         TestHelper.registerTestDataSource();
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDown() {
         PropertyUtil.clearProperties();
     }

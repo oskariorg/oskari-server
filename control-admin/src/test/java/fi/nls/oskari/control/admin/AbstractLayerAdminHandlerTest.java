@@ -9,13 +9,16 @@ import fi.nls.test.control.JSONActionRouteTest;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.oskari.permissions.PermissionService;
-import org.powermock.api.mockito.PowerMockito;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public abstract class AbstractLayerAdminHandlerTest extends JSONActionRouteTest {
 
@@ -28,13 +31,17 @@ public abstract class AbstractLayerAdminHandlerTest extends JSONActionRouteTest 
         PropertyUtil.addProperty("oskari.user.service", DummyUserService.class.getCanonicalName(), true);
         PermissionService permissionService = mock(PermissionService.class);
         OskariLayerService mapLayerService = mock(OskariLayerService.class);
-        PowerMockito.mockStatic(OskariComponentManager.class);
+        // org.mockito.exceptions.base.MockitoException:
+        // For fi.nls.oskari.service.OskariComponentManager, static mocking is already registered in the current thread
+//        Mockito.mockStatic(OskariComponentManager.class);
         when(OskariComponentManager.getComponentOfType(PermissionService.class)).thenReturn(permissionService);
         when(OskariComponentManager.getComponentOfType(OskariLayerService.class)).thenReturn(mapLayerService);
         doReturn(getTestLayers()).when(mapLayerService).findAll();
         doNothing().when(mapLayerService).update(any());
         doReturn(new HashSet<String>()).when(permissionService).getAdditionalPermissions();
-        doAnswer(invocation -> invocation.getArgument(0)).when(permissionService).getPermissionName(anyString(),anyString());
+        // unneccessary-stubbing-exception
+//        doAnswer(invocation -> invocation.getArgument(0)).when(permissionService).getPermissionName(anyString(),anyString());
+
     }
 
     protected static void tearDownMocks() {
