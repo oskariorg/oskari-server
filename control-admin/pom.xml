@@ -104,6 +104,12 @@
             <artifactId>postgresql</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+        </dependency>
+
+
         <!-- PowerMock can be used to mock static/private methods -->
         <!--
         <dependency>

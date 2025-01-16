@@ -156,6 +156,13 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
         </dependency>
 
 
@@ -957,6 +964,15 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
                 <version>${xom.version}</version>
                 <scope>provided</scope>
             </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+
         </dependencies>
     </dependencyManagement>
 
