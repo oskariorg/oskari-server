@@ -25,14 +25,15 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.oskari.map.userlayer.service.UserLayerDbService;
 import org.oskari.permissions.PermissionService;
 import org.oskari.permissions.PermissionServiceMybatisImpl;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,12 +45,6 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
-// TODO: fix some potential stubbing issues in JSONActionRouteTest and enable
-@Disabled
-
-// these are needed with PowerMock and Java 11. Haven't tried if Java 13+ still needs these:
-// https://github.com/powermock/powermock/issues/864
-//@PowerMockIgnore({"com.sun.org.apache.xalan.*", "com.sun.org.apache.xerces.*", "javax.xml.*", "org.w3c.dom.*", "org.xml.*", "com.sun.org.apache.xml.*"})
 public class AppSetupHandlerTest extends JSONActionRouteTest {
 	
     private AppSetupHandler handler = null;
@@ -114,14 +109,17 @@ public class AppSetupHandlerTest extends JSONActionRouteTest {
         // add all bundles needed in test
         Bundle bundle = new Bundle();
         bundle.setName(BUNDLE_WHITELISTED);
-        doReturn(bundle).when(bundleService).getBundleTemplateByName(BUNDLE_WHITELISTED);
+        Mockito.lenient().doReturn(bundle).when(bundleService).getBundleTemplateByName(BUNDLE_WHITELISTED);
     }
 
     private void mockUserService() throws Exception {
         userService = mock(UserService.class);
         Role role = new Role();
         role.setName("Admin");
-        doReturn(role).when(userService).getRoleByName(role.getName());
+        Mockito.lenient().doReturn(role).when(userService).getRoleByName(role.getName());
+        Field instance = UserService.class.getDeclaredField("instance");
+        instance.setAccessible(true);
+        instance.set(null, userService);
         // Whitebox.setInternalState(UserService.class, "instance", userService);
     }
 
