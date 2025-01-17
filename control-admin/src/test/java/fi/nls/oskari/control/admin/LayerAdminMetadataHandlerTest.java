@@ -34,6 +34,8 @@ public class LayerAdminMetadataHandlerTest extends JSONActionRouteTest {
     @BeforeAll
     public static void setup() throws Exception {
         PropertyUtil.addProperty("oskari.user.service", DummyUserService.class.getCanonicalName(), true);
+        // So ViewsHandler doesn't try to connect to db
+        PropertyUtil.addProperty("view.default", "1", true);
         setupPermissionsServiceMock();
         TestHelper.registerTestDataSource();
         handler.init();

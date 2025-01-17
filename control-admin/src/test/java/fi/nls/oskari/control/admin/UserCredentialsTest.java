@@ -30,6 +30,8 @@ public class UserCredentialsTest extends JSONActionRouteTest {
     public static void setup() throws Exception {
         TestHelper.registerTestDataSource();
         PropertyUtil.addProperty("oskari.user.service", DummyUserService.class.getCanonicalName(), true);
+        // So ViewsHandler doesn't try to connect to db
+        PropertyUtil.addProperty("view.default", "1", true);
     }
     @AfterAll
     public static void tearDown() {

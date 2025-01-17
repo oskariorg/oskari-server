@@ -17,14 +17,12 @@ public abstract class ViewModifier {
     public static final String KEY_STATE = "state";
     
     public static final String BUNDLE_MAPFULL = "mapfull";
-    public static final String BUNDLE_MYPLACES2 = "myplaces2";
     public static final String BUNDLE_MYPLACES3 = "myplaces3";
     public static final String BUNDLE_INFOBOX = "infobox";
     public static final String BUNDLE_POSTPROCESSOR = "postprocessor";
     public static final String BUNDLE_ADMINLAYERSELECTOR = "admin-layerselector";
     public static final String BUNDLE_ADMINLAYERRIGHTS = "admin-layerrights";
     public static final String BUNDLE_TOOLBAR = "toolbar";
-    public static final String BUNDLE_PUBLISHEDMYPLACES2 = "publishedmyplaces2";
     public static final String BUNDLE_FEATUREDATA2 = "featuredata2";
     public static final String BUNDLE_FEATUREDATA = "featuredata";
     public static final String BUNDLE_ANALYSE = "analyse";
@@ -52,7 +50,6 @@ public abstract class ViewModifier {
     public static final String KEY_EAST = "east";
     public static final String KEY_NORTH = "north";
     public static final String KEY_ZOOM = "zoom";
-    public static final String KEY_SELECTEDLAYERS = "selectedLayers";
 
     public void init() {
 
