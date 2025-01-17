@@ -90,5 +90,10 @@
             <artifactId>gt-epsg-hsql</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <!-- some powermock tests ignores xml packages and tests fails without this -->
+            <groupId>org.apache.ws.commons.axiom</groupId>
+            <artifactId>axiom-impl</artifactId>
+        </dependency>
     </dependencies>
 </project>

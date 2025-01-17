@@ -622,6 +622,12 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
                 <version>${jsoup.version}</version>
             </dependency>
             <dependency>
+                <!-- control-base powermock tests requires axiom -->
+                <groupId>org.apache.ws.commons.axiom</groupId>
+                <artifactId>axiom-impl</artifactId>
+                <version>1.2.22</version>
+            </dependency>
+            <dependency>
                 <groupId>xmlunit</groupId>
                 <artifactId>xmlunit</artifactId>
                 <version>${xmlunit.version}</version>
