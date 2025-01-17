@@ -3,14 +3,17 @@ package fi.nls.oskari.control.admin;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.map.view.View;
-import fi.nls.oskari.map.view.*;
+import fi.nls.oskari.map.view.BundleService;
+import fi.nls.oskari.map.view.BundleServiceMemory;
+import fi.nls.oskari.map.view.ViewException;
+import fi.nls.oskari.map.view.ViewService;
+import fi.nls.oskari.map.view.ViewServiceMemory;
 import fi.nls.oskari.map.view.util.ViewHelper;
 import fi.nls.test.control.JSONActionRouteTest;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
@@ -66,8 +69,6 @@ public class ViewsHandlerTest extends JSONActionRouteTest {
     }
 
     @Test
-    @Disabled
-    // org.opentest4j.AssertionFailedError: ActionException should have been thrown
     public void whenUuidIsMissingThrowsActionException() {
         ActionParameters params = new ActionParameters();
         params.setRequest(mockHttpServletRequest());
@@ -83,8 +84,6 @@ public class ViewsHandlerTest extends JSONActionRouteTest {
     }
 
     @Test
-    @Disabled
-    // org.opentest4j.AssertionFailedError: ActionException should have been thrown
     public void whenGETtingViewThatDoesNotExistThrowsActionException() {
         Map<String, String> queryParams = new HashMap<>();
         queryParams.put("uuid", "my-unknown-fake-uuid");
@@ -103,8 +102,6 @@ public class ViewsHandlerTest extends JSONActionRouteTest {
     }
 
     @Test
-    @Disabled
-    // org.opentest4j.AssertionFailedError: ActionException should have been thrown
     public void whenGETtingViewThatDoesExistRespondsWithValidJSON()
             throws ActionException, IllegalArgumentException, JSONException, ViewException {
         // Add View to ViewService
@@ -148,8 +145,6 @@ public class ViewsHandlerTest extends JSONActionRouteTest {
     }
 
     @Test
-    @Disabled
-    // org.opentest4j.AssertionFailedError: ActionException should have been thrown
     public void whenPOSTingValidJSONRespondsWithJSONContainingTheIdAndUuid()
             throws JSONException, ActionException {
         View view = getDummyView();
