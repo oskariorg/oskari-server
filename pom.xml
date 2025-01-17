@@ -164,20 +164,6 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
             <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
-
-
-        <!--
-            Bringing this back so that sample-server-application and others will continue to build.
-            This is the same version that powermock-module-junit4 uses
-
-            Get rid of this and powermock and add junit-juniper to apps
-        -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
     <!-- Managed dependencies -->
     <dependencyManagement>
@@ -950,6 +936,20 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
             <scope>test</scope>
         </dependency>
 
+
+
+        <!--
+            Bringing this back so that sample-server-application and others will continue to build.
+            This is the same version that powermock-module-junit4 uses
+
+            Get rid of this and powermock and add junit-juniper to apps
+        -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
 
         </dependencies>
     </dependencyManagement>
