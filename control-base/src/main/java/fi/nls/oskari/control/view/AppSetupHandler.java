@@ -26,6 +26,7 @@ import org.oskari.map.userlayer.service.UserLayerDbService;
 import org.oskari.permissions.PermissionService;
 
 import java.time.OffsetDateTime;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -41,7 +42,6 @@ public class AppSetupHandler extends RestActionHandler {
 
     private static final Logger LOG = LogFactory.getLogger(AppSetupHandler.class);
 
-    public static final String PROPERTY_DRAW_TOOLS_ENABLED = "actionhandler.Publish.drawToolsRoles";
     static final String PROPERTY_VIEW_UUID = "oskari.publish.only.with.uuid";
 
     static final String KEY_PUBDATA = "pubdata";
@@ -78,9 +78,6 @@ public class AppSetupHandler extends RestActionHandler {
     private ViewService viewService = null;
     private BundleService bundleService = null;
     private PublishPermissionHelper permissionHelper = new PublishPermissionHelper();
-
-    private String[] drawToolsEnabledRoles = new String[0];
-
 
     public void setMyPlacesService(final MyPlacesService service) {
         permissionHelper.setMyPlacesService(service);
@@ -128,9 +125,6 @@ public class AppSetupHandler extends RestActionHandler {
             LOG.error(ex, "Publish template not available!!");
         }
 
-        // setup roles authorized to enable drawing tools on published map
-        drawToolsEnabledRoles = PropertyUtil.getCommaSeparatedList(PROPERTY_DRAW_TOOLS_ENABLED);
-
         final String[] configBundles = PropertyUtil.getCommaSeparatedList("actionhandler.AppSetup.bundles.simple");
         if(configBundles.length > 0) {
             LOG.info("Whitelisting more bundles due to configuration configured ", configBundles);
@@ -145,9 +139,7 @@ public class AppSetupHandler extends RestActionHandler {
                 ViewModifier.BUNDLE_METADATACATALOGUE, ViewModifier.BUNDLE_METADATASEARCH, ViewModifier.BUNDLE_METADATAFLYOUT,
                 ViewModifier.BUNDLE_MAPROTATOR, ViewModifier.BUNDLE_MAPLEGEND, ViewModifier.BUNDLE_LAYERSWIPE,
                 ViewModifier.BUNDLE_ANNOUNCEMENTS));
-        for(String bundleId : configBundles) {
-            SIMPLE_BUNDLES.add(bundleId);
-        }
+        SIMPLE_BUNDLES.addAll(Arrays.asList(configBundles));
 
         // List of bundles that the user is able to publish
         // mapfull not included since it's assumed to be part of publisher template handled anyways
@@ -163,18 +155,18 @@ public class AppSetupHandler extends RestActionHandler {
     }
 
     public void preProcess(ActionParameters params) throws ActionException {
-        // published maps are user content so only available for logged in users
+        // published maps are user content so only available for logged-in users
         params.requireLoggedInUser();
 
         // check permission if modifying existing view
         final String viewUuid = params.getHttpParam(PARAM_UUID);
-        if(viewUuid == null) {
+        if (viewUuid == null) {
             return;
         }
         // verify this is users own view
         final View view = viewService.getViewWithConfByUuId(viewUuid);
         final boolean hasPermission = viewService.hasPermissionToAlterView(view, params.getUser());
-        if(!hasPermission) {
+        if (!hasPermission) {
             throw new ActionDeniedException("Not allowed to modify view with uuid: " + viewUuid);
         }
     }
@@ -226,7 +218,7 @@ public class AppSetupHandler extends RestActionHandler {
 
         // setup view modifications
         final JSONObject viewdata = publisherData.optJSONObject(KEY_VIEWCONFIG);
-        if(viewdata == null) {
+        if (viewdata == null) {
             throw new ActionParamsException("Missing configuration for the view to be saved");
         }
 
@@ -249,7 +241,7 @@ public class AppSetupHandler extends RestActionHandler {
             if(viewdata.has(bundleid)) {
                 setupBundle(view, viewdata, bundleid, ALWAYSON_BUNDLES.contains(bundleid));
 
-                //toolbar -> add style info from metadata
+                // toolbar -> add style info from metadata
                 if (bundleid.equals(ViewModifier.BUNDLE_TOOLBAR)) {
                     setupToolbarStyleInfo(view);
                 }
@@ -258,18 +250,6 @@ public class AppSetupHandler extends RestActionHandler {
 
         // reorder bundles - rpc bundle must have highest segment number
         view.pushBundleLast(ViewModifier.BUNDLE_RPC);
-
-        // Setup publishedmyplaces2 bundle if user has configured it/has permission to do so
-        if(!user.hasAnyRoleIn(drawToolsEnabledRoles)) {
-            // remove myplaces functionality if user doesn't have permission to add them
-            Object drawTools = viewdata.remove(ViewModifier.BUNDLE_PUBLISHEDMYPLACES2);
-            if(drawTools != null) {
-                LOG.warn("User tried to add draw tools, but doesn't have any of the permitted roles. Removing draw tools!");
-            }
-        }
-
-        final Bundle myplaces = setupBundle(view, viewdata, ViewModifier.BUNDLE_PUBLISHEDMYPLACES2, false);
-        handleMyplacesDrawLayer(myplaces, user);
 
         boolean isNew = view.getId() == -1;
         AuditLog audit = AuditLog.user(params.getClientIp(), params.getUser())
@@ -282,7 +262,7 @@ public class AppSetupHandler extends RestActionHandler {
         View savedView = saveView(view);
         // we might not have uuid before saving
         audit.withParam("uuid", view.getUuid());
-        if(isNew) {
+        if (isNew) {
             audit.added(AuditLog.ResourceType.EMBEDDED_VIEW);
         } else {
             audit.updated(AuditLog.ResourceType.EMBEDDED_VIEW);
@@ -291,6 +271,7 @@ public class AppSetupHandler extends RestActionHandler {
         return savedView;
     }
 
+    // TODO: is this still a thing?
     private void setupToolbarStyleInfo(final View view) throws ActionParamsException {
         final Bundle toolbarBundle = view.getBundleByName(ViewModifier.BUNDLE_TOOLBAR);
         if (toolbarBundle == null) {

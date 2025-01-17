@@ -76,11 +76,10 @@ public class MapfullHandler extends BundleHandler {
     private static final String PREFIX_MYPLACES = "myplaces_";
     private static final String PREFIX_ANALYSIS = "analysis_";
     private static final String PREFIX_USERLAYERS = "userlayer_";
-    private static final Set<String> BUNDLES_HANDLING_MYPLACES_LAYERS = ConversionHelper.asSet(ViewModifier.BUNDLE_MYPLACES2, ViewModifier.BUNDLE_MYPLACES3);
+    private static final Set<String> BUNDLES_HANDLING_MYPLACES_LAYERS = ConversionHelper.asSet(ViewModifier.BUNDLE_MYPLACES3);
 
     private static final String PLUGIN_LAYERSELECTION = "Oskari.mapframework.bundle.mapmodule.plugin.LayerSelectionPlugin";
     private static final String PLUGIN_GEOLOCATION = "Oskari.mapframework.bundle.mapmodule.plugin.GeoLocationPlugin";
-    public static final String PLUGIN_WFSVECTORLAYER = "Oskari.wfsvector.WfsVectorLayerPlugin";
     private static final String PLUGIN_MYLOCATION = "Oskari.mapframework.bundle.mapmodule.plugin.MyLocationPlugin";
 
     public static final String EPSG_PROJ4_FORMATS = "epsg_proj4_formats.json";
@@ -90,7 +89,7 @@ public class MapfullHandler extends BundleHandler {
     private static UserLayerDbService userLayerService;
     private static OskariLayerService mapLayerService;
 
-    private static JSONObject epsgMap = null;
+    private JSONObject epsgMap = null;
     private HashMap<String, PluginHandler> pluginHandlers = null;
 
 
@@ -102,7 +101,6 @@ public class MapfullHandler extends BundleHandler {
         // to prevent mocking issues in JUnit tests....
         permissionsService = ServiceFactory.getPermissionsService(); // OskariComponentManager.getComponentOfType(PermissionService.class);
         epsgInit();
-        svgInit();
         pluginHandlers = new HashMap<>();
         registerPluginHandler(LogoPluginHandler.PLUGIN_NAME, new LogoPluginHandler());
         registerPluginHandler(WfsLayerPluginHandler.PLUGIN_NAME, new WfsLayerPluginHandler());
@@ -126,7 +124,6 @@ public class MapfullHandler extends BundleHandler {
         final JSONArray mfStateLayers = JSONHelper.getEmptyIfNull(mapfullState.optJSONArray(KEY_SEL_LAYERS));
         copySelectedLayersToConfigLayers(mfConfigLayers, mfStateLayers);
         final Set<String> bundleIds = getBundleIds(params.getStartupSequence());
-        final boolean useDirectURLForMyplaces = false;
         final String mapSRS = getSRSFromMapConfig(mapfullConfig);
         final boolean forceProxy = mapfullConfig.optBoolean(KEY_FORCE_PROXY, false);
         final JSONArray fullConfigLayers = getFullLayerConfig(mfConfigLayers,
@@ -135,11 +132,9 @@ public class MapfullHandler extends BundleHandler {
                 params.getViewId(),
                 params.getViewType(),
                 bundleIds,
-                useDirectURLForMyplaces,
                 params.isModifyURLs(),
                 mapSRS,
-                forceProxy,
-                JSONHelper.getJSONArray(mapfullConfig, KEY_PLUGINS));
+                forceProxy);
 
         setProjDefsForMapConfig(mapfullConfig, mapSRS);
         // overwrite layers
@@ -171,24 +166,6 @@ public class MapfullHandler extends BundleHandler {
         });
 
         return false;
-    }
-
-    public static JSONArray getFullLayerConfig(final JSONArray layersArray,
-                                               final User user, final String lang, final long viewID,
-                                               final String viewType, final Set<String> bundleIds,
-                                               final boolean useDirectURLForMyplaces, final String mapSRS) {
-        return getFullLayerConfig(layersArray, user, lang, viewID, viewType, bundleIds, useDirectURLForMyplaces, false, mapSRS);
-    }
-
-    public static JSONArray getFullLayerConfig(final JSONArray layersArray,
-                                               final User user, final String lang, final long viewID,
-                                               final String viewType, final Set<String> bundleIds,
-                                               final boolean useDirectURLForMyplaces,
-                                               final boolean modifyURLs,
-                                               final String mapSRS) {
-        return getFullLayerConfig(
-                layersArray, user, lang, viewID, viewType, bundleIds,
-                useDirectURLForMyplaces, modifyURLs, mapSRS, false, null);
     }
 
     /**
@@ -239,19 +216,15 @@ public class MapfullHandler extends BundleHandler {
     }
 
     public String getMapSRSProjDef(final String mapSRS) {
-
-        try {
-
-            if(this.epsgMap.has(mapSRS.toUpperCase())){
-                return JSONHelper.getStringFromJSON(this.epsgMap, mapSRS.toUpperCase(), null);
-            }
-            else {
-                LOGGER.debug("ProjectionDefs not found in epsg_proj4_formats.json", mapSRS);
-            }
-        } catch (Exception e) {
-            LOGGER.debug("ProjectionDefs read failed in epsg_proj4_formats.json", mapSRS, " - exception: ", e);
+        if (mapSRS == null) {
+            return null;
         }
-        return null;
+        String srsUpperCase = mapSRS.toUpperCase();
+        if (!this.epsgMap.has(srsUpperCase)) {
+            LOGGER.debug("ProjectionDefs not found in epsg_proj4_formats.json", mapSRS);
+            return null;
+        }
+        return JSONHelper.getStringFromJSON(this.epsgMap, srsUpperCase, null);
     }
 
     /**
@@ -263,26 +236,22 @@ public class MapfullHandler extends BundleHandler {
      * @param viewID
      * @param viewType
      * @param bundleIds
-     * @param useDirectURLForMyplaces
      * @param modifyURLs              false to keep urls as is, true to modify them for easier proxy forwards
      * @param forceProxy              false to keep urls as is, true to proxy all layers
-     * @param plugins
      * @return
      */
     public static JSONArray getFullLayerConfig(final JSONArray layersArray,
                                                final User user, final String lang, final long viewID,
                                                final String viewType, final Set<String> bundleIds,
-                                               final boolean useDirectURLForMyplaces,
                                                final boolean modifyURLs,
                                                final String mapSRS,
-                                               final boolean forceProxy,
-                                               final JSONArray plugins) {
+                                               final boolean forceProxy) {
 
         // Create a list of layer ids
         final List<Integer> layerIdList = new ArrayList<>();
-        final List<Long> publishedMyPlaces = new ArrayList<Long>();
-        final List<Long> publishedAnalysis = new ArrayList<Long>();
-        final List<Long> publishedUserLayers = new ArrayList<Long>();
+        final List<Long> publishedMyPlaces = new ArrayList<>();
+        final List<Long> publishedAnalysis = new ArrayList<>();
+        final List<Long> publishedUserLayers = new ArrayList<>();
 
         for (int i = 0; i < layersArray.length(); i++) {
             String layerId = null;
@@ -645,9 +614,5 @@ public class MapfullHandler extends BundleHandler {
         } catch (Exception e) {
             LOGGER.info("No setup for epsg proj4 formats found", e);
         }
-    }
-
-    void svgInit(){
-
     }
 }
