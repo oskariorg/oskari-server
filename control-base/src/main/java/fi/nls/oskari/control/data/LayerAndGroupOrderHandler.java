@@ -17,6 +17,7 @@ import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkService;
 
 /**
  * CRUD for layer and group order handling. Methods require admin user.
+ * @deprecated No longer used and is not flushing caches on updates
  */
 @OskariActionRoute("LayerAndGroupOrder")
 public class LayerAndGroupOrderHandler extends RestActionHandler {
