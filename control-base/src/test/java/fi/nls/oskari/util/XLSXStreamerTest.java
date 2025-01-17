@@ -1,15 +1,15 @@
 package fi.nls.oskari.util;
 
-import java.io.FileOutputStream;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.io.FileOutputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 public class XLSXStreamerTest {
 
@@ -33,7 +33,6 @@ public class XLSXStreamerTest {
     }
 
     @Test
-    @Disabled
     public void testStreamToFile() throws Exception {
         XLSXStreamer streamer = new XLSXStreamer();
         
