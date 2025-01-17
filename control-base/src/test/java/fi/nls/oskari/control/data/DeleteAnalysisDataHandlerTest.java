@@ -12,7 +12,6 @@ import fi.nls.test.control.JSONActionRouteTest;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.exceptions.base.MockitoAssertionError;
 
@@ -164,8 +163,6 @@ public class DeleteAnalysisDataHandlerTest extends JSONActionRouteTest {
      * @throws Exception
      */
     @Test
-    @Disabled
-    // java.lang.NullPointerException: Cannot invoke "java.io.PrintWriter.print(Object)" because the return value of "javax.servlet.http.HttpServletResponse.getWriter()" is null
     public void testWithValidUser() throws Exception {
         final Map<String, String> parameters = new HashMap<String, String>();
         parameters.put("id", VALID_ANALYSIS_ID.toString());

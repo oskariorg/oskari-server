@@ -3,7 +3,6 @@ package fi.nls.oskari.control.data;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.test.control.JSONActionRouteTest;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -73,12 +72,8 @@ public class CoordinatesHandlerTest extends JSONActionRouteTest {
     }
 
     @Test
-    @Disabled
-    // java.lang.NullPointerException: Cannot invoke "java.io.PrintWriter.print(Object)" because the return value of "javax.servlet.http.HttpServletResponse.getWriter()" is null
     public void testHandleAction4326to3067()
             throws Exception {
-        // TODO: fix me and a bunch of others with the same problem:
-        // fi.nls.oskari.control.ActionParamsException: Cannot invoke "java.io.PrintWriter.print(Object)" because the return value of "javax.servlet.http.HttpServletResponse.getWriter()" is null
         Map<String, String> params = getValidParams();
         handler.handleAction(createActionParams(params));
 
@@ -86,8 +81,6 @@ public class CoordinatesHandlerTest extends JSONActionRouteTest {
         assertEquals(327578.78108392254, getResponseJSON().getDouble(PARAM_LON), 1e-9, PARAM_LON);
     }
     @Test
-    @Disabled
-    // java.lang.NullPointerException: Cannot invoke "java.io.PrintWriter.print(Object)" because the return value of "javax.servlet.http.HttpServletResponse.getWriter()" is null
     public void testHandleAction3067to4326()
             throws Exception {
         Map<String, String> params = new HashMap<>();
