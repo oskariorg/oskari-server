@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotNull;
 
 public class XmlHelperTest {
@@ -18,7 +19,7 @@ public class XmlHelperTest {
     @Test
     public void testDocumentBuilder() throws Exception {
         DocumentBuilderFactory factory = XmlHelper.newDocumentBuilderFactory(true);
-        assertEquals("Should be namespace aware", true, factory.isNamespaceAware());
+        assertTrue("Should be namespace aware", factory.isNamespaceAware());
     }
 
     @Test

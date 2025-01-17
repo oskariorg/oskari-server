@@ -44,7 +44,7 @@ public class GetRecordsTest {
 
     @Test(expected = ServiceRuntimeException.class)
     public void testWithNoFilter() {
-        org.oskari.csw.request.GetRecords.createRequest(null);
+        GetRecords.createRequest(null);
         fail("Should have thrown exception");
     }
 
@@ -52,14 +52,14 @@ public class GetRecordsTest {
     public void testRequestType() {
         // build filter
         Filter filter = createEqualsFilter("csw:Any", "testing");
-        String request = org.oskari.csw.request.GetRecords.createRequest(filter);
+        String request = GetRecords.createRequest(filter);
 
         assertTrue("Should get 'summary' as request type", request.contains("<csw:ElementSetName>summary</csw:ElementSetName>"));
 
-        request = org.oskari.csw.request.GetRecords.createRequest(filter, "brief");
+        request = GetRecords.createRequest(filter, "brief");
         assertTrue("Should get 'brief' as request type", request.contains("<csw:ElementSetName>brief</csw:ElementSetName>"));
 
-        request = org.oskari.csw.request.GetRecords.createRequest(filter, "full");
+        request = GetRecords.createRequest(filter, "full");
         assertTrue("Should get 'full' as request type", request.contains("<csw:ElementSetName>full</csw:ElementSetName>"));
     }
 
@@ -67,14 +67,14 @@ public class GetRecordsTest {
     public void testRequestTypeInvalid() {
         // build filter
         Filter filter = createEqualsFilter("csw:Any", "testing");
-        org.oskari.csw.request.GetRecords.createRequest(filter, "dummy");
+        GetRecords.createRequest(filter, "dummy");
     }
 
     @Test
     public void testSimpleFilter() throws IOException, SAXException {
         // build filter
         Filter filter = createEqualsFilter("my value", "myprop");
-        String request = org.oskari.csw.request.GetRecords.createRequest(filter);
+        String request = GetRecords.createRequest(filter);
 
         // read expected result and compare
         String expected = IOHelper.readString(getClass().getResourceAsStream("GetRecords-simple.xml"));
@@ -88,7 +88,7 @@ public class GetRecordsTest {
         Filter equalfilter = createEqualsFilter("my value", "myprop");
         Filter likefilter = createLikeFilter("input*", "query");
 
-        String request = org.oskari.csw.request.GetRecords.createRequest(filterFactory.and(equalfilter, likefilter));
+        String request = GetRecords.createRequest(filterFactory.and(equalfilter, likefilter));
 
         // read expected result and compare
         String expected = IOHelper.readString(getClass().getResourceAsStream("GetRecords-multi.xml"));
@@ -102,7 +102,7 @@ public class GetRecordsTest {
         // build filter
         String input = "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[292864,6845440],[292864,6781952],[393216,6781952],[393216,6845440],[292864,6845440]]]},\"properties\":{\"area\":\"Alue ei saa muodostaa silmukkaa. Piirrä risteämätön alue nähdäksesi mittaustuloksen.\"},\"id\":\"drawFeature3\"}],\"crs\":\"EPSG:3067\"}";
         Filter filter = createGeometryFilter(input);
-        String request = org.oskari.csw.request.GetRecords.createRequest(filter);
+        String request = GetRecords.createRequest(filter);
 
         // read expected result and compare
         String expected = IOHelper.readString(getClass().getResourceAsStream("GetRecords-coverage.xml"));

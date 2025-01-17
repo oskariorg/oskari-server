@@ -6,13 +6,8 @@ import fi.nls.oskari.util.JSONHelper;
 import org.oskari.xml.XmlHelper;
 import org.json.JSONObject;
 import org.junit.Test;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import java.io.InputStream;
 
@@ -20,37 +15,16 @@ import static org.junit.Assert.*;
 
 public class CSWServiceTest {
 
-    // Parsing with xpaths don't work with the "future" parser so we can't use it yet
-    // but this is the usage of revised version of XMLHelper
-    private Node getMetadataElementFuture(String file) throws Exception {
+    private Node getMetadataElement(String file) throws Exception {
         InputStream in = getClass().getResourceAsStream(file);
         Element ret = XmlHelper.parseXML(in, true);
-        Element metadata = XmlHelper.getFirstChild(ret, "MD_Metadata");
-        return metadata;
-    }
-
-    private Node getMetadataElementCurrent(String file) throws Exception {
-        InputStream in = getClass().getResourceAsStream(file);
-
-        DocumentBuilderFactory dbf = XmlHelper.newDocumentBuilderFactory(true);
-        DocumentBuilder db = dbf.newDocumentBuilder();
-        Document doc = db.parse(in);
-        Node root = doc.getDocumentElement();
-
-        NodeList children = root.getChildNodes();
-        Node metadata = null;
-        for (int i = 0; i < children.getLength(); i++) {
-            if ("MD_Metadata".equals(children.item(i).getLocalName())) {
-                metadata = children.item(i);
-            }
-        }
-        return metadata;
+        return XmlHelper.getFirstChild(ret, "MD_Metadata");
     }
 
     @Test
     public void mapIsoRecordElementToObject() throws Exception {
         String testfile = "CSWService-Metadata";
-        Node metadata = getMetadataElementCurrent(testfile + ".xml");
+        Node metadata = getMetadataElement(testfile + ".xml");
         CSWService service = new CSWService("http://for.testing.org");
         CSWIsoRecord rec = service.mapIsoRecordElementToObject(metadata, "fi");
         JSONObject actual = rec.toJSON();
@@ -61,7 +35,7 @@ public class CSWServiceTest {
     @Test
     public void mapIsoRecordElementToObjectMultiLang() throws Exception {
         String testfile = "CSWService-Metadata-multilang";
-        Node metadata = getMetadataElementCurrent(testfile + ".xml");
+        Node metadata = getMetadataElement(testfile + ".xml");
         CSWService service = new CSWService("http://for.testing.org");
         CSWIsoRecord rec = service.mapIsoRecordElementToObject(metadata, "fi");
         JSONObject actual = rec.toJSON();
