@@ -12,8 +12,8 @@ import java.util.Arrays;
 import org.geotools.mif.column.MIDColumn;
 import org.geotools.mif.util.QueueBufferedReader;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.geotools.api.referencing.FactoryException;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 
 public class MIFHeader {
 

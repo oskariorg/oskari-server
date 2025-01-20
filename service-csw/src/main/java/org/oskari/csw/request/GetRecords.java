@@ -3,7 +3,7 @@ package org.oskari.csw.request;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import org.geotools.filter.v1_0.OGCConfiguration;
 import org.geotools.xsd.Encoder;
-import org.opengis.filter.Filter;
+import org.geotools.api.filter.Filter;
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;

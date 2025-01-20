@@ -1,6 +1,6 @@
 package org.oskari.print.request;
 
-import org.opengis.filter.Filter;
+import org.geotools.api.filter.Filter;
 
 public class PrintVectorRule {
 

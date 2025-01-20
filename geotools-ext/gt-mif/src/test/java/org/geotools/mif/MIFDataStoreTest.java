@@ -6,7 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import org.geotools.data.DataStore;
+import org.geotools.api.data.DataStore;
 import org.junit.Test;
 
 public class MIFDataStoreTest {

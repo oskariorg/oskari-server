@@ -20,9 +20,9 @@ import org.geotools.gpx.gpx10.GPX10;
 import org.geotools.gpx.gpx10.GPX10Configuration;
 import org.geotools.referencing.CRS;
 import org.geotools.xsd.PullParser;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.geotools.api.feature.simple.SimpleFeature;
+import org.geotools.api.referencing.FactoryException;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.map.userlayer.service.UserLayerException;
 import org.xml.sax.SAXException;
 

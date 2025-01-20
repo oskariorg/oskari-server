@@ -3,7 +3,7 @@ package fi.nls.oskari.map.geometry;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.junit.Test;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

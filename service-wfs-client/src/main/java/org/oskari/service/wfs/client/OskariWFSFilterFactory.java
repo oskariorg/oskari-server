@@ -10,8 +10,8 @@ import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.json.JSONObject;
-import org.opengis.filter.Filter;
-import org.opengis.filter.FilterFactory;
+import org.geotools.api.filter.Filter;
+import org.geotools.api.filter.FilterFactory;
 
 public class OskariWFSFilterFactory {
     private static FilterFactory ff = CommonFactoryFinder.getFilterFactory();

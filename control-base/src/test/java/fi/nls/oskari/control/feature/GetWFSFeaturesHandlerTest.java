@@ -10,7 +10,7 @@ import org.geotools.referencing.CRS;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 
 import org.locationtech.jts.geom.Envelope;
 

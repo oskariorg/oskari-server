@@ -12,8 +12,8 @@ import java.nio.file.Paths;
 
 import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.data.simple.SimpleFeatureCollection;
-import org.geotools.data.simple.SimpleFeatureSource;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.geotools.api.data.SimpleFeatureSource;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.map.userlayer.service.UserLayerException;
 
 import fi.nls.oskari.log.LogFactory;

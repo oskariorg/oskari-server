@@ -10,9 +10,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.opengis.geometry.MismatchedDimensionException;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.operation.TransformException;
+import org.geotools.api.geometry.MismatchedDimensionException;
+import org.geotools.api.referencing.FactoryException;
+import org.geotools.api.referencing.operation.TransformException;
 import org.oskari.geojson.GeoJSON;
 
 import fi.nls.oskari.control.statistics.db.RegionSet;

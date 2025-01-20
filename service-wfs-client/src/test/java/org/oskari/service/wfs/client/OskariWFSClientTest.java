@@ -6,7 +6,7 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.json.JSONObject;
 import org.junit.Assert;
-import org.opengis.filter.Filter;
+import org.geotools.api.filter.Filter;
 import org.junit.Test;
 
 import java.util.Optional;
