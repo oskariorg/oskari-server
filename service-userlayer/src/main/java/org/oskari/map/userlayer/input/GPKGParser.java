@@ -5,11 +5,11 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.geotools.data.DataStore;
-import org.geotools.data.DataStoreFinder;
+import org.geotools.api.data.DataStore;
+import org.geotools.api.data.DataStoreFinder;
 import org.geotools.data.simple.SimpleFeatureCollection;
-import org.geotools.data.simple.SimpleFeatureSource;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.geotools.api.data.SimpleFeatureSource;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.map.userlayer.service.UserLayerException;
 
 import fi.nls.oskari.service.ServiceException;

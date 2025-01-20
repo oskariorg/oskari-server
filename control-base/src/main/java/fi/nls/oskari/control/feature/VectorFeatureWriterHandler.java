@@ -13,7 +13,7 @@ import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.opengis.referencing.FactoryException;
+import org.geotools.api.referencing.FactoryException;
 import org.oskari.xml.XmlHelper;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;

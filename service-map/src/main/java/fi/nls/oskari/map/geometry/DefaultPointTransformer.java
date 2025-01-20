@@ -2,7 +2,7 @@ package fi.nls.oskari.map.geometry;
 
 import fi.nls.oskari.domain.geo.Point;
 import org.geotools.referencing.CRS;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 
 /**
  * Wraps some

@@ -31,8 +31,8 @@ import org.json.JSONObject;
 
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.geojson.GeoJsonReader;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.geotools.api.referencing.FactoryException;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 
 import org.oskari.permissions.PermissionService;
 import org.oskari.permissions.model.PermissionType;

@@ -3,7 +3,7 @@ package org.oskari.map.userlayer.input;
 import java.io.File;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 
 import fi.nls.oskari.service.ServiceException;
 

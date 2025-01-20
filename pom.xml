@@ -107,7 +107,7 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
         <quartz-scheduler.version>2.3.2</quartz-scheduler.version>
 
         <!-- GeoTools 29.x requires Java 17+ -->
-        <geotools.version>29.6</geotools.version>
+        <geotools.version>30.5</geotools.version>
         <jts.version>1.19.0</jts.version>
         <!-- https://github.com/ElectronicChartCentre/java-vector-tile -->
         <mvt.version>1.3.23</mvt.version>
@@ -688,7 +688,7 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
             </dependency>
             <dependency>
                 <groupId>org.geotools</groupId>
-                <artifactId>gt-opengis</artifactId>
+                <artifactId>gt-api</artifactId>
                 <version>${geotools.version}</version>
             </dependency>
             <dependency>

@@ -12,11 +12,11 @@ import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.opengis.filter.Filter;
-import org.opengis.filter.FilterFactory2;
-import org.opengis.filter.expression.Expression;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.MathTransform;
+import org.geotools.api.filter.Filter;
+import org.geotools.api.filter.FilterFactory;
+import org.geotools.api.filter.expression.Expression;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
+import org.geotools.api.referencing.operation.MathTransform;
 import org.oskari.csw.request.GetRecords;
 import org.oskari.geojson.GeoJSONReader;
 
@@ -40,11 +40,11 @@ public class MetadataCatalogueQueryHelper {
     private static final String[] DEFAULT_QUERY_FIELDS = new String[] { "csw:anyText" };
 
     private static final Logger log = LogFactory.getLogger(MetadataCatalogueQueryHelper.class);
-    private FilterFactory2 filterFactory;
+    private FilterFactory filterFactory;
 
 
     public MetadataCatalogueQueryHelper() {
-        filterFactory = CommonFactoryFinder.getFilterFactory2();
+        filterFactory = CommonFactoryFinder.getFilterFactory();
     }
 
     public String getQueryPayload(SearchCriteria searchCriteria) {

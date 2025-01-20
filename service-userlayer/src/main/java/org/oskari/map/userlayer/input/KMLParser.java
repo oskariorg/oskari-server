@@ -21,10 +21,10 @@ import org.geotools.kml.v22.KMLConfiguration;
 import org.geotools.referencing.CRS;
 import org.geotools.xsd.PullParser;
 import org.geotools.geometry.jts.JTS;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.geotools.api.feature.simple.SimpleFeature;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.map.userlayer.service.UserLayerException;
-import org.opengis.referencing.operation.MathTransform;
+import org.geotools.api.referencing.operation.MathTransform;
 import org.xml.sax.SAXException;
 
 import org.locationtech.jts.geom.Geometry;

@@ -6,9 +6,9 @@ import java.util.stream.Collectors;
 
 import fi.nls.oskari.service.ServiceRuntimeException;
 import org.geotools.factory.CommonFactoryFinder;
-import org.opengis.filter.Filter;
-import org.opengis.filter.FilterFactory;
-import org.opengis.filter.expression.Expression;
+import org.geotools.api.filter.Filter;
+import org.geotools.api.filter.FilterFactory;
+import org.geotools.api.filter.expression.Expression;
 
 public class OskariWFSFilter {
     private static final String WILD_CARD = "*";

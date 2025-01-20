@@ -16,11 +16,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.opengis.filter.Filter;
-import org.opengis.filter.FilterFactory2;
-import org.opengis.filter.expression.Expression;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.MathTransform;
+import org.geotools.api.filter.Filter;
+import org.geotools.api.filter.FilterFactory;
+import org.geotools.api.filter.expression.Expression;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
+import org.geotools.api.referencing.operation.MathTransform;
 import org.oskari.geojson.GeoJSONReader;
 import org.xml.sax.SAXException;
 
@@ -31,7 +31,7 @@ import static org.junit.Assert.*;
 
 public class GetRecordsTest {
 
-    private FilterFactory2 filterFactory = CommonFactoryFinder.getFilterFactory2();
+    private FilterFactory filterFactory = CommonFactoryFinder.getFilterFactory();
 
     @BeforeClass
     public static void setUp() {
