@@ -6,11 +6,20 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Element;
 
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class XmlHelperTest {
     private static final Logger log = LogFactory.getLogger(XmlHelperTest.class);
+
+    @Test
+    public void testDocumentBuilder() throws Exception {
+        DocumentBuilderFactory factory = XmlHelper.newDocumentBuilderFactory(true);
+        assertTrue(factory.isNamespaceAware(), "Should be namespace aware");
+    }
 
     @Test
     public void testXMLParsing() throws Exception {

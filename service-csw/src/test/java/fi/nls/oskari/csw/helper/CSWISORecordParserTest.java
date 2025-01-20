@@ -1,7 +1,7 @@
 package fi.nls.oskari.csw.helper;
 
 import fi.nls.oskari.csw.domain.CSWIsoRecord;
-import fi.nls.oskari.util.XmlHelper;
+import org.oskari.xml.XmlHelper;
 import org.geotools.referencing.CRS;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -36,32 +37,14 @@ public class CSWISORecordParserTest {
         return transform;
     }
 
-    private Node getMetadataNode() {
-        DocumentBuilderFactory dbf = XmlHelper.newDocumentBuilderFactory();
-        dbf.setNamespaceAware(true);
-        InputStream xmlInputStream = getClass().getResourceAsStream(CSW_INPUT_FILE_NAME);
-
-        NodeList children = null;
-        try {
-            DocumentBuilder db = dbf.newDocumentBuilder();
-            Document doc = db.parse(xmlInputStream);
-            Node root = doc.getDocumentElement();
-            children = root.getChildNodes();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        Node metaDataNode = null;
-        for (int i = 0; i < children.getLength(); i++) {
-            if (METADATA_ID.equals(children.item(i).getLocalName())) {
-                metaDataNode = children.item(i);
-            }
-        }
-        return metaDataNode;
+    private Node getMetadataNode() throws Exception {
+        InputStream in = getClass().getResourceAsStream(CSW_INPUT_FILE_NAME);
+        Element ret = XmlHelper.parseXML(in, true);
+        return XmlHelper.getFirstChild(ret, METADATA_ID);
     }
 
     @Test
-    public void TestDateParsing() {
+    public void TestDateParsing() throws Exception {
         Node metaDataNode = getMetadataNode();
         MathTransform transform = getMathTransform();
         Locale locale = new Locale("EN");
