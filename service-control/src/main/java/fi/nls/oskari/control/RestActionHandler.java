@@ -3,7 +3,7 @@ package fi.nls.oskari.control;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * RestWrapper for ActionHandler. Concrete subclasses can be annotated with

@@ -21,8 +21,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -136,7 +136,7 @@ public class MapController {
      * and construct configuration elements for GetAppSetup action route.
      * @param params
      * @return path for forwarding to correct JSP (based on the view used)
-     * @throws javax.servlet.ServletException
+     * @throws jakarta.servlet.ServletException
      */
     private String setupRenderParameters(final ActionParameters params, Model model) {
 

@@ -49,7 +49,7 @@
         <!-- Value comes from profile when needed -->
         <module.build.config></module.build.config>
 
-        <spring.version>5.3.39</spring.version>
+        <spring.version>6.0.0</spring.version>
         <spring-security.version>5.7.13</spring-security.version>
         <!--
         session-bom 2021.2.3 uses 2.7.4 from session
@@ -59,7 +59,7 @@
         https://central.sonatype.com/artifact/org.springframework.session/spring-session-bom/2021.2.3 -->
         <spring.session.version>2021.2.3</spring.session.version>
 
-        <javax.servlet.version>3.1.0</javax.servlet.version>
+        <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
         <javax.servlet.jsp.version>2.3.3</javax.servlet.jsp.version>
         <javax.servlet.jstl.version>1.2</javax.servlet.jstl.version>
         <javax.xml.version>1.0</javax.xml.version>
@@ -506,9 +506,9 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
             </dependency>
 
             <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>javax.servlet-api</artifactId>
-                <version>${javax.servlet.version}</version>
+                <groupId>jakarta.servlet</groupId>
+                <artifactId>jakarta.servlet-api</artifactId>
+                <version>${jakarta.servlet.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>

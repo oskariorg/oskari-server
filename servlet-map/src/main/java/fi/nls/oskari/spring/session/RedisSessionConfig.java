@@ -9,14 +9,14 @@ import org.springframework.data.redis.connection.RedisPassword;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import redis.clients.jedis.JedisClientConfig;
 
 // TODO: Check if maxInactiveIntervalInSeconds can be configured
 @Configuration
 @Profile(RedisSessionConfig.PROFILE)
 @EnableRedisHttpSession(maxInactiveIntervalInSeconds=7200)
-public class RedisSessionConfig extends WebMvcConfigurerAdapter {
+public class RedisSessionConfig implements WebMvcConfigurer {
 
     public static final String PROFILE = JedisManager.CLUSTERED_ENV_PROFILE;
 

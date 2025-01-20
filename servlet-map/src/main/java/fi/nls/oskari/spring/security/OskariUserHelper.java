@@ -12,9 +12,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -35,11 +35,11 @@ public class OskariUserHelper {
      * @param response
      * @param authentication
      * @throws IOException
-     * @throws javax.servlet.ServletException
+     * @throws jakarta.servlet.ServletException
      */
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
             throws IOException,
-            javax.servlet.ServletException {
+            jakarta.servlet.ServletException {
         onAuthenticationSuccess(request, response, authentication.getPrincipal().toString());
     }
     /**
@@ -48,11 +48,11 @@ public class OskariUserHelper {
      * @param response
      * @param username
      * @throws IOException
-     * @throws javax.servlet.ServletException
+     * @throws jakarta.servlet.ServletException
      */
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, String username)
             throws IOException,
-            javax.servlet.ServletException {
+            jakarta.servlet.ServletException {
         log.debug("Auth success");
         // setup user object in session for Oskari
         setupSession(request, username);
