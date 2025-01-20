@@ -11,7 +11,6 @@ import fi.nls.test.util.TestHelper;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -56,8 +55,6 @@ public class LayerAdminMetadataHandlerTest extends JSONActionRouteTest {
     }
     
     @Test
-    @Disabled
-    // java.lang.NullPointerException: Cannot invoke "org.json.JSONObject.toString(int)" because "actualResponse" is null
     public void testGetWithAdmin() throws Exception {
         final ActionParameters params = createActionParams(getAdminUser());
         handler.handleAction(params);

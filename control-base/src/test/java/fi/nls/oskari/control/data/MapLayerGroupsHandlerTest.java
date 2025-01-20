@@ -12,7 +12,6 @@ import fi.nls.test.util.TestHelper;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.oskari.service.maplayer.OskariMapLayerGroupService;
 import org.oskari.service.maplayer.OskariMapLayerGroupServiceMybatisImpl;
@@ -33,9 +32,6 @@ import static org.mockito.Mockito.mock;
  * Time: 16:03
  * To change this template use File | Settings | File Templates.
  */
-@Disabled
-// TODO: OpenJDK 64-Bit Server VM warning: Ignoring option --illegal-access=permit; support was removed in 17.0
-// all tests are getting skipped anyway!
 public class MapLayerGroupsHandlerTest extends JSONActionRouteTest {
 
     private OskariMapLayerGroupService oskariMapLayerGroupService;

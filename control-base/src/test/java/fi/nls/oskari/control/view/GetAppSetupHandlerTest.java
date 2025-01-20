@@ -27,11 +27,12 @@ import fi.nls.test.view.BundleTestHelper;
 import fi.nls.test.view.ViewTestHelper;
 import org.json.JSONObject;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedConstruction;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.oskari.permissions.PermissionService;
@@ -52,7 +53,6 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -67,7 +67,6 @@ import static org.mockito.Mockito.verify;
  * To change this template use File | Settings | File Templates.
  */
 @ExtendWith(MockitoExtension.class)
-@Disabled
 // TODO: fix
 // org.mockito.exceptions.base.MockitoException:
 // For fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl, static mocking is already registered in the current thread
@@ -78,6 +77,11 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
     private ViewService viewService = null;
     private BundleService bundleService = null;
 
+    MockedConstruction<OskariLayerServiceMybatisImpl> oskariLayerServiceMybatisMockedConstruction;
+    MockedConstruction<BundleServiceMybatisImpl> bundleServiceMybatisMockedConstruction;
+    MockedConstruction<WFSSearchChannelsServiceMybatisImpl> wfsSearchChannelsServiceMybatisMockedConstruction;
+    MockedConstruction<PermissionServiceMybatisImpl> permissionServiceMybatisMockedConstruction;
+    MockedConstruction<DataProviderServiceMybatisImpl> dataProviderServiceMybatisMockedConstruction;
     @BeforeAll
     public static void addLocales() throws Exception {
         TestHelper.registerTestDataSource();
@@ -106,6 +110,29 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
 
         handler.init();
     }
+    @AfterEach
+    public void teardownMockedContructors() {
+        if (oskariLayerServiceMybatisMockedConstruction != null) {
+            oskariLayerServiceMybatisMockedConstruction.close();
+        }
+
+        if (bundleServiceMybatisMockedConstruction != null) {
+            bundleServiceMybatisMockedConstruction.close();
+        }
+
+        if (wfsSearchChannelsServiceMybatisMockedConstruction != null) {
+            wfsSearchChannelsServiceMybatisMockedConstruction.close();
+        }
+
+        if (permissionServiceMybatisMockedConstruction != null) {
+            permissionServiceMybatisMockedConstruction.close();
+        }
+
+        if (dataProviderServiceMybatisMockedConstruction != null) {
+            dataProviderServiceMybatisMockedConstruction.close();
+        }
+    }
+
     @AfterAll
     public static void teardown() {
         PropertyUtil.clearProperties();
@@ -224,19 +251,19 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
 
         viewService = mock(AppSetupServiceMybatisImpl.class);
         // id 2 for guest user
-        doReturn(2L).when(viewService).getDefaultViewId(getGuestUser());
+        Mockito.lenient().doReturn(2L).when(viewService).getDefaultViewId(getGuestUser());
         // id 1 for logged in user
-        doReturn(1L).when(viewService).getDefaultViewId(getLoggedInUser());
+        Mockito.lenient().doReturn(1L).when(viewService).getDefaultViewId(getLoggedInUser());
 
         // id 1 for default
-        doReturn(1L).when(viewService).getDefaultViewId();
+        Mockito.lenient().doReturn(1L).when(viewService).getDefaultViewId();
 
         final View dummyView = ViewTestHelper.createMockView("framework.mapfull");
         dummyView.setType(ViewTypes.USER);
         dummyView.setOnlyForUuId(false);
-        doReturn(dummyView).when(viewService).getViewWithConfByOldId(anyLong());
-        doReturn(dummyView).when(viewService).getViewWithConf(anyLong());
-        doReturn(dummyView).when(viewService).getViewWithConfByUuId(anyString());
+        Mockito.lenient().doReturn(dummyView).when(viewService).getViewWithConfByOldId(anyLong());
+        Mockito.lenient().doReturn(dummyView).when(viewService).getViewWithConf(anyLong());
+        Mockito.lenient().doReturn(dummyView).when(viewService).getViewWithConfByUuId(anyString());
 
         // TODO: mock view loading
         /**
@@ -250,82 +277,46 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
     private void mockBundleService() throws Exception {
 
         bundleService = mock(BundleServiceMybatisImpl.class);
-        doReturn(
+        Mockito.lenient().doReturn(
                 BundleTestHelper.loadBundle("integration.admin-layerselector")
         ).when(bundleService).getBundleTemplateByName(ViewModifier.BUNDLE_ADMINLAYERSELECTOR);
 
-        doReturn(
+        Mockito.lenient().doReturn(
                 BundleTestHelper.loadBundle("framework.postprocessor")
         ).when(bundleService).getBundleTemplateByName(ViewModifier.BUNDLE_POSTPROCESSOR);
 
-        Mockito.mockConstructionWithAnswer(BundleServiceMybatisImpl.class, invocation -> {
-            if (invocation.getArguments().length == 0) {
-                return bundleService;
-            }
-
-            return invocation.callRealMethod();
-        });
+        bundleServiceMybatisMockedConstruction = Mockito.mockConstruction(BundleServiceMybatisImpl.class);
     }
 
     private void mockInternalServices() throws Exception {
 
         final PermissionService service = mock(PermissionServiceMybatisImpl.class);
         // permission check is skipped here so just mock the call
-        doReturn(Optional.empty()).when(service).findResource(eq(ResourceType.maplayer.name()), any(String.class));
-        doReturn(Collections.emptySet()).when(service).getResourcesWithGrantedPermissions(eq(AnalysisLayer.TYPE), any(User.class), eq(PermissionType.VIEW_PUBLISHED.name()));
+        Mockito.lenient().doReturn(Optional.empty()).when(service).findResource(eq(ResourceType.maplayer.name()), any(String.class));
+        Mockito.lenient().doReturn(Collections.emptySet()).when(service).getResourcesWithGrantedPermissions(eq(AnalysisLayer.TYPE), any(User.class), eq(PermissionType.VIEW_PUBLISHED.name()));
 
-        Mockito.mockConstructionWithAnswer(PermissionServiceMybatisImpl.class, invocation -> {
-            if (invocation.getArguments().length == 0) {
-                return service;
-            }
-
-            return invocation.callRealMethod();
-        });
+        permissionServiceMybatisMockedConstruction = Mockito.mockConstruction(PermissionServiceMybatisImpl.class);
 
         final WFSSearchChannelsService searchService = mock(WFSSearchChannelsServiceMybatisImpl.class);
-        doReturn(Collections.emptyList()).when(searchService).findChannels();
+        Mockito.lenient().doReturn(Collections.emptyList()).when(searchService).findChannels();
 
-        Mockito.mockConstructionWithAnswer(WFSSearchChannelsServiceMybatisImpl.class, invocation -> {
-            if (invocation.getArguments().length == 0) {
-                return searchService;
-            }
+        wfsSearchChannelsServiceMybatisMockedConstruction = Mockito.mockConstruction(WFSSearchChannelsServiceMybatisImpl.class);
 
-            return invocation.callRealMethod();
-        });
-
-        // TODO: this might not do nearly the same thing as suppress(constructor()). Might need to come back to this.
-        // All in all, we gotta move these mockings to somewhere like beforeall and beforeeach and such. Skipping for now.
-        Mockito.mockConstruction(OskariLayerServiceMybatisImpl.class);
-//        suppress(constructor(OskariLayerServiceMybatisImpl.class));
+        oskariLayerServiceMybatisMockedConstruction = Mockito.mockConstruction(OskariLayerServiceMybatisImpl.class);
 
         final OskariLayerServiceMybatisImpl layerService = mock(OskariLayerServiceMybatisImpl.class);
-        doReturn(null).when(layerService).find(anyInt());
-        doReturn(Collections.emptyList()).when(layerService).findAll();
-
-        Mockito.mockConstructionWithAnswer(OskariLayerServiceMybatisImpl.class, invocation -> {
-            if (invocation.getArguments().length == 0) {
-                return layerService;
-            }
-
-            return invocation.getMock();
-        });
-
+        Mockito.lenient().doReturn(null).when(layerService).find(anyInt());
+        Mockito.lenient().doReturn(Collections.emptyList()).when(layerService).findAll();
 
         // TODO: Gotta figure out the junit5 equivalent of doing this
         //Whitebox.newInstance(DataProviderServiceIbatisImpl.class);
         final DataProviderService groupService = mock(DataProviderServiceMybatisImpl.class);
         DataProvider group = mock(DataProvider.class);
         group.setName("en", "Testing");
-        doReturn(group).when(groupService).find(anyInt());
-        doReturn(Collections.emptyList()).when(groupService).findAll();
+        Mockito.lenient().doReturn(group).when(groupService).find(anyInt());
+        Mockito.lenient().doReturn(Collections.emptyList()).when(groupService).findAll();
 
-        Mockito.mockConstructionWithAnswer(DataProviderServiceMybatisImpl.class, invocation -> {
-            if (invocation.getArguments().length == 0) {
-                return groupService;
-            }
-
-            return invocation.getMock();
-        });
+        dataProviderServiceMybatisMockedConstruction = Mockito.mockConstruction(DataProviderServiceMybatisImpl.class);
     }
 
 }

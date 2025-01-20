@@ -20,11 +20,12 @@ import fi.nls.test.util.TestHelper;
 import fi.nls.test.view.BundleTestHelper;
 import fi.nls.test.view.ViewTestHelper;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedConstruction;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.oskari.permissions.PermissionService;
@@ -52,16 +53,16 @@ import static org.mockito.Mockito.mock;
  * To change this template use File | Settings | File Templates.
  */
 @ExtendWith(MockitoExtension.class)
-@Disabled
-// these are needed with PowerMock and Java 11. Haven't tried if Java 13+ still needs these:
-// https://github.com/powermock/powermock/issues/864
-//@PowerMockIgnore({"com.sun.org.apache.xalan.*", "com.sun.org.apache.xerces.*", "javax.xml.*", "org.w3c.dom.*", "org.xml.*", "com.sun.org.apache.xml.*"})
 public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTest {
 
     final private GetAppSetupHandler handler = new GetAppSetupHandler();
 
     private ViewService viewService = null;
     private BundleService bundleService = null;
+
+    private MockedConstruction<PermissionServiceMybatisImpl> permissionServiceMybatisMockedConstruction;
+    private MockedConstruction<DataProviderServiceMybatisImpl> dataProviderServiceMybatisMockedConstruction;
+    private MockedConstruction<BundleServiceMybatisImpl> bundleServiceMybatisMockedConstruction;
 
     @BeforeAll
     public static void addLocales() throws Exception {
@@ -100,6 +101,19 @@ public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTe
         handler.init();
     }
 
+    @AfterEach
+    public void teardownMockedContructors() {
+        if (permissionServiceMybatisMockedConstruction != null) {
+            permissionServiceMybatisMockedConstruction.close();
+        }
+        if (dataProviderServiceMybatisMockedConstruction != null) {
+            dataProviderServiceMybatisMockedConstruction.close();
+        }
+
+        if (bundleServiceMybatisMockedConstruction != null) {
+            bundleServiceMybatisMockedConstruction.close();
+        }
+    }
     @AfterAll
     public static void teardown() {
         PropertyUtil.clearProperties();
@@ -143,14 +157,14 @@ public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTe
 
         viewService = mock(AppSetupServiceMybatisImpl.class);
         // id 2 for guest user
-        doReturn(2L).when(viewService).getDefaultViewId(getGuestUser());
+        Mockito.lenient().doReturn(2L).when(viewService).getDefaultViewId(getGuestUser());
         // id 1 for logged in user
         doReturn(1L).when(viewService).getDefaultViewId(getLoggedInUser());
         final View dummyView = ViewTestHelper.createMockView("framework.mapfull");
         dummyView.setType(ViewTypes.DEFAULT);
-        doReturn(dummyView).when(viewService).getViewWithConfByOldId(anyLong());
-        doReturn(dummyView).when(viewService).getViewWithConf(anyLong());
-        doReturn(dummyView).when(viewService).getViewWithConfByUuId(anyString());
+        Mockito.lenient().doReturn(dummyView).when(viewService).getViewWithConfByOldId(anyLong());
+        Mockito.lenient().doReturn(dummyView).when(viewService).getViewWithConf(anyLong());
+        Mockito.lenient().doReturn(dummyView).when(viewService).getViewWithConfByUuId(anyString());
 
         // TODO: mock view loading
         /**
@@ -163,6 +177,9 @@ public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTe
     private void mockBundleService() throws Exception {
 
         bundleService = mock(BundleServiceMybatisImpl.class);
+        // return mocked bundle service if a new one is created (in paramhandlers for example) excluding parameterized constructors
+        bundleServiceMybatisMockedConstruction = Mockito.mockConstruction(BundleServiceMybatisImpl.class);
+
         doReturn(
                 BundleTestHelper.loadBundle("integration.admin-layerselector")
         ).when(bundleService).getBundleTemplateByName(ViewModifier.BUNDLE_ADMINLAYERSELECTOR);
@@ -171,49 +188,28 @@ public class GetAppSetupHandlerRolesFromPropertiesTest extends JSONActionRouteTe
                 BundleTestHelper.loadBundle("framework.admin-layerrights")
         ).when(bundleService).getBundleTemplateByName(ViewModifier.BUNDLE_ADMINLAYERRIGHTS);
 
-        doReturn(
+        Mockito.lenient().doReturn(
                 BundleTestHelper.loadBundle("framework.postprocessor")
         ).when(bundleService).getBundleTemplateByName(ViewModifier.BUNDLE_POSTPROCESSOR);
-
-        // return mocked bundle service if a new one is created (in paramhandlers for example) excluding parameterized constructors
-        Mockito.mockConstructionWithAnswer(BundleServiceMybatisImpl.class, invocation -> {
-            if (invocation.getArguments().length == 0) {
-                return bundleService;
-            }
-
-            return invocation.callRealMethod();
-        });
     }
 
     private void mockInternalServices() throws Exception {
 
         final PermissionService service = mock(PermissionServiceMybatisImpl.class);
         // permission check is skipped here so just mock the call
-        doReturn(Optional.empty()).when(service).findResource(eq(ResourceType.maplayer.name()), any(String.class));
+        Mockito.lenient().doReturn(Optional.empty()).when(service).findResource(eq(ResourceType.maplayer.name()), any(String.class));
 
         // return mocked bundle service if a new one is created (in paramhandlers for example) excluding parameterized constructors
-        Mockito.mockConstructionWithAnswer(PermissionServiceMybatisImpl.class, invocation -> {
-            if (invocation.getArguments().length == 0) {
-                return service;
-            }
-
-            return invocation.callRealMethod();
-        });
+        permissionServiceMybatisMockedConstruction = Mockito.mockConstruction(PermissionServiceMybatisImpl.class);
 
         // TODO: mock MapLayerWorker.getSelectedLayersStructure() instead to return a valid JSON structure
         final DataProviderService groupService = mock(DataProviderServiceMybatisImpl.class);
         DataProvider group = mock(DataProvider.class);
         group.setName("en", "Testing");
-        doReturn(group).when(groupService).find(anyInt());
-        doReturn(Collections.emptyList()).when(groupService).findAll();
+        Mockito.lenient().doReturn(group).when(groupService).find(anyInt());
+        Mockito.lenient().doReturn(Collections.emptyList()).when(groupService).findAll();
 
         // return mocked bundle service if a new one is created (in paramhandlers for example) excluding parameterized constructors
-        Mockito.mockConstructionWithAnswer(DataProviderServiceMybatisImpl.class, invocation -> {
-            if (invocation.getArguments().length == 0) {
-                return groupService;
-            }
-
-            return invocation.callRealMethod();
-        });
+        dataProviderServiceMybatisMockedConstruction = Mockito.mockConstruction(DataProviderServiceMybatisImpl.class);
     }
 }

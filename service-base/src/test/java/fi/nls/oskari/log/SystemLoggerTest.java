@@ -1,13 +1,11 @@
 package fi.nls.oskari.log;
 
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
  * Testing simple log level for SystemLogger via env-properties. Ignored so it doesn't
  */
-@Disabled
 public class SystemLoggerTest {
 
     @AfterEach
