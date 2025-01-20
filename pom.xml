@@ -50,7 +50,7 @@
         <module.build.config></module.build.config>
 
         <spring.version>6.0.0</spring.version>
-        <spring-security.version>5.7.13</spring-security.version>
+        <spring-security.version>6.4.2</spring-security.version>
         <!--
         session-bom 2021.2.3 uses 2.7.4 from session
         https://github.com/spring-projects/spring-session/blob/2.7.4/gradle/dependency-management.gradle
@@ -500,7 +500,7 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
             <dependency>
                 <groupId>org.springframework.session</groupId>
                 <artifactId>spring-session-bom</artifactId>
-                <version>${spring.session.version}</version>
+                <version>3.0.2</version> <!-- Update to 3.x -->
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
