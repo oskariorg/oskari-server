@@ -46,14 +46,9 @@ public class GetRecordsTest {
 
     @Test()
     public void testWithNoFilter() {
-<<<<<<< HEAD
         assertThrows(ServiceRuntimeException.class , () -> {
             org.oskari.csw.request.GetRecords.createRequest(null);
         });
-=======
-        GetRecords.createRequest(null);
-        fail("Should have thrown exception");
->>>>>>> java17
     }
 
     @Test
@@ -64,33 +59,20 @@ public class GetRecordsTest {
 
         assertTrue(request.contains("<csw:ElementSetName>summary</csw:ElementSetName>"), "Should get 'summary' as request type");
 
-<<<<<<< HEAD
-        request = org.oskari.csw.request.GetRecords.createRequest(filter, "brief");
+        request = GetRecords.createRequest(filter, "brief");
         assertTrue(request.contains("<csw:ElementSetName>brief</csw:ElementSetName>"), "Should get 'brief' as request type");
 
-        request = org.oskari.csw.request.GetRecords.createRequest(filter, "full");
-        assertTrue(request.contains("<csw:ElementSetName>full</csw:ElementSetName>"), "Should get 'full' as request type");
-=======
-        request = GetRecords.createRequest(filter, "brief");
-        assertTrue("Should get 'brief' as request type", request.contains("<csw:ElementSetName>brief</csw:ElementSetName>"));
-
         request = GetRecords.createRequest(filter, "full");
-        assertTrue("Should get 'full' as request type", request.contains("<csw:ElementSetName>full</csw:ElementSetName>"));
->>>>>>> java17
+        assertTrue(request.contains("<csw:ElementSetName>full</csw:ElementSetName>"), "Should get 'full' as request type");
     }
 
     @Test()
     public void testRequestTypeInvalid() {
         // build filter
-<<<<<<< HEAD
         assertThrows(IllegalArgumentException.class, () -> {
             Filter filter = createEqualsFilter("csw:Any", "testing");
             org.oskari.csw.request.GetRecords.createRequest(filter, "dummy");
         });
-=======
-        Filter filter = createEqualsFilter("csw:Any", "testing");
-        GetRecords.createRequest(filter, "dummy");
->>>>>>> java17
     }
 
     @Test
