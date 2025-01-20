@@ -94,13 +94,9 @@ public class CreateUserLayerHandler extends RestActionHandler {
     private static final int MAX_RETRY_RANDOM_UUID = 100;
 
     FileCleaningTracker cleaningTracker = new FileCleaningTracker();
+    Path tempDir = Paths.get(System.getProperty("java.io.tmpdir"));
 
-    private final DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory(
-        null, // repositoryPath
-        MAX_SIZE_MEMORY, // sizeThreshold
-        StandardCharsets.UTF_8, // charset
-        cleaningTracker // tracker
-    );
+    private final DiskFileItemFactory diskFileItemFactory = DiskFileItemFactory.builder().setPath(tempDir).setBufferSize(MAX_SIZE_MEMORY).get();
     private String targetEPSG = "EPSG:4326";
     private int userlayerMaxFileSize = -1;
     private long unzippiedFileSizeLimit = -1;
@@ -177,7 +173,13 @@ public class CreateUserLayerHandler extends RestActionHandler {
                     validFiles.stream().collect(Collectors.joining(",")));
             throw e;
         } finally {
-            fileItems.forEach(FileItem::delete);
+            fileItems.forEach(fileItem -> {
+                try {
+                    fileItem.delete();
+                } catch (IOException e) {
+                    log.error("Failed to delete file item", e);
+                }
+            });
         }
     }
 
