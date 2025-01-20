@@ -88,7 +88,6 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
 
         <jsoup.version>1.17.2</jsoup.version>
 
-        <axiom.version>1.2.22</axiom.version>
         <stax-api.version>1.0-2</stax-api.version>
 
         <jackson.version>2.18.1</jackson.version>
@@ -623,36 +622,10 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
                 <version>${jsoup.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.apache.ws.commons.axiom</groupId>
-                <artifactId>axiom-api</artifactId>
-                <version>${axiom.version}</version>
-                <!-- http://jira.codehaus.org/browse/JAXEN-217 -->
-                <exclusions>
-                    <exclusion>
-                        <groupId>maven-plugins</groupId>
-                        <artifactId>maven-cobertura-plugin</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>maven-plugins</groupId>
-                        <artifactId>maven-findbugs-plugin</artifactId>
-                    </exclusion>
-                    <!-- exclude stax-api
-                    	Reason: xml-apis lib provide newer version of classes which are used (causing conflict if we have both)
-                     -->
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-stax-api_1.0_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-activation_1.1_spec</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
+                <!-- control-base powermock tests requires axiom -->
                 <groupId>org.apache.ws.commons.axiom</groupId>
                 <artifactId>axiom-impl</artifactId>
-                <version>${axiom.version}</version>
+                <version>1.2.22</version>
             </dependency>
             <dependency>
                 <groupId>xmlunit</groupId>

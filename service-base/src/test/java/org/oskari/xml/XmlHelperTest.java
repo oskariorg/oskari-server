@@ -5,14 +5,22 @@ import fi.nls.oskari.log.Logger;
 import org.junit.Test;
 import org.w3c.dom.Element;
 
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotNull;
 
 public class XmlHelperTest {
     private static final Logger log = LogFactory.getLogger(XmlHelperTest.class);
+
+    @Test
+    public void testDocumentBuilder() throws Exception {
+        DocumentBuilderFactory factory = XmlHelper.newDocumentBuilderFactory(true);
+        assertTrue("Should be namespace aware", factory.isNamespaceAware());
+    }
 
     @Test
     public void testXMLParsing() throws Exception {

@@ -5,7 +5,7 @@ import fi.nls.oskari.csw.domain.CSWIsoRecord.DataQuality;
 import fi.nls.oskari.csw.domain.CSWIsoRecord.DataQualityConformanceResult;
 import fi.nls.oskari.csw.domain.CSWIsoRecord.DataQualityObject;
 import fi.nls.oskari.csw.domain.CSWIsoRecord.DataQualityQuantitativeResult;
-import fi.nls.oskari.util.XmlHelper;
+import org.oskari.xml.XmlHelper;
 import org.geotools.referencing.CRS;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
@@ -42,34 +43,14 @@ public class CSWISORecordDataQualityParserTest {
         return transform;
     }
 
-    private Node getMetadataNode() {
-        // TODO: still need to use old XmlHelper since metadata utilizes a lot of xpath parsing
-        // xpaths don't seem to work that well with the new helper
-        DocumentBuilderFactory dbf = XmlHelper.newDocumentBuilderFactory();
-        dbf.setNamespaceAware(true);
-        InputStream xmlInputStream = getClass().getResourceAsStream("csw.xml");
-
-        NodeList children = null;
-        try {
-            DocumentBuilder db = dbf.newDocumentBuilder();
-            Document doc = db.parse(xmlInputStream);
-            Node root = doc.getDocumentElement();
-            children = root.getChildNodes();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        Node metaDataNode = null;
-        for (int i = 0; i < children.getLength(); i++) {
-            if (METADATA_ID.equals(children.item(i).getLocalName())) {                
-                metaDataNode = children.item(i);
-            }
-        }
-        return metaDataNode;
+    private Node getMetadataNode() throws Exception {
+        InputStream in = getClass().getResourceAsStream("csw.xml");
+        Element ret = XmlHelper.parseXML(in, true);
+        return XmlHelper.getFirstChild(ret, "MD_Metadata");
     }
 
     @Test
-    public void TestDataQualityParsing() {
+    public void TestDataQualityParsing() throws Exception {
         
         Node metaDataNode = getMetadataNode();
         MathTransform transform = getMathTransform();
@@ -112,7 +93,7 @@ public class CSWISORecordDataQualityParserTest {
     }
 
     @Test
-    public void TestDataQualityJson () {
+    public void TestDataQualityJson () throws Exception {
         Node metaDataNode = getMetadataNode();
         MathTransform transform = getMathTransform();
         Locale locale = new Locale("FI");
@@ -132,7 +113,7 @@ public class CSWISORecordDataQualityParserTest {
     }
 
     @Test 
-    public void TestLocalization () {
+    public void TestLocalization () throws Exception {
         Node metaDataNode = getMetadataNode();
         MathTransform transform = getMathTransform();
         Locale locale = new Locale("EN");

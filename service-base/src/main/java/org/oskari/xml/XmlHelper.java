@@ -215,6 +215,7 @@ public class XmlHelper {
      */
     public static DocumentBuilderFactory newDocumentBuilderFactory(boolean nsAware) throws FactoryConfigurationError {
         DocumentBuilderFactory f = newDocumentBuilderFactory();
+        toggleFeature(f,"http://xml.org/sax/features/namespaces", nsAware);
         f.setNamespaceAware(nsAware);
         return f;
     }
