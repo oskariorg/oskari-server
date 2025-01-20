@@ -3,7 +3,6 @@ package fi.nls.oskari.control.admin;
 import fi.nls.oskari.domain.map.OskariLayer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -29,7 +28,6 @@ public class LayerAdminHandlerTest extends AbstractLayerAdminHandlerTest {
     }
 
     @Test
-    @Disabled
     // For fi.nls.oskari.service.OskariComponentManager, static mocking is already registered in the current thread
     public void testCleanupLayerReferences() throws Exception {
         List<OskariLayer> layers = handler.cleanupLayerReferences(METADATA_LAYER_ID);

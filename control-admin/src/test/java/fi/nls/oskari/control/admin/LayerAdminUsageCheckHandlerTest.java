@@ -2,11 +2,11 @@ package fi.nls.oskari.control.admin;
 
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.test.util.ResourceHelper;
 import org.json.JSONObject;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -23,20 +23,19 @@ public class LayerAdminUsageCheckHandlerTest extends AbstractLayerAdminHandlerTe
 
     final private static LayerAdminUsageCheckHandler handler = new LayerAdminUsageCheckHandler();
 
-    @BeforeAll
-    public static void setup() throws Exception {
+    @BeforeEach
+    public void setup() throws Exception {
         setupMocks();
         handler.init();
     }
 
-    @AfterAll
-    public static void tearDown() {
+    @AfterEach
+    public void tearDown() {
+        OskariComponentManager.teardown();
         tearDownMocks();
     }
 
     @Test
-    @Disabled
-    // assertion fails for some reason. Handleaction isn't throwing
     public void testLayerUsageCheck() throws Exception {
         Map requestParameters = getRequestParams();
         ActionParameters params = createActionParams(requestParameters, getAdminUser());
@@ -46,8 +45,6 @@ public class LayerAdminUsageCheckHandlerTest extends AbstractLayerAdminHandlerTe
     }
 
     @Test
-    @Disabled
-    // assertion fails for some reason. Handleaction isn't throwing
     public void testLayerUsageCheckWhenUserIsNotAdmin() {
         Map requestParameters = getRequestParams();
         ActionParameters params = createActionParams(requestParameters, getNotAdminUser());
