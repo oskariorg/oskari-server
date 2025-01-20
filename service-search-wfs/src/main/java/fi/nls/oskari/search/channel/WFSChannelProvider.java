@@ -2,9 +2,11 @@ package fi.nls.oskari.search.channel;
 
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.service.OskariComponentManager;
+import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.wfs.WFSSearchChannelsConfiguration;
 import fi.nls.oskari.wfs.WFSSearchChannelsService;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,6 +17,9 @@ import java.util.Set;
 public class WFSChannelProvider extends ChannelProvider {
 
     public Set<SearchChannel> getChannels() {
+        if (PropertyUtil.getOptional("search.ignoreWFSchannels", false)) {
+            return Collections.emptySet();
+        }
         WFSSearchChannelsService channelService = OskariComponentManager.getComponentOfType(WFSSearchChannelsService.class);
         Set<SearchChannel> list = new HashSet<>();
         for(WFSSearchChannelsConfiguration config : channelService.findChannels()) {
