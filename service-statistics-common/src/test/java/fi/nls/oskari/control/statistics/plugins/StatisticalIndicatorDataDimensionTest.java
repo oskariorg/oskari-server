@@ -1,22 +1,25 @@
 package fi.nls.oskari.control.statistics.plugins;
 
 import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataDimension;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Created by SMAKINEN on 26.9.2016.
  */
 public class StatisticalIndicatorDataDimensionTest {
 
-    @Test(expected = APIException.class)
+    @Test
     public void testSetValueInvalid()
             throws Exception {
-        StatisticalIndicatorDataDimension sel = new StatisticalIndicatorDataDimension("test");
-        sel.addAllowedValue("value 1");
-        sel.setValue("this is not the value you're looking for");
-        fail("Should not reach this");
+
+        assertThrows(APIException.class, () -> {
+            StatisticalIndicatorDataDimension sel = new StatisticalIndicatorDataDimension("test");
+            sel.addAllowedValue("value 1");
+            sel.setValue("this is not the value you're looking for");
+        });
     }
 
     @Test
@@ -25,7 +28,7 @@ public class StatisticalIndicatorDataDimensionTest {
         StatisticalIndicatorDataDimension sel = new StatisticalIndicatorDataDimension("test");
         sel.addAllowedValue("value 1");
         sel.setValue("value 1");
-        assertEquals("Values should match", "value 1", sel.getValue());
+        assertEquals( "value 1", sel.getValue(), "Values should match");
     }
 
     private StatisticalIndicatorDataDimension createDimension() {
@@ -44,10 +47,10 @@ public class StatisticalIndicatorDataDimensionTest {
         final String defaultValue = "value 2";
         sel.useDefaultValue(defaultValue);
 
-        assertEquals("Size should remain", 3, sel.getAllowedValues().size());
-        assertEquals("Default value should be first", defaultValue, sel.getAllowedValues().get(0).getKey());
-        assertEquals("3 should be second", "value 3", sel.getAllowedValues().get(1).getKey());
-        assertEquals("1 should be last", "value 1", sel.getAllowedValues().get(2).getKey());
+        assertEquals(3, sel.getAllowedValues().size(), "Size should remain");
+        assertEquals( defaultValue, sel.getAllowedValues().get(0).getKey(), "Default value should be first");
+        assertEquals( "value 3", sel.getAllowedValues().get(1).getKey(), "3 should be second");
+        assertEquals("value 1", sel.getAllowedValues().get(2).getKey(), "1 should be last");
     }
 
     @Test
@@ -56,15 +59,15 @@ public class StatisticalIndicatorDataDimensionTest {
 
         StatisticalIndicatorDataDimension sel = createDimension();
         sel.sort(false);
-        assertEquals("Size should remain", 3, sel.getAllowedValues().size());
-        assertEquals("1 should be first", "value 1", sel.getAllowedValues().get(0).getKey());
-        assertEquals("2 should be second", "value 2", sel.getAllowedValues().get(1).getKey());
-        assertEquals("3 should be last", "value 3", sel.getAllowedValues().get(2).getKey());
+        assertEquals(3, sel.getAllowedValues().size(), "Size should remain");
+        assertEquals("value 1", sel.getAllowedValues().get(0).getKey(), "1 should be first");
+        assertEquals("value 2", sel.getAllowedValues().get(1).getKey(), "2 should be second");
+        assertEquals("value 3", sel.getAllowedValues().get(2).getKey(), "3 should be last");
 
         sel.sort(true);
-        assertEquals("Size should remain", 3, sel.getAllowedValues().size());
-        assertEquals("3 should be first", "value 3", sel.getAllowedValues().get(0).getKey());
-        assertEquals("2 should be second", "value 2", sel.getAllowedValues().get(1).getKey());
-        assertEquals("1 should be last", "value 1", sel.getAllowedValues().get(2).getKey());
+        assertEquals(3, sel.getAllowedValues().size(), "Size should remain");
+        assertEquals("value 3", sel.getAllowedValues().get(0).getKey(), "3 should be first");
+        assertEquals("value 2", sel.getAllowedValues().get(1).getKey(), "2 should be second");
+        assertEquals("value 1", sel.getAllowedValues().get(2).getKey(), "1 should be last");
     }
 }

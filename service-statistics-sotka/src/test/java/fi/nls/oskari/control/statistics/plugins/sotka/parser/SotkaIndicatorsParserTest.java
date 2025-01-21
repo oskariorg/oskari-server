@@ -10,8 +10,6 @@ import fi.nls.oskari.control.statistics.data.IndicatorValueType;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.util.ResourceHelper;
 
-import static org.junit.Assert.*;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,9 +19,11 @@ import javax.naming.NamingException;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class SotkaIndicatorsParserTest {
     private static String testResponse = ResourceHelper.readStringResource("SotkaIndicators.json",
@@ -32,20 +32,20 @@ public class SotkaIndicatorsParserTest {
             SotkaIndicatorsParserTest.class);
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws NamingException, IllegalArgumentException,
         IllegalAccessException {
         PropertyUtil.loadProperties("/oskari-ext.properties");
     }
-    @AfterClass
+    @AfterAll
     public static void tearDown() {
         PropertyUtil.clearProperties();
     }
 
     @Test
     public void testParseIndicators() throws Exception {
-        org.junit.Assume.assumeTrue(TestHelper.canDoHttp());
-        org.junit.Assume.assumeTrue(TestHelper.redisAvailable());
+        Assumptions.assumeTrue(TestHelper.canDoHttp());
+        Assumptions.assumeTrue(TestHelper.redisAvailable());
 
         Map<String, Long> layerMap = new HashMap<>();
         layerMap.put("kunta", 9l);
@@ -64,18 +64,15 @@ public class SotkaIndicatorsParserTest {
         }
 
         String json = MAPPER.writeValueAsString(parsedObject.get(0));
-        assertTrue("The parsed object did not match the expected first objects.",
-                JSONHelper.isEqual(JSONHelper.createJSONObject(json), JSONHelper.createJSONObject(testExpectedIndicator)));
-        assertEquals(2373, parsedObject.size());
-        assertEquals("245", parsedObject.get(40).getId());
-        assertEquals(3, parsedObject.get(40).getLayers().size());
-        assertEquals(IndicatorValueType.FLOAT, parsedObject.get(40).getLayers().get(2).getIndicatorValueType());
-        assertEquals(11, parsedObject.get(40).getLayers().get(2).getOskariLayerId());
-        assertEquals("{fi=Syöpäindeksi, ikävakioitu, sv=Cancerindex, åldersstandardiserat, en=Cancer index, age-standardised}",
-                parsedObject.get(40).getName().toString());
-        assertEquals("{fi=Terveyden ja hyvinvoinnin laitos (THL), sv=Institutet för hälsa och välfärd (THL), " +
-                "en=Institute for Health and Welfare (THL)}",
-                parsedObject.get(40).getSource().toString());
+        Assertions.assertTrue(JSONHelper.isEqual(JSONHelper.createJSONObject(json), JSONHelper.createJSONObject(testExpectedIndicator)), "The parsed object did not match the expected first objects.");
+        Assertions.assertEquals(2373, parsedObject.size());
+        Assertions.assertEquals("245", parsedObject.get(40).getId());
+        Assertions.assertEquals(3, parsedObject.get(40).getLayers().size());
+        Assertions.assertEquals(IndicatorValueType.FLOAT, parsedObject.get(40).getLayers().get(2).getIndicatorValueType());
+        Assertions.assertEquals(11, parsedObject.get(40).getLayers().get(2).getOskariLayerId());
+        Assertions.assertEquals("{fi=Syöpäindeksi, ikävakioitu, sv=Cancerindex, åldersstandardiserat, en=Cancer index, age-standardised}", parsedObject.get(40).getName().toString());
+        Assertions.assertEquals("{fi=Terveyden ja hyvinvoinnin laitos (THL), sv=Institutet för hälsa och välfärd (THL), " +
+                "en=Institute for Health and Welfare (THL)}", parsedObject.get(40).getSource().toString());
         // Note that the selectors are empty here, because this indicator has no allowed values for "sex".
         //assertEquals("{[{ id: year, value: null, allowedValues: [2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011]}]}", parsedObject.get(40).getDataModel().toString());
 

@@ -1,13 +1,9 @@
 package fi.nls.oskari.map.geometry;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
+import org.junit.jupiter.api.Assertions;
 import org.locationtech.jts.geom.CoordinateSequence;
 import org.locationtech.jts.geom.GeometryFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class GeometryHelperTest {
 
@@ -25,8 +21,8 @@ public class GeometryHelperTest {
         double lon = -180.0;
         double lat =   45.0;
         for (int i = 0; i <= 18; i++) {
-            assertEquals(lon, interpolated.getOrdinate(i, 0), 0.0);
-            assertEquals(lat, interpolated.getOrdinate(i, 1), 0.0);
+            Assertions.assertEquals(lon, interpolated.getOrdinate(i, 0), 0.0);
+            Assertions.assertEquals(lat, interpolated.getOrdinate(i, 1), 0.0);
             lon += 20.0;
         }
     }
@@ -40,23 +36,23 @@ public class GeometryHelperTest {
         cs.setOrdinate(1, 0,  180.0);
         cs.setOrdinate(1, 1,   45.0);
 
-        assertTrue("Happy", GeometryHelper.isWithin(cs,  -180.0, -45.0, 180.0,  45.0));
-        assertFalse("< minX", GeometryHelper.isWithin(cs, -160.0, -45.0, 180.0,  45.0));
-        assertFalse("> maxX", GeometryHelper.isWithin(cs, -180.0, -45.0, 130.0,  45.0));
-        assertFalse("< minY", GeometryHelper.isWithin(cs, -180.0,  20.0, 180.0,  45.0));
-        assertFalse("> maxY", GeometryHelper.isWithin(cs, -180.0, -45.0, 180.0,   5.0));
+        Assertions.assertTrue(GeometryHelper.isWithin(cs,  -180.0, -45.0, 180.0,  45.0), "Happy");
+        Assertions.assertFalse(GeometryHelper.isWithin(cs, -160.0, -45.0, 180.0,  45.0), "< minX");
+        Assertions.assertFalse(GeometryHelper.isWithin(cs, -180.0, -45.0, 130.0,  45.0), "> maxX");
+        Assertions.assertFalse(GeometryHelper.isWithin(cs, -180.0,  20.0, 180.0,  45.0), "< minY");
+        Assertions.assertFalse(GeometryHelper.isWithin(cs, -180.0, -45.0, 180.0,   5.0), "> maxY");
 
         try {
             GeometryHelper.isWithin(cs, 2, 5, 1, 6);
-            fail();
+            Assertions.fail();
         } catch (IllegalArgumentException ignore) {
-            assertEquals("maxX < minX", ignore.getMessage());
+            Assertions.assertEquals("maxX < minX", ignore.getMessage());
         }
         try {
             GeometryHelper.isWithin(cs, 1, -5, 2, -7);
-            fail();
+            Assertions.fail();
         } catch (IllegalArgumentException ignore) {
-            assertEquals("maxY < minY", ignore.getMessage());
+            Assertions.assertEquals("maxY < minY", ignore.getMessage());
         }
     }
 }

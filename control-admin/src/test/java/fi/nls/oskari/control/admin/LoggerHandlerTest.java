@@ -1,6 +1,6 @@
 package fi.nls.oskari.control.admin;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import static org.mockito.Mockito.spy;

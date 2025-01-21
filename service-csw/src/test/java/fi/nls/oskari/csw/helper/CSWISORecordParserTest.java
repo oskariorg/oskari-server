@@ -4,17 +4,12 @@ import fi.nls.oskari.csw.domain.CSWIsoRecord;
 import org.oskari.xml.XmlHelper;
 import org.geotools.referencing.CRS;
 import org.json.JSONObject;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 import org.geotools.api.referencing.operation.MathTransform;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import static org.junit.Assert.*;
 import java.io.InputStream;
 import java.util.Locale;
 
@@ -54,7 +49,7 @@ public class CSWISORecordParserTest {
             parser = new CSWISORecordParser();
             CSWIsoRecord metadata = parser.parse(metaDataNode, locale, transform);
             JSONObject json = metadata.toJSON();
-            assertEquals("2017-04-21T11:24Z", json.get("metadataDateStamp"));
+            Assertions.assertEquals("2017-04-21T11:24Z", json.get("metadataDateStamp"));
         } catch (Exception e) {
             e.printStackTrace();
         }

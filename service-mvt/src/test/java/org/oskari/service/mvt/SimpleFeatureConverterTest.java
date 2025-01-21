@@ -1,15 +1,10 @@
 package org.oskari.service.mvt;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.util.*;
-import java.util.stream.Collectors;
-
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.geotools.api.feature.simple.SimpleFeature;
 import org.geotools.api.feature.simple.SimpleFeatureType;
 
@@ -17,6 +12,13 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class SimpleFeatureConverterTest {
 
@@ -56,8 +58,8 @@ public class SimpleFeatureConverterTest {
 
         Map<String, Object> props = features.get(0).properties;
         Object value = props.get("$myComplexProperty");
-        assertTrue(value instanceof String);
-        assertEquals("{'cool-words':['foo','bar','baz']}".replace('\'', '"'), value);
+        Assertions.assertTrue(value instanceof String);
+        Assertions.assertEquals("{'cool-words':['foo','bar','baz']}".replace('\'', '"'), value);
     }
 
 }

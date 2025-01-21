@@ -4,8 +4,9 @@ import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.test.util.ResourceHelper;
 import org.json.JSONObject;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.oskari.capabilities.CapabilitiesService;
 import org.oskari.capabilities.LayerCapabilities;
 
@@ -13,14 +14,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 public class WMTSCapabilitiesParserTest {
 
     private static final Set<String> SYSTEM_CRS = new HashSet<>(5);
 
-    @BeforeClass
+    @BeforeAll
     public static void init() {
         SYSTEM_CRS.add("EPSG:3857");
         SYSTEM_CRS.add("EPSG:3067");
@@ -34,10 +32,10 @@ public class WMTSCapabilitiesParserTest {
         WMTSCapabilitiesParser parser = new WMTSCapabilitiesParser();
         parser.init();
         Map<String, LayerCapabilities> layers = parser.parseLayers(xml);
-        assertEquals("Should find a layer", 1, layers.size());
+        Assertions.assertEquals(1, layers.size(), "Should find a layer");
         JSONObject json = CapabilitiesService.toJSON(layers.values().iterator().next(), SYSTEM_CRS);
         // System.out.println(json);
-        assertTrue("JSON should match", JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)));
+        Assertions.assertTrue(JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)), "JSON should match");
     }
 
     @Test
@@ -48,10 +46,10 @@ public class WMTSCapabilitiesParserTest {
         WMTSCapabilitiesParser parser = new WMTSCapabilitiesParser();
         parser.init();
         Map<String, LayerCapabilities> layers = parser.parseLayers(xml);
-        assertEquals("Should find a bunch of layers", 965, layers.size());
+        Assertions.assertEquals(965, layers.size(), "Should find a bunch of layers");
         JSONObject json = CapabilitiesService.toJSON(layers.get("BlueMarble_NextGeneration"), SYSTEM_CRS);
         // System.out.println(json);
-        assertTrue("JSON should match", JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)));
+        Assertions.assertTrue(JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)), "JSON should match");
     }
 
     @Test
@@ -62,11 +60,11 @@ public class WMTSCapabilitiesParserTest {
         WMTSCapabilitiesParser parser = new WMTSCapabilitiesParser();
         parser.init();
         Map<String, LayerCapabilities> layers = parser.parseLayers(xml);
-        assertEquals("Should find a layer", 1, layers.size());
+        Assertions.assertEquals(1, layers.size(), "Should find a layer");
 
         JSONObject json = CapabilitiesService.toJSON(layers.values().iterator().next(), SYSTEM_CRS);
         // System.out.println(json);
-        assertTrue("JSON should match", JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)));
+        Assertions.assertTrue(JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)), "JSON should match");
     }
     @Test
     public void testVaylaParsing() throws Exception {
@@ -76,11 +74,11 @@ public class WMTSCapabilitiesParserTest {
         WMTSCapabilitiesParser parser = new WMTSCapabilitiesParser();
         parser.init();
         Map<String, LayerCapabilities> layers = parser.parseLayers(xml);
-        assertEquals("Should find a layer", 44, layers.size());
+        Assertions.assertEquals(44, layers.size(), "Should find a layer");
 
         JSONObject json = CapabilitiesService.toJSON(layers.values().iterator().next(), SYSTEM_CRS);
         // System.out.println(json);
-        assertTrue("JSON should match", JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)));
+        Assertions.assertTrue(JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)), "JSON should match");
     }
 
     @Test
@@ -91,11 +89,11 @@ public class WMTSCapabilitiesParserTest {
         WMTSCapabilitiesParser parser = new WMTSCapabilitiesParser();
         parser.init();
         Map<String, LayerCapabilities> layers = parser.parseLayers(xml);
-        assertEquals("Should find 23 layers", 23, layers.size());
+        Assertions.assertEquals(23, layers.size(), "Should find 23 layers");
 
         JSONObject json = CapabilitiesService.toJSON(layers.get("LMI_Island_einfalt"), SYSTEM_CRS);
         // System.out.println(json);
-        assertTrue("JSON should match", JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)));
+        Assertions.assertTrue(JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)), "JSON should match");
         // Just testing we are not throwing exception for having tilematrix reference of "EPSG:3057:0"
         /*
         Limit of "EPSG:3857:0" on layer:
@@ -121,15 +119,15 @@ public class WMTSCapabilitiesParserTest {
         WMTSCapabilitiesParser parser = new WMTSCapabilitiesParser();
         parser.init();
         Map<String, LayerCapabilities> layers = parser.parseLayers(xml);
-        assertEquals("Should find 3 layers", 3, layers.size());
+        Assertions.assertEquals(3, layers.size(), "Should find 3 layers");
 
         JSONObject json = CapabilitiesService.toJSON(layers.get("taustakartta"), SYSTEM_CRS);
         // System.out.println(json);
-        assertTrue("JSON should match", JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)));
+        Assertions.assertTrue(JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)), "JSON should match");
 
         LayerCapabilitiesWMTS caps = CapabilitiesService.fromJSON(json.toString(), OskariLayer.TYPE_WMTS);
         // Deserialization back to objects succeeded \o/
-        assertEquals("Only one tilematrix after filtering against CRS list for system", 1, caps.getTileMatrixLinks().size());
+        Assertions.assertEquals(1, caps.getTileMatrixLinks().size(), "Only one tilematrix after filtering against CRS list for system");
     }
 
     @Test
@@ -141,11 +139,11 @@ public class WMTSCapabilitiesParserTest {
         parser.init();
 
         Map<String, LayerCapabilities> layers = parser.parseLayers(xml);
-        assertEquals("Should find 18 layers", 18, layers.size());
+        Assertions.assertEquals(18, layers.size(), "Should find 18 layers");
 
         JSONObject json = CapabilitiesService.toJSON(layers.get("tampere:tampere_vkartta_gk24"), SYSTEM_CRS);
         // System.out.println(json);
-        assertTrue("JSON should match", JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)));
+        Assertions.assertTrue(JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)), "JSON should match");
     }
 
     @Test
@@ -157,11 +155,11 @@ public class WMTSCapabilitiesParserTest {
         parser.init();
 
         Map<String, LayerCapabilities> layers = parser.parseLayers(xml);
-        assertEquals("Should find 2 layers", 2, layers.size());
+        Assertions.assertEquals(2, layers.size(), "Should find 2 layers");
 
         JSONObject json = CapabilitiesService.toJSON(layers.get("IGNBaseTodo"), SYSTEM_CRS);
         // System.out.println(json);
-        assertTrue("JSON should match", JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)));
+        Assertions.assertTrue(JSONHelper.isEqual(json, JSONHelper.createJSONObject(expected)), "JSON should match");
     }
 
 

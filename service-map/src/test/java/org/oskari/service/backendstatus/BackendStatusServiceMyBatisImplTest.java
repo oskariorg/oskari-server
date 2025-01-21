@@ -1,21 +1,18 @@
 package org.oskari.service.backendstatus;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import fi.nls.oskari.domain.map.BackendStatus;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.postgresql.ds.PGSimpleDataSource;
 
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Ignore;
-import org.junit.Test;
-import org.postgresql.ds.PGSimpleDataSource;
-
-import fi.nls.oskari.domain.map.BackendStatus;
-
 public class BackendStatusServiceMyBatisImplTest {
 
     @Test
-    @Ignore("Requires a database connection, truncates table")
+    @Disabled("Requires a database connection, truncates table")
     public void testInsertingWorks() {
         String url = System.getProperty("oskari.test.db.url");
         PGSimpleDataSource ds = new PGSimpleDataSource();
@@ -32,8 +29,8 @@ public class BackendStatusServiceMyBatisImplTest {
         bs.insertAll(statuses);
 
         List<BackendStatus> found = bs.findAll();
-        assertNotNull(found);
-        assertEquals(3, found.size());
+        Assertions.assertNotNull(found);
+        Assertions.assertEquals(3, found.size());
         for (int i = 0; i < 3; i++) {
             // Should be ordered by id
             BackendStatus expect = statuses.get(i);
@@ -42,17 +39,17 @@ public class BackendStatusServiceMyBatisImplTest {
         }
 
         List<BackendStatus> alerts = bs.findAllWithAlert();
-        assertNotNull(alerts);
-        assertEquals(1, alerts.size());
+        Assertions.assertNotNull(alerts);
+        Assertions.assertEquals(1, alerts.size());
         validate(bar, alerts.get(0)); // bar is the one with ERROR
     }
 
     private void validate(BackendStatus expect, BackendStatus actual) {
-        assertEquals(expect.getMapLayerId(), actual.getMapLayerId());
-        assertEquals(expect.getStatus(), actual.getStatus());
-        assertEquals(expect.getStatusMessage(), actual.getStatusMessage());
-        assertEquals(expect.getInfoUrl(), actual.getInfoUrl());
-        assertNotNull(actual.getTimestamp());
+        Assertions.assertEquals(expect.getMapLayerId(), actual.getMapLayerId());
+        Assertions.assertEquals(expect.getStatus(), actual.getStatus());
+        Assertions.assertEquals(expect.getStatusMessage(), actual.getStatusMessage());
+        Assertions.assertEquals(expect.getInfoUrl(), actual.getInfoUrl());
+        Assertions.assertNotNull(actual.getTimestamp());
     }
 
 }

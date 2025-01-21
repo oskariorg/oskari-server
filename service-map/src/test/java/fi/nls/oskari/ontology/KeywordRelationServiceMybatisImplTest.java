@@ -7,14 +7,16 @@ import fi.nls.oskari.ontology.service.KeywordRelationServiceMybatisImpl;
 import fi.nls.oskari.ontology.service.KeywordServiceMybatisImpl;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.util.TestHelper;
-import org.junit.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static junit.framework.Assert.assertTrue;
-import static org.junit.Assume.assumeTrue;
-
-@Ignore
 public class KeywordRelationServiceMybatisImplTest {
 
     private static KeywordRelationServiceMybatisImpl keywordRelationServiceMybatis = null;
@@ -24,12 +26,12 @@ public class KeywordRelationServiceMybatisImplTest {
     private static Long testId2 = null;
     private static RelationType testRelationType = null;
 
-    @BeforeClass
+    @BeforeAll
     public static void init() {
-        assumeTrue(TestHelper.dbAvailable());
+        Assumptions.assumeTrue(TestHelper.dbAvailable());
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         Keyword keyword = new Keyword();
         keyword.setEditable(true);
@@ -57,7 +59,7 @@ public class KeywordRelationServiceMybatisImplTest {
         keywordRelationServiceMybatis.addRelation(testRelation);
         Relation relation = keywordRelationServiceMybatis.getRelation(testRelation);
 
-        assertTrue("Add and get relation", relation.getKeyid1().equals(testRelation.getKeyid1()));
+        Assertions.assertTrue(relation.getKeyid1().equals(testRelation.getKeyid1()), "Add and get relation");
     }
 
     @Test
@@ -65,7 +67,7 @@ public class KeywordRelationServiceMybatisImplTest {
         keywordRelationServiceMybatis.addRelation(testRelation);
         List<Relation> relationList = keywordRelationServiceMybatis.getRelationsForKeyword(testRelation.getKeyid1());
 
-        assertTrue("Add and get relation list", relationList.get(0).getKeyid1().equals(testRelation.getKeyid1()));
+        Assertions.assertTrue(relationList.get(0).getKeyid1().equals(testRelation.getKeyid1()), "Add and get relation list");
     }
 
     @Test
@@ -73,10 +75,10 @@ public class KeywordRelationServiceMybatisImplTest {
         keywordRelationServiceMybatis.addRelation(testRelation);
         List<Relation> relationList = keywordRelationServiceMybatis.getRelationsByTypeForKeyword(testRelation);
 
-        assertTrue("Add and get relation by type", relationList.get(0).getKeyid1().equals(testRelation.getKeyid1()));
+        Assertions.assertTrue(relationList.get(0).getKeyid1().equals(testRelation.getKeyid1()), "Add and get relation by type");
     }
 
-    @After
+    @AfterEach
     public void delete() {
         try {
             keywordRelationServiceMybatis.deleteAllRelations();
@@ -84,7 +86,7 @@ public class KeywordRelationServiceMybatisImplTest {
         }
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDown() {
         PropertyUtil.clearProperties();
     }

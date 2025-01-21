@@ -2,8 +2,8 @@ package fi.nls.oskari.control.statistics;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class StatisticsHelperTest {
 
@@ -16,7 +16,7 @@ public class StatisticsHelperTest {
         JSONObject selectionJSON = new JSONObject(selectionStr);
         String actual = StatisticsHelper.getIndicatorDataCacheKey(pluginId, indicatorId, layerId, selectionJSON);
         String expected = "oskari:stats:1:data:232:1850:sex=female:year=2015";
-        Assert.assertEquals(expected, actual);
+        Assertions.assertEquals(expected, actual);
     }
 
 }

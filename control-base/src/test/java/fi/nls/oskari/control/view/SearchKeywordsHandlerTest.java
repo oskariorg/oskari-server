@@ -10,13 +10,18 @@ import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.control.JSONActionRouteTest;
 import fi.nls.test.util.ResourceHelper;
 import fi.nls.test.util.TestHelper;
-import org.junit.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
-import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeTrue;
-import static org.mockito.Matchers.*;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
@@ -29,7 +34,7 @@ public class SearchKeywordsHandlerTest extends JSONActionRouteTest {
 
     private KeywordService keywordService = null;
 
-    @BeforeClass
+    @BeforeAll
     public static void addLocales() throws Exception {
         Properties properties = new Properties();
         try {
@@ -37,15 +42,15 @@ public class SearchKeywordsHandlerTest extends JSONActionRouteTest {
             PropertyUtil.addProperties(properties);
             String locales = PropertyUtil.getNecessary("oskari.locales");
             if (locales == null)
-                fail("No darned locales");
+                Assertions.fail("No darned locales");
         } catch (DuplicateException e) {
-            fail("Should not throw exception" + e.getStackTrace());
+            Assertions.fail("Should not throw exception" + e.getStackTrace());
         }
 
-        assumeTrue(TestHelper.dbAvailable());
+        Assumptions.assumeTrue(TestHelper.dbAvailable());
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         keywordService = mock(KeywordServiceMybatisImpl.class);
 
@@ -53,7 +58,7 @@ public class SearchKeywordsHandlerTest extends JSONActionRouteTest {
         handler.init();
     }
 
-    @AfterClass
+    @AfterAll
     public static void teardown() {
         PropertyUtil.clearProperties();
     }
@@ -163,7 +168,7 @@ public class SearchKeywordsHandlerTest extends JSONActionRouteTest {
         verifyResponseContent(ResourceHelper.readJSONArrayResource("SearchKeywordsHandlerTest-non-permitted-layer-on-exact-match.json", this));
     }
 
-    @After
+    @AfterEach
     public void delete() {
         PropertyUtil.clearProperties();
     }

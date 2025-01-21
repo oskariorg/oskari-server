@@ -2,9 +2,10 @@ package org.oskari.permissions;
 
 import fi.nls.test.util.ResourceHelper;
 import fi.nls.test.util.TestHelper;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.oskari.permissions.model.*;
 
 import javax.sql.DataSource;
@@ -13,8 +14,6 @@ import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
-
-import static org.junit.Assert.*;
 
 public class PermissionServiceMybatisImplTest {
 
@@ -25,14 +24,14 @@ public class PermissionServiceMybatisImplTest {
     private Permission myPermission;
     private Permission myPermission2;
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws SQLException, IOException, URISyntaxException {
         List<String> sqls = ResourceHelper.readSqlStatements(PermissionServiceMybatisImplTest.class, "/schema.sql");
         DataSource ds = TestHelper.createMemDBforUnitTest(sqls);
         permissionService = new PermissionServiceMybatisImpl(ds);
     }
 
-    @Before
+    @BeforeEach
     public void setup() {
         myResource = new OskariLayerResource(DUMMY_ID);
 
@@ -52,33 +51,33 @@ public class PermissionServiceMybatisImplTest {
 
     @Test
     public void testCRUD() {
-        assertEquals(-1, myResource.getId());
-        assertEquals(-1, myPermission.getId());
-        assertEquals(-1, myPermission2.getId());
+        Assertions.assertEquals(-1, myResource.getId());
+        Assertions.assertEquals(-1, myPermission.getId());
+        Assertions.assertEquals(-1, myPermission2.getId());
         permissionService.insertResource(myResource);
-        assertNotEquals("Insert should change the value of id field of the Resource", -1, myResource.getId());
-        assertNotEquals("Insert should change the value of id field of the Permission", -1, myPermission.getId());
-        assertNotEquals("Insert should change the value of id field of the Permission", -1, myPermission2.getId());
-        assertNotEquals("Different Permissions should get different ids", myPermission.getId(), myPermission2.getId());
+        Assertions.assertNotEquals(-1, myResource.getId(), "Insert should change the value of id field of the Resource");
+        Assertions.assertNotEquals(-1, myPermission.getId(), "Insert should change the value of id field of the Permission");
+        Assertions.assertNotEquals(-1, myPermission2.getId(), "Insert should change the value of id field of the Permission");
+        Assertions.assertNotEquals(myPermission.getId(), myPermission2.getId(), "Different Permissions should get different ids");
 
         Optional<Resource> resource = permissionService.findResource(myResource.getId());
-        assertTrue(resource.isPresent());
+        Assertions.assertTrue(resource.isPresent());
         Resource actual = resource.get();
-        assertEquals(myResource.getId(), actual.getId());
-        assertEquals(myResource.getType(), actual.getType());
-        assertEquals(myResource.getMapping(), actual.getMapping());
-        assertEquals(2, actual.getPermissions().size());
+        Assertions.assertEquals(myResource.getId(), actual.getId());
+        Assertions.assertEquals(myResource.getType(), actual.getType());
+        Assertions.assertEquals(myResource.getMapping(), actual.getMapping());
+        Assertions.assertEquals(2, actual.getPermissions().size());
 
         // Manually find the one that has the same id as myPermission (don't trust the list to be in same order)
         Permission actualPermission = findPermissionWithId(actual.getPermissions(), myPermission.getId());
         // ids match so no need to check those, findPermissionWithId would've thrown NoSuchElementException by now
-        assertEquals(myPermission.getType(), actualPermission.getType());
-        assertEquals(myPermission.getExternalType(), actualPermission.getExternalType());
-        assertEquals(myPermission.getExternalId(), actualPermission.getExternalId());
+        Assertions.assertEquals(myPermission.getType(), actualPermission.getType());
+        Assertions.assertEquals(myPermission.getExternalType(), actualPermission.getExternalType());
+        Assertions.assertEquals(myPermission.getExternalId(), actualPermission.getExternalId());
 
         permissionService.deleteResource(myResource);
         resource = permissionService.findResource(myResource.getId());
-        assertFalse(resource.isPresent());
+        Assertions.assertFalse(resource.isPresent());
         // TODO: Verify that the oskari_resource_permission rows are also deleted
     }
 

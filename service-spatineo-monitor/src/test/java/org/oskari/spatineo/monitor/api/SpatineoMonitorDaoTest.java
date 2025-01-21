@@ -1,41 +1,43 @@
 package org.oskari.spatineo.monitor.api;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.oskari.spatineo.monitor.api.model.Response;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-import static org.junit.Assert.*;
-
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 public class SpatineoMonitorDaoTest {
 
     SpatineoMonitorDao monitor;
 
-    @Before
+    @BeforeEach
     public void init() {
         monitor = new SpatineoMonitorDao("foo", "bar");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void whenEndPointIsNullThrowsException() {
-        new SpatineoMonitorDao(null, "bar");
+        assertThrows(IllegalArgumentException.class, () -> new SpatineoMonitorDao(null, "bar"), "");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void whenEndPointIsEmptyThrowsException() {
-        new SpatineoMonitorDao("", "bar");
+        assertThrows(IllegalArgumentException.class, () -> new SpatineoMonitorDao("", "bar"), "");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void whenAPIKeyIsNullThrowsException() {
-        new SpatineoMonitorDao("foo", null);
+        assertThrows(IllegalArgumentException.class, () -> new SpatineoMonitorDao("foo", null), "");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void whenAPIKeyIsEmptyThrowsException() {
-        new SpatineoMonitorDao("foo", "");
+        assertThrows(IllegalArgumentException.class, () -> new SpatineoMonitorDao("foo", ""), "");
     }
 
     @Test

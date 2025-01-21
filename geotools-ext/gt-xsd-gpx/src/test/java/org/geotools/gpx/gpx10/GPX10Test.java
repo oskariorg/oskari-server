@@ -5,23 +5,28 @@ import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.xsd.Binding;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.geotools.api.feature.simple.SimpleFeature;
-
 import org.locationtech.jts.geom.CoordinateSequence;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.MultiLineString;
 
-import static org.junit.Assert.assertEquals;
+import java.util.HashMap;
 
 public class GPX10Test extends GPX10TestSupport {
-
+    HashMap namespaceMappings;
+    @BeforeEach
+    public void setup() {
+        this.namespaceMappings = new HashMap<>();
+    }
     public void testType() {
-        assertEquals(  FeatureCollection.class, binding( GPX10.gpxType ).getType() );
+        Assertions.assertEquals(FeatureCollection.class, binding( GPX10.gpxType ).getType());
     }
 
     public void testExecutionMode() {
-        assertEquals( Binding.OVERRIDE, binding( GPX10.gpxType ).getExecutionMode() );
+        Assertions.assertEquals(Binding.OVERRIDE, binding( GPX10.gpxType ).getExecutionMode());
     }
 
     @Test
@@ -39,31 +44,31 @@ public class GPX10Test extends GPX10TestSupport {
         xml += "</gpx>";
         buildDocument(xml);
         SimpleFeatureCollection result = (SimpleFeatureCollection) parse();
-        assertEquals(1, result.size());
+        Assertions.assertEquals(1, result.size());
         try (SimpleFeatureIterator it = result.features()) {
             SimpleFeature f = it.next();
             MultiLineString track = (MultiLineString) f.getDefaultGeometry();
-            assertEquals(1, track.getNumGeometries());
+            Assertions.assertEquals(1, track.getNumGeometries());
 
             LineString tracksegment = (LineString) track.getGeometryN(0);
             CoordinateSequence csq = tracksegment.getCoordinateSequence();
-            assertEquals(4, csq.size());
+            Assertions.assertEquals(4, csq.size());
 
-            assertEquals(25.704601407051086, csq.getX(0), 1e-8);
-            assertEquals(62.494332790374756, csq.getY(0), 1e-8);
-            assertEquals(152.50732421875, csq.getOrdinate(0, 2), 1e-8);
+            Assertions.assertEquals(25.704601407051086, csq.getX(0), 1e-8);
+            Assertions.assertEquals(62.494332790374756, csq.getY(0), 1e-8);
+            Assertions.assertEquals(152.50732421875, csq.getOrdinate(0, 2), 1e-8);
 
-            assertEquals(25.70474762, csq.getX(1), 1e-8);
-            assertEquals(62.49435841, csq.getY(1), 1e-8);
-            assertEquals(150.565673828125, csq.getOrdinate(1, 2), 1e-8);
+            Assertions.assertEquals(25.70474762, csq.getX(1), 1e-8);
+            Assertions.assertEquals(62.49435841, csq.getY(1), 1e-8);
+            Assertions.assertEquals(150.565673828125, csq.getOrdinate(1, 2), 1e-8);
 
-            assertEquals(25.70493199, csq.getX(2), 1e-8);
-            assertEquals(62.4944432, csq.getY(2), 1e-8);
-            assertEquals(152.8448486328125, csq.getOrdinate(2, 2), 1e-8);
+            Assertions.assertEquals(25.70493199, csq.getX(2), 1e-8);
+            Assertions.assertEquals(62.4944432, csq.getY(2), 1e-8);
+            Assertions.assertEquals(152.8448486328125, csq.getOrdinate(2, 2), 1e-8);
 
-            assertEquals(25.70518417, csq.getX(3), 1e-8);
-            assertEquals(62.49450983, csq.getY(3), 1e-8);
-            assertEquals(155.17364501953125, csq.getOrdinate(3, 2), 1e-8);
+            Assertions.assertEquals(25.70518417, csq.getX(3), 1e-8);
+            Assertions.assertEquals(62.49450983, csq.getY(3), 1e-8);
+            Assertions.assertEquals(155.17364501953125, csq.getOrdinate(3, 2), 1e-8);
         }
     }
 

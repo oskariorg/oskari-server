@@ -7,7 +7,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 
 /**
  * Helper for JUnit tests. Logs the JSONs if test fails.
@@ -22,7 +23,7 @@ public class JSONTestHelper {
         boolean success = false;
         try {
 
-            assertTrue("Response should match expected", JSONHelper.isEqual(expectedResult, actualResponse));
+            assertTrue(JSONHelper.isEqual(expectedResult, actualResponse), "Response should match expected");
             success = true;
         } finally {
             if(!success) {
@@ -40,7 +41,7 @@ public class JSONTestHelper {
         boolean success = false;
         try {
 
-            assertTrue("Response should match expected", JSONHelper.isEqual(expectedResult, actualResponse));
+            assertTrue(JSONHelper.isEqual(expectedResult, actualResponse), "Response should match expected");
             success = true;
         } finally {
             if(!success) {

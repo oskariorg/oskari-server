@@ -1,11 +1,9 @@
 package fi.nls.oskari.domain.map.wfs;
 
-import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class WFSLayerOptionsTest {
     String baseOptions = "{\n" +
@@ -59,21 +57,21 @@ public class WFSLayerOptionsTest {
     @Test
     public void testDefaultOptions() throws JSONException {
         WFSLayerOptions opts = new WFSLayerOptions();
-        assertTrue("No clustering by default", opts.getClusteringDistance() == -1);
-        assertEquals("Default render mode should be vector", "vector", opts.getRenderMode());
+        Assertions.assertTrue(opts.getClusteringDistance() == -1, "No clustering by default");
+        Assertions.assertEquals("vector", opts.getRenderMode(), "Default render mode should be vector");
 
         JSONObject style = opts.getDefaultFeatureStyle();
-        assertTrue("default style should have image", style.has("image"));
-        assertTrue("default style should have fill", style.has("fill"));
-        assertTrue("default style should have stroke", style.has("stroke"));
+        Assertions.assertTrue(style.has("image"), "default style should have image");
+        Assertions.assertTrue(style.has("fill"), "default style should have fill");
+        Assertions.assertTrue(style.has("stroke"), "default style should have stroke");
     }
     @Test
     public void testSetOptions () throws JSONException {
         JSONObject input = new JSONObject(options);
         WFSLayerOptions opts = new WFSLayerOptions(input);
-        assertEquals("mvt", opts.getRenderMode());
+        Assertions.assertEquals("mvt", opts.getRenderMode());
         JSONObject style = opts.getDefaultFeatureStyle();
-        assertEquals(3, style.getJSONObject("fill").getJSONObject("area").getInt("pattern"));
+        Assertions.assertEquals(3, style.getJSONObject("fill").getJSONObject("area").getInt("pattern"));
     }
     @Test
     public void testOverrideDefaultStyle () throws JSONException {
@@ -81,19 +79,19 @@ public class WFSLayerOptionsTest {
         opts.setDefaultFeatureStyle(new JSONObject(customStyle));
         JSONObject style = opts.getDefaultFeatureStyle();
         JSONObject fill = style.getJSONObject("fill");
-        assertEquals("color", "#652d90", fill.getString("color"));
+        Assertions.assertEquals("#652d90", fill.getString("color"), "color");
     }
     @Test
     public void testBaseOptions () throws JSONException {
         JSONObject input = new JSONObject(options);
         WFSLayerOptions opts = new WFSLayerOptions(input);
-        assertEquals(-1, opts.getClusteringDistance());
+        Assertions.assertEquals(-1, opts.getClusteringDistance());
         JSONObject baseOpts = new JSONObject(baseOptions);
         opts.injectBaseLayerOptions(baseOpts);
-        assertEquals("base options shouldn't override layer options", "mvt", opts.getRenderMode());
-        assertEquals("clustering distance should be set from base options", 10, opts.getClusteringDistance());
+        Assertions.assertEquals("mvt", opts.getRenderMode(), "base options shouldn't override layer options");
+        Assertions.assertEquals(10, opts.getClusteringDistance(), "clustering distance should be set from base options");
         JSONObject style = opts.getDefaultFeatureStyle();
-        assertTrue("options has labelProperty. So text style should be added", style.has("text"));
-        assertEquals("name", style.getJSONObject("text").getString("labelProperty"));
+        Assertions.assertTrue(style.has("text"), "options has labelProperty. So text style should be added");
+        Assertions.assertEquals("name", style.getJSONObject("text").getString("labelProperty"));
     }
 }

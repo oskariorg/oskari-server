@@ -4,20 +4,28 @@ import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
-import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
+import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.control.JSONActionRouteTest;
 import fi.nls.test.util.ResourceHelper;
 import fi.nls.test.view.ViewTestHelper;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 
 /**
  * @author SMAKINEN
@@ -38,7 +46,7 @@ public class GetViewsHandlerTest extends JSONActionRouteTest {
         }
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         loadProperties();
         viewService = mock(AppSetupServiceMybatisImpl.class);
@@ -46,26 +54,29 @@ public class GetViewsHandlerTest extends JSONActionRouteTest {
 
         handler.init();
     }
-    @After
+    @AfterEach
     public void teardown() {
         PropertyUtil.clearProperties();
     }
 
-    @Test(expected = ActionDeniedException.class)
+    @Test()
     public void tesGetWithGuest() throws Exception {
 
-        // mock returned views
-        doReturn(Collections.emptyList()).when(viewService).getViewsForUser(anyLong());
+        assertThrows(ActionDeniedException.class, () -> {
+            // mock returned views
+            doReturn(Collections.emptyList()).when(viewService).getViewsForUser(anyLong());
 
-        // setup params
-        Map<String, String> parameters = new HashMap<String, String>();
-        parameters.put(ViewTypes.VIEW_TYPE, ViewTypes.USER);
+            // setup params
+            Map<String, String> parameters = new HashMap<String, String>();
+            parameters.put(ViewTypes.VIEW_TYPE, ViewTypes.USER);
 
-        final ActionParameters params = createActionParams(parameters);
-        assertEquals("Parameter is set correctly", ViewTypes.USER, params.getHttpParam(ViewTypes.VIEW_TYPE));
+            final ActionParameters params = createActionParams(parameters);
+            assertEquals(ViewTypes.USER, params.getHttpParam(ViewTypes.VIEW_TYPE), "Parameter is set correctly");
 
-        verifyResponseNotWritten(params);
-        handler.handleAction(params);
+            verifyResponseNotWritten(params);
+            handler.handleAction(params);
+
+        });
     }
     @Test
     public void testEmptyViews() throws Exception {
@@ -78,7 +89,7 @@ public class GetViewsHandlerTest extends JSONActionRouteTest {
         parameters.put(ViewTypes.VIEW_TYPE, ViewTypes.USER);
 
         final ActionParameters params = createActionParams(parameters,getLoggedInUser());
-        assertEquals("Parameter is set correctly", ViewTypes.USER, params.getHttpParam(ViewTypes.VIEW_TYPE));
+        assertEquals(ViewTypes.USER, params.getHttpParam(ViewTypes.VIEW_TYPE), "Parameter is set correctly");
 
         verifyResponseNotWritten(params);
         handler.handleAction(params);
@@ -89,14 +100,17 @@ public class GetViewsHandlerTest extends JSONActionRouteTest {
     }
 
 
-    @Test(expected = ActionDeniedException.class)
+    @Test()
     public void testWithNoParamsGuest() throws Exception {
-        // mock returned views
-        doReturn(Collections.emptyList()).when(viewService).getViewsForUser(anyLong());
-        final ActionParameters params = createActionParams();
+        assertThrows(ActionDeniedException.class, () -> {
+            // mock returned views
+            doReturn(Collections.emptyList()).when(viewService).getViewsForUser(anyLong());
+            final ActionParameters params = createActionParams();
 
-        verifyResponseNotWritten(params);
-        handler.handleAction(params);
+            verifyResponseNotWritten(params);
+            handler.handleAction(params);
+        });
+
     }
     @Test
     public void testWithNoParams() throws Exception {
@@ -112,22 +126,25 @@ public class GetViewsHandlerTest extends JSONActionRouteTest {
         verifyResponseContent(ResourceHelper.readJSONResource("GetViewsHandlerTest-empty-views.json", this));
     }
 
-    @Test(expected = ActionDeniedException.class)
+    @Test()
     public void testViewListingGuest() throws Exception {
-        // mock returned views
-        final List<View> views = new ArrayList<View>();
-        views.add(ViewTestHelper.createMockView("framework.mapfull"));
-        doReturn(views).when(viewService).getViewsForUser(anyLong());
+        assertThrows(ActionDeniedException.class, () -> {
+            // mock returned views
+            final List<View> views = new ArrayList<View>();
+            views.add(ViewTestHelper.createMockView("framework.mapfull"));
+            doReturn(views).when(viewService).getViewsForUser(anyLong());
 
-        // setup params
-        Map<String, String> parameters = new HashMap<String, String>();
-        parameters.put(ViewTypes.VIEW_TYPE, ViewTypes.USER);
+            // setup params
+            Map<String, String> parameters = new HashMap<String, String>();
+            parameters.put(ViewTypes.VIEW_TYPE, ViewTypes.USER);
 
-        final ActionParameters params = createActionParams(parameters);
-        assertEquals("Parameter is set correctly", ViewTypes.USER, params.getHttpParam(ViewTypes.VIEW_TYPE));
+            final ActionParameters params = createActionParams(parameters);
+            assertEquals(ViewTypes.USER, params.getHttpParam(ViewTypes.VIEW_TYPE), "Parameter is set correctly");
 
-        verifyResponseNotWritten(params);
-        handler.handleAction(params);
+            verifyResponseNotWritten(params);
+            handler.handleAction(params);
+
+        });
     }
     @Test
     public void testViewListing() throws Exception {
@@ -141,7 +158,7 @@ public class GetViewsHandlerTest extends JSONActionRouteTest {
         parameters.put(ViewTypes.VIEW_TYPE, ViewTypes.USER);
 
         final ActionParameters params = createActionParams(parameters,getLoggedInUser());
-        assertEquals("Parameter is set correctly", ViewTypes.USER, params.getHttpParam(ViewTypes.VIEW_TYPE));
+        assertEquals(ViewTypes.USER, params.getHttpParam(ViewTypes.VIEW_TYPE), "Parameter is set correctly");
 
         verifyResponseNotWritten(params);
         handler.handleAction(params);
@@ -151,17 +168,20 @@ public class GetViewsHandlerTest extends JSONActionRouteTest {
         verifyResponseContent(ResourceHelper.readJSONResource("GetViewsHandlerTest-has-views.json", this));
     }
 
-    @Test(expected = ActionDeniedException.class)
+    @Test()
     public void testViewListingWithNoParamsGuest() throws Exception {
-        // mock returned views
-        final List<View> views = new ArrayList<View>();
-        views.add(ViewTestHelper.createMockView("framework.mapfull"));
-        doReturn(views).when(viewService).getViewsForUser(anyLong());
+        assertThrows(ActionDeniedException.class, () -> {
+            // mock returned views
+            final List<View> views = new ArrayList<View>();
+            views.add(ViewTestHelper.createMockView("framework.mapfull"));
+            doReturn(views).when(viewService).getViewsForUser(anyLong());
 
-        final ActionParameters params = createActionParams();
+            final ActionParameters params = createActionParams();
 
-        verifyResponseNotWritten(params);
-        handler.handleAction(params);
+            verifyResponseNotWritten(params);
+            handler.handleAction(params);
+
+        });
     }
     @Test
     public void testViewListingWithNoParams() throws Exception {

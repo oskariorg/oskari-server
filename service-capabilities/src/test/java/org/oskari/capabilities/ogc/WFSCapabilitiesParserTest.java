@@ -4,8 +4,9 @@ import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.test.util.ResourceHelper;
 import org.json.JSONObject;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.oskari.capabilities.CapabilitiesService;
 import org.oskari.capabilities.LayerCapabilities;
 import org.oskari.capabilities.ServiceConnectInfo;
@@ -17,9 +18,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 public class WFSCapabilitiesParserTest {
 
     private static final Set<String> SYSTEM_CRS = new HashSet<>(5);
@@ -27,7 +25,7 @@ public class WFSCapabilitiesParserTest {
     private ServiceConnectInfo getConnectInfo(String version) {
         return new ServiceConnectInfo("https://mydomain.org", OskariLayer.TYPE_WFS, version);
     }
-    @BeforeClass
+    @BeforeAll
     public static void init() {
         SYSTEM_CRS.add("EPSG:3857");
         SYSTEM_CRS.add("EPSG:3067");
@@ -52,20 +50,20 @@ public class WFSCapabilitiesParserTest {
         String expected = ResourceHelper.readStringResource("WFSCapabilitiesParserTest-statfi-expected.json", this);
 
         Map<String, LayerCapabilities> layers = getParser().parseLayers(xml, version, getConnectInfo(version));
-        assertEquals("Should find 297 layers", 297, layers.size());
+        Assertions.assertEquals(297, layers.size(), "Should find 297 layers");
         LayerCapabilitiesWFS layerCaps = (LayerCapabilitiesWFS) layers.get("tilastointialueet:avi4500k");
         JSONObject json = CapabilitiesService.toJSON(layerCaps, SYSTEM_CRS);
         JSONObject expectedJSON = JSONHelper.createJSONObject(expected);
         // Check and remove version as it is different on expected between 1.1.0 and 2.0.0 input
-        assertEquals("Check version", version, json.remove("version"));
+        Assertions.assertEquals(version, json.remove("version"), "Check version");
         // System.out.println(json);
-        assertTrue("JSON should match", JSONHelper.isEqual(json, expectedJSON));
+        Assertions.assertTrue(JSONHelper.isEqual(json, expectedJSON), "JSON should match");
 
         String wkt = "POLYGON ((15.999210419254936 56.23928539106909, 15.999210419254936 73.5170461466599, 33.27697117484574 73.5170461466599, 33.27697117484574 56.23928539106909, 15.999210419254936 56.23928539106909))";
-        assertEquals("Coverage should match", wkt, layerCaps.getBbox().getWKT());
+        Assertions.assertEquals(wkt, layerCaps.getBbox().getWKT(), "Coverage should match");
 
         LayerCapabilitiesWFS deserialized = CapabilitiesService.fromJSON(json.toString(), "wfslayer");
-        assertTrue("Typed correctly on deserialization", deserialized instanceof LayerCapabilitiesWFS);
+        Assertions.assertTrue(deserialized instanceof LayerCapabilitiesWFS, "Typed correctly on deserialization");
     }
 
     @Test
@@ -75,17 +73,17 @@ public class WFSCapabilitiesParserTest {
         String expected = ResourceHelper.readStringResource("WFSCapabilitiesParserTest-statfi-expected.json", this);
 
         Map<String, LayerCapabilities> layers = getParser().parseLayers(xml, version, getConnectInfo(version));
-        assertEquals("Should find 297 layers", 297, layers.size());
+        Assertions.assertEquals(297, layers.size(), "Should find 297 layers");
         LayerCapabilitiesWFS layerCaps = (LayerCapabilitiesWFS) layers.get("tilastointialueet:avi4500k");
         JSONObject json = CapabilitiesService.toJSON(layerCaps, SYSTEM_CRS);
         JSONObject expectedJSON = JSONHelper.createJSONObject(expected);
         // Check and remove version as it is different on expected between 1.1.0 and 2.0.0 input
-        assertEquals("Check version", version, json.remove("version"));
+        Assertions.assertEquals(version, json.remove("version"), "Check version");
          System.out.println(json);
-        assertTrue("JSON should match", JSONHelper.isEqual(json, expectedJSON));
+        Assertions.assertTrue(JSONHelper.isEqual(json, expectedJSON), "JSON should match");
 
         String wkt = "POLYGON ((15.999210419254936 56.23928539106909, 15.999210419254936 73.5170461466599, 33.27697117484574 73.5170461466599, 33.27697117484574 56.23928539106909, 15.999210419254936 56.23928539106909))";
-        assertEquals("Coverage should match", wkt, layerCaps.getBbox().getWKT());
+        Assertions.assertEquals(wkt, layerCaps.getBbox().getWKT(), "Coverage should match");
     }
 
     @Test
@@ -96,13 +94,13 @@ public class WFSCapabilitiesParserTest {
 
         WFSCapabilitiesParser parser = getParser();
         Map<String, LayerCapabilities> layers = parser.parseLayers(serviceJSON, version, getConnectInfo(version));
-        assertEquals("Should find 19 layers", 19, layers.size());
+        Assertions.assertEquals(19, layers.size(), "Should find 19 layers");
         LayerCapabilitiesWFS layerCaps = (LayerCapabilitiesWFS) layers.get("AreaStatisticalUnit_4500k_EPSG_4326_2020");
 
         JSONObject json = CapabilitiesService.toJSON(layerCaps, SYSTEM_CRS);
         // System.out.println(json);
         JSONObject expectedJSON = JSONHelper.createJSONObject(expected);
-        assertTrue("JSON should match", JSONHelper.isEqual(json, expectedJSON));
+        Assertions.assertTrue(JSONHelper.isEqual(json, expectedJSON), "JSON should match");
     }
 
     class DescribeFeatureTypeProviderMock extends DescribeFeatureTypeProvider {

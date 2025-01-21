@@ -6,15 +6,10 @@ import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.PropertyUtil;
 import org.h2.jdbcx.JdbcDataSource;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.naming.OperationNotSupportedException;
 import javax.sql.DataSource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Connection;
@@ -85,6 +80,7 @@ public class TestHelper {
         return redisStatus.equals(STATUS.ENABLED);
     }
 
+    // TODO: make this be available.
     public static boolean dbAvailable() {
         if(dbStatus.equals(STATUS.NONE)) {
             DataSource ds = getDBforUnitTest();

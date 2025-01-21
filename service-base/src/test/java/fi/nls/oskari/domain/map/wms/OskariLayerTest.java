@@ -2,20 +2,19 @@ package fi.nls.oskari.domain.map.wms;
 
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.util.PropertyUtil;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * @author SMAKINEN
  */
 public class OskariLayerTest {
 
-    @After
+    @AfterEach
     public void teardown() {
         PropertyUtil.clearProperties();
     }
@@ -23,13 +22,13 @@ public class OskariLayerTest {
     @Test
     public void testSimplifiedWmsURL() {
         OskariLayer layer = new OskariLayer();
-        assertEquals("Simplified wms url should be empty if wms url is not set", "", layer.getSimplifiedUrl());
+        Assertions.assertEquals("", layer.getSimplifiedUrl(), "Simplified wms url should be empty if wms url is not set");
 
         layer.setUrl(null);
-        assertEquals("Simplified wms url should be empty if wms url is null", "", layer.getSimplifiedUrl());
+        Assertions.assertEquals("", layer.getSimplifiedUrl(), "Simplified wms url should be empty if wms url is null");
 
         layer.setUrl("");
-        assertEquals("Simplified wms url should be empty if wms url is empty", "", layer.getSimplifiedUrl());
+        Assertions.assertEquals("", layer.getSimplifiedUrl(), "Simplified wms url should be empty if wms url is empty");
 
         // key is wms url, value is simplified version
         final Map<String, String> tests = new HashMap<String, String>();
@@ -54,7 +53,7 @@ public class OskariLayerTest {
 
         for(String wmsurl : tests.keySet()) {
             layer.setUrl(wmsurl);
-            assertEquals("Simplified wms url should be '" + tests.get(wmsurl) + "' if wms url is '" + wmsurl + "'", tests.get(wmsurl), layer.getSimplifiedUrl());
+            Assertions.assertEquals(tests.get(wmsurl), layer.getSimplifiedUrl(), "Simplified wms url should be '" + tests.get(wmsurl) + "' if wms url is '" + wmsurl + "'");
         }
     }
 
@@ -65,14 +64,14 @@ public class OskariLayerTest {
         final String url = "http://oskari.org";
 
         layer.setUrl(url);
-        assertEquals("Url should be '" + url + "' if url is '" + url + "'", url, layer.getUrl());
-        assertEquals("Secure url should be 'https://oskari.org' if url is '" + url + "'", "https://oskari.org", layer.getUrl(true));
+        Assertions.assertEquals(url, layer.getUrl(), "Url should be '" + url + "' if url is '" + url + "'");
+        Assertions.assertEquals("https://oskari.org", layer.getUrl(true), "Secure url should be 'https://oskari.org' if url is '" + url + "'");
 
         PropertyUtil.addProperty("maplayer.wmsurl.secure", "/tiles/", true);
         layer = new OskariLayer();
         layer.setUrl(url);
-        assertEquals("Url should be '" + url + "' if url is '" + url + "'", url, layer.getUrl());
-        assertEquals("Secure url should be '/tiles/oskari.org' if url is '" + url + "'", "/tiles/oskari.org", layer.getUrl(true));
+        Assertions.assertEquals(url, layer.getUrl(), "Url should be '" + url + "' if url is '" + url + "'");
+        Assertions.assertEquals("/tiles/oskari.org", layer.getUrl(true), "Secure url should be '/tiles/oskari.org' if url is '" + url + "'");
 
         PropertyUtil.addProperty("maplayer.wmsurl.secure", "", true);
         PropertyUtil.addProperty("oskari.ajax.url.prefix", "/action?", true);
@@ -80,8 +79,8 @@ public class OskariLayerTest {
         layer.setUrl(url);
         layer.setId(37);
         final String proxyUrl = "/action?action_route=GetLayerTile&id=37";
-        assertEquals("Url should be '" + url + "' if url is '" + url + "'", url, layer.getUrl());
-        assertEquals("Secure url should be '" + proxyUrl + "' if url is '" + url + "'", proxyUrl, layer.getUrl(true));
+        Assertions.assertEquals(url, layer.getUrl(), "Url should be '" + url + "' if url is '" + url + "'");
+        Assertions.assertEquals(proxyUrl, layer.getUrl(true), "Secure url should be '" + proxyUrl + "' if url is '" + url + "'");
 
     }
 }

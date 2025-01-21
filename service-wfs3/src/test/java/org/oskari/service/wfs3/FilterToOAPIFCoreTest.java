@@ -1,19 +1,13 @@
 package org.oskari.service.wfs3;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-
+import fi.nls.oskari.domain.map.OskariLayer;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.referencing.CRS;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.geotools.api.filter.And;
 import org.geotools.api.filter.Filter;
 import org.geotools.api.filter.FilterFactory;
@@ -25,7 +19,10 @@ import org.geotools.api.referencing.FactoryException;
 import org.geotools.api.referencing.NoSuchAuthorityCodeException;
 import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 
-import fi.nls.oskari.domain.map.OskariLayer;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 public class FilterToOAPIFCoreTest {
 
@@ -62,9 +59,9 @@ public class FilterToOAPIFCoreTest {
         expected.put("baz", s);
         expected.put("bbox", String.format(Locale.US, "%f,%f,%f,%f", minEast, minNorth, maxEast, maxNorth));
         expected.put("bbox-crs", tm35finURI);
-        assertEquals(expected, actual);
+        Assertions.assertEquals(expected, actual);
 
-        assertEquals(Filter.INCLUDE, postFilter);
+        Assertions.assertEquals(Filter.INCLUDE, postFilter);
     }
 
     @Test
@@ -104,10 +101,10 @@ public class FilterToOAPIFCoreTest {
         expected.put("bar", Double.toString(b));
         expected.put("bbox", String.format(Locale.US, "%f,%f,%f,%f", minEast, minNorth, maxEast, maxNorth));
         expected.put("bbox-crs", tm35finURI);
-        assertEquals(expected, actual);
+        Assertions.assertEquals(expected, actual);
 
         if (!(postFilter instanceof And)) {
-            fail();
+            Assertions.fail();
         }
         assertPropertyIsEqualTo(((And) postFilter).getChildren().get(1), "baz", c);
         assertPropertyIsEqualTo(((And) postFilter).getChildren().get(0), "qux", d);
@@ -115,19 +112,19 @@ public class FilterToOAPIFCoreTest {
 
     private void assertPropertyIsEqualTo(Filter filter, String expectedPropertyName, Object expectedLiteral) {
         if (!(filter instanceof PropertyIsEqualTo)) {
-            fail();
+            Assertions.fail();
         }
         PropertyIsEqualTo eq = (PropertyIsEqualTo) filter;
 
         if (!(eq.getExpression1() instanceof PropertyName)) {
-            fail();
+            Assertions.fail();
         }
-        assertEquals(expectedPropertyName, ((PropertyName) eq.getExpression1()).getPropertyName());
+        Assertions.assertEquals(expectedPropertyName, ((PropertyName) eq.getExpression1()).getPropertyName());
 
         if (!(eq.getExpression2() instanceof Literal)) {
-            fail();
+            Assertions.fail();
         }
-        assertEquals(expectedLiteral, ((Literal) eq.getExpression2()).getValue());
+        Assertions.assertEquals(expectedLiteral, ((Literal) eq.getExpression2()).getValue());
     }
 
     @Test
@@ -159,13 +156,13 @@ public class FilterToOAPIFCoreTest {
         expected.put("myprop", Integer.toString(a));
         expected.put("bbox", String.format(Locale.US, "%f,%f,%f,%f", minEast, minNorth, maxEast, maxNorth));
         expected.put("bbox-crs", tm35finURI);
-        assertEquals(expected, actual);
+        Assertions.assertEquals(expected, actual);
 
         if (!(postFilter instanceof PropertyIsNotEqualTo)) {
-            fail("Expected PostFilter to be PropertyIsNotEqualTo");
+            Assertions.fail("Expected PostFilter to be PropertyIsNotEqualTo");
         }
         PropertyIsNotEqualTo neq = (PropertyIsNotEqualTo) postFilter;
-        assertEquals(b, ((Literal) neq.getExpression2()).getValue());
+        Assertions.assertEquals(b, ((Literal) neq.getExpression2()).getValue());
     }
 
     @Test
@@ -186,9 +183,9 @@ public class FilterToOAPIFCoreTest {
 
         Map<String, String> expected = new HashMap<>();
         expected.put("myprop", "1,2,3");
-        assertEquals(expected, actual);
+        Assertions.assertEquals(expected, actual);
 
-        assertEquals(Filter.INCLUDE, postFilter);
+        Assertions.assertEquals(Filter.INCLUDE, postFilter);
     }
 
     @Test
@@ -206,7 +203,7 @@ public class FilterToOAPIFCoreTest {
 
         try {
             f.toQueryParameters(and, new HashMap<>());
-            fail();
+            Assertions.fail();
         } catch (UnsupportedOperationException expected) {
             // success
         }

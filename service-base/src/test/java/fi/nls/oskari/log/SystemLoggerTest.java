@@ -1,19 +1,15 @@
 package fi.nls.oskari.log;
 
-import org.junit.After;
-import org.junit.Ignore;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Testing simple log level for SystemLogger via env-properties. Ignored so it doesn't
  */
-@Ignore
 public class SystemLoggerTest {
 
-    @After
-    public static void teardown() {
+    @AfterEach
+    public void teardown() {
         System.clearProperty(SystemLogger.PROPERTY_LOG_LEVEL);
     }
 

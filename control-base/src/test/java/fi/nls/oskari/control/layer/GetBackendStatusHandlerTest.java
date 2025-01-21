@@ -1,29 +1,31 @@
 package fi.nls.oskari.control.layer;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.map.BackendStatus;
 import fi.nls.test.control.JSONActionRouteTest;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.oskari.service.backendstatus.BackendStatusService;
+
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import org.junit.Before;
-import org.junit.Test;
-import org.oskari.service.backendstatus.BackendStatusService;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class GetBackendStatusHandlerTest extends JSONActionRouteTest {
 
     private GetBackendStatusHandler handler;
 
-    @Before
+    @BeforeEach
     public void init() {
         BackendStatus foo = new BackendStatus(1, "OK", null, "http://foo.bar/12345");
         BackendStatus bar = new BackendStatus(2, "ERROR", "Unknown service", null);
@@ -56,7 +58,7 @@ public class GetBackendStatusHandlerTest extends JSONActionRouteTest {
                 + "{'maplayer_id':4,'status':'DOWN','statusjson':null,'infourl':'http://foo.bar/54321','ts':null}"
                 + "]}";
         expected = expected.replace('\'', '"');
-        assertEquals(expected, actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -73,7 +75,7 @@ public class GetBackendStatusHandlerTest extends JSONActionRouteTest {
                 + "{'maplayer_id':4,'status':'DOWN','statusjson':null,'infourl':'http://foo.bar/54321','ts':null}"
                 + "]}";
         expected = expected.replace('\'', '"');
-        assertEquals(expected, actual);
+        Assertions.assertEquals(expected, actual);
     }
 
 }
