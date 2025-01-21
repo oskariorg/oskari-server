@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.Set;
 
-@Disabled
+@Disabled("Ignored in junit4 as well")
 public class JedisManagerTest {
     private static String key;
     private static String value;

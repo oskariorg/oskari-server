@@ -12,6 +12,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.oskari.permissions.PermissionService;
@@ -29,7 +30,7 @@ import static org.mockito.Mockito.when;
 public class LayerAdminMetadataHandlerTest extends JSONActionRouteTest {
     
     final private static LayerAdminMetadataHandler handler = new LayerAdminMetadataHandler();
-    
+    private static MockedStatic<OskariComponentManager> oskariComponentManagerMockedStatic;
     @BeforeAll
     public static void setup() throws Exception {
         PropertyUtil.addProperty("oskari.user.service", DummyUserService.class.getCanonicalName(), true);
@@ -43,11 +44,14 @@ public class LayerAdminMetadataHandlerTest extends JSONActionRouteTest {
     public static void tearDown() {
         PropertyUtil.clearProperties();
         TestHelper.teardown();
+        if (oskariComponentManagerMockedStatic != null) {
+            oskariComponentManagerMockedStatic.close();
+        }
     }
 
     private static void setupPermissionsServiceMock() {
         PermissionService permissionService = mock(PermissionService.class);
-        Mockito.mockStatic(OskariComponentManager.class);
+        oskariComponentManagerMockedStatic = Mockito.mockStatic(OskariComponentManager.class);
         when(OskariComponentManager.getComponentOfType(PermissionService.class)).thenReturn(permissionService);
         
         doReturn(new HashSet<String>()).when(permissionService).getAdditionalPermissions();

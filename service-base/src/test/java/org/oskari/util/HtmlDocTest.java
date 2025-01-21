@@ -63,7 +63,7 @@ public class HtmlDocTest {
     }
 
     @Test
-    @Disabled
+    @Disabled("Assertion fails probably due to corrupt test files or smthng")
     public void getFilteredDataURL() throws IOException {
         String html = IOHelper.readString(getClass().getResourceAsStream("gfi-data-response.html"));
         String expected = IOHelper.readString(getClass().getResourceAsStream("gfi-data-response-expected.html"));

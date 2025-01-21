@@ -21,7 +21,7 @@ public class ResetRemainingSessionTimeHandlerTest extends JSONActionRouteTest {
     private ResetRemainingSessionTimeHandler handler = new ResetRemainingSessionTimeHandler();
 
     @Test
-    @Disabled
+    @Disabled("Mocking system not allowed with mockito")
     public void testResponseSessionExists() throws Exception {
         
         ActionParameters params = createActionParams();

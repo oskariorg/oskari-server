@@ -5,7 +5,6 @@ import fi.mml.portti.service.search.SearchCriteria;
 import fi.mml.portti.service.search.SearchResultItem;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
 import org.geotools.referencing.CRS;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -19,7 +18,6 @@ public class OpenStreetMapSearchChannelTest {
      * @throws Exception
      */
     @Test
-    @Disabled
     public void testCoordinateTransforms() throws Exception {
 
         OpenStreetMapSearchChannel channel = new OpenStreetMapSearchChannel();

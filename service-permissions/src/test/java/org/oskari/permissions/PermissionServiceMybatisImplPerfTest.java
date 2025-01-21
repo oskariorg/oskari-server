@@ -13,7 +13,7 @@ import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.List;
 
-@Disabled
+@Disabled("Was ignored even before, requires db")
 public class PermissionServiceMybatisImplPerfTest {
 
     private static PermissionServiceMybatisImpl permissionService;

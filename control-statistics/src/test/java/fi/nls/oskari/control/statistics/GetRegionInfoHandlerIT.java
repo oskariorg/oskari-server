@@ -19,6 +19,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTimeout;
 
 @ExtendWith(MockitoExtension.class)
+@Disabled("Requires DB")
+//[WARN] fi.nls.oskari.map.view.AppSetupServiceMybatisImpl: Exception while init deafult view id :
+//### Error querying database.  Cause: org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "oskari_appsetup" not found (this database is empty); SQL statement
 public class GetRegionInfoHandlerIT {
 
     @BeforeAll
@@ -32,9 +35,6 @@ public class GetRegionInfoHandlerIT {
     }
 
     @Test
-    @Disabled
-    //[WARN] fi.nls.oskari.map.view.AppSetupServiceMybatisImpl: Exception while init deafult view id :
-    //### Error querying database.  Cause: org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "oskari_appsetup" not found (this database is empty); SQL statement
     public void testGettingRegionInfo() throws ActionException, JSONException {
         assertTimeout(Duration.ofMillis(120000), () -> {
             GetRegionsHandler handler = new GetRegionsHandler();
@@ -46,9 +46,6 @@ public class GetRegionInfoHandlerIT {
     }
 
     @Test()
-    @Disabled
-    //[WARN] fi.nls.oskari.map.view.AppSetupServiceMybatisImpl: Exception while init deafult view id :
-    //### Error querying database.  Cause: org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "oskari_appsetup" not found (this database is empty); SQL statement
     public void testGettingRegionInfoForErva() throws ActionException, JSONException {
         assertTimeout(Duration.ofMillis(120000), () -> {
             GetRegionsHandler handler = new GetRegionsHandler();

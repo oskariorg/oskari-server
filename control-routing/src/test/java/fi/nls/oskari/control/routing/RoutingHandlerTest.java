@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import static fi.nls.oskari.control.ActionConstants.*;
 
-@Disabled
+@Disabled("Was already ignored. Throws NoSuchAuthorityException")
 public class RoutingHandlerTest extends JSONActionRouteTest {
 
     RoutingHandler routingHandler = new RoutingHandler();

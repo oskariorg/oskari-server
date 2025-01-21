@@ -35,7 +35,7 @@ public abstract class AbstractLayerAdminHandlerTest extends JSONActionRouteTest 
         OskariLayerService mapLayerService = mock(OskariLayerService.class);
         // org.mockito.exceptions.base.MockitoException:
         // For fi.nls.oskari.service.OskariComponentManager, static mocking is already registered in the current thread
-        AbstractLayerAdminHandlerTest.oskariComponentManagerMockedStatic = Mockito.mockStatic(OskariComponentManager.class);
+        oskariComponentManagerMockedStatic = Mockito.mockStatic(OskariComponentManager.class);
         when(OskariComponentManager.getComponentOfType(PermissionService.class)).thenReturn(permissionService);
         when(OskariComponentManager.getComponentOfType(OskariLayerService.class)).thenReturn(mapLayerService);
         Mockito.lenient().doReturn(getTestLayers()).when(mapLayerService).findAll();
@@ -46,7 +46,9 @@ public abstract class AbstractLayerAdminHandlerTest extends JSONActionRouteTest 
     }
 
     protected static void tearDownMocks() {
-        AbstractLayerAdminHandlerTest.oskariComponentManagerMockedStatic.close();
+        if (oskariComponentManagerMockedStatic != null) {
+            oskariComponentManagerMockedStatic.close();
+        }
         OskariComponentManager.teardown();;
         PropertyUtil.clearProperties();
     }

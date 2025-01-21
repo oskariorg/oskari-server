@@ -31,8 +31,8 @@ public class LayerAdminUsageCheckHandlerTest extends AbstractLayerAdminHandlerTe
 
     @AfterEach
     public void tearDown() {
-        OskariComponentManager.teardown();
         tearDownMocks();
+        OskariComponentManager.teardown();
     }
 
     @Test
