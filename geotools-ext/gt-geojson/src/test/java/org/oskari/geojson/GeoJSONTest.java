@@ -2,6 +2,7 @@ package org.oskari.geojson;
 
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.test.util.ResourceHelper;
+import org.geotools.api.feature.simple.SimpleFeature;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
@@ -15,7 +16,6 @@ import org.locationtech.jts.geom.MultiPoint;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
-import org.opengis.feature.simple.SimpleFeature;
 
 import java.io.IOException;
 

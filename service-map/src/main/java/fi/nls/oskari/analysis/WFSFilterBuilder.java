@@ -11,9 +11,9 @@ import org.geotools.xsd.Encoder;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.opengis.filter.Filter;
-import org.opengis.filter.FilterFactory2;
-import org.opengis.filter.identity.FeatureId;
+import org.geotools.api.filter.Filter;
+import org.geotools.api.filter.FilterFactory;
+import org.geotools.api.filter.identity.FeatureId;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -53,7 +53,7 @@ public class WFSFilterBuilder {
     public static final String CUSTOM_ID_FILTER_END = "</ogc:Or></ogc:Filter>";
 
     private static final Logger log = LogFactory.getLogger(WFSFilterBuilder.class);
-    private static final FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
+    private static final FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
 
     /**
      * @param filter_js Analysis filter

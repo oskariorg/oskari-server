@@ -1,6 +1,6 @@
 package org.geotools.mif;
 
-import org.geotools.data.DataStore;
+import org.geotools.api.data.DataStore;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

@@ -6,8 +6,8 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
-import org.opengis.filter.Filter;
 import org.junit.jupiter.api.Test;
+import org.geotools.api.filter.Filter;
 
 import java.util.Optional;
 

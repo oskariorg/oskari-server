@@ -11,15 +11,15 @@ import fi.nls.oskari.util.JSONHelper;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.geojson.geom.GeometryJSON;
-import org.geotools.geometry.DirectPosition2D;
+import org.geotools.geometry.Position2D;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.json.JSONObject;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.cs.AxisDirection;
-import org.opengis.referencing.operation.MathTransform;
+import org.geotools.api.feature.simple.SimpleFeature;
+import org.geotools.api.feature.simple.SimpleFeatureType;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
+import org.geotools.api.referencing.cs.AxisDirection;
+import org.geotools.api.referencing.operation.MathTransform;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -100,13 +100,13 @@ public class ProjectionHelper implements PointTransformer {
             // by setting the lenient parameter to true when searching with findMathTransform.
             boolean lenient = false;
             MathTransform mathTransform = CRS.findMathTransform(sourceCrs, targetCrs, lenient);
-            DirectPosition2D srcDirectPosition2D = new DirectPosition2D(sourceCrs, point.getLon(), point.getLat());
+            Position2D srcDirectPosition2D = new Position2D(sourceCrs, point.getLon(), point.getLat());
             // Just in case that sourceCrs axis order is not forced as lon 1st
             if (isFirstAxisNorth(sourceCrs)) {
                 // reverse xy lon 1st
-                srcDirectPosition2D = new DirectPosition2D(sourceCrs, point.getLat(), point.getLon());
+                srcDirectPosition2D = new Position2D(sourceCrs, point.getLat(), point.getLon());
             }
-            DirectPosition2D destDirectPosition2D = new DirectPosition2D(targetCrs);
+            Position2D destDirectPosition2D = new Position2D(targetCrs);
             mathTransform.transform(srcDirectPosition2D, destDirectPosition2D);
             // Just in case that targetCrs axis order is not forced as lon 1st
             if (isFirstAxisNorth(targetCrs)) {

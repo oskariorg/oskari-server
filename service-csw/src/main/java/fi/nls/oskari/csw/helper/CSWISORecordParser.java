@@ -5,8 +5,8 @@ import fi.nls.oskari.csw.domain.CSWIsoRecord;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import org.geotools.geometry.jts.JTS;
-import org.opengis.referencing.operation.MathTransform;
-import org.opengis.referencing.operation.TransformException;
+import org.geotools.api.referencing.operation.MathTransform;
+import org.geotools.api.referencing.operation.TransformException;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
