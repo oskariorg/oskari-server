@@ -9,9 +9,9 @@ import fi.nls.test.control.JSONActionRouteTest;
 import fi.nls.test.util.TestHelper;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
@@ -21,10 +21,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 /**
  * Simple user-credentials check for handlers listed in getAdminHandlers().
  */
-@Disabled
 public class UserCredentialsTest extends JSONActionRouteTest {
 
-    private ActionHandler handler = null;
+    //private ActionHandler handler = null;
 
     @BeforeAll
     public static void setup() throws Exception {
@@ -51,28 +50,30 @@ public class UserCredentialsTest extends JSONActionRouteTest {
         );
     }
 
-    public UserCredentialsTest(Class<ActionHandler> clazz) {
-        try {
-            handler = clazz.newInstance();
-            handler.init();
-        } catch (Exception ignored) {}
-    }
-
     @ParameterizedTest
-    public void testWithGuest() throws Exception {
+    @MethodSource("getAdminHandlers")
+    public void testWithGuest(Class<ActionHandler> clazz) throws Exception {
+        ActionHandler handler = clazz.newInstance();
+        handler.init();
         assertThrows(ActionDeniedException.class, () -> {
             handler.handleAction(createActionParams());
         });
     }
 
     @ParameterizedTest
-    public void testWithUser() throws Exception {
+    @MethodSource("getAdminHandlers")
+    public void testWithUser(Class<ActionHandler> clazz) throws Exception {
+        ActionHandler handler = clazz.newInstance();
+        handler.init();
         assertThrows(ActionDeniedException.class, () -> {
             handler.handleAction(createActionParams(getLoggedInUser()));
         });
     }
     @ParameterizedTest
-    public void testWithAdmin() throws Exception {
+    @MethodSource("getAdminHandlers")
+    public void testWithAdmin(Class<ActionHandler> clazz) throws Exception {
+        ActionHandler handler = clazz.newInstance();
+        handler.init();
         System.out.println("Parameterized ActionHandler is : " + handler.getClass().getName());
         handler.handleAction(createActionParams(getAdminUser()));
         // no exception thrown so we are happy
