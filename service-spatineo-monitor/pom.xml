@@ -23,6 +23,11 @@
             <groupId>org.oskari</groupId>
             <artifactId>service-map</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.oskari</groupId>
+            <artifactId>test-helper</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 </project>

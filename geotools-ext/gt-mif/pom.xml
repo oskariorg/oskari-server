@@ -22,14 +22,14 @@
             <groupId>org.geotools</groupId>
             <artifactId>gt-main</artifactId>
         </dependency>
-        <!-- dependency>
-            <groupId>org.geotools</groupId>
-            <artifactId>gt-data</artifactId>
-            <version>${geotools.version}</version>
-        </dependency -->
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-epsg-hsql</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.oskari</groupId>
+            <artifactId>test-helper</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

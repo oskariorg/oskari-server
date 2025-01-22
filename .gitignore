@@ -12,16 +12,10 @@ target/
 /data/
 /test-output/
 /servlet-map/data/
-transport.log
 *pom.xml.versionsBackup
-/standalone-jetty/dist/public/oskari
-/standalone-jetty/dist/public/Oskari
-/standalone-jetty/dist/*.jar
-/bin/
-/service-spatineo-monitor/nbproject/
-/control-base/nbproject
+*/nbproject/
 */nbactions.xml
 */nb-configuration.xml
 
-/service-search-nls/nbproject/
 .metadata
+control-base/workbook.xlsx

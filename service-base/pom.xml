@@ -54,5 +54,10 @@
             <groupId>org.locationtech.jts.io</groupId>
             <artifactId>jts-io-common</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.oskari</groupId>
+            <artifactId>test-helper</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>
