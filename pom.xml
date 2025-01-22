@@ -46,8 +46,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.version>17</jdk.version>
         <oskari.version>${project.version}</oskari.version>
-        <!-- Value comes from profile when needed -->
-        <module.build.config></module.build.config>
 
         <spring.version>5.3.39</spring.version>
         <spring-security.version>5.7.13</spring-security.version>
@@ -143,25 +141,6 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>${mockito.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-junit-jupiter</artifactId>
-            <version>${mockito.version}</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
     <!-- Managed dependencies -->
     <dependencyManagement>
@@ -848,22 +827,46 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
             <!-- Managed test dependencies -->
             <dependency>
                 <groupId>org.oskari</groupId>
+                <artifactId>test-helper</artifactId>
+                <version>${oskari.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.oskari</groupId>
                 <artifactId>shared-test-resources</artifactId>
                 <version>${oskari.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-api</artifactId>
+                <version>${junit.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${mockito.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-junit-jupiter</artifactId>
+                <version>${mockito.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-params</artifactId>
+                <version>${junit.version}</version>
+            </dependency>
             <!-- Override java assist (used by mock libraries) to latest version to work with Java 21 -->
             <dependency>
                 <groupId>org.javassist</groupId>
                 <artifactId>javassist</artifactId>
                 <version>3.30.2-GA</version>
-                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.hamcrest</groupId>
                 <artifactId>hamcrest-library</artifactId>
                 <version>${hamcrest.version}</version>
-                <scope>test</scope>
             </dependency>
             <!-- https://mvnrepository.com/artifact/org.mockito/mockito-core -->
             <dependency>
@@ -896,27 +899,18 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
                 <scope>provided</scope>
             </dependency>
 
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-params</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
+            <!--
+                Bringing this back so that sample-server-application and others will continue to build.
+                This is the same version that powermock-module-junit4 uses
 
-
-
-        <!--
-            Bringing this back so that sample-server-application and others will continue to build.
-            This is the same version that powermock-module-junit4 uses
-
-            Get rid of this and powermock and add junit-juniper to apps
-        -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
+                Get rid of this and powermock and add junit-juniper to apps
+            -->
+            <!-- dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.12</version>
+                <scope>test</scope>
+            </dependency -->
 
         </dependencies>
     </dependencyManagement>
@@ -981,7 +975,6 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.5.2</version>
                 <configuration>
-                    <!-- module.build.config is a workaround for test/mock libraries on Java 11 -->
                     <!-- headless=true prevents forking java process from stealing window focus on Mac OS -->
                     <!-- syslog.level makes builds less verbose (defaults to system.out logger) -->
                     <argLine>
@@ -993,10 +986,16 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
                     --add-opens java.base/java.io=ALL-UNNAMED
                     --add-opens java.base/jdk.internal.loader=ALL-UNNAMED
                     --add-opens java.xml/jdk.xml.internal=ALL-UNNAMED
-                        ${module.build.config}
                         -Djava.awt.headless=true
                         -Doskari.syslog.level=warn</argLine>
                 </configuration>
+                <!-- dependencies>
+                    <dependency>
+                        <groupId>org.junit.jupiter</groupId>
+                        <artifactId>junit-jupiter-engine</artifactId>
+                        <version>${junit.version}</version>
+                    </dependency>
+                </dependencies -->
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -1214,6 +1213,7 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
     </profiles>
     <modules>
         <!-- basic oskari map requirements -->
+        <module>test-helper</module>
         <module>shared-test-resources</module>
         <module>model-ogcapi</module>
 

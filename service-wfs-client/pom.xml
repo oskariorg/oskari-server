@@ -42,6 +42,11 @@
             <groupId>com.netflix.hystrix</groupId>
             <artifactId>hystrix-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.oskari</groupId>
+            <artifactId>test-helper</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 </project>

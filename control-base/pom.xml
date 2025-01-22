@@ -60,11 +60,6 @@
             <artifactId>service-userlayer</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.oskari</groupId>
-            <artifactId>shared-test-resources</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-csv</artifactId>
         </dependency>
@@ -86,14 +81,13 @@
             <artifactId>service-wfs-client</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.geotools</groupId>
-            <artifactId>gt-epsg-hsql</artifactId>
+            <groupId>org.oskari</groupId>
+            <artifactId>shared-test-resources</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <!-- some powermock tests ignores xml packages and tests fails without this -->
-            <groupId>org.apache.ws.commons.axiom</groupId>
-            <artifactId>axiom-impl</artifactId>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-epsg-hsql</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

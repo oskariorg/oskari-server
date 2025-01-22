@@ -17,6 +17,7 @@
         <dependency>
             <groupId>org.oskari</groupId>
             <artifactId>service-control</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -31,29 +32,9 @@
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 		</dependency>
-
-        <!-- PowerMock can be used to mock static/private methods -->
-        <!--
         <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-module-junit4</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-api-mockito2</artifactId>
-            <scope>test</scope>
-        </dependency>
-        -->
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>${mockito.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>${junit.version}</version>
+            <groupId>org.oskari</groupId>
+            <artifactId>test-helper</artifactId>
         </dependency>
     </dependencies>
 
