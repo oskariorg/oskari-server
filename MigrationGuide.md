@@ -4,6 +4,14 @@
 
 In 3.0.0 the minimum Java version for Oskari is changed from Java 8 to 17.
 
+### Junit migrated from 4 to 5
+
+The Junit present on the BOM for oskari-server was updated from JUnit 4 to 5 and JUnit changed the groupId and artifactId in their update. This means that if your app does NOT define a specific version for the JUnit dependency and depend on oskari-server doing it, your app will not compile after updating due to missing dependency version. To fix this you have some options and here's what we've used:
+
+- for the sample-server-extension there were no tests so junit was removed from dependencies: https://github.com/oskariorg/sample-server-extension/pull/63
+- for apps that do have tests and don't want to migrate them, you can define the junit 4 dependency version for the app like this: https://github.com/nls-oskari/kartta.paikkatietoikkuna.fi/pull/235
+- for apps that want to migrate to JUnit 5, you can do something like this: https://github.com/nlsfi/oskari-server-extras/pull/31
+
 ### Generic proxy removed
 
 A proxy implementation was previously used to pass requests from
