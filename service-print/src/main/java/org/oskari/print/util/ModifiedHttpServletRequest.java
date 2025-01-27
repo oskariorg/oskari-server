@@ -164,13 +164,6 @@ public class ModifiedHttpServletRequest implements HttpServletRequest {
         return null;
     }
 
-/*
-    @Override
-    public String getRealPath(String path) {
-        return null;
-    }
-    */
-
     @Override
     public int getRemotePort() {
         return 0;
@@ -367,14 +360,6 @@ public class ModifiedHttpServletRequest implements HttpServletRequest {
     public String getRequestId() {
         return null;
     }
-    
-
-/*
-    @Override
-    public boolean isRequestedSessionIdFromUrl() {
-        return false;
-    }
-    */
 
     @Override
     public boolean authenticate(HttpServletResponse response) throws IOException, ServletException {

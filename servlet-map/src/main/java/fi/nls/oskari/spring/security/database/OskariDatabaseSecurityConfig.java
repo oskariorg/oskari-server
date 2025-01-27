@@ -17,7 +17,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
-
 /**
  * Database-based authentication for Oskari.
  */
@@ -40,7 +39,6 @@ public class OskariDatabaseSecurityConfig {
         this.oskariAuthenticationProvider = oskariAuthenticationProvider;
         this.oskariAuthenticationSuccessHandler = oskariAuthenticationSuccessHandler;
     }
-
 
     @Bean
     @Order(1)
