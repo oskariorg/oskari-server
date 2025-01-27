@@ -11,12 +11,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Component;
 
 
 /**
  * Sample custom authentication provider using Oskari UserService.
  */
-public class OskariAuthenticationProvider implements AuthenticationProvider {
+@Component
+    public class OskariAuthenticationProvider implements AuthenticationProvider {
 
     private Logger log = LogFactory.getLogger(OskariAuthenticationProvider.class);
 

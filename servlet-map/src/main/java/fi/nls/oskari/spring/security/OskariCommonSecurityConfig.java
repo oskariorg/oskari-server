@@ -15,7 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
  */
 @Configuration
 @EnableWebSecurity
-@Order(2)
+
 public class OskariCommonSecurityConfig {
 
     private Logger log = LogFactory.getLogger(OskariCommonSecurityConfig.class);
@@ -27,6 +27,7 @@ public class OskariCommonSecurityConfig {
     }
 
     @Bean
+    @Order(2)
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         log.info("Configuring common security options");
 

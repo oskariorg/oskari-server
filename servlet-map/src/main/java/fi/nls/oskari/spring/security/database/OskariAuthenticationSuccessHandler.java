@@ -8,12 +8,15 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.stereotype.Component;
+
 import java.io.IOException;
 
 /**
  * Hooks in OskariUserHelper.onAuthenticationSuccess(). Extends different Spring class than the similar class
  * in SAML package.
  */
+@Component
 public class OskariAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private Logger log = LogFactory.getLogger(OskariAuthenticationSuccessHandler.class);
     private OskariUserHelper helper = new OskariUserHelper();
