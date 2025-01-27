@@ -57,7 +57,7 @@
         which is aligned with core 5.3.30 and security 5.7.11 versions
         https://github.com/spring-projects/spring-session/releases/tag/2.7.4
         https://central.sonatype.com/artifact/org.springframework.session/spring-session-bom/2021.2.3 -->
-        <spring.session.version>2021.2.3</spring.session.version>
+        <spring.session.version>3.4.1</spring.session.version>
 
         <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
         <javax.servlet.jsp.version>2.3.3</javax.servlet.jsp.version>
@@ -500,7 +500,7 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
             <dependency>
                 <groupId>org.springframework.session</groupId>
                 <artifactId>spring-session-bom</artifactId>
-                <version>3.0.2</version> <!-- Update to 3.x -->
+                <version>${spring.session.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
