@@ -6,9 +6,8 @@ import fi.nls.oskari.domain.geo.Point;
 import fi.nls.oskari.search.channel.SearchChannel;
 import fi.nls.test.util.ResourceHelper;
 import org.json.JSONObject;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Created by SMAKINEN on 26.1.2016.
@@ -21,9 +20,9 @@ public class What3WordsSearchChannelTest {
         SearchChannel channel = new What3WordsSearchChannel();
         SearchCriteria sc = new SearchCriteria();
         sc.setSearchString("asdf");
-        assertFalse("Invalid search term: " + sc.getSearchString(), channel.isValidSearchTerm(sc));
+        Assertions.assertFalse(channel.isValidSearchTerm(sc), "Invalid search term: " + sc.getSearchString());
         sc.setSearchString("carting.pint.invent");
-        assertTrue("Valid search term: " + sc.getSearchString(), channel.isValidSearchTerm(sc));
+        Assertions.assertTrue(channel.isValidSearchTerm(sc), "Valid search term: " + sc.getSearchString());
 
     }
 
@@ -33,16 +32,16 @@ public class What3WordsSearchChannelTest {
         What3WordsSearchChannel channel = new What3WordsSearchChannel();
         JSONObject json = ResourceHelper.readJSONResource("What3Words-success.json", this);
         SearchResultItem item = channel.parseResult(json, "EPSG:3067");
-        assertEquals("Title", item.getTitle(), "carting.pint.invent");
-        assertEquals("Lat", item.getLat(), 6675293.715526561, 0.1);
-        assertEquals("Lon", item.getLon(), 385547.65760422836, 0.1);
+        Assertions.assertEquals(item.getTitle(), "carting.pint.invent", "Title");
+        Assertions.assertEquals(item.getLat(), 6675293.715526561, 0.1, "Lat");
+        Assertions.assertEquals(item.getLon(), 385547.65760422836, 0.1, "Lon");
     }
 
     @Test
     public void testTransform() throws Exception {
         What3WordsSearchChannel channel = new What3WordsSearchChannel();
         Point p = channel.getServiceCoordinates(385547.65760422836, 6675293.715526561, "EPSG:3067");
-        assertEquals(60.19837505386789, p.getLat(), 0.1);
-        assertEquals(24.93546499999964, p.getLon(), 0.1);
+        Assertions.assertEquals(60.19837505386789, p.getLat(), 0.1);
+        Assertions.assertEquals(24.93546499999964, p.getLon(), 0.1);
     }
 }

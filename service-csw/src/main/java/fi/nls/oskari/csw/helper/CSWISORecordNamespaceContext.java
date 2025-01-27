@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * Created by TMIKKOLAINEN on 2.9.2014.
  */
-public class CSWISORecordNamespaceContext implements NamespaceContext, org.jaxen.NamespaceContext {
+public class CSWISORecordNamespaceContext implements NamespaceContext {
     public static final String CSWNS = "http://www.opengis.net/cat/csw/2.0.2";
     public static final String DCNS = "http://purl.org/dc/elements/1.1/";
     public static final String DCTNS = "http://purl.org/dc/terms/";
@@ -41,10 +41,6 @@ public class CSWISORecordNamespaceContext implements NamespaceContext, org.jaxen
         }
     }
 
-    public Map<String, URI> getNsmap() {
-        return nsmap;
-    }
-
     public String getNamespaceURI(String prefix) {
         if (prefix == null) {
             throw new IllegalArgumentException("Null prefix");
@@ -56,19 +52,6 @@ public class CSWISORecordNamespaceContext implements NamespaceContext, org.jaxen
             log.debug("No URI found for " + prefix);
         }
         return ret == null ? null : nsmap.get(prefix).toString();
-    }
-
-    public String translateNamespacePrefixToUri(String prefix) {
-        if (prefix == null || prefix.isEmpty()) {
-            return null;
-        } else if ("xml".equals(prefix)) {
-            return "http://www.w3.org/XML/1998/namespace";
-        }
-        URI uri = nsmap.get(prefix);
-        if (uri == null) {
-            return null;
-        }
-        return uri.toString();
     }
 
     // This method isn't necessary for XPath processing.

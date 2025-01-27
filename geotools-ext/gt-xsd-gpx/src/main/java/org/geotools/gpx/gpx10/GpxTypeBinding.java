@@ -9,7 +9,7 @@ import org.geotools.feature.FeatureCollection;
 import org.geotools.xsd.AbstractComplexBinding;
 import org.geotools.xsd.ElementInstance;
 import org.geotools.xsd.Node;
-import org.opengis.feature.simple.SimpleFeature;
+import org.geotools.api.feature.simple.SimpleFeature;
 
 /**
  * Binding object for the type http://www.topografix.com/GPX/1/0:gpxType.

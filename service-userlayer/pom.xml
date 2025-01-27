@@ -28,7 +28,7 @@
         </dependency>
         <dependency>
             <groupId>org.geotools</groupId>
-            <artifactId>gt-opengis</artifactId>
+            <artifactId>gt-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.geotools</groupId>
@@ -59,8 +59,8 @@
             <artifactId>gt-geopkg</artifactId>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.oskari</groupId>
+            <artifactId>test-helper</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

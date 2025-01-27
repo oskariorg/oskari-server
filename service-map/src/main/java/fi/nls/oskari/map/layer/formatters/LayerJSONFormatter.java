@@ -11,7 +11,7 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.capabilities.MetadataHelper;
 import org.oskari.capabilities.ogc.LayerCapabilitiesOGC;
 import org.oskari.utils.common.Sets;

@@ -3,14 +3,14 @@ package fi.nls.oskari.control.routing;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.control.JSONActionRouteTest;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 import static fi.nls.oskari.control.ActionConstants.*;
 
-@Ignore
+@Disabled("Was already ignored. Throws NoSuchAuthorityException")
 public class RoutingHandlerTest extends JSONActionRouteTest {
 
     RoutingHandler routingHandler = new RoutingHandler();

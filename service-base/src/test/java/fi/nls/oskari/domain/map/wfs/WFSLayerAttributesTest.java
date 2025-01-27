@@ -3,9 +3,8 @@ package fi.nls.oskari.domain.map.wfs;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class WFSLayerAttributesTest {
 
@@ -161,26 +160,26 @@ public class WFSLayerAttributesTest {
     @Test
     public void testEmptyParam() {
         WFSLayerAttributes attrs = new WFSLayerAttributes(null);
-        assertTrue("No attributes selected", attrs.getSelectedAttributes().isEmpty());
-        assertEquals("No featurecount set", 100000, attrs.getMaxFeatures());
-        assertNull("No url set", attrs.getNamespaceURL());
-        assertNull("Params was null", attrs.getAttributes());
-        assertFalse("Filter wasn't given", attrs.hasFilter());
-        assertFalse("Localization wasn't given", attrs.getLocalization("en").isPresent());
-        assertNull("noDataValue was null", attrs.getNoDataValue());
-        assertNull("commonId was null", attrs.getCommonId());
+        Assertions.assertTrue(attrs.getSelectedAttributes().isEmpty(), "No attributes selected");
+        Assertions.assertEquals(100000, attrs.getMaxFeatures(), "No featurecount set");
+        Assertions.assertNull(attrs.getNamespaceURL(), "No url set");
+        Assertions.assertNull(attrs.getAttributes(), "Params was null");
+        Assertions.assertFalse(attrs.hasFilter(), "Filter wasn't given");
+        Assertions.assertFalse(attrs.getLocalization("en").isPresent(), "Localization wasn't given");
+        Assertions.assertNull(attrs.getNoDataValue(), "noDataValue was null");
+        Assertions.assertNull(attrs.getCommonId(), "commonId was null");
     }
 
     @Test
     public void testSimpleFilter() throws JSONException {
         JSONObject input = new JSONObject(attributesSimpleFilter);
         WFSLayerAttributes attrs = new WFSLayerAttributes(input);
-        assertEquals("11 attributes selected", 11, attrs.getSelectedAttributes().size());
-        assertEquals("Max features set", 100, attrs.getMaxFeatures());
-        assertEquals("Namespace set", "http://oskari.org", attrs.getNamespaceURL());
-        assertTrue("Input & output match", JSONHelper.isEqual(input, attrs.getAttributes()));
-        assertTrue("Filter was given", attrs.hasFilter());
-        assertFalse("English locale wasn't given", attrs.getLocalization("en").isPresent());
+        Assertions.assertEquals(11, attrs.getSelectedAttributes().size(), "11 attributes selected");
+        Assertions.assertEquals(100, attrs.getMaxFeatures(), "Max features set");
+        Assertions.assertEquals("http://oskari.org", attrs.getNamespaceURL(), "Namespace set");
+        Assertions.assertTrue(JSONHelper.isEqual(input, attrs.getAttributes()), "Input & output match");
+        Assertions.assertTrue(attrs.hasFilter(), "Filter was given");
+        Assertions.assertFalse(attrs.getLocalization("en").isPresent(), "English locale wasn't given");
     }
 
     @Test
@@ -188,28 +187,28 @@ public class WFSLayerAttributesTest {
         JSONObject input = new JSONObject(attributesLocalizedFilter);
         WFSLayerAttributes attrs = new WFSLayerAttributes(input);
 
-        assertEquals("11 attributes selected for default lang", 11, attrs.getSelectedAttributes().size());
-        assertEquals("11 attributes selected for sv lang", 11, attrs.getSelectedAttributes("sv").size());
-        assertEquals("Max features set", 100, attrs.getMaxFeatures());
-        assertEquals("Namespace set", "http://oskari.org", attrs.getNamespaceURL());
-        assertTrue("Input & output match", JSONHelper.isEqual(input, attrs.getAttributes()));
-        assertTrue("Filter was given", attrs.hasFilter());
-        assertTrue("English locale wasn't given", attrs.getLocalization("en").isPresent());
+        Assertions.assertEquals(11, attrs.getSelectedAttributes().size(), "11 attributes selected for default lang");
+        Assertions.assertEquals(11, attrs.getSelectedAttributes("sv").size(), "11 attributes selected for sv lang");
+        Assertions.assertEquals(100, attrs.getMaxFeatures(), "Max features set");
+        Assertions.assertEquals("http://oskari.org", attrs.getNamespaceURL(), "Namespace set");
+        Assertions.assertTrue(JSONHelper.isEqual(input, attrs.getAttributes()), "Input & output match");
+        Assertions.assertTrue(attrs.hasFilter(), "Filter was given");
+        Assertions.assertTrue(attrs.getLocalization("en").isPresent(), "English locale wasn't given");
     }
     @Test
     public void testSimpleAttributes() throws JSONException {
         JSONObject input = new JSONObject(simpleAttributes);
         WFSLayerAttributes attrs = new WFSLayerAttributes(input);
 
-        assertEquals("Max features set", 2000, attrs.getMaxFeatures());
-        assertEquals("Namespace set", "http://oskari.org", attrs.getNamespaceURL());
-        assertTrue("Input & output match", JSONHelper.isEqual(input, attrs.getAttributes()));
+        Assertions.assertEquals(2000, attrs.getMaxFeatures(), "Max features set");
+        Assertions.assertEquals("http://oskari.org", attrs.getNamespaceURL(), "Namespace set");
+        Assertions.assertTrue(JSONHelper.isEqual(input, attrs.getAttributes()), "Input & output match");
 
-        assertEquals("noDataValue set", -1, attrs.getNoDataValue().intValue());
-        assertEquals("commonId set", "grid_id", attrs.getCommonId());
+        Assertions.assertEquals(-1, attrs.getNoDataValue().intValue(), "noDataValue set");
+        Assertions.assertEquals("grid_id", attrs.getCommonId(), "commonId set");
 
-        assertFalse("Filter wasn't given", attrs.hasFilter());
-        assertFalse("Localization wasn't given", attrs.getLocalization("en").isPresent());
-        assertTrue("No attributes selected", attrs.getSelectedAttributes().isEmpty());
+        Assertions.assertFalse(attrs.hasFilter(), "Filter wasn't given");
+        Assertions.assertFalse(attrs.getLocalization("en").isPresent(), "Localization wasn't given");
+        Assertions.assertTrue(attrs.getSelectedAttributes().isEmpty(), "No attributes selected");
     }
 }

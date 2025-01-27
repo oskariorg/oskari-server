@@ -3,16 +3,13 @@ package fi.nls.oskari.control.data;
 import fi.mml.portti.service.search.SearchService;
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.search.channel.SearchChannel;
-import fi.nls.oskari.search.channel.SearchableChannel;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.control.JSONActionRouteTest;
-import org.apache.poi.hpsf.Property;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
@@ -21,7 +18,7 @@ import static org.mockito.Mockito.mock;
  */
 public class SearchOptionsHandlerTest extends JSONActionRouteTest {
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         PropertyUtil.clearProperties();
     }
@@ -45,7 +42,7 @@ public class SearchOptionsHandlerTest extends JSONActionRouteTest {
         SearchChannel channel = mock(SearchChannel.class);
         mockCapabilities(channel, false);
         SearchOptionsHandler handler = getHandler();
-        assertFalse("Channel should not permitted if there's no textual capabilities", handler.shouldBeIncluded(channel, getGuestUser()));
+        Assertions.assertFalse(handler.shouldBeIncluded(channel, getGuestUser()), "Channel should not permitted if there's no textual capabilities");
     }
     @Test
     public void testShouldBeIncludedTextualSearch() throws Exception {
@@ -53,7 +50,7 @@ public class SearchOptionsHandlerTest extends JSONActionRouteTest {
         mockCapabilities(channel, true);
         doReturn(true).when(channel).hasPermission(getGuestUser());
         SearchOptionsHandler handler = getHandler();
-        assertTrue("Channel should be permitted if there's textual capabilities, no blacklist and user is permitted", handler.shouldBeIncluded(channel, getGuestUser()));
+        Assertions.assertTrue(handler.shouldBeIncluded(channel, getGuestUser()), "Channel should be permitted if there's textual capabilities, no blacklist and user is permitted");
     }
 
     @Test
@@ -64,8 +61,8 @@ public class SearchOptionsHandlerTest extends JSONActionRouteTest {
         doReturn(false).when(channel).hasPermission(getGuestUser());
         doReturn(true).when(channel).hasPermission(getLoggedInUser());
         SearchOptionsHandler handler = getHandler();
-        assertFalse("Channel should not permitted for guest", handler.shouldBeIncluded(channel, getGuestUser()));
-        assertTrue("Channel should be permitted for user", handler.shouldBeIncluded(channel, getLoggedInUser()));
+        Assertions.assertFalse(handler.shouldBeIncluded(channel, getGuestUser()), "Channel should not permitted for guest");
+        Assertions.assertTrue(handler.shouldBeIncluded(channel, getLoggedInUser()), "Channel should be permitted for user");
     }
 
     @Test
@@ -79,14 +76,14 @@ public class SearchOptionsHandlerTest extends JSONActionRouteTest {
         PropertyUtil.addProperty("actionhandler.SearchOptions.blacklist", "TestChannel");
 
         SearchOptionsHandler handler = getHandler();
-        assertFalse("Channel should not permitted for guest", handler.shouldBeIncluded(channel, getGuestUser()));
-        assertFalse("Channel should be permitted for user", handler.shouldBeIncluded(channel, getLoggedInUser()));
+        Assertions.assertFalse(handler.shouldBeIncluded(channel, getGuestUser()), "Channel should not permitted for guest");
+        Assertions.assertFalse(handler.shouldBeIncluded(channel, getLoggedInUser()), "Channel should be permitted for user");
 
         // clear blacklist - should be allowed
         PropertyUtil.clearProperties();
         handler = getHandler();
-        assertTrue("Channel should not permitted for guest", handler.shouldBeIncluded(channel, getGuestUser()));
-        assertTrue("Channel should be permitted for user", handler.shouldBeIncluded(channel, getLoggedInUser()));
+        Assertions.assertTrue(handler.shouldBeIncluded(channel, getGuestUser()), "Channel should not permitted for guest");
+        Assertions.assertTrue(handler.shouldBeIncluded(channel, getLoggedInUser()), "Channel should be permitted for user");
 
     }
 

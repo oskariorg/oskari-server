@@ -1,7 +1,8 @@
 package org.oskari.print.util;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
 import java.awt.*;
 
 
@@ -12,15 +13,15 @@ public class ColorUtilTest {
         Color hex = ColorUtil.parseColor("#FF0000");
         Color rrggbb = ColorUtil.parseColor("FF0000");
         Color rgba = ColorUtil.parseColor("rgba(255,0,0,1)");
-        Assert.assertEquals(Color.RED, rgb);
-        Assert.assertEquals(Color.RED, hex);
-        Assert.assertEquals(Color.RED, rrggbb);
-        Assert.assertEquals(Color.RED, rgba);
+        Assertions.assertEquals(Color.RED, rgb);
+        Assertions.assertEquals(Color.RED, hex);
+        Assertions.assertEquals(Color.RED, rrggbb);
+        Assertions.assertEquals(Color.RED, rgba);
     }
     @Test
     public void testParseRGBA() {
         Color rgba = ColorUtil.parseColor("rgba(255,0,0,0.5)");
-        Assert.assertTrue(128 == rgba.getAlpha());
-        Assert.assertTrue(Transparency.TRANSLUCENT == rgba.getTransparency());
+        Assertions.assertTrue(128 == rgba.getAlpha());
+        Assertions.assertTrue(Transparency.TRANSLUCENT == rgba.getTransparency());
     }
 }

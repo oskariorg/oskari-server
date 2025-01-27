@@ -8,22 +8,35 @@ import fi.nls.test.util.JSONTestHelper;
 import fi.nls.test.util.MapBuilder;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.mockito.Mockito;
 import org.mockito.exceptions.base.MockitoAssertionError;
 
 import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.io.*;
-import java.util.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.Collections;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Vector;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 /**
+
  * @author SMAKINEN
  * Base junit test class for ActionHandlers responding with JSON. Convenience methods for mocking ActionParams and getting the written response
  */
@@ -31,12 +44,12 @@ public class JSONActionRouteTest {
 
     private StringWriter response = new StringWriter();
 
-    @Before
+    @BeforeEach
     public void jsonActionRouteSetUp() throws Exception {
         response = new StringWriter();
     }
 
-    @After
+    @AfterEach
     public void jsonActionRouteTeardown() throws Exception {
         response.close();
     }
@@ -95,9 +108,10 @@ public class JSONActionRouteTest {
         HttpServletResponse resp = mock(HttpServletResponse.class);
         PrintWriter output = new PrintWriter(response);
         try {
-            doReturn(output).when(resp).getWriter();
+            Mockito.lenient().when(resp.getWriter()).thenReturn(output);
         }
         catch (IOException ignored ) {}
+
 
         params.setRequest(req);
         params.setResponse(resp);
@@ -125,18 +139,18 @@ public class JSONActionRouteTest {
         HttpServletRequest req = mock(HttpServletRequest.class);
 
         if (parameters != null) {
-            doReturn(new Vector<>(parameters.keySet()).elements()).when(req).getParameterNames();
+            Mockito.lenient().doReturn(new Vector<>(parameters.keySet()).elements()).when(req).getParameterNames();
             for (String key : parameters.keySet()) {
-                when(req.getParameter(key)).thenReturn(parameters.get(key));
+                Mockito.lenient().when(req.getParameter(key)).thenReturn(parameters.get(key));
             }
         }
 
         HttpSession session = mock(HttpSession.class);
-        doReturn("testkey").when(session).getId();
-        doReturn(session).when(req).getSession();
+        Mockito.lenient().doReturn("testkey").when(session).getId();
+        Mockito.lenient().doReturn(session).when(req).getSession();
 
         if (method != null) {
-            doReturn(method).when(req).getMethod();
+            Mockito.lenient().doReturn(method).when(req).getMethod();
         }
 
         if (contentType != null) {

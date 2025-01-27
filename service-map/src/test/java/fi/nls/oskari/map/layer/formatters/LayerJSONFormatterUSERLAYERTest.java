@@ -10,8 +10,8 @@ import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -61,27 +61,27 @@ public class LayerJSONFormatterUSERLAYERTest {
         WFSLayerAttributes attr = new WFSLayerAttributes(attrJson);
         fields.remove(2);
         WFSLayerAttributes anotherAttr = new WFSLayerAttributes(FORMATTER_USERLAYER.parseAttributes(fields));
-        Assert.assertEquals(1, anotherAttr.getSelectedAttributes().size());
+        Assertions.assertEquals(1, anotherAttr.getSelectedAttributes().size());
 
         List<String> selected = attr.getSelectedAttributes();
-        Assert.assertEquals("2 attributes selected", 2, selected.size());
-        Assert.assertEquals("NAME should be first", "NAME", selected.get(0));
-        Assert.assertEquals( "CODE should be second","CODE", selected.get(1));
+        Assertions.assertEquals(2, selected.size(), "2 attributes selected");
+        Assertions.assertEquals("NAME", selected.get(0), "NAME should be first");
+        Assertions.assertEquals("CODE", selected.get(1), "CODE should be second");
 
         JSONObject en = attr.getLocalization().get();
-        Assert.assertEquals(2, en.length());
-        Assert.assertEquals("Name", en.getString("NAME"));
+        Assertions.assertEquals(2, en.length());
+        Assertions.assertEquals("Name", en.getString("NAME"));
         JSONObject fi = attr.getLocalization("fi").get();
-        Assert.assertEquals(2, fi.length());
-        Assert.assertEquals("Nimi", fi.getString("NAME"));
+        Assertions.assertEquals(2, fi.length());
+        Assertions.assertEquals("Nimi", fi.getString("NAME"));
 
         JSONObject data = attr.getAttributes().getJSONObject("data");
         JSONObject types = data.optJSONObject("types");
-        Assert.assertEquals("string", types.getString("NAME"));
-        Assert.assertEquals("number", types.getString("CODE"));
+        Assertions.assertEquals("string", types.getString("NAME"));
+        Assertions.assertEquals("number", types.getString("CODE"));
 
-        Assert.assertEquals("the_geom", data.getString("geometryName"));
-        Assert.assertEquals("MultiPolygon", data.getString("geometryType"));
+        Assertions.assertEquals("the_geom", data.getString("geometryName"));
+        Assertions.assertEquals("MultiPolygon", data.getString("geometryType"));
     }
 
     @Test
@@ -102,26 +102,23 @@ public class LayerJSONFormatterUSERLAYERTest {
         JSONObject describeLayer = layerJson.getJSONObject("describeLayer");
         JSONObject vectorStyle = describeLayer.getJSONArray("styles").getJSONObject(0);
         JSONObject styleDef = vectorStyle.getJSONObject("style");
-        Assert.assertTrue("VectorStyle should have default feature style definitions",
-                JSONHelper.isEqual(styleDef.getJSONObject("featureStyle"), WFSLayerOptions.getDefaultOskariStyle()));
-        Assert.assertEquals("VectorStyle should have id", "default", vectorStyle.getString("id"));
-        Assert.assertEquals("VectorStyle should have type", "oskari", vectorStyle.getString("type"));
+        Assertions.assertTrue(JSONHelper.isEqual(styleDef.getJSONObject("featureStyle"), WFSLayerOptions.getDefaultOskariStyle()), "VectorStyle should have default feature style definitions");
+        Assertions.assertEquals("default", vectorStyle.getString("id"), "VectorStyle should have id");
+        Assertions.assertEquals("oskari", vectorStyle.getString("type"), "VectorStyle should have type");
 
         JSONArray properties = describeLayer.getJSONArray("properties");
-        Assert.assertEquals("Properties should include all fields (also geometry)", 3, properties.length());
-        Assert.assertTrue("Field should get parsed like DescribeLayer",
-                JSONHelper.isEqual(properties.getJSONObject(1), new JSONObject(EXPECTED_1)));
-        Assert.assertTrue("Field should get parsed like DescribeLayer",
-                JSONHelper.isEqual(properties.getJSONObject(2), new JSONObject(EXPECTED_2)));
+        Assertions.assertEquals(3, properties.length(), "Properties should include all fields (also geometry)");
+        Assertions.assertTrue(JSONHelper.isEqual(properties.getJSONObject(1), new JSONObject(EXPECTED_1)), "Field should get parsed like DescribeLayer");
+        Assertions.assertTrue(JSONHelper.isEqual(properties.getJSONObject(2), new JSONObject(EXPECTED_2)), "Field should get parsed like DescribeLayer");
 
         String coverage = describeLayer.getString("coverage");
         // If test fails (interpolation) could be also check that WKT exists coverage.startsWith("POLYGON ((1 ")
-        Assert.assertEquals("Should have coverage WKT", WKT, coverage);
+        Assertions.assertEquals(WKT, coverage, "Should have coverage WKT");
 
         JSONObject controlData = describeLayer.getJSONObject("controlData");
-        Assert.assertEquals("Should have style type", "area", controlData.getString("styleType"));
-        Assert.assertEquals("Should have render mode", "render", controlData.getString("renderMode"));
-        Assert.assertEquals("Should have clustering distance", 20, controlData.getInt("clusteringDistance"));
+        Assertions.assertEquals("area", controlData.getString("styleType"), "Should have style type");
+        Assertions.assertEquals("render", controlData.getString("renderMode"), "Should have render mode");
+        Assertions.assertEquals(20, controlData.getInt("clusteringDistance"), "Should have clustering distance");
     }
 
 }

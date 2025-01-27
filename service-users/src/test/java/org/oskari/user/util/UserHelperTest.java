@@ -1,11 +1,10 @@
 package org.oskari.user.util;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 public class UserHelperTest {
     @Test
@@ -17,7 +16,7 @@ public class UserHelperTest {
             "user-name@domain-test.com",
             "username@domain.co.in",
             "user_name@domain.com");
-        goodEmails.forEach(email -> assertTrue(email, UserHelper.isValidEmail(email)));
+        goodEmails.forEach(email -> Assertions.assertTrue(UserHelper.isValidEmail(email), email));
     }
     @Test
     public void isNotValidEmail() {
@@ -26,6 +25,6 @@ public class UserHelperTest {
                 ".user.name@domain.com",
                 "user-name@domain.com.",
                 "username@.com");
-        badEmails.forEach(email -> assertFalse(email, UserHelper.isValidEmail(email)));
+        badEmails.forEach(email -> Assertions.assertFalse(UserHelper.isValidEmail(email), email));
     }
 }

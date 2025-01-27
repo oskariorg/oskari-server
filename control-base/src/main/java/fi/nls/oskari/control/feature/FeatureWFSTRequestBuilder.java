@@ -8,8 +8,8 @@ import fi.nls.oskari.util.GML3Writer;
 
 import org.geotools.referencing.CRS;
 import org.locationtech.jts.geom.Geometry;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.geotools.api.referencing.FactoryException;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.wfst.WFSTRequestBuilder;
 
 import javax.xml.stream.XMLStreamException;

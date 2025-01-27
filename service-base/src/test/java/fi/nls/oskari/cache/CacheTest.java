@@ -2,17 +2,16 @@ package fi.nls.oskari.cache;
 
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import org.junit.After;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Simple tests for cache.
  */
 public class CacheTest {
 
-    @After
+    @AfterEach
     public void teardown() {
         PropertyUtil.clearProperties();
     }
@@ -20,17 +19,17 @@ public class CacheTest {
     @Test
     public void testLimitNoProperty() {
         Cache<String> cache = CacheManager.getCache("LimitNoProperty");
-        assertEquals("Cache should be empty", 0, cache.getSize());
+        Assertions.assertEquals(0, cache.getSize(), "Cache should be empty");
         final int limit = 10;
         cache.setLimit(limit);
-        assertEquals("Cache limit should be " + limit, limit, cache.getLimit());
+        Assertions.assertEquals(limit, cache.getLimit(), "Cache limit should be " + limit);
         for(int i = 0; i < limit + 5; i++) {
             boolean overflow = cache.put("test" + i, "testing" + i);
             if(i < limit) {
-                assertFalse("Not overflowing", overflow);
+                Assertions.assertFalse(overflow, "Not overflowing");
             }
             else {
-                assertTrue("Overflowing", overflow);
+                Assertions.assertTrue(overflow, "Overflowing");
             }
         }
         // Checking that the oldest elements have been removed and the remaining are test5-test14
@@ -38,10 +37,10 @@ public class CacheTest {
             final int num = ConversionHelper.getInt(key.substring(4), -1);
             String value = cache.get(key);
             final int num2 = ConversionHelper.getInt(value.substring(7), -1);
-            assertTrue("Keynumbers should be over 4/" + num + "/" + key, num > 4);
-            assertTrue("Values should be over 4/" + num2 + "/" + value, num2 > 4);
+            Assertions.assertTrue(num > 4, "Keynumbers should be over 4/" + num + "/" + key);
+            Assertions.assertTrue(num2 > 4, "Values should be over 4/" + num2 + "/" + value);
         }
-        assertEquals("Cache size should be " + limit, limit, cache.getSize());
+        Assertions.assertEquals(limit, cache.getSize(), "Cache size should be " + limit);
     }
 
     @Test
@@ -51,22 +50,22 @@ public class CacheTest {
         PropertyUtil.addProperty(Cache.PROPERTY_LIMIT_PREFIX + cacheName, "" + limit);
 
         Cache<String> cache = CacheManager.getCache(cacheName);
-        assertEquals("Cache should be empty", 0, cache.getSize());
-        assertEquals("Cache limit should be " + limit, limit, cache.getLimit());
+        Assertions.assertEquals(0, cache.getSize(), "Cache should be empty");
+        Assertions.assertEquals(limit, cache.getLimit(), "Cache limit should be " + limit);
 
         cache.setLimit(limit + 5);
-        assertEquals("Cache limit prefers property config " + limit, limit, cache.getLimit());
+        Assertions.assertEquals(limit, cache.getLimit(), "Cache limit prefers property config " + limit);
 
         for(int i = 0; i < limit + 5; i++) {
             boolean overflow = cache.put("test" + i, "testing");
             if(i < limit) {
-                assertFalse("Not overflowing", overflow);
+                Assertions.assertFalse(overflow, "Not overflowing");
             }
             else {
-                assertTrue("Overflowing", overflow);
+                Assertions.assertTrue(overflow, "Overflowing");
             }
         }
-        assertEquals("Cache size should be " + limit, limit, cache.getSize());
+        Assertions.assertEquals(limit, cache.getSize(), "Cache size should be " + limit);
     }
 
     @Test
@@ -74,9 +73,9 @@ public class CacheTest {
         final String cacheName = "Expiration";
         final Cache<String> cache = CacheManager.getCache(cacheName);
         final long last = cache.getLastFlush();
-        assertFalse("Newly created cache should not be ready to flush", cache.isTimeToFlush(last));
+        Assertions.assertFalse(cache.isTimeToFlush(last), "Newly created cache should not be ready to flush");
         final long expiration = cache.getExpiration();
-        assertTrue("Cache lastFlush + expiration + 10 should be cleared for flush", cache.isTimeToFlush(last + expiration + 10));
+        Assertions.assertTrue(cache.isTimeToFlush(last + expiration + 10), "Cache lastFlush + expiration + 10 should be cleared for flush");
     }
 
 }

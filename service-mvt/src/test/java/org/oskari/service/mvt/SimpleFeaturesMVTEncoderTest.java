@@ -12,10 +12,11 @@ import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.referencing.CRS;
-import org.junit.Test;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.geotools.api.feature.simple.SimpleFeature;
+import org.geotools.api.feature.simple.SimpleFeatureType;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.geojson.GeoJSONReader2;
 import org.oskari.geojson.GeoJSONSchemaDetector;
 
@@ -27,8 +28,6 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LinearRing;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
-
-import static org.junit.Assert.*;
 
 public class SimpleFeaturesMVTEncoderTest {
 
@@ -61,16 +60,16 @@ public class SimpleFeaturesMVTEncoderTest {
             fc.add(fBuilder.buildFeature(null));
         }
 
-        assertEquals(5, fc.size());
+        Assertions.assertEquals(5, fc.size());
 
         List<Geometry> inTile = SimpleFeaturesMVTEncoder.asMVTGeoms(fc, bbox, 4096, 256);
-        assertEquals(0, inTile.size());
+        Assertions.assertEquals(0, inTile.size());
 
         List<Geometry> inLargeTile = SimpleFeaturesMVTEncoder.asMVTGeoms(fc, largerBbox, 4096, 256);
-        assertEquals(5, inLargeTile.size());
+        Assertions.assertEquals(5, inLargeTile.size());
 
         List<Geometry> inLargeTileNoBuffer = SimpleFeaturesMVTEncoder.asMVTGeoms(fc, largerBbox, 4096, 0);
-        assertEquals(1, inLargeTileNoBuffer.size());
+        Assertions.assertEquals(1, inLargeTileNoBuffer.size());
     }
 
     @Test
@@ -99,7 +98,7 @@ public class SimpleFeaturesMVTEncoderTest {
         fc.add(f);
 
         List<Geometry> geom = SimpleFeaturesMVTEncoder.asMVTGeoms(fc, bbox, 4096, 256);
-        assertEquals(1, geom.size());
+        Assertions.assertEquals(1, geom.size());
     }
 
     @Test
@@ -137,7 +136,7 @@ public class SimpleFeaturesMVTEncoderTest {
         fc.add(f);
 
         List<Geometry> geom = SimpleFeaturesMVTEncoder.asMVTGeoms(fc, bbox, 4096, 256);
-        assertEquals(0, geom.size());
+        Assertions.assertEquals(0, geom.size());
     }
 
     @Test
@@ -167,7 +166,7 @@ public class SimpleFeaturesMVTEncoderTest {
         fc.add(f);
 
         List<Geometry> geom = SimpleFeaturesMVTEncoder.asMVTGeoms(fc, bbox, 4096, 0);
-        assertEquals(1, geom.size());
+        Assertions.assertEquals(1, geom.size());
     }
 
     @Test
@@ -205,8 +204,8 @@ public class SimpleFeaturesMVTEncoderTest {
         fc.add(f);
 
         List<Geometry> geom = SimpleFeaturesMVTEncoder.asMVTGeoms(fc, bbox, 4096, 0);
-        assertEquals(1, geom.size());
-        assertEquals(Polygon.class, geom.get(0).getClass());
+        Assertions.assertEquals(1, geom.size());
+        Assertions.assertEquals(Polygon.class, geom.get(0).getClass());
     }
 
     public void verySmallInteriorRingsAreDeleted() {
@@ -243,9 +242,9 @@ public class SimpleFeaturesMVTEncoderTest {
         fc.add(f);
 
         List<Geometry> geom = SimpleFeaturesMVTEncoder.asMVTGeoms(fc, bbox, 4096, 0);
-        assertEquals(1, geom.size());
-        assertEquals(Polygon.class, geom.get(0).getClass());
-        assertNull(((Polygon) geom.get(0)).getInteriorRingN(0));
+        Assertions.assertEquals(1, geom.size());
+        Assertions.assertEquals(Polygon.class, geom.get(0).getClass());
+        Assertions.assertNull(((Polygon) geom.get(0)).getInteriorRingN(0));
     }
 
     @Test
@@ -262,7 +261,7 @@ public class SimpleFeaturesMVTEncoderTest {
         SimpleFeatureCollection sfc = GeoJSONReader2.toFeatureCollection(json, schema);
         double[] bbox = grid.getTileExtent(new TileCoord(10, 456, 826));
         List<Geometry> mvtGeoms = SimpleFeaturesMVTEncoder.asMVTGeoms(sfc, bbox, 4096, 256);
-        assertEquals(1, mvtGeoms.size());
+        Assertions.assertEquals(1, mvtGeoms.size());
     }
 
     @Test
@@ -279,7 +278,7 @@ public class SimpleFeaturesMVTEncoderTest {
         SimpleFeatureCollection sfc = GeoJSONReader2.toFeatureCollection(json, schema);
         double[] bbox = grid.getTileExtent(new TileCoord(11, 917, 1651));
         List<Geometry> mvtGeoms = SimpleFeaturesMVTEncoder.asMVTGeoms(sfc, bbox, 4096, 256);
-        assertEquals(1, mvtGeoms.size());
+        Assertions.assertEquals(1, mvtGeoms.size());
     }
 
     @Test
@@ -305,14 +304,14 @@ public class SimpleFeaturesMVTEncoderTest {
 */
         double[] bbox = grid.getTileExtent(new TileCoord(7, 50, 102));
         List<Geometry> mvtGeoms = SimpleFeaturesMVTEncoder.asMVTGeoms(sfc, bbox, 4096, 256);
-        assertEquals(175, mvtGeoms.size()); // wdtinc & no.ecc both 33063 bytes (~200ms)
+        Assertions.assertEquals(175, mvtGeoms.size()); // wdtinc & no.ecc both 33063 bytes (~200ms)
 
         long start = System.currentTimeMillis();
         byte[] bytes = SimpleFeaturesMVTEncoder.encodeToByteArray(sfc, "test", bbox, 4096, 256);
         long duration = System.currentTimeMillis() - start;
         System.out.println(duration + "ms -> " + bytes.length);
-        assertEquals("Check size" ,33063, bytes.length);
-        assertTrue("Check time" ,duration < 400); // Should be around ~200ms but CI might be slower
+        Assertions.assertEquals(33063, bytes.length, "Check size");
+        Assertions.assertTrue(duration < 400, "Check time"); // Should be around ~200ms but CI might be slower
     }
     @Test
     public void testPolygons() throws Exception {
@@ -329,15 +328,15 @@ public class SimpleFeaturesMVTEncoderTest {
 
         double[] bbox = grid.getTileExtent(new TileCoord(10, 456, 826));
         List<Geometry> mvtGeoms = SimpleFeaturesMVTEncoder.asMVTGeoms(sfc, bbox, 4096, 256);
-        assertEquals(28, mvtGeoms.size()); // wdtinc 3941bytes (~300ms) / no.ecc 4539bytes (~300ms)
+        Assertions.assertEquals(28, mvtGeoms.size()); // wdtinc 3941bytes (~300ms) / no.ecc 4539bytes (~300ms)
 
         long start = System.currentTimeMillis();
         byte[] bytes = SimpleFeaturesMVTEncoder.encodeToByteArray(sfc, "test", bbox, 4096, 256);
 
         long duration = System.currentTimeMillis() - start;
         System.out.println(duration + "ms -> " + bytes.length);
-        assertEquals("Check size" ,4539, bytes.length);
-        assertTrue("Check time" ,duration < 500); // Should be around ~300ms but CI might be slower
+        Assertions.assertEquals(4539, bytes.length, "Check size");
+        Assertions.assertTrue(duration < 500, "Check time"); // Should be around ~300ms but CI might be slower
     }
     @Test
     public void testLines() throws Exception {
@@ -353,15 +352,15 @@ public class SimpleFeaturesMVTEncoderTest {
         SimpleFeatureCollection sfc = GeoJSONReader2.toFeatureCollection(json, schema);
         double[] bbox = grid.getTileExtent(new TileCoord(10, 459, 838));
         List<Geometry> mvtGeoms = SimpleFeaturesMVTEncoder.asMVTGeoms(sfc, bbox, 4096, 256);
-        assertEquals(284, mvtGeoms.size()); // wdtinc 3941bytes (~300ms) / no.ecc 32083bytes (~300ms)
+        Assertions.assertEquals(284, mvtGeoms.size()); // wdtinc 3941bytes (~300ms) / no.ecc 32083bytes (~300ms)
 
         long start = System.currentTimeMillis();
         byte[] bytes = SimpleFeaturesMVTEncoder.encodeToByteArray(sfc, "test", bbox, 4096, 256);
 
         long duration = System.currentTimeMillis() - start;
         System.out.println(duration + "ms -> " + bytes.length);
-        assertEquals("Check size" ,32083, bytes.length);
-        assertTrue("Check time" ,duration < 500); // Should be around ~300ms but CI might be slower
+        Assertions.assertEquals(32083, bytes.length, "Check size");
+        Assertions.assertTrue(duration < 500, "Check time"); // Should be around ~300ms but CI might be slower
 
     }
 }

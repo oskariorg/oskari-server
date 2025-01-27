@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.print.request.PrintLayer;
 import org.oskari.service.user.UserLayerService;
 import org.oskari.service.wfs.client.OskariFeatureClient;

@@ -1,10 +1,9 @@
 package org.oskari.service.wfs.client;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
-
-import org.junit.Test;
 
 public class ExceptionReportParserTest {
 
@@ -12,9 +11,9 @@ public class ExceptionReportParserTest {
     public void happyCase() throws Exception {
         try (InputStream in = getClass().getClassLoader().getResourceAsStream("exceptionReport.xml")) {
             OWSException exception = OWSExceptionReportParser.parse(in);
-            assertEquals("InvalidParameterValue", exception.getExceptionCode());
-            assertEquals("outputFormat", exception.getLocator());
-            assertEquals("Failed to find response for output format application/json11", exception.getExceptionText());
+            Assertions.assertEquals("InvalidParameterValue", exception.getExceptionCode());
+            Assertions.assertEquals("outputFormat", exception.getLocator());
+            Assertions.assertEquals("Failed to find response for output format application/json11", exception.getExceptionText());
         }
     }
 

@@ -1,10 +1,12 @@
 package org.oskari.utils.common;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Test;
 
 import java.util.Iterator;
 import java.util.Map;
-import org.junit.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MapsTest {
 
@@ -32,9 +34,11 @@ public class MapsTest {
         assertEquals("qux", values.next());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test()
     public void oddNumberOfParamsThrowsException() {
-        map = Maps.of("foo", "bar", "baz");
+        assertThrows(IllegalArgumentException.class, () -> {
+            map = Maps.of("foo", "bar", "baz");
+        }, "fuu");
     }
 
     @Test

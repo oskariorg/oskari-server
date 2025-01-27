@@ -8,8 +8,8 @@ import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
@@ -59,30 +59,25 @@ public class LayerJSONFormatterMYPLACESTest {
         JSONObject describeLayer = layerJson.getJSONObject("describeLayer");
         JSONObject vectorStyle = describeLayer.getJSONArray("styles").getJSONObject(0);
         JSONObject styleDef = vectorStyle.getJSONObject("style");
-        Assert.assertTrue("VectorStyle should have default feature style definitions",
-                JSONHelper.isEqual(styleDef.getJSONObject("featureStyle"), WFSLayerOptions.getDefaultOskariStyle()));
-        Assert.assertEquals("VectorStyle should have id", "default", vectorStyle.getString("id"));
-        Assert.assertEquals("VectorStyle should have type", "oskari", vectorStyle.getString("type"));
+        Assertions.assertTrue(JSONHelper.isEqual(styleDef.getJSONObject("featureStyle"), WFSLayerOptions.getDefaultOskariStyle()), "VectorStyle should have default feature style definitions");
+        Assertions.assertEquals("default", vectorStyle.getString("id"), "VectorStyle should have id");
+        Assertions.assertEquals("oskari", vectorStyle.getString("type"), "VectorStyle should have type");
 
         JSONArray properties = describeLayer.getJSONArray("properties");
-        Assert.assertEquals("Properties should include all (also geometry and hidden)", 6, properties.length());
-        Assert.assertTrue("Property should get parsed like DescribeLayer",
-                JSONHelper.isEqual(properties.getJSONObject(0), new JSONObject(PROP_NAME)));
-        Assert.assertTrue("Property should get parsed like DescribeLayer",
-                JSONHelper.isEqual(properties.getJSONObject(2), new JSONObject(PROP_IMAGE)));
-        Assert.assertTrue("Attention text should be hidden and after visible props",
-                properties.getJSONObject(4).getBoolean("hidden"));
-        Assert.assertEquals("Geometry is last", "geometry",
-                properties.getJSONObject(5).getString("type"));
+        Assertions.assertEquals(6, properties.length(), "Properties should include all (also geometry and hidden)");
+        Assertions.assertTrue(JSONHelper.isEqual(properties.getJSONObject(0), new JSONObject(PROP_NAME)), "Property should get parsed like DescribeLayer");
+        Assertions.assertTrue(JSONHelper.isEqual(properties.getJSONObject(2), new JSONObject(PROP_IMAGE)), "Property should get parsed like DescribeLayer");
+        Assertions.assertTrue(properties.getJSONObject(4).getBoolean("hidden"), "Attention text should be hidden and after visible props");
+        Assertions.assertEquals("geometry", properties.getJSONObject(5).getString("type"), "Geometry is last");
 
         String coverage = describeLayer.optString("coverage", null);
-        Assert.assertNull("Shouldn't have coverage WKT", coverage);
+        Assertions.assertNull(coverage, "Shouldn't have coverage WKT");
 
         JSONObject controlData = describeLayer.getJSONObject("controlData");
-        Assert.assertEquals("Should have style type", "collection", controlData.getString("styleType"));
-        Assert.assertEquals("Should have default render mode", "vector", controlData.getString("renderMode"));
-        Assert.assertEquals("Shouldn't have clustering distance", -1, controlData.getInt("clusteringDistance"));
-        Assert.assertFalse(controlData.getBoolean("isDefault"));
+        Assertions.assertEquals("collection", controlData.getString("styleType"), "Should have style type");
+        Assertions.assertEquals("vector", controlData.getString("renderMode"), "Should have default render mode");
+        Assertions.assertEquals(-1, controlData.getInt("clusteringDistance"), "Shouldn't have clustering distance");
+        Assertions.assertFalse(controlData.getBoolean("isDefault"));
 
         layer.setDefault(true);
         JSONObject seJson = FORMATTER.getJSON(baseLayer, layer, SRS, "sv");
@@ -90,8 +85,8 @@ public class LayerJSONFormatterMYPLACESTest {
         String[] labels = props.stream()
                 .map(m -> (String) m.getOrDefault("label", null))
                 .toArray(String[]::new);
-        Assert.assertArrayEquals("Labels should be localized", SE_LABELS, labels);
-        Assert.assertTrue(seJson.getJSONObject("describeLayer").getJSONObject("controlData").getBoolean("isDefault"));
+        Assertions.assertArrayEquals(SE_LABELS, labels, "Labels should be localized");
+        Assertions.assertTrue(seJson.getJSONObject("describeLayer").getJSONObject("controlData").getBoolean("isDefault"));
     }
 
     @Test
@@ -103,14 +98,14 @@ public class LayerJSONFormatterMYPLACESTest {
         MyPlaceCategory layer = new MyPlaceCategory();
         JSONObject layerJson = FORMATTER.getJSON(baseLayer, layer, SRS, LANG);
         // Some MyPlaces layers have empty locale in DB for auto created default layer
-        Assert.assertEquals("Should have localized name from baselayer", "My map layer", layerJson.getString("name"));
-        Assert.assertTrue("and locale", JSONHelper.isEqual(baseLayer.getLocale(), layerJson.optJSONObject("locale")));
+        Assertions.assertEquals("My map layer", layerJson.getString("name"), "Should have localized name from baselayer");
+        Assertions.assertTrue(JSONHelper.isEqual(baseLayer.getLocale(), layerJson.optJSONObject("locale")), "and locale");
 
         String name = "Edited my place";
         layer.setName(LANG, name);
         layerJson = FORMATTER.getJSON(baseLayer, layer, SRS, LANG);
-        Assert.assertEquals("Should have localized name for WFS layer type", name, layerJson.getString("name"));
+        Assertions.assertEquals(name, layerJson.getString("name"), "Should have localized name for WFS layer type");
         JSONObject locale = JSONHelper.createJSONObject(LANG,JSONHelper.createJSONObject("name", name));
-        Assert.assertTrue("and locale", JSONHelper.isEqual(locale, layerJson.optJSONObject("locale")));
+        Assertions.assertTrue(JSONHelper.isEqual(locale, layerJson.optJSONObject("locale")), "and locale");
     }
 }

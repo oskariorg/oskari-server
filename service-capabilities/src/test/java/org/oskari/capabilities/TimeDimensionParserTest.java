@@ -1,10 +1,9 @@
 package org.oskari.capabilities;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 public class TimeDimensionParserTest {
 
@@ -13,53 +12,53 @@ public class TimeDimensionParserTest {
         String timeDimension = "2024-11-13T00:00:00Z/2024-11-23T00:00:00Z/PT3H";
 
         List<String> timeList = TimeDimensionParser.parseTimeDimensionAsStrings(timeDimension);
-        assertEquals("timeList should have x times", 81, timeList.size());
-        assertEquals("timeList should have expected first time", "2024-11-13T00:00:00Z", timeList.get(0));
-        assertEquals("timeList should have expected 10th time", "2024-11-14T03:00:00Z", timeList.get(9));
-        assertEquals("timeList should have expected last time", "2024-11-23T00:00:00Z", timeList.get(80));
+        Assertions.assertEquals(81, timeList.size(), "timeList should have x times");
+        Assertions.assertEquals("2024-11-13T00:00:00Z", timeList.get(0), "timeList should have expected first time");
+        Assertions.assertEquals("2024-11-14T03:00:00Z", timeList.get(9), "timeList should have expected 10th time");
+        Assertions.assertEquals("2024-11-23T00:00:00Z", timeList.get(80), "timeList should have expected last time");
     }
     @Test
     public void testWMSTIntervalParsingMinutes() {
         String timeDimension = "2024-11-20T00:00:00Z/2024-11-23T00:00:00Z/PT10M";
 
         List<String> timeList = TimeDimensionParser.parseTimeDimensionAsStrings(timeDimension);
-        assertEquals("timeList should have x times", 433, timeList.size());
-        assertEquals("timeList should have expected first time", "2024-11-20T00:00:00Z", timeList.get(0));
-        assertEquals("timeList should have expected 10th time", "2024-11-20T01:30:00Z", timeList.get(9));
-        assertEquals("timeList should have expected last time", "2024-11-23T00:00:00Z", timeList.get(432));
+        Assertions.assertEquals(433, timeList.size(), "timeList should have x times");
+        Assertions.assertEquals("2024-11-20T00:00:00Z", timeList.get(0), "timeList should have expected first time");
+        Assertions.assertEquals("2024-11-20T01:30:00Z", timeList.get(9), "timeList should have expected 10th time");
+        Assertions.assertEquals("2024-11-23T00:00:00Z", timeList.get(432), "timeList should have expected last time");
 
     }
 
     @Test
     public void testIntervalDateErrors() {
-        assertEquals("Should return empty list for null", 0, TimeDimensionParser.parseTimeDimensionAsStrings(null).size());
-        assertEquals("Should return empty list for empty str", 0, TimeDimensionParser.parseTimeDimensionAsStrings("").size());
-        assertEquals("Should return empty list for str with less /", 0, TimeDimensionParser.parseTimeDimensionAsStrings("/").size());
-        assertEquals("Should return empty list for str with more /", 0, TimeDimensionParser.parseTimeDimensionAsStrings("/////").size());
+        Assertions.assertEquals(0, TimeDimensionParser.parseTimeDimensionAsStrings(null).size(), "Should return empty list for null");
+        Assertions.assertEquals(0, TimeDimensionParser.parseTimeDimensionAsStrings("").size(), "Should return empty list for empty str");
+        Assertions.assertEquals(0, TimeDimensionParser.parseTimeDimensionAsStrings("/").size(), "Should return empty list for str with less /");
+        Assertions.assertEquals(0, TimeDimensionParser.parseTimeDimensionAsStrings("/////").size(), "Should return empty list for str with more /");
         try {
             TimeDimensionParser.parseTimeDimensionAsStrings("2v024-11-13T00:00:00Z/2024-11-23T00:00:00Z/PT3H");
-            fail("Should have raised exception for start date");
+            Assertions.fail("Should have raised exception for start date");
         } catch (IllegalArgumentException e) {
-            assertEquals("Should throw exception", "Unable to parse start date from: 2v024-11-13T00:00:00Z", e.getMessage());
+            Assertions.assertEquals("Unable to parse start date from: 2v024-11-13T00:00:00Z", e.getMessage(), "Should throw exception");
         }
 
         try {
             TimeDimensionParser.parseTimeDimensionAsStrings("2024-11-13/2024-11-23T00:00:00Z/PT3H");
-            fail("Should have raised exception for start date");
+            Assertions.fail("Should have raised exception for start date");
         } catch (IllegalArgumentException e) {
-            assertEquals("Should throw exception", "Unable to parse start date from: 2024-11-13", e.getMessage());
+            Assertions.assertEquals("Unable to parse start date from: 2024-11-13", e.getMessage(), "Should throw exception");
         }
         try {
             TimeDimensionParser.parseTimeDimensionAsStrings("2024-11-13T00:00:00Z/2024-11-23T000:00:00Z/PT3H");
-            fail("Should have raised exception for end date");
+            Assertions.fail("Should have raised exception for end date");
         } catch (IllegalArgumentException e) {
-            assertEquals("Should throw exception", "Unable to parse end date from: 2024-11-23T000:00:00Z", e.getMessage());
+            Assertions.assertEquals("Unable to parse end date from: 2024-11-23T000:00:00Z", e.getMessage(), "Should throw exception");
         }
         try {
             TimeDimensionParser.parseTimeDimensionAsStrings("//PT3H");
-            fail("Should have raised exception for start date");
+            Assertions.fail("Should have raised exception for start date");
         } catch (IllegalArgumentException e) {
-            assertEquals("Should throw exception", "Unable to parse start date from: ", e.getMessage());
+            Assertions.assertEquals("Unable to parse start date from: ", e.getMessage(), "Should throw exception");
         }
     }
 
@@ -69,18 +68,18 @@ public class TimeDimensionParserTest {
 
         try {
             TimeDimensionParser.parseTimeDimensionAsStrings("2024-11-13T00:00:00Z/2024-11-23T00:00:00Z/PT3xH");
-            fail("Should have raised exception for interval");
+            Assertions.fail("Should have raised exception for interval");
         } catch (IllegalArgumentException e) {
-            assertEquals("Should throw exception", "Unsupported interval format: PT3xH", e.getMessage());
+            Assertions.assertEquals("Unsupported interval format: PT3xH", e.getMessage(), "Should throw exception");
         }
         try {
             TimeDimensionParser.parseTimeDimensionAsStrings("2024-11-13T00:00:00Z/2024-11-23T00:00:00Z/P20S");
-            fail("Should have raised exception for interval");
+            Assertions.fail("Should have raised exception for interval");
         } catch (IllegalArgumentException e) {
-            assertEquals("Should throw exception", "Unsupported interval format: P20S", e.getMessage());
+            Assertions.assertEquals("Unsupported interval format: P20S", e.getMessage(), "Should throw exception");
         }
 
-        assertEquals("Should return single entry when interval is bigger than start/end difference", 1, TimeDimensionParser.parseTimeDimensionAsStrings("2024-11-13T00:00:00Z/2024-11-23T00:00:00Z/P20Y").size());
+        Assertions.assertEquals(1, TimeDimensionParser.parseTimeDimensionAsStrings("2024-11-13T00:00:00Z/2024-11-23T00:00:00Z/P20Y").size(), "Should return single entry when interval is bigger than start/end difference");
 
     }
 }

@@ -5,19 +5,18 @@ import fi.nls.oskari.domain.User;
 import fi.nls.oskari.service.DummyUserService;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.util.TestHelper;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.sql.DataSource;
-
-import static org.junit.Assert.assertEquals;
 
 public class AppSetupServiceMybatisImplTest {
 
     private ViewService service;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         /*
         view.default=[global default view id that is used if role-based default view is not found]
@@ -39,19 +38,19 @@ public class AppSetupServiceMybatisImplTest {
     public void testGetDefaultViewId() throws Exception {
 
         final User guest = new GuestUser();
-        assertEquals("User with no roles should end up using the value configure in 'view.default'", 5, service.getDefaultViewId(guest));
+        Assertions.assertEquals(5, service.getDefaultViewId(guest), "User with no roles should end up using the value configure in 'view.default'");
         guest.addRole(1, "Guest");
-        assertEquals("User with Guest role should end up using the value configure in 'view.default.Guest'", 4, service.getDefaultViewId(guest));
+        Assertions.assertEquals(4, service.getDefaultViewId(guest), "User with Guest role should end up using the value configure in 'view.default.Guest'");
 
         final User user = new User();
         user.addRole(2, "User");
-        assertEquals("User with User role should end up using the value configure in 'view.default.User'", 3, service.getDefaultViewId(user));
+        Assertions.assertEquals(3, service.getDefaultViewId(user), "User with User role should end up using the value configure in 'view.default.User'");
         user.addRole(3, "Admin");
-        assertEquals("User with Admin role should end up using the value configure in 'view.default.Admin'", 2, service.getDefaultViewId(user));
+        Assertions.assertEquals(2, service.getDefaultViewId(user), "User with Admin role should end up using the value configure in 'view.default.Admin'");
 
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         PropertyUtil.clearProperties();
     }

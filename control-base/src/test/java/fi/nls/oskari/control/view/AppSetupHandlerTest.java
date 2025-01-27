@@ -7,10 +7,10 @@ import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
 import fi.nls.oskari.map.analysis.service.AnalysisDbService;
+import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
 import fi.nls.oskari.map.view.BundleService;
 import fi.nls.oskari.map.view.BundleServiceMybatisImpl;
 import fi.nls.oskari.map.view.ViewService;
-import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
 import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.myplaces.MyPlacesServiceMybatisImpl;
 import fi.nls.oskari.service.UserService;
@@ -22,32 +22,29 @@ import fi.nls.test.util.ResourceHelper;
 import fi.nls.test.util.TestHelper;
 import fi.nls.test.view.ViewTestHelper;
 import org.json.JSONObject;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.oskari.map.userlayer.service.UserLayerDbService;
 import org.oskari.permissions.PermissionService;
 import org.oskari.permissions.PermissionServiceMybatisImpl;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.anyLong;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(value = {UserService.class})
-// these are needed with PowerMock and Java 11. Haven't tried if Java 13+ still needs these:
-// https://github.com/powermock/powermock/issues/864
-@PowerMockIgnore({"com.sun.org.apache.xalan.*", "com.sun.org.apache.xerces.*", "javax.xml.*", "org.w3c.dom.*", "org.xml.*", "com.sun.org.apache.xml.*"})
+@ExtendWith(MockitoExtension.class)
 public class AppSetupHandlerTest extends JSONActionRouteTest {
 	
     private AppSetupHandler handler = null;
@@ -60,7 +57,7 @@ public class AppSetupHandlerTest extends JSONActionRouteTest {
     public static final String BUNDLE_WHITELISTED = "whitelistTestBundle";
     public static final String VALUE_PARENT_UUID = "just-testing";
 
-    @BeforeClass
+    @BeforeAll
     public static void addProperties() throws Exception {
         TestHelper.registerTestDataSource();
         PropertyUtil.addProperty("view.template.publish", "3", true);
@@ -68,7 +65,7 @@ public class AppSetupHandlerTest extends JSONActionRouteTest {
         PropertyUtil.addProperty("oskari.map.url", "/map", true);
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         // view.template.publish=3
     	// mock services for testing
@@ -90,7 +87,7 @@ public class AppSetupHandlerTest extends JSONActionRouteTest {
         handler.init();
     }
 
-    @AfterClass
+    @AfterAll
     public static void teardown() {
         PropertyUtil.clearProperties();
         TestHelper.teardown();
@@ -112,15 +109,18 @@ public class AppSetupHandlerTest extends JSONActionRouteTest {
         // add all bundles needed in test
         Bundle bundle = new Bundle();
         bundle.setName(BUNDLE_WHITELISTED);
-        doReturn(bundle).when(bundleService).getBundleTemplateByName(BUNDLE_WHITELISTED);
+        Mockito.lenient().doReturn(bundle).when(bundleService).getBundleTemplateByName(BUNDLE_WHITELISTED);
     }
 
     private void mockUserService() throws Exception {
         userService = mock(UserService.class);
         Role role = new Role();
         role.setName("Admin");
-        doReturn(role).when(userService).getRoleByName(role.getName());
-        Whitebox.setInternalState(UserService.class, "instance", userService);
+        Mockito.lenient().doReturn(role).when(userService).getRoleByName(role.getName());
+        Field instance = UserService.class.getDeclaredField("instance");
+        instance.setAccessible(true);
+        instance.set(null, userService);
+        // Whitebox.setInternalState(UserService.class, "instance", userService);
     }
 
     @Test
@@ -140,17 +140,17 @@ public class AppSetupHandlerTest extends JSONActionRouteTest {
         final JSONObject expectedResult = ResourceHelper.readJSONResource("AppSetupHandlerTest-output-simple.json", this);
         final JSONObject actualResponse = getResponseJSON();
         // UUID will change in each run, so just checking that there is one
-        assertNotNull("Must contain actual UUID", actualResponse.getString("uuid"));
+        assertNotNull(actualResponse.getString("uuid"), "Must contain actual UUID");
         actualResponse.remove("uuid");
         expectedResult.remove("uuid");
 
         // URL will change in each run as it contains the UUID, so just checking that there is one
-        assertNotNull("Must contain some URL", actualResponse.getString("url"));
-        assertNotNull("URL should start with expected format", actualResponse.getString("url").startsWith("//domain.com/map?lang=fi&" + ActionConstants.PARAM_UUID + "="));
+        assertNotNull( actualResponse.getString("url"), "Must contain some URL");
+        assertNotNull(actualResponse.getString("url").startsWith("//domain.com/map?lang=fi&" + ActionConstants.PARAM_UUID + "="), "URL should start with expected format");
                 actualResponse.remove("url");
         expectedResult.remove("url");
 
-        assertTrue("Response should match expected", JSONHelper.isEqual(expectedResult, actualResponse));
+        assertTrue(JSONHelper.isEqual(expectedResult, actualResponse), "Response should match expected");
     }
 
     @Test
@@ -166,7 +166,7 @@ public class AppSetupHandlerTest extends JSONActionRouteTest {
         final ActionParameters params = createActionParams(parameters, getLoggedInUser());
         View view = handler.buildPublishedView(params);
 
-        assertNull("View shouldn't have bundle that has not been whitelisted", view.getBundleByName(BUNDLE_WHITELISTED));
+        assertNull(view.getBundleByName(BUNDLE_WHITELISTED), "View shouldn't have bundle that has not been whitelisted");
     }
 
     @Test
@@ -182,7 +182,7 @@ public class AppSetupHandlerTest extends JSONActionRouteTest {
         final ActionParameters params = createActionParams(parameters, getLoggedInUser());
         View view = handler.buildPublishedView(params);
 
-        assertNotNull("View should have bundle that has been whitelisted", view.getBundleByName(BUNDLE_WHITELISTED));
+        assertNotNull(view.getBundleByName(BUNDLE_WHITELISTED), "View should have bundle that has been whitelisted");
     }
 
 }

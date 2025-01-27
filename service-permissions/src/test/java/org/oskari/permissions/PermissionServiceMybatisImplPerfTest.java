@@ -2,9 +2,9 @@ package org.oskari.permissions;
 
 import fi.nls.oskari.domain.GuestUser;
 import fi.nls.test.util.TestHelper;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.oskari.permissions.model.*;
 
 import javax.sql.DataSource;
@@ -13,12 +13,12 @@ import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.List;
 
-@Ignore
+@Disabled("Was ignored even before, requires db")
 public class PermissionServiceMybatisImplPerfTest {
 
     private static PermissionServiceMybatisImpl permissionService;
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws SQLException, IOException, URISyntaxException {
         DataSource dataSource = TestHelper.createMemDBforUnitTest();
         permissionService = new PermissionServiceMybatisImpl(dataSource);

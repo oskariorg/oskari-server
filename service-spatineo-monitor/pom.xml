@@ -24,8 +24,8 @@
             <artifactId>service-map</artifactId>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.oskari</groupId>
+            <artifactId>test-helper</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

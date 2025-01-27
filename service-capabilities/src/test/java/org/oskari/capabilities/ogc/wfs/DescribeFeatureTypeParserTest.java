@@ -1,13 +1,12 @@
 package org.oskari.capabilities.ogc.wfs;
 
 import fi.nls.test.util.ResourceHelper;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.junit.Assert.*;
 
 public class DescribeFeatureTypeParserTest {
 
@@ -36,10 +35,10 @@ public class DescribeFeatureTypeParserTest {
     }
 
     private void verify(List<FeaturePropertyType> props, Map<String, String> expected) {
-        assertEquals("Should get expected amount of props", expected.size(), props.size());
+        Assertions.assertEquals(expected.size(), props.size(), "Should get expected amount of props");
 
         props.stream().forEach(p -> {
-            assertEquals("Prop " + p.name + " should be " + p.type, expected.get(p.name), p.type);
+            Assertions.assertEquals(expected.get(p.name), p.type, "Prop " + p.name + " should be " + p.type);
         });
     }
     private void verify(List<FeaturePropertyType> props) {

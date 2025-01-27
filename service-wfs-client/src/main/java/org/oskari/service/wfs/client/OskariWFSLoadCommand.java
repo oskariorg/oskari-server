@@ -3,8 +3,8 @@ package org.oskari.service.wfs.client;
 import fi.nls.oskari.domain.map.OskariLayer;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.opengis.filter.Filter;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.geotools.api.filter.Filter;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.service.wfs3.OskariWFS3Client;
 
 import com.netflix.hystrix.HystrixCommand;

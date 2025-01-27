@@ -7,9 +7,8 @@ import fi.nls.oskari.control.statistics.data.StatisticalIndicatorDataDimension;
 import fi.nls.oskari.control.statistics.data.StatisticalIndicatorLayer;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Created by SMAKINEN on 13.1.2017.
@@ -22,7 +21,7 @@ public class DataSourceUpdaterTest {
             throws Exception {
 
         StatisticalIndicator indicator = MAPPER.readValue(getClass().getResourceAsStream("indicator_full.json"), StatisticalIndicator.class);
-        assertEquals("Indicator id parsed correctly", "3056", indicator.getId());
+        Assertions.assertEquals("3056", indicator.getId(), "Indicator id parsed correctly");
     }
     @Test
     public void writeToList()
@@ -36,10 +35,10 @@ public class DataSourceUpdaterTest {
 
         final String expectedListItem = IOHelper.readString(getClass().getResourceAsStream("indicator_listitem.json"));
         String result = listMapper.writeValueAsString(indicator);
-        assertTrue("List serialization should match", JSONHelper.isEqual(JSONHelper.createJSONObject(result), JSONHelper.createJSONObject(expectedListItem)));
+        Assertions.assertTrue(JSONHelper.isEqual(JSONHelper.createJSONObject(result), JSONHelper.createJSONObject(expectedListItem)), "List serialization should match");
 
         String full = MAPPER.writeValueAsString(indicator);
-        assertTrue("Metadata serialization should match", JSONHelper.isEqual(JSONHelper.createJSONObject(full), JSONHelper.createJSONObject(fullIndicator)));
+        Assertions.assertTrue(JSONHelper.isEqual(JSONHelper.createJSONObject(full), JSONHelper.createJSONObject(fullIndicator)), "Metadata serialization should match");
     }
 
     @Test
@@ -51,10 +50,10 @@ public class DataSourceUpdaterTest {
         layer.addParam(key, value);
         String json = MAPPER.writeValueAsString(layer);
         final String expected = "{\"oskariLayerId\":1,\"indicatorId\":\"indicatorId\",\"params\":{\"testing\":\"param value\"},\"indicatorValueType\":\"FLOAT\"}";
-        assertTrue("Layer serialization should match", JSONHelper.isEqual(JSONHelper.createJSONObject(expected), JSONHelper.createJSONObject(json)));
+        Assertions.assertTrue(JSONHelper.isEqual(JSONHelper.createJSONObject(expected), JSONHelper.createJSONObject(json)), "Layer serialization should match");
 
         StatisticalIndicatorLayer layer_fromJson = MAPPER.readValue(json, StatisticalIndicatorLayer.class);
-        assertEquals("Param should have been deserialized correctly", value, layer_fromJson.getParam(key));
+        Assertions.assertEquals(value, layer_fromJson.getParam(key), "Param should have been deserialized correctly");
     }
 
     @Test
@@ -65,19 +64,19 @@ public class DataSourceUpdaterTest {
         StatisticalIndicator indicator = MAPPER.readValue(fullIndicator, StatisticalIndicator.class);
 
         StatisticalIndicatorDataDimension gender = indicator.getDataModel().getDimension("sex");
-        assertEquals("Initial value should be male", "male", gender.getAllowedValues().get(0).getKey());
+        Assertions.assertEquals("male", gender.getAllowedValues().get(0).getKey(), "Initial value should be male");
         gender.useDefaultValue("total");
-        assertEquals("Default value should be total", "total", gender.getAllowedValues().get(0).getKey());
+        Assertions.assertEquals("total", gender.getAllowedValues().get(0).getKey(), "Default value should be total");
 
         StatisticalIndicatorDataDimension year = indicator.getDataModel().getDimension("year");
-        assertEquals("Initial value should be 1996", "1996", year.getAllowedValues().get(0).getKey());
+        Assertions.assertEquals("1996", year.getAllowedValues().get(0).getKey(), "Initial value should be 1996");
         year.sort(true);
-        assertEquals("Sorted value should be 2015", "2015", year.getAllowedValues().get(0).getKey());
+        Assertions.assertEquals("2015", year.getAllowedValues().get(0).getKey(), "Sorted value should be 2015");
 
         String json = MAPPER.writeValueAsString(indicator);
         StatisticalIndicator deserialized = MAPPER.readValue(json, StatisticalIndicator.class);
 
-        assertEquals("Deserialized value should be total", "total", gender.getAllowedValues().get(0).getKey());
-        assertEquals("Deserialized value should be 2015", "2015", year.getAllowedValues().get(0).getKey());
+        Assertions.assertEquals("total", gender.getAllowedValues().get(0).getKey(), "Deserialized value should be total");
+        Assertions.assertEquals("2015", year.getAllowedValues().get(0).getKey(), "Deserialized value should be 2015");
     }
 }

@@ -8,11 +8,11 @@ import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.filter.text.cql2.CQL;
 import org.json.JSONObject;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.filter.Filter;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.geotools.api.feature.simple.SimpleFeature;
+import org.geotools.api.filter.Filter;
 
 import java.util.Arrays;
 import java.util.List;
@@ -75,7 +75,7 @@ public class OskariWFSFilterTest {
             "}";
     String notLikeFilter = likeFilter.replace("like", "notLike");
 
-    @Before
+    @BeforeEach
     public void init() {
         tb.setName("test");
         tb.add("name", String.class);
@@ -98,29 +98,29 @@ public class OskariWFSFilterTest {
     @Test
     public void cqlTest() throws Exception {
         Filter f = OskariWFSFilterFactory.getAttributeFilter(equalFilter);
-        Assert.assertEquals("name = 'helsinki'", CQL.toCQL(f));
+        Assertions.assertEquals("name = 'helsinki'", CQL.toCQL(f));
         f = OskariWFSFilterFactory.getAttributeFilter(rangeFilter);
-        Assert.assertEquals("population > 4000.0 AND population < 200000.0", CQL.toCQL(f));
+        Assertions.assertEquals("population > 4000.0 AND population < 200000.0", CQL.toCQL(f));
         f = OskariWFSFilterFactory.getAttributeFilter(inclusiveFilter);
-        Assert.assertEquals("population <= 200000.0 AND population >= 4000.0", CQL.toCQL(f));
+        Assertions.assertEquals("population <= 200000.0 AND population >= 4000.0", CQL.toCQL(f));
         f = OskariWFSFilterFactory.getAttributeFilter(notInFilter);
-        Assert.assertEquals("name <> 'Helsinki' AND name <> 'Tampere'", CQL.toCQL(f));
+        Assertions.assertEquals("name <> 'Helsinki' AND name <> 'Tampere'", CQL.toCQL(f));
         f = OskariWFSFilterFactory.getAttributeFilter(inFilter);
-        Assert.assertEquals("name = 'Helsinki' OR name = 'Tampere'", CQL.toCQL(f));
+        Assertions.assertEquals("name = 'Helsinki' OR name = 'Tampere'", CQL.toCQL(f));
         f = OskariWFSFilterFactory.getAttributeFilter(likeFilter);
-        Assert.assertEquals("name ILIKE 'Hels*'", CQL.toCQL(f));
+        Assertions.assertEquals("name ILIKE 'Hels*'", CQL.toCQL(f));
         f = OskariWFSFilterFactory.getAttributeFilter(notLikeFilter);
-        Assert.assertEquals("NOT (name ILIKE 'Hels*')", CQL.toCQL(f));
+        Assertions.assertEquals("NOT (name ILIKE 'Hels*')", CQL.toCQL(f));
 
         f = OskariWFSFilterFactory.getAttributeFilter(andFilter);
         String cqlAnd = CQL.toCQL(f);
-        Assert.assertEquals("type = 'city' AND (population > 20000.0)", cqlAnd);
+        Assertions.assertEquals("type = 'city' AND (population > 20000.0)", cqlAnd);
         f = OskariWFSFilterFactory.getAttributeFilter(orFilter);
         String cqlOr = CQL.toCQL(f);
-        Assert.assertEquals("(name = 'Tampere') OR type = 'village'", cqlOr);
+        Assertions.assertEquals("(name = 'Tampere') OR type = 'village'", cqlOr);
 
         f = OskariWFSFilterFactory.getAttributeFilter(andOrFlter);
-        Assert.assertEquals("(" + cqlAnd +") AND (" + cqlOr + ")", CQL.toCQL(f));
+        Assertions.assertEquals("(" + cqlAnd +") AND (" + cqlOr + ")", CQL.toCQL(f));
     }
 
     @Test
@@ -129,69 +129,69 @@ public class OskariWFSFilterTest {
         JSONObject propertyFilter = jsonFilter.getJSONObject("property");
         Filter f = OskariWFSFilterFactory.getAttributeFilter(jsonFilter);
         SimpleFeatureCollection sfc = fc.subCollection(f);
-        Assert.assertEquals(0, sfc.size());
+        Assertions.assertEquals(0, sfc.size());
 
         propertyFilter.remove("caseSensitive"); // defaults to false
         f = OskariWFSFilterFactory.getAttributeFilter(jsonFilter);
         sfc = fc.subCollection(f);
-        Assert.assertEquals(1, sfc.size());
+        Assertions.assertEquals(1, sfc.size());
         SimpleFeature feat =  sfc.features().next();
-        Assert.assertEquals("Helsinki", feat.getAttribute("name"));
+        Assertions.assertEquals("Helsinki", feat.getAttribute("name"));
 
         propertyFilter.put("key", "capital");
         propertyFilter.put("value", false);
         f = OskariWFSFilterFactory.getAttributeFilter(jsonFilter);
         sfc = fc.subCollection(f);
-        Assert.assertEquals(3, sfc.size());
-        Assert.assertFalse(sfc.contains(feat));
+        Assertions.assertEquals(3, sfc.size());
+        Assertions.assertFalse(sfc.contains(feat));
 
         propertyFilter.put("key", "population");
         propertyFilter.put("value", 600000);
         f = OskariWFSFilterFactory.getAttributeFilter(jsonFilter);
         sfc = fc.subCollection(f);
-        Assert.assertEquals(1, sfc.size());
-        Assert.assertTrue(sfc.contains(feat));
+        Assertions.assertEquals(1, sfc.size());
+        Assertions.assertTrue(sfc.contains(feat));
     }
 
     @Test
     public void rangeFilters() throws Exception {
         Filter f = OskariWFSFilterFactory.getAttributeFilter(rangeFilter);
         SimpleFeatureCollection sfc = fc.subCollection(f);
-        Assert.assertEquals(1, sfc.size());
-        Assert.assertEquals("Sipoo", sfc.features().next().getAttribute("name"));
+        Assertions.assertEquals(1, sfc.size());
+        Assertions.assertEquals("Sipoo", sfc.features().next().getAttribute("name"));
         f = OskariWFSFilterFactory.getAttributeFilter(inclusiveFilter);
         sfc = fc.subCollection(f);
-        Assert.assertEquals(3, sfc.size());
-        Assert.assertFalse(getFeatureNames(sfc).contains("Helsinki"));
+        Assertions.assertEquals(3, sfc.size());
+        Assertions.assertFalse(getFeatureNames(sfc).contains("Helsinki"));
     }
 
     @Test
     public void orFilter() throws Exception {
         Filter f = OskariWFSFilterFactory.getAttributeFilter(orFilter);
         SimpleFeatureCollection sfc = fc.subCollection(f);
-        Assert.assertEquals(2, sfc.size());
+        Assertions.assertEquals(2, sfc.size());
         List<String> names = getFeatureNames(sfc);
-        Assert.assertTrue(names.contains("Tampere"));
-        Assert.assertTrue(names.contains("Puuppola"));
+        Assertions.assertTrue(names.contains("Tampere"));
+        Assertions.assertTrue(names.contains("Puuppola"));
     }
 
     @Test
     public void andFilter() throws Exception {
         Filter f = OskariWFSFilterFactory.getAttributeFilter(andFilter);
         SimpleFeatureCollection sfc = fc.subCollection(f);
-        Assert.assertEquals(2, sfc.size());
+        Assertions.assertEquals(2, sfc.size());
         List<String> names = getFeatureNames(sfc);
-        Assert.assertTrue(names.contains("Tampere"));
-        Assert.assertTrue(names.contains("Helsinki"));
+        Assertions.assertTrue(names.contains("Tampere"));
+        Assertions.assertTrue(names.contains("Helsinki"));
     }
 
     @Test
     public void andOrFilter() throws Exception {
         Filter f = OskariWFSFilterFactory.getAttributeFilter(andOrFlter);
         SimpleFeatureCollection sfc = fc.subCollection(f);
-        Assert.assertEquals(1, sfc.size());
+        Assertions.assertEquals(1, sfc.size());
         List<String> names = getFeatureNames(sfc);
-        Assert.assertTrue(names.contains("Tampere"));
+        Assertions.assertTrue(names.contains("Tampere"));
     }
 
     @Test
@@ -201,13 +201,13 @@ public class OskariWFSFilterTest {
         f = OskariWFSFilterFactory.getAttributeFilter(inFilter);
         SimpleFeatureCollection sfcIn = fc.subCollection(f);
 
-        Assert.assertTrue("Subcollections should be disjoint sets", isDisjoint(sfcNot, sfcIn));
-        Assert.assertEquals(fc.size(), sfcNot.size() + sfcIn.size());
+        Assertions.assertTrue(isDisjoint(sfcNot, sfcIn), "Subcollections should be disjoint sets");
+        Assertions.assertEquals(fc.size(), sfcNot.size() + sfcIn.size());
 
         List<String> names = getFeatureNames(sfcNot);
-        Assert.assertEquals(2, names.size());
-        Assert.assertTrue(names.contains("Puuppola"));
-        Assert.assertTrue(names.contains("Sipoo"));
+        Assertions.assertEquals(2, names.size());
+        Assertions.assertTrue(names.contains("Puuppola"));
+        Assertions.assertTrue(names.contains("Sipoo"));
     }
 
     @Test
@@ -217,12 +217,12 @@ public class OskariWFSFilterTest {
         Filter fNot = OskariWFSFilterFactory.getAttributeFilter(notLikeFilter);
         SimpleFeatureCollection sfcNot = fc.subCollection(fNot);
 
-        Assert.assertTrue("Subcollections should be disjoint sets", isDisjoint(sfcNot, sfcLike));
-        Assert.assertEquals(fc.size(), sfcNot.size() + sfcLike.size());
+        Assertions.assertTrue(isDisjoint(sfcNot, sfcLike), "Subcollections should be disjoint sets");
+        Assertions.assertEquals(fc.size(), sfcNot.size() + sfcLike.size());
 
         List<String> names = getFeatureNames(sfcLike);
-        Assert.assertEquals(1, names.size());
-        Assert.assertTrue(names.contains("Helsinki"));
+        Assertions.assertEquals(1, names.size());
+        Assertions.assertTrue(names.contains("Helsinki"));
 
         JSONObject jsonFilter = new JSONObject(likeFilter);
         JSONObject propertyFilter = jsonFilter.getJSONObject("property");
@@ -230,16 +230,16 @@ public class OskariWFSFilterTest {
         fLike = OskariWFSFilterFactory.getAttributeFilter(jsonFilter);
         sfcLike = fc.subCollection(fLike);
         names = getFeatureNames(sfcLike);
-        Assert.assertEquals(2, sfcLike.size());
-        Assert.assertTrue(names.contains("Puuppola"));
-        Assert.assertTrue(names.contains("Sipoo"));
+        Assertions.assertEquals(2, sfcLike.size());
+        Assertions.assertTrue(names.contains("Puuppola"));
+        Assertions.assertTrue(names.contains("Sipoo"));
 
         propertyFilter.put("like", "hels?nki");
         fLike = OskariWFSFilterFactory.getAttributeFilter(jsonFilter);
         sfcLike = fc.subCollection(fLike);
-        Assert.assertEquals(1, sfcLike.size());
+        Assertions.assertEquals(1, sfcLike.size());
         names = getFeatureNames(sfcLike);
-        Assert.assertTrue(names.contains("Helsinki"));
+        Assertions.assertTrue(names.contains("Helsinki"));
     }
 
     private List<String> getFeatureNames (SimpleFeatureCollection sfc) {

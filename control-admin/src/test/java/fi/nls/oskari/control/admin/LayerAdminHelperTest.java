@@ -1,11 +1,9 @@
 package fi.nls.oskari.control.admin;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import fi.nls.oskari.domain.map.OskariLayer;
@@ -18,7 +16,7 @@ public class LayerAdminHelperTest {
 
         OskariLayer mock = Mockito.mock(OskariLayer.class);
 
-        assertFalse(LayerAdminHelper.isReferencedByTimeseriesMetadata(layerId, mock));
+        Assertions.assertFalse(LayerAdminHelper.isReferencedByTimeseriesMetadata(layerId, mock));
     }
 
     @Test
@@ -30,7 +28,7 @@ public class LayerAdminHelperTest {
         OskariLayer mock = Mockito.mock(OskariLayer.class);
         Mockito.when(mock.getOptions()).thenReturn(options);
 
-        assertFalse(LayerAdminHelper.isReferencedByTimeseriesMetadata(layerId, mock));
+        Assertions.assertFalse(LayerAdminHelper.isReferencedByTimeseriesMetadata(layerId, mock));
     }
 
     @Test
@@ -52,7 +50,7 @@ public class LayerAdminHelperTest {
         OskariLayer mock = Mockito.mock(OskariLayer.class);
         Mockito.when(mock.getOptions()).thenReturn(options);
 
-        assertFalse(LayerAdminHelper.isReferencedByTimeseriesMetadata(layerId, mock));
+        Assertions.assertFalse(LayerAdminHelper.isReferencedByTimeseriesMetadata(layerId, mock));
     }
 
     @Test
@@ -74,7 +72,7 @@ public class LayerAdminHelperTest {
         OskariLayer mock = Mockito.mock(OskariLayer.class);
         Mockito.when(mock.getOptions()).thenReturn(options);
 
-        assertFalse(LayerAdminHelper.isReferencedByTimeseriesMetadata(layerId, mock));
+        Assertions.assertFalse(LayerAdminHelper.isReferencedByTimeseriesMetadata(layerId, mock));
     }
 
     @Test
@@ -96,7 +94,7 @@ public class LayerAdminHelperTest {
         OskariLayer mock = Mockito.mock(OskariLayer.class);
         Mockito.when(mock.getOptions()).thenReturn(options);
 
-        assertTrue(LayerAdminHelper.isReferencedByTimeseriesMetadata(layerId, mock));
+        Assertions.assertTrue(LayerAdminHelper.isReferencedByTimeseriesMetadata(layerId, mock));
     }
 
 }
