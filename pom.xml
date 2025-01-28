@@ -57,7 +57,7 @@
         https://central.sonatype.com/artifact/org.springframework.session/spring-session-bom/2021.2.3 -->
         <spring.session.version>3.4.1</spring.session.version>
 
-        <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
+        <jakarta.servlet.version>6.0.0</jakarta.servlet.version>
         <jakarta.servlet.jsp.version>3.1.0</jakarta.servlet.jsp.version>
         <jakarta.servlet.jsp.jstl.version>2.0.0</jakarta.servlet.jsp.jstl.version>
         <javax.xml.version>1.0</javax.xml.version>
