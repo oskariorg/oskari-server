@@ -58,8 +58,8 @@
         <spring.session.version>3.4.1</spring.session.version>
 
         <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
-        <javax.servlet.jsp.version>2.3.3</javax.servlet.jsp.version>
-        <javax.servlet.jstl.version>1.2</javax.servlet.jstl.version>
+        <jakarta.servlet.jsp.version>3.1.0</jakarta.servlet.jsp.version>
+        <jakarta.servlet.jsp.jstl.version>2.0.0</jakarta.servlet.jsp.jstl.version>
         <javax.xml.version>1.0</javax.xml.version>
         <vecmath.version>1.5.2</vecmath.version>
 
@@ -68,7 +68,7 @@
         <!-- could be removed? -->
         <commons-collections.version>3.2.2</commons-collections.version>
         <commons-codec.version>1.16.0</commons-codec.version>
-        <commons-fileupload.version>1.5</commons-fileupload.version>
+        <commons-fileupload.version>2.0.0-M2</commons-fileupload.version>
         <commons-dbcp2.version>2.11.0</commons-dbcp2.version>
 
 <!-- This will override commons-io to be packaged with version 2.16.1, otherwise
@@ -514,13 +514,13 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
             <dependency>
                 <groupId>jakarta.servlet.jsp</groupId>
                 <artifactId>jakarta.servlet.jsp-api</artifactId>
-                <version>3.1.0</version>
+                <version>${jakarta.servlet.jsp.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.glassfish.web</groupId>
                 <artifactId>jakarta.servlet.jsp.jstl</artifactId>
-                <version>2.0.0</version>
+                <version>${jakarta.servlet.jsp.jstl.version}</version>
             </dependency>
 
             <dependency>
@@ -778,7 +778,7 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-fileupload2-jakarta-servlet6</artifactId>
-                <version>2.0.0-M2</version>
+                <version>${commons-fileupload.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.quartz-scheduler</groupId>
