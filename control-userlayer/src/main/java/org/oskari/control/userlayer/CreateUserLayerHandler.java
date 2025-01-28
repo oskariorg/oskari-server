@@ -26,7 +26,6 @@ import org.apache.commons.fileupload2.core.FileItem;
 import org.apache.commons.fileupload2.core.FileUploadException;
 import org.apache.commons.fileupload2.core.DiskFileItemFactory;
 import org.apache.commons.fileupload2.jakarta.servlet6.JakartaServletFileUpload;
-import org.apache.commons.io.FileCleaningTracker;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.referencing.CRS;
 import org.json.JSONObject;
@@ -93,7 +92,6 @@ public class CreateUserLayerHandler extends RestActionHandler {
 
     private static final int MAX_RETRY_RANDOM_UUID = 100;
 
-    FileCleaningTracker cleaningTracker = new FileCleaningTracker();
     Path tempDir = Paths.get(System.getProperty("java.io.tmpdir"));
     private final DiskFileItemFactory diskFileItemFactory = DiskFileItemFactory.builder().setPath(tempDir).setBufferSize(MAX_SIZE_MEMORY).get();
     private String targetEPSG = "EPSG:4326";
