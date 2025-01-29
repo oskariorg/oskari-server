@@ -2,9 +2,9 @@ name: Run tests
 
 on:
   push:
-    branches: [ java17 ]
+    branches: [ master, develop ]
   pull_request:
-    branches: [ java17 ]
+    branches: [ master, develop ]
 
 # Cancel job when new commit is pushed for the same build
 # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#concurrency
@@ -30,7 +30,7 @@ jobs:
           distribution: 'adopt'
           architecture: x64
       - name: Cache Maven packages
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
