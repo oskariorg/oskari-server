@@ -1,9 +1,8 @@
 package org.jsoup.safety;
 
 import org.jsoup.Jsoup;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class CustomSafelistTest {
 
@@ -14,7 +13,7 @@ public class CustomSafelistTest {
     public void isSafeAttributeDataURLDisabled() {
         CustomSafelist list = new CustomSafelist();
         String result = Jsoup.clean(IMG_WITH_DATA_URL, list);
-        assertEquals("<img alt=\"Red dot\">", result);
+        Assertions.assertEquals("<img alt=\"Red dot\">", result);
     }
 
     @Test
@@ -22,6 +21,6 @@ public class CustomSafelistTest {
         CustomSafelist list = new CustomSafelist();
         list.allowDataUrlsForImages(true);
         String result = Jsoup.clean(IMG_WITH_DATA_URL, list);
-        assertEquals(IMG_WITH_DATA_URL, result);
+        Assertions.assertEquals(IMG_WITH_DATA_URL, result);
     }
 }

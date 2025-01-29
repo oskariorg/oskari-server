@@ -9,8 +9,8 @@ import fi.nls.oskari.service.ServiceException;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.json.JSONObject;
-import org.opengis.filter.Filter;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.geotools.api.filter.Filter;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 
 public abstract class UserLayerService extends OskariComponent {
     //public abstract void getLayers(User user) throws ServiceException;

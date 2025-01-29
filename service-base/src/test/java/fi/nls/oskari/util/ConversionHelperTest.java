@@ -1,8 +1,7 @@
 package fi.nls.oskari.util;
 
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author SMAKINEN
@@ -11,32 +10,32 @@ public class ConversionHelperTest {
 
     @Test
     public void testCount() {
-        assertEquals("'moo' should match 2 o's", 2, ConversionHelper.count("moo", "o"));
-        assertEquals("'moo' should match 1 oo", 1, ConversionHelper.count("moo", "oo"));
-        assertEquals("'moo' should match 1 moo", 1, ConversionHelper.count("moo", "moo"));
-        assertEquals("'moo' should match 1 mo", 1, ConversionHelper.count("moo", "mo"));
-        assertEquals("'moo' should not match 'kvaak", 0, ConversionHelper.count("moo", "kvaak"));
-        assertEquals("'wild**cards*' should match 3 *", 3, ConversionHelper.count("wild**cards*", "*"));
+        Assertions.assertEquals(2, ConversionHelper.count("moo", "o"), "'moo' should match 2 o's");
+        Assertions.assertEquals(1, ConversionHelper.count("moo", "oo"), "'moo' should match 1 oo");
+        Assertions.assertEquals(1, ConversionHelper.count("moo", "moo"), "'moo' should match 1 moo");
+        Assertions.assertEquals(1, ConversionHelper.count("moo", "mo"), "'moo' should match 1 mo");
+        Assertions.assertEquals(0, ConversionHelper.count("moo", "kvaak"), "'moo' should not match 'kvaak");
+        Assertions.assertEquals(3, ConversionHelper.count("wild**cards*", "*"), "'wild**cards*' should match 3 *");
     }
 
     @Test
     public void testDecapitalize() {
-        assertEquals("'M' should become 'm'", "m", ConversionHelper.decapitalize("M"));
-        assertEquals("'HTTP' should become 'http'", "http", ConversionHelper.decapitalize("HTTP"));
-        assertEquals("'HTTP' should become 'hTTP' with second parameter false", "hTTP", ConversionHelper.decapitalize("HTTP", false));
-        assertEquals("'MyAssertion' should become 'myAssertion'", "myAssertion", ConversionHelper.decapitalize("MyAssertion"));
+        Assertions.assertEquals("m", ConversionHelper.decapitalize("M"), "'M' should become 'm'");
+        Assertions.assertEquals("http", ConversionHelper.decapitalize("HTTP"), "'HTTP' should become 'http'");
+        Assertions.assertEquals("hTTP", ConversionHelper.decapitalize("HTTP", false), "'HTTP' should become 'hTTP' with second parameter false");
+        Assertions.assertEquals("myAssertion", ConversionHelper.decapitalize("MyAssertion"), "'MyAssertion' should become 'myAssertion'");
 
-        assertEquals("Empty string should stay empty", "", ConversionHelper.decapitalize(""));
-        assertEquals("<null> should stay <null>", null, ConversionHelper.decapitalize(null));
+        Assertions.assertEquals("", ConversionHelper.decapitalize(""), "Empty string should stay empty");
+        Assertions.assertEquals(null, ConversionHelper.decapitalize(null), "<null> should stay <null>");
     }
 
     @Test
     public void testIsOnlyUpperCase() {
-        assertTrue("'M' is uppercase only", ConversionHelper.isOnlyUpperCase("M"));
-        assertTrue("'MOO' is uppercase only", ConversionHelper.isOnlyUpperCase("MOO"));
+        Assertions.assertTrue(ConversionHelper.isOnlyUpperCase("M"), "'M' is uppercase only");
+        Assertions.assertTrue(ConversionHelper.isOnlyUpperCase("MOO"), "'MOO' is uppercase only");
 
-        assertFalse("'Moo' is NOT uppercase only", ConversionHelper.isOnlyUpperCase("Moo"));
-        assertFalse("<null> is NOT uppercase only", ConversionHelper.isOnlyUpperCase(null));
+        Assertions.assertFalse(ConversionHelper.isOnlyUpperCase("Moo"), "'Moo' is NOT uppercase only");
+        Assertions.assertFalse(ConversionHelper.isOnlyUpperCase(null), "<null> is NOT uppercase only");
 
     }
 
@@ -44,64 +43,64 @@ public class ConversionHelperTest {
     public void testGetString() {
         String test = "test";
         String result = ConversionHelper.getString(test, "fail");
-        assertTrue("Should get 'test'", result.equals(test));
+        Assertions.assertTrue(result.equals(test), "Should get 'test'");
 
         test = null;
         result = ConversionHelper.getString(test, "fail");
-        assertTrue("Should get 'fail'", result.equals("fail"));
+        Assertions.assertTrue(result.equals("fail"), "Should get 'fail'");
     }
 
     @Test
     public void testGetLong() {
         String test = "20";
         long result = ConversionHelper.getLong(test, 0);
-        assertTrue("Should get 20L", result == 20L);
+        Assertions.assertTrue(result == 20L, "Should get 20L");
 
         test = "test";
         result = ConversionHelper.getLong(test, 0);
-        assertTrue("Should get 0L", result == 0L);
+        Assertions.assertTrue(result == 0L, "Should get 0L");
     }
 
     @Test
     public void testGetInt() {
         String test = "20";
         long result = ConversionHelper.getInt(test, 0);
-        assertTrue("Should get 20", result == 20);
+        Assertions.assertTrue(result == 20, "Should get 20");
 
         test = "test";
         result = ConversionHelper.getLong(test, 0);
-        assertTrue("Should get 0", result == 0);
+        Assertions.assertTrue(result == 0, "Should get 0");
     }
 
     @Test
     public void testGetDouble() {
         String test = "20";
         double result = ConversionHelper.getDouble(test, 0);
-        assertTrue("Should get 20.0", result == 20.0);
+        Assertions.assertTrue(result == 20.0, "Should get 20.0");
 
         test = "test";
         result = ConversionHelper.getDouble(test, 0);
-        assertTrue("Should get 0.0", result == 0.0);
+        Assertions.assertTrue(result == 0.0, "Should get 0.0");
     }
 
     @Test
     public void testGetBoolean() {
         String test = "true";
         boolean result = ConversionHelper.getBoolean(test, false);
-        assertTrue("Should get true", result);
+        Assertions.assertTrue(result, "Should get true");
 
         test = "True";
         result = ConversionHelper.getBoolean(test, false);
-        assertTrue("Should get true", result);
+        Assertions.assertTrue(result, "Should get true");
 
         test = "test";
         result = ConversionHelper.getBoolean(test, false);
-        assertTrue("Should get false", !result);
+        Assertions.assertTrue(!result, "Should get false");
 
         result = ConversionHelper.getBoolean(null, true);
-        assertTrue("Null should yield default value 'true'", result);
+        Assertions.assertTrue(result, "Null should yield default value 'true'");
 
         result = ConversionHelper.getBoolean(null, false);
-        assertTrue("Null should yield default value 'false'", !result);
+        Assertions.assertTrue(!result, "Null should yield default value 'false'");
     }
 }

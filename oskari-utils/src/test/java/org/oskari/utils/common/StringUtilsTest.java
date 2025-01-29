@@ -1,37 +1,29 @@
 package org.oskari.utils.common;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class StringUtilsTest {
     
     @Test
     public void testJoin() {
-        assertNull(StringUtils.join(null, ','));
-        assertEquals("", StringUtils.join(new String[0], ','));
-        assertEquals("foo", StringUtils.join(new String[] { "foo" }, ','));
-        assertEquals("foo,bar",
-                StringUtils.join(new String[] { "foo", "bar" }, ','));
-        assertEquals("foo,bar,baz",
-                StringUtils.join(new String[] { "foo", "bar", "baz" }, ','));
-        assertEquals("foo,null,baz",
-                StringUtils.join(new String[] { "foo", null, "baz" }, ','));
-        assertEquals("foo,,baz",
-                StringUtils.join(new String[] { "foo", "", "baz" }, ','));
+        Assertions.assertNull(StringUtils.join(null, ','));
+        Assertions.assertEquals("", StringUtils.join(new String[0], ','));
+        Assertions.assertEquals("foo", StringUtils.join(new String[] { "foo" }, ','));
+        Assertions.assertEquals("foo,bar", StringUtils.join(new String[] { "foo", "bar" }, ','));
+        Assertions.assertEquals("foo,bar,baz", StringUtils.join(new String[] { "foo", "bar", "baz" }, ','));
+        Assertions.assertEquals("foo,null,baz", StringUtils.join(new String[] { "foo", null, "baz" }, ','));
+        Assertions.assertEquals("foo,,baz", StringUtils.join(new String[] { "foo", "", "baz" }, ','));
     }
 
     @Test
     public void testParseDoubleArray() {
-        assertFalse(StringUtils.parseDoubleArray(null, ',').isPresent());
-        assertFalse(StringUtils.parseDoubleArray("", ',').isPresent());
-        assertFalse(StringUtils.parseDoubleArray("foo", ',').isPresent());
-        assertFalse(StringUtils.parseDoubleArray(",123.0,333.0,652.0", ',').isPresent());
-        assertFalse(StringUtils.parseDoubleArray("123.0,333.0,652.0,", ',').isPresent());
-        assertArrayEquals(new double[] { 123.0, -333.0, 652.0 },
-                StringUtils.parseDoubleArray("123.0,-333.0,652", ',').get(), 0.0);
+        Assertions.assertFalse(StringUtils.parseDoubleArray(null, ',').isPresent());
+        Assertions.assertFalse(StringUtils.parseDoubleArray("", ',').isPresent());
+        Assertions.assertFalse(StringUtils.parseDoubleArray("foo", ',').isPresent());
+        Assertions.assertFalse(StringUtils.parseDoubleArray(",123.0,333.0,652.0", ',').isPresent());
+        Assertions.assertFalse(StringUtils.parseDoubleArray("123.0,333.0,652.0,", ',').isPresent());
+        Assertions.assertArrayEquals(new double[] { 123.0, -333.0, 652.0 }, StringUtils.parseDoubleArray("123.0,-333.0,652", ',').get(), 0.0);
         double[] arr = new double[17];
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < arr.length; i++) {
@@ -43,18 +35,17 @@ public class StringUtilsTest {
             }
             sb.append(d);
         }
-        assertArrayEquals(arr, StringUtils.parseDoubleArray(sb.toString(), ',').get(), 0.0);
+        Assertions.assertArrayEquals(arr, StringUtils.parseDoubleArray(sb.toString(), ',').get(), 0.0);
     }
 
     @Test
     public void testParseIntArray() {
-        assertFalse(StringUtils.parseIntArray(null, ',').isPresent());
-        assertFalse(StringUtils.parseIntArray("", ',').isPresent());
-        assertFalse(StringUtils.parseIntArray("foo", ',').isPresent());
-        assertFalse(StringUtils.parseIntArray(",123,333,652", ',').isPresent());
-        assertFalse(StringUtils.parseIntArray("123,333,652,", ',').isPresent());
-        assertArrayEquals(new int[] { 123, -333, 652 },
-                StringUtils.parseIntArray("123,-333,652", ',').get());
+        Assertions.assertFalse(StringUtils.parseIntArray(null, ',').isPresent());
+        Assertions.assertFalse(StringUtils.parseIntArray("", ',').isPresent());
+        Assertions.assertFalse(StringUtils.parseIntArray("foo", ',').isPresent());
+        Assertions.assertFalse(StringUtils.parseIntArray(",123,333,652", ',').isPresent());
+        Assertions.assertFalse(StringUtils.parseIntArray("123,333,652,", ',').isPresent());
+        Assertions.assertArrayEquals(new int[] { 123, -333, 652 }, StringUtils.parseIntArray("123,-333,652", ',').get());
         int[] arr = new int[17];
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < arr.length; i++) {
@@ -64,7 +55,7 @@ public class StringUtilsTest {
             }
             sb.append(i);
         }
-        assertArrayEquals(arr, StringUtils.parseIntArray(sb.toString(), ',').get());
+        Assertions.assertArrayEquals(arr, StringUtils.parseIntArray(sb.toString(), ',').get());
     }
 
 }

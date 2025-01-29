@@ -1,14 +1,12 @@
 package org.geotools.mif;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.locationtech.jts.geom.LineString;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-
-import org.junit.Test;
-import org.locationtech.jts.geom.LineString;
 
 public class MIFDataReaderTest {
 
@@ -27,23 +25,23 @@ public class MIFDataReaderTest {
             pline3 = (LineString) r.next();
         }
 
-        assertEquals(53, pline1.getNumPoints());
-        assertEquals(EPSILON,  508688.045709824, pline1.getCoordinateN(0).getX());
-        assertEquals(EPSILON, 7722000.000000000, pline1.getCoordinateN(0).getY());
-        assertEquals(EPSILON,  508742.876, pline1.getCoordinateN(52).getX());
-        assertEquals(EPSILON, 7748438.773, pline1.getCoordinateN(52).getY());
+        Assertions.assertEquals(53, pline1.getNumPoints());
+        Assertions.assertEquals(EPSILON, 508688.045709824, pline1.getCoordinateN(0).getX());
+        Assertions.assertEquals(EPSILON, 7722000.000000000, pline1.getCoordinateN(0).getY());
+        Assertions.assertEquals(EPSILON, 508742.876, pline1.getCoordinateN(52).getX());
+        Assertions.assertEquals(EPSILON, 7748438.773, pline1.getCoordinateN(52).getY());
 
-        assertEquals(30, pline2.getNumPoints());
-        assertEquals(EPSILON,  508742.876, pline2.getCoordinateN(0).getX());
-        assertEquals(EPSILON, 7748438.773, pline2.getCoordinateN(0).getY());
-        assertEquals(EPSILON,  503414.898000001, pline2.getCoordinateN(29).getX());
-        assertEquals(EPSILON, 7755431.873800000, pline2.getCoordinateN(29).getY());
+        Assertions.assertEquals(30, pline2.getNumPoints());
+        Assertions.assertEquals(EPSILON, 508742.876, pline2.getCoordinateN(0).getX());
+        Assertions.assertEquals(EPSILON, 7748438.773, pline2.getCoordinateN(0).getY());
+        Assertions.assertEquals(EPSILON, 503414.898000001, pline2.getCoordinateN(29).getX());
+        Assertions.assertEquals(EPSILON, 7755431.873800000, pline2.getCoordinateN(29).getY());
 
-        assertEquals(39, pline3.getNumPoints());
-        assertEquals(EPSILON,  508742.876, pline3.getCoordinateN(0).getX());
-        assertEquals(EPSILON, 7748438.773, pline3.getCoordinateN(0).getY());
-        assertEquals(EPSILON,  535262.676499178, pline3.getCoordinateN(38).getX());
-        assertEquals(EPSILON, 7770000.000000000, pline3.getCoordinateN(38).getY());
+        Assertions.assertEquals(39, pline3.getNumPoints());
+        Assertions.assertEquals(EPSILON, 508742.876, pline3.getCoordinateN(0).getX());
+        Assertions.assertEquals(EPSILON, 7748438.773, pline3.getCoordinateN(0).getY());
+        Assertions.assertEquals(EPSILON, 535262.676499178, pline3.getCoordinateN(38).getX());
+        Assertions.assertEquals(EPSILON, 7770000.000000000, pline3.getCoordinateN(38).getY());
     }
 
     @Test
@@ -51,7 +49,7 @@ public class MIFDataReaderTest {
         File mif = new File(getClass().getResource("L41_SahkoLinja.mif").toURI());
         try (MIFDataReader r = new MIFDataReader(mif)) {
             while (r.hasNext()) {
-                assertNotNull(r.next());
+                Assertions.assertNotNull(r.next());
             }
         }
     }

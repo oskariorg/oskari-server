@@ -1,5 +1,46 @@
 # Migration guide
 
+## 3.0.0
+
+In 3.0.0 the minimum Java version for Oskari is changed from Java 8 to 17.
+
+### Junit migrated from 4 to 5
+
+The Junit present on the BOM for oskari-server was updated from JUnit 4 to 5 and JUnit changed the groupId and artifactId in their update. This means that if your app does NOT define a specific version for the JUnit dependency and depend on oskari-server doing it, your app will not compile after updating due to missing dependency version. To fix this you have some options and here's what we've used:
+
+- for the sample-server-extension there were no tests so junit was removed from dependencies: https://github.com/oskariorg/sample-server-extension/pull/63
+- for apps that do have tests and don't want to migrate them, you can define the junit 4 dependency version for the app like this: https://github.com/nls-oskari/kartta.paikkatietoikkuna.fi/pull/235
+- for apps that want to migrate to JUnit 5, you can do something like this: https://github.com/nlsfi/oskari-server-extras/pull/31
+
+### Generic proxy removed
+
+A proxy implementation was previously used to pass requests from
+oskari-frontend to the "internal" GeoServer through the oskari-server based webapp.
+As we don't use the GeoServer anymore for user generated content these have been removed. 
+
+If you have the `oskari.proxyservices` defined in oskari-ext.properties or any property starting 
+with `oskari.proxy.` you can remove all of those as they are no longer used.
+These have been removed from the new configs here: https://github.com/oskariorg/sample-configs/pull/29/files
+
+### Language code for Indonesia changed in Java 17.
+
+Old behavior can be restored with system property `-Djava.locale.useOldISOCodes=true`
+
+See details:
+- https://stackoverflow.com/questions/55955641/correct-locale-for-indonesia-id-id-vs-in-id/55965008
+- https://bugs.openjdk.org/browse/JDK-8267069
+
+### Removed deprecated action routes
+
+- `GetWFSLayerFields` and `GetLocalizedPropertyNames` have been replaced by `DescribeLayer` 
+- (`GetLayerCapabilities` is approaching the chopping block but is still used by admin UI)
+- `GetPermissionsLayerHandlers` and `SaveLayerPermission` have been replaced by `LayerPermission`
+- `GetAllRoles` has been replaced by `ManageRoles`
+
+### TODO
+
+- `GetPermissionsLayerHandlers`, `GetAllRoles` and `SaveLayerPermission` are still used by admin-layerrights bundle, remove the bundle from 3.0 (replaced by admin-permissions)
+
 ## 2.14.0
 
 ### Frontend

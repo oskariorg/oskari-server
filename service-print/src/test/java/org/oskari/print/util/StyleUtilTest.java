@@ -1,8 +1,8 @@
 package org.oskari.print.util;
 
 import org.apache.pdfbox.pdmodel.PDResources;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.json.JSONObject;
 import org.json.JSONArray;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -29,8 +29,8 @@ public class StyleUtilTest {
             StyleUtil.getIcon(doc, i, FILL, 3);
 
             String data = JSONHelper.getJSONObject(svgMarkers, i).getString("data");
-            Assert.assertTrue("Marker:" + i +  " should have placeholder for fill", data.contains(PLACEHOLDER_FILL));
-            Assert.assertTrue("Marker: " + i +  " should have placeholder for stroke", data.contains(PLACEHOLDER_STROKE));
+            Assertions.assertTrue(data.contains(PLACEHOLDER_FILL), "Marker:" + i +  " should have placeholder for fill");
+            Assertions.assertTrue(data.contains(PLACEHOLDER_STROKE), "Marker: " + i +  " should have placeholder for stroke");
         }
         doc.close();
     }
@@ -41,21 +41,21 @@ public class StyleUtilTest {
 
         PDDocument doc = new PDDocument();
         PDPrintStyle point = StyleUtil.getPointStyle(style, doc);
-        Assert.assertNotNull("Point should have icon", point.getIcon());
+        Assertions.assertNotNull(point.getIcon(), "Point should have icon");
         doc.close();
 
         PDPrintStyle line = StyleUtil.getLineStyle(style);
-        Assert.assertTrue("Line should have color", line.hasLineColor());
+        Assertions.assertTrue(line.hasLineColor(), "Line should have color");
 
         PDPrintStyle polygon = StyleUtil.getPolygonStyle(style, null);
-        Assert.assertTrue("Polygon should have fill color", polygon.hasFillColor());
-        Assert.assertTrue("Polygon should have line color", polygon.hasLineColor());
+        Assertions.assertTrue(polygon.hasFillColor(), "Polygon should have fill color");
+        Assertions.assertTrue(polygon.hasLineColor(), "Polygon should have line color");
 
         JSONObject area = style.getJSONObject("fill").getJSONObject("area");
         for (int i = 0; i <= 3; i++) {
             area.put("pattern", i);
             PDPrintStyle pattern = StyleUtil.getPolygonStyle(style, new PDResources());
-            Assert.assertTrue("Pattern:" + i +  " should have fill color", pattern.hasFillColor());
+            Assertions.assertTrue(pattern.hasFillColor(), "Pattern:" + i +  " should have fill color");
         }
     }
 }

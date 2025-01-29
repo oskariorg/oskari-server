@@ -1,20 +1,19 @@
 package fi.nls.oskari.control.statistics.data;
 
 import fi.nls.oskari.util.PropertyUtil;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class StatisticalIndicatorTest {
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws Exception {
         PropertyUtil.addProperty("oskari.locales", "fi_FI,en_US,sv_SE", true);
     }
 
-    @AfterClass
+    @AfterAll
     public static void teardown() throws Exception {
         PropertyUtil.clearProperties();
     }
@@ -23,10 +22,10 @@ public class StatisticalIndicatorTest {
     public void testSetValueInvalid() {
         StatisticalIndicator ind = new StatisticalIndicator();
         ind.addName("sv", "testing");
-        assertEquals("Should return sv as only value with en request", "testing", ind.getName("en"));
+        Assertions.assertEquals("testing", ind.getName("en"), "Should return sv as only value with en request");
         ind.addName("fi", "testing fi");
-        assertEquals("Should return fi (default locale) with en request", "testing fi", ind.getName("en"));
+        Assertions.assertEquals("testing fi", ind.getName("en"), "Should return fi (default locale) with en request");
         ind.addName("en", "testing en");
-        assertEquals("Should return direct match", "testing en", ind.getName("en"));
+        Assertions.assertEquals("testing en", ind.getName("en"), "Should return direct match");
     }
 }

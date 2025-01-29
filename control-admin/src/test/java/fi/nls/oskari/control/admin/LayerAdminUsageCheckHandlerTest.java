@@ -5,32 +5,34 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.test.util.ResourceHelper;
 import org.json.JSONObject;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({OskariComponentManager.class})
+
+@ExtendWith(MockitoExtension.class)
 public class LayerAdminUsageCheckHandlerTest extends AbstractLayerAdminHandlerTest {
 
     final private static LayerAdminUsageCheckHandler handler = new LayerAdminUsageCheckHandler();
 
-    @BeforeClass
-    public static void setup() throws Exception {
+    @BeforeEach
+    public void setup() throws Exception {
         setupMocks();
         handler.init();
     }
 
-    @AfterClass
-    public static void tearDown() {
+    @AfterEach
+    public void tearDown() {
         tearDownMocks();
+        OskariComponentManager.teardown();
     }
 
     @Test

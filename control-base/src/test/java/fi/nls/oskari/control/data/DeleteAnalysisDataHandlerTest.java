@@ -9,18 +9,24 @@ import fi.nls.oskari.map.analysis.service.AnalysisDbServiceMybatisImpl;
 import fi.nls.oskari.util.DuplicateException;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.control.JSONActionRouteTest;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.exceptions.base.MockitoAssertionError;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 /**
  * @author SMAKINEN
@@ -37,7 +43,7 @@ public class DeleteAnalysisDataHandlerTest extends JSONActionRouteTest {
     private final static Long ANOTHER_USERS_ANALYSIS_ID = 1l;
     private final static Long VALID_ANALYSIS_ID = 2l;
 
-    @BeforeClass
+    @BeforeAll
     public static void addLocales() throws Exception {
         PropertyUtil.clearProperties();
         Properties properties = new Properties();
@@ -52,7 +58,7 @@ public class DeleteAnalysisDataHandlerTest extends JSONActionRouteTest {
         }
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
 
         service = mock(AnalysisDbServiceMybatisImpl.class);
@@ -70,7 +76,7 @@ public class DeleteAnalysisDataHandlerTest extends JSONActionRouteTest {
         handler.init();
     }
 
-    @AfterClass
+    @AfterAll
     public static void teardown() {
         PropertyUtil.clearProperties();
     }
@@ -80,11 +86,12 @@ public class DeleteAnalysisDataHandlerTest extends JSONActionRouteTest {
      *
      * @throws Exception
      */
-    @Test(expected = ActionDeniedException.class)
+    @Test()
     public void testWithGuest() throws Exception {
-        handler.handlePost(createActionParams());
-        checkDeleteNotCalled();
-        fail("ActionDeniedException should have been thrown");
+        assertThrows(ActionDeniedException.class, () -> {
+            handler.handlePost(createActionParams());
+            checkDeleteNotCalled();
+        });
     }
 
     /**
@@ -92,12 +99,13 @@ public class DeleteAnalysisDataHandlerTest extends JSONActionRouteTest {
      *
      * @throws Exception
      */
-    @Test(expected = ActionParamsException.class)
+    @Test()
     public void testWithMissingParam() throws Exception {
-        final ActionParameters params = createActionParams(getLoggedInUser());
-        handler.handlePost(params);
-        checkDeleteNotCalled();
-        fail("ActionParamsException should have been thrown");
+        assertThrows(ActionParamsException.class, () -> {
+            final ActionParameters params = createActionParams(getLoggedInUser());
+            handler.handlePost(params);
+            checkDeleteNotCalled();
+        });
     }
 
     /**
@@ -105,14 +113,15 @@ public class DeleteAnalysisDataHandlerTest extends JSONActionRouteTest {
      *
      * @throws Exception
      */
-    @Test(expected = ActionParamsException.class)
+    @Test()
     public void testWithInvalidParamType() throws Exception {
-        final Map<String, String> parameters = new HashMap<String, String>();
-        parameters.put("id", "this should be of type long");
-        final ActionParameters params = createActionParams(parameters, getLoggedInUser());
-        handler.handlePost(params);
-        checkDeleteNotCalled();
-        fail("ActionParamsException should have been thrown");
+        assertThrows(ActionParamsException.class, () -> {
+            final Map<String, String> parameters = new HashMap<String, String>();
+            parameters.put("id", "this should be of type long");
+            final ActionParameters params = createActionParams(parameters, getLoggedInUser());
+            handler.handlePost(params);
+            checkDeleteNotCalled();
+        });
     }
 
     /**
@@ -120,14 +129,15 @@ public class DeleteAnalysisDataHandlerTest extends JSONActionRouteTest {
      *
      * @throws Exception
      */
-    @Test(expected = ActionParamsException.class)
+    @Test()
     public void testWithNonMatchingIdParam() throws Exception {
-        final Map<String, String> parameters = new HashMap<String, String>();
-        parameters.put("id", NON_MATCHING_ID.toString());
-        final ActionParameters params = createActionParams(parameters, getLoggedInUser());
-        handler.handlePost(params);
-        checkDeleteNotCalled();
-        fail("ActionParamsException should have been thrown");
+        assertThrows(ActionParamsException.class, () -> {
+            final Map<String, String> parameters = new HashMap<String, String>();
+            parameters.put("id", NON_MATCHING_ID.toString());
+            final ActionParameters params = createActionParams(parameters, getLoggedInUser());
+            handler.handlePost(params);
+            checkDeleteNotCalled();
+        });
     }
 
     /**
@@ -136,14 +146,15 @@ public class DeleteAnalysisDataHandlerTest extends JSONActionRouteTest {
      *
      * @throws Exception
      */
-    @Test(expected = ActionDeniedException.class)
+    @Test()
     public void testWithInvalidUser() throws Exception {
-        final Map<String, String> parameters = new HashMap<String, String>();
-        parameters.put("id", ANOTHER_USERS_ANALYSIS_ID.toString());
-        final ActionParameters params = createActionParams(parameters, getLoggedInUser());
-        handler.handlePost(params);
-        checkDeleteNotCalled();
-        fail("ActionDeniedException should have been thrown");
+        assertThrows(ActionDeniedException.class, () -> {
+            final Map<String, String> parameters = new HashMap<String, String>();
+            parameters.put("id", ANOTHER_USERS_ANALYSIS_ID.toString());
+            final ActionParameters params = createActionParams(parameters, getLoggedInUser());
+            handler.handlePost(params);
+            checkDeleteNotCalled();
+        });
     }
 
     /**

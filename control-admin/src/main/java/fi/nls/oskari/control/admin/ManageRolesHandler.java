@@ -77,7 +77,7 @@ public class ManageRolesHandler extends RestActionHandler {
                     .withMsg("Role")
                     .added(AuditLog.ResourceType.USER);
             }
-            ResponseHelper.writeResponse(params, role2Json(role));
+            ResponseHelper.writeResponse(params, role.toJSON());
         } catch (Exception se) {
             throw new ActionException(se.getMessage(), se);
         }
@@ -111,7 +111,7 @@ public class ManageRolesHandler extends RestActionHandler {
         final JSONArray roleValues = new JSONArray();
         if (roles != null) {
             for (Role role : roles) {
-                roleValues.put(role2Json(role));
+                roleValues.put(role.toJSON());
             }
         }
 
@@ -121,12 +121,4 @@ public class ManageRolesHandler extends RestActionHandler {
 
         return response;
     }
-    
-    private JSONObject role2Json(Role role) throws JSONException {
-        JSONObject ro = new JSONObject();
-        ro.put("id", role.getId());
-        ro.put("name", role.getName());
-        return ro;
-    }    
-  
 }

@@ -1,27 +1,24 @@
 package fi.nls.oskari.control.statistics;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import fi.nls.oskari.control.statistics.db.RegionSet;
+import fi.nls.oskari.service.ServiceException;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.geotools.api.geometry.MismatchedDimensionException;
+import org.geotools.api.referencing.FactoryException;
+import org.geotools.api.referencing.operation.TransformException;
+import org.oskari.geojson.GeoJSON;
 
 import java.io.IOException;
 import java.util.List;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.opengis.geometry.MismatchedDimensionException;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.operation.TransformException;
-import org.oskari.geojson.GeoJSON;
-
-import fi.nls.oskari.control.statistics.db.RegionSet;
-import fi.nls.oskari.service.ServiceException;
-
 public class RegionSetHelperTest {
 
     @Test
-    @Ignore("Requires HTTP connection to a WFS server serving specific FeatureType")
+    @Disabled("Requires HTTP connection to a WFS server serving specific FeatureType")
     public void testGeoServerWFSWorks() throws MismatchedDimensionException, FactoryException, TransformException, ServiceException, IOException, JSONException {
         String endPoint = "http://localhost:8081/geoserver/wfs";
         RegionSet kunnatWFS = new RegionSet();
@@ -30,12 +27,12 @@ public class RegionSetHelperTest {
         kunnatWFS.setSrs_name("EPSG:3067");
         kunnatWFS.setAttributes(getAttributes("kuntakoodi", "kuntanimi", endPoint));
         List<Region> regions = RegionSetHelper.getRegions(kunnatWFS, "EPSG:3067");
-        assertEquals(320, regions.size());
+        Assertions.assertEquals(320, regions.size());
         for (Region region : regions) {
             if ("082".equals(region.getCode())) {
-                assertEquals("Hattula", region.getName());
+                Assertions.assertEquals("Hattula", region.getName());
             } else if ("091".equals(region.getCode())) {
-                assertEquals("Helsinki", region.getName());
+                Assertions.assertEquals("Helsinki", region.getName());
             }
         }
     }
@@ -49,26 +46,26 @@ public class RegionSetHelperTest {
         kunnatJSON.setSrs_name("EPSG:3067");
         kunnatJSON.setAttributes(getAttributes("kuntakoodi", "kuntanimi", endPoint));
         List<Region> regions = RegionSetHelper.getRegions(kunnatJSON, "EPSG:3067");
-        assertEquals(320, regions.size());
+        Assertions.assertEquals(320, regions.size());
         for (Region region : regions) {
             if ("082".equals(region.getCode())) {
-                assertEquals("Hattula", region.getName());
+                Assertions.assertEquals("Hattula", region.getName());
                 JSONObject geoJSON = region.getGeojson();
-                assertEquals(GeoJSON.FEATURE, geoJSON.getString(GeoJSON.TYPE));
+                Assertions.assertEquals(GeoJSON.FEATURE, geoJSON.getString(GeoJSON.TYPE));
                 JSONObject geometry = geoJSON.getJSONObject(GeoJSON.GEOMETRY);
-                assertNotNull(geometry);
+                Assertions.assertNotNull(geometry);
                 JSONObject properties = region.getGeojson().getJSONObject(GeoJSON.PROPERTIES);
-                assertEquals("082", properties.get(Region.KEY_CODE));
-                assertEquals("Hattula", properties.get(Region.KEY_NAME));
+                Assertions.assertEquals("082", properties.get(Region.KEY_CODE));
+                Assertions.assertEquals("Hattula", properties.get(Region.KEY_NAME));
             } else if ("091".equals(region.getCode())) {
-                assertEquals("Helsinki", region.getName());
+                Assertions.assertEquals("Helsinki", region.getName());
                 JSONObject geoJSON = region.getGeojson();
-                assertEquals(GeoJSON.FEATURE, geoJSON.getString(GeoJSON.TYPE));
+                Assertions.assertEquals(GeoJSON.FEATURE, geoJSON.getString(GeoJSON.TYPE));
                 JSONObject geometry = geoJSON.getJSONObject(GeoJSON.GEOMETRY);
-                assertNotNull(geometry);
+                Assertions.assertNotNull(geometry);
                 JSONObject properties = geoJSON.getJSONObject(GeoJSON.PROPERTIES);
-                assertEquals("091", properties.get(Region.KEY_CODE));
-                assertEquals("Helsinki", properties.get(Region.KEY_NAME));
+                Assertions.assertEquals("091", properties.get(Region.KEY_CODE));
+                Assertions.assertEquals("Helsinki", properties.get(Region.KEY_NAME));
             }
         }
     }
@@ -82,7 +79,7 @@ public class RegionSetHelperTest {
         elyJson.setSrs_name("EPSG:3067");
         elyJson.setAttributes(getAttributes("ely", "nimi", endPoint));
         List<Region> regions = RegionSetHelper.getRegions(elyJson, "EPSG:3067");
-        assertEquals(16, regions.size());
+        Assertions.assertEquals(16, regions.size());
     }
 
     @Test
@@ -94,14 +91,14 @@ public class RegionSetHelperTest {
         kunnatJSON.setUrl(endPoint);
         kunnatJSON.setName("oskari:kunnat2013");
         kunnatJSON.setSrs_name("EPSG:3067");
-        assertEquals("Should return url when attributes NOT defined", endPoint, kunnatJSON.getFeaturesUrl());
+        Assertions.assertEquals(endPoint, kunnatJSON.getFeaturesUrl(), "Should return url when attributes NOT defined");
 
         kunnatJSON.setAttributes(getAttributes("kuntakoodi", "kuntanimi", overridingEndPoint));
-        assertEquals("Should return features url when attributes ARE defined", overridingEndPoint, kunnatJSON.getFeaturesUrl());
+        Assertions.assertEquals(overridingEndPoint, kunnatJSON.getFeaturesUrl(), "Should return features url when attributes ARE defined");
 
         overridingEndPoint = null;
         kunnatJSON.setAttributes(getAttributes("kuntakoodi", "kuntanimi", overridingEndPoint));
-        assertEquals("Should return url when attributes ARE defined WITHOUT features url", endPoint, kunnatJSON.getFeaturesUrl());
+        Assertions.assertEquals(endPoint, kunnatJSON.getFeaturesUrl(), "Should return url when attributes ARE defined WITHOUT features url");
     }
 
     private String getAttributes(String regionIdTag, String nameIdTag, String featuresUrl) throws JSONException {

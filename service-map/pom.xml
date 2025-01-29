@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.oskari</groupId>
         <artifactId>oskari-server</artifactId>
-        <version>2.15.0-SNAPSHOT</version>
+        <version>3.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>service-map</artifactId>
@@ -39,20 +39,6 @@
             <artifactId>service-wfs3</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.ws.commons.axiom</groupId>
-            <artifactId>axiom-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.ws.commons.axiom</groupId>
-            <artifactId>axiom-impl</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-wfs-ng</artifactId>
         </dependency>
@@ -71,11 +57,6 @@
         <dependency>
             <groupId>org.oskari</groupId>
             <artifactId>shared-test-resources</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>xmlunit</groupId>
-            <artifactId>xmlunit</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

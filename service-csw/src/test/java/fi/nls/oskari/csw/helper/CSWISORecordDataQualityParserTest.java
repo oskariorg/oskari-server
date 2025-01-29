@@ -5,19 +5,16 @@ import fi.nls.oskari.csw.domain.CSWIsoRecord.DataQuality;
 import fi.nls.oskari.csw.domain.CSWIsoRecord.DataQualityConformanceResult;
 import fi.nls.oskari.csw.domain.CSWIsoRecord.DataQualityObject;
 import fi.nls.oskari.csw.domain.CSWIsoRecord.DataQualityQuantitativeResult;
-import fi.nls.oskari.util.XmlHelper;
+import org.oskari.xml.XmlHelper;
 import org.geotools.referencing.CRS;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.junit.Test;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.MathTransform;
-import org.w3c.dom.Document;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
+import org.geotools.api.referencing.operation.MathTransform;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import static org.junit.Assert.*;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Locale;
@@ -42,34 +39,14 @@ public class CSWISORecordDataQualityParserTest {
         return transform;
     }
 
-    private Node getMetadataNode() {
-        // TODO: still need to use old XmlHelper since metadata utilizes a lot of xpath parsing
-        // xpaths don't seem to work that well with the new helper
-        DocumentBuilderFactory dbf = XmlHelper.newDocumentBuilderFactory();
-        dbf.setNamespaceAware(true);
-        InputStream xmlInputStream = getClass().getResourceAsStream("csw.xml");
-
-        NodeList children = null;
-        try {
-            DocumentBuilder db = dbf.newDocumentBuilder();
-            Document doc = db.parse(xmlInputStream);
-            Node root = doc.getDocumentElement();
-            children = root.getChildNodes();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        Node metaDataNode = null;
-        for (int i = 0; i < children.getLength(); i++) {
-            if (METADATA_ID.equals(children.item(i).getLocalName())) {                
-                metaDataNode = children.item(i);
-            }
-        }
-        return metaDataNode;
+    private Node getMetadataNode() throws Exception {
+        InputStream in = getClass().getResourceAsStream("csw.xml");
+        Element ret = XmlHelper.parseXML(in, true);
+        return XmlHelper.getFirstChild(ret, "MD_Metadata");
     }
 
     @Test
-    public void TestDataQualityParsing() {
+    public void TestDataQualityParsing() throws Exception {
         
         Node metaDataNode = getMetadataNode();
         MathTransform transform = getMathTransform();
@@ -81,38 +58,38 @@ public class CSWISORecordDataQualityParserTest {
             CSWISORecordDataQualityParser dqParser = new CSWISORecordDataQualityParser();
             DataQualityObject object = record.getDataQualityObject();
             List<DataQuality> nodeList = object.getDataQualities();
-            assertTrue("There should be 4 nodes", nodeList.size() == 4);
+            Assertions.assertTrue(nodeList.size() == 4, "There should be 4 nodes");
             for (DataQuality dq : nodeList){
-                assertTrue("Data quality's nodename should be in dataQualities map", dqParser.getDataQualitiesMap().containsKey(dq.getNodeName()));
+                Assertions.assertTrue(dqParser.getDataQualitiesMap().containsKey(dq.getNodeName()), "Data quality's nodename should be in dataQualities map");
                 if ("topologicalConsistency".equals(dq.getNodeName())){
-                    assertEquals("Topological ", "ELF_ADM06", dq.getNameOfMeasure());
-                    assertNotNull(dq.getMeasureDescription());
-                    assertNotNull(dq.getEvaluationMethodDescription());
+                    Assertions.assertEquals("ELF_ADM06", dq.getNameOfMeasure(), "Topological ");
+                    Assertions.assertNotNull(dq.getMeasureDescription());
+                    Assertions.assertNotNull(dq.getEvaluationMethodDescription());
                     //Conformance results
                     DataQualityConformanceResult conformance = dq.getConformanceResultList().get(0);
-                    assertEquals("ELF Master LoD1", conformance.getSpecification());
-                    assertNotNull(conformance.getExplanation());
-                    assertFalse(conformance.getPass());
+                    Assertions.assertEquals("ELF Master LoD1", conformance.getSpecification());
+                    Assertions.assertNotNull(conformance.getExplanation());
+                    Assertions.assertFalse(conformance.getPass());
                     //Quantitative results
                     DataQualityQuantitativeResult quantitative = dq.getQuantitativeResultList().get(0);
-                    assertEquals("Number of errors", quantitative.getValueType());
-                    assertEquals("54", quantitative.getValue().get(0));
+                    Assertions.assertEquals("Number of errors", quantitative.getValueType());
+                    Assertions.assertEquals("54", quantitative.getValue().get(0));
                     quantitative = dq.getQuantitativeResultList().get(1);
-                    assertEquals("Percentage of errors", quantitative.getValueType());
-                    assertEquals("7.96460177%", quantitative.getValue().get(0));
+                    Assertions.assertEquals("Percentage of errors", quantitative.getValueType());
+                    Assertions.assertEquals("7.96460177%", quantitative.getValue().get(0));
                 }
             }
             List <String> lineages = object.getLineageStatements();
-            assertTrue("There should be only one lineage statement", lineages.size() == 1);
+            Assertions.assertTrue(lineages.size() == 1, "There should be only one lineage statement");
             //Check that lineage doesn't contain localized (SV, EN) content 
-            assertTrue("FI lineage statement shold contain 1313 chars", (lineages.get(0).length() == 1313));            
+            Assertions.assertTrue((lineages.get(0).length() == 1313), "FI lineage statement shold contain 1313 chars");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @Test
-    public void TestDataQualityJson () {
+    public void TestDataQualityJson () throws Exception {
         Node metaDataNode = getMetadataNode();
         MathTransform transform = getMathTransform();
         Locale locale = new Locale("FI");
@@ -123,16 +100,16 @@ public class CSWISORecordDataQualityParserTest {
             CSWIsoRecord record = parser.parse(metaDataNode, locale, transform);
             JSONObject json = record.toJSON();
             JSONArray dataQualities = json.getJSONArray(DATA_QUALITIES);
-            assertTrue("There should be 4 DataQuality items in JSONArray", dataQualities.length() == 4);
+            Assertions.assertTrue(dataQualities.length() == 4, "There should be 4 DataQuality items in JSONArray");
             JSONArray lineages = json.getJSONArray(LINEAGE_STATEMENTS);
-            assertTrue("There should be 1 lineage statement", lineages.length() == 1);
+            Assertions.assertTrue(lineages.length() == 1, "There should be 1 lineage statement");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @Test 
-    public void TestLocalization () {
+    public void TestLocalization () throws Exception {
         Node metaDataNode = getMetadataNode();
         MathTransform transform = getMathTransform();
         Locale locale = new Locale("EN");
@@ -143,7 +120,7 @@ public class CSWISORecordDataQualityParserTest {
             DataQualityObject object = record.getDataQualityObject();
             List <String> lineages = object.getLineageStatements();
             //Check that lineage contains localized (EN) content 
-            assertEquals("Regarding", lineages.get(0).substring(0, 9));
+            Assertions.assertEquals("Regarding", lineages.get(0).substring(0, 9));
         } catch (Exception e) {
             e.printStackTrace();
         }

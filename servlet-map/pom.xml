@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.oskari</groupId>
         <artifactId>oskari-server</artifactId>
-        <version>2.15.0-SNAPSHOT</version>
+        <version>3.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>servlet-map</artifactId>
     <packaging>jar</packaging>
@@ -60,12 +60,8 @@
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
         </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
         <!-- PowerMock can be used to mock static/private methods -->
+        <!--
         <dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-module-junit4</artifactId>
@@ -76,5 +72,13 @@
             <artifactId>powermock-api-mockito2</artifactId>
             <scope>test</scope>
         </dependency>
+        -->
+        <!--
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        -->
     </dependencies>
 </project>

@@ -1,13 +1,11 @@
 package fi.nls.oskari.search.channel;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
 import fi.nls.oskari.service.OskariComponentManager;
 import org.json.JSONObject;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import fi.mml.portti.service.search.SearchResultItem;
 import fi.nls.oskari.util.JSONHelper;
@@ -18,7 +16,7 @@ public class WFSSearchChannelTest {
     private static JSONObject dinagatIslands;
     private static JSONObject pointFeature;
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() throws Exception {
         String dinagat = ""
                 + "{"
@@ -51,7 +49,7 @@ public class WFSSearchChannelTest {
         // prevent call to OskariComponentManager.addDefaultComponents() that adds components requiring db-connections
         OskariComponentManager.addComponent(new WFSChannelHandler());
     }
-    @AfterClass
+    @AfterAll
     public static void teardown() throws Exception {
         OskariComponentManager.teardown();
     }
@@ -62,8 +60,8 @@ public class WFSSearchChannelTest {
 
         WFSSearchChannel ch = new WFSSearchChannel(cfg);
 
-        assertNull(ch.getRegion(dinagatIslands));
-        assertNull(ch.getRegion(pointFeature));
+        Assertions.assertNull(ch.getRegion(dinagatIslands));
+        Assertions.assertNull(ch.getRegion(pointFeature));
     }
 
     @Test
@@ -74,8 +72,8 @@ public class WFSSearchChannelTest {
 
         WFSSearchChannel ch = new WFSSearchChannel(cfg);
 
-        assertEquals("Caraga", ch.getRegion(dinagatIslands));
-        assertNull(ch.getRegion(pointFeature));
+        Assertions.assertEquals("Caraga", ch.getRegion(dinagatIslands));
+        Assertions.assertNull(ch.getRegion(pointFeature));
     }
 
     @Test
@@ -92,10 +90,10 @@ public class WFSSearchChannelTest {
         SearchResultItem item;
 
         item = ch.parseResultItem(dinagatIslands);
-        assertEquals("Caraga", item.getRegion());
+        Assertions.assertEquals("Caraga", item.getRegion());
 
         item = ch.parseResultItem(pointFeature);
-        assertEquals("My Default Region", item.getRegion());
+        Assertions.assertEquals("My Default Region", item.getRegion());
     }
 
 }

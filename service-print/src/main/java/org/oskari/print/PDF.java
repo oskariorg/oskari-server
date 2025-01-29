@@ -18,6 +18,7 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.pdmodel.graphics.optionalcontent.PDOptionalContentGroup;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 import org.apache.pdfbox.pdmodel.graphics.state.RenderingMode;
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceStream;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.apache.pdfbox.util.Matrix;
@@ -37,12 +38,12 @@ import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.geom.util.AffineTransformation;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.filter.FilterFactory2;
-import org.opengis.filter.expression.Expression;
-import org.opengis.filter.expression.Function;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.geotools.api.feature.simple.SimpleFeature;
+import org.geotools.api.filter.FilterFactory;
+import org.geotools.api.filter.expression.Expression;
+import org.geotools.api.filter.expression.Function;
+import org.geotools.api.referencing.FactoryException;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.print.loader.AsyncFeatureLoader;
 import org.oskari.print.loader.AsyncImageLoader;
 import org.oskari.print.request.PDPrintStyle;
@@ -149,7 +150,7 @@ public class PDF {
     private static final String MARKER_SEPARATOR= "___";
     private static final String MARKER_COORD_SEPARATOR= "_";
 
-    private static final FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
+    private static final FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
     
     private static ResourceBundle rb;
 
@@ -682,7 +683,7 @@ public class PDF {
         }
 
         // Create a Form XObject
-        PDFormXObject form = new PDFormXObject(doc);
+        PDAppearanceStream form = new PDAppearanceStream(doc);
         PDResources resources = new PDResources();
         form.setResources(resources);
 
@@ -719,7 +720,7 @@ public class PDF {
                                         AffineTransformation transform, float x, float y, float w, float h) throws IOException {
         if (markers == null || markers.isEmpty()) return;
         // Create a Form XObject
-        PDFormXObject form = new PDFormXObject(doc);
+        PDAppearanceStream form = new PDAppearanceStream(doc);
         PDResources resources = new PDResources();
         form.setResources(resources);
 

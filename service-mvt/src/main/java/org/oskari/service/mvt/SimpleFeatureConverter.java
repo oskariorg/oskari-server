@@ -5,9 +5,9 @@ import fi.nls.oskari.log.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.locationtech.jts.geom.Geometry;
-import org.opengis.feature.Property;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.type.Name;
+import org.geotools.api.feature.Property;
+import org.geotools.api.feature.simple.SimpleFeature;
+import org.geotools.api.feature.type.Name;
 
 import java.math.BigDecimal;
 import java.util.*;

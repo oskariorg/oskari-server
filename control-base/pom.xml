@@ -6,7 +6,7 @@
 	<parent>
         <groupId>org.oskari</groupId>
         <artifactId>oskari-server</artifactId>
-        <version>2.15.0-SNAPSHOT</version>
+        <version>3.0.0-SNAPSHOT</version>
 	</parent>
 
     <artifactId>control-base</artifactId>
@@ -60,11 +60,6 @@
             <artifactId>service-userlayer</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.oskari</groupId>
-            <artifactId>shared-test-resources</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-csv</artifactId>
         </dependency>
@@ -84,6 +79,11 @@
         <dependency>
             <groupId>org.oskari</groupId>
             <artifactId>service-wfs-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.oskari</groupId>
+            <artifactId>shared-test-resources</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.geotools</groupId>

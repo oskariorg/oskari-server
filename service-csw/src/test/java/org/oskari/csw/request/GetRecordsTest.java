@@ -1,6 +1,5 @@
 package org.oskari.csw.request;
 
-import org.locationtech.jts.geom.Geometry;
 import fi.nls.oskari.search.channel.MetadataCatalogueQueryHelper;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.IOHelper;
@@ -14,26 +13,29 @@ import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.opengis.filter.Filter;
-import org.opengis.filter.FilterFactory2;
-import org.opengis.filter.expression.Expression;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.MathTransform;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.locationtech.jts.geom.Geometry;
+import org.geotools.api.filter.Filter;
+import org.geotools.api.filter.FilterFactory;
+import org.geotools.api.filter.expression.Expression;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
+import org.geotools.api.referencing.operation.MathTransform;
 import org.oskari.geojson.GeoJSONReader;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GetRecordsTest {
 
-    private FilterFactory2 filterFactory = CommonFactoryFinder.getFilterFactory2();
+    private FilterFactory filterFactory = CommonFactoryFinder.getFilterFactory();
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() {
         // use relaxed comparison settings
         XMLUnit.setIgnoreComments(true);
@@ -42,44 +44,47 @@ public class GetRecordsTest {
         XMLUnit.setIgnoreAttributeOrder(true);
     }
 
-    @Test(expected = ServiceRuntimeException.class)
+    @Test()
     public void testWithNoFilter() {
-        org.oskari.csw.request.GetRecords.createRequest(null);
-        fail("Should have thrown exception");
+        assertThrows(ServiceRuntimeException.class , () -> {
+            org.oskari.csw.request.GetRecords.createRequest(null);
+        });
     }
 
     @Test
     public void testRequestType() {
         // build filter
         Filter filter = createEqualsFilter("csw:Any", "testing");
-        String request = org.oskari.csw.request.GetRecords.createRequest(filter);
+        String request = GetRecords.createRequest(filter);
 
-        assertTrue("Should get 'summary' as request type", request.contains("<csw:ElementSetName>summary</csw:ElementSetName>"));
+        assertTrue(request.contains("<csw:ElementSetName>summary</csw:ElementSetName>"), "Should get 'summary' as request type");
 
-        request = org.oskari.csw.request.GetRecords.createRequest(filter, "brief");
-        assertTrue("Should get 'brief' as request type", request.contains("<csw:ElementSetName>brief</csw:ElementSetName>"));
+        request = GetRecords.createRequest(filter, "brief");
+        assertTrue(request.contains("<csw:ElementSetName>brief</csw:ElementSetName>"), "Should get 'brief' as request type");
 
-        request = org.oskari.csw.request.GetRecords.createRequest(filter, "full");
-        assertTrue("Should get 'full' as request type", request.contains("<csw:ElementSetName>full</csw:ElementSetName>"));
+        request = GetRecords.createRequest(filter, "full");
+        assertTrue(request.contains("<csw:ElementSetName>full</csw:ElementSetName>"), "Should get 'full' as request type");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test()
     public void testRequestTypeInvalid() {
         // build filter
-        Filter filter = createEqualsFilter("csw:Any", "testing");
-        org.oskari.csw.request.GetRecords.createRequest(filter, "dummy");
+        assertThrows(IllegalArgumentException.class, () -> {
+            Filter filter = createEqualsFilter("csw:Any", "testing");
+            org.oskari.csw.request.GetRecords.createRequest(filter, "dummy");
+        });
     }
 
     @Test
     public void testSimpleFilter() throws IOException, SAXException {
         // build filter
         Filter filter = createEqualsFilter("my value", "myprop");
-        String request = org.oskari.csw.request.GetRecords.createRequest(filter);
+        String request = GetRecords.createRequest(filter);
 
         // read expected result and compare
         String expected = IOHelper.readString(getClass().getResourceAsStream("GetRecords-simple.xml"));
         Diff xmlDiff = new Diff(request, expected);
-        assertTrue("Should get expected simple request" + xmlDiff, xmlDiff.similar());
+        assertTrue(xmlDiff.similar(), "Should get expected simple request" + xmlDiff);
     }
 
     @Test
@@ -88,12 +93,12 @@ public class GetRecordsTest {
         Filter equalfilter = createEqualsFilter("my value", "myprop");
         Filter likefilter = createLikeFilter("input*", "query");
 
-        String request = org.oskari.csw.request.GetRecords.createRequest(filterFactory.and(equalfilter, likefilter));
+        String request = GetRecords.createRequest(filterFactory.and(equalfilter, likefilter));
 
         // read expected result and compare
         String expected = IOHelper.readString(getClass().getResourceAsStream("GetRecords-multi.xml"));
         Diff xmlDiff = new Diff(request, expected);
-        assertTrue("Should get expected and-filter request" + xmlDiff, xmlDiff.similar());
+        assertTrue(xmlDiff.similar(), "Should get expected and-filter request" + xmlDiff);
     }
 
     @Test
@@ -102,7 +107,7 @@ public class GetRecordsTest {
         // build filter
         String input = "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[292864,6845440],[292864,6781952],[393216,6781952],[393216,6845440],[292864,6845440]]]},\"properties\":{\"area\":\"Alue ei saa muodostaa silmukkaa. Piirrä risteämätön alue nähdäksesi mittaustuloksen.\"},\"id\":\"drawFeature3\"}],\"crs\":\"EPSG:3067\"}";
         Filter filter = createGeometryFilter(input);
-        String request = org.oskari.csw.request.GetRecords.createRequest(filter);
+        String request = GetRecords.createRequest(filter);
 
         // read expected result and compare
         String expected = IOHelper.readString(getClass().getResourceAsStream("GetRecords-coverage.xml"));
@@ -111,19 +116,18 @@ public class GetRecordsTest {
         DetailedDiff detailXmlDiff = new DetailedDiff(xmlDiff);
 
         List<Difference> differences = detailXmlDiff.getAllDifferences();
-        boolean isJava11 = System.getProperty("java.version").startsWith("11.");
-        if (isJava11 && differences.size() == 1) {
-            // Java 11 produces different results for transforms than Java 8
-            // The expected result is produced with Java 8
+        boolean compareXpathOnly = differences.size() == 1;
+        if (compareXpathOnly) {
+            // Java 11/17 produces different results for transforms than Java 8
+            // The expected result is produced with Java 17
             // if the only thing that's different is the content of coordinates everything is fine
             final String coordinatesPath =
                     "/GetRecords[1]/Query[1]/Constraint[1]/Filter[1]/Intersects[1]/Polygon[1]/outerBoundaryIs[1]/LinearRing[1]/coordinates[1]/text()[1]";
             // if the difference is NOT the coordinates -> we have a problem
             assertEquals("Something else than coordinates transform differ in expected and result",
                     coordinatesPath, differences.get(0).getTestNodeDetail().getXpathLocation());
-        } else {
-            assertTrue("Should get expected coverage request" + xmlDiff, xmlDiff.similar());
         }
+        assertTrue(xmlDiff.similar(), "Should get expected coverage request" + xmlDiff);
     }
 
     private Filter createLikeFilter(final String searchCriterion,

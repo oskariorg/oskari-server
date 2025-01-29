@@ -4,13 +4,12 @@ import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.oskari.announcements.helpers.AnnouncementsHelper;
 import org.oskari.announcements.model.Announcement;
 
 import java.util.Collections;
-
-import static org.junit.Assert.assertTrue;
 
 public class AnnouncementsHelperTest {
     private static final String JSON = "{"
@@ -36,6 +35,6 @@ public class AnnouncementsHelperTest {
         Announcement announcement = AnnouncementsHelper.readJSON(JSON.replace('\'', '"'));
         String arrayStr = AnnouncementsHelper.writeJSON(Collections.singletonList(announcement));
 
-        assertTrue(JSONHelper.isEqual(jsonArray, new JSONArray(arrayStr)));
+        Assertions.assertTrue(JSONHelper.isEqual(jsonArray, new JSONArray(arrayStr)));
     }
 }

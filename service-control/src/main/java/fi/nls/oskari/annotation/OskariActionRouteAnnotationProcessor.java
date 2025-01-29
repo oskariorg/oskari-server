@@ -4,6 +4,8 @@ import fi.nls.oskari.control.ActionHandler;
 
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.SupportedSourceVersion;
+import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
@@ -19,6 +21,7 @@ import java.util.Set;
  * The file is created if it didn't exist and duplicates aren't written.
  */
 @SupportedAnnotationTypes(OskariActionRouteAnnotationProcessor.ANNOTATION_TYPE)
+@SupportedSourceVersion(SourceVersion.RELEASE_17)
 public class OskariActionRouteAnnotationProcessor extends OskariBaseAnnotationProcessor {
     /**
      * This is the annotation we are going to process

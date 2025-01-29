@@ -2,15 +2,15 @@ package org.geotools.mif;
 
 import java.io.IOException;
 
-import org.geotools.data.FeatureReader;
-import org.geotools.data.Query;
+import org.geotools.api.data.FeatureReader;
+import org.geotools.api.data.Query;
 import org.geotools.data.store.ContentState;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.type.BasicFeatureTypes;
 import org.geotools.mif.util.NOPFilter;
 import org.geotools.mif.util.TransformFilter;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
+import org.geotools.api.feature.simple.SimpleFeature;
+import org.geotools.api.feature.simple.SimpleFeatureType;
 
 import org.locationtech.jts.geom.CoordinateSequenceFilter;
 import org.locationtech.jts.geom.Geometry;

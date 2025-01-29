@@ -4,18 +4,13 @@ import fi.mml.portti.service.search.SearchResultItem;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.test.util.ResourceHelper;
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMXMLParserWrapper;
 import org.json.JSONArray;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.oskari.xml.XmlHelper;
 import org.w3c.dom.Element;
 
-import java.util.Iterator;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
-
-import static org.junit.Assert.*;
 
 public class MetadataCatalogueResultParserTest {
 
@@ -32,7 +27,7 @@ public class MetadataCatalogueResultParserTest {
                 response.put(item.toJSON());
             } catch (Exception ignored) {}
         });
-        assertTrue("JSON should match", JSONHelper.isEqual(new JSONArray(json), response));
+        Assertions.assertTrue(JSONHelper.isEqual(new JSONArray(json), response), "JSON should match");
     }
     @Test
     public void parseResultASDI() throws Exception {
@@ -47,7 +42,7 @@ public class MetadataCatalogueResultParserTest {
                 response.put(item.toJSON());
             } catch (Exception ignored) {}
         });
-        assertTrue("JSON should match", JSONHelper.isEqual(new JSONArray(json), response));
+        Assertions.assertTrue(JSONHelper.isEqual(new JSONArray(json), response), "JSON should match");
     }
     protected Stream<Element> getResults(Element root) {
         if (!"GetRecordsResponse".equals(XmlHelper.getLocalName(root))) {

@@ -6,19 +6,16 @@ import fi.nls.oskari.csw.helper.CSWISORecordNamespaceContext;
 import fi.nls.oskari.csw.helper.CSWISORecordParser;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import org.oskari.xml.XmlHelper;
 import org.geotools.referencing.CRS;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.MathTransform;
-import org.opengis.referencing.operation.TransformException;
-import org.w3c.dom.Document;
+import org.geotools.api.referencing.FactoryException;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
+import org.geotools.api.referencing.operation.MathTransform;
+import org.geotools.api.referencing.operation.TransformException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 import java.io.EOFException;
@@ -145,34 +142,15 @@ public class CSWService {
             throw new IOException("Couldn't connect to service. Got response code " + con.getResponseCode());
         }
         try (InputStream in = con.getInputStream()) {
-            // TODO: return getMetadataRootFuture(in);
-            return getMetadataRootCurrent(in);
+            return getMetadataRoot(in);
         } catch (Exception e) {
             throw new IOException("Unable to parse XML from " + url, e);
         }
     }
 
-    private Node getMetadataRootCurrent(InputStream in) throws Exception {
-        DocumentBuilderFactory dbf = fi.nls.oskari.util.XmlHelper.newDocumentBuilderFactory();
-        dbf.setNamespaceAware(true);
-        DocumentBuilder db = dbf.newDocumentBuilder();
-        Document doc = db.parse(in);
-        Node root = doc.getDocumentElement();
-        NodeList children = root.getChildNodes();
-        Node ret = null;
-        for (int i = 0; i < children.getLength(); i++) {
-            if ("MD_Metadata".equals(children.item(i).getLocalName())) {
-                ret = children.item(i);
-            }
-        }
-        return ret;
-    }
-
-    // Parsing with xpaths don't work with the "future" parser so we can't use it yet
-    // but this is the usage of revised version of XMLHelper
-    private Node getMetadataRootFuture(InputStream in) throws Exception {
-        Element root = org.oskari.xml.XmlHelper.parseXML(in, true);
-        Element metadata = org.oskari.xml.XmlHelper.getFirstChild(root, "MD_Metadata");
+    private Node getMetadataRoot(InputStream in) throws Exception {
+        Element root = XmlHelper.parseXML(in, true);
+        Element metadata = XmlHelper.getFirstChild(root, "MD_Metadata");
         if (metadata == null) {
             throw new EOFException("No 'MD_Metadata' element in metadata");
         }

@@ -4,12 +4,12 @@ import java.util.Set;
 
 import org.geotools.filter.FilterCapabilities;
 import org.geotools.filter.visitor.PostPreProcessFilterSplittingVisitor;
-import org.opengis.filter.Filter;
-import org.opengis.filter.Or;
-import org.opengis.filter.PropertyIsEqualTo;
-import org.opengis.filter.expression.Expression;
-import org.opengis.filter.expression.Literal;
-import org.opengis.filter.expression.PropertyName;
+import org.geotools.api.filter.Filter;
+import org.geotools.api.filter.Or;
+import org.geotools.api.filter.PropertyIsEqualTo;
+import org.geotools.api.filter.expression.Expression;
+import org.geotools.api.filter.expression.Literal;
+import org.geotools.api.filter.expression.PropertyName;
 
 /**
  * Split a Filter into pre-filter and post-filter.

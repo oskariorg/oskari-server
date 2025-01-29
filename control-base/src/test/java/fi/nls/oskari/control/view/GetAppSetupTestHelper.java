@@ -7,8 +7,8 @@ import fi.nls.test.util.ResourceHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GetAppSetupTestHelper {
     private static final String KEY_ENV = "env";
@@ -27,10 +27,10 @@ public class GetAppSetupTestHelper {
         JSONTestHelper.shouldEqual(style, WFSLayerOptions.getDefaultOskariStyle());
 
         JSONArray markers = JSONHelper.getJSONArray(env, KEY_MARKERS);
-        assertTrue("Response env should have markers", markers.length() > 0);
+        assertTrue(markers.length() > 0, "Response env should have markers");
         for (int i = 0; i < markers.length(); i++) {
             String data = JSONHelper.getJSONObject(markers, i).optString(KEY_MARKER_DATA);
-            assertFalse("Every marker should have data", data.isEmpty());
+            assertFalse(data.isEmpty(), "Every marker should have data");
         }
         // remove content which aren't in resource file before testing equality
         env.remove(KEY_STYLE);

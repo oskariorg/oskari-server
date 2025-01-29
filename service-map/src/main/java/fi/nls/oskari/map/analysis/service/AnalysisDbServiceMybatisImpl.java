@@ -23,10 +23,9 @@ import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.locationtech.jts.geom.Geometry;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.oskari.geojson.GeoJSONWriter;
+import org.geotools.api.feature.simple.SimpleFeature;
+import org.geotools.api.feature.simple.SimpleFeatureType;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 
 import javax.sql.DataSource;
 import java.time.OffsetDateTime;
@@ -49,8 +48,6 @@ public class AnalysisDbServiceMybatisImpl extends AnalysisDbService {
 
     private SqlSessionFactory factory = null;
 
-    private static final GeoJSONWriter geojsonWriter = new GeoJSONWriter();
-
     public AnalysisDbServiceMybatisImpl() {
 
         final DatasourceHelper helper = DatasourceHelper.getInstance();
@@ -58,7 +55,7 @@ public class AnalysisDbServiceMybatisImpl extends AnalysisDbService {
         if (dataSource == null) {
             dataSource = helper.createDataSource();
         }
-        if(dataSource != null) {
+        if (dataSource != null) {
             factory = initializeMyBatis(dataSource);
         }
         else {
@@ -83,48 +80,6 @@ public class AnalysisDbServiceMybatisImpl extends AnalysisDbService {
             cache.put(Long.toString(layer.getId()), layer);
         }
         return layer;
-    }
-
-    /**
-     * insert Analysis table row
-     *
-     * @param analysis
-     */
-
-    public long insertAnalysisRow(final Analysis analysis) {
-        final SqlSession session = factory.openSession();
-        try {
-            log.debug("Insert analyse row:", analysis);
-            final AnalysisMapper mapper = session.getMapper(AnalysisMapper.class);
-            mapper.insertAnalysisRow(analysis);
-            session.commit();
-        } catch (Exception e) {
-            log.warn(e, "Exception when trying to add analysis: ", analysis);
-        } finally {
-            session.close();
-        }
-        log.debug("Got analyse id:", analysis.getId());
-        return analysis.getId();
-    }
-
-    /**
-     * update Analysis table row field mapping
-     *
-     * @param analysis
-     */
-    public long updateAnalysisCols(final Analysis analysis) {
-        final SqlSession session = factory.openSession();
-        try {
-            log.debug("Updating analysis columns:", analysis);
-            final AnalysisMapper mapper = session.getMapper(AnalysisMapper.class);
-            mapper.updateAnalysisCols(analysis);
-            session.commit();
-        } catch (Exception e) {
-            log.warn(e, "Exception when trying to update analysis columns mapping: ", analysis);
-        } finally {
-            session.close();
-        }
-        return analysis.getId();
     }
 
     /**
@@ -259,35 +214,6 @@ public class AnalysisDbServiceMybatisImpl extends AnalysisDbService {
             log.warn(e, "Exception when trying delete analysis by id: ", analysis);
         } finally {
             session.close();
-        }
-    }
-
-    public void mergeAnalysis(final Analysis analysis, final List<Long> ids) throws ServiceException {
-        if(analysis == null) {
-            throw new ServiceException("Tried to merge analysis with <null> param");
-        }
-        final SqlSession session = factory.openSession();
-        if (ids.size() > 1) {
-            try {
-                log.debug("Merging analysis: ", analysis);
-                //TODO final Resource res = permissionsService.getResource(AnalysisLayer.TYPE, "analysis+" + analysis.getId());
-                //permissionsService.deleteResource(res);
-                final AnalysisMapper mapper = session.getMapper(AnalysisMapper.class);
-                for (long id : ids) {
-                    analysis.setOld_id(id);
-                    mapper.mergeAnalysisData(analysis);
-                }
-                for (long id : ids) {
-                    Analysis analysis_old = mapper.getAnalysisById(id);
-                    mapper.deleteAnalysisById(id);
-                    cache.remove(Long.toString(analysis_old.getId()));
-                }
-                session.commit();
-            } catch (Exception e) {
-                log.warn(e, "Error merging analysis data with ids: ", ids);
-            } finally {
-                session.close();
-            }
         }
     }
 

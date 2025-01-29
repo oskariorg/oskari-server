@@ -1,8 +1,7 @@
 package fi.nls.oskari.worker;
 
-import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class JobQueueTest {
 	private class TestJob extends AbstractJob<String> {
@@ -39,23 +38,23 @@ public class JobQueueTest {
 		
 		TestJob job = new TestJob(1);
     	jobs.add(job);
-		assertTrue("Should be created", job.goNext() == true);
+		Assertions.assertTrue(job.goNext() == true, "Should be created");
 		Thread.sleep(500); // wait that its running
-		assertTrue("Should run", job.isStarted() == true);
+		Assertions.assertTrue(job.isStarted() == true, "Should run");
 		TestJob job2 = new TestJob(2);
     	jobs.add(job2);
-		assertTrue("Should be created", job2.goNext() == true);
+		Assertions.assertTrue(job2.goNext() == true, "Should be created");
 		Thread.sleep(500); // wait that its running
-		assertTrue("Should run", job2.isStarted() == true);
+		Assertions.assertTrue(job2.isStarted() == true, "Should run");
 		TestJob job3 = new TestJob(3);
     	jobs.add(job3);
-		assertTrue("Should be created", job3.goNext() == true);
+		Assertions.assertTrue(job3.goNext() == true, "Should be created");
 		Thread.sleep(500); // wait that its running
-		assertTrue("Should run", job3.isStarted() == false);
+		Assertions.assertTrue(job3.isStarted() == false, "Should run");
     	jobs.remove(job);
 		Thread.sleep(500); // wait that pool gives turn..
-		assertTrue("Should be stopped", job.goNext() == false);
-		assertTrue("Should run", job3.isStarted() == true);
+		Assertions.assertTrue(job.goNext() == false, "Should be stopped");
+		Assertions.assertTrue(job3.isStarted() == true, "Should run");
 	}
 
 }

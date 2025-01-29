@@ -1,6 +1,8 @@
 package org.geotools.mif;
 
-import static org.junit.Assert.assertTrue;
+import org.geotools.referencing.CRS;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -9,13 +11,11 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.geotools.data.DataStore;
-import org.geotools.data.DataStoreFinder;
-import org.geotools.referencing.CRS;
-import org.junit.Test;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.NoSuchAuthorityCodeException;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.geotools.api.data.DataStore;
+import org.geotools.api.data.DataStoreFinder;
+import org.geotools.api.referencing.FactoryException;
+import org.geotools.api.referencing.NoSuchAuthorityCodeException;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 
 public class MIFDataStoreFactoryTest {
 
@@ -26,13 +26,13 @@ public class MIFDataStoreFactoryTest {
         params.put("url", url);
 
         DataStore store = DataStoreFinder.getDataStore(params);
-        assertTrue(store instanceof MIFDataStore);
+        Assertions.assertTrue(store instanceof MIFDataStore);
         MIFDataStore mifStore = (MIFDataStore) store;
 
         MIFHeader header = mifStore.readHeader();
 
         try (MIDReader mid = mifStore.openMID(header)) {
-            assertTrue(mid.getClass().equals(MIDReader.class));
+            Assertions.assertTrue(mid.getClass().equals(MIDReader.class));
         }
     }
 
@@ -43,13 +43,13 @@ public class MIFDataStoreFactoryTest {
         params.put("url", url);
 
         DataStore store = DataStoreFinder.getDataStore(params);
-        assertTrue(store instanceof MIFDataStore);
+        Assertions.assertTrue(store instanceof MIFDataStore);
         MIFDataStore mifStore = (MIFDataStore) store;
 
         MIFHeader header = mifStore.readHeader();
 
         try (MIDReader mid = mifStore.openMID(header)) {
-            assertTrue(mid.getClass().equals(NoMIDReader.class));
+            Assertions.assertTrue(mid.getClass().equals(NoMIDReader.class));
         }
     }
 
@@ -63,16 +63,16 @@ public class MIFDataStoreFactoryTest {
         params.put("crs", epsg);
 
         DataStore store = DataStoreFinder.getDataStore(params);
-        assertTrue(store instanceof MIFDataStore);
+        Assertions.assertTrue(store instanceof MIFDataStore);
         MIFDataStore mifStore = (MIFDataStore) store;
 
         MIFHeader header = mifStore.readHeader();
         CoordinateReferenceSystem actual = header.getCoordSys();
         CoordinateReferenceSystem expected = CRS.decode("EPSG:2393", true);
-        assertTrue(CRS.equalsIgnoreMetadata(expected, actual));
+        Assertions.assertTrue(CRS.equalsIgnoreMetadata(expected, actual));
 
         try (MIDReader mid = mifStore.openMID(header)) {
-            assertTrue(mid.getClass().equals(NoMIDReader.class));
+            Assertions.assertTrue(mid.getClass().equals(NoMIDReader.class));
         }
     }
 

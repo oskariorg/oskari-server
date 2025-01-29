@@ -8,8 +8,8 @@ import fi.nls.oskari.util.JSONHelper;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.xsd.Encoder;
-import org.opengis.filter.Filter;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.geotools.api.filter.Filter;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.service.ServiceRuntimeException;

@@ -1,14 +1,15 @@
 package org.oskari.maplayer.admin;
 
 import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.service.ServiceRuntimeException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.oskari.maplayer.model.MapLayer;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class LayerValidatorTest {
 
@@ -16,21 +17,22 @@ public class LayerValidatorTest {
     public void validateUrl() {
         String url = "https://api.maptiler.com/tiles/v3/{z}/{x}/{y}.pbf";
         String validated = LayerValidator.sanitizeUrl(url);
-        assertEquals("URL should be unchanged", url, validated);
+        assertEquals( url, validated, "URL should be unchanged");
     }
 
     @Test
     public void validateUrlNull() {
         String url = null;
         String validated = LayerValidator.sanitizeUrl(url);
-        assertNull("URL should be unchanged", validated);
+        assertNull(validated, "URL should be unchanged");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test()
     public void validateUrlNonvalid() {
-        String url = "sgashahah";
-        String validated = LayerValidator.sanitizeUrl(url);
-        fail("Should have thrown exception");
+        assertThrows(IllegalArgumentException.class, () -> {
+            String url = "sgashahah";
+            String validated = LayerValidator.sanitizeUrl(url);
+        });
     }
 
     @Test
@@ -113,7 +115,7 @@ public class LayerValidatorTest {
             assertEquals(original[i], rest[0]);
             rest = LayerValidator.shiftArray(rest);
         }
-        assertEquals("Rest should be empty", rest.length, 0);
+        assertEquals(rest.length, 0, "Rest should be empty");
     }
 
     private Map<String, Map<String, String>> createValidLocaleForLayer() {

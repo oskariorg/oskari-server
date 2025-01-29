@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.oskari</groupId>
         <artifactId>oskari-server</artifactId>
-        <version>2.15.0-SNAPSHOT</version>
+        <version>3.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>service-routing</artifactId>
@@ -25,11 +25,6 @@
         <dependency>
             <groupId>org.oskari</groupId>
             <artifactId>service-map</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>

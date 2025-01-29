@@ -5,9 +5,9 @@ import org.geotools.filter.text.cql2.CQL;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.json.JSONObject;
-import org.junit.Assert;
-import org.opengis.filter.Filter;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.geotools.api.filter.Filter;
 
 import java.util.Optional;
 
@@ -20,7 +20,7 @@ public class OskariWFSClientTest {
         OskariLayer layer = new OskariLayer();
         layer.setType(OskariLayer.TYPE_WFS);
         Filter filter = client.getWFSFilter(null, layer, null, Optional.empty());
-        Assert.assertNull("Layer without filter should get null filter", filter);
+        Assertions.assertNull(filter, "Layer without filter should get null filter");
     }
     @Test
     public void filter() throws Exception {
@@ -30,7 +30,7 @@ public class OskariWFSClientTest {
         layer.setAttributes(new JSONObject(FILTER));
         ReferencedEnvelope bbox = new ReferencedEnvelope(0, 10, 0, 10, DefaultGeographicCRS.WGS84);
         Filter filter = client.getWFSFilter(null, layer, bbox, Optional.empty());
-        Assert.assertNotNull("Layer should get filter", filter);
-        Assert.assertEquals("foo = 'bar' AND BBOX(geomName, 0.0,0.0,10.0,10.0)", CQL.toCQL(filter));
+        Assertions.assertNotNull(filter, "Layer should get filter");
+        Assertions.assertEquals("foo = 'bar' AND BBOX(geomName, 0.0,0.0,10.0,10.0)", CQL.toCQL(filter));
     }
 }

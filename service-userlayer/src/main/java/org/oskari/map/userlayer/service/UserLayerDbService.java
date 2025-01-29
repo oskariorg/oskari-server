@@ -6,7 +6,7 @@ import fi.nls.oskari.service.OskariComponent;
 import fi.nls.oskari.service.ServiceException;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 
 import java.util.List;
 

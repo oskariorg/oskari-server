@@ -1,13 +1,12 @@
 package org.oskari.control.mvt;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.oskari.service.mvt.TileCoord;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
-import org.junit.Test;
-import org.oskari.service.mvt.TileCoord;
 
 public class GetWFSVectorTileHandlerTest {
 
@@ -31,9 +30,9 @@ public class GetWFSVectorTileHandlerTest {
 
         List<TileCoord> tiles = GetWFSVectorTileHandler.getTilesToLoad(targetZ, z, x, y);
         for (TileCoord tile : tiles) {
-            assertEquals(targetZ, tile.getZ());
+            Assertions.assertEquals(targetZ, tile.getZ());
         }
-        assertEquals(expectedLen, tiles.size());
+        Assertions.assertEquals(expectedLen, tiles.size());
         Collections.sort(tiles, Comparator.comparing(TileCoord::getX).thenComparing(TileCoord::getY));
 
         int index = 0;
@@ -42,8 +41,8 @@ public class GetWFSVectorTileHandlerTest {
             for (int j = 0; j < expectedMatrixLen; j++) {
                 int expectedY = minExpectedY + j;
                 TileCoord tile = tiles.get(index++);
-                assertEquals(expectedX, tile.getX());
-                assertEquals(expectedY, tile.getY());
+                Assertions.assertEquals(expectedX, tile.getX());
+                Assertions.assertEquals(expectedY, tile.getY());
             }
         }
     }
@@ -74,9 +73,9 @@ public class GetWFSVectorTileHandlerTest {
 
         List<TileCoord> tiles = GetWFSVectorTileHandler.getTilesToLoad(targetZ, z, x, y);
         for (TileCoord tile : tiles) {
-            assertEquals(targetZ, tile.getZ());
+            Assertions.assertEquals(targetZ, tile.getZ());
         }
-        assertEquals(expectedLen, tiles.size());
+        Assertions.assertEquals(expectedLen, tiles.size());
         Collections.sort(tiles, Comparator.comparing(TileCoord::getX).thenComparing(TileCoord::getY));
 
         int index = 0;
@@ -85,8 +84,8 @@ public class GetWFSVectorTileHandlerTest {
             for (int j = 0; j < expectedMatrixLen; j++) {
                 int expectedY = minExpectedY + j;
                 TileCoord tile = tiles.get(index++);
-                assertEquals(expectedX, tile.getX());
-                assertEquals(expectedY, tile.getY());
+                Assertions.assertEquals(expectedX, tile.getX());
+                Assertions.assertEquals(expectedY, tile.getY());
             }
         }
     }
@@ -111,9 +110,9 @@ public class GetWFSVectorTileHandlerTest {
 
         List<TileCoord> tiles = GetWFSVectorTileHandler.getTilesToLoad(targetZ, z, x, y);
         for (TileCoord tile : tiles) {
-            assertEquals(targetZ, tile.getZ());
+            Assertions.assertEquals(targetZ, tile.getZ());
         }
-        assertEquals(expectedLen, tiles.size());
+        Assertions.assertEquals(expectedLen, tiles.size());
         Collections.sort(tiles, Comparator.comparing(TileCoord::getX).thenComparing(TileCoord::getY));
 
         int index = 0;
@@ -122,8 +121,8 @@ public class GetWFSVectorTileHandlerTest {
             for (int j = 0; j < expectedMatrixLen; j++) {
                 int expectedY = minExpectedY + j;
                 TileCoord tile = tiles.get(index++);
-                assertEquals(expectedX, tile.getX());
-                assertEquals(expectedY, tile.getY());
+                Assertions.assertEquals(expectedX, tile.getX());
+                Assertions.assertEquals(expectedY, tile.getY());
             }
         }
     }
