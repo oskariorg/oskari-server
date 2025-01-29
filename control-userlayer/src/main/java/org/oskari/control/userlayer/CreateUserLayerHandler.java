@@ -296,6 +296,13 @@ public class CreateUserLayerHandler extends RestActionHandler {
         FeatureCollectionParser parser = null;
         try {
             dir = makeRandomTempDirectory();
+            File file = new File(dir, zipFile.getName());
+            if (!file.toPath().normalize().startsWith(dir.toPath())) {
+                // malicious zip could have getName() as ../things/stuff or other bad path
+                throw new UserLayerException("Zip contains paths we don't want to follow:" + zipFile.getName(),
+                        UserLayerException.ErrorType.INVALID_ZIP);
+            }
+
             File mainFile = unZip(zipFile, cs, validFiles, dir);
             parser = getParser(mainFile);
             return parser.parse(mainFile, sourceCRS, targetCRS);
