@@ -17,7 +17,7 @@ import org.oskari.admin.LayerCapabilitiesHelper;
 import org.oskari.maplayer.admin.LayerValidator;
 import org.oskari.maplayer.model.ServiceCapabilitiesResult;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.net.SocketTimeoutException;

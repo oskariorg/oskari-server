@@ -8,7 +8,7 @@ import fi.nls.oskari.view.modifier.ModifierException;
 import fi.nls.oskari.view.modifier.ModifierParams;
 import org.json.JSONObject;
 
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSession;
 
 @OskariViewModifier("statehandler")
 public class StateHandlerHandler extends BundleHandler {

@@ -331,7 +331,7 @@ public class GetAppSetupHandler extends ActionHandler {
     }
 
 
-    private JSONObject getStateFromCookie(javax.servlet.http.Cookie cookie) {
+    private JSONObject getStateFromCookie(jakarta.servlet.http.Cookie cookie) {
         if (cookie == null) {
             log.debug("Cookie state was <null>");
             return null;

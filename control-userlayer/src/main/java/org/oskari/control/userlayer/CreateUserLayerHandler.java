@@ -3,6 +3,9 @@ package org.oskari.control.userlayer;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -13,14 +16,16 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import fi.nls.oskari.control.*;
 import org.oskari.log.AuditLog;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
+
+
+import org.apache.commons.fileupload2.core.FileItem;
+import org.apache.commons.fileupload2.core.FileUploadException;
+import org.apache.commons.fileupload2.core.DiskFileItemFactory;
+import org.apache.commons.fileupload2.jakarta.servlet6.JakartaServletFileUpload;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.referencing.CRS;
 import org.json.JSONObject;
@@ -87,7 +92,8 @@ public class CreateUserLayerHandler extends RestActionHandler {
 
     private static final int MAX_RETRY_RANDOM_UUID = 100;
 
-    private final DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory(MAX_SIZE_MEMORY, null);
+    Path tempDir = Paths.get(System.getProperty("java.io.tmpdir"));
+    private final DiskFileItemFactory diskFileItemFactory = DiskFileItemFactory.builder().setPath(tempDir).setBufferSize(MAX_SIZE_MEMORY).get();
     private String targetEPSG = "EPSG:4326";
     private int userlayerMaxFileSize = -1;
     private long unzippiedFileSizeLimit = -1;
@@ -164,7 +170,13 @@ public class CreateUserLayerHandler extends RestActionHandler {
                     validFiles.stream().collect(Collectors.joining(",")));
             throw e;
         } finally {
-            fileItems.forEach(FileItem::delete);
+            fileItems.forEach(fileItem -> {
+                try {
+                    fileItem.delete();
+                } catch (IOException e) {
+                    log.error("Failed to delete file item", e);
+                }
+            });
         }
     }
 
@@ -200,7 +212,7 @@ public class CreateUserLayerHandler extends RestActionHandler {
     private List<FileItem> getFileItems(HttpServletRequest request) throws ActionException {
         try {
             request.setCharacterEncoding("UTF-8");
-            ServletFileUpload upload = new ServletFileUpload(diskFileItemFactory);
+            JakartaServletFileUpload upload = new JakartaServletFileUpload(diskFileItemFactory);
             upload.setSizeMax(userlayerMaxFileSize);
             return upload.parseRequest(request);
         } catch (UnsupportedEncodingException | FileUploadException e) {

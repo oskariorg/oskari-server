@@ -4,7 +4,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import org.oskari.util.HtmlHelper;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashMap;
