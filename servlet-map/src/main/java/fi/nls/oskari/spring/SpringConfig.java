@@ -26,8 +26,8 @@ import org.springframework.web.servlet.resource.PathResourceResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import jakarta.servlet.ServletContext;
 import java.util.ArrayList;
 import java.util.List;
