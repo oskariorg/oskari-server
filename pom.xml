@@ -59,7 +59,8 @@
 
         <jakarta.servlet.version>6.0.0</jakarta.servlet.version>
         <jakarta.servlet.jsp.version>3.1.0</jakarta.servlet.jsp.version>
-        <jakarta.servlet.jsp.jstl.version>2.0.0</jakarta.servlet.jsp.jstl.version>
+        <jakarta.servlet.jsp.jstl-api.version>3.0.0</jakarta.servlet.jsp.jstl-api.version>
+        <jakarta.servlet.jsp.jstl.version>3.0.1</jakarta.servlet.jsp.jstl.version>
         <javax.xml.version>1.0</javax.xml.version>
         <vecmath.version>1.5.2</vecmath.version>
 
@@ -517,6 +518,15 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
                 <version>${jakarta.servlet.jsp.version}</version>
                 <scope>provided</scope>
             </dependency>
+            <!-- JSTL API is required to prevent jakarta.servlet.ServletException:
+            Handler processing failed: java.lang.NoClassDefFoundError: jakarta/servlet/jsp/jstl/core/Config at runtime with JSP
+            This happens immediately by just opening the geoportal page -->
+            <dependency>
+                <groupId>jakarta.servlet.jsp.jstl</groupId>
+                <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
+                <version>${jakarta.servlet.jsp.jstl-api.version}</version>
+            </dependency>
+            <!-- JSTL IMPL from glassfish -->
             <dependency>
                 <groupId>org.glassfish.web</groupId>
                 <artifactId>jakarta.servlet.jsp.jstl</artifactId>
