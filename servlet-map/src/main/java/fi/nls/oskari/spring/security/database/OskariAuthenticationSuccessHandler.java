@@ -6,14 +6,17 @@ import fi.nls.oskari.spring.security.OskariUserHelper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.stereotype.Component;
+
 import java.io.IOException;
 
 /**
  * Hooks in OskariUserHelper.onAuthenticationSuccess(). Extends different Spring class than the similar class
  * in SAML package.
  */
+@Component
 public class OskariAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private Logger log = LogFactory.getLogger(OskariAuthenticationSuccessHandler.class);
     private OskariUserHelper helper = new OskariUserHelper();
@@ -23,7 +26,7 @@ public class OskariAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     }
 
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
-            throws IOException, javax.servlet.ServletException {
+            throws IOException, jakarta.servlet.ServletException {
         log.debug("Database based login successful:", authentication.getPrincipal());
         super.onAuthenticationSuccess(request, response, authentication);
         helper.onAuthenticationSuccess(request, response, authentication);

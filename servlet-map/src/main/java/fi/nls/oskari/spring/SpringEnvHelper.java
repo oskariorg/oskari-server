@@ -5,6 +5,7 @@ import fi.nls.oskari.util.PropertyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import org.springframework.core.env.Profiles;
 
 /**
  * Created with IntelliJ IDEA.
@@ -41,10 +42,11 @@ public class SpringEnvHelper {
     }
 
     public boolean isSAMLEnabled() {
-        return springEnvironment.acceptsProfiles(PROFILE_LOGIN_SAML);
+        return springEnvironment.acceptsProfiles(Profiles.of(PROFILE_LOGIN_SAML));
     }
+    
     public boolean isDBLoginEnabled() {
-        return springEnvironment.acceptsProfiles(PROFILE_LOGIN_DB);
+        return springEnvironment.acceptsProfiles(Profiles.of(PROFILE_LOGIN_DB));
     }
 
     public boolean isHandleLoginForm() {

@@ -26,8 +26,8 @@ import org.oskari.permissions.PermissionService;
 import org.oskari.service.user.LayerAccessHandler;
 import org.oskari.service.util.ServiceFactory;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.net.HttpURLConnection;
 import java.util.*;
 

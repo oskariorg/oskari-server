@@ -8,7 +8,7 @@ import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.util.ResponseHelper;
 import org.oskari.util.Customization;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @OskariActionRoute("Logo")

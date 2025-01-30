@@ -5,11 +5,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.session.data.redis.config.ConfigureRedisAction;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @Profile(RedisSessionsConfigElasticCache.PROFILE)
-public class RedisSessionsConfigElasticCache  extends WebMvcConfigurerAdapter {
+public class RedisSessionsConfigElasticCache implements WebMvcConfigurer {
     public static final String PROFILE = "redis-aws";
 
     @Bean

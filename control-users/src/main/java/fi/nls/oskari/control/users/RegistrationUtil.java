@@ -3,7 +3,7 @@ package fi.nls.oskari.control.users;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.util.PropertyUtil;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
 import java.util.Calendar;
 

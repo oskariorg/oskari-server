@@ -47,19 +47,19 @@
         <jdk.version>17</jdk.version>
         <oskari.version>${project.version}</oskari.version>
 
-        <spring.version>5.3.39</spring.version>
-        <spring-security.version>5.7.13</spring-security.version>
+        <spring.version>6.2.2</spring.version>
+        <spring-security.version>6.4.2</spring-security.version>
         <!--
         session-bom 2021.2.3 uses 2.7.4 from session
         https://github.com/spring-projects/spring-session/blob/2.7.4/gradle/dependency-management.gradle
         which is aligned with core 5.3.30 and security 5.7.11 versions
         https://github.com/spring-projects/spring-session/releases/tag/2.7.4
         https://central.sonatype.com/artifact/org.springframework.session/spring-session-bom/2021.2.3 -->
-        <spring.session.version>2021.2.3</spring.session.version>
+        <spring.session.version>3.4.1</spring.session.version>
 
-        <javax.servlet.version>3.1.0</javax.servlet.version>
-        <javax.servlet.jsp.version>2.3.3</javax.servlet.jsp.version>
-        <javax.servlet.jstl.version>1.2</javax.servlet.jstl.version>
+        <jakarta.servlet.version>6.0.0</jakarta.servlet.version>
+        <jakarta.servlet.jsp.version>3.1.0</jakarta.servlet.jsp.version>
+        <jakarta.servlet.jsp.jstl.version>2.0.0</jakarta.servlet.jsp.jstl.version>
         <javax.xml.version>1.0</javax.xml.version>
         <vecmath.version>1.5.2</vecmath.version>
 
@@ -68,7 +68,7 @@
         <!-- could be removed? -->
         <commons-collections.version>3.2.2</commons-collections.version>
         <commons-codec.version>1.16.0</commons-codec.version>
-        <commons-fileupload.version>1.5</commons-fileupload.version>
+        <commons-fileupload.version>2.0.0-M2</commons-fileupload.version>
         <commons-dbcp2.version>2.11.0</commons-dbcp2.version>
 
 <!-- This will override commons-io to be packaged with version 2.16.1, otherwise
@@ -506,22 +506,21 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
             </dependency>
 
             <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>javax.servlet-api</artifactId>
-                <version>${javax.servlet.version}</version>
+                <groupId>jakarta.servlet</groupId>
+                <artifactId>jakarta.servlet-api</artifactId>
+                <version>${jakarta.servlet.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
-                <groupId>javax.servlet.jsp</groupId>
-                <artifactId>javax.servlet.jsp-api</artifactId>
-                <version>${javax.servlet.jsp.version}</version>
+                <groupId>jakarta.servlet.jsp</groupId>
+                <artifactId>jakarta.servlet.jsp-api</artifactId>
+                <version>${jakarta.servlet.jsp.version}</version>
                 <scope>provided</scope>
             </dependency>
-
             <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>jstl</artifactId>
-                <version>${javax.servlet.jstl.version}</version>
+                <groupId>org.glassfish.web</groupId>
+                <artifactId>jakarta.servlet.jsp.jstl</artifactId>
+                <version>${jakarta.servlet.jsp.jstl.version}</version>
             </dependency>
 
             <dependency>
@@ -777,8 +776,8 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
                 <version>${fi.mml.nameregister.version}</version>
             </dependency>
             <dependency>
-                <groupId>commons-fileupload</groupId>
-                <artifactId>commons-fileupload</artifactId>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-fileupload2-jakarta-servlet6</artifactId>
                 <version>${commons-fileupload.version}</version>
             </dependency>
             <dependency>
