@@ -13,8 +13,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class V2_15_1__infobox_colourscheme_to_theme  extends BaseJavaMigration {
-    private static final Logger LOG = LogFactory.getLogger(V2_15_1__infobox_colourscheme_to_theme.class);
+public class V3_0_1__infobox_colourscheme_to_theme extends BaseJavaMigration {
+    private static final Logger LOG = LogFactory.getLogger(V3_0_1__infobox_colourscheme_to_theme.class);
     private static final String INFO_PLUGIN_CLASS = "Oskari.mapframework.mapmodule.GetInfoPlugin";
     @Override
     public void migrate (Context context) throws Exception {
@@ -92,8 +92,17 @@ public class V2_15_1__infobox_colourscheme_to_theme  extends BaseJavaMigration {
 
         for (int i = 0; i < mapModules.length(); i++) {
             JSONObject module = mapModules.getJSONObject(i);
-            JSONObject config = new JSONObject(module.getString("config"));
-            JSONObject metadata = new JSONObject(module.getString("metadata"));
+
+            JSONObject config = null;
+            JSONObject metadata = null;
+            if (module.has("config")) {
+                config = new JSONObject(module.getString("config"));
+            }
+
+            if (module.has("metadata")) {
+                metadata = new JSONObject(module.getString("metadata"));
+            }
+
 
             if(metadata == null || config == null) {
                 continue;
