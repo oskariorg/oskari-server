@@ -34,13 +34,13 @@ public class OskariLoginFailureHandler extends SimpleUrlAuthenticationFailureHan
         super.onAuthenticationFailure(request, response, exception);
         AuditLog.guest(ActionParameters.getClientIp(request))
                 .withMsg("Login")
-                .withParam("ex", exception.getMessage())
+                .withParam("ex", exception.getMessage() + " " + getCauseMsg(exception))
                 .errored(AuditLog.ResourceType.USER);
     }
     private String getCauseMsg(Exception e) {
         if (e.getCause() == null) {
             return "";
         }
-        return e.getCause().getClass() + ":" + e.getCause().getMessage();
+        return "- Cause: " + e.getCause().getClass() + " with msg: " + e.getCause().getMessage();
     }
 }
