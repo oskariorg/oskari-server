@@ -1,8 +1,6 @@
 package fi.nls.oskari.spring.security.database;
 
 import fi.nls.oskari.domain.User;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.spring.security.OskariUserHelper;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -18,9 +16,7 @@ import org.springframework.stereotype.Component;
  * Sample custom authentication provider using Oskari UserService.
  */
 @Component
-    public class OskariAuthenticationProvider implements AuthenticationProvider {
-
-    private Logger log = LogFactory.getLogger(OskariAuthenticationProvider.class);
+public class OskariAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication)
@@ -30,10 +26,9 @@ import org.springframework.stereotype.Component;
         try {
             User user = getUser(name, password);
             return new UsernamePasswordAuthenticationToken(name, password, OskariUserHelper.getRoles(user.getRoles()));
-        } catch (Exception ex) {
-            log.error(ex, "Exception on auth!");
+        } catch (UsernameNotFoundException ex) {
+            throw new AuthenticationServiceException("Unable to auth", ex);
         }
-        throw new AuthenticationServiceException("Unable to auth");
     }
 
     public User getUser(final String username, final String password) throws UsernameNotFoundException {
@@ -45,8 +40,9 @@ import org.springframework.stereotype.Component;
             }
             return user;
 
+        } catch (UsernameNotFoundException ex) {
+            throw ex;
         } catch (Exception ex) {
-            log.error(ex, "Exception on auth!");
             throw new UsernameNotFoundException("User not found");
         }
     }
