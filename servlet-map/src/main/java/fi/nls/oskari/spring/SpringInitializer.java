@@ -64,7 +64,7 @@ public class SpringInitializer extends AbstractHttpSessionApplicationInitializer
             log.info("Using profiles:", configuredProfiles);
             context.getEnvironment().setActiveProfiles(configuredProfiles);
         }
-        context.setConfigLocation("fi.nls.oskari.spring");
+        context.setConfigLocations("org.oskari.spring", "fi.nls.oskari.spring");
         return context;
     }
 
