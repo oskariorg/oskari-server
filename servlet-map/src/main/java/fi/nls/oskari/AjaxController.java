@@ -24,7 +24,7 @@ public class AjaxController {
 
     @RequestMapping("/action/{route}")
     @ResponseBody
-    public void handleRoute(@OskariParam ActionParameters params, @PathVariable String route) {
+    public void handleRoute(@OskariParam ActionParameters params, @PathVariable("route") String route) {
         handleAction(params, route);
     }
 
@@ -42,7 +42,7 @@ public class AjaxController {
             ActionControl.routeAction(route, params);
             // TODO:  HANDLE THE EXCEPTION, LOG USER AGENT ETC. on exceptions
         } catch (ActionParamsException e) {
-            // For cases where we dont want a stack trace
+            // For cases where we don't want a stack trace
             log.error("Couldn't handle action:", route, ". Message: ", e.getMessage(), ". Parameters: ", params.getRequest().getParameterMap());
             AuditLog.user(params.getClientIp(), params.getUser())
                     .withParams(params.getRequest().getParameterMap())
