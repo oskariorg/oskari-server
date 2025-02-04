@@ -1,10 +1,11 @@
-package fi.nls.oskari.spring.security.database;
+package org.oskari.spring.security.database;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.spring.SpringEnvHelper;
-import fi.nls.oskari.spring.security.OskariLoginFailureHandler;
-import org.oskari.spring.OskariSpringSecurityDsl;
+import org.oskari.spring.security.OskariAuthenticationSuccessHandler;
+import org.oskari.spring.security.OskariLoginFailureHandler;
+import org.oskari.spring.security.OskariSpringSecurityDsl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

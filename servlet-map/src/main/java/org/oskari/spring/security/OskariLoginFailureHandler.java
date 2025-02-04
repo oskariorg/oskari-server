@@ -1,4 +1,4 @@
-package fi.nls.oskari.spring.security;
+package org.oskari.spring.security;
 
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.log.LogFactory;
@@ -29,12 +29,18 @@ public class OskariLoginFailureHandler extends SimpleUrlAuthenticationFailureHan
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-        // just log the error for now
-        log.error(exception, "Login failed!");
+        log.debug(exception, "Login failed!");
+        log.warn("Login failed:", exception.getMessage(), getCauseMsg(exception));
         super.onAuthenticationFailure(request, response, exception);
         AuditLog.guest(ActionParameters.getClientIp(request))
                 .withMsg("Login")
                 .withParam("ex", exception.getMessage())
                 .errored(AuditLog.ResourceType.USER);
+    }
+    private String getCauseMsg(Exception e) {
+        if (e.getCause() == null) {
+            return "";
+        }
+        return e.getCause().getClass() + ":" + e.getCause().getMessage();
     }
 }

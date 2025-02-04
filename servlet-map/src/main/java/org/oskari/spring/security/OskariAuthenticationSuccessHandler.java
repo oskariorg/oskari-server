@@ -1,8 +1,7 @@
-package fi.nls.oskari.spring.security.database;
+package org.oskari.spring.security;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.spring.security.OskariUserHelper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 

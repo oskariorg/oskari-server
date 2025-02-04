@@ -1,8 +1,8 @@
-package fi.nls.oskari.spring.security.database;
+package org.oskari.spring.security.database;
 
 import fi.nls.oskari.domain.User;
 import fi.nls.oskari.service.UserService;
-import fi.nls.oskari.spring.security.OskariUserHelper;
+import org.oskari.spring.security.OskariUserHelper;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

@@ -1,8 +1,9 @@
-package fi.nls.oskari.spring.security;
+package org.oskari.spring.security;
 
 import org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer;
 
 /**
+ * This is REQUIRED for security configs to be used!
  * This does nothing but having a class that extends
  * AbstractSecurityWebApplicationInitializer will load the springSecurityFilterChain automatically.
  *

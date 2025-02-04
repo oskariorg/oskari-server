@@ -1,4 +1,4 @@
-package org.oskari.spring;
+package org.oskari.spring.security;
 
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
