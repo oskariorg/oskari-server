@@ -11,7 +11,7 @@ import org.springframework.security.web.authentication.preauth.AbstractPreAuthen
 public class OskariSpringSecurityDsl extends AbstractHttpConfigurer<OskariSpringSecurityDsl, HttpSecurity> {
     private boolean disableFrameOpts = true;
     private boolean disableUnnecessarySessions = true;
-    private boolean disableHSTS = true;
+    private boolean disableHSTS = false;
     private boolean useCommonLogout = true;
     private Filter loginFilter = null;
     private Filter preAuthFilter = null;
@@ -22,6 +22,7 @@ public class OskariSpringSecurityDsl extends AbstractHttpConfigurer<OskariSpring
     public void init(HttpSecurity http) throws Exception {
         // any method that adds another configurer
         // must be done in the init method
+
         disableCSRF(http);
         if (disableFrameOpts) {
             disableFrameOptions(http);
@@ -52,7 +53,7 @@ public class OskariSpringSecurityDsl extends AbstractHttpConfigurer<OskariSpring
         }
     }
 
-    public OskariSpringSecurityDsl setDisableFrameOpts(boolean disableFrameOpts) {
+    public OskariSpringSecurityDsl setAllowMapsToBeEmbedded(boolean disableFrameOpts) {
         this.disableFrameOpts = disableFrameOpts;
         return this;
     }
@@ -105,6 +106,7 @@ public class OskariSpringSecurityDsl extends AbstractHttpConfigurer<OskariSpring
     }
 
     public static void disableFrameOptions(HttpSecurity http) throws Exception {
+        // we need to disable frame options or embedding maps doesn't work
         http.headers(headers ->
                 // Disable frame options and CSRF for embedded maps
                 headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable));
