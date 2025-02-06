@@ -50,11 +50,19 @@
         <spring.version>6.2.2</spring.version>
         <spring-security.version>6.4.2</spring-security.version>
         <!--
-        session-bom 2021.2.3 uses 2.7.4 from session
-        https://github.com/spring-projects/spring-session/blob/2.7.4/gradle/dependency-management.gradle
-        which is aligned with core 5.3.30 and security 5.7.11 versions
-        https://github.com/spring-projects/spring-session/releases/tag/2.7.4
-        https://central.sonatype.com/artifact/org.springframework.session/spring-session-bom/2021.2.3 -->
+        session-bom 3.4.1 uses:
+        https://github.com/spring-projects/spring-session/blob/3.4.1/gradle/libs.versions.toml#L61-L62
+        which is aligned with core 6.2.1 and security 6.4.2 versions
+        https://central.sonatype.com/artifact/org.springframework.session/spring-session-bom/3.4.1
+        https://mvnrepository.com/artifact/org.springframework.session/spring-session-bom/3.4.1
+         and spring-data 2024.1.1 (https://github.com/spring-projects/spring-session/blob/3.4.1/gradle/libs.versions.toml#L60)
+         which uses spring-data-redis 3.4.2:
+         - https://github.com/spring-projects/spring-data-redis/releases/tag/3.4.2
+         - https://github.com/spring-projects/spring-data-bom/releases/tag/2024.1.2
+         Which uses Jedis 5.2.0:
+         - https://github.com/spring-projects/spring-data-redis/blob/3.4.2/pom.xml#L28
+         Hence we need the same jedis version
+         -->
         <spring.session.version>3.4.1</spring.session.version>
 
         <jakarta.servlet.version>6.0.0</jakarta.servlet.version>
@@ -95,12 +103,11 @@ The one packaged without this is 2.15.1
         <postgresql.version>42.7.4</postgresql.version>
         <hikaricp.version>6.2.1</hikaricp.version>
 
-        <!-- https://github.com/spring-projects/spring-data-redis/blob/2.7.x/pom.xml#L29
-         https://github.com/spring-projects/spring-data-redis/blob/2.7.4/pom.xml#L28-->
-        <jedis.version>3.8.0</jedis.version>
+        <!-- https://github.com/spring-projects/spring-data-redis/blob/3.4.2/pom.xml#L28 -->
+        <jedis.version>5.2.0</jedis.version>
         <quartz-scheduler.version>2.3.2</quartz-scheduler.version>
 
-        <geotools.version>32.1</geotools.version>
+        <geotools.version>32.2</geotools.version>
         <jts.version>1.20.0</jts.version>
         <!-- https://github.com/ElectronicChartCentre/java-vector-tile -->
         <mvt.version>1.4.1</mvt.version>
@@ -851,6 +858,9 @@ The one packaged without this is 2.15.1
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.13.0</version>
                 <configuration>
+                    <!-- Spring Framework 6.1 requires -parameters to be able to introspect method parameter names -->
+                    <!-- Don't know if we need to enable it, but looks like you do it here if we do -->
+                    <!-- compilerArgs>-parameters</compilerArgs -->
                     <source>${jdk.version}</source>
                     <target>${jdk.version}</target>
                 </configuration>
