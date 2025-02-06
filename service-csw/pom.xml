@@ -31,10 +31,10 @@
             <groupId>org.oskari</groupId>
             <artifactId>service-control</artifactId>
         </dependency>
-        <dependency>
+        <!--dependency>
             <groupId>javax.vecmath</groupId>
             <artifactId>vecmath</artifactId>
-        </dependency>
+        </dependency -->
 
         <dependency>
             <groupId>xmlunit</groupId>
