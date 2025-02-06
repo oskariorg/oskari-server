@@ -61,29 +61,28 @@
         <jakarta.servlet.jsp.version>3.1.0</jakarta.servlet.jsp.version>
         <jakarta.servlet.jsp.jstl-api.version>3.0.0</jakarta.servlet.jsp.jstl-api.version>
         <jakarta.servlet.jsp.jstl.version>3.0.1</jakarta.servlet.jsp.jstl.version>
-        <javax.xml.version>1.0</javax.xml.version>
         <vecmath.version>1.5.2</vecmath.version>
 
-        <commons-lang3.version>3.14.0</commons-lang3.version>
-        <commons-text.version>1.11.0</commons-text.version>
+        <commons-lang3.version>3.17.0</commons-lang3.version>
+        <commons-text.version>1.13.0</commons-text.version>
         <!-- could be removed? -->
         <commons-collections.version>3.2.2</commons-collections.version>
         <commons-codec.version>1.16.0</commons-codec.version>
         <commons-fileupload.version>2.0.0-M2</commons-fileupload.version>
         <commons-dbcp2.version>2.11.0</commons-dbcp2.version>
 
-<!-- This will override commons-io to be packaged with version 2.16.1, otherwise
-- geotools 28.4 uses 2.10
-- fileupload 1.5 uses 2.11
-- poi-ooxml 5.2.5 uses 2.16.1
-The one packaged without this is 2.11, but poi-ooxml throws methodNotDefined or similar exception with it (requires 2.15+).
-The 2.15 doesn't report any breaking changes so its backwards compatible with 2.10+
+<!-- This will override commons-io to be packaged with version 2.18.0, otherwise
+https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml/5.4.0
+- geotools 32.1 uses 2.17.0 (https://github.com/geotools/geotools/blob/32.1/pom.xml#L942-L944)
+- fileupload 2.0.0-M2 uses 2.15.1 (https://commons.apache.org/proper/commons-fileupload/commons-fileupload2-jakarta-servlet6/dependency-management.html)
+- poi-ooxml 5.4.0 uses 2.18.0 (https://github.com/apache/poi/blob/REL_5_4_0/build.gradle#L124)
+The one packaged without this is 2.15.1
   -->
-        <commons-io.version>2.16.1</commons-io.version>
+        <commons-io.version>2.18.0</commons-io.version>
         <commons-csv.version>1.10.0</commons-csv.version>
         <xmlgraphics-fop.version>2.10</xmlgraphics-fop.version>
         <!-- Note! Check commons-compress override when updating this -->
-        <poi-ooxml.version>5.3.0</poi-ooxml.version>
+        <poi-ooxml.version>5.4.0</poi-ooxml.version>
 
         <jsoup.version>1.17.2</jsoup.version>
 
@@ -762,11 +761,11 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
                 <version>${project.version}</version>
             </dependency>
 
-            <dependency>
+            <!-- dependency>
                 <groupId>javax.vecmath</groupId>
                 <artifactId>vecmath</artifactId>
                 <version>${vecmath.version}</version>
-            </dependency>
+            </dependency -->
 
             <dependency>
                 <groupId>fi.mml</groupId>
