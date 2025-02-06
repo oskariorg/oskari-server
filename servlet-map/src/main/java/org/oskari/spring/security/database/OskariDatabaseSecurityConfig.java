@@ -1,18 +1,16 @@
-package fi.nls.oskari.spring.security.database;
+package org.oskari.spring.security.database;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.spring.SpringEnvHelper;
-import fi.nls.oskari.spring.security.OskariLoginFailureHandler;
+import org.oskari.spring.security.OskariAuthenticationSuccessHandler;
+import org.oskari.spring.security.OskariLoginFailureHandler;
+import org.oskari.spring.security.OskariSpringSecurityDsl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -29,8 +27,8 @@ public class OskariDatabaseSecurityConfig {
     private final SpringEnvHelper env;
 
     private final OskariAuthenticationProvider oskariAuthenticationProvider;
-
     private final OskariAuthenticationSuccessHandler oskariAuthenticationSuccessHandler;
+
     @Autowired
     public OskariDatabaseSecurityConfig(SpringEnvHelper env,
                                         OskariAuthenticationProvider oskariAuthenticationProvider,
@@ -44,30 +42,27 @@ public class OskariDatabaseSecurityConfig {
     @Order(1)
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         log.info("Configuring database login");
+        http.with(OskariSpringSecurityDsl.oskariCommonDsl(),
+                (dsl) -> dsl
+                        .setLogoutUrl(env.getLogoutUrl())
+                        .setLogoutSuccessUrl(env.getLoggedOutPage())
+        );
 
         // Add custom authentication provider
         http.authenticationProvider(oskariAuthenticationProvider);
+        http.authorizeHttpRequests(
+                // the user can access any url without logging in (guests can see geoportal)
+                // but we want to be explicit about it to have the user available on any request
+                authorize -> authorize.anyRequest().permitAll())
+                .formLogin(form -> form
+                        .loginProcessingUrl(env.getLoginUrl())
+                        .passwordParameter(env.getParam_password())
+                        .usernameParameter(env.getParam_username())
+                        .failureHandler(new OskariLoginFailureHandler("/?loginState=failed"))
+                        .successHandler(oskariAuthenticationSuccessHandler)
+                        .loginPage("/")
+                );
 
-        // Disable frame options and CSRF for embedded maps
-        http.headers(headers -> headers.frameOptions().disable());
-        http.csrf(csrf -> csrf.disable());
-
-        //http.authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll());
-        // Configure form login
-        http.formLogin(form -> form
-            .loginProcessingUrl(env.getLoginUrl())
-            .passwordParameter(env.getParam_password())
-            .usernameParameter(env.getParam_username())
-            .failureHandler(new OskariLoginFailureHandler("/?loginState=failed"))
-            .successHandler(oskariAuthenticationSuccessHandler)
-            .loginPage("/")
-        );
         return http.build();
     }
-
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-    }
-
 }

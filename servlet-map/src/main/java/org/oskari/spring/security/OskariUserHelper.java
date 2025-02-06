@@ -1,4 +1,4 @@
-package fi.nls.oskari.spring.security;
+package org.oskari.spring.security;
 
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.domain.Role;
