@@ -6,6 +6,7 @@ import org.springframework.security.config.annotation.web.configurers.HeadersCon
 import org.springframework.security.config.http.SessionCreationPolicy;
 import jakarta.servlet.Filter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 
 public class OskariSpringSecurityDsl extends AbstractHttpConfigurer<OskariSpringSecurityDsl, HttpSecurity> {
     private boolean disableFrameOpts = true;
@@ -13,6 +14,7 @@ public class OskariSpringSecurityDsl extends AbstractHttpConfigurer<OskariSpring
     private boolean disableHSTS = true;
     private boolean useCommonLogout = true;
     private Filter loginFilter = null;
+    private Filter preAuthFilter = null;
     private String logoutUrl = "/logout";
     private String logoutSuccessUrl = "/";
 
@@ -21,13 +23,6 @@ public class OskariSpringSecurityDsl extends AbstractHttpConfigurer<OskariSpring
         // any method that adds another configurer
         // must be done in the init method
         disableCSRF(http);
-    }
-
-    public static OskariSpringSecurityDsl oskariCommonDsl() {
-        return new OskariSpringSecurityDsl();
-    }
-    @Override
-    public void configure(HttpSecurity http) throws Exception {
         if (disableFrameOpts) {
             disableFrameOptions(http);
         }
@@ -37,12 +32,23 @@ public class OskariSpringSecurityDsl extends AbstractHttpConfigurer<OskariSpring
         if (disableUnnecessarySessions) {
             disableUnnecessarySessions(http);
         }
+        if (useCommonLogout) {
+            configLogout(http);
+        }
+    }
+
+    public static OskariSpringSecurityDsl oskariCommonDsl() {
+        return new OskariSpringSecurityDsl();
+    }
+    @Override
+    public void configure(HttpSecurity http) throws Exception {
 
         if (loginFilter != null) {
             http.addFilterBefore(loginFilter, UsernamePasswordAuthenticationFilter.class);
         }
-        if (useCommonLogout) {
-            configLogout(http);
+
+        if (preAuthFilter != null) {
+            http.addFilterBefore(preAuthFilter, AbstractPreAuthenticatedProcessingFilter.class);
         }
     }
 
@@ -66,6 +72,11 @@ public class OskariSpringSecurityDsl extends AbstractHttpConfigurer<OskariSpring
         return this;
     }
 
+    public OskariSpringSecurityDsl setPreAuthFilter(Filter preAuthFilter) {
+        this.preAuthFilter = preAuthFilter;
+        return this;
+    }
+
     public OskariSpringSecurityDsl setUseCommonLogout(boolean useCommonLogout) {
         this.useCommonLogout = useCommonLogout;
         return this;
@@ -82,33 +93,36 @@ public class OskariSpringSecurityDsl extends AbstractHttpConfigurer<OskariSpring
     }
 
     public void configLogout(HttpSecurity http) throws Exception {
+        configLogout(http, logoutUrl, logoutSuccessUrl);
+    }
+    public static void configLogout(HttpSecurity http, String pLogoutUrl, String pLogoutSuccessUrl) throws Exception {
         http.logout(logout -> logout
-                .logoutUrl(logoutUrl)
+                .logoutUrl(pLogoutUrl)
                 .deleteCookies("oskaristate", "JSESSIONID", "CSRF-TOKEN")
                 .invalidateHttpSession(true)
-                .logoutSuccessUrl(logoutSuccessUrl)
+                .logoutSuccessUrl(pLogoutSuccessUrl)
         );
     }
 
-    private static void disableFrameOptions(HttpSecurity http) throws Exception {
+    public static void disableFrameOptions(HttpSecurity http) throws Exception {
         http.headers(headers ->
                 // Disable frame options and CSRF for embedded maps
                 headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable));
     }
 
-    private static void disableCSRF(HttpSecurity http) throws Exception {
+    public static void disableCSRF(HttpSecurity http) throws Exception {
         // 3rd party cookie blockers don't really work with cookie based CSRF protection on embedded maps.
         // Configure nginx/httpd to attach SameSite-flag to cookies instead.
         http.csrf(AbstractHttpConfigurer::disable);
     }
 
-    private static void disableHSTS(HttpSecurity http) throws Exception {
+    public static void disableHSTS(HttpSecurity http) throws Exception {
         http.headers(headers ->
             // Disable HSTS header, we don't want to force HTTPS for ALL requests
             headers.httpStrictTransportSecurity(HeadersConfigurer.HstsConfig::disable));
     }
 
-    private static void disableUnnecessarySessions(HttpSecurity http) throws Exception {
+    public static void disableUnnecessarySessions(HttpSecurity http) throws Exception {
         // Don't create unnecessary sessions
         http.sessionManagement(sessionManagement ->
                 sessionManagement.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
