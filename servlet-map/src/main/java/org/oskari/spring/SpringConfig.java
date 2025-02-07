@@ -145,7 +145,8 @@ public class SpringConfig implements WebMvcConfigurer, ServletContextAware, Appl
                 .addResourceLocations("classpath:service-workers/xhr-prioritizer.js")
                 .resourceChain(true)
                 .addResolver(new PathResourceResolver());
-        String faviconPath = PropertyUtil.get("favicon.path", "classpath:favicon.ico");
+        // search from configured path or from classpath root
+        String faviconPath = PropertyUtil.get("favicon.path", "classpath:/");
         registry
                 .addResourceHandler("/favicon.ico")
                 .addResourceLocations(faviconPath)
