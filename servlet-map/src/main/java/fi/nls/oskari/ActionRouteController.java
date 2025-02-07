@@ -3,7 +3,7 @@ package fi.nls.oskari;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.spring.extension.OskariParam;
+import org.oskari.spring.extension.OskariParam;
 import fi.nls.oskari.util.ResponseHelper;
 import org.oskari.log.AuditLog;
 import org.springframework.stereotype.Controller;
@@ -15,24 +15,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- * Handles ajax routing to Oskari Action handlers
+ * Handles XHR routing to Oskari Action handlers
  */
 @Controller
-public class AjaxController {
+public class ActionRouteController {
 
-    private final static Logger log = LogFactory.getLogger(AjaxController.class);
+    private final static Logger log = LogFactory.getLogger(ActionRouteController.class);
 
     @RequestMapping("/action/{route}")
     @ResponseBody
     public void handleRoute(@OskariParam ActionParameters params, @PathVariable("route") String route) {
-        handleAction(params, route);
-    }
-
-    @RequestMapping("/action")
-    @ResponseBody
-    public void handleAction(@OskariParam ActionParameters params, @RequestParam("action_route") String route) {
-        // ActionHandlers write the response internally.
-        // ResponseBody with void return type is needed so Spring doesn't try to show a view/JSP.
 
         if(!ActionControl.hasAction(route)) {
             ResponseHelper.writeError(params, "No such route registered: " + route, HttpServletResponse.SC_NOT_IMPLEMENTED);
@@ -76,18 +68,32 @@ public class AjaxController {
             ResponseHelper.writeError(params, e.getMessage());
         } catch (ActionException e) {
             // Internal failure -> print stack trace
-        	Throwable error = e;
-        	if(e.getCause() != null) {
-        		error = e.getCause();
-        	}
+            Throwable error = e;
+            if(e.getCause() != null) {
+                error = e.getCause();
+            }
             log.error(error, "Couldn't handle action:", route, "Message: ", e.getMessage(), ". Parameters: ", params.getRequest().getParameterMap());
             AuditLog.user(params.getClientIp(), params.getUser())
                     .withParams(params.getRequest().getParameterMap())
                     .withMsg(error.getMessage())
                     .errored(AuditLog.ResourceType.GENERIC);
-            
-           
+
+
             ResponseHelper.writeError(params, e.getMessage());
-        } 
+        }
+    }
+
+    /**
+     * @deprecated Use handleRoute instead
+     * @param params
+     * @param route
+     */
+    @Deprecated
+    @RequestMapping("/action")
+    @ResponseBody
+    public void handleAction(@OskariParam ActionParameters params, @RequestParam("action_route") String route) {
+        // ActionHandlers write the response internally.
+        // ResponseBody with void return type is needed so Spring doesn't try to show a view/JSP.
+        handleRoute(params, route);
     }
 }
