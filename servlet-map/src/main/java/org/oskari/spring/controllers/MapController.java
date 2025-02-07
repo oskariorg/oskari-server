@@ -108,6 +108,7 @@ public class MapController {
     private void setupLoginDetails(final ActionParameters params, Model model) {
         if(env.isHandleLoginForm()) {
             if(!params.getUser().isGuest()) {
+                model.addAttribute("_user", params.getUser());
                 model.addAttribute("_logout_uri", env.getLogoutUrl());
                 model.addAttribute("_registration_uri", env.getRegisterUrl());
             }
@@ -115,10 +116,6 @@ public class MapController {
                 // move possible "failed" parameter to attribute as JSP checks attribute
                 if ("failed".equals(params.getHttpParam("loginState"))) {
                     model.addAttribute("loginState", "failed");
-                }
-                // if we are handling login -> setup attributes for login url/fieldnames
-                if(env.isSAMLEnabled()) {
-                    model.addAttribute("_login_uri_saml", env.getLoginUrlSAML());
                 }
                 if(env.isDBLoginEnabled()) {
                     model.addAttribute("_login_uri", env.getLoginUrl());
