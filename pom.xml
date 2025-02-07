@@ -858,9 +858,8 @@ The one packaged without this is 2.15.1
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.13.0</version>
                 <configuration>
-                    <!-- Spring Framework 6.1 requires -parameters to be able to introspect method parameter names -->
-                    <!-- Don't know if we need to enable it, but looks like you do it here if we do -->
-                    <!-- compilerArgs>-parameters</compilerArgs -->
+                    <!-- Spring Framework works better with "-parameters" to be able to introspect method parameter names -->
+                    <compilerArgs>-parameters</compilerArgs>
                     <source>${jdk.version}</source>
                     <target>${jdk.version}</target>
                 </configuration>
