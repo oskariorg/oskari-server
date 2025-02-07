@@ -10,9 +10,15 @@ In 3.0.0 the minimum Java version for Oskari is changed from Java 8 to 17.
   - `fi.nls.oskari.domain.User` -> `org.oskari.user.User`
   - `fi.nls.oskari.domain.GuestUser` -> `org.oskari.user.GuestUser`
   - `fi.nls.oskari.domain.Role` -> `org.oskari.user.Role`
+  - All classes under `fi.nls.oskari.spring.*` have been moved to `org.oskari.spring.*`
+  - `fi.nls.oskari.MapController` is now `org.oskari.spring.controllers.MapController`
 
-Any class under `fi.nls.oskari.spring.*` has been moved to `org.oskari.spring.*`
-
+```sh
+git grep -l fi.nls.oskari.domain. | xargs sed -i "s/fi.nls.oskari.domain.User/org.oskari.user.User/g"
+git grep -l fi.nls.oskari.domain. | xargs sed -i "s/fi.nls.oskari.domain.Role/org.oskari.user.Role/g"
+# this updates all fi.nls.oskari.spring imports and might break stuff if you have these on your own app
+git grep -l fi.nls.oskari.spring. | xargs sed -i "s/import fi.nls.oskari.spring./import org.oskari.spring./g"
+```
 TODO: add some guidance for Spring changes.
 
 ### Junit migrated from 4 to 5
