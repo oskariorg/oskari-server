@@ -1,7 +1,7 @@
 package fi.nls.oskari.control.data;
 
 import fi.mml.portti.service.search.SearchService;
-import fi.nls.oskari.domain.User;
+import org.oskari.user.User;
 import fi.nls.oskari.search.channel.SearchChannel;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.control.JSONActionRouteTest;

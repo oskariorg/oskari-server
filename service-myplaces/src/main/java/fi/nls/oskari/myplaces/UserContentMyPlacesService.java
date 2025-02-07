@@ -2,7 +2,7 @@ package fi.nls.oskari.myplaces;
 
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.db.DatasourceHelper;
-import fi.nls.oskari.domain.User;
+import org.oskari.user.User;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.db.UserContentService;
 

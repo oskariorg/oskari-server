@@ -1,8 +1,8 @@
 package fi.nls.oskari.control.admin;
 
 import fi.nls.oskari.control.RestActionHandler;
-import fi.nls.oskari.domain.Role;
-import fi.nls.oskari.domain.User;
+import org.oskari.user.Role;
+import org.oskari.user.User;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;

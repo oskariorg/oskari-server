@@ -1,7 +1,7 @@
 package fi.nls.oskari.map.view;
 
-import fi.nls.oskari.domain.GuestUser;
-import fi.nls.oskari.domain.User;
+import org.oskari.user.GuestUser;
+import org.oskari.user.User;
 import fi.nls.oskari.service.DummyUserService;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.util.TestHelper;

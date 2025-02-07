@@ -5,7 +5,7 @@ import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionHandler;
 import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.domain.User;
+import org.oskari.user.User;
 import fi.nls.oskari.search.channel.SearchAutocomplete;
 import fi.nls.oskari.search.channel.SearchableChannel;
 import fi.nls.oskari.service.OskariComponentManager;

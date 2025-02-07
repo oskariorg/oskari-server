@@ -1,7 +1,7 @@
 package fi.nls.oskari.control.statistics.plugins;
 
 import fi.nls.oskari.control.statistics.data.*;
-import fi.nls.oskari.domain.User;
+import org.oskari.user.User;
 
 import java.util.Map;
 

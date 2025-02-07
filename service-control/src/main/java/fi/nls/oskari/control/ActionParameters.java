@@ -1,7 +1,7 @@
 package fi.nls.oskari.control;
 
-import fi.nls.oskari.domain.GuestUser;
-import fi.nls.oskari.domain.User;
+import org.oskari.user.GuestUser;
+import org.oskari.user.User;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.RequestHelper;

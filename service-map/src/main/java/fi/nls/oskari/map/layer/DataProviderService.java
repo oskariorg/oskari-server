@@ -1,6 +1,6 @@
 package fi.nls.oskari.map.layer;
 
-import fi.nls.oskari.domain.User;
+import org.oskari.user.User;
 import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.service.OskariComponent;
 

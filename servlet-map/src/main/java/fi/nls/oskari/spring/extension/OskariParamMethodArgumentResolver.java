@@ -1,7 +1,7 @@
 package fi.nls.oskari.spring.extension;
 
 import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.domain.User;
+import org.oskari.user.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import org.springframework.context.i18n.LocaleContextHolder;

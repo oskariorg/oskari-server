@@ -6,7 +6,7 @@ import fi.nls.oskari.control.users.model.EmailToken;
 import org.oskari.user.util.UserHelper;
 import fi.nls.oskari.control.users.service.MailSenderService;
 import fi.nls.oskari.control.users.service.UserRegistrationService;
-import fi.nls.oskari.domain.User;
+import org.oskari.user.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.OskariComponentManager;

@@ -1,7 +1,7 @@
 package org.oskari.control.userlayer;
 
 import fi.nls.oskari.annotation.Oskari;
-import fi.nls.oskari.domain.User;
+import org.oskari.user.User;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.service.OskariComponentManager;

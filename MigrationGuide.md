@@ -4,6 +4,15 @@
 
 In 3.0.0 the minimum Java version for Oskari is changed from Java 8 to 17.
 
+### User management
+
+- Moved packages:
+  - `fi.nls.oskari.domain.User` -> `org.oskari.user.User`
+  - `fi.nls.oskari.domain.GuestUser` -> `org.oskari.user.GuestUser`
+  - `fi.nls.oskari.domain.Role` -> `org.oskari.user.Role`
+
+TODO: add some guidance for Spring changes.
+
 ### Junit migrated from 4 to 5
 
 The Junit present on the BOM for oskari-server was updated from JUnit 4 to 5 and JUnit changed the groupId and artifactId in their update. This means that if your app does NOT define a specific version for the JUnit dependency and depend on oskari-server doing it, your app will not compile after updating due to missing dependency version. To fix this you have some options and here's what we've used:

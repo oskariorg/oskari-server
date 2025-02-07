@@ -2,7 +2,7 @@ package fi.nls.oskari.map.layer;
 
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.db.DatasourceHelper;
-import fi.nls.oskari.domain.User;
+import org.oskari.user.User;
 import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;

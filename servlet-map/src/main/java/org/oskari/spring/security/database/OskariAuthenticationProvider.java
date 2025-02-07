@@ -1,6 +1,6 @@
 package org.oskari.spring.security.database;
 
-import fi.nls.oskari.domain.User;
+import org.oskari.user.User;
 import fi.nls.oskari.service.UserService;
 import org.oskari.spring.security.OskariUserHelper;
 import org.springframework.security.authentication.AuthenticationProvider;
