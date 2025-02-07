@@ -2,7 +2,7 @@ package org.oskari.spring.security.database;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.spring.SpringEnvHelper;
+import org.oskari.spring.SpringEnvHelper;
 import org.oskari.spring.security.OskariAuthenticationSuccessHandler;
 import org.oskari.spring.security.OskariLoginFailureHandler;
 import org.oskari.spring.security.OskariSpringSecurityDsl;

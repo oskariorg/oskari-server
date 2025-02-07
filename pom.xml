@@ -859,6 +859,7 @@ The one packaged without this is 2.15.1
                 <version>3.13.0</version>
                 <configuration>
                     <!-- Spring Framework works better with "-parameters" to be able to introspect method parameter names -->
+                    <!-- https://ricma.co/posts/tech/dev/migrating-to-spring-61-javac-parameters/ -->
                     <compilerArgs>-parameters</compilerArgs>
                     <source>${jdk.version}</source>
                     <target>${jdk.version}</target>

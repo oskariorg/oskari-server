@@ -20,10 +20,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.UUID;
 import java.util.Locale;
-import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 import org.springframework.context.MessageSource;
-import fi.nls.oskari.spring.SpringContextHolder;
+import org.oskari.spring.SpringContextHolder;
 
 /**
  * Download services.

@@ -15,7 +15,7 @@ import java.util.*;
  * Internal model for user role.
  * Admin role name can be configured with property "oskari.user.role.admin" in PropertyUtil
  * and defaults to "Admin".
- * Default logged in user role name can be configured with property "oskari.user.role.loggedIn" in PropertyUtil
+ * Default logged-in user role name can be configured with property "oskari.user.role.loggedIn" in PropertyUtil
  * and defaults to "User".
  */
 public class Role implements Serializable {

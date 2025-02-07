@@ -15,7 +15,7 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
-import fi.nls.oskari.spring.SpringContextHolder;
+import org.oskari.spring.SpringContextHolder;
 import fi.nls.oskari.user.MybatisUserService;
 import fi.nls.oskari.util.ResponseHelper;
 import org.oskari.log.AuditLog;

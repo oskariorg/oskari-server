@@ -11,6 +11,8 @@ In 3.0.0 the minimum Java version for Oskari is changed from Java 8 to 17.
   - `fi.nls.oskari.domain.GuestUser` -> `org.oskari.user.GuestUser`
   - `fi.nls.oskari.domain.Role` -> `org.oskari.user.Role`
 
+Any class under `fi.nls.oskari.spring.*` has been moved to `org.oskari.spring.*`
+
 TODO: add some guidance for Spring changes.
 
 ### Junit migrated from 4 to 5

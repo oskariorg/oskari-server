@@ -5,7 +5,7 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.UserService;
 
 /**
- * Extension of User for unknown/guest user
+ * Extension of User for anonymous/guest user
  */
 public class GuestUser extends User {
 
@@ -37,7 +37,7 @@ public class GuestUser extends User {
             return service.getGuestUser();
         }
         catch (Exception ex) {
-            log.error(ex, "Couldnt't get GuestUser from UserService - defaulting to blank class");
+            log.error(ex, "Couldn't get GuestUser from UserService - defaulting to blank class");
         }
         return new GuestUser();
     }

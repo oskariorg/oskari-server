@@ -1,7 +1,6 @@
-package fi.nls.oskari.spring.session;
+package org.oskari.spring.session;
 
 import fi.nls.oskari.cache.JedisManager;
-import fi.nls.oskari.util.PropertyUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;

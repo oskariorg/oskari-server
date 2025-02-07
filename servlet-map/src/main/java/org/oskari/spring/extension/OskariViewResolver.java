@@ -1,4 +1,4 @@
-package fi.nls.oskari.spring.extension;
+package org.oskari.spring.extension;
 
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;

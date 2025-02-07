@@ -1,4 +1,4 @@
-package fi.nls.oskari.spring.extension;
+package org.oskari.spring.extension;
 
 import fi.nls.oskari.control.ActionParameters;
 import org.oskari.user.User;
