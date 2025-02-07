@@ -1,4 +1,4 @@
-package fi.nls.oskari;
+package org.oskari.spring.controllers;
 
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.service.OskariComponentManager;
