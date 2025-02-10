@@ -123,7 +123,7 @@ public class PublishPermissionHelper {
         try {
             for (int i = 0; i < selectedLayers.length(); ++i) {
                 JSONObject layer = selectedLayers.getJSONObject(i);
-                final String layerId = layer.getString("id");
+                final String layerId = layer.optString("id");
                 if (layerId.startsWith(PREFIX_MYPLACES)) {
                     // check publish right for published myplaces layer
                     if (hasRightToPublishMyPlaceLayer(layerId, userUuid, user.getScreenname())) {

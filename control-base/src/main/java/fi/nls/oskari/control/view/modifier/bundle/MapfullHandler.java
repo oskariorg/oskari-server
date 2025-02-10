@@ -257,7 +257,7 @@ public class MapfullHandler extends BundleHandler {
             String layerId = null;
             try {
                 final JSONObject layer = layersArray.getJSONObject(i);
-                layerId = layer.getString(KEY_ID);
+                layerId = layer.optString(KEY_ID);
                 if (layerId == null || layerIdList.contains(layerId)) {
                     continue;
                 }
@@ -475,11 +475,11 @@ public class MapfullHandler extends BundleHandler {
             try {
                 boolean inConfigLayers = false;
                 stateLayer = mfStateLayers.getJSONObject(i);
-                stateLayerId = stateLayer.getString(KEY_ID);
+                stateLayerId = stateLayer.optString(KEY_ID);
 
                 for (int j = 0; j < mfConfigLayers.length(); j++) {
                     confLayer = mfConfigLayers.getJSONObject(j);
-                    confLayerId = confLayer.getString(KEY_ID);
+                    confLayerId = confLayer.optString(KEY_ID);
                     if (stateLayerId.equals(confLayerId)) {
                         inConfigLayers = true;
                     }
@@ -554,7 +554,7 @@ public class MapfullHandler extends BundleHandler {
                 if (!plugin.has(KEY_ID) || !plugin.has(KEY_CONFIG)) {
                     continue;
                 }
-                String id = plugin.getString(KEY_ID);
+                String id = plugin.optString(KEY_ID);
                 LOGGER.debug("[killLayerSelectionPlugin] got plugin " + id);
                 if (!id.equals(PLUGIN_LAYERSELECTION)) {
                     continue;

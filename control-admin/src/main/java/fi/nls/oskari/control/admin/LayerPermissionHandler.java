@@ -131,7 +131,7 @@ public class LayerPermissionHandler extends AbstractLayerAdminHandler {
                     throw new ActionParamsException("Resource not found: " + layerMapping);
                 }
                 Resource resource = dbResource.get();
-                final int roleId = Integer.parseInt(layerPermission.getString("roleId"));
+                final int roleId = Integer.parseInt(layerPermission.optString("roleId"));
                 JSONArray perm = layerPermission.getJSONArray("permissions");
                 final List<Permission> resourcePermissions = resource.getPermissions();
 
