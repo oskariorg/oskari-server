@@ -440,12 +440,12 @@ public class AppSetupHelper {
             view.setCreator(ConversionHelper.getLong(viewJSON.optString("creator"), -1));
             view.setIsPublic(viewJSON.optBoolean("public", false));
             view.setOnlyForUuId(viewJSON.optBoolean("onlyUuid", true));
-            view.setType(viewJSON.getString("type"));
-            view.setName(viewJSON.getString("name"));
+            view.setType(viewJSON.optString("type", ViewTypes.USER));
+            view.setName(viewJSON.optString("name", "N/A"));
             view.setIsDefault(viewJSON.optBoolean("default"));
             final JSONObject oskari = JSONHelper.getJSONObject(viewJSON, "oskari");
-            view.setPage(oskari.getString("page"));
-            view.setApplication(oskari.getString("application"));
+            view.setPage(oskari.optString("page", "index"));
+            view.setApplication(oskari.optString("application", view.getApplication()));
             view.setMetadata(oskari.optJSONObject("metadata"));
         } catch (Exception ex) {
             log.error( "Unable to construct view (metadata missing)! Msg:", ex.getMessage());
@@ -458,9 +458,10 @@ public class AppSetupHelper {
             final JSONArray bundles = viewJSON.getJSONArray("bundles");
             for (int i = 0; i < bundles.length(); ++i) {
                 final JSONObject bJSON = bundles.getJSONObject(i);
-                final Bundle bundle = BundleHelper.getRegisteredBundle(conn, bJSON.getString("id"));
+                String bundleId = bJSON.getString("id");
+                final Bundle bundle = BundleHelper.getRegisteredBundle(conn, bundleId);
                 if (bundle == null) {
-                    throw new Exception("Bundle not registered - id:" + bJSON.getString("id"));
+                    throw new Exception("Bundle not registered - id:" + bundleId);
                 }
                 if (bJSON.has("instance")) {
                     bundle.setBundleinstance(bJSON.getString("instance"));

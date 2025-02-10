@@ -102,6 +102,9 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
         <!-- https://github.com/spring-projects/spring-data-redis/blob/2.7.x/pom.xml#L29
          https://github.com/spring-projects/spring-data-redis/blob/2.7.4/pom.xml#L28-->
         <jedis.version>3.8.0</jedis.version>
+        <!-- Jedis depends on org.json/json -->
+        <json.version>20240303</json.version>
+
         <quartz-scheduler.version>2.3.2</quartz-scheduler.version>
 
         <geotools.version>32.1</geotools.version>
@@ -627,6 +630,12 @@ The 2.15 doesn't report any breaking changes so its backwards compatible with 2.
                 <artifactId>xmlunit</artifactId>
                 <version>${xmlunit.version}</version>
                 <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.json</groupId>
+                <artifactId>json</artifactId>
+                <version>${json.version}</version>
             </dependency>
             <dependency>
                 <groupId>redis.clients</groupId>
