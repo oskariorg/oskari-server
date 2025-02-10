@@ -24,6 +24,7 @@ public class MyBatisHelper {
         configuration.setLazyLoadingEnabled(false);
         // typehandlers aren't found from classpath even when annotated.
         // also important to register them before adding mappers
+        configuration.getTypeHandlerRegistry().register(JsonMapMybatisTypeHandler.class);
         configuration.getTypeHandlerRegistry().register(JSONObjectMybatisTypeHandler.class);
         configuration.getTypeHandlerRegistry().register(JSONArrayMybatisTypeHandler.class);
         addMappers(configuration, mappers);

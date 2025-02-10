@@ -15,6 +15,7 @@ import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import org.oskari.log.AuditLog;
 import org.json.JSONObject;
+import org.oskari.user.UserJsonHelper;
 import org.oskari.user.util.UserHelper;
 
 import java.util.Iterator;
@@ -180,14 +181,10 @@ public class UserRegistrationHandler extends RestActionHandler {
 		if (user == null) {
 			throw new ActionParamsException("User doesn't exists.");
 		}
-		JSONObject json = user.toJSON();
+		JSONObject json = UserJsonHelper.toJSON(user);
 		// include attributes prefixed with user_
-		JSONObject attrs = user.getAttributesJSON();
-		Iterator<String> it = attrs.keys();
-		while(it.hasNext()) {
-			final String key = it.next();
-			JSONHelper.putValue(json, ATTR_PARAM_PREFIX + key, attrs.opt(key));
-		}
+		user.getAttributes().entrySet().stream().forEach(entry ->
+				JSONHelper.putValue(json, ATTR_PARAM_PREFIX + entry.getKey(), entry.getValue()));
 		// roles can be skipped here.
 		json.remove("roles");
 		return json;

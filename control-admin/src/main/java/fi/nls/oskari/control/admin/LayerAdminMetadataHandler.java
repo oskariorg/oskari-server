@@ -27,6 +27,7 @@ import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
+import org.oskari.user.UserJsonHelper;
 
 @OskariActionRoute("LayerAdminMetadata")
 public class LayerAdminMetadataHandler extends RestActionHandler {
@@ -84,7 +85,7 @@ public class LayerAdminMetadataHandler extends RestActionHandler {
         final JSONArray rolesJSON = new JSONArray();
         if (roles != null) {
             for (Role role : roles) {
-                rolesJSON.put(role.toJSON());
+                rolesJSON.put(UserJsonHelper.toJSON(role));
             }
         }
         return rolesJSON;

@@ -5,8 +5,6 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.util.PropertyUtil;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.*;
@@ -27,8 +25,6 @@ public class Role implements Serializable {
     public static final String DEFAULT_ADMIN_ROLE_NAME = "Admin";
     public static final String DEFAULT_USER_ROLE_NAME = "User";
     public static final String DEFAULT_GUEST_ROLE_NAME = "Guest";
-    private final static String KEY_ROLE_ID = "id";
-    private final static String KEY_ROLE_NAME = "name";
 
     private long id;
     private String name;
@@ -50,10 +46,10 @@ public class Role implements Serializable {
      * @return
      */
     public static Role getAdminRole() {
-        if(ADMIN_ROLE == null) {
+        if (ADMIN_ROLE == null) {
             final String rolename = PropertyUtil.get("oskari.user.role.admin", DEFAULT_ADMIN_ROLE_NAME);
             ADMIN_ROLE = getRoleByName(rolename);
-            if(ADMIN_ROLE == null) {
+            if (ADMIN_ROLE == null) {
                 ADMIN_ROLE = new Role();
                 ADMIN_ROLE.setName(rolename);
                 log.warn("Admin role was not found, but was created and does not have id");
@@ -67,14 +63,14 @@ public class Role implements Serializable {
      * @return
      */
     public static Role getDefaultUserRole() {
-        if(USER_ROLE == null) {
+        if (USER_ROLE == null) {
             final String rolename = PropertyUtil.get("oskari.user.role.loggedIn", DEFAULT_USER_ROLE_NAME).trim();
             USER_ROLE = getRoleByName(rolename);
         }
         return USER_ROLE;
     }
     public static Role getGuestUserRole() {
-        if(GUEST_ROLE == null) {
+        if (GUEST_ROLE == null) {
             final String name = PropertyUtil.get("oskari.user.role.guest", DEFAULT_GUEST_ROLE_NAME).trim();
             GUEST_ROLE = getRoleByName(name);
         }
@@ -116,30 +112,4 @@ public class Role implements Serializable {
         this.name = name;
     }
 
-    public JSONObject toJSON() {
-        try {
-            JSONObject roleData = new JSONObject();
-            roleData.put(KEY_ROLE_ID, getId());
-            roleData.put(KEY_ROLE_NAME, getName());
-
-            return roleData;
-        } catch (JSONException jsonex) {
-            log.warn("Unable to construct JSON role data:", this);
-        }
-        return null;
-    }
-
-    public static Role parse(JSONObject json) {
-
-        try {
-            Role role = new Role();
-            role.setId(json.optInt(KEY_ROLE_ID));
-            role.setName(json.optString(KEY_ROLE_NAME));
-
-            return role;
-        } catch (Exception jsonex) {
-            log.warn("Unable to parse role from JSON:", json);
-        }
-        return null;
-    }
 }

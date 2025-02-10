@@ -15,6 +15,7 @@ import org.oskari.log.AuditLog;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.oskari.user.UserJsonHelper;
 
 import java.util.Collections;
 
@@ -77,7 +78,7 @@ public class ManageRolesHandler extends RestActionHandler {
                     .withMsg("Role")
                     .added(AuditLog.ResourceType.USER);
             }
-            ResponseHelper.writeResponse(params, role.toJSON());
+            ResponseHelper.writeResponse(params, UserJsonHelper.toJSON(role));
         } catch (Exception se) {
             throw new ActionException(se.getMessage(), se);
         }
@@ -111,7 +112,7 @@ public class ManageRolesHandler extends RestActionHandler {
         final JSONArray roleValues = new JSONArray();
         if (roles != null) {
             for (Role role : roles) {
-                roleValues.put(role.toJSON());
+                roleValues.put(UserJsonHelper.toJSON(role));
             }
         }
 
