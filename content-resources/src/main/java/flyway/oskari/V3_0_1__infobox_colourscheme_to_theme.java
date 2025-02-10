@@ -103,8 +103,7 @@ public class V3_0_1__infobox_colourscheme_to_theme extends BaseJavaMigration {
                 metadata = new JSONObject(module.getString("metadata"));
             }
 
-
-            if(metadata == null || config == null) {
+            if (metadata == null || config == null) {
                 continue;
             }
 
@@ -112,7 +111,7 @@ public class V3_0_1__infobox_colourscheme_to_theme extends BaseJavaMigration {
 
             for (int p = 0; p < plugins.length(); p++) {
                 JSONObject plugin = plugins.getJSONObject(p);
-                String id = plugin.getString("id");
+                String id = plugin.optString("id", null);
                 if (INFO_PLUGIN_CLASS.equals(id) && plugin.has("config")) {
                     JSONObject pluginConfig = plugin.getJSONObject("config");
 
@@ -121,10 +120,10 @@ public class V3_0_1__infobox_colourscheme_to_theme extends BaseJavaMigration {
                         String bgColour = null;
                         String titleColour = null;
                         if (colourScheme.has("bgColour")) {
-                            bgColour = colourScheme.getString("bgColour");
+                            bgColour = colourScheme.optString("bgColour", null);
                         }
                         if (colourScheme.has("titleColour")) {
-                            titleColour = colourScheme.getString("titleColour");
+                            titleColour = colourScheme.optString("titleColour", null);
                         }
 
                         if (bgColour != null || titleColour != null) {

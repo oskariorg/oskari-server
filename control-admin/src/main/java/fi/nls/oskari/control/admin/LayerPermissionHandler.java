@@ -125,9 +125,9 @@ public class LayerPermissionHandler extends AbstractLayerAdminHandler {
         try {
             for (int i = 0; i < resources.length(); i++) {
                 final JSONObject layerPermission = resources.getJSONObject(i);
-                final String layerMapping = new Integer(layerPermission.getInt("id")).toString();
+                final String layerMapping = Integer.valueOf(layerPermission.getInt("id")).toString();
                 final Optional<Resource> dbResource = permissionsService.findResource(ResourceType.maplayer, layerMapping);
-                if (!dbResource.isPresent()) {
+                if (dbResource.isEmpty()) {
                     throw new ActionParamsException("Resource not found: " + layerMapping);
                 }
                 Resource resource = dbResource.get();

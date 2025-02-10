@@ -103,8 +103,12 @@ The one packaged without this is 2.15.1
         <postgresql.version>42.7.4</postgresql.version>
         <hikaricp.version>6.2.1</hikaricp.version>
 
-        <!-- https://github.com/spring-projects/spring-data-redis/blob/3.4.2/pom.xml#L28 -->
-        <jedis.version>5.2.0</jedis.version>
+        <!-- https://github.com/spring-projects/spring-data-redis/blob/2.7.x/pom.xml#L29
+         https://github.com/spring-projects/spring-data-redis/blob/2.7.4/pom.xml#L28-->
+        <jedis.version>3.8.0</jedis.version>
+        <!-- Jedis depends on org.json/json -->
+        <json.version>20240303</json.version>
+
         <quartz-scheduler.version>2.3.2</quartz-scheduler.version>
 
         <geotools.version>32.2</geotools.version>
@@ -595,6 +599,12 @@ The one packaged without this is 2.15.1
                 <artifactId>xmlunit</artifactId>
                 <version>${xmlunit.version}</version>
                 <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.json</groupId>
+                <artifactId>json</artifactId>
+                <version>${json.version}</version>
             </dependency>
             <dependency>
                 <groupId>redis.clients</groupId>
