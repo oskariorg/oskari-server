@@ -17,6 +17,7 @@ import org.oskari.geojson.GeoJSONReader2;
 import org.oskari.geojson.GeoJSONSchemaDetector;
 
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -72,8 +73,8 @@ public class UserLayerWFSHelperTest {
         Assertions.assertEquals(String.class, lahdeainei.getValue().getClass());
         Assertions.assertEquals("0", lahdeainei.getValue());
 
-        Assertions.assertEquals(Double.class, id.getValue().getClass());
-        Assertions.assertEquals(1.48627129E8, ((Double) id.getValue()).doubleValue(), 1e-8);
+        Assertions.assertEquals(BigDecimal.class, id.getValue().getClass());
+        Assertions.assertEquals(1.48627129E8, ((BigDecimal) id.getValue()).doubleValue(), 1e-8);
 
         Assertions.assertEquals(String.class, laji.getValue().getClass());
         Assertions.assertEquals("696", laji.getValue());

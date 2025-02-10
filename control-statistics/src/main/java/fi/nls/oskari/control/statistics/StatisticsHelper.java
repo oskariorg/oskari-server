@@ -42,10 +42,7 @@ public class StatisticsHelper {
                         CACHE_KEY_DATA,
                         indicatorId,
                         layerId));
-
-        Iterator<String> it = selectorJSON.sortedKeys();
-        while (it.hasNext()) {
-            String key = it.next();
+        selectorJSON.keySet().stream().sorted().forEach(key -> {
             cacheKey.append(CacheKeys.CACHE_KEY_SEPARATOR);
             cacheKey.append(key);
             cacheKey.append('=');
@@ -54,7 +51,7 @@ public class StatisticsHelper {
             } catch (JSONException e) {
                 // Ignore, we are iterating the keys, the key _does_ exist
             }
-        }
+        });
         return cacheKey.toString();
     }
 

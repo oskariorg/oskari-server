@@ -149,8 +149,8 @@ public class ViewHelper {
         viewJSON.put("metadata", view.getMetadata());
         viewJSON.put("application", view.getApplication());
         viewJSON.put("page", view.getPage());
-        viewJSON.put("created", view.getCreated());
-        viewJSON.put("updated", view.getUpdated());
+        viewJSON.put("created", view.getCreated().toString());
+        viewJSON.put("updated", view.getUpdated().toString());
         viewJSON.put("bundles", createBundles(bundleService, view.getBundles()));
         return viewJSON;
     }
