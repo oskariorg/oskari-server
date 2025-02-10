@@ -1,7 +1,7 @@
 package fi.nls.oskari.control;
 
-import fi.nls.oskari.domain.Role;
-import fi.nls.oskari.domain.User;
+import org.oskari.user.Role;
+import org.oskari.user.User;
 import fi.nls.oskari.service.DummyUserService;
 import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.util.PropertyUtil;

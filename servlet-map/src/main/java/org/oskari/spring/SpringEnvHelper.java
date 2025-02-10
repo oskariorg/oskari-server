@@ -1,4 +1,4 @@
-package fi.nls.oskari.spring;
+package org.oskari.spring;
 
 import fi.nls.oskari.util.EnvHelper;
 import fi.nls.oskari.util.PropertyUtil;
@@ -7,27 +7,18 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.core.env.Profiles;
 
-/**
- * Created with IntelliJ IDEA.
- * User: SMAKINEN
- * Date: 5.11.2014
- * Time: 12:54
- * To change this template use File | Settings | File Templates.
- */
 @Component
 public class SpringEnvHelper {
 
     public static final String PROFILE_LOGIN_DB = "LoginDatabase";
-    public static final String PROFILE_LOGIN_SAML = "LoginSAML";
 
     // login related properties
-    private boolean handleLoginForm;
-    private String loginUrlSAML = "/saml/login";
-    private String loggedOutPage;
-    private String param_username;
-    private String param_password;
-
-    private String mapUrl;
+    private final boolean handleLoginForm;
+    private final String loggedOutPage;
+    private final String param_username;
+    private final String param_password;
+    // path to geoportal map
+    private final String mapUrl;
 
     @Autowired
     private Environment springEnvironment;
@@ -41,23 +32,17 @@ public class SpringEnvHelper {
         param_password = PropertyUtil.get("auth.login.field.pass", "j_password");
     }
 
-    public boolean isSAMLEnabled() {
-        return springEnvironment.acceptsProfiles(Profiles.of(PROFILE_LOGIN_SAML));
-    }
-    
     public boolean isDBLoginEnabled() {
-        return springEnvironment.acceptsProfiles(Profiles.of(PROFILE_LOGIN_DB));
+        return isProfileEnabled(PROFILE_LOGIN_DB);
+    }
+
+    public boolean isProfileEnabled(String profile) {
+        return springEnvironment.acceptsProfiles(Profiles.of(profile));
     }
 
     public boolean isHandleLoginForm() {
         return handleLoginForm;
     }
-
-
-    public String getLoginUrlSAML() {
-        return loginUrlSAML;
-    }
-
 
     public String getLoggedOutPage() {
         return loggedOutPage;

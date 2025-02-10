@@ -2,7 +2,6 @@ package fi.nls.oskari.control.style;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
-import fi.nls.oskari.domain.User;
 import fi.nls.oskari.domain.map.style.VectorStyle;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;

@@ -1,10 +1,10 @@
-package fi.nls.oskari.spring;
+package org.oskari.spring;
 
 import fi.nls.oskari.control.ActionControl;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.spring.extension.OskariParamMethodArgumentResolver;
-import fi.nls.oskari.spring.extension.OskariViewResolver;
+import org.oskari.spring.extension.OskariParamMethodArgumentResolver;
+import org.oskari.spring.extension.OskariViewResolver;
 import fi.nls.oskari.util.PropertyUtil;
 import org.oskari.init.OskariInitializer;
 import org.springframework.context.ApplicationListener;
@@ -108,7 +108,7 @@ public class SpringConfig implements WebMvcConfigurer, ServletContextAware, Appl
 
     @Bean
     public ViewResolver getExtensionHookViewResolver() {
-        // OskariViewResolver extends InternalResourceViewResolver but let's missing views
+        // OskariViewResolver extends InternalResourceViewResolver but lets missing views
         // pass to next viewResolver so you don't need to copy/paste defaults when adding new JSPs
         final OskariViewResolver resolver = new OskariViewResolver();
         resolver.setViewClass(JstlView.class);
@@ -145,7 +145,8 @@ public class SpringConfig implements WebMvcConfigurer, ServletContextAware, Appl
                 .addResourceLocations("classpath:service-workers/xhr-prioritizer.js")
                 .resourceChain(true)
                 .addResolver(new PathResourceResolver());
-        String faviconPath = PropertyUtil.get("favicon.path", "classpath:favicon.ico");
+        // search from configured path or from classpath root
+        String faviconPath = PropertyUtil.get("favicon.path", "classpath:/");
         registry
                 .addResourceHandler("/favicon.ico")
                 .addResourceLocations(faviconPath)

@@ -3,7 +3,7 @@ package fi.nls.oskari.control.statistics.plugins.user;
 import fi.nls.oskari.control.statistics.data.*;
 import fi.nls.oskari.control.statistics.plugins.StatisticalDatasourcePlugin;
 import fi.nls.oskari.control.statistics.plugins.db.StatisticalDatasource;
-import fi.nls.oskari.domain.User;
+import org.oskari.user.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.OskariComponentManager;

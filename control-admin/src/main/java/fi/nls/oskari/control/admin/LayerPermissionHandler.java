@@ -6,7 +6,7 @@ import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.control.layer.GetMapLayerGroupsHandler;
-import fi.nls.oskari.domain.Role;
+import org.oskari.user.Role;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;

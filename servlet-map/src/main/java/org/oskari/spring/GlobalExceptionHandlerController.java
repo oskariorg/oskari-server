@@ -1,4 +1,4 @@
-package fi.nls.oskari.spring;
+package org.oskari.spring;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;

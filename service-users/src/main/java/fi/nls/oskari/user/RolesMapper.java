@@ -1,6 +1,6 @@
 package fi.nls.oskari.user;
 
-import fi.nls.oskari.domain.Role;
+import org.oskari.user.Role;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Options;

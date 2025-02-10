@@ -1,7 +1,6 @@
-package fi.nls.oskari;
+package org.oskari.spring.controllers;
 
 import fi.nls.oskari.annotation.Oskari;
-import fi.nls.oskari.service.OskariComponent;
 import fi.nls.oskari.util.PropertyUtil;
 import org.oskari.status.AppStatus;
 

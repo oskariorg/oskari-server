@@ -1,13 +1,11 @@
-package fi.nls.oskari.spring;
+package org.oskari.spring;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-/**
- * Created by SMAKINEN on 15.2.2016.
- */
+
 public class OskariRequestInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request,

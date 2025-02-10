@@ -1,8 +1,8 @@
 package org.oskari.spring.security;
 
 import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.domain.Role;
-import fi.nls.oskari.domain.User;
+import org.oskari.user.Role;
+import org.oskari.user.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.UserService;

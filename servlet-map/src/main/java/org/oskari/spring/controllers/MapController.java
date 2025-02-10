@@ -1,9 +1,9 @@
-package fi.nls.oskari;
+package org.oskari.spring.controllers;
 
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.view.GetAppSetupHandler;
 import fi.nls.oskari.control.view.modifier.param.ParamControl;
-import fi.nls.oskari.domain.User;
+import org.oskari.user.User;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
 import fi.nls.oskari.log.LogFactory;
@@ -11,12 +11,11 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.view.ViewService;
 import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
 import fi.nls.oskari.map.view.util.ViewHelper;
-import fi.nls.oskari.spring.SpringEnvHelper;
-import fi.nls.oskari.spring.extension.OskariParam;
+import org.oskari.spring.SpringEnvHelper;
+import org.oskari.spring.extension.OskariParam;
 import fi.nls.oskari.util.*;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -109,6 +108,7 @@ public class MapController {
     private void setupLoginDetails(final ActionParameters params, Model model) {
         if(env.isHandleLoginForm()) {
             if(!params.getUser().isGuest()) {
+                model.addAttribute("_user", params.getUser());
                 model.addAttribute("_logout_uri", env.getLogoutUrl());
                 model.addAttribute("_registration_uri", env.getRegisterUrl());
             }
@@ -116,10 +116,6 @@ public class MapController {
                 // move possible "failed" parameter to attribute as JSP checks attribute
                 if ("failed".equals(params.getHttpParam("loginState"))) {
                     model.addAttribute("loginState", "failed");
-                }
-                // if we are handling login -> setup attributes for login url/fieldnames
-                if(env.isSAMLEnabled()) {
-                    model.addAttribute("_login_uri_saml", env.getLoginUrlSAML());
                 }
                 if(env.isDBLoginEnabled()) {
                     model.addAttribute("_login_uri", env.getLoginUrl());

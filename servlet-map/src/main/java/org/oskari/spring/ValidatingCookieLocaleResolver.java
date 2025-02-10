@@ -1,4 +1,4 @@
-package fi.nls.oskari.spring;
+package org.oskari.spring;
 
 import java.util.Locale;
 import jakarta.servlet.http.HttpServletRequest;

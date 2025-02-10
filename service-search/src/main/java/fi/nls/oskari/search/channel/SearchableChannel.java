@@ -4,7 +4,7 @@ import fi.mml.portti.service.search.ChannelSearchResult;
 import fi.mml.portti.service.search.IllegalSearchCriteriaException;
 import fi.mml.portti.service.search.SearchCriteria;
 import fi.mml.portti.service.search.SearchResultItem;
-import fi.nls.oskari.domain.User;
+import org.oskari.user.User;
 import org.json.JSONObject;
 
 /**

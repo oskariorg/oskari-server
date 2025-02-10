@@ -4,7 +4,7 @@ import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.RestActionHandler;
-import fi.nls.oskari.domain.User;
+import org.oskari.user.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.myplaces.MyPlacesService;

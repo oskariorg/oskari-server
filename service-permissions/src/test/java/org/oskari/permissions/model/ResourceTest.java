@@ -6,8 +6,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 
-import fi.nls.oskari.domain.Role;
-import fi.nls.oskari.domain.User;
+import org.oskari.user.Role;
+import org.oskari.user.User;
 import org.junit.jupiter.api.Test;
 
 public class ResourceTest {

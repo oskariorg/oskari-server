@@ -1,6 +1,6 @@
 package fi.nls.oskari.control.users.model;
 
-import fi.nls.oskari.domain.User;
+import org.oskari.user.User;
 
 import java.sql.Timestamp;
 import java.util.Date;

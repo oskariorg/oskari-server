@@ -1,6 +1,6 @@
 package fi.nls.oskari.user;
 
-import fi.nls.oskari.domain.User;
+import org.oskari.user.User;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;

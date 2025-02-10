@@ -1,8 +1,8 @@
-package fi.nls.oskari.spring;
+package org.oskari.spring;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.spring.session.RedisSessionConfig;
+import org.oskari.spring.session.RedisSessionConfig;
 import fi.nls.oskari.util.PropertyUtil;
 import org.oskari.init.OskariInitializer;
 import org.springframework.session.web.context.AbstractHttpSessionApplicationInitializer;

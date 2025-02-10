@@ -1,7 +1,7 @@
 package fi.mml.portti.service.search;
 
 import fi.nls.oskari.SearchWorker;
-import fi.nls.oskari.domain.User;
+import org.oskari.user.User;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
 import fi.nls.oskari.util.PropertyUtil;

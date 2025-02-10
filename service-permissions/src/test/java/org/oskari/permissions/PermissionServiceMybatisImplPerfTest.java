@@ -1,6 +1,6 @@
 package org.oskari.permissions;
 
-import fi.nls.oskari.domain.GuestUser;
+import org.oskari.user.GuestUser;
 import fi.nls.test.util.TestHelper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;

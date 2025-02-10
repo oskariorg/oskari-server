@@ -7,7 +7,7 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.control.RestActionHandler;
 import fi.nls.oskari.control.myplaces.MyPlacesWFSHelper;
-import fi.nls.oskari.domain.User;
+import org.oskari.user.User;
 import fi.nls.oskari.domain.map.MyPlace;
 import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.oskari.log.LogFactory;

@@ -2,8 +2,8 @@ package fi.nls.oskari.control.admin;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
-import fi.nls.oskari.domain.Role;
-import fi.nls.oskari.domain.User;
+import org.oskari.user.Role;
+import org.oskari.user.User;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.View;
@@ -24,7 +24,6 @@ import org.json.JSONObject;
 import org.oskari.permissions.PermissionService;
 import org.oskari.permissions.model.PermissionType;
 import org.oskari.permissions.model.ResourceType;
-import org.oskari.service.util.ServiceFactory;
 
 import java.util.ArrayList;
 import java.util.Date;

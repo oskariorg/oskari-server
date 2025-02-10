@@ -10,7 +10,7 @@ import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.control.RestActionHandler;
 
-import fi.nls.oskari.domain.User;
+import org.oskari.user.User;
 import fi.nls.oskari.domain.map.Feature;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.wfs.WFSLayerAttributes;

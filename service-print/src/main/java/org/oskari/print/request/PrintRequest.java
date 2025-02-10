@@ -1,6 +1,6 @@
 package org.oskari.print.request;
 
-import fi.nls.oskari.domain.User;
+import org.oskari.user.User;
 import org.geotools.referencing.CRS;
 import org.geotools.api.referencing.FactoryException;
 import org.geotools.api.referencing.crs.CoordinateReferenceSystem;

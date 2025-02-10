@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.List;
 
 import fi.nls.oskari.control.*;
-import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
 import fi.nls.oskari.util.PropertyUtil;
 import org.oskari.log.AuditLog;
 import org.oskari.myplaces.service.mybatis.MyPlacesLayersServiceMybatisImpl;
@@ -14,7 +13,7 @@ import org.json.JSONObject;
 
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.OskariActionRoute;
-import fi.nls.oskari.domain.User;
+import org.oskari.user.User;
 import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;

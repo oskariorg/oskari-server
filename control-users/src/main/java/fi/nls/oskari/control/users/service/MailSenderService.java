@@ -4,7 +4,7 @@ import fi.nls.oskari.control.users.model.EmailMessage;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
-import fi.nls.oskari.spring.SpringContextHolder;
+import org.oskari.spring.SpringContextHolder;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.apache.commons.text.StringSubstitutor;

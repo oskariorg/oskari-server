@@ -1,4 +1,4 @@
-package fi.nls.oskari.spring.session;
+package org.oskari.spring.session;
 
 import fi.nls.oskari.cache.JedisManager;
 import org.springframework.context.annotation.Bean;

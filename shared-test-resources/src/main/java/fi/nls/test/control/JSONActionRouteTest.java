@@ -1,8 +1,8 @@
 package fi.nls.test.control;
 
 import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.domain.GuestUser;
-import fi.nls.oskari.domain.User;
+import org.oskari.user.GuestUser;
+import org.oskari.user.User;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.test.util.JSONTestHelper;
 import fi.nls.test.util.MapBuilder;
@@ -13,7 +13,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;
 import org.mockito.exceptions.base.MockitoAssertionError;
 
-import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;

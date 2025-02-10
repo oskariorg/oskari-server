@@ -10,6 +10,7 @@ import fi.nls.oskari.service.OskariComponentManager;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.oskari.user.UserJsonHelper;
 import org.oskari.util.Customization;
 
 import java.io.IOException;
@@ -83,7 +84,7 @@ public class EnvHelper {
         JSONHelper.putValue(env, KEY_DECIMAL_SEPARATOR, Character.toString(dfs.getDecimalSeparator()));
 
         // setup user info
-        final JSONObject user = params.getUser().toJSON();
+        final JSONObject user = UserJsonHelper.toJSON(params.getUser());
         JSONHelper.putValue(user, KEY_APIKEY, params.getAPIkey());
         JSONHelper.putValue(env, KEY_USER, user);
 
