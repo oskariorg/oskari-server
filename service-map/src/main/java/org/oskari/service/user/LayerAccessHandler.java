@@ -1,6 +1,6 @@
 package org.oskari.service.user;
 
-import fi.nls.oskari.domain.User;
+import org.oskari.user.User;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.service.OskariComponent;
 

@@ -15,13 +15,13 @@ import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.service.UserService;
-import fi.nls.oskari.spring.SpringContextHolder;
+import org.oskari.spring.SpringContextHolder;
 import fi.nls.oskari.user.MybatisUserService;
 import fi.nls.oskari.util.ResponseHelper;
 import org.oskari.log.AuditLog;
 import org.springframework.context.MessageSource;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Locale;

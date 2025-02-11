@@ -2,7 +2,7 @@ package fi.nls.oskari.routing.pojo;
 
 import com.fasterxml.jackson.annotation.*;
 
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 import java.util.HashMap;
 import java.util.Map;
 

@@ -1,6 +1,6 @@
 package org.oskari.admin;
 
-import fi.nls.oskari.domain.Role;
+import org.oskari.user.Role;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.user.MybatisRoleService;
 import org.oskari.permissions.PermissionService;

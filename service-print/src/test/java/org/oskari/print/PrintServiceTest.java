@@ -19,7 +19,7 @@ import org.oskari.print.request.PrintFormat;
 import org.oskari.print.request.PrintLayer;
 import org.oskari.print.request.PrintRequest;
 
-import fi.nls.oskari.domain.User;
+import org.oskari.user.User;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.DuplicateException;

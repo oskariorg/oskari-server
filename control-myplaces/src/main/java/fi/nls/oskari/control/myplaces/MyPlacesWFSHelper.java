@@ -1,7 +1,7 @@
 package fi.nls.oskari.control.myplaces;
 
 import fi.nls.oskari.annotation.Oskari;
-import fi.nls.oskari.domain.User;
+import org.oskari.user.User;
 import fi.nls.oskari.domain.map.MyPlace;
 import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.oskari.domain.map.OskariLayer;

@@ -3,7 +3,7 @@ package fi.nls.oskari.control.view;
 import fi.nls.oskari.control.ActionConstants;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.view.modifier.param.CoordinateParamHandler;
-import fi.nls.oskari.domain.User;
+import org.oskari.user.User;
 import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;

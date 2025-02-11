@@ -1,7 +1,7 @@
 package fi.nls.oskari.control.view;
 
 import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.domain.Role;
+import org.oskari.user.Role;
 import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;

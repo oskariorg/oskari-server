@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" isELIgnored="false" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <!DOCTYPE html>
@@ -53,8 +53,6 @@
             #login input[type="text"], #login input[type="password"] {
                 width: 90%;
                 margin-bottom: 5px;
-                background-image: url("${clientDomain}/Oskari/${version}/resources/images/forms/input_shadow.png");
-                background-repeat: no-repeat;
                 padding-left: 5px;
                 padding-right: 5px;
                 border: 1px solid #B7B7B7;
@@ -95,7 +93,7 @@
     </style>
     <!-- ############# /css ################# -->
 </head>
-<body>
+<body id="oskari">
 
 <nav id="maptools">
     <div id="loginbar">
@@ -113,10 +111,9 @@
             </c:when>
         </c:choose>
         <c:choose>
-            <%-- If logout url is present - so logout link --%>
-            <c:when test="${!empty _logout_uri}">
+            <%-- If _user is present (logged-in user), there will be a logout url as well - show logout link --%>
+            <c:when test="${!empty _user}">
                 <form action="${pageContext.request.contextPath}${_logout_uri}" method="POST" id="logoutform">
-                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                     <a href="${pageContext.request.contextPath}${_logout_uri}" onClick="jQuery('#logoutform').submit();return false;"><spring:message code="logout" text="Logout" /></a>
                 </form>
                 <%-- oskari-profile-link id is used by the personaldata bundle - do not modify --%>
@@ -124,16 +121,12 @@
             </c:when>
             <%-- Otherwise show appropriate logins --%>
             <c:otherwise>
-                <c:if test="${!empty _login_uri_saml}">
-                    <a href="${pageContext.request.contextPath}${_login_uri_saml}"><spring:message code="login.sso" text="SSO login" /></a><hr />
-                </c:if>
                 <c:if test="${!empty _login_uri && !empty _login_field_user}">
                     <form action='${pageContext.request.contextPath}${_login_uri}' method="post" accept-charset="UTF-8">
                         <input size="16" id="username" name="${_login_field_user}" type="text" placeholder="<spring:message code="username" text="Username" />" autofocus
                                required />
                         <input size="16" id="password" name="${_login_field_pass}" type="password" placeholder="<spring:message code="password" text="Password" />" required />
 
-                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                         <input type="submit" id="submit" value="<spring:message code="login" text="Log in" />" />
                     </form>
                 </c:if>
@@ -143,20 +136,8 @@
             </c:otherwise>
         </c:choose>
     </div>
-    <div id="oskari-system-messages"></div>
 </nav>
-<div id="contentMap" class="oskariui container-fluid">
-    <div id="menutoolbar" class="container-fluid"></div>
-    <div class="row-fluid oskariui-mode-content" style="height: 100%; background-color:white;">
-        <div class="oskariui-left"></div>
-        <div class="span12 oskariui-center" style="height: 100%; margin: 0;">
-            <div id="mapdiv"></div>
-        </div>
-        <div class="oskari-closed oskariui-right">
-            <div id="mapdivB"></div>
-        </div>
-    </div>
-</div>
+<div id="contentMap"></div>
 
 
 <!-- ############# Javascript ################# -->

@@ -1,7 +1,7 @@
 package fi.mml.portti.service.search;
 
 import fi.nls.oskari.annotation.Oskari;
-import fi.nls.oskari.domain.User;
+import org.oskari.user.User;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.search.channel.*;

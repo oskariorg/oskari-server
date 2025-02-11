@@ -1,7 +1,7 @@
 package fi.nls.oskari.view.modifier;
 
 import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.domain.User;
+import org.oskari.user.User;
 import fi.nls.oskari.domain.map.view.View;
 import org.json.JSONArray;
 import org.json.JSONObject;

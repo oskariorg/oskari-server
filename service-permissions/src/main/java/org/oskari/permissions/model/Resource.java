@@ -1,13 +1,12 @@
 package org.oskari.permissions.model;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import fi.nls.oskari.domain.Role;
-import fi.nls.oskari.domain.User;
+import org.oskari.user.Role;
+import org.oskari.user.User;
 
 /**
  * A generic mapping for resource. Reflects DB table oskari_resource.

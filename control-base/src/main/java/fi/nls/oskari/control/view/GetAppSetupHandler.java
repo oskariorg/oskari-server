@@ -4,8 +4,8 @@ import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.control.view.modifier.bundle.BundleHandler;
 import fi.nls.oskari.control.view.modifier.param.ParamControl;
-import fi.nls.oskari.domain.Role;
-import fi.nls.oskari.domain.User;
+import org.oskari.user.Role;
+import org.oskari.user.User;
 import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
@@ -331,7 +331,7 @@ public class GetAppSetupHandler extends ActionHandler {
     }
 
 
-    private JSONObject getStateFromCookie(javax.servlet.http.Cookie cookie) {
+    private JSONObject getStateFromCookie(jakarta.servlet.http.Cookie cookie) {
         if (cookie == null) {
             log.debug("Cookie state was <null>");
             return null;

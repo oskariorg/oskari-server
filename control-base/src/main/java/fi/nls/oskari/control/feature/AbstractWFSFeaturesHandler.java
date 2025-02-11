@@ -2,7 +2,7 @@ package fi.nls.oskari.control.feature;
 
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.control.layer.PermissionHelper;
-import fi.nls.oskari.domain.User;
+import org.oskari.user.User;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.service.OskariComponentManager;
 

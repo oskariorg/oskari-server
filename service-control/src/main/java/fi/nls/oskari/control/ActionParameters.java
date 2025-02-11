@@ -1,16 +1,16 @@
 package fi.nls.oskari.control;
 
-import fi.nls.oskari.domain.GuestUser;
-import fi.nls.oskari.domain.User;
+import org.oskari.user.GuestUser;
+import org.oskari.user.User;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.RequestHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;

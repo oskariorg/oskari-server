@@ -2,7 +2,7 @@ package fi.nls.oskari.map.style;
 
 import java.util.List;
 
-import fi.nls.oskari.domain.User;
+import org.oskari.user.User;
 import fi.nls.oskari.domain.map.style.VectorStyle;
 import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
 import fi.nls.oskari.log.LogFactory;

@@ -1,5 +1,12 @@
 package fi.nls.oskari.util;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.oskari.user.GuestUser;
+import org.oskari.user.Role;
+import org.oskari.user.User;
+
 import java.util.*;
 
 /**

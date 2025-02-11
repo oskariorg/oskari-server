@@ -1,7 +1,7 @@
 package fi.nls.oskari.service;
 
-import fi.nls.oskari.domain.Role;
-import fi.nls.oskari.domain.User;
+import org.oskari.user.Role;
+import org.oskari.user.User;
 import fi.nls.oskari.util.PropertyUtil;
 
 import java.util.Map;
