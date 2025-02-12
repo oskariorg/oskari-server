@@ -4,6 +4,16 @@
 
 In 3.0.0 the minimum Java version for Oskari is changed from Java 8 to 17.
 
+### Migrated from javax.servlet to jakarta-namespace
+
+Some application specific files might have imports from javax.servlet. You can switch them with this cli command:
+
+```sh
+git grep -l javax.servlet. | xargs sed -i "s/import javax.servlet./import jakarta.servlet./g"
+```
+
+TODO: add some guidance for Spring changes?
+
 ### User management
 
 - Moved packages:
@@ -19,7 +29,6 @@ git grep -l fi.nls.oskari.domain. | xargs sed -i "s/fi.nls.oskari.domain.Role/or
 # this updates all fi.nls.oskari.spring imports and might break stuff if you have these on your own app
 git grep -l fi.nls.oskari.spring. | xargs sed -i "s/import fi.nls.oskari.spring./import org.oskari.spring./g"
 ```
-TODO: add some guidance for Spring changes.
 
 ### Junit migrated from 4 to 5
 
