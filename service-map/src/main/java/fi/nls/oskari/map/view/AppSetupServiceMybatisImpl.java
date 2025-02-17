@@ -133,9 +133,8 @@ public class AppSetupServiceMybatisImpl extends ViewService {
         try (final SqlSession session = factory.openSession()) {
             final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
             final Map<String, Object> params = new HashMap<>();
-            params.put("limit", pageSize);
-            params.put("offset", (page -1) * pageSize);
-            return mapper.getViews(params);
+            int offset = (page -1) * pageSize;
+            return mapper.getViews(offset, pageSize);
         } catch (Exception e) {
             LOG.warn(e, "");
         }
@@ -300,7 +299,7 @@ public class AppSetupServiceMybatisImpl extends ViewService {
 
         try (final SqlSession session = factory.openSession()) {
             final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
-            mapper.updateUsage(view);
+            mapper.updateUsage(view.getId());
             session.commit();
         } catch (Exception e) {
             LOG.warn(e, "Exception while updating view usage");
@@ -327,18 +326,10 @@ public class AppSetupServiceMybatisImpl extends ViewService {
 
     public void updateBundleSettingsForView(final long viewId, final Bundle bundle) throws ViewException {
         LOG.debug("Update bundle settings for view");
-        final Map<String, Object> params = new HashMap<>();
-        params.put("view_id", viewId);
-        params.put("bundle_id", bundle.getBundleId());
-
-        params.put("seqno", bundle.getSeqNo());
-        params.put("config", bundle.getConfig());
-        params.put("state", bundle.getState());
-        params.put("bundleinstance", bundle.getBundleinstance());
 
         try (final SqlSession session = factory.openSession()) {
             final AppSetupMapper mapper = session.getMapper(AppSetupMapper.class);
-            final int numUpdated = mapper.updateBundleSettingsInView(params);
+            final int numUpdated = mapper.updateBundleSettingsInView(viewId, bundle);
             if(numUpdated == 0) {
                 // not updated, bundle not found
                 throw new ViewException("Failed to update - bundle not found in view?");
