@@ -142,7 +142,7 @@ public class SpringConfig implements WebMvcConfigurer, ServletContextAware, Appl
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry
                 .addResourceHandler("/xhr-prioritizer.js")
-                .addResourceLocations("classpath:service-workers/xhr-prioritizer.js")
+                .addResourceLocations("classpath:service-workers")
                 .resourceChain(true)
                 .addResolver(new PathResourceResolver());
         // search from configured path or from classpath root
