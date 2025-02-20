@@ -148,7 +148,7 @@ public class SpringConfig implements WebMvcConfigurer, ServletContextAware, Appl
         // search from configured path or from classpath root
         String faviconPath = PropertyUtil.get("favicon.path", "classpath:/");
         registry
-                .addResourceHandler("/favicon.ico")
+                .addResourceHandler("/favicon.ico", "/favicon-light.ico", "/favicon-dark.ico")
                 .addResourceLocations(faviconPath)
                 .resourceChain(true)
                 .addResolver(new PathResourceResolver());
