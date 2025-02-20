@@ -6,7 +6,12 @@
 <html>
 <head>
     <title>Oskari - ${viewName}</title>
-    <link rel="shortcut icon" href="${clientDomain}/Oskari${path}/logo.png" type="image/png" />
+    <!-- Default favicon (for browsers that don't support media queries in link tags) -->
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <!-- Light mode favicon -->
+    <link rel="icon" href="favicon-light.ico" type="image/x-icon" media="(prefers-color-scheme: light)">
+    <!-- Dark mode favicon -->
+    <link rel="icon" href="favicon-dark.ico" type="image/x-icon" media="(prefers-color-scheme: dark)">
     <meta name="format-detection" content="telephone=no" />
 
     <!-- ############# css ################# -->
