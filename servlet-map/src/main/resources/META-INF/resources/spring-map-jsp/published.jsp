@@ -3,7 +3,11 @@
 <html>
 <head>
     <title>${viewName}</title>
-    <link rel="shortcut icon" href="${clientDomain}/Oskari${path}/logo.png" type="image/png" />
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <!-- Light mode favicon -->
+    <link rel="icon" href="favicon-light.ico" type="image/x-icon" media="(prefers-color-scheme: light)">
+    <!-- Dark mode favicon -->
+    <link rel="icon" href="favicon-dark.ico" type="image/x-icon" media="(prefers-color-scheme: dark)">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     <meta name="format-detection" content="telephone=no" />
 
@@ -21,38 +25,26 @@
     <link href="https://fonts.googleapis.com/css?family=Noto+Sans" rel="stylesheet">
     <style type="text/css">
         @media screen {
+            /* Make the map application fill all available space */
             body {
                 margin : 0;
                 padding : 0;
-            }
-            #mapdiv {
-                width: 100%;
-            }
-            #contentMap {
-                height: 100%;
+                width: 100vw;
+                height: 100vh;
             }
         }
     </style>
     <!-- ############# /css ################# -->
 </head>
 <body>
-<div id="contentMap" class="oskariui container-fluid published">
-    <div class="row-fluid" style="height: 100%; background-color:white;">
-        <div class="oskariui-left"></div>
-        <div class="span12 oskariui-center" style="height: 100%; margin: 0;">
-            <div id="mapdiv"></div>
-        </div>
-        <div class="oskari-closed oskariui-right">
-            <div id="mapdivB"></div>
-        </div>
-    </div>
+<div id="oskari">
+<%-- The embedded map will be rendered here --%>
 </div>
 
 
 <!-- ############# Javascript ################# -->
 
 <!--  OSKARI -->
-
 <script type="text/javascript">
     var ajaxUrl = '${ajaxUrl}';
     var controlParams = ${controlParams};
