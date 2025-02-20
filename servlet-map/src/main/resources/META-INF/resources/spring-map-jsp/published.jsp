@@ -25,13 +25,12 @@
     <link href="https://fonts.googleapis.com/css?family=Noto+Sans" rel="stylesheet">
     <style type="text/css">
         @media screen {
+            /* Make the map application fill all available space */
             body {
                 margin : 0;
                 padding : 0;
-            }
-            #oskari {
-                width: 100%;
-                height: 100%;
+                width: 100vw;
+                height: 100vh;
             }
         }
     </style>

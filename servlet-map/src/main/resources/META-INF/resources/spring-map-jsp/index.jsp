@@ -31,10 +31,8 @@
             body {
                 margin: 0;
                 padding: 0;
-            }
-
-            #mapdiv {
-                width: 100%;
+                width: 100vw;
+                height: 100vh;
             }
 
             #maptools {
@@ -44,11 +42,6 @@
                 top: 0;
                 width: 153px;
                 z-index: 2;
-            }
-
-            #contentMap {
-                height: 100%;
-                margin-left: 170px;
             }
 
             #login {
