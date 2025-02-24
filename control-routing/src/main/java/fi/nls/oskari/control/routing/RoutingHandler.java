@@ -69,6 +69,11 @@ public class RoutingHandler extends ActionHandler {
         routeparams.setSrs(params.getHttpParam(PARAM_SRS));
         routeparams.setLang(params.getHttpParam(PARAM_LANGUAGE));
         routeparams.setMaxWalkDistance(ConversionHelper.getLong(params.getHttpParam(PARAM_MAX_WALK_DISTANCE, PropertyUtil.get("routing.default.maxwalkdistance")), 1000000));
+        // SUKAN parametrit:
+        // joukkoliikenne - TRANSIT / WALK
+        // fillari BICYCLE
+        // Kävely WALK
+        // Ajelu CAR
         routeparams.setMode(params.getHttpParam(PARAM_MODE, PropertyUtil.get("routing.default.mode")));
 
         RouteResponse result = service.getRoute(routeparams);
