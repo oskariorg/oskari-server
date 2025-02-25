@@ -156,31 +156,23 @@ public class PrintLoader {
     }
 
     public Future<BufferedImage> runImageSupplier(String commandKey, Supplier<BufferedImage> supplier) {
-        try {
-            return Decorators.ofSupplier(supplier)
-                    .withThreadPoolBulkhead(bulkhead)
-                    .withTimeLimiter(timeLimiter, executor)
-                    .withCircuitBreaker(circuitBreakerRegistry.circuitBreaker(commandKey))
-                    .withRetry(retryRegistry.retry(commandKey), executor)
-                    .withFallback(throwable -> null)
-                    .get().toCompletableFuture();
-        } catch (CompletionException e) {
-            throw new RuntimeException(e.getCause());
-        }
+        return Decorators.ofSupplier(supplier)
+                .withThreadPoolBulkhead(bulkhead)
+                .withTimeLimiter(timeLimiter, executor)
+                .withCircuitBreaker(circuitBreakerRegistry.circuitBreaker(commandKey))
+                .withRetry(retryRegistry.retry(commandKey), executor)
+                .withFallback(throwable -> null)
+                .get().toCompletableFuture();
     }
 
     public Future<SimpleFeatureCollection> runFeatureSupplier(String commandKey, Supplier<SimpleFeatureCollection> supplier) {
-        try {
-            return Decorators.ofSupplier(supplier)
-                    .withThreadPoolBulkhead(bulkhead)
-                    .withTimeLimiter(timeLimiter, executor)
-                    .withCircuitBreaker(circuitBreakerRegistry.circuitBreaker(commandKey))
-                    .withRetry(retryRegistry.retry(commandKey), executor)
-                    .withFallback(throwable -> new DefaultFeatureCollection())
-                    .get().toCompletableFuture();
-        } catch (CompletionException e) {
-            throw new RuntimeException(e.getCause());
-        }
+        return Decorators.ofSupplier(supplier)
+                .withThreadPoolBulkhead(bulkhead)
+                .withTimeLimiter(timeLimiter, executor)
+                .withCircuitBreaker(circuitBreakerRegistry.circuitBreaker(commandKey))
+                .withRetry(retryRegistry.retry(commandKey), executor)
+                .withFallback(throwable -> new DefaultFeatureCollection())
+                .get().toCompletableFuture();
     }
 
     public static BufferedImage loadImageFromURL(String uri, String user, String pass) {
