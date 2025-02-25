@@ -73,8 +73,6 @@
 
         <commons-lang3.version>3.17.0</commons-lang3.version>
         <commons-text.version>1.13.0</commons-text.version>
-        <!-- could be removed? -->
-        <commons-collections.version>3.2.2</commons-collections.version>
         <commons-codec.version>1.16.0</commons-codec.version>
         <commons-fileupload.version>2.0.0-M2</commons-fileupload.version>
 
@@ -530,11 +528,6 @@ The one packaged without this is 2.15.1
                 <version>${jakarta.servlet.jsp.jstl.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>commons-collections</groupId>
-                <artifactId>commons-collections</artifactId>
-                <version>${commons-collections.version}</version>
-            </dependency>
             <dependency>
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
