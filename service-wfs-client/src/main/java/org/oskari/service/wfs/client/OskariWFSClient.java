@@ -46,9 +46,11 @@ public class OskariWFSClient {
     private static final int DEFAULT_MAX_FEATURES = 10000;
     protected static final String KEY_FILTER = "filter";
 
+    private final OskariWFSLoader loader = new OskariWFSLoader();
+
     public SimpleFeatureCollection getFeatures(OskariLayer layer,
             ReferencedEnvelope bbox, CoordinateReferenceSystem crs, Filter filter) {
-        return new OskariWFSLoadCommand(layer, bbox, crs, filter).execute();
+        return loader.getFeatures(layer, bbox, crs, filter);
     }
 
     // Common methods for WFS 1.1.0 and 2.0.0 clients

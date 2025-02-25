@@ -28,7 +28,7 @@ import java.util.function.Supplier;
 
 import fi.nls.oskari.util.PropertyUtil;
 
-public class OskariWFSLoadCommand {
+public class OskariWFSLoader {
     private static final String WFS_3_VERSION = "3.0.0";
     private static final String WFS_2_VERSION = "2.0.0";
     private static final String GROUP_KEY = "wfs";
@@ -41,7 +41,7 @@ public class OskariWFSLoadCommand {
     private final ThreadPoolBulkhead bulkhead;
     private final ScheduledExecutorService executor;
 
-    public OskariWFSLoadCommand() {
+    public OskariWFSLoader() {
         int failRequests = PropertyUtil.getOptional("oskari." + GROUP_KEY + ".failrequests", 5);
         int slidingWindowMs = PropertyUtil.getOptional("oskari." + GROUP_KEY + ".rollingwindow", 100000);
         int waitDuration = PropertyUtil.getOptional("oskari." + GROUP_KEY + ".sleepwindow", 20000);
