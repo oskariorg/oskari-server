@@ -23,16 +23,12 @@ public class PlanConnectionRequest {
 
     public String getQuery(RouteParams params) {
 /*
-        routeparams.setIsWheelChair("true".equals(params.getHttpParam(PARAM_WHEELCHAIR)));
+        // TODO: check again if an equivalent for these could be found hidden inside the api
         routeparams.setIsShowIntermediateStops("true".equals(params.getHttpParam(PARAM_SHOW_INTERMEDIATE_STOPS)));
-
-        routeparams.setSrs(params.getHttpParam(PARAM_SRS));
-        routeparams.setLang(params.getHttpParam(PARAM_LANGUAGE));
         routeparams.setMaxWalkDistance(ConversionHelper.getLong(params.getHttpParam(PARAM_MAX_WALK_DISTANCE, PropertyUtil.get("routing.default.maxwalkdistance")), 1000000));
 */
 
         String modes = params.getMode();
-        // TODO: remake the whole jsonpart to get that from a jsonobject and stringify the rest
         String transitModes = getTransitModes(modes);
         if (transitModes != null) {
             transitModes = transitModes + ", ";
@@ -42,11 +38,24 @@ public class PlanConnectionRequest {
         }
 
         String dateTimeJSON = getDateTimeJSON(params.getIsArriveBy(), params.getDate());
+
         String query = "  {\n" +
         "    planConnection(\n" +
                 transitModes + "\n" +
                 dateTimeJSON + "\n" +
-        "      origin:\n" +
+        "       locale: \"" + params.getLang()+ "\"";
+
+        if (params.getIsWheelChair()) {
+            query += "preferences: { "+
+                "   accessibility: {"+
+                "       wheelChair: { " +
+                "           enabled: true "+
+                "       }"+
+                "  }" +
+                "}";
+        }
+        query +=
+        "   origin:\n" +
         "      {\n" +
         "        location: {\n" +
         "          coordinate: {\n" +
