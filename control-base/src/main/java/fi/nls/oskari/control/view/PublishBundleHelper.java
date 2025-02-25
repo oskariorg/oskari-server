@@ -3,7 +3,6 @@ package fi.nls.oskari.control.view;
 import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
-import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -74,7 +73,7 @@ public class PublishBundleHelper {
             String classes = location.optString(KEY_CLASSES);
             if (classes != null && classes.length() > 0) {
                 String[] filteredClasses = filterClasses(classes.split(" "));
-                JSONHelper.putValue(location, KEY_CLASSES, StringUtils.join(filteredClasses, " "));
+                JSONHelper.putValue(location, KEY_CLASSES, String.join(" ",filteredClasses));
             }
             // Make sure we don't have inline css set
             for(String str : CLASS_WHITELIST) {

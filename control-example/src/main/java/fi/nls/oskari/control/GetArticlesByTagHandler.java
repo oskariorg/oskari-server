@@ -7,7 +7,6 @@ import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
-import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -76,7 +75,7 @@ public class GetArticlesByTagHandler extends ActionHandler {
             return getMissingContentNote(originalTags);
         }
         // remove the last tag
-        final String newTags = StringUtils.join(Arrays.copyOf(tags, tags.length-1), ",");
+        final String newTags =  String.join(",", Arrays.copyOf(tags, tags.length-1));
         JSONObject articleContent = getContent(newTags);
         while (articleContent == null) {
             articleContent = tryContentWithLessTags(originalTags, newTags);

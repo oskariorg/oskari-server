@@ -14,6 +14,7 @@ import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.oskari.log.AuditLog;
 import fi.nls.oskari.wfs.WFSSearchChannelsConfiguration;
 import fi.nls.oskari.wfs.WFSSearchChannelsService;
@@ -71,7 +72,7 @@ public class SearchWFSChannelActionHandler extends RestActionHandler {
                 }
             }
         } catch (Exception ex){
-            log.error(org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(ex));
+            log.error(ExceptionUtils.getStackTrace(ex));
             throw new ActionParamsException("Couldn't get WFS search channels");
         }
         JSONHelper.putValue(response, "channels", channelsJSONArray);
@@ -101,7 +102,7 @@ public class SearchWFSChannelActionHandler extends RestActionHandler {
             JSONHelper.putValue(response, "success", true);
             ResponseHelper.writeResponse(params, response);
         } catch (Exception ex) {
-            log.error(org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(ex));
+            log.error(ExceptionUtils.getStackTrace(ex));
             throw new ActionParamsException("Couldn't delete WFS search channel");
         }
     }
@@ -125,7 +126,7 @@ public class SearchWFSChannelActionHandler extends RestActionHandler {
             JSONHelper.putValue(response, "success", true);
             ResponseHelper.writeResponse(params, response);
         } catch (Exception ex) {
-            log.error(org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(ex));
+            log.error(ExceptionUtils.getStackTrace(ex));
             throw new ActionParamsException("Couldn't update WFS search channel");
         }
     }
@@ -146,7 +147,7 @@ public class SearchWFSChannelActionHandler extends RestActionHandler {
             JSONHelper.putValue(response, "success", newId > 0);
             ResponseHelper.writeResponse(params, response);
         } catch (Exception ex) {
-            log.error(org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(ex));
+            log.error(ExceptionUtils.getStackTrace(ex));
             throw new ActionParamsException("Couldn't add WFS search channel");
         }
     }
