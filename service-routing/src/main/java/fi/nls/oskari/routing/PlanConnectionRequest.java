@@ -3,6 +3,8 @@ package fi.nls.oskari.routing;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -37,9 +39,12 @@ public class PlanConnectionRequest {
             transitModes = transitModes + ", ";
         }
 
+        String dateTimeJSON = getDateTimeJSON(params.getIsArriveBy(), params.getDate());
+
         String query = "  {\n" +
         "    planConnection(\n" +
-                transitModes +
+                transitModes + "\n" +
+                dateTimeJSON + "\n" +
         "      origin:\n" +
         "      {\n" +
         "        location: {\n" +
@@ -160,5 +165,18 @@ public class PlanConnectionRequest {
         }
 
         return null;
+    }
+
+    private String getDateTimeJSON(Boolean isArriveBy, OffsetDateTime date) {
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mmXXX");
+        String dateTimeString = "dateTime: {";
+        if (isArriveBy) {
+            dateTimeString += "latestArrival: \"" + date.format(formatter) + "\"";
+        } else {
+            dateTimeString += "earliestDeparture: \"" + date.format(formatter) + "\"";
+        }
+        dateTimeString += "}";
+        return dateTimeString;
     }
 }

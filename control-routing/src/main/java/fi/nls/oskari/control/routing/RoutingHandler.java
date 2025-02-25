@@ -15,10 +15,14 @@ import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
 import org.json.JSONObject;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import static fi.nls.oskari.control.ActionConstants.*;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
+import static fi.nls.oskari.control.ActionConstants.PARAM_LANGUAGE;
+import static fi.nls.oskari.control.ActionConstants.PARAM_SRS;
 
 /**
  * Created by SMAKINEN on 26.6.2015.
@@ -48,18 +52,20 @@ public class RoutingHandler extends ActionHandler {
         routeparams.setFrom(params.getRequiredParamDouble(PARAM_FROM_LON), params.getRequiredParamDouble(PARAM_FROM_LAT));
         routeparams.setTo(params.getRequiredParamDouble(PARAM_TO_LON), params.getRequiredParamDouble(PARAM_TO_LAT));
 
-        // TODO: validate values
-        final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyyMMdd");
-        final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH:mm");
-        final SimpleDateFormat timeFormatter = new SimpleDateFormat("HH:mm");
-        final String dateTime =
-                params.getHttpParam(PARAM_DATE, dateFormatter.format(new Date())) +
-                params.getHttpParam(PARAM_TIME, timeFormatter.format(new Date()));
-        try {
-            final Date date = sdf.parse(dateTime);
-            routeparams.setDate(date);
 
-        } catch (ParseException e) {
+        // TODO: validate values
+        final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        final String dateTime =
+                params.getHttpParam(PARAM_DATE, LocalDateTime.now(ZoneId.systemDefault()).format(dateFormatter)) + " " +
+                params.getHttpParam(PARAM_TIME, LocalDateTime.now(ZoneId.systemDefault()).format(timeFormatter));
+        try {
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            LocalDateTime ldt = LocalDateTime.parse(dateTime, dateTimeFormatter);
+            OffsetDateTime odt = ldt.atOffset(ldt.atZone(ZoneId.systemDefault()).getOffset());
+            routeparams.setDate(odt);
+
+        } catch (DateTimeParseException e) {
             throw new ActionParamsException("Couldn't parse date");
         }
         routeparams.setIsArriveBy("true".equals(params.getHttpParam(PARAM_ARRIVEBY)));
