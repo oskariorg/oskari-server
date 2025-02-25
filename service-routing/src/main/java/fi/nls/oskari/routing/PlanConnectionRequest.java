@@ -23,7 +23,6 @@ public class PlanConnectionRequest {
 
     public String getQuery(RouteParams params) {
 /*
-        routeparams.setIsArriveBy("true".equals(params.getHttpParam(PARAM_ARRIVEBY)));
         routeparams.setIsWheelChair("true".equals(params.getHttpParam(PARAM_WHEELCHAIR)));
         routeparams.setIsShowIntermediateStops("true".equals(params.getHttpParam(PARAM_SHOW_INTERMEDIATE_STOPS)));
 
@@ -38,9 +37,11 @@ public class PlanConnectionRequest {
         if (transitModes != null) {
             transitModes = transitModes + ", ";
         }
+        if (transitModes == null) {
+            transitModes = "";
+        }
 
         String dateTimeJSON = getDateTimeJSON(params.getIsArriveBy(), params.getDate());
-
         String query = "  {\n" +
         "    planConnection(\n" +
                 transitModes + "\n" +
