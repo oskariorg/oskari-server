@@ -3,7 +3,6 @@ package fi.nls.oskari.csw.helper;
 import fi.nls.oskari.csw.domain.CSWIsoRecord;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import org.apache.commons.collections.map.LinkedMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -11,6 +10,7 @@ import javax.xml.xpath.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.LinkedHashMap;
 
 public class CSWISORecordDataQualityParser {
 
@@ -22,7 +22,7 @@ public class CSWISORecordDataQualityParser {
 
     //Data quality node information
     private final XPath xpath = XPathFactory.newInstance().newXPath();
-    private final Map<String, String> dataQualities = new LinkedMap();
+    private final Map<String, String> dataQualities = new LinkedHashMap();
     private XPathExpression XPATH_NAME_OF_MEASURE = null; //many
     private XPathExpression XPATH_MEASURE_IDENTIFICATION_CODE = null;
     private XPathExpression XPATH_MEASURE_IDENTIFICATION_AUTHORIZATION = null;
