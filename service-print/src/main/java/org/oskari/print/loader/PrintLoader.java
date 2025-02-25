@@ -43,8 +43,8 @@ import org.oskari.service.wfs.client.OskariFeatureClient;
 
 import javax.imageio.ImageIO;
 
-public class AsyncImageLoader {
-    private static final Logger LOG = LogFactory.getLogger(AsyncImageLoader.class);
+public class PrintLoader {
+    private static final Logger LOG = LogFactory.getLogger(PrintLoader.class);
     private static final String GROUP_KEY = "print";
     private static final String FORMAT = "image/png";
     private static final int RETRY_COUNT = 3;
@@ -56,7 +56,7 @@ public class AsyncImageLoader {
     private final ThreadPoolBulkhead bulkhead;
     private final ScheduledExecutorService executor;
 
-    public AsyncImageLoader() {
+    public PrintLoader() {
         int failRequests = PropertyUtil.getOptional("oskari." + GROUP_KEY + ".failrequests", 5);
         int rollingwindow = PropertyUtil.getOptional("oskari." + GROUP_KEY + ".rollingwindow", 100000);
         int waitDuration = PropertyUtil.getOptional("oskari." + GROUP_KEY + ".sleepwindow", 20000);

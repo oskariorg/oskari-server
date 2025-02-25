@@ -20,6 +20,6 @@ public class CommandLoadImageArcGISREST {
                 .height(height)
                 .transparent(true)
                 .build();
-        return AsyncImageLoader.loadImageFromURL(request, layer.getUsername(), layer.getPassword());
+        return PrintLoader.loadImageFromURL(request, layer.getUsername(), layer.getPassword());
     }
 }

@@ -4,7 +4,6 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.service.ServiceException;
-import org.apache.commons.lang.StringUtils;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -44,8 +43,7 @@ import org.geotools.api.filter.expression.Expression;
 import org.geotools.api.filter.expression.Function;
 import org.geotools.api.referencing.FactoryException;
 import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
-import org.oskari.print.loader.AsyncFeatureLoader;
-import org.oskari.print.loader.AsyncImageLoader;
+import org.oskari.print.loader.PrintLoader;
 import org.oskari.print.request.PDPrintStyle;
 import org.oskari.print.request.PrintLayer;
 import org.oskari.print.request.PrintRequest;
@@ -53,7 +51,6 @@ import org.oskari.print.request.PrintVectorRule;
 import org.oskari.print.util.PDFBoxUtil;
 import org.oskari.print.util.StyleUtil;
 import org.oskari.print.util.Units;
-import org.oskari.service.wfs.client.OskariFeatureClient;
 import org.oskari.util.Customization;
 
 import javax.imageio.ImageIO;
@@ -192,9 +189,7 @@ public class PDF {
     /**
      * This method should be called (only) via PrintService
      */
-    protected static void getPDF(PrintRequest request,
-            OskariFeatureClient featureClient,
-            PDDocument doc) throws IOException, ServiceException {
+    protected static void getPDF(PrintService service, PrintRequest request, PDDocument doc) throws IOException, ServiceException {
         rb = ResourceBundle.getBundle(MESSAGES_BASENAME, new Locale(request.getLang()));
         int mapWidthPx = request.getWidth();
         int mapHeightPx = request.getHeight();
@@ -209,9 +204,9 @@ public class PDF {
         float mapHeight = pixelsToPoints(mapHeightPx);
 
         // Init requests to run in the background
-        Map<Integer, Future<BufferedImage>> layerImages = AsyncImageLoader.initLayers(request);
-        Map<Integer, Future<SimpleFeatureCollection>> featureCollections = AsyncFeatureLoader.initLayers(request, featureClient);
-
+        PrintLoader loader = service.getLoader();
+        Map<Integer, Future<BufferedImage>> layerImages = loader.initImageLayers(request);
+        Map<Integer, Future<SimpleFeatureCollection>> featureCollections = loader.initVectorLayers(request, service.getFeatureClient());
         PDPage page = new PDPage(pageSize);
         doc.addPage(page);
 
@@ -350,8 +345,8 @@ public class PDF {
     private static void drawTimeseriesTexts(PDPageContentStream stream,
             PrintRequest request, PDRectangle pageSize) throws IOException {
         if (!request.isShowTimeSeriesTime()
-                || StringUtils.isEmpty(request.getTimeseriesLabel())
-                    || StringUtils.isEmpty(request.getFormattedTime())) {
+                || request.getTimeseriesLabel().isEmpty()
+                    || request.getFormattedTime().isEmpty()) {
             return;
         }
 

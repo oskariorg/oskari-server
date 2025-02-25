@@ -1,7 +1,5 @@
 package org.oskari.print;
 
-import fi.nls.oskari.service.ServiceException;
-
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import java.awt.AlphaComposite;
@@ -13,11 +11,9 @@ import java.util.Map;
 import java.util.concurrent.Future;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
-import org.oskari.print.loader.AsyncFeatureLoader;
-import org.oskari.print.loader.AsyncImageLoader;
+import org.oskari.print.loader.PrintLoader;
 import org.oskari.print.request.PrintLayer;
 import org.oskari.print.request.PrintRequest;
-import org.oskari.service.wfs.client.OskariFeatureClient;
 
 public class PNG {
 
@@ -26,19 +22,19 @@ public class PNG {
     /**
      * This method should be called via PrintService
      */
-    protected static BufferedImage getBufferedImage(PrintRequest request, OskariFeatureClient featureClient)
-            throws ServiceException {
+    protected static BufferedImage getBufferedImage(PrintService service, PrintRequest request) {
         final int width = request.getWidth();
         final int height = request.getHeight();
         final double [] bbox = request.getBoundingBox();
 
         final List<PrintLayer> layers = request.getLayers();
 
-        Map<Integer, Future<BufferedImage>> images = AsyncImageLoader.initLayers(request);
-        Map<Integer, Future<SimpleFeatureCollection>> featureCollections = AsyncFeatureLoader.initLayers(request, featureClient);
+        // Init requests to run in the background
+        PrintLoader loader = service.getLoader();
+        Map<Integer, Future<BufferedImage>> images = loader.initImageLayers(request);
+        Map<Integer, Future<SimpleFeatureCollection>> featureCollections = loader.initVectorLayers(request, service.getFeatureClient());
         BufferedImage canvas = new BufferedImage(width, height,
                 BufferedImage.TYPE_INT_ARGB);
-
         Graphics2D g2d = canvas.createGraphics();
         try {
             for (int i = 0; i < layers.size(); i++) {

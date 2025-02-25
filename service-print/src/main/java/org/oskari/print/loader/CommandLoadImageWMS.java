@@ -26,6 +26,6 @@ public class CommandLoadImageWMS {
                 .transparent(true)
                 .time(time)
                 .toKVP();
-        return AsyncImageLoader.loadImageFromURL(request, layer.getUsername(), layer.getPassword());
+        return PrintLoader.loadImageFromURL(request, layer.getUsername(), layer.getPassword());
     }
 }

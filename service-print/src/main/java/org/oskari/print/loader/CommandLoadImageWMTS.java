@@ -43,7 +43,7 @@ public class CommandLoadImageWMTS {
             double[] bbox,
             String srs,
             double resolution,
-            AsyncImageLoader loader) {
+            PrintLoader loader) {
         LayerCapabilitiesWMTS caps = getLayerCapabilities(layer);
         TileMatrixSet tms = getTileMatrixSet(caps.getTileMatrixLinks(), layer, srs);
         TileMatrix tm = getTileMatrix(tms, resolution);
@@ -122,7 +122,7 @@ public class CommandLoadImageWMTS {
                 }
                 requestBuilder.tileCol(c);
                 String uri = requestBuilder.build();
-                Supplier<BufferedImage> supplier = () -> AsyncImageLoader.loadImageFromURL(uri, layer.getUsername(), layer.getPassword());
+                Supplier<BufferedImage> supplier = () -> PrintLoader.loadImageFromURL(uri, layer.getUsername(), layer.getPassword());
                 String commandKey = Integer.toString(layer.getId());
                 futureTiles.add(loader.runImageSupplier(commandKey, supplier));
             }
