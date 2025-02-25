@@ -39,8 +39,8 @@
             <artifactId>gt-epsg-hsql</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.netflix.hystrix</groupId>
-            <artifactId>hystrix-core</artifactId>
+            <groupId>io.github.resilience4j</groupId>
+            <artifactId>resilience4j-all</artifactId>
         </dependency>
         <dependency>
             <groupId>org.oskari</groupId>
