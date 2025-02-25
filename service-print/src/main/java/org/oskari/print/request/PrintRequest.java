@@ -226,7 +226,7 @@ public class PrintRequest {
     }
 
     public String getFormattedTime() {
-        return formattedTime;
+        return formattedTime == null ? "" : formattedTime;
     }
 
     public void setFormattedTime(String formattedTime) {
@@ -234,7 +234,7 @@ public class PrintRequest {
     }
 
     public String getTimeseriesLabel() {
-        return timeseriesLabel;
+        return timeseriesLabel == null ? "" : timeseriesLabel;
     }
 
     public void setTimeseriesLabel(String timeseriesLabel) {
