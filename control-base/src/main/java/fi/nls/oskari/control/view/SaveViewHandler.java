@@ -14,7 +14,7 @@ import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import org.oskari.log.AuditLog;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.json.JSONObject;
 
 
@@ -83,7 +83,7 @@ public class SaveViewHandler extends RestActionHandler {
         // View data JSON
         final String data = params.getRequiredParam(VIEW_DATA);
         try {
-            return new JSONObject(StringEscapeUtils.unescapeHtml(data));
+            return new JSONObject(StringEscapeUtils.unescapeHtml4(data));
         } catch (Exception ex) {
             throw new ActionParamsException("[AddViewHandler] Could not get View data : " + ex.toString() + " -- " + params.getHttpParam(VIEW_DATA));
         }

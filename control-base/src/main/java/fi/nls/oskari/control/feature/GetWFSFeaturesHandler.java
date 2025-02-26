@@ -15,9 +15,6 @@ import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.service.user.UserLayerService;
 import org.oskari.service.wfs.client.OskariWFSClient;
 
-import com.netflix.hystrix.exception.HystrixRuntimeException;
-import com.netflix.hystrix.exception.HystrixRuntimeException.FailureType;
-
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionCommonException;
 import fi.nls.oskari.control.ActionConstants;
@@ -32,9 +29,6 @@ import fi.nls.oskari.util.ResponseHelper;
 public class GetWFSFeaturesHandler extends AbstractWFSFeaturesHandler {
 
     protected static final String ERR_BBOX_INVALID = "Invalid bbox";
-    protected static final String ERR_SHORT_CIRCUIT = "Backing service disabled temporarily";
-    protected static final String ERR_TIMEOUT = "Request to backing service timed out";
-    protected static final String ERR_FAILED_TO_RETRIEVE_FEATURES = "Failed to retrieve features";
     protected static final String ERR_GEOJSON_ENCODE_FAIL = "Failed to write GeoJSON";
 
     private static final String PARAM_BBOX = "bbox";
@@ -111,21 +105,8 @@ public class GetWFSFeaturesHandler extends AbstractWFSFeaturesHandler {
             CoordinateReferenceSystem targetCRS, Optional<UserLayerService> contentProcessor) throws ActionException {
         try {
             return featureClient.getFeatures(id, layer, bbox, targetCRS, contentProcessor);
-        } catch (HystrixRuntimeException e) {
-            if (e.getFailureType() == FailureType.SHORTCIRCUIT) {
-                throw new ActionCommonException(ERR_SHORT_CIRCUIT);
-            }
-            if (e.getFailureType() == FailureType.TIMEOUT) {
-                throw new ActionCommonException(ERR_TIMEOUT);
-            }
-            if (e.getCause() != null) {
-                if (e.getCause() instanceof ServiceRuntimeException) {
-                    throw new ActionCommonException(ERR_FAILED_TO_RETRIEVE_FEATURES, e);
-                }
-            }
-            throw new ActionException(ERR_FAILED_TO_RETRIEVE_FEATURES, e);
         } catch (ServiceRuntimeException e) {
-            throw new ActionCommonException(ERR_FAILED_TO_RETRIEVE_FEATURES, e);
+            throw new ActionCommonException(e.getMessage(), e);
         }
     }
 

@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
-
 /**
  * WMS GetMap Request (KVP) Builder
  */
@@ -158,7 +156,7 @@ public class GetMapBuilder {
             sb.append("&BGCOLOR=").append(colorToHex(bgColor));
         }
 
-        if(StringUtils.isNotBlank(time)) {
+        if(time != null && !time.isBlank()) {
             sb.append("&TIME=").append(time);
         }
 

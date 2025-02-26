@@ -5,37 +5,16 @@ import java.awt.image.BufferedImage;
 import org.oskari.print.request.PrintLayer;
 import org.oskari.print.util.GetMapBuilder;
 
-/**
- * HystrixCommand that loads BufferedImage from WMS
- */
-public class CommandLoadImageWMS extends CommandLoadImageBase {
+public class CommandLoadImageWMS {
 
     private static final String FORMAT = "image/png";
 
-    private final PrintLayer layer;
-    private final int width;
-    private final int height;
-    private final double[] bbox;
-    private final String srsName;
-    private final String time;
-
-    public CommandLoadImageWMS(PrintLayer layer,
+    public static BufferedImage loadImage(PrintLayer layer,
             int width,
             int height,
             double[] bbox,
             String srsName,
             String time) {
-        super(Integer.toString(layer.getId()));
-        this.layer = layer;
-        this.width = width;
-        this.height = height;
-        this.bbox = bbox;
-        this.srsName = srsName;
-        this.time = time;
-    }
-
-    @Override
-    public BufferedImage run() throws Exception {
         final String request = new GetMapBuilder().endPoint(layer.getUrl())
                 .version(layer.getVersion())
                 .layer(layer.getName(), layer.getStyle())
@@ -47,13 +26,6 @@ public class CommandLoadImageWMS extends CommandLoadImageBase {
                 .transparent(true)
                 .time(time)
                 .toKVP();
-
-        return CommandLoadImageFromURL.load(request, layer.getUsername(), layer.getPassword());
+        return PrintLoader.loadImageFromURL(request, layer.getUsername(), layer.getPassword());
     }
-
-    @Override
-    public BufferedImage getFallback() {
-        return null;
-    }
-
 }

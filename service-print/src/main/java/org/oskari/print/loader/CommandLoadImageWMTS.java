@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Future;
+import java.util.function.Supplier;
 
 import fi.nls.oskari.domain.map.OskariLayer;
 import org.oskari.capabilities.CapabilitiesService;
@@ -20,18 +21,12 @@ import org.oskari.print.wmts.GetTileRequestBuilderREST;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
-import fi.nls.oskari.map.layer.OskariLayerService;
-import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 
 import org.geotools.referencing.CRS;
 import org.json.JSONObject;
 import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 
-/**
- * HystrixCommand that loads tiles from a WMTS service and combines them to a
- * single BufferedImage
- */
-public class CommandLoadImageWMTS extends CommandLoadImageBase {
+public class CommandLoadImageWMTS {
 
     private static final Logger LOG = LogFactory.getLogger(CommandLoadImageWMTS.class);
     private static final double EPSILON = 0.015625;
@@ -42,36 +37,16 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
         "image/jpeg"
     };
 
-    private final PrintLayer layer;
-    private final int width;
-    private final int height;
-    private final double[] bbox;
-    private final double resolution;
-    private final String srs;
-
-    private final OskariLayerService layerService = new OskariLayerServiceMybatisImpl();
-
-    public CommandLoadImageWMTS(PrintLayer layer,
+    public static BufferedImage loadImage(PrintLayer layer,
             int width,
             int height,
             double[] bbox,
             String srs,
-            double resolution) {
-        // Use Layers id as commandName
-        super(Integer.toString(layer.getId()));
-        this.layer = layer;
-        this.width = width;
-        this.height = height;
-        this.bbox = bbox;
-        this.srs = srs;
-        this.resolution = resolution;
-    }
-
-    @Override
-    public BufferedImage run() throws Exception {
-        LayerCapabilitiesWMTS caps = getLayerCapabilities();
-        TileMatrixSet tms = getTileMatrixSet(caps.getTileMatrixLinks());
-        TileMatrix tm = getTileMatrix(tms);
+            double resolution,
+            PrintLoader loader) {
+        LayerCapabilitiesWMTS caps = getLayerCapabilities(layer);
+        TileMatrixSet tms = getTileMatrixSet(caps.getTileMatrixLinks(), layer, srs);
+        TileMatrix tm = getTileMatrix(tms, resolution);
 
         int tileWidth = tm.getTileWidth();
         int tileHeight = tm.getTileHeight();
@@ -121,9 +96,9 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
         ResourceUrl tileResourceUrl = caps.getResourceUrl("tile");
         GetTileRequestBuilder requestBuilder;
         if (tileResourceUrl != null) {
-            requestBuilder = getTileRequestBuilderREST(tms.getId(), tm.getId(), tileResourceUrl);
+            requestBuilder = getTileRequestBuilderREST(tms.getId(), tm.getId(), tileResourceUrl, layer);
         } else {
-            requestBuilder = getTileRequestBuilderKVP(tms.getId(), tm.getId(), caps.getFormats());
+            requestBuilder = getTileRequestBuilderKVP(tms.getId(), tm.getId(), caps.getFormats(), layer);
         }
 
         for (int row = 0; row < countTileRows; row++) {
@@ -147,9 +122,9 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
                 }
                 requestBuilder.tileCol(c);
                 String uri = requestBuilder.build();
-                futureTiles.add(new CommandLoadImageFromURL(
-                        Integer.toString(layer.getId()), uri,
-                        layer.getUsername(), layer.getPassword()).queue());
+                Supplier<BufferedImage> supplier = () -> PrintLoader.loadImageFromURL(uri, layer.getUsername(), layer.getPassword());
+                String commandKey = Integer.toString(layer.getId());
+                futureTiles.add(loader.runImageSupplier(commandKey, supplier));
             }
         }
 
@@ -166,7 +141,10 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
                     // futureTile is null if the the tile is outside TileMatrix limits
                     continue;
                 }
-                BufferedImage tile = futureTile.get();
+                BufferedImage tile = null;
+                try {
+                    tile = futureTile.get();
+                } catch (Exception ignored) {}
                 if (tile != null) {
                     // tile is null if something goes wrong
                     // but we don't want to cancel the whole request
@@ -190,7 +168,7 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
         }
     }
 
-    private LayerCapabilitiesWMTS getLayerCapabilities() throws IllegalArgumentException {
+    private static LayerCapabilitiesWMTS getLayerCapabilities(PrintLayer layer) throws IllegalArgumentException {
         OskariLayer oskariLayer = layer.getOskariLayer();
         if (oskariLayer != null) {
             JSONObject capabilies = layer.getOskariLayer().getCapabilities();
@@ -201,7 +179,7 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
         throw new IllegalArgumentException("Could not find layer from Capabilities");
     }
 
-    private TileMatrix getTileMatrix(TileMatrixSet tms) throws IllegalArgumentException {
+    private static TileMatrix getTileMatrix(TileMatrixSet tms, double resolution) throws IllegalArgumentException {
         double wantedScale = resolution / Units.OGC_PIXEL_SIZE_METRE;
         for (TileMatrix matrix : tms.getTileMatrixMap().values()) {
             double scaleDenominator = matrix.getScaleDenominator();
@@ -215,7 +193,7 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
                 "Could not find TileMatrix with scaleDenominator: %f", wantedScale));
     }
 
-    private TileMatrixSet getTileMatrixSet(List<TileMatrixLink> tileMatrixLinks) throws IllegalArgumentException {
+    private static TileMatrixSet getTileMatrixSet(List<TileMatrixLink> tileMatrixLinks, PrintLayer layer, String srs) throws IllegalArgumentException {
         List<TileMatrixSet> possibleTileMatrixSets = new ArrayList<>();
 
         for (TileMatrixLink link : tileMatrixLinks) {
@@ -232,12 +210,11 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
         if (possibleTileMatrixSets.size() == 1) {
             return possibleTileMatrixSets.get(0);
         }
-        return determineTileMatrixSetToUse(possibleTileMatrixSets);
+        return determineTileMatrixSetToUse(possibleTileMatrixSets, layer, srs);
     }
 
-    private TileMatrixSet determineTileMatrixSetToUse(List<TileMatrixSet> possibleTileMatrixSets) throws IllegalArgumentException {
-        JSONObject useThisTileMatrixSetInstead = layerService.find(layer.getId()).getAttributes().optJSONObject("preferredTileMatrix");
-        
+    private static TileMatrixSet determineTileMatrixSetToUse(List<TileMatrixSet> possibleTileMatrixSets, PrintLayer layer, String srs) throws IllegalArgumentException {
+        JSONObject useThisTileMatrixSetInstead = layer.getOskariLayer().getAttributes().optJSONObject("preferredTileMatrix");
         if (useThisTileMatrixSetInstead == null) {
             return possibleTileMatrixSets.get(0);
         }
@@ -254,7 +231,7 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
         throw new IllegalArgumentException("Could not find TileMatrixSet with id " + id + " for layer " + layer.getId());
     }
 
-    private GetTileRequestBuilder getTileRequestBuilderREST(String tileMatrixSetId, String tileMatrixId, ResourceUrl tileResourceUrl) {
+    private static GetTileRequestBuilder getTileRequestBuilderREST(String tileMatrixSetId, String tileMatrixId, ResourceUrl tileResourceUrl, PrintLayer layer) {
         String template = tileResourceUrl.getTemplate();
         return new GetTileRequestBuilderREST(template)
                 .layer(layer.getName())
@@ -263,7 +240,7 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
                 .tileMatrix(tileMatrixId);
     }
 
-    private GetTileRequestBuilder getTileRequestBuilderKVP(String tileMatrixSetId, String tileMatrixId, Set<String> formats) {
+    private static GetTileRequestBuilder getTileRequestBuilderKVP(String tileMatrixSetId, String tileMatrixId, Set<String> formats, PrintLayer layer) {
         String format = getFormat(formats);
         return new GetTileRequestBuilderKVP().endPoint(layer.getUrl())
                 .layer(layer.getName())
@@ -273,7 +250,7 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
                 .format(format);
     }
 
-    private String getFormat(Set<String> layersFormats) {
+    private static String getFormat(Set<String> layersFormats) {
         for (String format : FORMAT_TO_USE) {
             if (layersFormats.contains(format)) {
                 return format;
@@ -281,5 +258,7 @@ public class CommandLoadImageWMTS extends CommandLoadImageBase {
         }
         throw new RuntimeException("Layer doesn't support any of the supported formats");
     }
-
+    protected BufferedImage getFallback() {
+        return null;
+    }
 }
