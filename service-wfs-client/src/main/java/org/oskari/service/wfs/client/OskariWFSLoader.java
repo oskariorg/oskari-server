@@ -43,14 +43,14 @@ public class OskariWFSLoader {
 
     public OskariWFSLoader() {
         int failRequests = PropertyUtil.getOptional("oskari." + GROUP_KEY + ".failrequests", 5);
-        int slidingWindowMs = PropertyUtil.getOptional("oskari." + GROUP_KEY + ".rollingwindow", 100000);
+        int rollingWindowMs = PropertyUtil.getOptional("oskari." + GROUP_KEY + ".rollingwindow", 100000);
         int waitDuration = PropertyUtil.getOptional("oskari." + GROUP_KEY + ".sleepwindow", 20000);
-        int slidingWindow = failRequests * 2; // failing rate 50%
+        int slidingWindow = rollingWindowMs / 1000;
 
         CircuitBreakerConfig circuitBreakerConfig = CircuitBreakerConfig.custom()
                 .waitDurationInOpenState(Duration.ofMillis(waitDuration))
-                .permittedNumberOfCallsInHalfOpenState(failRequests)
-                .minimumNumberOfCalls(slidingWindow)
+                .permittedNumberOfCallsInHalfOpenState(failRequests/2)
+                .minimumNumberOfCalls(failRequests)
                 .slidingWindowType(CircuitBreakerConfig.SlidingWindowType.TIME_BASED)
                 .slidingWindowSize(slidingWindow)
                 .build();
