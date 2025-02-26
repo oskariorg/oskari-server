@@ -4,17 +4,13 @@ import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
-import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.control.RestActionHandler;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.search.channel.WFSChannelHandler;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.oskari.log.AuditLog;
 import fi.nls.oskari.wfs.WFSSearchChannelsConfiguration;
 import fi.nls.oskari.wfs.WFSSearchChannelsService;
@@ -30,7 +26,6 @@ import static fi.nls.oskari.control.ActionConstants.PARAM_SRS;
 @OskariActionRoute("SearchWFSChannel")
 public class SearchWFSChannelActionHandler extends RestActionHandler {
 
-    private static final Logger log = LogFactory.getLogger(SearchWFSChannelActionHandler.class);
     private static final String PARAM_ID = "id";
     private static final String PARAM_WFS_ID = "wfsLayerId";
     private static final String PARAM_LOCALE = "locale";
@@ -72,8 +67,7 @@ public class SearchWFSChannelActionHandler extends RestActionHandler {
                 }
             }
         } catch (Exception ex){
-            log.error(ExceptionUtils.getStackTrace(ex));
-            throw new ActionParamsException("Couldn't get WFS search channels");
+            throw new ActionException("Couldn't get WFS search channels", ex);
         }
         JSONHelper.putValue(response, "channels", channelsJSONArray);
         JSONArray handlers = new JSONArray();
@@ -102,8 +96,7 @@ public class SearchWFSChannelActionHandler extends RestActionHandler {
             JSONHelper.putValue(response, "success", true);
             ResponseHelper.writeResponse(params, response);
         } catch (Exception ex) {
-            log.error(ExceptionUtils.getStackTrace(ex));
-            throw new ActionParamsException("Couldn't delete WFS search channel");
+            throw new ActionException("Couldn't delete WFS search channel", ex);
         }
     }
 
@@ -126,8 +119,7 @@ public class SearchWFSChannelActionHandler extends RestActionHandler {
             JSONHelper.putValue(response, "success", true);
             ResponseHelper.writeResponse(params, response);
         } catch (Exception ex) {
-            log.error(ExceptionUtils.getStackTrace(ex));
-            throw new ActionParamsException("Couldn't update WFS search channel");
+            throw new ActionException("Couldn't update WFS search channel", ex);
         }
     }
 
@@ -147,8 +139,7 @@ public class SearchWFSChannelActionHandler extends RestActionHandler {
             JSONHelper.putValue(response, "success", newId > 0);
             ResponseHelper.writeResponse(params, response);
         } catch (Exception ex) {
-            log.error(ExceptionUtils.getStackTrace(ex));
-            throw new ActionParamsException("Couldn't add WFS search channel");
+            throw new ActionException("Couldn't add WFS search channel", ex);
         }
     }
 
