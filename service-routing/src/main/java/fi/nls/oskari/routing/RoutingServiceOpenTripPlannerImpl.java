@@ -5,7 +5,7 @@ import fi.nls.oskari.domain.geo.Point;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
-import fi.nls.oskari.routing.pojo.Route;
+import fi.nls.oskari.routing.pojo.PlanConnection;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONException;
@@ -52,24 +52,37 @@ public class RoutingServiceOpenTripPlannerImpl implements RoutingService {
         params.setTo(newTo.getLon(), newTo.getLat());
 
         PlanConnectionRequest planConnectionRequest = new PlanConnectionRequest();
-        String routeJSON = null;
-        Route route = null;
+        String routeJSONString = null;
+        // Route route = null;
         RouteResponse result = new RouteResponse();
         try {
             // TODO: The old implementation had optional username & password here -> check if they could still be needed or even if they could be used? Probably not?
             String planConnectionRequestQuery =  planConnectionRequest.getQuery(params);
             HttpURLConnection conn  = IOHelper.post(PropertyUtil.get("routing.url"), "application/json", planConnectionRequestQuery.getBytes("UTF-8"));
-            routeJSON = IOHelper.readString(conn.getInputStream(), "UTF-8");
-            route = mapper.readValue(routeJSON, Route.class);
+            routeJSONString = IOHelper.readString(conn.getInputStream(), "UTF-8");
 
-            if(!isErrorMessage(routeJSON)){
-                result.setRequestParameters(parser.generateRequestParameters(route, params));
-                result.setPlan(parser.generatePlan(route, params));
+            if(!isErrorMessage(routeJSONString)){
+                JSONObject routeJSON, planConnectionJSON = null;
+                try {
+                    routeJSON = new JSONObject(routeJSONString);
+                    JSONObject routeData = routeJSON.has("data") ? routeJSON.getJSONObject("data") : null;
+                    if (routeData != null) {
+                        planConnectionJSON = routeData.has("planConnection") ? routeData.getJSONObject("planConnection") : null;
+                    }
+                } catch(JSONException e) {
+                    LOGGER.error("Cannot parse response to JSONObject", e);
+                }
+                PlanConnection planConnection = null;
+                if (planConnectionJSON != null) {
+                    planConnection = mapper.readValue(planConnectionJSON.toString(), PlanConnection.class);
+                }
+                // result.setRequestParameters(parser.generateRequestParameters(route, params));
+                // result.setPlan(parser.mapPlanConnectionToPlan(planConnection, params));
                 result.setSuccess(true);
             } else {
                 result.setSuccess(false);
                 try {
-                    JSONObject error = new JSONObject(routeJSON);
+                    JSONObject error = new JSONObject(routeJSONString);
                     if(error.has(PARAM_ERROR_MESSAGE)) {
                         result.setErrorMessage(error.getString(PARAM_ERROR_MESSAGE));
                     } else {
