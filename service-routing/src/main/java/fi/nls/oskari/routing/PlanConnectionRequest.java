@@ -86,6 +86,23 @@ public class PlanConnectionRequest {
         "          start\n" +
         "          end\n" +
         "          legs {\n" +
+        "            mode\n" +
+        "            distance\n" +
+        "            duration\n" +
+        "            interlineWithPreviousLeg\n" +
+        "            realTime\n" +
+        "            rentedBike\n" +
+        "            serviceDate\n" +
+        "            trnansitLeg\n" +
+        "            trip \n{"+
+        "              id\n"+
+        "            }\n"+
+        "            route {\n"+
+        "               id\n"+
+        "               longName\n"+
+        "               shortName\n"+
+        "               type\n"+
+        "            }\n"+
         "            from {\n" +
         "              name\n" +
         "              lon\n" +
@@ -102,8 +119,6 @@ public class PlanConnectionRequest {
         "             length\n" +
         "             points\n" +
         "           }\n" +
-        "           mode\n" +
-        "           distance\n" +
         "           start {\n" +
         "             scheduledTime\n" +
         "             estimated {\n" +
@@ -122,19 +137,19 @@ public class PlanConnectionRequest {
         "             timezone\n" +
         "           }\n" +
         "           steps {\n" +
-        "            area\n" +
-        "            elevationProfile {\n" +
-        "              distance\n" +
-        "              elevation\n" +
-        "            }\n" +
-        "            streetName\n" +
-        "            distance\n" +
-        "            bogusName\n" +
-        "            stayOn\n" +
-        "            lon\n" +
-        "            lat\n" +
-        "            absoluteDirection\n" +
-        "            relativeDirection\n" +
+        "             area\n" +
+        "             elevationProfile {\n" +
+        "               distance\n" +
+        "               elevation\n" +
+        "             }\n" +
+        "             streetName\n" +
+        "             distance\n" +
+        "             bogusName\n" +
+        "             stayOn\n" +
+        "             lon\n" +
+        "             lat\n" +
+        "             absoluteDirection\n" +
+        "             relativeDirection\n" +
         "          }\n" +
         "        }\n" +
         "      }\n" +

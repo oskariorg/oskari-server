@@ -7,12 +7,12 @@ import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.routing.pojo.Edge;
 import fi.nls.oskari.routing.pojo.From;
 import fi.nls.oskari.routing.pojo.Leg;
+import fi.nls.oskari.routing.pojo.LegGeometry;
 import fi.nls.oskari.routing.pojo.Node;
 import fi.nls.oskari.routing.pojo.PlanConnection;
 import fi.nls.oskari.routing.pojo.To;
 import fi.nls.oskari.routing.pojo.v1.IntermediateStop;
 import fi.nls.oskari.routing.pojo.v1.Itinerary;
-import fi.nls.oskari.routing.pojo.v1.LegGeometry;
 import fi.nls.oskari.routing.pojo.v1.Plan;
 import fi.nls.oskari.routing.pojo.v1.RequestParameters;
 import fi.nls.oskari.routing.pojo.v1.Route;
@@ -227,7 +227,8 @@ public class RouteParser {
         final JSONArray itinerariesJSON = new JSONArray();
 
         try {
-            for (Node node:edges) {
+            for (Edge edge : edges) {
+                Node node = Edge.getNode();
                 JSONObject itineraryJSON = new JSONObject();
                 itineraryJSON.put(PARAM_ITINERARIES_DURATION, node.getDuration());
                 itineraryJSON.put(PARAM_ITINERARIES_START_TIME, node.getStart());
@@ -379,23 +380,38 @@ public class RouteParser {
                 legJSON.put(PARAM_LEGS_DISTANCE, leg.getDistance());
 
                 legJSON.put(PARAM_LEGS_DURATION, leg.getDuration());
-                legJSON.put(PARAM_LEGS_END_TIME, leg.getEndTime());
+                legJSON.put(PARAM_LEGS_END_TIME, leg.getEnd().getScheduledTime());
                 legJSON.put(PARAM_LEGS_HEADSIGN, leg.getHeadsign());
-                legJSON.put(PARAM_LEGS_INTERLINE_WIDTH_PREVIOUS_LEG, leg.getInterlineWithPreviousLeg());
+                legJSON.put(PARAM_LEGS_INTERLINE_WIDTH_PREVIOUS_LEG, leg.isInterlineWithPreviousLeg());
                 legJSON.put(PARAM_LEGS_MODE, leg.getMode());
-                legJSON.put(PARAM_LEGS_PATHWAY, leg.getPathway());
-                legJSON.put(PARAM_LEGS_REAL_TIME, leg.getRealTime());
-                legJSON.put(PARAM_LEGS_RENTED_BIKE, leg.getRentedBike());
-                legJSON.put(PARAM_LEGS_ROUTE, leg.getRoute());
-                legJSON.put(PARAM_LEGS_ROUTE_ID, leg.getRouteId());
-                legJSON.put(PARAM_LEGS_ROUTE_LONG_NAME, leg.getRouteLongName());
-                legJSON.put(PARAM_LEGS_ROUTE_SHORT_NAME, leg.getRouteShortName());
-                legJSON.put(PARAM_LEGS_ROUTE_TYPE, leg.getRouteType());
-                legJSON.put(PARAM_LEGS_SERVICE_DATE, leg.getServiceDate());
-                legJSON.put(PARAM_LEGS_START_TIME, leg.getStartTime());
-                legJSON.put(PARAM_LEGS_TRANSIT_LEG, leg.getTransitLeg());
-                legJSON.put(PARAM_LEGS_TRIP_ID, leg.getTripId());
+                //legJSON.put(PARAM_LEGS_PATHWAY, leg.getPathway()); // TODO: what dis???
+                legJSON.put(PARAM_LEGS_REAL_TIME, leg.isRealTime());
+                legJSON.put(PARAM_LEGS_RENTED_BIKE, leg.isRentedBike());
 
+                legJSON.put(PARAM_LEGS_ROUTE, leg.getRoute().getShortName()); // TODO: there is no property "route:String" anymore... this seems to map to route -> short name but is it always the same?
+                legJSON.put(PARAM_LEGS_ROUTE_ID, leg.getRoute().getId());
+                legJSON.put(PARAM_LEGS_ROUTE_LONG_NAME, leg.getRoute().getLongName());
+                legJSON.put(PARAM_LEGS_ROUTE_SHORT_NAME, leg.getRoute().getShortName());
+                legJSON.put(PARAM_LEGS_ROUTE_TYPE, leg.getRoute().getType());
+
+
+                legJSON.put(PARAM_LEGS_SERVICE_DATE, leg.getServiceDate());
+                legJSON.put(PARAM_LEGS_START_TIME, leg.getStart().getScheduledTime());
+                legJSON.put(PARAM_LEGS_TRANSIT_LEG, leg.isTransitLeg());
+                legJSON.put(PARAM_LEGS_TRIP_ID, leg.getTrip().getId());
+
+                //legJSON.put(PARAM_LEGS_FROM, getLegFromJSON(leg));
+                //legJSON.put(PARAM_LEGS_TO, getLegToJSON(leg));
+
+                LegGeometry geometry = leg.getLegGeometry();
+                JSONObject geometryJSON = new JSONObject();
+                geometryJSON.put(PARAM_LEGS_LEG_GEOJSON, parseGeoJson(leg, targetSRS));
+                geometryJSON.put(PARAM_LEGS_LEG_GEOMETRY_LENGTH, geometry.getLength());
+                geometryJSON.put(PARAM_LEGS_LEG_GEOMETRY_POINTS, geometry.getPoints());
+                legJSON.put(PARAM_LEGS_LEG_GEOMETRY, geometryJSON);
+
+
+/*
                 From_ from = leg.getFrom();
                 JSONObject fromJSON = new JSONObject();
                 fromJSON.put(PARAM_LEGS_FROM_ARRIVAL, from.getArrival());
@@ -414,7 +430,8 @@ public class RouteParser {
                 fromJSON.put(PARAM_LEGS_FROM_VERTEX_TYPE, from.getVertexType());
                 fromJSON.put(PARAM_LEGS_FROM_ZONE_ID, from.getZoneId());
                 legJSON.put(PARAM_LEGS_FROM, fromJSON);
-
+*/
+                /*
                 To_ to = leg.getTo();
                 JSONObject toJSON = new JSONObject();
                 toJSON.put(PARAM_LEGS_TO_ARRIVAL, to.getArrival());
@@ -433,14 +450,16 @@ public class RouteParser {
                 toJSON.put(PARAM_LEGS_TO_VERTEX_TYPE, to.getVertexType());
                 toJSON.put(PARAM_LEGS_TO_ZONE_ID, to.getZoneId());
                 legJSON.put(PARAM_LEGS_TO, toJSON);
+
                 LegGeometry geometry = leg.getLegGeometry();
                 JSONObject geometryJSON = new JSONObject();
                 geometryJSON.put(PARAM_LEGS_LEG_GEOJSON, parseGeoJson(leg, targetSRS));
                 geometryJSON.put(PARAM_LEGS_LEG_GEOMETRY_LENGTH, geometry.getLength());
                 geometryJSON.put(PARAM_LEGS_LEG_GEOMETRY_POINTS, geometry.getPoints());
                 legJSON.put(PARAM_LEGS_LEG_GEOMETRY, geometryJSON);
-
-                List<Object> steps = leg.getSteps();
+*/
+                /*
+                List<Step> steps = leg.getSteps();
                 JSONArray stepsJSON = new JSONArray();
 
                 for (int i = 0; i < steps.size(); i++) {
@@ -469,7 +488,7 @@ public class RouteParser {
                 }
 
                 legJSON.put(PARAM_LEGS_STEPS, stepsJSON);
-
+*/
                 // Intermediate stops
                 List<IntermediateStop> stops = leg.getIntermediateStops();
                 JSONArray stopsJSON = new JSONArray();

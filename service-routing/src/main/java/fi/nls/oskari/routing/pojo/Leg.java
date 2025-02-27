@@ -7,14 +7,40 @@ import java.util.List;
 
 public class Leg {
 
-    @JsonProperty("legGeometry")
-    private LegGeometry legGeometry;
-
     @JsonProperty("mode")
     private String mode;
 
     @JsonProperty("distance")
     private Double distance;
+
+    @JsonProperty("duration")
+    private Double duration;
+
+    @JsonProperty("headsign")
+    private Double headsign;
+
+    @JsonProperty("interlineWithPreviousLeg")
+    private boolean interlineWithPreviousLeg;
+
+    @JsonProperty("realTime")
+    private boolean realTime;
+
+    @JsonProperty("rentedBike")
+    private boolean rentedBike;
+
+    @JsonProperty("serviceDate")
+    private String serviceDate;
+
+    @JsonProperty("transitLeg")
+    private boolean transitLeg;
+
+    @JsonProperty("trip")
+    private Trip trip;
+    @JsonProperty("route")
+    private Route route;
+
+    @JsonProperty("legGeometry")
+    private LegGeometry legGeometry;
 
     @JsonProperty("start")
     private ScheduledTime start;
@@ -103,5 +129,77 @@ public class Leg {
 
     public void setAgency(Agency agency) {
         this.agency = agency;
+    }
+
+    public Double getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Double duration) {
+        this.duration = duration;
+    }
+
+    public Double getHeadsign() {
+        return headsign;
+    }
+
+    public void setHeadsign(Double headsign) {
+        this.headsign = headsign;
+    }
+
+    public boolean isInterlineWithPreviousLeg() {
+        return interlineWithPreviousLeg;
+    }
+
+    public void setInterlineWithPreviousLeg(boolean interlineWithPreviousLeg) {
+        this.interlineWithPreviousLeg = interlineWithPreviousLeg;
+    }
+
+    public boolean isRealTime() {
+        return realTime;
+    }
+
+    public void setRealTime(boolean realTime) {
+        this.realTime = realTime;
+    }
+
+    public boolean isRentedBike() {
+        return rentedBike;
+    }
+
+    public void setRentedBike(boolean rentedBike) {
+        this.rentedBike = rentedBike;
+    }
+
+    public Route getRoute() {
+        return route;
+    }
+
+    public void setRoute(Route route) {
+        this.route = route;
+    }
+
+    public String getServiceDate() {
+        return serviceDate;
+    }
+
+    public void setServiceDate(String serviceDate) {
+        this.serviceDate = serviceDate;
+    }
+
+    public boolean isTransitLeg() {
+        return transitLeg;
+    }
+
+    public void setTransitLeg(boolean transitLeg) {
+        this.transitLeg = transitLeg;
+    }
+
+    public Trip getTrip() {
+        return trip;
+    }
+
+    public void setTrip(Trip trip) {
+        this.trip = trip;
     }
 }
