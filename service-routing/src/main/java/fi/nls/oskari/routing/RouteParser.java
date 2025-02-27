@@ -228,23 +228,24 @@ public class RouteParser {
 
         try {
             for (Edge edge : edges) {
-                Node node = Edge.getNode();
+                Node node = edge.getNode();
                 JSONObject itineraryJSON = new JSONObject();
                 itineraryJSON.put(PARAM_ITINERARIES_DURATION, node.getDuration());
                 itineraryJSON.put(PARAM_ITINERARIES_START_TIME, node.getStart());
                 itineraryJSON.put(PARAM_ITINERARIES_END_TIME, node.getEnd());
                 itineraryJSON.put(PARAM_ITINERARIES_WALK_TIME, node.getWalkTime());
-                // we need to calculate this i guess? duration - waitingtime - walkingtime
+                // TODO: wasn't found as a field in the new api. We need to calculate this I guess? duration - waitingtime - walkingtime?
                 float transitTime = node.getDuration() - node.getWaitingTime() - node.getWalkTime();
                 itineraryJSON.put(PARAM_ITINERARIES_TRANSIT_TIME, transitTime);
                 itineraryJSON.put(PARAM_ITINERARIES_WAITING_TIME, node.getWaitingTime());
                 itineraryJSON.put(PARAM_ITINERARIES_WALK_DISTANCE, node.getWalkDistance());
-                itineraryJSON.put(PARAM_ITINERARIES_WALK_LIMIT_EXCEEDED, node.getWalkLimitExceeded());
+//                itineraryJSON.put(PARAM_ITINERARIES_WALK_LIMIT_EXCEEDED, node.getWalkLimitExceeded()); // TODO: not found in the new itinerary-type.
                 itineraryJSON.put(PARAM_ITINERARIES_ELEVATION_LOST, node.getElevationLost());
                 itineraryJSON.put(PARAM_ITINERARIES_ELEVATION_GAINED, node.getElevationGained());
-                itineraryJSON.put(PARAM_ITINERARIES_TRANSFERS, node.getTransfers());
-                itineraryJSON.put(PARAM_ITINERARIES_TOO_SLOPED, node.getTooSloped());
-                itineraryJSON.put(PARAM_ITINERARIES_GEOJSON, getItinerariesGeoJSON(node, params));
+//                itineraryJSON.put(PARAM_ITINERARIES_TRANSFERS, node.getTransfers()); // TODO: not found in the new itinerary-type. Or the old one and it seems this is always zero
+//                itineraryJSON.put(PARAM_ITINERARIES_TOO_SLOPED, node.getTooSloped()); // TODO: not found in the new itinerary-type.
+
+                //itineraryJSON.put(PARAM_ITINERARIES_GEOJSON, getItinerariesGeoJSON(node, params));
                 itineraryJSON.put(PARAM_ITINERARIES_LEGS, getLegsJSON(node, params));
                 itinerariesJSON.put(itineraryJSON);
             }
