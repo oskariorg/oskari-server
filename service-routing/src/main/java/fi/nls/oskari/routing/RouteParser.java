@@ -4,14 +4,29 @@ import fi.nls.oskari.domain.geo.Point;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
-import fi.nls.oskari.routing.pojo.*;
-import fi.nls.oskari.util.ConversionHelper;
+import fi.nls.oskari.routing.pojo.Edge;
+import fi.nls.oskari.routing.pojo.From;
+import fi.nls.oskari.routing.pojo.Leg;
+import fi.nls.oskari.routing.pojo.Node;
+import fi.nls.oskari.routing.pojo.PlanConnection;
+import fi.nls.oskari.routing.pojo.To;
+import fi.nls.oskari.routing.pojo.v1.IntermediateStop;
+import fi.nls.oskari.routing.pojo.v1.Itinerary;
+import fi.nls.oskari.routing.pojo.v1.LegGeometry;
+import fi.nls.oskari.routing.pojo.v1.Plan;
+import fi.nls.oskari.routing.pojo.v1.RequestParameters;
+import fi.nls.oskari.routing.pojo.v1.Route;
+import fi.nls.oskari.routing.pojo.v1.To_;
 import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.*;
+import java.time.OffsetDateTime;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Initial parsing for WMTS capabilities in a way that admin-layerselector can interpret it.
@@ -137,28 +152,29 @@ public class RouteParser {
     private static final String PARAM_LEG_STOP_STOPSEQUENCE = "stopSequence";
     private static final String PARAM_LEG_STOP_VERTEXTYPE = "vertexType";
 
+
     /**
      * Generate route plan
-     * @param route
+     * @param planConnection
      * @param params
      * @return route plan
      */
-    public JSONObject generatePlan(Route route, RouteParams params){
+    public JSONObject mapPlanConnectionToPlan(PlanConnection planConnection, RouteParams params){
         final JSONObject planJSON = new JSONObject();
-        final Plan plan = route.getPlan();
 
         try{
             // date
-            planJSON.put(PARAM_DATE, plan.getDate());
+            Long date = OffsetDateTime.parse(planConnection.getSearchDateTime()).toEpochSecond();
+            planJSON.put(PARAM_DATE, date);
 
             // from
-            planJSON.put(PARAM_FROM, getFromJSON(plan, params));
+            planJSON.put(PARAM_FROM, getFromJSON(planConnection, params));
 
             // to
-            planJSON.put(PARAM_TO, getToJSON(plan, params));
+            planJSON.put(PARAM_TO, getToJSON(planConnection, params));
 
             // itineraries
-            planJSON.put(PARAM_ITINERARIES, getItinerariesJSON(plan, params));
+            planJSON.put(PARAM_ITINERARIES, getItinerariesJSON(planConnection, params));
 
 
         } catch(JSONException ex){
@@ -170,12 +186,15 @@ public class RouteParser {
 
     /**
      * Get from JSON
-     * @param plan
+     * @param planConnection
      * @param params
      * @return from JSON
      */
-    private JSONObject getFromJSON(Plan plan, RouteParams params){
-        final From from = plan.getFrom();
+    private JSONObject getFromJSON(PlanConnection planConnection, RouteParams params){
+        // first node -> first leg -> from
+        Edge firstEdge = planConnection.getEdges().get(0);
+        fi.nls.oskari.routing.pojo.Leg lastLeg = firstEdge.getNode().getLegs().get(0);
+        final From from = lastLeg.getFrom();
         final JSONObject fromJSON = new JSONObject();
         final String sourceSRS = PropertyUtil.get("routing.srs");
         final String targetSRS = params.getSrs();
@@ -196,14 +215,91 @@ public class RouteParser {
         return fromJSON;
     }
 
+
+    /**
+     * Get itineraries JSON
+     * @param planConnection
+     * @param params
+     * @return itineraries JSON
+     */
+    private JSONArray getItinerariesJSON(PlanConnection planConnection, RouteParams params){
+        final List<Edge> edges = planConnection.getEdges();
+        final JSONArray itinerariesJSON = new JSONArray();
+
+        try {
+            for (Node node:edges) {
+                JSONObject itineraryJSON = new JSONObject();
+                itineraryJSON.put(PARAM_ITINERARIES_DURATION, node.getDuration());
+                itineraryJSON.put(PARAM_ITINERARIES_START_TIME, node.getStart());
+                itineraryJSON.put(PARAM_ITINERARIES_END_TIME, node.getEnd());
+                itineraryJSON.put(PARAM_ITINERARIES_WALK_TIME, node.getWalkTime());
+                // we need to calculate this i guess? duration - waitingtime - walkingtime
+                float transitTime = node.getDuration() - node.getWaitingTime() - node.getWalkTime();
+                itineraryJSON.put(PARAM_ITINERARIES_TRANSIT_TIME, transitTime);
+                itineraryJSON.put(PARAM_ITINERARIES_WAITING_TIME, node.getWaitingTime());
+                itineraryJSON.put(PARAM_ITINERARIES_WALK_DISTANCE, node.getWalkDistance());
+                itineraryJSON.put(PARAM_ITINERARIES_WALK_LIMIT_EXCEEDED, node.getWalkLimitExceeded());
+                itineraryJSON.put(PARAM_ITINERARIES_ELEVATION_LOST, node.getElevationLost());
+                itineraryJSON.put(PARAM_ITINERARIES_ELEVATION_GAINED, node.getElevationGained());
+                itineraryJSON.put(PARAM_ITINERARIES_TRANSFERS, node.getTransfers());
+                itineraryJSON.put(PARAM_ITINERARIES_TOO_SLOPED, node.getTooSloped());
+                itineraryJSON.put(PARAM_ITINERARIES_GEOJSON, getItinerariesGeoJSON(node, params));
+                itineraryJSON.put(PARAM_ITINERARIES_LEGS, getLegsJSON(node, params));
+                itinerariesJSON.put(itineraryJSON);
+            }
+        } catch (JSONException ex){
+            LOG.error("Cannot get route itineraries JSON", ex);
+        }
+        return itinerariesJSON;
+    }
+
+
+
+
+
+    /**
+     * Generate route plan
+     * @param route
+     * @param params
+     * @return route plan
+     */
+    public JSONObject generatePlan(Route route, RouteParams params){
+        final JSONObject planJSON = new JSONObject();
+        final Plan plan = route.getPlan();
+
+        try{
+            // date
+            planJSON.put(PARAM_DATE, plan.getDate());
+
+            // from
+//            planJSON.put(PARAM_FROM, getFromJSON(plan, params));
+
+            // to
+//            planJSON.put(PARAM_TO, getToJSON(plan, params));
+
+            // itineraries
+//            planJSON.put(PARAM_ITINERARIES, getItinerariesJSON(plan, params));
+
+
+        } catch(JSONException ex){
+            LOG.error("Cannot generate routing plan", ex);
+        }
+
+        return planJSON;
+    }
+
+
     /**
      * Get to JSON
-     * @param plan
+     * @param planConnection
      * @param params
      * @return to JSON
      */
-    private JSONObject getToJSON(Plan plan, RouteParams params){
-        final To to = plan.getTo();
+    private JSONObject getToJSON(PlanConnection planConnection, RouteParams params){
+        Edge lastEdge = planConnection.getEdges().get(planConnection.getEdges().size() - 1);
+        fi.nls.oskari.routing.pojo.Leg lastLeg = lastEdge.getNode().getLegs().get(lastEdge.getNode().getLegs().size() - 1);
+        final To to = lastLeg.getTo();
+
         final JSONObject toJSON = new JSONObject();
         final String sourceSRS = PropertyUtil.get("routing.srs");
         final String targetSRS = params.getSrs();
@@ -250,7 +346,7 @@ public class RouteParser {
                 itineraryJSON.put(PARAM_ITINERARIES_TRANSFERS, itinerary.getTransfers());
                 itineraryJSON.put(PARAM_ITINERARIES_TOO_SLOPED, itinerary.getTooSloped());
                 itineraryJSON.put(PARAM_ITINERARIES_GEOJSON, getItinerariesGeoJSON(itinerary, params));
-                itineraryJSON.put(PARAM_ITINERARIES_LEGS, getLegsJSON(itinerary, params));
+                // itineraryJSON.put(PARAM_ITINERARIES_LEGS, getLegsJSON(itinerary, params));
                 itinerariesJSON.put(itineraryJSON);
             }
         } catch (JSONException ex){
@@ -258,6 +354,164 @@ public class RouteParser {
         }
         return itinerariesJSON;
     }
+
+    /**
+     * Get legs JSON
+     * @param itinerary
+     * @param params
+     * @return legs JSON
+     */
+    public JSONArray getLegsJSON(Node itinerary, RouteParams params) {
+        final List<Leg> legs = itinerary.getLegs();
+        final JSONArray legsJSON = new JSONArray();
+        final String sourceSRS = PropertyUtil.get("routing.srs");
+        final String targetSRS = params.getSrs();
+        try {
+            for (Leg leg:legs) {
+                JSONObject legJSON = new JSONObject();
+
+                legJSON.put(PARAM_LEGS_AGENCY_ID, leg.getAgency().getId());
+                legJSON.put(PARAM_LEGS_AGENCY_NAME, leg.getAgency().getName());
+                legJSON.put(PARAM_LEGS_AGENCY_TIME_ZONE_OFFSET, leg.getAgency().getTimezone()); // TODO: old implementation holds an offset in ms
+                legJSON.put(PARAM_LEGS_AGENCY_URL, leg.getAgency().getUrl());
+                legJSON.put(PARAM_LEGS_ARRIVAL_DELAY, leg.getEnd().getEstimated().getDelay());
+                legJSON.put(PARAM_LEGS_DEPARTURE_DELAY, leg.getStart().getEstimated().getDelay());
+                legJSON.put(PARAM_LEGS_DISTANCE, leg.getDistance());
+
+                legJSON.put(PARAM_LEGS_DURATION, leg.getDuration());
+                legJSON.put(PARAM_LEGS_END_TIME, leg.getEndTime());
+                legJSON.put(PARAM_LEGS_HEADSIGN, leg.getHeadsign());
+                legJSON.put(PARAM_LEGS_INTERLINE_WIDTH_PREVIOUS_LEG, leg.getInterlineWithPreviousLeg());
+                legJSON.put(PARAM_LEGS_MODE, leg.getMode());
+                legJSON.put(PARAM_LEGS_PATHWAY, leg.getPathway());
+                legJSON.put(PARAM_LEGS_REAL_TIME, leg.getRealTime());
+                legJSON.put(PARAM_LEGS_RENTED_BIKE, leg.getRentedBike());
+                legJSON.put(PARAM_LEGS_ROUTE, leg.getRoute());
+                legJSON.put(PARAM_LEGS_ROUTE_ID, leg.getRouteId());
+                legJSON.put(PARAM_LEGS_ROUTE_LONG_NAME, leg.getRouteLongName());
+                legJSON.put(PARAM_LEGS_ROUTE_SHORT_NAME, leg.getRouteShortName());
+                legJSON.put(PARAM_LEGS_ROUTE_TYPE, leg.getRouteType());
+                legJSON.put(PARAM_LEGS_SERVICE_DATE, leg.getServiceDate());
+                legJSON.put(PARAM_LEGS_START_TIME, leg.getStartTime());
+                legJSON.put(PARAM_LEGS_TRANSIT_LEG, leg.getTransitLeg());
+                legJSON.put(PARAM_LEGS_TRIP_ID, leg.getTripId());
+
+                From_ from = leg.getFrom();
+                JSONObject fromJSON = new JSONObject();
+                fromJSON.put(PARAM_LEGS_FROM_ARRIVAL, from.getArrival());
+                fromJSON.put(PARAM_LEGS_FROM_DEPARTURE, from.getDeparture());
+                Point newFrom;
+
+                newFrom = ProjectionHelper.transformPoint(from.getLon(), from.getLat(), sourceSRS, targetSRS);
+                fromJSON.put(PARAM_LEGS_FROM_LON, newFrom.getLon());
+                fromJSON.put(PARAM_LEGS_FROM_LAT, newFrom.getLat());
+
+                fromJSON.put(PARAM_LEGS_FROM_NAME, from.getName());
+                fromJSON.put(PARAM_LEGS_FROM_STOP_CODE, from.getStopCode());
+                fromJSON.put(PARAM_LEGS_FROM_STOP_ID, from.getStopId());
+                fromJSON.put(PARAM_LEGS_FROM_STOP_INDEX, from.getStopIndex());
+                fromJSON.put(PARAM_LEGS_FROM_STOP_SEQUENCE, from.getStopSequence());
+                fromJSON.put(PARAM_LEGS_FROM_VERTEX_TYPE, from.getVertexType());
+                fromJSON.put(PARAM_LEGS_FROM_ZONE_ID, from.getZoneId());
+                legJSON.put(PARAM_LEGS_FROM, fromJSON);
+
+                To_ to = leg.getTo();
+                JSONObject toJSON = new JSONObject();
+                toJSON.put(PARAM_LEGS_TO_ARRIVAL, to.getArrival());
+                Point newTo;
+
+                newTo = ProjectionHelper.transformPoint(to.getLon(), to.getLat(), sourceSRS, targetSRS);
+                toJSON.put(PARAM_LEGS_TO_LON, newTo.getLon());
+                toJSON.put(PARAM_LEGS_TO_LAT, newTo.getLat());
+
+                toJSON.put(PARAM_LEGS_TO_NAME, to.getName());
+                toJSON.put(PARAM_LEGS_TO_ORIG, to.getOrig());
+                toJSON.put(PARAM_LEGS_TO_STOP_CODE, to.getStopCode());
+                toJSON.put(PARAM_LEGS_TO_STOP_ID, to.getStopId());
+                toJSON.put(PARAM_LEGS_TO_STOP_INDEX, to.getStopIndex());
+                toJSON.put(PARAM_LEGS_TO_STOP_SEQUENCE, to.getStopSequence());
+                toJSON.put(PARAM_LEGS_TO_VERTEX_TYPE, to.getVertexType());
+                toJSON.put(PARAM_LEGS_TO_ZONE_ID, to.getZoneId());
+                legJSON.put(PARAM_LEGS_TO, toJSON);
+                LegGeometry geometry = leg.getLegGeometry();
+                JSONObject geometryJSON = new JSONObject();
+                geometryJSON.put(PARAM_LEGS_LEG_GEOJSON, parseGeoJson(leg, targetSRS));
+                geometryJSON.put(PARAM_LEGS_LEG_GEOMETRY_LENGTH, geometry.getLength());
+                geometryJSON.put(PARAM_LEGS_LEG_GEOMETRY_POINTS, geometry.getPoints());
+                legJSON.put(PARAM_LEGS_LEG_GEOMETRY, geometryJSON);
+
+                List<Object> steps = leg.getSteps();
+                JSONArray stepsJSON = new JSONArray();
+
+                for (int i = 0; i < steps.size(); i++) {
+                    LinkedHashMap lhm = (LinkedHashMap)steps.get(i);
+                    Iterator iterator = lhm.entrySet().iterator();
+                    JSONObject stepJSON = new JSONObject();
+                    while(iterator.hasNext()){
+                        Map.Entry me = (Map.Entry)iterator.next();
+                        stepJSON.put(me.getKey().toString(), me.getValue().toString());
+                    }
+
+                    // convert coordinates
+                    if(stepJSON.has(PARAM_LEGS_STEPS_LON) && stepJSON.has(PARAM_LEGS_STEPS_LAT)){
+                        String stepLon = stepJSON.getString(PARAM_LEGS_STEPS_LON);
+                        String stepLat = stepJSON.getString(PARAM_LEGS_STEPS_LAT);
+
+                        Point stepPoint;
+
+                            stepPoint = ProjectionHelper.transformPoint(stepLon, stepLat, sourceSRS, targetSRS);
+                            stepJSON.put(PARAM_LEGS_STEPS_LON, stepPoint.getLon());
+                            stepJSON.put(PARAM_LEGS_STEPS_LAT, stepPoint.getLat());
+
+                    }
+
+                    stepsJSON.put(stepJSON);
+                }
+
+                legJSON.put(PARAM_LEGS_STEPS, stepsJSON);
+
+                // Intermediate stops
+                List<IntermediateStop> stops = leg.getIntermediateStops();
+                JSONArray stopsJSON = new JSONArray();
+                for (IntermediateStop intermediateStop : stops) {
+                    JSONObject stopJSON = new JSONObject();
+                    // convert coordinates
+                    if (intermediateStop.getLat() != null && intermediateStop.getLon() != null) {
+                        Point stopPoint;
+                        stopPoint = ProjectionHelper.transformPoint(intermediateStop.getLon(), intermediateStop.getLat(), sourceSRS, targetSRS);
+                        stopJSON.put(PARAM_LEG_STOP_LON, stopPoint.getLon());
+                        stopJSON.put(PARAM_LEG_STOP_LAT, stopPoint.getLat());
+                    }
+
+                    stopJSON.put(PARAM_LEG_STOP_NAME, intermediateStop.getName());
+                    stopJSON.put(PARAM_LEG_STOP_STOPID, intermediateStop.getStopId());
+                    stopJSON.put(PARAM_LEG_STOP_STOPCODE, intermediateStop.getStopCode());
+                    stopJSON.put(PARAM_LEG_STOP_ARRIVAL, intermediateStop.getArrival());
+                    stopJSON.put(PARAM_LEG_STOP_DEPARTURE, intermediateStop.getDeparture());
+                    stopJSON.put(PARAM_LEG_STOP_ZONEID, intermediateStop.getZoneId());
+                    stopJSON.put(PARAM_LEG_STOP_STOPINDEX, intermediateStop.getStopIndex());
+                    stopJSON.put(PARAM_LEG_STOP_STOPSEQUENCE, intermediateStop.getStopSequence());
+                    stopJSON.put(PARAM_LEG_STOP_VERTEXTYPE, intermediateStop.getVertexType());
+
+                    stopsJSON.put(stopJSON);
+                }
+
+                legJSON.put(PARAM_LEG_STOPS, stopsJSON);
+
+                legsJSON.put(legJSON);
+            }
+        } catch (JSONException ex){
+            LOG.error("Cannot get itineraries legs JSON", ex);
+        }
+
+        return legsJSON;
+    }
+
+
+
+
+
+
 
     /**
      * Get itineraries GeoJSON

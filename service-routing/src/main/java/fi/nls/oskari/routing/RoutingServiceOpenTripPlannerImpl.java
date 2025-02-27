@@ -76,8 +76,9 @@ public class RoutingServiceOpenTripPlannerImpl implements RoutingService {
                 if (planConnectionJSON != null) {
                     planConnection = mapper.readValue(planConnectionJSON.toString(), PlanConnection.class);
                 }
+                // TODO: why do we need the request parameters in result...?
                 // result.setRequestParameters(parser.generateRequestParameters(route, params));
-                // result.setPlan(parser.mapPlanConnectionToPlan(planConnection, params));
+                result.setPlan(parser.mapPlanConnectionToPlan(planConnection, params));
                 result.setSuccess(true);
             } else {
                 result.setSuccess(false);

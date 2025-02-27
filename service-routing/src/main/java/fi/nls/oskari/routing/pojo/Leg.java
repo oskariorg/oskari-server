@@ -1,7 +1,6 @@
 package fi.nls.oskari.routing.pojo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import fi.nls.oskari.routing.pojo.v1.LegGeometry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +20,15 @@ public class Leg {
     private ScheduledTime start;
     @JsonProperty("end")
     private ScheduledTime end;
+
+    @JsonProperty("from")
+    private From from;
+
+    @JsonProperty("to")
+    private To to;
+
+    @JsonProperty("agency")
+    private Agency agency;
 
     @JsonProperty("steps")
     private List<Step> steps = new ArrayList();
@@ -71,5 +79,29 @@ public class Leg {
 
     public void setSteps(List<Step> steps) {
         this.steps = steps;
+    }
+
+    public From getFrom() {
+        return from;
+    }
+
+    public void setFrom(From from) {
+        this.from = from;
+    }
+
+    public To getTo() {
+        return to;
+    }
+
+    public void setTo(To to) {
+        this.to = to;
+    }
+
+    public Agency getAgency() {
+        return agency;
+    }
+
+    public void setAgency(Agency agency) {
+        this.agency = agency;
     }
 }

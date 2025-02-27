@@ -86,38 +86,61 @@ public class PlanConnectionRequest {
         "          start\n" +
         "          end\n" +
         "          legs {\n" +
-        "            legGeometry {\n" +
-        "              length\n" +
-        "              points\n" +
-        "            }\n" +
-        "            mode\n" +
-        "            distance\n" +
-        "            start {\n" +
-        "              scheduledTime\n" +
-        "            }\n" +
-        "            end {\n" +
-        "              scheduledTime\n" +
-        "            }\n" +
-        "            steps {\n" +
-        "              area\n" +
-        "              elevationProfile {\n" +
-        "                distance\n" +
-        "                elevation\n" +
-        "              }\n" +
-        "              streetName\n" +
-        "              distance\n" +
-        "              bogusName\n" +
-        "              stayOn\n" +
+        "            from {\n" +
+        "              name\n" +
         "              lon\n" +
         "              lat\n" +
-        "              absoluteDirection\n" +
-        "              relativeDirection\n" +
+        "              vertexType\n" +
         "            }\n" +
+        "           to {\n" +
+        "             name\n" +
+        "             lon\n" +
+        "             lat\n" +
+        "             vertexType\n" +
+        "           }\n" +
+        "           legGeometry {\n" +
+        "             length\n" +
+        "             points\n" +
+        "           }\n" +
+        "           mode\n" +
+        "           distance\n" +
+        "           start {\n" +
+        "             scheduledTime\n" +
+        "             estimated {\n" +
+        "               delay\n" +
+        "             }\n" +
+        "           }\n" +
+        "           end {\n" +
+        "             scheduledTime\n" +
+        "             estimated {\n" +
+        "               delay\n" +
+        "             }\n" +
+        "           }\n" +
+        "           agency {\n" +
+        "             id\n" +
+        "             name\n" +
+        "             timezone\n" +
+        "           }\n" +
+        "           steps {\n" +
+        "            area\n" +
+        "            elevationProfile {\n" +
+        "              distance\n" +
+        "              elevation\n" +
+        "            }\n" +
+        "            streetName\n" +
+        "            distance\n" +
+        "            bogusName\n" +
+        "            stayOn\n" +
+        "            lon\n" +
+        "            lat\n" +
+        "            absoluteDirection\n" +
+        "            relativeDirection\n" +
         "          }\n" +
-        "      \t}\n" +
-        "    \t}\n" +
-        "  \t}\n" +
-        "  }\n";
+        "        }\n" +
+        "      }\n" +
+        "    }\n" +
+        "  }\n" +
+        "}\n";
 
 
         try {
