@@ -55,11 +55,10 @@ public class PlanConnectionRequest {
                 "}";
         }
         query +=
-        "   origin:\n" +
-        "      {\n" +
-        "        location: {\n" +
+        "   origin: {\n" +
+        "      location: {\n" +
         "          coordinate: {\n" +
-        "            longitude: " + params.getFrom().getX()+",\n" +
+        "          longitude: " + params.getFrom().getX()+",\n" +
         "            latitude: " + params.getFrom().getY()+"\n" +
         "          }\n" +
         "        }\n" +
@@ -76,24 +75,9 @@ public class PlanConnectionRequest {
         "      searchDateTime\n" +
         "      edges {\n" +
         "        node {\n" +
-        "          elevationLost\n" +
-        "          elevationGained\n" +
-        "          waitingTime\n" +
-        "          walkTime\n" +
-        "          walkDistance\n" +
-        "          duration\n" +
-        "          numberOfTransfers\n" +
-        "          start\n" +
-        "          end\n" +
+                 getNodeStaticResultFields() +
         "          legs {\n" +
-        "            mode\n" +
-        "            distance\n" +
-        "            duration\n" +
-        "            interlineWithPreviousLeg\n" +
-        "            realTime\n" +
-        "            rentedBike\n" +
-        "            serviceDate\n" +
-        "            trnansitLeg\n" +
+                    getLegStaticResultFields() +
         "            trip \n{"+
         "              id\n"+
         "            }\n"+
@@ -104,32 +88,21 @@ public class PlanConnectionRequest {
         "               type\n"+
         "            }\n"+
         "            from {\n" +
-        "              name\n" +
-        "              lon\n" +
-        "              lat\n" +
-        "              vertexType\n" +
-        "            }\n" +
+                        getPlaceStaticResultFields() +
+        "           }\n" +
         "           to {\n" +
-        "             name\n" +
-        "             lon\n" +
-        "             lat\n" +
-        "             vertexType\n" +
+                        getPlaceStaticResultFields() +
         "           }\n" +
         "           legGeometry {\n" +
         "             length\n" +
         "             points\n" +
         "           }\n" +
         "           start {\n" +
-        "             scheduledTime\n" +
-        "             estimated {\n" +
-        "               delay\n" +
+                        getScheduledTimeStaticResultFields() +
         "             }\n" +
         "           }\n" +
         "           end {\n" +
-        "             scheduledTime\n" +
-        "             estimated {\n" +
-        "               delay\n" +
-        "             }\n" +
+                        getScheduledTimeStaticResultFields() +
         "           }\n" +
         "           agency {\n" +
         "             id\n" +
@@ -157,7 +130,6 @@ public class PlanConnectionRequest {
         "  }\n" +
         "}\n";
 
-
         try {
             JSONObject json = new JSONObject();
             json.put("query", query);
@@ -166,6 +138,39 @@ public class PlanConnectionRequest {
         } catch (JSONException e) {
             return null;
         }
+    }
+
+    private String getLegStaticResultFields() {
+        return
+        "mode\n" +
+        "distance\n" +
+        "duration\n" +
+        "interlineWithPreviousLeg\n" +
+        "realTime\n" +
+        "rentedBike\n" +
+        "serviceDate\n" +
+        "transitLeg\n";
+
+    }
+
+    private String getNodeStaticResultFields() {
+        return "elevationLost\n" +
+        "elevationGained\n" +
+        "waitingTime\n" +
+        "walkTime\n" +
+        "walkDistance\n" +
+        "duration\n" +
+        "numberOfTransfers\n" +
+        "start\n" +
+        "end\n";
+    }
+
+    private String getScheduledTimeStaticResultFields() {
+        return "" +
+        "scheduledTime\n" +
+        "estimated {\n" +
+        "   delay\n" +
+        "}\n";
     }
 
     private String getTransitModes(String paramModes) {
@@ -226,5 +231,32 @@ public class PlanConnectionRequest {
         }
         dateTimeString += "}";
         return dateTimeString;
+    }
+
+    private String getPlaceStaticResultFields() {
+        return
+        "name\n" +
+        "lon\n" +
+        "lat\n" +
+        "vertexType\n" +
+        "arrival {\n" +
+        "   estimated {\n" +
+        "       delay\n" +
+        "       time\n" +
+        "   }\n" +
+        "   scheduledTime\n" +
+        "}\n" +
+        "departure {\n" +
+        "    estimated {\n" +
+        "        delay\n" +
+        "        time\n" +
+        "    }\n" +
+        "   scheduledTime\n" +
+        "}\n" +
+        "stop {\n" +
+        "    id\n" +
+        "    code\n" +
+        "    zoneId\n" +
+        "}\n";
     }
 }

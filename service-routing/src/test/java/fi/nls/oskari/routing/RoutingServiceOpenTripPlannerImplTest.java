@@ -49,7 +49,7 @@ public class RoutingServiceOpenTripPlannerImplTest {
 
         if(!ROUTING_SERVICE.isErrorMessage(routeJson)){
             response.setRequestParameters(parser.generateRequestParameters(route, routeparams));
-            response.setPlan(parser.generatePlan(route, routeparams));
+//            response.setPlan(parser.generatePlan(route, routeparams));
             response.setSuccess(true);
         } else {
             response.setSuccess(false);
@@ -87,7 +87,7 @@ public class RoutingServiceOpenTripPlannerImplTest {
 
         if(!ROUTING_SERVICE.isErrorMessage(routeJson)){
             response.setRequestParameters(parser.generateRequestParameters(route, routeparams));
-            response.setPlan(parser.generatePlan(route, routeparams));
+//            response.setPlan(parser.generatePlan(route, routeparams));
             response.setSuccess(true);
         } else {
             response.setSuccess(false);

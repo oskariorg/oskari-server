@@ -18,6 +18,12 @@ public class To {
     @JsonProperty("vertexType")
     private String vertexType;
 
+    @JsonProperty("arrival")
+    private ScheduledTime arrival;
+
+    @JsonProperty("stop")
+    private Stop stop;
+
     /**
      * 
      * @return
@@ -118,4 +124,19 @@ public class To {
         this.vertexType = vertexType;
     }
 
+    public ScheduledTime getArrival() {
+        return arrival;
+    }
+
+    public void setArrival(ScheduledTime arrival) {
+        this.arrival = arrival;
+    }
+
+    public Stop getStop() {
+        return stop;
+    }
+
+    public void setStop(Stop stop) {
+        this.stop = stop;
+    }
 }
