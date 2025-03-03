@@ -12,7 +12,18 @@ Some application specific files might have imports from javax.servlet. You can s
 git grep -l javax.servlet. | xargs sed -i "s/import javax.servlet./import jakarta.servlet./g"
 ```
 
-TODO: add some guidance for Spring changes?
+### Spring configuration
+- Dependency updates
+  - javax.servlet:javax.servlet-api -> jakarta.servlet:jakarta.servlet-api
+  - JSP functionality requires jakarta.servlet.jsp.jst and  jakarta.servlet.jsp.jstl-api
+    - https://github.com/oskariorg/sample-server-extension/blob/9f0aeafbb037b7f61446b1049dad2aa3248bd21c/webapp-map/pom.xml#L103-L110
+
+Spring 6 security configuration have to changed to bean based classes from extending WebSecurityConfigurerAdapter etc.  
+
+Security configurations should have @Profile() and @Order() annotation to work properly. 
+
+User class doesn't handle attribute serialization anymore so it must be done on calling end: 
+- user.getAttributesJSON() -> new JSONObject(user.getAttributes())
 
 ### User management
 
@@ -31,13 +42,16 @@ git grep -l fi.nls.oskari.spring. | xargs sed -i "s/import fi.nls.oskari.spring.
 ```
 
 ### Junit migrated from 4 to 5
-
 The Junit present on the BOM for oskari-server was updated from JUnit 4 to 5 and JUnit changed the groupId and artifactId in their update. This means that if your app does NOT define a specific version for the JUnit dependency and depend on oskari-server doing it, your app will not compile after updating due to missing dependency version. To fix this you have some options and here's what we've used:
 
 - for the sample-server-extension there were no tests so junit was removed from dependencies: https://github.com/oskariorg/sample-server-extension/pull/63
 - for apps that do have tests and don't want to migrate them, you can define the junit 4 dependency version for the app like this: https://github.com/nls-oskari/kartta.paikkatietoikkuna.fi/pull/235
 - for apps that want to migrate to JUnit 5, you can do something like this: https://github.com/nlsfi/oskari-server-extras/pull/31
-
+- Changed annotations
+  - @Before -> @BeforeEach
+  - @After -> @AfterEach
+  - @Ignore -> @Disabled()
+  - Tests may require @TestInstance(TestInstance.Lifecycle.PER_CLASS) annotation after update
 ### Generic proxy removed
 
 A proxy implementation was previously used to pass requests from
