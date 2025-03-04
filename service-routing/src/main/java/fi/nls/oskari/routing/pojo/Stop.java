@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Stop {
-    @JsonProperty("id")
-    private long id;
+    @JsonProperty("gtfsId")
+    private String gtfsId;
 
     @JsonProperty("code")
     private long code;
@@ -14,12 +14,12 @@ public class Stop {
     @JsonProperty("zoneId")
     private long zoneId;
 
-    public long getId() {
-        return id;
+    public String getGtfsId() {
+        return gtfsId;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setGtfsId(String gtfsId) {
+        this.gtfsId = gtfsId;
     }
 
     public long getCode() {

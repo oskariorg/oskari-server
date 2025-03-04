@@ -21,6 +21,7 @@ public class RoutingServiceOpenTripPlannerImpl implements RoutingService {
     private static final Logger LOGGER = LogFactory.getLogger(RoutingServiceOpenTripPlannerImpl.class);
 
     public static final String PARAM_ERROR = "error";
+    public static final String PARAM_ERRORS = "errors";
     public static final String PARAM_ERROR_MESSAGE = "message";
     public static final String PARAM_FROM_PLACE = "fromPlace";
     public static final String PARAM_TO_PLACE = "toPlace";
@@ -108,7 +109,7 @@ public class RoutingServiceOpenTripPlannerImpl implements RoutingService {
     public boolean isErrorMessage(String response){
         try {
             JSONObject job = new JSONObject(response);
-            if(job.has(PARAM_ERROR)) {
+            if(job.has(PARAM_ERROR) || job.has(PARAM_ERRORS)) {
                 return true;
             }
         } catch(JSONException ex){

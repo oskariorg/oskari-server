@@ -24,9 +24,9 @@ public class Step {
     private boolean stayOn;
 
     @JsonProperty("lon")
-    private float lon;
+    private Float lon;
     @JsonProperty("lat")
-    private float lat;
+    private Float lat;
     @JsonProperty("absoluteDirection")
     private String absoluteDirection;
     @JsonProperty("relativeDirection")
@@ -80,19 +80,19 @@ public class Step {
         this.stayOn = stayOn;
     }
 
-    public float getLon() {
+    public Float getLon() {
         return lon;
     }
 
-    public void setLon(float lon) {
+    public void setLon(Float lon) {
         this.lon = lon;
     }
 
-    public float getLat() {
+    public Float getLat() {
         return lat;
     }
 
-    public void setLat(float lat) {
+    public void setLat(Float lat) {
         this.lat = lat;
     }
 

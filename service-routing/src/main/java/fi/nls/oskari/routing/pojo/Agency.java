@@ -3,26 +3,29 @@ package fi.nls.oskari.routing.pojo;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Agency {
     @JsonProperty("name")
     private String name;
 
-    @JsonProperty("id")
-    private long id;
+    @JsonProperty("gtfsId")
+    private String gtfsId;
 
     @JsonProperty("timezone")
-    private long timezone;
+    private String timezone;
 
     @JsonProperty("url")
-    private long url;
+    private String url;
 
-    public long getId() {
-        return id;
+    public String getGtfsId() {
+        return gtfsId;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setGtfsId(String gtfsId) {
+        this.gtfsId = gtfsId;
     }
 
     public String getName() {
@@ -33,19 +36,24 @@ public class Agency {
         this.name = name;
     }
 
-    public long getTimezone() {
+    public String getTimezone() {
         return timezone;
     }
 
-    public void setTimezone(long timezone) {
+    public void setTimezone(String timezone) {
         this.timezone = timezone;
     }
 
-    public long getUrl() {
+    public Long getTimeZoneOffset() {
+        Long timezoneOffsetMillis = (long) (OffsetDateTime.now(ZoneId.of(this.timezone)).getOffset().getTotalSeconds() * 1000);
+        return timezoneOffsetMillis;
+    }
+
+    public String getUrl() {
         return url;
     }
 
-    public void setUrl(long url) {
+    public void setUrl(String url) {
         this.url = url;
     }
 }

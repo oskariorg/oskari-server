@@ -48,16 +48,19 @@ public class Leg {
     private ScheduledTime end;
 
     @JsonProperty("from")
-    private From from;
+    private Place from;
 
     @JsonProperty("to")
-    private To to;
+    private Place to;
 
     @JsonProperty("agency")
     private Agency agency;
 
     @JsonProperty("steps")
     private List<Step> steps = new ArrayList();
+
+    @JsonProperty("intermediatePlaces")
+    private List<Place> intermediatePlaces;
 
     public LegGeometry getLegGeometry() {
         return legGeometry;
@@ -107,19 +110,19 @@ public class Leg {
         this.steps = steps;
     }
 
-    public From getFrom() {
+    public Place getFrom() {
         return from;
     }
 
-    public void setFrom(From from) {
+    public void setFrom(Place from) {
         this.from = from;
     }
 
-    public To getTo() {
+    public Place getTo() {
         return to;
     }
 
-    public void setTo(To to) {
+    public void setTo(Place to) {
         this.to = to;
     }
 
@@ -201,5 +204,13 @@ public class Leg {
 
     public void setTrip(Trip trip) {
         this.trip = trip;
+    }
+
+    public List<Place> getIntermediatePlaces() {
+        return intermediatePlaces;
+    }
+
+    public void setIntermediatePlaces(List<Place> intermediatePlaces) {
+        this.intermediatePlaces = intermediatePlaces;
     }
 }

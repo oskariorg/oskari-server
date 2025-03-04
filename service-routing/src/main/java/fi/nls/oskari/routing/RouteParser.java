@@ -4,15 +4,19 @@ import fi.nls.oskari.domain.geo.Point;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
+import fi.nls.oskari.routing.pojo.Agency;
 import fi.nls.oskari.routing.pojo.Edge;
-import fi.nls.oskari.routing.pojo.From;
+import fi.nls.oskari.routing.pojo.Estimated;
 import fi.nls.oskari.routing.pojo.Leg;
 import fi.nls.oskari.routing.pojo.LegGeometry;
 import fi.nls.oskari.routing.pojo.Node;
+import fi.nls.oskari.routing.pojo.Place;
 import fi.nls.oskari.routing.pojo.PlanConnection;
-import fi.nls.oskari.routing.pojo.To;
-import fi.nls.oskari.routing.pojo.v1.RequestParameters;
-import fi.nls.oskari.routing.pojo.v1.Route;
+import fi.nls.oskari.routing.pojo.Route;
+import fi.nls.oskari.routing.pojo.ScheduledTime;
+import fi.nls.oskari.routing.pojo.Step;
+import fi.nls.oskari.routing.pojo.Stop;
+import fi.nls.oskari.routing.pojo.Trip;
 import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,6 +24,7 @@ import org.json.JSONObject;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Initial parsing for WMTS capabilities in a way that admin-layerselector can interpret it.
@@ -144,6 +149,15 @@ public class RouteParser {
     private static final String PARAM_LEG_STOP_STOPINDEX = "stopIndex";
     private static final String PARAM_LEG_STOP_STOPSEQUENCE = "stopSequence";
     private static final String PARAM_LEG_STOP_VERTEXTYPE = "vertexType";
+    private static final String PARAM_LEG_STEP_AREA = "area";
+    private static final String PARAM_LEG_STEP_ELEVATION = "elevation";
+    private static final String PARAM_LEG_STEP_STREET_NAME = "streetName";
+    private static final String PARAM_LEG_STEP_DISTANCE = "distance";
+
+    private static final String PARAM_LEG_STEP_BOGUS_NAME = "bogusName";
+    private static final String PARAM_LEG_STEP_STAY_ON = "stayOn";
+    private static final String PARAM_LEG_STEP_ABSOLUTE_DIRECTION = "absoluteDirection";
+    private static final String PARAM_LEG_STEP_RELATIVE_DIRECTION = "relativeDirection";
 
 
     /**
@@ -157,7 +171,7 @@ public class RouteParser {
 
         try{
             // date
-            Long date = OffsetDateTime.parse(planConnection.getSearchDateTime()).toEpochSecond();
+            Long date = getEpochFromString(planConnection.getSearchDateTime());
             planJSON.put(PARAM_DATE, date);
 
             // from
@@ -187,7 +201,7 @@ public class RouteParser {
         // first node -> first leg -> from
         Edge firstEdge = planConnection.getEdges().get(0);
         fi.nls.oskari.routing.pojo.Leg lastLeg = firstEdge.getNode().getLegs().get(0);
-        final From from = lastLeg.getFrom();
+        final Place from = lastLeg.getFrom();
         final JSONObject fromJSON = new JSONObject();
         final String sourceSRS = PropertyUtil.get("routing.srs");
         final String targetSRS = params.getSrs();
@@ -235,7 +249,7 @@ public class RouteParser {
 //                itineraryJSON.put(PARAM_ITINERARIES_WALK_LIMIT_EXCEEDED, node.getWalkLimitExceeded()); // TODO: not found in the new itinerary-type.
                 itineraryJSON.put(PARAM_ITINERARIES_ELEVATION_LOST, node.getElevationLost());
                 itineraryJSON.put(PARAM_ITINERARIES_ELEVATION_GAINED, node.getElevationGained());
-//                itineraryJSON.put(PARAM_ITINERARIES_TRANSFERS, node.getTransfers()); // TODO: not found in the new itinerary-type. Or the old one and it seems this is always zero
+                itineraryJSON.put(PARAM_ITINERARIES_TRANSFERS, node.getNumberOfTransfers());
 //                itineraryJSON.put(PARAM_ITINERARIES_TOO_SLOPED, node.getTooSloped()); // TODO: not found in the new itinerary-type.
 
                 itineraryJSON.put(PARAM_ITINERARIES_GEOJSON, getItinerariesGeoJSON(node, params));
@@ -277,7 +291,7 @@ public class RouteParser {
     private JSONObject getToJSON(PlanConnection planConnection, RouteParams params){
         Edge lastEdge = planConnection.getEdges().get(planConnection.getEdges().size() - 1);
         fi.nls.oskari.routing.pojo.Leg lastLeg = lastEdge.getNode().getLegs().get(lastEdge.getNode().getLegs().size() - 1);
-        final To to = lastLeg.getTo();
+        final Place to = lastLeg.getTo();
 
         final JSONObject toJSON = new JSONObject();
         final String sourceSRS = PropertyUtil.get("routing.srs");
@@ -314,34 +328,28 @@ public class RouteParser {
             for (Leg leg:legs) {
                 JSONObject legJSON = new JSONObject();
 
-                legJSON.put(PARAM_LEGS_AGENCY_ID, leg.getAgency().getId());
-                legJSON.put(PARAM_LEGS_AGENCY_NAME, leg.getAgency().getName());
-                legJSON.put(PARAM_LEGS_AGENCY_TIME_ZONE_OFFSET, leg.getAgency().getTimezone()); // TODO: old implementation holds an offset in ms
-                legJSON.put(PARAM_LEGS_AGENCY_URL, leg.getAgency().getUrl());
-                legJSON.put(PARAM_LEGS_ARRIVAL_DELAY, leg.getEnd().getEstimated().getDelay());
-                legJSON.put(PARAM_LEGS_DEPARTURE_DELAY, leg.getStart().getEstimated().getDelay());
+                addAgencyFields(leg, legJSON);
+
+                addLegStartFields(leg, legJSON);
+
+                addLegEndFields(leg, legJSON);
+
+                addLegRouteFields(leg, legJSON);
+
                 legJSON.put(PARAM_LEGS_DISTANCE, leg.getDistance());
 
                 legJSON.put(PARAM_LEGS_DURATION, leg.getDuration());
-                legJSON.put(PARAM_LEGS_END_TIME, leg.getEnd().getScheduledTime());
                 legJSON.put(PARAM_LEGS_HEADSIGN, leg.getHeadsign());
                 legJSON.put(PARAM_LEGS_INTERLINE_WIDTH_PREVIOUS_LEG, leg.isInterlineWithPreviousLeg());
                 legJSON.put(PARAM_LEGS_MODE, leg.getMode());
-                //legJSON.put(PARAM_LEGS_PATHWAY, leg.getPathway()); // TODO: what dis???
+                //legJSON.put(PARAM_LEGS_PATHWAY, leg.getPathway()); // TODO: can't find this in the new api. Or old.
                 legJSON.put(PARAM_LEGS_REAL_TIME, leg.isRealTime());
                 legJSON.put(PARAM_LEGS_RENTED_BIKE, leg.isRentedBike());
 
-                legJSON.put(PARAM_LEGS_ROUTE, leg.getRoute().getShortName()); // TODO: there is no property "route:String" anymore... this seems to map to route -> short name but is it always the same?
-                legJSON.put(PARAM_LEGS_ROUTE_ID, leg.getRoute().getId());
-                legJSON.put(PARAM_LEGS_ROUTE_LONG_NAME, leg.getRoute().getLongName());
-                legJSON.put(PARAM_LEGS_ROUTE_SHORT_NAME, leg.getRoute().getShortName());
-                legJSON.put(PARAM_LEGS_ROUTE_TYPE, leg.getRoute().getType());
-
-
                 legJSON.put(PARAM_LEGS_SERVICE_DATE, leg.getServiceDate());
-                legJSON.put(PARAM_LEGS_START_TIME, leg.getStart().getScheduledTime());
                 legJSON.put(PARAM_LEGS_TRANSIT_LEG, leg.isTransitLeg());
-                legJSON.put(PARAM_LEGS_TRIP_ID, leg.getTrip().getId());
+
+                legJSON.put(PARAM_LEGS_TRIP_ID, Optional.ofNullable(leg.getTrip()).map(Trip::getGtfsId).orElse(null));
 
                 legJSON.put(PARAM_LEGS_FROM, getLegFromJSON(leg, sourceSRS, targetSRS));
                 legJSON.put(PARAM_LEGS_TO, getLegToJSON(leg, sourceSRS, targetSRS));
@@ -353,96 +361,178 @@ public class RouteParser {
                 geometryJSON.put(PARAM_LEGS_LEG_GEOMETRY_POINTS, geometry.getPoints());
                 legJSON.put(PARAM_LEGS_LEG_GEOMETRY, geometryJSON);
 
-                //legJSON.put(PARAM_LEG_STOPS, getLegStopsJSON(leg));
+                legJSON.put(PARAM_LEGS_STEPS, getLegStepsJSON(leg, sourceSRS, targetSRS));
 
-                /*
-                List<Step> steps = leg.getSteps();
-                JSONArray stepsJSON = new JSONArray();
+                legJSON.put(PARAM_LEG_STOPS, getLegStopsJSON(leg, sourceSRS, targetSRS));
 
-                for (int i = 0; i < steps.size(); i++) {
-                    LinkedHashMap lhm = (LinkedHashMap)steps.get(i);
-                    Iterator iterator = lhm.entrySet().iterator();
-                    JSONObject stepJSON = new JSONObject();
-                    while(iterator.hasNext()){
-                        Map.Entry me = (Map.Entry)iterator.next();
-                        stepJSON.put(me.getKey().toString(), me.getValue().toString());
-                    }
-
-                    // convert coordinates
-                    if(stepJSON.has(PARAM_LEGS_STEPS_LON) && stepJSON.has(PARAM_LEGS_STEPS_LAT)){
-                        String stepLon = stepJSON.getString(PARAM_LEGS_STEPS_LON);
-                        String stepLat = stepJSON.getString(PARAM_LEGS_STEPS_LAT);
-
-                        Point stepPoint;
-
-                            stepPoint = ProjectionHelper.transformPoint(stepLon, stepLat, sourceSRS, targetSRS);
-                            stepJSON.put(PARAM_LEGS_STEPS_LON, stepPoint.getLon());
-                            stepJSON.put(PARAM_LEGS_STEPS_LAT, stepPoint.getLat());
-
-                    }
-
-                    stepsJSON.put(stepJSON);
-                }
-
-                legJSON.put(PARAM_LEGS_STEPS, stepsJSON);
-*/
-                /*
-                // Intermediate stops
-                List<IntermediateStop> stops = leg.getIntermediateStops();
-                JSONArray stopsJSON = new JSONArray();
-                for (IntermediateStop intermediateStop : stops) {
-                    JSONObject stopJSON = new JSONObject();
-                    // convert coordinates
-                    if (intermediateStop.getLat() != null && intermediateStop.getLon() != null) {
-                        Point stopPoint;
-                        stopPoint = ProjectionHelper.transformPoint(intermediateStop.getLon(), intermediateStop.getLat(), sourceSRS, targetSRS);
-                        stopJSON.put(PARAM_LEG_STOP_LON, stopPoint.getLon());
-                        stopJSON.put(PARAM_LEG_STOP_LAT, stopPoint.getLat());
-                    }
-
-                    stopJSON.put(PARAM_LEG_STOP_NAME, intermediateStop.getName());
-                    stopJSON.put(PARAM_LEG_STOP_STOPID, intermediateStop.getStopId());
-                    stopJSON.put(PARAM_LEG_STOP_STOPCODE, intermediateStop.getStopCode());
-                    stopJSON.put(PARAM_LEG_STOP_ARRIVAL, intermediateStop.getArrival());
-                    stopJSON.put(PARAM_LEG_STOP_DEPARTURE, intermediateStop.getDeparture());
-                    stopJSON.put(PARAM_LEG_STOP_ZONEID, intermediateStop.getZoneId());
-                    stopJSON.put(PARAM_LEG_STOP_STOPINDEX, intermediateStop.getStopIndex());
-                    stopJSON.put(PARAM_LEG_STOP_STOPSEQUENCE, intermediateStop.getStopSequence());
-                    stopJSON.put(PARAM_LEG_STOP_VERTEXTYPE, intermediateStop.getVertexType());
-
-                    stopsJSON.put(stopJSON);
-                }
-
-                legJSON.put(PARAM_LEG_STOPS, stopsJSON);
-*/
                 legsJSON.put(legJSON);
             }
         } catch (JSONException ex){
             LOG.error("Cannot get itineraries legs JSON", ex);
+        } catch(Exception e) {
+            // TODO: remove this before going to develop -> keep for ease of debugging.
+            LOG.error("LegsJSON major fail.", e);
         }
 
         return legsJSON;
     }
 
+    private void addLegRouteFields(Leg leg, JSONObject legJSON) {
+        try {
+            Route route = leg.getRoute();
+            String gtfsId = Optional.ofNullable(route).map(Route::getGtfsId).orElse(null);
+            String longName = Optional.ofNullable(route).map(Route::getLongName).orElse(null);
+            String shortName = Optional.ofNullable(route).map(Route::getShortName).orElse(null);
+            Integer type = Optional.ofNullable(route).map(Route::getType).orElse(null);
+
+            legJSON.put(PARAM_LEGS_ROUTE, shortName); // TODO: there is no property "route:String" anymore... this seems to map to route -> short name but is it always the same?
+            legJSON.put(PARAM_LEGS_ROUTE_ID, gtfsId);
+            legJSON.put(PARAM_LEGS_ROUTE_LONG_NAME, longName);
+            legJSON.put(PARAM_LEGS_ROUTE_SHORT_NAME, shortName);
+            legJSON.put(PARAM_LEGS_ROUTE_TYPE, type);
+        } catch(JSONException ex) {
+            LOG.error("Failed to add route fields for leg ", ex);
+        }
+    }
+
+    private void addAgencyFields(Leg leg, JSONObject legJSON) {
+        try {
+            Agency legAgency = leg.getAgency();
+            String gtfsId = Optional.ofNullable(legAgency).map(Agency::getGtfsId).orElse(null);
+            String name = Optional.ofNullable(legAgency).map(Agency::getName).orElse(null);
+            Long timezoneOffset = Optional.ofNullable(legAgency).map(Agency::getTimeZoneOffset).orElse(null);
+            String url = Optional.ofNullable(legAgency).map(Agency::getUrl).orElse(null);
+            legJSON.put(PARAM_LEGS_AGENCY_ID, gtfsId);
+            legJSON.put(PARAM_LEGS_AGENCY_NAME, name);
+            legJSON.put(PARAM_LEGS_AGENCY_TIME_ZONE_OFFSET, timezoneOffset);
+            legJSON.put(PARAM_LEGS_AGENCY_URL, url);
+        } catch(JSONException ex) {
+            LOG.error("Failed to add agency fields for leg ", ex);
+        }
+    }
+    private void addLegStartFields(Leg leg, JSONObject legJSON) {
+        try {
+            ScheduledTime start = leg.getStart();
+
+            Long delay = Optional.ofNullable(start).map(ScheduledTime::getEstimated).map(Estimated::getDelayMilliseconds).orElse(null);
+            String scheduledTime = Optional.ofNullable(start).map(ScheduledTime::getScheduledTime).orElse(null);
+            legJSON.put(PARAM_LEGS_DEPARTURE_DELAY, delay);
+            legJSON.put(PARAM_LEGS_START_TIME, scheduledTime);
+        } catch(JSONException ex) {
+            LOG.error("Failed to add start fields for leg ", ex);
+        }
+    }
+
+    private void addLegEndFields(Leg leg, JSONObject legJSON) {
+        try {
+            ScheduledTime end = leg.getEnd();
+            Long delay = Optional.ofNullable(end).map(ScheduledTime::getEstimated).map(Estimated::getDelayMilliseconds).orElse(null);
+            String scheduledTime = Optional.ofNullable(end).map(ScheduledTime::getScheduledTime).orElse(null);
+            legJSON.put(PARAM_LEGS_ARRIVAL_DELAY, delay);
+            legJSON.put(PARAM_LEGS_END_TIME, scheduledTime);
+        } catch(JSONException ex) {
+            LOG.error("Failed to add end fields for leg ", ex);
+        }
+    }
+
+    private JSONArray getLegStopsJSON(Leg leg, String sourceSRS, String targetSRS) {
+        // Intermediate stops
+        List<Place> places = leg.getIntermediatePlaces();
+        JSONArray stopsJSON = new JSONArray();
+        if (places == null) {
+            return stopsJSON;
+        }
+        try {
+            for (Place intermediatePlace : places) {
+                JSONObject stopJSON = new JSONObject();
+                // convert coordinates
+                if (intermediatePlace.getLat() != null && intermediatePlace.getLon() != null) {
+                    Point stopPoint;
+                    stopPoint = ProjectionHelper.transformPoint(intermediatePlace.getLon(), intermediatePlace.getLat(), sourceSRS, targetSRS);
+                    stopJSON.put(PARAM_LEG_STOP_LON, stopPoint.getLon());
+                    stopJSON.put(PARAM_LEG_STOP_LAT, stopPoint.getLat());
+                }
+
+                String stopGtsfId = Optional.ofNullable(intermediatePlace.getStop()).map(Stop::getGtfsId).orElse(null);
+                Long stopCode = Optional.ofNullable(intermediatePlace.getStop()).map(Stop::getCode).orElse(null);
+                Long stopZoneId = Optional.ofNullable(intermediatePlace.getStop()).map(Stop::getZoneId).orElse(null);
+
+                stopJSON.put(PARAM_LEG_STOP_STOPID, stopGtsfId);
+                stopJSON.put(PARAM_LEG_STOP_STOPCODE, stopCode);
+                stopJSON.put(PARAM_LEG_STOP_ZONEID, stopZoneId);
+
+                stopJSON.put(PARAM_LEG_STOP_NAME, intermediatePlace.getName());
+                stopJSON.put(PARAM_LEG_STOP_ARRIVAL, intermediatePlace.getArrival());
+                stopJSON.put(PARAM_LEG_STOP_DEPARTURE, intermediatePlace.getDeparture());
+                // stopJSON.put(PARAM_LEG_STOP_STOPINDEX, intermediatePlace.getStopIndex()); // TODO: not found in new api
+                // stopJSON.put(PARAM_LEG_STOP_STOPSEQUENCE, intermediatePlace.getStopSequence());//TODO: not found in new api
+                stopJSON.put(PARAM_LEG_STOP_VERTEXTYPE, intermediatePlace.getVertexType());
+                stopsJSON.put(stopJSON);
+            }
+        } catch(Exception e) {
+            LOG.error("Cannot get intermediate places JSON for leg", e);
+        }
+
+        return stopsJSON;
+
+    }
+
+    private JSONArray getLegStepsJSON(Leg leg, String sourceSRS, String targetSRS) {
+        List<Step> steps = leg.getSteps();
+        JSONArray stepsJSON = new JSONArray();
+
+        try {
+            for (int i = 0; i < steps.size(); i++) {
+                Step step = steps.get(i);
+                JSONObject stepJSON = new JSONObject();
+                stepJSON.put(PARAM_LEG_STEP_AREA, step.isArea());
+                stepJSON.put(PARAM_LEG_STEP_ELEVATION, step.getElevationProfile());
+                stepJSON.put(PARAM_LEG_STEP_STREET_NAME, step.getStreetName());
+                stepJSON.put(PARAM_LEG_STEP_DISTANCE, step.getDistance());
+                stepJSON.put(PARAM_LEG_STEP_BOGUS_NAME, step.getBogusName());
+                stepJSON.put(PARAM_LEG_STEP_STAY_ON, step.isStayOn());
+                stepJSON.put(PARAM_LEG_STEP_ABSOLUTE_DIRECTION, step.getAbsoluteDirection());
+                stepJSON.put(PARAM_LEG_STEP_RELATIVE_DIRECTION, step.getAbsoluteDirection());
+
+                if (step.getLat() != null && step.getLon() != null) {
+                    String stepLon = step.getLon().toString();
+                    String stepLat = step.getLat().toString();
+                    Point stepPoint = ProjectionHelper.transformPoint(stepLon, stepLat, sourceSRS, targetSRS);
+                    stepJSON.put(PARAM_LEGS_STEPS_LON, stepPoint.getLon());
+                    stepJSON.put(PARAM_LEGS_STEPS_LAT, stepPoint.getLat());
+                }
+                stepsJSON.put(stepJSON);
+            }
+        } catch(Exception e) {
+            LOG.error("Cannot get steps for leg", e);
+        }
+
+        return stepsJSON;
+    }
+
     private JSONObject getLegToJSON(Leg leg, String sourceSRS, String targetSRS) {
-        To to = leg.getTo();
+        Place to = leg.getTo();
         JSONObject toJSON = new JSONObject();
         try {
             toJSON.put(PARAM_LEGS_TO_ARRIVAL, getEpochFromString(to.getArrival().getScheduledTime()));
-            Point newTo;
 
-            newTo = ProjectionHelper.transformPoint(to.getLon(), to.getLat(), sourceSRS, targetSRS);
+            Point newTo = ProjectionHelper.transformPoint(to.getLon(), to.getLat(), sourceSRS, targetSRS);
             toJSON.put(PARAM_LEGS_TO_LON, newTo.getLon());
             toJSON.put(PARAM_LEGS_TO_LAT, newTo.getLat());
 
             toJSON.put(PARAM_LEGS_TO_NAME, to.getName());
             toJSON.put(PARAM_LEGS_TO_ORIG, to.getOrig());
-            toJSON.put(PARAM_LEGS_TO_STOP_CODE, to.getStop().getCode());
-            toJSON.put(PARAM_LEGS_TO_STOP_ID, to.getStop().getId());
+
+            String stopGtsfId = Optional.ofNullable(to.getStop()).map(Stop::getGtfsId).orElse(null);
+            Long stopCode = Optional.ofNullable(to.getStop()).map(Stop::getCode).orElse(null);
+            Long stopZoneId = Optional.ofNullable(to.getStop()).map(Stop::getZoneId).orElse(null);
+            toJSON.put(PARAM_LEGS_TO_STOP_ID, stopGtsfId);
+            toJSON.put(PARAM_LEGS_TO_STOP_CODE, stopCode);
+            toJSON.put(PARAM_LEGS_TO_ZONE_ID, stopZoneId);
+
             // toJSON.put(PARAM_LEGS_TO_STOP_INDEX, to.getStopIndex()); // TODO: not found in new api
             // toJSON.put(PARAM_LEGS_TO_STOP_SEQUENCE, to.getStopSequence()); // TODO: not found in new api
             toJSON.put(PARAM_LEGS_TO_VERTEX_TYPE, to.getVertexType());
-            toJSON.put(PARAM_LEGS_TO_ZONE_ID, to.getStop().getZoneId());
 
         } catch (JSONException e) {
             LOG.error("Cannot parse To-property of leg", e);
@@ -452,7 +542,7 @@ public class RouteParser {
     }
 
     private JSONObject getLegFromJSON(Leg leg, String sourceSRS, String targetSRS) {
-        From from = leg.getFrom();
+        Place from = leg.getFrom();
         JSONObject fromJSON = new JSONObject();
         try {
             fromJSON.put(PARAM_LEGS_FROM_ARRIVAL, getEpochFromString(from.getArrival().getScheduledTime()));
@@ -464,12 +554,17 @@ public class RouteParser {
             fromJSON.put(PARAM_LEGS_FROM_LAT, newFrom.getLat());
 
             fromJSON.put(PARAM_LEGS_FROM_NAME, from.getName());
-            fromJSON.put(PARAM_LEGS_FROM_STOP_CODE, from.getStop().getCode());
-            fromJSON.put(PARAM_LEGS_FROM_STOP_ID, from.getStop().getId());
+
+            String stopGtsfId = Optional.ofNullable(from.getStop()).map(Stop::getGtfsId).orElse(null);
+            Long stopCode = Optional.ofNullable(from.getStop()).map(Stop::getCode).orElse(null);
+            Long stopZoneId = Optional.ofNullable(from.getStop()).map(Stop::getZoneId).orElse(null);
+            fromJSON.put(PARAM_LEGS_FROM_STOP_ID, stopGtsfId);
+            fromJSON.put(PARAM_LEGS_FROM_STOP_CODE, stopCode);
+            fromJSON.put(PARAM_LEGS_FROM_ZONE_ID, stopZoneId);
+
             // fromJSON.put(PARAM_LEGS_FROM_STOP_INDEX, from.getStopIndex()); // TODO: no match in new api?.
             // fromJSON.put(PARAM_LEGS_FROM_STOP_SEQUENCE, from.getStopSequence()); // TODO: no match in new api?.
             fromJSON.put(PARAM_LEGS_FROM_VERTEX_TYPE, from.getVertexType());
-            fromJSON.put(PARAM_LEGS_FROM_ZONE_ID, from.getStop().getZoneId());
 
         } catch(JSONException e) {
             LOG.error("Cannot parse From-property of leg", e);
@@ -482,12 +577,6 @@ public class RouteParser {
         OffsetDateTime odt = OffsetDateTime.parse(date);
         return odt.toEpochSecond();
     }
-
-
-
-
-
-
 
 
 
@@ -753,6 +842,7 @@ public class RouteParser {
      * @return request parameters
      */
     public JSONObject generateRequestParameters(Route route, RouteParams params){
+        /*
         final JSONObject requestParameters = new JSONObject();
         final RequestParameters rp = route.getRequestParameters();
         final String sourceSRS = PropertyUtil.get("routing.srs");
@@ -777,12 +867,14 @@ public class RouteParser {
             newTo = ProjectionHelper.transformPoint(toPoints[1], toPoints[0], sourceSRS, targetSRS);
             requestParameters.put(PARAM_FROM_PLACE, getPointJSON(newFrom.getLon(), newFrom.getLat()));
             requestParameters.put(PARAM_TO_PLACE, getPointJSON(newTo.getLon(), newTo.getLat()));
-
         } catch (JSONException ex) {
             LOG.error("Cannot generate routing request parameters", ex);
         }
 
         return requestParameters;
+*/
+        // TODO: make me work
+        return null;
     }
 
     /**

@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Route {
-    @JsonProperty("id")
-    private long id;
+    @JsonProperty("gtfsId")
+    private String gtfsId;
     @JsonProperty("longName")
     private String longName;
 
@@ -16,12 +16,12 @@ public class Route {
     @JsonProperty("type")
     private int type;
 
-    public long getId() {
-        return id;
+    public String getGtfsId() {
+        return gtfsId;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setGtfsId(String gtfsId) {
+        this.gtfsId = gtfsId;
     }
 
     public String getLongName() {

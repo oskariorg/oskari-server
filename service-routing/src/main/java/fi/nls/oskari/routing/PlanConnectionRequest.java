@@ -75,14 +75,14 @@ public class PlanConnectionRequest {
         "      searchDateTime\n" +
         "      edges {\n" +
         "        node {\n" +
-                 getNodeStaticResultFields() +
+                   getNodeStaticResultFields() +
         "          legs {\n" +
-                    getLegStaticResultFields() +
+                     getLegStaticResultFields() +
         "            trip \n{"+
-        "              id\n"+
+        "              gtfsId\n\n"+
         "            }\n"+
         "            route {\n"+
-        "               id\n"+
+        "               gtfsId\n\n"+
         "               longName\n"+
         "               shortName\n"+
         "               type\n"+
@@ -99,13 +99,12 @@ public class PlanConnectionRequest {
         "           }\n" +
         "           start {\n" +
                         getScheduledTimeStaticResultFields() +
-        "             }\n" +
         "           }\n" +
         "           end {\n" +
                         getScheduledTimeStaticResultFields() +
         "           }\n" +
         "           agency {\n" +
-        "             id\n" +
+        "             gtfsId\n\n" +
         "             name\n" +
         "             timezone\n" +
         "           }\n" +
@@ -242,19 +241,17 @@ public class PlanConnectionRequest {
         "arrival {\n" +
         "   estimated {\n" +
         "       delay\n" +
-        "       time\n" +
         "   }\n" +
         "   scheduledTime\n" +
         "}\n" +
         "departure {\n" +
         "    estimated {\n" +
         "        delay\n" +
-        "        time\n" +
         "    }\n" +
         "   scheduledTime\n" +
         "}\n" +
         "stop {\n" +
-        "    id\n" +
+        "    gtfsId\n\n" +
         "    code\n" +
         "    zoneId\n" +
         "}\n";

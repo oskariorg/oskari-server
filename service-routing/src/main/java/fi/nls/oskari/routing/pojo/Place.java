@@ -1,12 +1,10 @@
-
 package fi.nls.oskari.routing.pojo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class To {
-
+public class Place {
     @JsonProperty("name")
     private String name;
     @JsonProperty("lon")
@@ -21,11 +19,13 @@ public class To {
     @JsonProperty("arrival")
     private ScheduledTime arrival;
 
+    @JsonProperty("departure")
+    private ScheduledTime departure;
+
     @JsonProperty("stop")
     private Stop stop;
-
     /**
-     * 
+     *
      * @return
      *     The name
      */
@@ -35,7 +35,7 @@ public class To {
     }
 
     /**
-     * 
+     *
      * @param name
      *     The name
      */
@@ -45,7 +45,7 @@ public class To {
     }
 
     /**
-     * 
+     *
      * @return
      *     The lon
      */
@@ -55,7 +55,7 @@ public class To {
     }
 
     /**
-     * 
+     *
      * @param lon
      *     The lon
      */
@@ -65,7 +65,7 @@ public class To {
     }
 
     /**
-     * 
+     *
      * @return
      *     The lat
      */
@@ -75,7 +75,7 @@ public class To {
     }
 
     /**
-     * 
+     *
      * @param lat
      *     The lat
      */
@@ -85,7 +85,7 @@ public class To {
     }
 
     /**
-     * 
+     *
      * @return
      *     The orig
      */
@@ -95,7 +95,7 @@ public class To {
     }
 
     /**
-     * 
+     *
      * @param orig
      *     The orig
      */
@@ -105,7 +105,7 @@ public class To {
     }
 
     /**
-     * 
+     *
      * @return
      *     The vertexType
      */
@@ -115,7 +115,7 @@ public class To {
     }
 
     /**
-     * 
+     *
      * @param vertexType
      *     The vertexType
      */
@@ -130,6 +130,14 @@ public class To {
 
     public void setArrival(ScheduledTime arrival) {
         this.arrival = arrival;
+    }
+
+    public ScheduledTime getDeparture() {
+        return departure;
+    }
+
+    public void setDeparture(ScheduledTime departure) {
+        this.departure = departure;
     }
 
     public Stop getStop() {
