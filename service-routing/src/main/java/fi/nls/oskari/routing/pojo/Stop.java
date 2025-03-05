@@ -9,10 +9,10 @@ public class Stop {
     private String gtfsId;
 
     @JsonProperty("code")
-    private long code;
+    private String code;
 
     @JsonProperty("zoneId")
-    private long zoneId;
+    private String zoneId;
 
     public String getGtfsId() {
         return gtfsId;
@@ -22,19 +22,19 @@ public class Stop {
         this.gtfsId = gtfsId;
     }
 
-    public long getCode() {
+    public String getCode() {
         return code;
     }
 
-    public void setCode(long code) {
+    public void setCode(String code) {
         this.code = code;
     }
 
-    public long getZoneId() {
+    public String getZoneId() {
         return zoneId;
     }
 
-    public void setZoneId(long zoneId) {
+    public void setZoneId(String zoneId) {
         this.zoneId = zoneId;
     }
 }

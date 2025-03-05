@@ -454,8 +454,8 @@ public class RouteParser {
                 }
 
                 String stopGtsfId = Optional.ofNullable(intermediatePlace.getStop()).map(Stop::getGtfsId).orElse(null);
-                Long stopCode = Optional.ofNullable(intermediatePlace.getStop()).map(Stop::getCode).orElse(null);
-                Long stopZoneId = Optional.ofNullable(intermediatePlace.getStop()).map(Stop::getZoneId).orElse(null);
+                String stopCode = Optional.ofNullable(intermediatePlace.getStop()).map(Stop::getCode).orElse(null);
+                String stopZoneId = Optional.ofNullable(intermediatePlace.getStop()).map(Stop::getZoneId).orElse(null);
 
                 stopJSON.put(PARAM_LEG_STOP_STOPID, stopGtsfId);
                 stopJSON.put(PARAM_LEG_STOP_STOPCODE, stopCode);
@@ -524,8 +524,8 @@ public class RouteParser {
             toJSON.put(PARAM_LEGS_TO_ORIG, to.getOrig());
 
             String stopGtsfId = Optional.ofNullable(to.getStop()).map(Stop::getGtfsId).orElse(null);
-            Long stopCode = Optional.ofNullable(to.getStop()).map(Stop::getCode).orElse(null);
-            Long stopZoneId = Optional.ofNullable(to.getStop()).map(Stop::getZoneId).orElse(null);
+            String stopCode = Optional.ofNullable(to.getStop()).map(Stop::getCode).orElse(null);
+            String stopZoneId = Optional.ofNullable(to.getStop()).map(Stop::getZoneId).orElse(null);
             toJSON.put(PARAM_LEGS_TO_STOP_ID, stopGtsfId);
             toJSON.put(PARAM_LEGS_TO_STOP_CODE, stopCode);
             toJSON.put(PARAM_LEGS_TO_ZONE_ID, stopZoneId);
@@ -556,8 +556,8 @@ public class RouteParser {
             fromJSON.put(PARAM_LEGS_FROM_NAME, from.getName());
 
             String stopGtsfId = Optional.ofNullable(from.getStop()).map(Stop::getGtfsId).orElse(null);
-            Long stopCode = Optional.ofNullable(from.getStop()).map(Stop::getCode).orElse(null);
-            Long stopZoneId = Optional.ofNullable(from.getStop()).map(Stop::getZoneId).orElse(null);
+            String stopCode = Optional.ofNullable(from.getStop()).map(Stop::getCode).orElse(null);
+            String stopZoneId = Optional.ofNullable(from.getStop()).map(Stop::getZoneId).orElse(null);
             fromJSON.put(PARAM_LEGS_FROM_STOP_ID, stopGtsfId);
             fromJSON.put(PARAM_LEGS_FROM_STOP_CODE, stopCode);
             fromJSON.put(PARAM_LEGS_FROM_ZONE_ID, stopZoneId);
