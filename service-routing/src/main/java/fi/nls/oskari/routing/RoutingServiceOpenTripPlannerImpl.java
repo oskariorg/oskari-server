@@ -53,20 +53,33 @@ public class RoutingServiceOpenTripPlannerImpl implements RoutingService {
         params.setTo(newTo.getLon(), newTo.getLat());
 
         PlanConnectionRequest planConnectionRequest = new PlanConnectionRequest();
-        String routeJSONString = null;
-        // Route route = null;
+        String apiResponseString = null;
         RouteResponse result = new RouteResponse();
         try {
             // TODO: The old implementation had optional username & password here -> check if they could still be needed or even if they could be used? Probably not?
+            final String username = PropertyUtil.getOptional(PROPERTY_USER);
+            final String password = PropertyUtil.getOptional(PROPERTY_PASSWORD);
             String planConnectionRequestQuery =  planConnectionRequest.getQuery(params);
-            HttpURLConnection conn  = IOHelper.post(PropertyUtil.get("routing.url"), "application/json", planConnectionRequestQuery.getBytes("UTF-8"));
-            routeJSONString = IOHelper.readString(conn.getInputStream(), "UTF-8");
+            HttpURLConnection connection = null;
+            if(username != null && !username.isEmpty() && password != null && !password.isEmpty()) {
+                connection  = IOHelper.post(
+                    PropertyUtil.get("routing.url"),
+                    "application/json",
+                    planConnectionRequestQuery.getBytes("UTF-8"),
+                    username, password);
+            } else {
+                connection  = IOHelper.post(
+                    PropertyUtil.get("routing.url"),
+                    "application/json",
+                    planConnectionRequestQuery.getBytes("UTF-8"));
+            }
 
-            if(!isErrorMessage(routeJSONString)){
-                JSONObject routeJSON, planConnectionJSON = null;
+            apiResponseString = IOHelper.readString(connection.getInputStream(), "UTF-8");
+            if(!isErrorMessage(apiResponseString)){
+                JSONObject responseData, planConnectionJSON = null;
                 try {
-                    routeJSON = new JSONObject(routeJSONString);
-                    JSONObject routeData = routeJSON.has("data") ? routeJSON.getJSONObject("data") : null;
+                    responseData = new JSONObject(apiResponseString);
+                    JSONObject routeData = responseData.has("data") ? responseData.getJSONObject("data") : null;
                     if (routeData != null) {
                         planConnectionJSON = routeData.has("planConnection") ? routeData.getJSONObject("planConnection") : null;
                     }
@@ -84,7 +97,7 @@ public class RoutingServiceOpenTripPlannerImpl implements RoutingService {
             } else {
                 result.setSuccess(false);
                 try {
-                    JSONObject error = new JSONObject(routeJSONString);
+                    JSONObject error = new JSONObject(apiResponseString);
                     if(error.has(PARAM_ERROR_MESSAGE)) {
                         result.setErrorMessage(error.getString(PARAM_ERROR_MESSAGE));
                     } else {

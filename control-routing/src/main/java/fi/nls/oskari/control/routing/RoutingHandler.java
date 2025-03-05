@@ -52,8 +52,6 @@ public class RoutingHandler extends ActionHandler {
         routeparams.setFrom(params.getRequiredParamDouble(PARAM_FROM_LON), params.getRequiredParamDouble(PARAM_FROM_LAT));
         routeparams.setTo(params.getRequiredParamDouble(PARAM_TO_LON), params.getRequiredParamDouble(PARAM_TO_LAT));
 
-
-        // TODO: validate values
         final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
         final String dateTime =
