@@ -23,16 +23,6 @@ public class RoutingServiceOpenTripPlannerImpl implements RoutingService {
     public static final String PARAM_ERROR = "error";
     public static final String PARAM_ERRORS = "errors";
     public static final String PARAM_ERROR_MESSAGE = "message";
-    public static final String PARAM_FROM_PLACE = "fromPlace";
-    public static final String PARAM_TO_PLACE = "toPlace";
-    public static final String PARAM_MODE = "mode";
-    public static final String PARAM_MAX_WALK_DISTANCE = "maxWalkDistance";
-    public static final String PARAM_WHEELCHAIR = "wheelchair";
-    public static final String PARAM_LOCALE = "locale";
-    public static final String PARAM_DATE = "date";
-    public static final String PARAM_TIME = "time";
-    public static final String PARAM_ARRIVE_BY = "arriveBy";
-    public static final String PARAM_SHOW_INTERMEDIATE_STOPS = "showIntermediateStops";
 
     private static final String PROPERTY_USER = "routing.user";
     private static final String PROPERTY_PASSWORD = "routing.password";
@@ -56,7 +46,6 @@ public class RoutingServiceOpenTripPlannerImpl implements RoutingService {
         String apiResponseString = null;
         RouteResponse result = new RouteResponse();
         try {
-            // TODO: The old implementation had optional username & password here -> check if they could still be needed or even if they could be used? Probably not?
             final String username = PropertyUtil.getOptional(PROPERTY_USER);
             final String password = PropertyUtil.getOptional(PROPERTY_PASSWORD);
             String planConnectionRequestQuery =  planConnectionRequest.getQuery(params);
@@ -90,8 +79,7 @@ public class RoutingServiceOpenTripPlannerImpl implements RoutingService {
                 if (planConnectionJSON != null) {
                     planConnection = mapper.readValue(planConnectionJSON.toString(), PlanConnection.class);
                 }
-                // TODO: why do we need the request parameters in result...?
-                // result.setRequestParameters(parser.generateRequestParameters(route, params));
+                result.setRequestParameters(parser.generateRequestParameters(params));
                 result.setPlan(parser.mapPlanConnectionToPlan(planConnection, params));
                 result.setSuccess(true);
             } else {
