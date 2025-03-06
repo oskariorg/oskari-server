@@ -15,12 +15,12 @@ git grep -l javax.servlet. | xargs sed -i "s/import javax.servlet./import jakart
 ### Spring configuration
 
 - Dependency updates:
-    - javax.servlet:javax.servlet-api -> jakarta.servlet:jakarta.servlet-api
-    - JSP functionality requires jakarta.servlet.jsp.jst and  jakarta.servlet.jsp.jstl-api
+    - `javax.servlet:javax.servlet-api` -> `jakarta.servlet:jakarta.servlet-api`
+    - JSP functionality requires `jakarta.servlet.jsp.jstl` and `jakarta.servlet.jsp.jstl-api`
     - See the change in sample-server-extension: https://github.com/oskariorg/sample-server-extension/pull/66
 
 Spring 6 security configuration have to changed to bean based classes from extending WebSecurityConfigurerAdapter etc.
-Also Oskari Spring configurations have been moved from fi.nls.oskari.spring -> org.oskari.spring:
+Also Oskari Spring configurations have been moved from `fi.nls.oskari.spring` -> `org.oskari.spring`:
 - FROM: https://github.com/oskariorg/oskari-server/blob/2.14.0/servlet-map/src/main/java/fi/nls/oskari/spring/security/database/OskariDatabaseSecurityConfig.java
 - TO: https://github.com/oskariorg/oskari-server/blob/develop/servlet-map/src/main/java/org/oskari/spring/security/database/OskariDatabaseSecurityConfig.java
 
@@ -42,9 +42,7 @@ git grep -l fi.nls.oskari.domain. | xargs sed -i "s/fi.nls.oskari.domain.Role/or
 git grep -l fi.nls.oskari.spring. | xargs sed -i "s/import fi.nls.oskari.spring./import org.oskari.spring./g"
 ```
 
-User class doesn't handle attribute serialization anymore, but to get the same result you can do this:
-FROM: `user.getAttributesJSON()`
-TO: `new JSONObject(user.getAttributes())`
+User class doesn't handle attribute serialization anymore, but to get the same result you can do change: `user.getAttributesJSON()` -> `new JSONObject(user.getAttributes())`
 
 ### Junit migrated from 4 to 5
 
