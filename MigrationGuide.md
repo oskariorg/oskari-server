@@ -13,17 +13,18 @@ git grep -l javax.servlet. | xargs sed -i "s/import javax.servlet./import jakart
 ```
 
 ### Spring configuration
-- Dependency updates
-  - javax.servlet:javax.servlet-api -> jakarta.servlet:jakarta.servlet-api
-  - JSP functionality requires jakarta.servlet.jsp.jst and  jakarta.servlet.jsp.jstl-api
-    - https://github.com/oskariorg/sample-server-extension/blob/9f0aeafbb037b7f61446b1049dad2aa3248bd21c/webapp-map/pom.xml#L103-L110
 
-Spring 6 security configuration have to changed to bean based classes from extending WebSecurityConfigurerAdapter etc.  
+- Dependency updates:
+    - javax.servlet:javax.servlet-api -> jakarta.servlet:jakarta.servlet-api
+    - JSP functionality requires jakarta.servlet.jsp.jst and  jakarta.servlet.jsp.jstl-api
+    - See the change in sample-server-extension: https://github.com/oskariorg/sample-server-extension/pull/66
 
-Security configurations should have @Profile() and @Order() annotation to work properly. 
+Spring 6 security configuration have to changed to bean based classes from extending WebSecurityConfigurerAdapter etc.
+Also Oskari Spring configurations have been moved from fi.nls.oskari.spring -> org.oskari.spring:
+- FROM: https://github.com/oskariorg/oskari-server/blob/2.14.0/servlet-map/src/main/java/fi/nls/oskari/spring/security/database/OskariDatabaseSecurityConfig.java
+- TO: https://github.com/oskariorg/oskari-server/blob/develop/servlet-map/src/main/java/org/oskari/spring/security/database/OskariDatabaseSecurityConfig.java
 
-User class doesn't handle attribute serialization anymore so it must be done on calling end: 
-- user.getAttributesJSON() -> new JSONObject(user.getAttributes())
+Security configurations should have `@Profile()` and `@Order()` annotation to work properly. 
 
 ### User management
 
@@ -41,17 +42,23 @@ git grep -l fi.nls.oskari.domain. | xargs sed -i "s/fi.nls.oskari.domain.Role/or
 git grep -l fi.nls.oskari.spring. | xargs sed -i "s/import fi.nls.oskari.spring./import org.oskari.spring./g"
 ```
 
+User class doesn't handle attribute serialization anymore, but to get the same result you can do this:
+FROM: `user.getAttributesJSON()`
+TO: `new JSONObject(user.getAttributes())`
+
 ### Junit migrated from 4 to 5
+
 The Junit present on the BOM for oskari-server was updated from JUnit 4 to 5 and JUnit changed the groupId and artifactId in their update. This means that if your app does NOT define a specific version for the JUnit dependency and depend on oskari-server doing it, your app will not compile after updating due to missing dependency version. To fix this you have some options and here's what we've used:
 
 - for the sample-server-extension there were no tests so junit was removed from dependencies: https://github.com/oskariorg/sample-server-extension/pull/63
 - for apps that do have tests and don't want to migrate them, you can define the junit 4 dependency version for the app like this: https://github.com/nls-oskari/kartta.paikkatietoikkuna.fi/pull/235
 - for apps that want to migrate to JUnit 5, you can do something like this: https://github.com/nlsfi/oskari-server-extras/pull/31
 - Changed annotations
-  - @Before -> @BeforeEach
-  - @After -> @AfterEach
-  - @Ignore -> @Disabled()
-  - Tests may require @TestInstance(TestInstance.Lifecycle.PER_CLASS) annotation after update
+  - `@Before` -> `@BeforeEach`
+  - `@After` -> `@AfterEach`
+  - `@Ignore` -> `@Disabled()`
+  - Tests may require `@TestInstance(TestInstance.Lifecycle.PER_CLASS)` annotation after update
+
 ### Generic proxy removed
 
 A proxy implementation was previously used to pass requests from
@@ -76,10 +83,6 @@ See details:
 - (`GetLayerCapabilities` is approaching the chopping block but is still used by admin UI)
 - `GetPermissionsLayerHandlers` and `SaveLayerPermission` have been replaced by `LayerPermission`
 - `GetAllRoles` has been replaced by `ManageRoles`
-
-### TODO
-
-- `GetPermissionsLayerHandlers`, `GetAllRoles` and `SaveLayerPermission` are still used by admin-layerrights bundle, remove the bundle from 3.0 (replaced by admin-permissions)
 
 ## 2.14.0
 
