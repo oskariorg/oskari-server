@@ -151,4 +151,9 @@ public class IOHelperTest {
             }
         });
     }
+
+    @Test
+    public void testUserAgent() {
+        assertEquals("Oskari/0.0", IOHelper.getUserAgent(), "Test that the default version is returned when we don't have a MANIFEST.MF");
+    }
 }
