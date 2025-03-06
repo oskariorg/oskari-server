@@ -1,5 +1,5 @@
 
-package fi.nls.oskari.routing.pojo;
+package fi.nls.oskari.routing.pojo.v1;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,13 +20,13 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "lon",
     "lat",
     "arrival",
-    "orig",
+    "departure",
     "zoneId",
     "stopIndex",
     "stopSequence",
     "vertexType"
 })
-public class To_ {
+public class From_ {
 
     @JsonProperty("name")
     private String name;
@@ -40,8 +40,8 @@ public class To_ {
     private Double lat;
     @JsonProperty("arrival")
     private Long arrival;
-    @JsonProperty("orig")
-    private String orig;
+    @JsonProperty("departure")
+    private Long departure;
     @JsonProperty("zoneId")
     private String zoneId;
     @JsonProperty("stopIndex")
@@ -176,21 +176,21 @@ public class To_ {
     /**
      * 
      * @return
-     *     The orig
+     *     The departure
      */
-    @JsonProperty("orig")
-    public String getOrig() {
-        return orig;
+    @JsonProperty("departure")
+    public Long getDeparture() {
+        return departure;
     }
 
     /**
      * 
-     * @param orig
-     *     The orig
+     * @param departure
+     *     The departure
      */
-    @JsonProperty("orig")
-    public void setOrig(String orig) {
-        this.orig = orig;
+    @JsonProperty("departure")
+    public void setDeparture(Long departure) {
+        this.departure = departure;
     }
 
     /**

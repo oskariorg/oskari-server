@@ -4,7 +4,7 @@ package fi.nls.oskari.routing;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.routing.pojo.Route;
+import fi.nls.oskari.routing.pojo.v1.Route;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONException;
