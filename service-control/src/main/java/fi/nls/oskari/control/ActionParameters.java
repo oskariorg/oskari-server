@@ -317,15 +317,6 @@ public class ActionParameters {
         }
     }
 
-    /**
-     * Returns an api key for the request
-     * @return
-     */
-    public String getAPIkey() {
-        // TODO: use something better than session id
-        return getRequest().getSession().getId();
-    }
-
     public String getPayLoad() throws ActionParamsException {
         HttpServletRequest req = this.getRequest();
         try (InputStream in = req.getInputStream()) {
