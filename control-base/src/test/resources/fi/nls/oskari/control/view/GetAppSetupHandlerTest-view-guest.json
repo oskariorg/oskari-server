@@ -18,7 +18,6 @@
       "logout": "/logout"
     },
     "user": {
-      "apikey": "testkey",
       "email": "",
       "firstName": "guest",
       "lastName": "guest",
