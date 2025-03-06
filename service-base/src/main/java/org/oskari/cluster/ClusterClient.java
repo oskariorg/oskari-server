@@ -17,6 +17,7 @@ public class ClusterClient extends JedisPubSub {
     private String functionalityId;
     private Jedis client;
     private Map<String, List<MessageListener>> listeners = new HashMap<>();
+    private boolean stopped = false;
 
     /**
      * Same as JedisManager.publish() but this uses the same functionality id <> channel separation as when
@@ -72,6 +73,9 @@ public class ClusterClient extends JedisPubSub {
      * @return
      */
     public long sendMessage(String channel, String message) {
+        if (stopped) {
+            LOG.error("Listener for " + functionalityId + " stopped, but still trying to send messages!");
+        }
         return ClusterClient.sendMessage(functionalityId, channel, message);
     }
 
@@ -80,6 +84,7 @@ public class ClusterClient extends JedisPubSub {
      * after calling this.
      */
     public void stopListening() {
+        stopped = true;
         listeners.clear();
         try {
             // shutdown thread so it's not reconnecting
@@ -89,8 +94,13 @@ public class ClusterClient extends JedisPubSub {
         }
         try {
             // unsubscribe from Redis
-            // closes the client it was passed as well
+            // and close the client it was passed
             this.unsubscribe();
+            if (client != null) {
+                // we need to explicitly close the client if it's atill around
+                //  or the thread will continue to keep running after tomcat shutdown
+                client.close();
+            }
         } catch (Exception ignored) {
             LOG.ignore("Error unsubscribing while shutting down", ignored);
         }
@@ -130,6 +140,7 @@ public class ClusterClient extends JedisPubSub {
     private void startListening(String prefix) {
         // if subscribe raises en exception the Thread will end
         // and the executor will execute the next task -> reconnecting the client
+        stopped = false;
         service.execute(() -> {
             try (Jedis jedis = createClient())  {
                 LOG.info("Subscribing to all channels starting with", prefix);
@@ -138,7 +149,11 @@ public class ClusterClient extends JedisPubSub {
                 // the client remains blocked for subscription
                 jedis.psubscribe(this, prefix + "*");
             } catch (Exception e) {
-                LOG.error(e,"Problem listening to channel:", prefix);
+                if (!stopped) {
+                    // something unexpected happened since it wasn't stopped by calling the stopped function
+                    // if we don't handle it with this flag, there's unnecessary noise on server log on shutdown
+                    LOG.error(e,"Problem listening to channel:", prefix);
+                }
             } finally {
                 client = null;
             }

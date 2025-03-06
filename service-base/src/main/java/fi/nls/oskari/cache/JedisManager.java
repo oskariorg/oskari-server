@@ -118,14 +118,22 @@ public class JedisManager {
     }
 
     public static void shutdown() {
-        pool.close();
+        if (pool != null) {
+            // close calls destroy()
+            // https://github.com/redis/jedis/blob/5.3.0/src/main/java/redis/clients/jedis/util/Pool.java#L24-L25
+            pool.close();
+        }
     }
 
     /**
      * Destroys the pool
      */
     public void release() {
-        pool.destroy();
+        if (pool != null) {
+            // close calls destroy()
+            // https://github.com/redis/jedis/blob/5.3.0/src/main/java/redis/clients/jedis/util/Pool.java#L24-L25
+            pool.destroy();
+        }
     }
 
 

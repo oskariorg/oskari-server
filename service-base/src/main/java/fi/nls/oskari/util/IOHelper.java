@@ -13,7 +13,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.util.*;
-import java.util.jar.Manifest;
 import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -66,10 +65,15 @@ public class IOHelper {
     public static String getMyDomain() {
         return PropertyUtil.get("oskari.domain", "http://localhost:8080");
     }
+
+    public static String getManifestVersionInfo() {
+        Package pkg = IOHelper.class.getPackage();
+        return pkg.getImplementationVersion();
+    }
+
     public static String getUserAgent() {
         if (userAgent == null) {
-            Package pkg = Manifest.class.getPackage();
-            String implVersion = pkg.getImplementationVersion();
+            String implVersion = getManifestVersionInfo();
             if (implVersion == null || implVersion.isEmpty() || implVersion.contains("null")) {
                 // Some clients respond with 403 Forbidden if this includes null as string
                 // If we can't get the version, default to 0.0
