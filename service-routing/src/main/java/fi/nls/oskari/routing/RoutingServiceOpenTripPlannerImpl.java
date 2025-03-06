@@ -8,6 +8,7 @@ import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.routing.pojo.PlanConnection;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -84,22 +85,38 @@ public class RoutingServiceOpenTripPlannerImpl implements RoutingService {
                 result.setSuccess(true);
             } else {
                 result.setSuccess(false);
-                try {
-                    JSONObject error = new JSONObject(apiResponseString);
-                    if(error.has(PARAM_ERROR_MESSAGE)) {
-                        result.setErrorMessage(error.getString(PARAM_ERROR_MESSAGE));
-                    } else {
-                        result.setErrorMessage("ERROR");
-                    }
-                } catch (JSONException ex){
-                    LOGGER.warn("Cannot set error message to route response", ex);
-                }
+                result.setErrorMessage(this.getErrorMessage(apiResponseString));
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
         return result;
+    }
+
+    private String getErrorMessage(String errorsJSON) {
+        try {
+            JSONObject errorsJSONObject = new JSONObject(errorsJSON);
+            JSONArray errors = null;
+            JSONObject firstError = null;
+            if (errorsJSONObject.has(PARAM_ERRORS)) {
+                errors = errorsJSONObject.getJSONArray(PARAM_ERRORS);
+            }
+
+            if (errors != null && errors.length() > 0) {
+                firstError = errors.getJSONObject(0);
+            }
+
+            // return the message of the first error in the array if available.
+            if(firstError.has(PARAM_ERROR_MESSAGE)) {
+                return firstError.getString(PARAM_ERROR_MESSAGE);
+            }
+        } catch (JSONException ex){
+            LOGGER.warn("Cannot extract error message from response.", ex);
+        }
+
+        return "ERROR";
+
     }
 
     /**
