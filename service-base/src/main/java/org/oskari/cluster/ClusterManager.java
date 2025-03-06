@@ -32,6 +32,11 @@ public class ClusterManager {
         return instance;
     }
 
+    public static void shutdown() {
+        var currentClients =getInstance().clients;
+        currentClients.values().forEach(ClusterClient::stopListening);
+        currentClients.clear();
+    }
     /**
      * Returns a shared ClusterClient for given functionality (like "cache") that can be used to send/listen to messages
      * between cluster nodes.

@@ -1,8 +1,10 @@
 package org.oskari.spring;
 
+import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.ActionControl;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import org.oskari.cluster.ClusterManager;
 import org.oskari.spring.extension.OskariParamMethodArgumentResolver;
 import org.oskari.spring.extension.OskariViewResolver;
 import fi.nls.oskari.util.PropertyUtil;
@@ -135,6 +137,9 @@ public class SpringConfig implements WebMvcConfigurer, ServletContextAware, Appl
     public void tearDown() {
         LOG.info("Teardown");
         ActionControl.teardown();
+        // ClusterManager leaves threads running if we don't stop them
+        ClusterManager.shutdown();
+        // OskariInitializer closes JedisManager
         OskariInitializer.teardown();
     }
 
