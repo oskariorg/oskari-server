@@ -50,7 +50,6 @@ public class EnvHelper {
 
     // theme
     private static final String KEY_THEME = "theme";
-    private static final String KEY_APIKEY = "apikey";
 
     // appsetups
     private static final String KEY_APPSETUP = "app";
@@ -85,7 +84,6 @@ public class EnvHelper {
 
         // setup user info
         final JSONObject user = UserJsonHelper.toJSON(params.getUser());
-        JSONHelper.putValue(user, KEY_APIKEY, params.getAPIkey());
         JSONHelper.putValue(env, KEY_USER, user);
 
         // setup env urls info (api, terms of use, "geoportal url?")

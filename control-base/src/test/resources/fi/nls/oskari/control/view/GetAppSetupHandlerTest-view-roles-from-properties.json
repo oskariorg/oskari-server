@@ -18,7 +18,6 @@
       "uuid": "aaaa-bbbbb-cccc"
     },
     "user": {
-      "apikey": "testkey",
       "email": "test@oskari.org",
       "firstName": "Test",
       "lastName": "Oskari",

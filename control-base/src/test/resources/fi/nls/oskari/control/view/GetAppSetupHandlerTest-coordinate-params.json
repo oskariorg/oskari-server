@@ -18,7 +18,6 @@
       "uuid": "aaaa-bbbbb-cccc"
     },
     "user": {
-      "apikey": "testkey",
       "email": "",
       "firstName": "guest",
       "lastName": "guest",
