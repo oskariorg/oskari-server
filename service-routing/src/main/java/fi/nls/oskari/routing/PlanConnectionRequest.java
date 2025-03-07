@@ -173,6 +173,10 @@ public class PlanConnectionRequest {
     }
 
     private String getTransitModes(String paramModes) {
+        if (paramModes == null) {
+            return null;
+        }
+
         String[] modesArray = paramModes.split(",");
 
         List<String> transits = new ArrayList();

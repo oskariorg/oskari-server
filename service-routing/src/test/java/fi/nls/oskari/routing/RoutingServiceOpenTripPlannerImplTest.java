@@ -1,17 +1,24 @@
 package fi.nls.oskari.routing;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.routing.pojo.v1.Route;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.time.OffsetDateTime;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.when;
 
 public class RoutingServiceOpenTripPlannerImplTest {
     private static final Logger LOGGER = LogFactory.getLogger(RoutingServiceOpenTripPlannerImplTest.class);
@@ -21,90 +28,60 @@ public class RoutingServiceOpenTripPlannerImplTest {
     private static final String MAP_SRS = "EPSG:3067";
     private static final String JSON_ENCODING = "UTF-8";
 
+    private HttpURLConnection mockHttpURLConnection;
+    private MockedStatic<IOHelper> mockIOHelper;
     @BeforeEach
     public void initialize()throws Exception{
         PropertyUtil.addProperty("routing.srs", ROUTING_SRS);
+        mockIOHelper = mockStatic(IOHelper.class);
+        mockHttpURLConnection = mock(HttpURLConnection.class);
+
     }
 
     @AfterEach
     public void goAway() throws Exception{
         PropertyUtil.clearProperties();
+        if (mockIOHelper != null) {
+            mockIOHelper.close();
+        }
     }
 
+    private RouteParams initRouteParams() {
+        RouteParams routeParams = new RouteParams();
+        routeParams.setSrs(MAP_SRS);
+        routeParams.setFrom(1235467.0, 765432.0);
+        routeParams.setTo(2235467.0, 665432.0);
+        routeParams.setDate(OffsetDateTime.now());
+        routeParams.setMode(null);
+        routeParams.setIsArriveBy(true);
+        routeParams.setIsWheelChair(false);
+        routeParams.setLang("fi");
+
+        return routeParams;
+    }
     @Test
     public void testParseRouteThatIsOk() throws Exception {
-        RouteParser parser = new RouteParser();
-        ObjectMapper mapper = new ObjectMapper();
 
-        RouteParams routeparams = new RouteParams();
-        routeparams.setSrs(MAP_SRS);
+        String responseJson = new String(getClass().getResourceAsStream("digitransit-response-success-v2.json").readAllBytes());
+        when(IOHelper.post((String)any(), any(), (byte[])any())).thenReturn(this.mockHttpURLConnection);
+        when(IOHelper.readString((InputStream)any(), (String)any())).thenReturn(responseJson);
 
-        String routeJson = IOHelper.readString(getClass().getResourceAsStream("route2.json"), JSON_ENCODING);
-        routeJson = routeJson.replaceAll("\\\\", "\\\\\\\\");
+        RouteParams routeParams = initRouteParams();
+        RouteResponse response = ROUTING_SERVICE.getRoute(routeParams);
 
-
-        Route route = mapper.readValue(routeJson, Route.class);
-
-        RouteResponse response = new RouteResponse();
-
-        if(!ROUTING_SERVICE.isErrorMessage(routeJson)){
-            // TODO: fixme
-//            response.setRequestParameters(parser.generateRequestParameters(route, routeparams));
-//            response.setPlan(parser.generatePlan(route, routeparams));
-            response.setSuccess(true);
-        } else {
-            response.setSuccess(false);
-            try {
-                JSONObject error = new JSONObject(routeJson);
-                if(error.has(RoutingServiceOpenTripPlannerImpl.PARAM_ERROR_MESSAGE)) {
-                    response.setErrorMessage(error.getString(RoutingServiceOpenTripPlannerImpl.PARAM_ERROR_MESSAGE));
-                } else {
-                    response.setErrorMessage("ERROR");
-                }
-            } catch (JSONException ex){
-                LOGGER.warn("Cannot set error message to route response", ex);
-            }
-        }
-        LOGGER.debug(response.toJSON());
-
+        Assertions.assertTrue(response.isSuccess());
     }
 
     @Test
-    public void testParseRouteThatIsNok() throws Exception {
+    public void testParseRouteThatIsNotOk() throws Exception {
+        String responseJson = new String(getClass().getResourceAsStream("digitransit-response-error-v2.json").readAllBytes());
+        when(IOHelper.post((String)any(), any(), (byte[])any())).thenReturn(this.mockHttpURLConnection);
+        when(IOHelper.readString((InputStream)any(), (String)any())).thenReturn(responseJson);
 
-        RouteParser parser = new RouteParser();
-        ObjectMapper mapper = new ObjectMapper();
+        RouteParams routeParams = initRouteParams();
+        RouteResponse response = ROUTING_SERVICE.getRoute(routeParams);
 
-        RouteParams routeparams = new RouteParams();
-        routeparams.setSrs(MAP_SRS);
-
-        String routeJson = IOHelper.readString(getClass().getResourceAsStream("route_error.json"), JSON_ENCODING);
-        routeJson = routeJson.replaceAll("\\\\", "\\\\\\\\");
-
-
-        Route route = mapper.readValue(routeJson, Route.class);
-
-        RouteResponse response = new RouteResponse();
-
-        if(!ROUTING_SERVICE.isErrorMessage(routeJson)){
-            // TODO: fix
-//            response.setRequestParameters(parser.generateRequestParameters(route, routeparams));
-//            response.setPlan(parser.generatePlan(route, routeparams));
-            response.setSuccess(true);
-        } else {
-            response.setSuccess(false);
-            try {
-                JSONObject error = new JSONObject(routeJson);
-                if(error.has(RoutingServiceOpenTripPlannerImpl.PARAM_ERROR_MESSAGE)) {
-                    response.setErrorMessage(error.getString(RoutingServiceOpenTripPlannerImpl.PARAM_ERROR_MESSAGE));
-                } else {
-                    response.setErrorMessage("ERROR");
-                }
-            } catch (JSONException ex){
-                LOGGER.warn("Cannot set error message to route response", ex);
-            }
-        }
-        LOGGER.debug(response.toJSON());
+        Assertions.assertFalse(response.isSuccess());
 
     }
 }

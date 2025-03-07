@@ -18,9 +18,7 @@ public class RouteParams {
     private String srs;
     private String lang;
     private String mode;
-    private long maxWalkDistance;
     private Boolean isWheelChair;
-    private Boolean showIntermediateStops;
 
 
     private Point createPoint(Double x, Double y) {
@@ -90,13 +88,6 @@ public class RouteParams {
         this.mode = mode;
     }
 
-    public long getMaxWalkDistance() {
-        return maxWalkDistance;
-    }
-
-    public void setMaxWalkDistance(long maxWalkDistance) {
-        this.maxWalkDistance = maxWalkDistance;
-    }
 
     public Boolean getIsWheelChair() {
         return isWheelChair;
@@ -106,11 +97,4 @@ public class RouteParams {
         this.isWheelChair = isWheelChair;
     }
 
-    public Boolean getIsShowIntermediateStops() {
-        return showIntermediateStops;
-    }
-
-    public void setIsShowIntermediateStops(Boolean showIntermediateStops) {
-        this.showIntermediateStops = showIntermediateStops;
-    }
 }
