@@ -9,7 +9,6 @@ import fi.nls.oskari.routing.RouteParams;
 import fi.nls.oskari.routing.RouteResponse;
 import fi.nls.oskari.routing.RoutingService;
 import fi.nls.oskari.routing.RoutingServiceOpenTripPlannerImpl;
-import fi.nls.oskari.util.ConversionHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
@@ -68,11 +67,9 @@ public class RoutingHandler extends ActionHandler {
         }
         routeparams.setIsArriveBy("true".equals(params.getHttpParam(PARAM_ARRIVEBY)));
         routeparams.setIsWheelChair("true".equals(params.getHttpParam(PARAM_WHEELCHAIR)));
-        routeparams.setIsShowIntermediateStops("true".equals(params.getHttpParam(PARAM_SHOW_INTERMEDIATE_STOPS)));
 
         routeparams.setSrs(params.getHttpParam(PARAM_SRS));
         routeparams.setLang(params.getHttpParam(PARAM_LANGUAGE));
-        routeparams.setMaxWalkDistance(ConversionHelper.getLong(params.getHttpParam(PARAM_MAX_WALK_DISTANCE, PropertyUtil.get("routing.default.maxwalkdistance")), 1000000));
         routeparams.setMode(params.getHttpParam(PARAM_MODE, PropertyUtil.get("routing.default.mode")));
 
         RouteResponse result = service.getRoute(routeparams);

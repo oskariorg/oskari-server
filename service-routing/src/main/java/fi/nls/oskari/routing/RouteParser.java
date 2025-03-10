@@ -585,8 +585,6 @@ public class RouteParser {
      * @return request parameters
      */
     public JSONObject generateRequestParameters(RouteParams params){
-        // TODO: maybe rethink how and if the original request parameters even should be added to response...
-        // Doing this here is a bit useless mapping back and forth - type thing, we could just send back the actionparams we get in handleAction.
         final JSONObject requestParameters = new JSONObject();
         final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
@@ -594,7 +592,6 @@ public class RouteParser {
             requestParameters.put(PARAM_DATE, params.getDate().format(dateFormatter));
             requestParameters.put(PARAM_WHEELCHAIR, params.getIsWheelChair());
             requestParameters.put(PARAM_ARRIVE_BY, params.getIsArriveBy());
-            requestParameters.put(PARAM_MAX_WALK_DISTANCE, params.getMaxWalkDistance());
             requestParameters.put(PARAM_TIME, params.getDate().format(timeFormatter));
             requestParameters.put(PARAM_LOCALE, params.getLang());
             requestParameters.put(PARAM_FROM_PLACE, getPointJSON(params.getFrom().getX(), params.getFrom().getY()));

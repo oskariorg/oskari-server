@@ -22,12 +22,6 @@ public class PlanConnectionRequest {
     String JSON_CONTENT_TRANSFER = "transfer";
 
     public String getQuery(RouteParams params) {
-/*
-        // TODO: check again if an equivalent for these could be found hidden inside the api
-        routeparams.setIsShowIntermediateStops("true".equals(params.getHttpParam(PARAM_SHOW_INTERMEDIATE_STOPS)));
-        routeparams.setMaxWalkDistance(ConversionHelper.getLong(params.getHttpParam(PARAM_MAX_WALK_DISTANCE, PropertyUtil.get("routing.default.maxwalkdistance")), 1000000));
-*/
-
         String modes = params.getMode();
         String transitModes = getTransitModes(modes);
         if (transitModes != null) {
