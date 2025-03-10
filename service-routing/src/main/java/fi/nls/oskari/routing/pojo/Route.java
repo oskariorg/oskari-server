@@ -1,87 +1,50 @@
-
 package fi.nls.oskari.routing.pojo;
 
-import com.fasterxml.jackson.annotation.*;
-
-import jakarta.annotation.Generated;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Generated("org.jsonschema2pojo")
-@JsonPropertyOrder({
-        "requestParameters",
-        "plan",
-        "debugOutput"
-})
 public class Route {
+    @JsonProperty("gtfsId")
+    private String gtfsId;
+    @JsonProperty("longName")
+    private String longName;
 
-    @JsonProperty("requestParameters")
-    private RequestParameters requestParameters;
-    @JsonProperty("plan")
-    private Plan plan;
-    @JsonProperty("debugOutput")
-    private DebugOutput debugOutput;
-    @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    @JsonProperty("shortName")
+    private String shortName;
 
-    /**
-     * @return The requestParameters
-     */
-    @JsonProperty("requestParameters")
-    public RequestParameters getRequestParameters() {
-        return requestParameters;
+    @JsonProperty("type")
+    private int type;
+
+    public String getGtfsId() {
+        return gtfsId;
     }
 
-    /**
-     * @param requestParameters The requestParameters
-     */
-    @JsonProperty("requestParameters")
-    public void setRequestParameters(RequestParameters requestParameters) {
-        this.requestParameters = requestParameters;
+    public void setGtfsId(String gtfsId) {
+        this.gtfsId = gtfsId;
     }
 
-    /**
-     * @return The plan
-     */
-    @JsonProperty("plan")
-    public Plan getPlan() {
-        return plan;
+    public String getLongName() {
+        return longName;
     }
 
-    /**
-     * @param plan The plan
-     */
-    @JsonProperty("plan")
-    public void setPlan(Plan plan) {
-        this.plan = plan;
+    public void setLongName(String longName) {
+        this.longName = longName;
     }
 
-    /**
-     * @return The debugOutput
-     */
-    @JsonProperty("debugOutput")
-    public DebugOutput getDebugOutput() {
-        return debugOutput;
+    public String getShortName() {
+        return shortName;
     }
 
-    /**
-     * @param debugOutput The debugOutput
-     */
-    @JsonProperty("debugOutput")
-    public void setDebugOutput(DebugOutput debugOutput) {
-        this.debugOutput = debugOutput;
+    public void setShortName(String shortName) {
+        this.shortName = shortName;
     }
 
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
+    public int getType() {
+        return type;
     }
 
-    @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
+    public void setType(int type) {
+        this.type = type;
     }
-
 }

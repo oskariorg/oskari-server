@@ -758,6 +758,14 @@ public class IOHelper {
     }
 
     public static HttpURLConnection post(String url, String contentType,
+            byte[] body, String userName, String password) throws IOException {
+
+        HttpURLConnection conn = getConnection(url);
+        setupBasicAuth(conn, userName, password);
+
+        return send(conn, "POST", contentType, body);
+    }
+    public static HttpURLConnection post(String url, String contentType,
             ByteArrayOutputStream baos) throws IOException {
         return send(getConnection(url), "POST", contentType, baos);
     }
