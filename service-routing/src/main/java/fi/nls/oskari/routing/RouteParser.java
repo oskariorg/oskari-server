@@ -370,9 +370,6 @@ public class RouteParser {
             }
         } catch (JSONException ex){
             LOG.error("Cannot get itineraries legs JSON", ex);
-        } catch(Exception e) {
-            // TODO: remove this before going to develop -> keep for ease of debugging.
-            LOG.error("LegsJSON major fail.", e);
         }
 
         return legsJSON;
