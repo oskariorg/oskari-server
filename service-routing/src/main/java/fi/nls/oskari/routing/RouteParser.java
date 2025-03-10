@@ -201,8 +201,8 @@ public class RouteParser {
     private JSONObject getFromJSON(PlanConnection planConnection, RouteParams params){
         // first node -> first leg -> from
         Edge firstEdge = planConnection.getEdges().get(0);
-        fi.nls.oskari.routing.pojo.Leg lastLeg = firstEdge.getNode().getLegs().get(0);
-        final Place from = lastLeg.getFrom();
+        fi.nls.oskari.routing.pojo.Leg firstLeg = firstEdge.getNode().getLegs().get(0);
+        final Place from = firstLeg.getFrom();
         final JSONObject fromJSON = new JSONObject();
         final String sourceSRS = PropertyUtil.get("routing.srs");
         final String targetSRS = params.getSrs();
