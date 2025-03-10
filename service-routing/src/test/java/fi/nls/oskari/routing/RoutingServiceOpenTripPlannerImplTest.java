@@ -3,6 +3,7 @@ package fi.nls.oskari.routing;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.util.DuplicateException;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONObject;
@@ -16,6 +17,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.NoSuchElementException;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -27,6 +29,7 @@ public class RoutingServiceOpenTripPlannerImplTest {
     private static final RoutingServiceOpenTripPlannerImpl ROUTING_SERVICE = new RoutingServiceOpenTripPlannerImpl();
 
     public static final String ROUTING_SRS = "EPSG:4326";
+    public static final String ROUTING_URL = "not_a_real_url_but_just_some_value";
     private static final String MAP_SRS = "EPSG:3067";
     private static final String JSON_ENCODING = "UTF-8";
 
@@ -35,6 +38,7 @@ public class RoutingServiceOpenTripPlannerImplTest {
     @BeforeEach
     public void initialize()throws Exception{
         PropertyUtil.addProperty("routing.srs", ROUTING_SRS);
+        PropertyUtil.addProperty("routing.url", ROUTING_URL);
         mockIOHelper = mockStatic(IOHelper.class);
         mockHttpURLConnection = mock(HttpURLConnection.class);
 
@@ -123,4 +127,23 @@ public class RoutingServiceOpenTripPlannerImplTest {
         Assertions.assertEquals(routeParams.getTo().getY(), ((JSONObject)requestParams.get("toPlace")).get("lat"));
     }
 
+    @Test
+    public void testThrowsExceptionWhenNoURLProvided() {
+        // clear properties == no routing.url
+        PropertyUtil.clearProperties();
+        try {
+            PropertyUtil.addProperty("routing.srs", ROUTING_SRS, true);
+            Assertions.assertThrows(NoSuchElementException.class, () -> { ROUTING_SERVICE.getRoute(initRouteParams()); });
+
+        } catch(DuplicateException ex) {
+            LOGGER.error("Duplicate Exception thrown. ", ex);
+        }
+    }
+
+    @Test
+    public void testThrowsExceptionWhenNoRoutingSRSProvided() {
+        // clear properties == no routing.srs
+        PropertyUtil.clearProperties();
+        Assertions.assertThrows(NoSuchElementException.class, () -> { ROUTING_SERVICE.getRoute(initRouteParams()); });
+    }
 }

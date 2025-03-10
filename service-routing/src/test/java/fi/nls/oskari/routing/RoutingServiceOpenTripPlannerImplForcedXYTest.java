@@ -18,6 +18,7 @@ public class RoutingServiceOpenTripPlannerImplForcedXYTest extends RoutingServic
     @BeforeEach
     public void initialize() throws Exception{
         PropertyUtil.addProperty("routing.srs", ROUTING_SRS);
+        PropertyUtil.addProperty("routing.url", ROUTING_URL);
         System.setProperty("org.geotools.referencing.forceXY", "true");
         PropertyUtil.addProperty("routing.forceXY", "true");
         mockIOHelper = mockStatic(IOHelper.class);

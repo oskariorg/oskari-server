@@ -1,5 +1,6 @@
 package fi.nls.oskari.routing;
 
+import org.apache.commons.text.StringSubstitutor;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -7,7 +8,9 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PlanConnectionRequest {
 
@@ -22,6 +25,115 @@ public class PlanConnectionRequest {
     String JSON_CONTENT_TRANSFER = "transfer";
 
     public String getQuery(RouteParams params) {
+        Map<String, String> planConnectionReplamentMap = getPlanconnectionReplacementMap(params);
+        StringSubstitutor substitutor = new StringSubstitutor(planConnectionReplamentMap);
+
+        String planConnectionQuery = """
+            {
+                planConnection(
+                    ${transitModes}
+                    ${dateTimeJSON}
+                    locale: \"${lang}\"
+            """;
+
+        if (params.getIsWheelChair()) {
+            planConnectionQuery += """
+                preferences: {
+                    accessibility: {
+                        wheelchair: {
+                            enabled: true
+                        }
+                    }
+                }
+            """;
+        }
+
+        planConnectionQuery += """
+                origin: {
+                    location: {
+                        coordinate: {
+                            longitude: ${fromLon}
+                            latitude: ${fromLat}
+                        }
+                    }
+                },
+                destination: {
+                    location: {
+                        coordinate: {
+                            longitude: ${toLon}
+                            latitude: ${toLat}
+                        }
+                    }
+                }) {
+                    searchDateTime
+                    edges {
+                        node {
+                            ${nodeStaticFields}
+                            legs {
+                                ${legStaticResultFields}
+                                trip {
+                                    gtfsId
+                                }
+                                route {
+                                    gtfsId
+                                    longName
+                                    shortName
+                                    type
+                                }
+                                from {
+                                    ${fromPlaceStaticFields}
+                                }
+                                to {
+                                    ${toPlaceStaticFields}
+                                }
+                                legGeometry {
+                                    length
+                                    points
+                                }
+                                start {
+                                    ${startTime}
+                                }
+                                end {
+                                    ${endTime}
+                                }
+                                agency {
+                                    gtfsId
+                                    name
+                                    timezone
+                                }
+                                steps {
+                                    area
+                                    elevationProfile {
+                                        distance
+                                        elevation
+                                    }
+                                    streetName
+                                    distance
+                                    bogusName
+                                    stayOn
+                                    lon
+                                    lat
+                                    absoluteDirection
+                                    relativeDirection
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            """;
+        String query = substitutor.replace(planConnectionQuery);
+        try {
+            JSONObject json = new JSONObject();
+            json.put("query", query);
+            return json.toString();
+
+        } catch (JSONException e) {
+            return null;
+        }
+    }
+
+    private Map<String, String> getPlanconnectionReplacementMap(RouteParams params) {
         String modes = params.getMode();
         String transitModes = getTransitModes(modes);
         if (transitModes != null) {
@@ -33,137 +145,60 @@ public class PlanConnectionRequest {
 
         String dateTimeJSON = getDateTimeJSON(params.getIsArriveBy(), params.getDate());
 
-        String query = "  {\n" +
-        "    planConnection(\n" +
-                transitModes + "\n" +
-                dateTimeJSON + "\n" +
-        "       locale: \"" + params.getLang()+ "\"";
+        Map<String, String> planConnectionReplamentMap = new HashMap<>();
+        planConnectionReplamentMap.put("transitModes", transitModes);
+        planConnectionReplamentMap.put("dateTimeJSON", dateTimeJSON);
+        planConnectionReplamentMap.put("lang", params.getLang());
+        planConnectionReplamentMap.put("fromLon", String.valueOf(params.getFrom().getX()));
+        planConnectionReplamentMap.put("fromLat", String.valueOf(params.getFrom().getY()));
+        planConnectionReplamentMap.put("toLon", String.valueOf(params.getTo().getX()));
+        planConnectionReplamentMap.put("toLat", String.valueOf(params.getTo().getY()));
+        planConnectionReplamentMap.put("nodeStaticFields", getNodeStaticResultFields());
+        planConnectionReplamentMap.put("legStaticResultFields", getLegStaticResultFields());
+        planConnectionReplamentMap.put("fromPlaceStaticFields", getPlaceStaticResultFields());
+        planConnectionReplamentMap.put("toPlaceStaticFields", getPlaceStaticResultFields());
+        planConnectionReplamentMap.put("startTime", getScheduledTimeStaticResultFields());
+        planConnectionReplamentMap.put("endTime", getScheduledTimeStaticResultFields());
 
-        if (params.getIsWheelChair()) {
-            query += "preferences: { "+
-                "   accessibility: {"+
-                "       wheelChair: { " +
-                "           enabled: true "+
-                "       }"+
-                "  }" +
-                "}";
-        }
-        query +=
-        "   origin: {\n" +
-        "      location: {\n" +
-        "          coordinate: {\n" +
-        "          longitude: " + params.getFrom().getX()+",\n" +
-        "            latitude: " + params.getFrom().getY()+"\n" +
-        "          }\n" +
-        "        }\n" +
-        "      },\n" +
-        "      destination:\n" +
-        "      {\n" +
-        "        location: {\n" +
-        "          coordinate: {\n" +
-        "            longitude: " + params.getTo().getX() + ",\n" +
-        "            latitude: " + params.getTo().getY() + "\n" +
-        "          }\n" +
-        "        }\n" +
-        "      }) {\n" +
-        "      searchDateTime\n" +
-        "      edges {\n" +
-        "        node {\n" +
-                   getNodeStaticResultFields() +
-        "          legs {\n" +
-                     getLegStaticResultFields() +
-        "            trip \n{"+
-        "              gtfsId\n\n"+
-        "            }\n"+
-        "            route {\n"+
-        "               gtfsId\n\n"+
-        "               longName\n"+
-        "               shortName\n"+
-        "               type\n"+
-        "            }\n"+
-        "            from {\n" +
-                        getPlaceStaticResultFields() +
-        "           }\n" +
-        "           to {\n" +
-                        getPlaceStaticResultFields() +
-        "           }\n" +
-        "           legGeometry {\n" +
-        "             length\n" +
-        "             points\n" +
-        "           }\n" +
-        "           start {\n" +
-                        getScheduledTimeStaticResultFields() +
-        "           }\n" +
-        "           end {\n" +
-                        getScheduledTimeStaticResultFields() +
-        "           }\n" +
-        "           agency {\n" +
-        "             gtfsId\n\n" +
-        "             name\n" +
-        "             timezone\n" +
-        "           }\n" +
-        "           steps {\n" +
-        "             area\n" +
-        "             elevationProfile {\n" +
-        "               distance\n" +
-        "               elevation\n" +
-        "             }\n" +
-        "             streetName\n" +
-        "             distance\n" +
-        "             bogusName\n" +
-        "             stayOn\n" +
-        "             lon\n" +
-        "             lat\n" +
-        "             absoluteDirection\n" +
-        "             relativeDirection\n" +
-        "          }\n" +
-        "        }\n" +
-        "      }\n" +
-        "    }\n" +
-        "  }\n" +
-        "}\n";
-
-        try {
-            JSONObject json = new JSONObject();
-            json.put("query", query);
-            return json.toString();
-
-        } catch (JSONException e) {
-            return null;
-        }
+        return planConnectionReplamentMap;
     }
 
     private String getLegStaticResultFields() {
-        return
-        "mode\n" +
-        "distance\n" +
-        "duration\n" +
-        "interlineWithPreviousLeg\n" +
-        "realTime\n" +
-        "rentedBike\n" +
-        "serviceDate\n" +
-        "transitLeg\n";
+        return """
+            mode
+            distance
+            duration
+            interlineWithPreviousLeg
+            realTime
+            rentedBike
+            serviceDate
+            transitLeg
+        """;
 
     }
 
     private String getNodeStaticResultFields() {
-        return "elevationLost\n" +
-        "elevationGained\n" +
-        "waitingTime\n" +
-        "walkTime\n" +
-        "walkDistance\n" +
-        "duration\n" +
-        "numberOfTransfers\n" +
-        "start\n" +
-        "end\n";
+        return """
+            elevationLost
+            elevationGained
+            waitingTime
+            walkTime
+            walkDistance
+            duration
+            numberOfTransfers
+            start
+            end
+        """;
+            
     }
 
     private String getScheduledTimeStaticResultFields() {
-        return "" +
-        "scheduledTime\n" +
-        "estimated {\n" +
-        "   delay\n" +
-        "}\n";
+        return """
+            scheduledTime
+            estimated {
+                delay
+            }
+        """;
     }
 
     private String getTransitModes(String paramModes) {
@@ -184,7 +219,7 @@ public class PlanConnectionRequest {
         if (Arrays.stream(modesArray).noneMatch(ALL_PUBLIC_TRANSPORTATIONS_MODE::equals)) {
             for (String transitMode : modesArray) {
                 if (Arrays.stream(AVAILABLE_TRANSIT_MODES).anyMatch(transitMode::equals)) {
-                    transits.add(transitMode);
+                    transits.add("{ mode: " + transitMode + "}");
                 }
             }
         }
@@ -196,7 +231,7 @@ public class PlanConnectionRequest {
         }
 
         if (transits.size() > 0) {
-            transitsString = JSON_CONTENT_TRANSIT + ": [" + String.join(", ", transits) + "]";
+            transitsString = JSON_CONTENT_TRANSIT + ": [" + String.join(", ", transits) + "]\n";
         }
         if (transfers.size() > 0) {
             transfersString = JSON_CONTENT_TRANSFER + ": [" + String.join(", ", transfers) + "]";
@@ -231,27 +266,28 @@ public class PlanConnectionRequest {
     }
 
     private String getPlaceStaticResultFields() {
-        return
-        "name\n" +
-        "lon\n" +
-        "lat\n" +
-        "vertexType\n" +
-        "arrival {\n" +
-        "   estimated {\n" +
-        "       delay\n" +
-        "   }\n" +
-        "   scheduledTime\n" +
-        "}\n" +
-        "departure {\n" +
-        "    estimated {\n" +
-        "        delay\n" +
-        "    }\n" +
-        "   scheduledTime\n" +
-        "}\n" +
-        "stop {\n" +
-        "    gtfsId\n\n" +
-        "    code\n" +
-        "    zoneId\n" +
-        "}\n";
+        return """
+            name
+            lon
+            lat
+            vertexType
+            arrival {
+               estimated {
+                   delay
+               }
+               scheduledTime
+            }
+            departure {
+                estimated {
+                    delay
+                }
+               scheduledTime
+            }
+            stop {
+                gtfsId
+                code
+                zoneId
+            }
+        """;
     }
 }
