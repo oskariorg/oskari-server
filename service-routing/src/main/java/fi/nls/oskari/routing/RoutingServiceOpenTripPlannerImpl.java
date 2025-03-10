@@ -35,7 +35,7 @@ public class RoutingServiceOpenTripPlannerImpl implements RoutingService {
         RouteParser parser = new RouteParser();
 
         //Transform coordinates for the route service
-        final String targetSRS = PropertyUtil.get("routing.srs");
+        final String targetSRS = PropertyUtil.getNecessary("routing.srs", "No target SRS provided!");
         final String sourceSRS = params.getSrs();
         final Point newFrom = ProjectionHelper.transformPoint(params.getFrom().getX(), params.getFrom().getY(), sourceSRS, targetSRS);
         final Point newTo = ProjectionHelper.transformPoint(params.getTo().getX(), params.getTo().getY(), sourceSRS, targetSRS);
@@ -53,13 +53,13 @@ public class RoutingServiceOpenTripPlannerImpl implements RoutingService {
             HttpURLConnection connection = null;
             if(username != null && !username.isEmpty() && password != null && !password.isEmpty()) {
                 connection  = IOHelper.post(
-                    PropertyUtil.get("routing.url"),
+                    PropertyUtil.getNecessary("routing.url", "No routing URL configured to properties!"),
                     "application/json",
                     planConnectionRequestQuery.getBytes("UTF-8"),
                     username, password);
             } else {
                 connection  = IOHelper.post(
-                    PropertyUtil.get("routing.url"),
+                    PropertyUtil.getNecessary("routing.url", "No routing URL configured to properties!"),
                     "application/json",
                     planConnectionRequestQuery.getBytes("UTF-8"));
             }
