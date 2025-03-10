@@ -1,0 +1,28 @@
+{
+  "errors": [
+    {
+      "message": "Validation error (SubselectionRequired@[planConnection/edges/node/legs/start]) : Subselection required for type 'LegTime!' of field 'start'",
+      "locations": [
+        {
+          "line": 48,
+          "column": 13
+        }
+      ],
+      "extensions": {
+        "classification": "ValidationError"
+      }
+    },
+    {
+      "message": "Validation error (SubselectionRequired@[planConnection/edges/node/legs/end]) : Subselection required for type 'LegTime!' of field 'end'",
+      "locations": [
+        {
+          "line": 49,
+          "column": 13
+        }
+      ],
+      "extensions": {
+        "classification": "ValidationError"
+      }
+    }
+  ]
+}
