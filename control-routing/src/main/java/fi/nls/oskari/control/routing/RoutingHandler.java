@@ -51,13 +51,13 @@ public class RoutingHandler extends ActionHandler {
         routeparams.setFrom(params.getRequiredParamDouble(PARAM_FROM_LON), params.getRequiredParamDouble(PARAM_FROM_LAT));
         routeparams.setTo(params.getRequiredParamDouble(PARAM_TO_LON), params.getRequiredParamDouble(PARAM_TO_LAT));
 
-        final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
         final String dateTime =
                 params.getHttpParam(PARAM_DATE, LocalDateTime.now(ZoneId.systemDefault()).format(dateFormatter)) + " " +
                 params.getHttpParam(PARAM_TIME, LocalDateTime.now(ZoneId.systemDefault()).format(timeFormatter));
         try {
-            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm");
             LocalDateTime ldt = LocalDateTime.parse(dateTime, dateTimeFormatter);
             OffsetDateTime odt = ldt.atOffset(ldt.atZone(ZoneId.systemDefault()).getOffset());
             routeparams.setDate(odt);
