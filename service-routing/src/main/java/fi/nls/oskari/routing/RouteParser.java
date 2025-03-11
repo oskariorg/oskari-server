@@ -24,6 +24,7 @@ import org.json.JSONObject;
 
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
 
@@ -188,7 +189,7 @@ public class RouteParser {
         } catch(JSONException ex){
             LOG.error("Cannot generate routing plan", ex);
         }
-
+        
         return planJSON;
     }
 
@@ -199,11 +200,11 @@ public class RouteParser {
      * @return from JSON
      */
     private JSONObject getFromJSON(PlanConnection planConnection, RouteParams params){
-        // first node -> first leg -> from
-        Edge firstEdge = planConnection.getEdges().get(0);
-        fi.nls.oskari.routing.pojo.Leg firstLeg = firstEdge.getNode().getLegs().get(0);
-        final Place from = firstLeg.getFrom();
         final JSONObject fromJSON = new JSONObject();
+        final Place from = getFromOfTheFirstLeg(planConnection);
+        if (from == null) {
+            return fromJSON;
+        }
         final String sourceSRS = PropertyUtil.get("routing.srs");
         final String targetSRS = params.getSrs();
 
@@ -223,6 +224,72 @@ public class RouteParser {
         return fromJSON;
     }
 
+    private Place getToOfTheLastLeg(PlanConnection planConnection) {
+
+
+        // last node -> last leg -> to
+        Edge lastEdge = Optional.ofNullable(planConnection.getEdges())
+            .map((edges) -> {
+                if (edges == null || edges.isEmpty()) {
+                    return null;
+                }
+                return edges.get(edges.size() - 1);
+            })
+            .orElse(null);
+
+        if (lastEdge == null) {
+            return null;
+        }
+
+        Leg lastLeg = Optional.ofNullable(lastEdge.getNode())
+            .map(Node::getLegs)
+            .map(legs -> {
+                if (legs == null || legs.isEmpty()) {
+                    return null;
+                }
+                return legs.get(legs.size() - 1);
+
+            })
+            .orElse(null);
+
+        if (lastLeg == null) {
+            return null;
+        }
+
+        return lastLeg.getTo();
+    }
+
+    private Place getFromOfTheFirstLeg(PlanConnection planConnection) {
+        // first node -> first leg -> from
+        Edge firstEdge = Optional.ofNullable(planConnection.getEdges())
+            .map((edges) -> {
+                if (edges == null || edges.isEmpty()) {
+                    return null;
+                }
+                return edges.get(0);
+            })
+            .orElse(null);
+
+        if (firstEdge == null) {
+            return null;
+        }
+
+        Leg firstLeg = Optional.ofNullable(firstEdge.getNode())
+            .map(Node::getLegs)
+            .map(legs -> {
+                if (legs == null || legs.isEmpty()) {
+                    return null;
+                }
+                return legs.get(0);
+            })
+            .orElse(null);
+
+        if (firstLeg == null) {
+            return null;
+        }
+
+        return firstLeg.getFrom();
+    }
 
     /**
      * Get itineraries JSON
@@ -234,6 +301,9 @@ public class RouteParser {
         final List<Edge> edges = planConnection.getEdges();
         final JSONArray itinerariesJSON = new JSONArray();
 
+        if (edges == null) {
+            return itinerariesJSON;
+        }
         try {
             for (Edge edge : edges) {
                 Node node = edge.getNode();
@@ -266,6 +336,10 @@ public class RouteParser {
     public JSONObject getItinerariesGeoJSON(Node node, RouteParams params) {
         final JSONObject featureCollection = new JSONObject();
         final List<Leg> legs = node.getLegs();
+
+        if (legs == null) {
+            return featureCollection;
+        }
         final String targetSRS = params.getSrs();
         try {
             featureCollection.put(PARAM_GEOJSON_TYPE, "FeatureCollection");
@@ -290,11 +364,13 @@ public class RouteParser {
      * @return to JSON
      */
     private JSONObject getToJSON(PlanConnection planConnection, RouteParams params){
-        Edge lastEdge = planConnection.getEdges().get(planConnection.getEdges().size() - 1);
-        fi.nls.oskari.routing.pojo.Leg lastLeg = lastEdge.getNode().getLegs().get(lastEdge.getNode().getLegs().size() - 1);
-        final Place to = lastLeg.getTo();
+        final Place to = getToOfTheLastLeg(planConnection);
 
         final JSONObject toJSON = new JSONObject();
+
+        if (to == null) {
+            return toJSON;
+        }
         final String sourceSRS = PropertyUtil.get("routing.srs");
         final String targetSRS = params.getSrs();
 
@@ -323,6 +399,9 @@ public class RouteParser {
     public JSONArray getLegsJSON(Node node, RouteParams params) {
         final List<Leg> legs = node.getLegs();
         final JSONArray legsJSON = new JSONArray();
+        if (legs == null) {
+            return legsJSON;
+        }
         final String sourceSRS = PropertyUtil.get("routing.srs");
         final String targetSRS = params.getSrs();
         try {
@@ -479,6 +558,9 @@ public class RouteParser {
         List<Step> steps = leg.getSteps();
         JSONArray stepsJSON = new JSONArray();
 
+        if (steps == null) {
+            return stepsJSON;
+        }
         try {
             for (int i = 0; i < steps.size(); i++) {
                 Step step = steps.get(i);
@@ -511,6 +593,9 @@ public class RouteParser {
     private JSONObject getLegToJSON(Leg leg, String sourceSRS, String targetSRS) {
         Place to = leg.getTo();
         JSONObject toJSON = new JSONObject();
+        if (to == null) {
+            return toJSON;
+        }
         try {
             toJSON.put(PARAM_LEGS_TO_ARRIVAL, getEpochFromString(to.getArrival().getScheduledTime()));
 
@@ -542,6 +627,9 @@ public class RouteParser {
     private JSONObject getLegFromJSON(Leg leg, String sourceSRS, String targetSRS) {
         Place from = leg.getFrom();
         JSONObject fromJSON = new JSONObject();
+        if (from == null) {
+            return fromJSON;
+        }
         try {
             fromJSON.put(PARAM_LEGS_FROM_ARRIVAL, getEpochFromString(from.getArrival().getScheduledTime()));
             fromJSON.put(PARAM_LEGS_FROM_DEPARTURE, getEpochFromString(from.getDeparture().getScheduledTime()));
@@ -572,8 +660,13 @@ public class RouteParser {
     }
 
     private Long getEpochFromString(String date) {
-        OffsetDateTime odt = OffsetDateTime.parse(date);
-        return odt.toEpochSecond();
+        try {
+            OffsetDateTime odt = OffsetDateTime.parse(date);
+            return odt.toEpochSecond();
+        } catch(DateTimeParseException ex) {
+            LOG.error("Cannot get epoch from string: " + date, ex);
+            return null;
+        }
     }
 
     /**
