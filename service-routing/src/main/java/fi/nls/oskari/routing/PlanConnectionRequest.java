@@ -1,5 +1,8 @@
 package fi.nls.oskari.routing;
 
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.ServiceRuntimeException;
 import org.apache.commons.text.StringSubstitutor;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,6 +17,8 @@ import java.util.Map;
 
 public class PlanConnectionRequest {
 
+    private static final Logger LOG = LogFactory.getLogger(PlanConnectionRequest.class);
+    // Can't have more than one transfer mode at one request.
     String[] AVAILABLE_TRANSFER_MODES = {"WALK", "BICYCLE", "CAR"};
     String[] AVAILABLE_TRANSIT_MODES = {"AIRPLANE", "BUS", "CABLE_CAR", "CARPOOL", "COACH", "FERRY", "FUNICULAR", "GONDOLA", "MONORAIL", "RAIL", "SUBWAY", "TAXI", "TRAM", "TROLLEYBUS"};
 
@@ -23,6 +28,8 @@ public class PlanConnectionRequest {
 
     String JSON_CONTENT_TRANSIT = "transit";
     String JSON_CONTENT_TRANSFER = "transfer";
+    String JSON_CONTENT_EGRESS = "egress";
+    String JSON_CONTENT_ACCESS = "access";
 
     public String getQuery(RouteParams params) {
         Map<String, String> planConnectionReplamentMap = getPlanconnectionReplacementMap(params);
@@ -233,8 +240,17 @@ public class PlanConnectionRequest {
         if (transits.size() > 0) {
             transitsString = JSON_CONTENT_TRANSIT + ": [" + String.join(", ", transits) + "]\n";
         }
-        if (transfers.size() > 0) {
-            transfersString = JSON_CONTENT_TRANSFER + ": [" + String.join(", ", transfers) + "]";
+
+        if (transfers.size() > 1) {
+            throw new ServiceRuntimeException("Can't have more then one transfer mode selected. You had " + String.join(", ", transfers));
+        }
+
+        // If transfermode is set it needs to be exactly one (CAR, BICYCLE OR WALK). And if set to CAR OR BICYCLE egress and access need to be set as well.
+        // So we're setting egress and access for any mode.
+        if (transfers.size() == 1) {
+            transfersString = JSON_CONTENT_TRANSFER + ": [" +  transfers.get(0) + "]";
+            transfersString += JSON_CONTENT_EGRESS + ": [" + transfers.get(0)  + "]";
+            transfersString += JSON_CONTENT_ACCESS + ": [" + transfers.get(0)  + "]";
         }
 
         if (transitsString != null || transfersString != null) {
