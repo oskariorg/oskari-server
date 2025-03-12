@@ -493,8 +493,9 @@ public class RouteParser {
 
             Long delay = Optional.ofNullable(start).map(ScheduledTime::getEstimated).map(Estimated::getDelayMilliseconds).orElse(null);
             String scheduledTime = Optional.ofNullable(start).map(ScheduledTime::getScheduledTime).orElse(null);
+            Long scheduledTimeMillis = scheduledTime != null ? OffsetDateTime.parse(scheduledTime).toEpochSecond() : null;
             legJSON.put(PARAM_LEGS_DEPARTURE_DELAY, delay);
-            legJSON.put(PARAM_LEGS_START_TIME, scheduledTime);
+            legJSON.put(PARAM_LEGS_START_TIME, scheduledTimeMillis);
         } catch(JSONException ex) {
             LOG.error("Failed to add start fields for leg ", ex);
         }
@@ -505,8 +506,9 @@ public class RouteParser {
             ScheduledTime end = leg.getEnd();
             Long delay = Optional.ofNullable(end).map(ScheduledTime::getEstimated).map(Estimated::getDelayMilliseconds).orElse(null);
             String scheduledTime = Optional.ofNullable(end).map(ScheduledTime::getScheduledTime).orElse(null);
+            Long scheduledTimeMillis = scheduledTime != null ? OffsetDateTime.parse(scheduledTime).toEpochSecond() : null;
             legJSON.put(PARAM_LEGS_ARRIVAL_DELAY, delay);
-            legJSON.put(PARAM_LEGS_END_TIME, scheduledTime);
+            legJSON.put(PARAM_LEGS_END_TIME, scheduledTimeMillis);
         } catch(JSONException ex) {
             LOG.error("Failed to add end fields for leg ", ex);
         }
