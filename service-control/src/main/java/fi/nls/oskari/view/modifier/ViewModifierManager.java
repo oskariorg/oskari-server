@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentMap;
 public class ViewModifierManager {
 
     private final static Logger log = LogFactory.getLogger(ViewModifierManager.class);
-    private static final ConcurrentMap<String, ViewModifier> actions = new ConcurrentHashMap<String, ViewModifier>();
+    private static final ConcurrentMap<String, List<ViewModifier>> actions = new ConcurrentHashMap<>();
 
     /**
      * Registers a ViewModifier with the given key after instantiating a class with the given className.
@@ -37,7 +37,8 @@ public class ViewModifierManager {
     public static void addModifier(final String action, final ViewModifier handler) {
         try {
             handler.init();
-            actions.put(action, handler);
+            List<ViewModifier> list = actions.computeIfAbsent(action, (key) -> new ArrayList<>(5));
+            list.add(handler);
             log.debug("ViewModifier added", action,"=", handler.getClass().getCanonicalName());
         }
         catch (Exception ex) {
@@ -77,14 +78,18 @@ public class ViewModifierManager {
      * @return unmodifyable map of view modifiers mathing the given type
      */
     public static <Mod extends ViewModifier> Map<String, Mod> getModifiersOfType(final Class clazz) {
-        if(actions.isEmpty()) {
+        if (actions.isEmpty()) {
             addDefaultControls();
         }
-        final HashMap<String, Mod> mods = new HashMap<String, Mod>();
+        final HashMap<String, Mod> mods = new HashMap<>();
         for(String key : actions.keySet()) {
-            final ViewModifier m = actions.get(key);
-            if(clazz.isInstance(m)) {
-                mods.put(key, (Mod)m);
+            List<ViewModifier> modifiersList = actions.get(key);
+            List<ViewModifier> typedMods = modifiersList.stream().filter(clazz::isInstance).toList();
+            if (!typedMods.isEmpty()) {
+                mods.put(key, (Mod) typedMods.get(0));
+            }
+            if (typedMods.size() > 1) {
+                log.warn("Multiple handlers for ViewModifier with name", key, ":", typedMods, "Using first one!");
             }
         }
         return Collections.unmodifiableMap(mods);
@@ -94,13 +99,15 @@ public class ViewModifierManager {
      * Cleanup method. Calls teardown on all registered modifiers.
      */
     public static void teardown() {
-        for( ViewModifier h : actions.values()) {
-            try {
-                h.teardown();
-            }
-            catch (Exception ex) {
-                log.error(ex, "ViewModifier teardown failed! Skipping", h.getName(),"=", h.getClass().getCanonicalName());
-            }
-        }
+        actions.values().forEach(list -> {
+            list.forEach(mod -> {
+                try {
+                    mod.teardown();
+                }
+                catch (Exception ex) {
+                    log.error(ex, "ViewModifier teardown failed! Skipping", mod.getName(),"=", mod.getClass().getCanonicalName());
+                }
+            });
+        });
     }
 }
