@@ -44,6 +44,9 @@ public class FlywaydbMigrator {
         // This will throw expections for "referenced migrations that are unavailable" for any
         // pre-1.56 versions so we don't need to handle it.
         FluentConfiguration config = Flyway.configure()
+                // By default, Flyway has this as false, which will skip migrations with invalid naming.
+                // When set to true, flyway will fail the migration, and log the invalid filenames
+                .validateMigrationNaming(PropertyUtil.getOptional("db.flyway.validateMigrationNaming", true))
                 .dataSource(datasource)
                 .table(getStatusTableName(null))
                 .locations(getScriptLocations(null))
@@ -89,6 +92,9 @@ public class FlywaydbMigrator {
         }
         // myplaces/userlayer or application module (use the same baseline as with 1.x Oskari)
         Flyway flyway = Flyway.configure()
+                // By default, Flyway has this as false, which will skip migrations with invalid naming.
+                // When set to true, flyway will fail the migration, and log the invalid filenames
+                .validateMigrationNaming(PropertyUtil.getOptional("db.flyway.validateMigrationNaming", true))
                 .dataSource(datasource)
                 .table(getStatusTableName(moduleName))
                 .locations(getScriptLocations(moduleName))
