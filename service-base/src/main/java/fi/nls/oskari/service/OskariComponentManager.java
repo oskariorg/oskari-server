@@ -60,29 +60,17 @@ public class OskariComponentManager {
      * Uses ServiceLoader to find all OskariComponents in classpath.
      */
     public synchronized static void addDefaultComponents() {
-        ServiceLoader<OskariComponent> impl = ServiceLoader.load(OskariComponent.class);
-        List<OskariComponent> sortedList = new ArrayList<>();
-        for (OskariComponent loadedImpl: impl) {
-            if (loadedImpl == null) {
-                continue;
-            }
-            sortedList.add(loadedImpl);
-        }
-        sortedList.sort(Comparator.comparingInt(OskariComponent::getOrder));
-        sortedList.forEach(loadedImpl -> addComponent(loadedImpl));
-        /*
-        // After Java 9+ we can use stream
-        impl.stream()
-                .filter( h -> h != null)
-                .map(h -> h.get())
+        ServiceLoader.load(OskariComponent.class).stream()
+                .filter(Objects::nonNull)
+                .map(ServiceLoader.Provider::get)
                 .sorted(Comparator.comparingInt(OskariComponent::getOrder))
-                .forEach(loadedImpl -> addComponent(loadedImpl));
-         */
+                .forEach(OskariComponentManager::addComponent);
     }
+
     public synchronized static <MOD extends OskariComponent> MOD getComponentOfType(final Class<MOD> clazz) {
         Map<String, MOD> map = getComponentsOfType(clazz);
-        if(map.isEmpty()) {
-            throw new NoSuchElementException("Coudldn't find component of type " + clazz.getName());
+        if (map.isEmpty()) {
+            throw new NoSuchElementException("Couldn't find component of type " + clazz.getName());
         }
         // just pick the first one
         // TODO: error handling (nullpointer) and possibly prioritize implementations
