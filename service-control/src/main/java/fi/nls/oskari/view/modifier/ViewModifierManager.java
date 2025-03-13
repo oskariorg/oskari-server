@@ -86,10 +86,11 @@ public class ViewModifierManager {
             List<ViewModifier> modifiersList = actions.get(key);
             List<ViewModifier> typedMods = modifiersList.stream().filter(clazz::isInstance).toList();
             if (!typedMods.isEmpty()) {
-                mods.put(key, (Mod) typedMods.get(0));
+                // return the last one for backwards compatibility
+                mods.put(key, (Mod) typedMods.get(typedMods.size() - 1));
             }
             if (typedMods.size() > 1) {
-                log.warn("Multiple handlers for ViewModifier with name", key, ":", typedMods, "Using first one!");
+                log.warn("Multiple handlers for ViewModifier with name >", key, "<:", typedMods, "- Using first one!");
             }
         }
         return Collections.unmodifiableMap(mods);
@@ -109,5 +110,6 @@ public class ViewModifierManager {
                 }
             });
         });
+        actions.clear();
     }
 }
