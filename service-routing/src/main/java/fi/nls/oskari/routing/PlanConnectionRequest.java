@@ -2,7 +2,7 @@ package fi.nls.oskari.routing;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.service.ServiceRuntimeException;
+import fi.nls.oskari.service.ServiceException;
 import org.apache.commons.text.StringSubstitutor;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,7 +31,7 @@ public class PlanConnectionRequest {
     String JSON_CONTENT_EGRESS = "egress";
     String JSON_CONTENT_ACCESS = "access";
 
-    public String getQuery(RouteParams params) {
+    public String getQuery(RouteParams params) throws ServiceException{
         Map<String, String> planConnectionReplamentMap = getPlanconnectionReplacementMap(params);
         StringSubstitutor substitutor = new StringSubstitutor(planConnectionReplamentMap);
 
@@ -140,7 +140,7 @@ public class PlanConnectionRequest {
         }
     }
 
-    private Map<String, String> getPlanconnectionReplacementMap(RouteParams params) {
+    private Map<String, String> getPlanconnectionReplacementMap(RouteParams params) throws ServiceException {
         String modes = params.getMode();
         String transitModes = getTransitModes(modes);
         if (transitModes != null) {
@@ -208,7 +208,7 @@ public class PlanConnectionRequest {
         """;
     }
 
-    private String getTransitModes(String paramModes) {
+    private String getTransitModes(String paramModes) throws ServiceException{
         if (paramModes == null) {
             return null;
         }
@@ -242,7 +242,7 @@ public class PlanConnectionRequest {
         }
 
         if (transfers.size() > 1) {
-            throw new ServiceRuntimeException("Can't have more then one transfer mode selected. You had " + String.join(", ", transfers));
+            throw new ServiceException("Can't have more then one transfer mode selected. You had " + String.join(", ", transfers));
         }
 
         // If transfermode is set it needs to be exactly one (CAR, BICYCLE OR WALK). And if set to CAR OR BICYCLE egress and access need to be set as well.

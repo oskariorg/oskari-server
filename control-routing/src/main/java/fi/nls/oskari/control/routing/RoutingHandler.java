@@ -9,6 +9,7 @@ import fi.nls.oskari.routing.RouteParams;
 import fi.nls.oskari.routing.RouteResponse;
 import fi.nls.oskari.routing.RoutingService;
 import fi.nls.oskari.routing.RoutingServiceOpenTripPlannerImpl;
+import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.util.ResponseHelper;
@@ -72,14 +73,18 @@ public class RoutingHandler extends ActionHandler {
         routeparams.setLang(params.getHttpParam(PARAM_LANGUAGE));
         routeparams.setMode(params.getHttpParam(PARAM_MODE, PropertyUtil.get("routing.default.mode")));
 
-        RouteResponse result = service.getRoute(routeparams);
+        try {
+            RouteResponse result = service.getRoute(routeparams);
 
-        JSONObject response = result.toJSON();
-        if(params.getUser().isAdmin()) {
-            JSONHelper.putValue(response, "otpUrl", result.getRequestUrl());
+            JSONObject response = result.toJSON();
+            if(params.getUser().isAdmin()) {
+                JSONHelper.putValue(response, "otpUrl", result.getRequestUrl());
+            }
+
+            ResponseHelper.writeResponse(params, response);
+        } catch(ServiceException ex) {
+            throw new ActionException(ex.getMessage(), ex);
         }
-
-        ResponseHelper.writeResponse(params, response);
 
     }
 }

@@ -173,7 +173,7 @@ public class RouteParser {
 
         try{
             // date
-            Long date = getEpochFromString(planConnection.getSearchDateTime());
+            Long date = getEpochMillisFromString(planConnection.getSearchDateTime());
             planJSON.put(PARAM_DATE, date);
 
             // from
@@ -493,7 +493,7 @@ public class RouteParser {
 
             Long delay = Optional.ofNullable(start).map(ScheduledTime::getEstimated).map(Estimated::getDelayMilliseconds).orElse(null);
             String scheduledTime = Optional.ofNullable(start).map(ScheduledTime::getScheduledTime).orElse(null);
-            Long scheduledTimeMillis = scheduledTime != null ? OffsetDateTime.parse(scheduledTime).toEpochSecond() : null;
+            Long scheduledTimeMillis = scheduledTime != null ? getEpochMillisFromString(scheduledTime) : null;
             legJSON.put(PARAM_LEGS_DEPARTURE_DELAY, delay);
             legJSON.put(PARAM_LEGS_START_TIME, scheduledTimeMillis);
         } catch(JSONException ex) {
@@ -506,13 +506,14 @@ public class RouteParser {
             ScheduledTime end = leg.getEnd();
             Long delay = Optional.ofNullable(end).map(ScheduledTime::getEstimated).map(Estimated::getDelayMilliseconds).orElse(null);
             String scheduledTime = Optional.ofNullable(end).map(ScheduledTime::getScheduledTime).orElse(null);
-            Long scheduledTimeMillis = scheduledTime != null ? OffsetDateTime.parse(scheduledTime).toEpochSecond() : null;
+            Long scheduledTimeMillis = scheduledTime != null ? getEpochMillisFromString(scheduledTime) : null;
             legJSON.put(PARAM_LEGS_ARRIVAL_DELAY, delay);
             legJSON.put(PARAM_LEGS_END_TIME, scheduledTimeMillis);
         } catch(JSONException ex) {
             LOG.error("Failed to add end fields for leg ", ex);
         }
     }
+
 
     private JSONArray getLegStopsJSON(Leg leg, String sourceSRS, String targetSRS) {
         // Intermediate stops
@@ -599,7 +600,7 @@ public class RouteParser {
             return toJSON;
         }
         try {
-            toJSON.put(PARAM_LEGS_TO_ARRIVAL, getEpochFromString(to.getArrival().getScheduledTime()));
+            toJSON.put(PARAM_LEGS_TO_ARRIVAL, getEpochMillisFromString(to.getArrival().getScheduledTime()));
 
             Point newTo = ProjectionHelper.transformPoint(to.getLon(), to.getLat(), sourceSRS, targetSRS);
             toJSON.put(PARAM_LEGS_TO_LON, newTo.getLon());
@@ -633,8 +634,8 @@ public class RouteParser {
             return fromJSON;
         }
         try {
-            fromJSON.put(PARAM_LEGS_FROM_ARRIVAL, getEpochFromString(from.getArrival().getScheduledTime()));
-            fromJSON.put(PARAM_LEGS_FROM_DEPARTURE, getEpochFromString(from.getDeparture().getScheduledTime()));
+            fromJSON.put(PARAM_LEGS_FROM_ARRIVAL, getEpochMillisFromString(from.getArrival().getScheduledTime()));
+            fromJSON.put(PARAM_LEGS_FROM_DEPARTURE, getEpochMillisFromString(from.getDeparture().getScheduledTime()));
             Point newFrom;
 
             newFrom = ProjectionHelper.transformPoint(from.getLon(), from.getLat(), sourceSRS, targetSRS);
@@ -661,10 +662,10 @@ public class RouteParser {
 
     }
 
-    private Long getEpochFromString(String date) {
+    private Long getEpochMillisFromString(String date) {
         try {
             OffsetDateTime odt = OffsetDateTime.parse(date);
-            return odt.toEpochSecond();
+            return odt.toInstant().toEpochMilli();
         } catch(DateTimeParseException ex) {
             LOG.error("Cannot get epoch from string: " + date, ex);
             return null;
