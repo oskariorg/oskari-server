@@ -68,13 +68,17 @@ public class ActionControl {
      * @param skipAllowedCheck true to ignore checking against blacklisted action keys. False to conform to blacklist checks
      */
     public static void addAction(final String action, final ActionHandler handler, boolean skipAllowedCheck) {
-        if(!skipAllowedCheck && !isAllowedKey(action)) {
+        if (!skipAllowedCheck && !isAllowedKey(action)) {
             LOG.debug("Action disabled by config - Skipping", action, "=", handler.getClass().getCanonicalName());
             return;
         }
 
         try {
             handler.init();
+            ActionHandler currenHandler = actions.get(action);
+            if (currenHandler != null) {
+                LOG.warn("Previously registered action for", action, "overwritten", currenHandler.getClass().getCanonicalName(), "->", handler.getClass().getCanonicalName());
+            }
             actions.put(action, handler);
             LOG.debug("Action added", action, "=", handler.getClass().getCanonicalName());
         }
@@ -99,24 +103,11 @@ public class ActionControl {
      * returned by getName() method.
      */
     public synchronized static void addDefaultControls() {
-        ServiceLoader<ActionHandler> impl = ServiceLoader.load(ActionHandler.class);
-        List<ActionHandler> sortedList = new ArrayList<>();
-        for (ActionHandler loadedImpl: impl) {
-            if (loadedImpl == null) {
-                continue;
-            }
-            sortedList.add(loadedImpl);
-        }
-        sortedList.sort(Comparator.comparingInt(ActionHandler::getOrder));
-        sortedList.forEach(loadedImpl -> addAction(loadedImpl.getName(), loadedImpl));
-        /*
-        // After Java 9+ we can use stream
-        impl.stream()
-                .filter( h -> h != null)
-                .map(h -> h.get())
+        ServiceLoader.load(ActionHandler.class).stream()
+                .filter(Objects::nonNull)
+                .map(ServiceLoader.Provider::get)
                 .sorted(Comparator.comparingInt(ActionHandler::getOrder))
                 .forEach(loadedImpl -> addAction(loadedImpl.getName(), loadedImpl));
-         */
     }
 
     /**
