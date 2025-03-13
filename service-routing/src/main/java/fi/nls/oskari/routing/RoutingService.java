@@ -1,5 +1,7 @@
 package fi.nls.oskari.routing;
 
+import fi.nls.oskari.service.ServiceException;
+
 import java.util.List;
 
 /**
@@ -7,5 +9,5 @@ import java.util.List;
  */
 public interface RoutingService {
 
-    RouteResponse getRoute(RouteParams params);
+    RouteResponse getRoute(RouteParams params) throws ServiceException;
 }

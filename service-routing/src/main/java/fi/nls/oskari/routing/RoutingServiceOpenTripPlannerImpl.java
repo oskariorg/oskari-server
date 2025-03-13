@@ -6,6 +6,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.geometry.ProjectionHelper;
 import fi.nls.oskari.routing.pojo.PlanConnection;
+import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
@@ -31,7 +32,7 @@ public class RoutingServiceOpenTripPlannerImpl implements RoutingService {
     ObjectMapper mapper = new ObjectMapper();
 
     @Override
-    public RouteResponse getRoute(RouteParams params) {
+    public RouteResponse getRoute(RouteParams params) throws ServiceException {
         RouteParser parser = new RouteParser();
 
         //Transform coordinates for the route service

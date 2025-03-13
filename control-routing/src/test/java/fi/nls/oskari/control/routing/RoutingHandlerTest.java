@@ -1,10 +1,10 @@
 package fi.nls.oskari.control.routing;
 
-import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.routing.RouteResponse;
 import fi.nls.oskari.routing.RoutingServiceOpenTripPlannerImpl;
+import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.DuplicateException;
 import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.test.control.JSONActionRouteTest;
@@ -33,7 +33,7 @@ public class RoutingHandlerTest extends JSONActionRouteTest {
     private static MockedConstruction<RoutingServiceOpenTripPlannerImpl> mockRoutingService;
     private static MockedConstruction<User> mockUser;
     @BeforeAll
-    private static void init() throws DuplicateException {
+    private static void init() throws DuplicateException, ServiceException {
         //requires following properties to work:
         PropertyUtil.addProperty("routing.url", "");
         PropertyUtil.addProperty("routing.user", "");
@@ -91,7 +91,7 @@ public class RoutingHandlerTest extends JSONActionRouteTest {
     }
 
     @Test
-    public void testHandleActionDateCorrectFormat() throws ActionException, DuplicateException {
+    public void testHandleActionDateCorrectFormat() throws ServiceException {
         final Map<String, String> parameters = getParameters();
 
         parameters.put("date", "20211221");
@@ -103,7 +103,7 @@ public class RoutingHandlerTest extends JSONActionRouteTest {
     }
 
     @Test
-    public void testHandleActionDateCorrectFormatTimeSingleDigit() throws ActionException, DuplicateException {
+    public void testHandleActionDateCorrectFormatTimeSingleDigit() {
         final Map<String, String> parameters = getParameters();
         parameters.put("date", "20211221");
         parameters.put("time", "1:23");
@@ -113,7 +113,7 @@ public class RoutingHandlerTest extends JSONActionRouteTest {
     }
 
     @Test
-    public void testHandleActionDateCorrectFormatNoTime() throws ActionException, DuplicateException {
+    public void testHandleActionDateCorrectFormatNoTime() {
         final Map<String, String> parameters = getParameters();
         parameters.put("date", "20211221");
         ActionParameters actionParams = createActionParams(parameters);
@@ -121,7 +121,7 @@ public class RoutingHandlerTest extends JSONActionRouteTest {
     }
 
     @Test
-    public void testHandleActionNoDateTimeCorrectFormat() throws ActionException, DuplicateException {
+    public void testHandleActionNoDateTimeCorrectFormat() {
         final Map<String, String> parameters = getParameters();
         parameters.put("time", "12:22");
 
@@ -130,7 +130,7 @@ public class RoutingHandlerTest extends JSONActionRouteTest {
     }
 
     @Test
-    public void testHandleActionDateWrongFormat() throws ActionException {
+    public void testHandleActionDateWrongFormat() {
         final Map<String, String> parameters = getParameters();
         parameters.put("date", "21.12.2021");
         parameters.put("time", "13:23:24");
