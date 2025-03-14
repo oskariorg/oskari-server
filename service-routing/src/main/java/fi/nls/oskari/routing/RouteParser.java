@@ -576,7 +576,7 @@ public class RouteParser {
                 stepJSON.put(PARAM_LEG_STEP_BOGUS_NAME, step.getBogusName());
                 stepJSON.put(PARAM_LEG_STEP_STAY_ON, step.isStayOn());
                 stepJSON.put(PARAM_LEG_STEP_ABSOLUTE_DIRECTION, step.getAbsoluteDirection());
-                stepJSON.put(PARAM_LEG_STEP_RELATIVE_DIRECTION, step.getAbsoluteDirection());
+                stepJSON.put(PARAM_LEG_STEP_RELATIVE_DIRECTION, step.getRelativeDirection());
 
                 if (step.getLat() != null && step.getLon() != null) {
                     String stepLon = step.getLon().toString();
