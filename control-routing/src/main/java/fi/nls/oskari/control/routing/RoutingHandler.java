@@ -46,6 +46,10 @@ public class RoutingHandler extends ActionHandler {
     private static final String PARAM_WHEELCHAIR = "wheelchair";
     public static final String PARAM_SHOW_INTERMEDIATE_STOPS = "showIntermediateStops";
 
+    public static final String ROUTING_ERRORS = "routingErrors";
+
+    public static final String ROUTING_QUERY = "query";
+
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
         RouteParams routeparams = new RouteParams();
@@ -79,6 +83,8 @@ public class RoutingHandler extends ActionHandler {
             JSONObject response = result.toJSON();
             if(params.getUser().isAdmin()) {
                 JSONHelper.putValue(response, "otpUrl", result.getRequestUrl());
+                JSONHelper.putValue(response, ROUTING_ERRORS, result.getRoutingErrors());
+                JSONHelper.putValue(response, ROUTING_QUERY, result.getPlanConnectionQueryString());
             }
 
             ResponseHelper.writeResponse(params, response);

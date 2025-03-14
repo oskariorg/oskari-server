@@ -13,6 +13,10 @@ public class PlanConnection {
     @JsonProperty("edges")
     private List<Edge> edges;
 
+    @JsonProperty("routingErrors")
+    private List<RoutingError> routingErrors;
+
+
     public String getSearchDateTime() {
         return searchDateTime;
     }
@@ -29,4 +33,11 @@ public class PlanConnection {
         this.edges = edges;
     }
 
+    public List<RoutingError> getRoutingErrors() {
+        return routingErrors;
+    }
+
+    public void setRoutingErrors(List<RoutingError> routingErrors) {
+        this.routingErrors = routingErrors;
+    }
 }

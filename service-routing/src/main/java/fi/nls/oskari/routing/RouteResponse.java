@@ -2,6 +2,7 @@ package fi.nls.oskari.routing;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -16,12 +17,16 @@ public class RouteResponse {
     private static final String PARAM_ERROR_MESSAGE = "errorMessage";
     private static final String PARAM_SUCCESS = "success";
 
-
     private JSONObject requestParameters;
     private JSONObject plan;
     private boolean success;
     private String errorMessage;
     private String requestUrl;
+
+    private JSONArray routingErrors;
+
+    // the graphql query that was sent to api. Send this back to front for admin users for debugging purposes
+    private String planConnectionQueryString;
 
     public JSONObject toJSON() {
         JSONObject json = new JSONObject();
@@ -82,5 +87,19 @@ public class RouteResponse {
         this.errorMessage = errorMessage;
     }
 
+    public JSONArray getRoutingErrors() {
+        return routingErrors;
+    }
 
+    public void setRoutingErrors(JSONArray routingErrors) {
+        this.routingErrors = routingErrors;
+    }
+
+    public String getPlanConnectionQueryString() {
+        return planConnectionQueryString;
+    }
+
+    public void setPlanConnectionQueryString(String planConnectionQueryString) {
+        this.planConnectionQueryString = planConnectionQueryString;
+    }
 }
