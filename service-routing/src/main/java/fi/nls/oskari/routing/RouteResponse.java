@@ -17,9 +17,6 @@ public class RouteResponse {
     private static final String PARAM_ERROR_MESSAGE = "errorMessage";
     private static final String PARAM_SUCCESS = "success";
 
-    public static final String ROUTING_ERRORS = "routingErrors";
-
-
     private JSONObject requestParameters;
     private JSONObject plan;
     private boolean success;
@@ -27,6 +24,9 @@ public class RouteResponse {
     private String requestUrl;
 
     private JSONArray routingErrors;
+
+    // the graphql query that was sent to api. Send this back to front for admin users for debugging purposes
+    private String planConnectionQueryString;
 
     public JSONObject toJSON() {
         JSONObject json = new JSONObject();
@@ -93,5 +93,13 @@ public class RouteResponse {
 
     public void setRoutingErrors(JSONArray routingErrors) {
         this.routingErrors = routingErrors;
+    }
+
+    public String getPlanConnectionQueryString() {
+        return planConnectionQueryString;
+    }
+
+    public void setPlanConnectionQueryString(String planConnectionQueryString) {
+        this.planConnectionQueryString = planConnectionQueryString;
     }
 }

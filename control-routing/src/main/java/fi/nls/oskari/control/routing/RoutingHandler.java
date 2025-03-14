@@ -23,7 +23,6 @@ import java.time.format.DateTimeParseException;
 
 import static fi.nls.oskari.control.ActionConstants.PARAM_LANGUAGE;
 import static fi.nls.oskari.control.ActionConstants.PARAM_SRS;
-import static fi.nls.oskari.routing.RouteResponse.ROUTING_ERRORS;
 
 /**
  * Created by SMAKINEN on 26.6.2015.
@@ -46,6 +45,10 @@ public class RoutingHandler extends ActionHandler {
     private static final String PARAM_MAX_WALK_DISTANCE = "maxwalkdistance";
     private static final String PARAM_WHEELCHAIR = "wheelchair";
     public static final String PARAM_SHOW_INTERMEDIATE_STOPS = "showIntermediateStops";
+
+    public static final String ROUTING_ERRORS = "routingErrors";
+
+    public static final String ROUTING_QUERY = "query";
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
@@ -81,6 +84,7 @@ public class RoutingHandler extends ActionHandler {
             if(params.getUser().isAdmin()) {
                 JSONHelper.putValue(response, "otpUrl", result.getRequestUrl());
                 JSONHelper.putValue(response, ROUTING_ERRORS, result.getRoutingErrors());
+                JSONHelper.putValue(response, ROUTING_QUERY, result.getPlanConnectionQueryString());
             }
 
             ResponseHelper.writeResponse(params, response);

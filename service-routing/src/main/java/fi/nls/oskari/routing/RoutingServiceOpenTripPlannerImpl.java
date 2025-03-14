@@ -84,9 +84,11 @@ public class RoutingServiceOpenTripPlannerImpl implements RoutingService {
                 result.setRequestParameters(parser.generateRequestParameters(params));
                 result.setPlan(parser.mapPlanConnectionToPlan(planConnection, params));
                 result.setRoutingErrors(parser.generateRoutingErrors(planConnection));
+                result.setPlanConnectionQueryString(planConnectionRequestQuery);
                 result.setSuccess(true);
             } else {
                 result.setSuccess(false);
+                result.setPlanConnectionQueryString(planConnectionRequestQuery);
                 result.setErrorMessage(this.getErrorMessage(apiResponseString));
             }
         } catch (IOException e) {
