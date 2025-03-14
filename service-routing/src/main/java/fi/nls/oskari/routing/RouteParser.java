@@ -13,6 +13,7 @@ import fi.nls.oskari.routing.pojo.Node;
 import fi.nls.oskari.routing.pojo.Place;
 import fi.nls.oskari.routing.pojo.PlanConnection;
 import fi.nls.oskari.routing.pojo.Route;
+import fi.nls.oskari.routing.pojo.RoutingError;
 import fi.nls.oskari.routing.pojo.ScheduledTime;
 import fi.nls.oskari.routing.pojo.Step;
 import fi.nls.oskari.routing.pojo.Stop;
@@ -696,6 +697,19 @@ public class RouteParser {
         return requestParameters;
     }
 
+    public JSONArray generateRoutingErrors(PlanConnection planConnection) {
+        final JSONArray routingErrors = new JSONArray();
+        if (planConnection != null && planConnection.getRoutingErrors() != null) {
+            for (RoutingError e : planConnection.getRoutingErrors()) {
+                JSONObject error = new JSONObject();
+                error.put("code", e.getCode());
+                error.put("description", e.getDescription());
+                routingErrors.put(error);
+            }
+        }
+        return routingErrors;
+    }
+
     /**
      * Get point JSON
      * @param x
@@ -830,4 +844,5 @@ public class RouteParser {
 
         return new int[] { num, index };
     }
+
 }

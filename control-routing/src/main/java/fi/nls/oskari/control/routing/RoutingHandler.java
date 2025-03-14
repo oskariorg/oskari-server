@@ -23,6 +23,7 @@ import java.time.format.DateTimeParseException;
 
 import static fi.nls.oskari.control.ActionConstants.PARAM_LANGUAGE;
 import static fi.nls.oskari.control.ActionConstants.PARAM_SRS;
+import static fi.nls.oskari.routing.RouteResponse.ROUTING_ERRORS;
 
 /**
  * Created by SMAKINEN on 26.6.2015.
@@ -79,6 +80,7 @@ public class RoutingHandler extends ActionHandler {
             JSONObject response = result.toJSON();
             if(params.getUser().isAdmin()) {
                 JSONHelper.putValue(response, "otpUrl", result.getRequestUrl());
+                JSONHelper.putValue(response, ROUTING_ERRORS, result.getRoutingErrors());
             }
 
             ResponseHelper.writeResponse(params, response);

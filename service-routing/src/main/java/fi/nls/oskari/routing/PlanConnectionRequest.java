@@ -73,6 +73,10 @@ public class PlanConnectionRequest {
                     }
                 }) {
                     searchDateTime
+                    routingErrors {
+                        code
+                        description
+                    }
                     edges {
                         node {
                             ${nodeStaticFields}
