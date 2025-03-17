@@ -759,22 +759,6 @@ public class IOHelper {
         return send(getConnection(url), "POST", contentType, body);
     }
 
-    public static HttpURLConnection post(String url, String contentType, String acceptLanguage,
-             byte[] body) throws IOException {
-        HttpURLConnection conn = getConnection(url);
-        conn.setRequestProperty(HEADER_ACCEPT_LANGUAGE, acceptLanguage);
-        return send(conn, "POST", contentType, body);
-    }
-
-    public static HttpURLConnection post(String url, String contentType, String acceptLanguage,
-            byte[] body, String userName, String password) throws IOException {
-
-        HttpURLConnection conn = getConnection(url);
-        conn.setRequestProperty(HEADER_ACCEPT_LANGUAGE, acceptLanguage);
-        setupBasicAuth(conn, userName, password);
-
-        return send(conn, "POST", contentType, body);
-    }
     public static HttpURLConnection post(String url, String contentType,
             ByteArrayOutputStream baos) throws IOException {
         return send(getConnection(url), "POST", contentType, baos);

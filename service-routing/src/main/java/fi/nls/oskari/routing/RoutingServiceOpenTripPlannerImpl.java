@@ -16,6 +16,12 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 
+import static fi.nls.oskari.util.IOHelper.HEADER_ACCEPT_LANGUAGE;
+import static fi.nls.oskari.util.IOHelper.getConnection;
+import static fi.nls.oskari.util.IOHelper.setContentType;
+import static fi.nls.oskari.util.IOHelper.writeHeader;
+import static fi.nls.oskari.util.IOHelper.writeToConnection;
+
 /**
  * Created by SMAKINEN on 26.6.2015.
  */
@@ -50,22 +56,13 @@ public class RoutingServiceOpenTripPlannerImpl implements RoutingService {
         try {
             final String username = PropertyUtil.getOptional(PROPERTY_USER);
             final String password = PropertyUtil.getOptional(PROPERTY_PASSWORD);
+            final String contentType = "application/json";
             String planConnectionRequestQuery =  planConnectionRequest.getQuery(params);
-            HttpURLConnection connection = null;
-            if(username != null && !username.isEmpty() && password != null && !password.isEmpty()) {
-                connection  = IOHelper.post(
-                    PropertyUtil.getNecessary("routing.url", "No routing URL configured to properties!"),
-                    "application/json",
-                    params.getLang(),
-                    planConnectionRequestQuery.getBytes("UTF-8"),
-                    username, password);
-            } else {
-                connection  = IOHelper.post(
-                    PropertyUtil.getNecessary("routing.url", "No routing URL configured to properties!"),
-                    "application/json",
-                    params.getLang(),
-                    planConnectionRequestQuery.getBytes("UTF-8"));
-            }
+            String url = PropertyUtil.getNecessary("routing.url", "No routing URL configured to properties!");
+            HttpURLConnection connection = getConnection(url, username, password);
+            setContentType(connection, contentType);
+            writeHeader(connection, HEADER_ACCEPT_LANGUAGE, params.getLang());
+            writeToConnection(connection, planConnectionRequestQuery.getBytes("UTF-8"));
 
             apiResponseString = IOHelper.readString(connection.getInputStream(), "UTF-8");
             if(!isErrorMessage(apiResponseString)){
