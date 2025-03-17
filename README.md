@@ -1,31 +1,37 @@
+![alt text](oskari_logo_rgb_horizontal.svg "Oskari logo")
+
 # Oskari-server
 
-[Oskari](http://www.oskari.org/) Map Application Framework aims to provide a framework and a collection of functionality-enhancing bundles and plugins for rapid development of feature-rich GI web applications.
+[Oskari](https://www.oskari.org/) aims to provide a framework and a collection of server modules for rapid development of feature-rich web map applications.
 
-Documentation available at [http://www.oskari.org].
+Documentation available at [https://www.oskari.org].
+
+This repository contains Maven modules that can be used as dependencies when creating an Oskari-based server-side application and are served from (non-browseable) Maven repositories at:
+- Released versions (`master`-branch): `https://oskari.org/repository/maven/releases/`
+- Nightly builds (`develop`-branch): `https://oskari.org/repository/maven/snapshots/`
+
+Our template for server-side application is located on [https://github.com/oskariorg/sample-server-extension]. The template is the preferred way of customizing Oskari-based applications.
 
 # Reporting issues
 
-All Oskari-related issues should be reported here: https://github.com/oskariorg/oskari-docs/issues
+All Oskari-related issues should be reported here: https://github.com/oskariorg/oskari-documentation/issues
 
 # Contributing
 
-Please read the [contribution guidelines](http://oskari.org/documentation/development/how-to-contribute) before contributing pull requests to the Oskari project.
+Please read the [contribution guidelines](https://oskari.org/contribute) before contributing pull requests to the Oskari project.
 
 ## Maven targets
 
 Build with:
 
     mvn clean install
-    
-Run OWASP check with:
-
-    mvn -P owasp-check
 
 ## Prerequisites
-Oskari-server has been tested to compile using
-* JDK 8
-* Apache Maven 3.6.3
+
+Oskari-server has been tested to compile using:
+
+- JDK 17
+- Apache Maven 3.6.3
 
 ## License
 
