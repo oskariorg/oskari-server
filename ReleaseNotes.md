@@ -1,5 +1,78 @@
 # Release Notes
 
+## 3.0.0
+
+For a full list of changes see:
+https://github.com/oskariorg/oskari-server/milestone/52?closed=1
+
+The minimum Java version for Oskari 3.0 has been upgraded from 8 to 17 and with that comes a long list of dependency upgrades and manual migration requirements for Oskari-based applications.
+
+### Spring update 5.x -> 6.x
+
+Requires migration on Oskari-based applications (see [Migrationguide.md]):
+- packages have changed from javax.servlet to jakarta.servlet
+- Spring security configs have been migrated for the new Spring version and you can now use `OskariSpringSecurityDsl` on your custom configs: https://github.com/oskariorg/oskari-server/pull/1124
+- JSTL-library updated
+- org.json update updated. JSONObject.getString() now throws an exception if the value is for example integer. Might require changes in applications to change getString() to optString().
+
+### Routing adapter changed
+
+Routing service was built with an implementation for digitransit API service. This service has released a version 2 implementation of the API with version 1 being shutdown shortly. The routing implementation has been changed to map the version 2 response to match the response that is accessible through Oskari RPC API.
+
+### Dependency updates (see [Migrationguide.md])
+
+- GeoTools 28.5 -> 32.2
+- Spring 5.x -> 6.2.2
+- JUnit 4.x -> replaced with org.junit.jupiter 5.x
+- flywaydb: 9.22.3 -> 11.1.1
+- hikaricp from 4.0.3 to 6.2.1
+- h2database from 2.2.224 to 2.3.232
+- PDFBox 2.0.32 to 3.0.3
+- commons-lang3: 3.14.0 -> 3.17.0
+- commons-text: 1.11.0 -> 1.13.0
+- commons-io: 2.16.1 -> 2.18.0
+- commons-csv: 1.10.0 -> 1.13.0
+- poi-ooxml: 5.3.0 -> 5.4.0
+- jsoup: 1.17.2 -> 1.18.3
+- jackson: 2.18.1 -> 2.18.2
+- mybatis: 3.5.16 -> 3.5.19
+- metrics: 4.1.0 -> 4.2.30
+- jedis: 3.8.0 -> 5.2.0
+
+#### Changed dependencies
+
+- Hystrix replaced with Resilience4j: https://github.com/oskariorg/oskari-server/pull/1135
+- org.json implementation removed from service-base, replaced by version that is used by Jedis (https://github.com/oskariorg/oskari-server/pull/1127)
+- axiom removed as Java now has decent built-in XML handling: https://github.com/oskariorg/oskari-server/pull/1109
+- Jetty dependencies removed (just used for getting vulnerability notifications)
+-> tomcat added as replacement to get vulnerability notifications
+- vecmath
+- PowerMock replaced by Mockito
+- xom
+- commons-dbcp2
+- commons-collections
+
+### Removal of old code
+
+Generic WFS-T related code has been moved from `service-myplaces` to `service-wfs-client`. My places used WFS-T with GeoServer and for lack of better place at that time the generic code was placed under my places functionality.
+Nothing changed on code level: https://github.com/oskariorg/oskari-server/pull/1102
+
+Removed proxy-functionality that was designed to pass messages between Oskari-frontend and a GeoServer handling user generated content. Now that the GeoServer has been removed, these have been removed as well:
+ - https://github.com/oskariorg/oskari-server/pull/1098
+ - https://github.com/oskariorg/oskari-server/pull/1101
+
+Analysis functionality used GeoServer as well for doing the analyses. That functionality has been deprecated before and now much of the code related to analysis layers has been removed as well:
+- https://github.com/oskariorg/oskari-server/pull/1100
+
+Once upon a time, Oskari was used to render vector features into raster images using SLDs. Functionality that used these have been removed some time ago so the SLDStore class was now removed:
+- https://github.com/oskariorg/oskari-server/pull/1099
+
+Removed old action routes where replacements are now used by the frontend maintained:
+- https://github.com/oskariorg/oskari-server/pull/1105
+- https://github.com/oskariorg/oskari-server/pull/1106
+
+Removed the adapter module for reading an old Eurostat statistics API: `service-statistics-eurostat`. These were never used in production and looks like the API has changed over the years enough that it's probably easier to start fresh if we ever need reading them.
+
 ## 2.14.0
 
 For a full list of changes see:

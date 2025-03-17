@@ -2,11 +2,11 @@
 
 ## 3.0.0
 
-In 3.0.0 the minimum Java version for Oskari is changed from Java 8 to 17.
+The minimum Java version for Oskari 3.0 has been upgraded from 8 to 17.
 
 ### Migrated from javax.servlet to jakarta-namespace
 
-Some application specific files might have imports from javax.servlet. You can switch them with this cli command:
+Some application specific files might have imports from `javax.servlet`. These need to be changed to `jakarta.servlet` and you can switch them with this cli command:
 
 ```sh
 git grep -l javax.servlet. | xargs sed -i "s/import javax.servlet./import jakarta.servlet./g"
@@ -19,21 +19,21 @@ git grep -l javax.servlet. | xargs sed -i "s/import javax.servlet./import jakart
     - JSP functionality requires `jakarta.servlet.jsp.jstl` and `jakarta.servlet.jsp.jstl-api`
     - See the change in sample-server-extension: https://github.com/oskariorg/sample-server-extension/pull/66
 
-Spring 6 security configuration have to changed to bean based classes from extending WebSecurityConfigurerAdapter etc.
+Spring 6 security configuration have to changed to bean based classes (previously extended WebSecurityConfigurerAdapter).
 Also Oskari Spring configurations have been moved from `fi.nls.oskari.spring` -> `org.oskari.spring`:
 - FROM: https://github.com/oskariorg/oskari-server/blob/2.14.0/servlet-map/src/main/java/fi/nls/oskari/spring/security/database/OskariDatabaseSecurityConfig.java
 - TO: https://github.com/oskariorg/oskari-server/blob/develop/servlet-map/src/main/java/org/oskari/spring/security/database/OskariDatabaseSecurityConfig.java
 
-Security configurations should have `@Profile()` and `@Order()` annotation to work properly. 
+Security configurations might need `@Profile()` and `@Order()` annotation to work properly. 
 
 ### User management
 
-- Moved packages:
-  - `fi.nls.oskari.domain.User` -> `org.oskari.user.User`
-  - `fi.nls.oskari.domain.GuestUser` -> `org.oskari.user.GuestUser`
-  - `fi.nls.oskari.domain.Role` -> `org.oskari.user.Role`
-  - All classes under `fi.nls.oskari.spring.*` have been moved to `org.oskari.spring.*`
-  - `fi.nls.oskari.MapController` is now `org.oskari.spring.controllers.MapController`
+Moved packages:
+- `fi.nls.oskari.domain.User` -> `org.oskari.user.User`
+- `fi.nls.oskari.domain.GuestUser` -> `org.oskari.user.GuestUser`
+- `fi.nls.oskari.domain.Role` -> `org.oskari.user.Role`
+- All classes under `fi.nls.oskari.spring.*` have been moved to `org.oskari.spring.*`
+- `fi.nls.oskari.MapController` is now `org.oskari.spring.controllers.MapController`
 
 ```sh
 git grep -l fi.nls.oskari.domain. | xargs sed -i "s/fi.nls.oskari.domain.User/org.oskari.user.User/g"
@@ -57,6 +57,15 @@ The Junit present on the BOM for oskari-server was updated from JUnit 4 to 5 and
   - `@Ignore` -> `@Disabled()`
   - Tests may require `@TestInstance(TestInstance.Lifecycle.PER_CLASS)` annotation after update
 
+Added a new module that brings in test-libraries like junit, mockito etc. You can use it on your modules like this:
+```xml
+<dependency>
+    <groupId>org.oskari</groupId>
+    <artifactId>test-helper</artifactId>
+    <scope>test</scope>
+</dependency>
+```
+
 ### Generic proxy removed
 
 A proxy implementation was previously used to pass requests from
@@ -67,6 +76,13 @@ If you have the `oskari.proxyservices` defined in oskari-ext.properties or any p
 with `oskari.proxy.` you can remove all of those as they are no longer used.
 These have been removed from the new configs here: https://github.com/oskariorg/sample-configs/pull/29/files
 
+### Removed deprecated action routes
+
+- `GetWFSLayerFields` and `GetLocalizedPropertyNames` have been replaced by `DescribeLayer` 
+- (`GetLayerCapabilities` is approaching the chopping block but is still used by admin UI)
+- `GetPermissionsLayerHandlers` and `SaveLayerPermission` have been replaced by `LayerPermission`
+- `GetAllRoles` has been replaced by `ManageRoles`
+
 ### Language code for Indonesia changed in Java 17.
 
 Old behavior can be restored with system property `-Djava.locale.useOldISOCodes=true`
@@ -74,13 +90,6 @@ Old behavior can be restored with system property `-Djava.locale.useOldISOCodes=
 See details:
 - https://stackoverflow.com/questions/55955641/correct-locale-for-indonesia-id-id-vs-in-id/55965008
 - https://bugs.openjdk.org/browse/JDK-8267069
-
-### Removed deprecated action routes
-
-- `GetWFSLayerFields` and `GetLocalizedPropertyNames` have been replaced by `DescribeLayer` 
-- (`GetLayerCapabilities` is approaching the chopping block but is still used by admin UI)
-- `GetPermissionsLayerHandlers` and `SaveLayerPermission` have been replaced by `LayerPermission`
-- `GetAllRoles` has been replaced by `ManageRoles`
 
 ## 2.14.0
 
