@@ -9,27 +9,14 @@ import org.json.JSONObject;
 
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
+import static fi.nls.oskari.routing.PlanConnectionRequestHelper.getTransitModes;
 
 public class PlanConnectionRequest {
 
     private static final Logger LOG = LogFactory.getLogger(PlanConnectionRequest.class);
-    // Can't have more than one transfer mode at one request.
-    String[] AVAILABLE_TRANSFER_MODES = {"WALK", "BICYCLE", "CAR"};
-    String[] AVAILABLE_TRANSIT_MODES = {"AIRPLANE", "BUS", "CABLE_CAR", "CARPOOL", "COACH", "FERRY", "FUNICULAR", "GONDOLA", "MONORAIL", "RAIL", "SUBWAY", "TAXI", "TRAM", "TROLLEYBUS"};
-
-    String ALL_PUBLIC_TRANSPORTATIONS_MODE = "TRANSIT";
-
-    String JSON_CONTENT_MODES = "modes";
-
-    String JSON_CONTENT_TRANSIT = "transit";
-    String JSON_CONTENT_TRANSFER = "transfer";
-    String JSON_CONTENT_EGRESS = "egress";
-    String JSON_CONTENT_ACCESS = "access";
 
     public String getQuery(RouteParams params) throws ServiceException{
         Map<String, String> planConnectionReplamentMap = getPlanconnectionReplacementMap(params);
@@ -212,65 +199,6 @@ public class PlanConnectionRequest {
         """;
     }
 
-    private String getTransitModes(String paramModes) throws ServiceException{
-        if (paramModes == null) {
-            return null;
-        }
-
-        String[] modesArray = paramModes.split(",");
-
-        List<String> transits = new ArrayList();
-        List<String> transfers = new ArrayList();
-
-        String transitsString = null;
-        String transfersString = null;
-
-        // generic "TRANSIT" not found -> check if we find any listed public transportations here - BUS, RAIL etc.
-        // Adding NO excplicit transit mode(s) means anything goes.
-        if (Arrays.stream(modesArray).noneMatch(ALL_PUBLIC_TRANSPORTATIONS_MODE::equals)) {
-            for (String transitMode : modesArray) {
-                if (Arrays.stream(AVAILABLE_TRANSIT_MODES).anyMatch(transitMode::equals)) {
-                    transits.add("{ mode: " + transitMode + "}");
-                }
-            }
-        }
-
-        for (String transferMode : modesArray) {
-            if (Arrays.stream(AVAILABLE_TRANSFER_MODES).anyMatch(transferMode::equals)) {
-                transfers.add(transferMode);
-            }
-        }
-
-        if (transits.size() > 0) {
-            transitsString = JSON_CONTENT_TRANSIT + ": [" + String.join(", ", transits) + "]\n";
-        }
-
-        if (transfers.size() > 1) {
-            throw new ServiceException("Can't have more then one transfer mode selected. You had " + String.join(", ", transfers));
-        }
-
-        // If transfermode is set it needs to be exactly one (CAR, BICYCLE OR WALK). And if set to CAR OR BICYCLE egress and access need to be set as well.
-        // So we're setting egress and access for any mode.
-        if (transfers.size() == 1) {
-            transfersString = JSON_CONTENT_TRANSFER + ": [" +  transfers.get(0) + "]";
-            transfersString += JSON_CONTENT_EGRESS + ": [" + transfers.get(0)  + "]";
-            transfersString += JSON_CONTENT_ACCESS + ": [" + transfers.get(0)  + "]";
-        }
-
-        if (transitsString != null || transfersString != null) {
-            String returnValue = "modes: { transit: {";
-            if (transitsString != null) {
-                returnValue += transitsString;
-            }
-            if (transfersString != null) {
-                returnValue += transfersString;
-            }
-            returnValue += "}}";
-            return returnValue;
-        }
-
-        return null;
-    }
 
     private String getDateTimeJSON(Boolean isArriveBy, OffsetDateTime date) {
 
