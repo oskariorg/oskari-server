@@ -36,6 +36,8 @@ public class IOHelper {
     public static final String HEADER_ACCEPT_CHARSET = "Accept-Charset";
     public static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
 
+    public static final String HEADER_ACCEPT_LANGUAGE = "Accept-Language";
+
     public static final String CHARSET_UTF8 = "UTF-8";
     public static final String DEFAULT_CHARSET = CHARSET_UTF8;
     public static final Charset DEFAULT_CHARSET_CS = StandardCharsets.UTF_8;
@@ -757,14 +759,6 @@ public class IOHelper {
         return send(getConnection(url), "POST", contentType, body);
     }
 
-    public static HttpURLConnection post(String url, String contentType,
-            byte[] body, String userName, String password) throws IOException {
-
-        HttpURLConnection conn = getConnection(url);
-        setupBasicAuth(conn, userName, password);
-
-        return send(conn, "POST", contentType, body);
-    }
     public static HttpURLConnection post(String url, String contentType,
             ByteArrayOutputStream baos) throws IOException {
         return send(getConnection(url), "POST", contentType, baos);

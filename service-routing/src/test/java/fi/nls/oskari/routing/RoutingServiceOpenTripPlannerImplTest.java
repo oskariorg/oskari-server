@@ -69,7 +69,7 @@ public class RoutingServiceOpenTripPlannerImplTest {
     public void testParseRouteThatIsOk() throws Exception {
 
         String responseJson = new String(getClass().getResourceAsStream("digitransit-response-success-v2.json").readAllBytes());
-        when(IOHelper.post((String)any(), any(), (byte[])any())).thenReturn(this.mockHttpURLConnection);
+        when(IOHelper.getConnection(any(), any(), any())).thenReturn(this.mockHttpURLConnection);
         when(IOHelper.readString((InputStream)any(), (String)any())).thenReturn(responseJson);
 
         RouteParams routeParams = initRouteParams();
@@ -83,7 +83,7 @@ public class RoutingServiceOpenTripPlannerImplTest {
     @Test
     public void testParseRouteThatIsNotOk() throws Exception {
         String responseJson = new String(getClass().getResourceAsStream("digitransit-response-error-v2.json").readAllBytes());
-        when(IOHelper.post((String)any(), any(), (byte[])any())).thenReturn(this.mockHttpURLConnection);
+        when(IOHelper.getConnection(any(), any(), any())).thenReturn(this.mockHttpURLConnection);
         when(IOHelper.readString((InputStream)any(), (String)any())).thenReturn(responseJson);
 
         RouteParams routeParams = initRouteParams();
@@ -104,7 +104,7 @@ public class RoutingServiceOpenTripPlannerImplTest {
     @Test
     public void testRequestParamsReturnedOk() throws Exception {
         String responseJson = new String(getClass().getResourceAsStream("digitransit-response-success-v2.json").readAllBytes());
-        when(IOHelper.post((String)any(), any(), (byte[])any())).thenReturn(this.mockHttpURLConnection);
+        when(IOHelper.getConnection(any(), any(), any())).thenReturn(this.mockHttpURLConnection);
         when(IOHelper.readString((InputStream)any(), (String)any())).thenReturn(responseJson);
 
         RouteParams routeParams = initRouteParams();
