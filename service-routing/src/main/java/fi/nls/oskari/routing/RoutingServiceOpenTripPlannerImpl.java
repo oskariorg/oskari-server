@@ -56,12 +56,14 @@ public class RoutingServiceOpenTripPlannerImpl implements RoutingService {
                 connection  = IOHelper.post(
                     PropertyUtil.getNecessary("routing.url", "No routing URL configured to properties!"),
                     "application/json",
+                    params.getLang(),
                     planConnectionRequestQuery.getBytes("UTF-8"),
                     username, password);
             } else {
                 connection  = IOHelper.post(
                     PropertyUtil.getNecessary("routing.url", "No routing URL configured to properties!"),
                     "application/json",
+                    params.getLang(),
                     planConnectionRequestQuery.getBytes("UTF-8"));
             }
 
