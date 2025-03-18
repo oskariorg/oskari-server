@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.oskari</groupId>
         <artifactId>oskari-server</artifactId>
-        <version>3.0.0-SNAPSHOT</version>
+        <version>3.0.0</version>
     </parent>
     <artifactId>model-ogcapi</artifactId>
     <description>Domain classes/value objects for working with OGC API services</description>
