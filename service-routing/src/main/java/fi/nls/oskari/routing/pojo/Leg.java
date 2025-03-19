@@ -17,7 +17,7 @@ public class Leg {
     private Double duration;
 
     @JsonProperty("headsign")
-    private Double headsign;
+    private String headsign;
 
     @JsonProperty("interlineWithPreviousLeg")
     private boolean interlineWithPreviousLeg;
@@ -142,11 +142,11 @@ public class Leg {
         this.duration = duration;
     }
 
-    public Double getHeadsign() {
+    public String getHeadsign() {
         return headsign;
     }
 
-    public void setHeadsign(Double headsign) {
+    public void setHeadsign(String headsign) {
         this.headsign = headsign;
     }
 
