@@ -17,6 +17,7 @@ import fi.nls.oskari.routing.pojo.RoutingError;
 import fi.nls.oskari.routing.pojo.ScheduledTime;
 import fi.nls.oskari.routing.pojo.Step;
 import fi.nls.oskari.routing.pojo.Stop;
+import fi.nls.oskari.routing.pojo.StopPosition;
 import fi.nls.oskari.routing.pojo.Trip;
 import fi.nls.oskari.util.PropertyUtil;
 import org.json.JSONArray;
@@ -545,7 +546,7 @@ public class RouteParser {
                 stopJSON.put(PARAM_LEG_STOP_NAME, intermediatePlace.getName());
                 stopJSON.put(PARAM_LEG_STOP_ARRIVAL, intermediatePlace.getArrival());
                 stopJSON.put(PARAM_LEG_STOP_DEPARTURE, intermediatePlace.getDeparture());
-                // stopJSON.put(PARAM_LEG_STOP_STOPINDEX, intermediatePlace.getStopIndex()); // TODO: not found in new api
+                stopJSON.put(PARAM_LEG_STOP_STOPINDEX, getPlaceStopPosition(intermediatePlace));
                 // stopJSON.put(PARAM_LEG_STOP_STOPSEQUENCE, intermediatePlace.getStopSequence());//TODO: not found in new api
                 stopJSON.put(PARAM_LEG_STOP_VERTEXTYPE, intermediatePlace.getVertexType());
                 stopsJSON.put(stopJSON);
@@ -617,7 +618,7 @@ public class RouteParser {
             toJSON.put(PARAM_LEGS_TO_STOP_CODE, stopCode);
             toJSON.put(PARAM_LEGS_TO_ZONE_ID, stopZoneId);
 
-            // toJSON.put(PARAM_LEGS_TO_STOP_INDEX, to.getStopIndex()); // TODO: not found in new api
+            toJSON.put(PARAM_LEGS_TO_STOP_INDEX, getPlaceStopPosition(to)); // TODO: not found in new api
             // toJSON.put(PARAM_LEGS_TO_STOP_SEQUENCE, to.getStopSequence()); // TODO: not found in new api
             toJSON.put(PARAM_LEGS_TO_VERTEX_TYPE, to.getVertexType());
 
@@ -626,6 +627,13 @@ public class RouteParser {
         }
 
         return toJSON;
+    }
+
+    private Integer getPlaceStopPosition(Place place) {
+        if (place == null) {
+            return null;
+        }
+        return Optional.ofNullable(place.getStopPosition()).map(StopPosition::getPosition).orElse(null);
     }
 
     private JSONObject getLegFromJSON(Leg leg, String sourceSRS, String targetSRS) {
@@ -652,7 +660,7 @@ public class RouteParser {
             fromJSON.put(PARAM_LEGS_FROM_STOP_CODE, stopCode);
             fromJSON.put(PARAM_LEGS_FROM_ZONE_ID, stopZoneId);
 
-            // fromJSON.put(PARAM_LEGS_FROM_STOP_INDEX, from.getStopIndex()); // TODO: no match in new api?.
+            fromJSON.put(PARAM_LEGS_FROM_STOP_INDEX, getPlaceStopPosition(from));
             // fromJSON.put(PARAM_LEGS_FROM_STOP_SEQUENCE, from.getStopSequence()); // TODO: no match in new api?.
             fromJSON.put(PARAM_LEGS_FROM_VERTEX_TYPE, from.getVertexType());
 
