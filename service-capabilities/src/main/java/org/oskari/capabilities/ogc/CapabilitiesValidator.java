@@ -55,6 +55,8 @@ public class CapabilitiesValidator {
 
     private static XMLStreamReader getXMLStreamReader(byte[] data) throws XMLStreamException{
         XMLInputFactory xif = XMLInputFactory.newInstance();
+        xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
+        xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
         xif.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, true);
         return xif.createXMLStreamReader(new ByteArrayInputStream(data));
     }
