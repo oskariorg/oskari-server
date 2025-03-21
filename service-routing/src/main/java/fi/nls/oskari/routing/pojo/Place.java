@@ -24,6 +24,9 @@ public class Place {
 
     @JsonProperty("stop")
     private Stop stop;
+
+    @JsonProperty("stopPosition")
+    private StopPosition stopPosition;
     /**
      *
      * @return
@@ -146,5 +149,13 @@ public class Place {
 
     public void setStop(Stop stop) {
         this.stop = stop;
+    }
+
+    public StopPosition getStopPosition() {
+        return stopPosition;
+    }
+
+    public void setStopPosition(StopPosition stopPosition) {
+        this.stopPosition = stopPosition;
     }
 }

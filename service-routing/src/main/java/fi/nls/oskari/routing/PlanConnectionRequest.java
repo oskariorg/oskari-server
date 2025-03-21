@@ -171,6 +171,7 @@ public class PlanConnectionRequest {
             rentedBike
             serviceDate
             transitLeg
+            headsign
         """;
 
     }
@@ -235,6 +236,15 @@ public class PlanConnectionRequest {
                 gtfsId
                 code
                 zoneId
+            }
+            stopPosition {
+                ... on PositionAtStop {
+                    position
+                }
+                ... on PositionBetweenStops {
+                    nextPosition
+                    previousPosition
+                }
             }
         """;
     }
