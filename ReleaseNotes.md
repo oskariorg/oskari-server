@@ -1,5 +1,14 @@
 # Release Notes
 
+## 3.0.1
+
+For a full list of changes see:
+https://github.com/oskariorg/oskari-server/milestone/53?closed=1
+
+- DigiTransit API: add headsign and stopindex to response
+- Tomcat 10.1.34 -> 10.1.39 to match the download zip
+- Disabled some xml-reader features for capabilities validation
+
 ## 3.0.0
 
 For a full list of changes see:
