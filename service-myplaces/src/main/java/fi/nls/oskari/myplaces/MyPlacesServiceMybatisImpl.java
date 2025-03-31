@@ -192,14 +192,9 @@ public class MyPlacesServiceMybatisImpl extends MyPlacesService {
     public int updatePublisherName(final long id, final String uuid, final String name) {
         LOG.debug("Updating publisher name", id, uuid, name);
 
-        final Map<String, Object> data = new HashMap<>();
-        data.put("publisher_name", name);
-        data.put("uuid", uuid);
-        data.put("id", id);
-
         try (final SqlSession session = factory.openSession()) {
             final MyPlaceMapper mapper = session.getMapper(MyPlaceMapper.class);
-            int rows = mapper.updatePublisherName(data);
+            int rows = mapper.updatePublisherName(name, uuid, id);
             session.commit();
             // update data in cache
             MyPlaceCategory layer = getFromCache(id);
@@ -208,7 +203,7 @@ public class MyPlacesServiceMybatisImpl extends MyPlacesService {
             }
             return rows;
         } catch (Exception e) {
-            LOG.error(e, "Failed to update publisher name", data);
+            LOG.error(e, "Failed to update publisher name", name, uuid, id);
         }
         return 0;
     }
@@ -222,19 +217,6 @@ public class MyPlacesServiceMybatisImpl extends MyPlacesService {
         }
         return Collections.emptyList();
     }
-
-    public List<MyPlaceCategory> getMyPlaceLayersBySearchKey(final String search) {
-        Map<String, Object> data = new HashMap<String, Object>();
-        data.put("searchKey", search + ":*");
-        try (final SqlSession session = factory.openSession()) {
-            final MyPlaceMapper mapper = session.getMapper(MyPlaceMapper.class);
-            return mapper.freeFind(data);
-        } catch (Exception e) {
-            LOG.error(e, "Failed searchwith", search);
-        }
-        return Collections.emptyList();
-    }
-
 
     public void deleteByUid(final String uid) {
         try (final SqlSession session = factory.openSession()) {
