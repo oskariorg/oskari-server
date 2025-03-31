@@ -104,9 +104,9 @@ public interface MyPlaceMapper {
     MyPlace findPlace(long id);
     MyPlaceCategory find(long categoryId);
     @Update("update categories set " +
-            "   publisher_name = #{publisher_name}" +
+            "   publisher_name = #{name}" +
             "   where uuid = #{uuid} and id = #{id}")
-    int updatePublisherName(Map map);
+    int updatePublisherName(@Param("name") String name, @Param("uuid") String uuid, @Param("id") long id);
     List<MyPlaceCategory> findByIds(@Param("list") List<Long> idList);
     List<MyPlaceCategory> freeFind(Map<String, Object> data);
     List<MyPlaceCategory> findAll();
