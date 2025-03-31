@@ -1,6 +1,5 @@
 package fi.nls.oskari.control.view;
 
-import fi.nls.oskari.analysis.AnalysisHelper;
 import fi.nls.oskari.control.ActionDeniedException;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParamsException;
@@ -8,11 +7,9 @@ import org.oskari.user.Role;
 import org.oskari.user.User;
 import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.analysis.service.AnalysisDbService;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.service.OskariComponentManager;
@@ -28,7 +25,6 @@ import org.oskari.service.util.ServiceFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by SMAKINEN on 17.8.2015.
@@ -38,22 +34,16 @@ public class PublishPermissionHelper {
     private static final Logger LOG = LogFactory.getLogger(PublishPermissionHelper.class);
 
     private MyPlacesService myPlaceService = null;
-    private AnalysisDbService analysisService = null;
     private UserLayerDbService userLayerService = null;
     private OskariLayerService layerService = null;
     private PermissionService permissionsService = null;
 
     private static final String PREFIX_MYPLACES = "myplaces_";
-    private static final String PREFIX_ANALYSIS = "analysis_";
     private static final String PREFIX_USERLAYER = "userlayer_";
 
     public void init() {
         if (myPlaceService == null) {
             setMyPlacesService(OskariComponentManager.getComponentOfType(MyPlacesService.class));
-        }
-
-        if (analysisService == null) {
-            setAnalysisService(OskariComponentManager.getComponentOfType(AnalysisDbService.class));
         }
 
         if (userLayerService == null) {
@@ -71,10 +61,6 @@ public class PublishPermissionHelper {
 
     public void setMyPlacesService(final MyPlacesService service) {
         myPlaceService = service;
-    }
-
-    public void setAnalysisService(final AnalysisDbService service) {
-        analysisService = service;
     }
 
     public void setUserLayerService(final UserLayerDbService service) {
@@ -129,11 +115,6 @@ public class PublishPermissionHelper {
                     if (hasRightToPublishMyPlaceLayer(layerId, userUuid, user.getScreenname())) {
                         filteredList.put(layer);
                     }
-                } else if (layerId.startsWith(PREFIX_ANALYSIS)) {
-                    // check publish right for published analysis layer
-                    if (hasRightToPublishAnalysisLayer(layerId, user)) {
-                        filteredList.put(layer);
-                    }
                 } else if (layerId.startsWith(PREFIX_USERLAYER)) {
                     // check publish rights for user layer
                     if (hasRightToPublishUserLayer(layerId, user)) {
@@ -168,34 +149,6 @@ public class PublishPermissionHelper {
         }
         LOG.warn("Found my places layer in selected that isn't users own or isn't published any more! LayerId:", layerId, "User UUID:", userUuid);
         return false;
-    }
-
-
-    private boolean hasRightToPublishAnalysisLayer(final String layerId, final User user) {
-        final long analysisId = AnalysisHelper.getAnalysisIdFromLayerId(layerId);
-        if(analysisId == -1) {
-            return false;
-        }
-        final Analysis analysis = analysisService.getAnalysisById(analysisId);
-        if (!analysis.getUuid().equals(user.getUuid())) {
-            LOG.warn("Found analysis layer in selected that isn't users own! LayerId:", layerId, "User UUID:", user.getUuid(), "Analysis UUID:", analysis.getUuid());
-            return false;
-        }
-
-        final Set<String> permissions = permissionsService.getResourcesWithGrantedPermissions(
-                ResourceType.analysislayer, user, PermissionType.PUBLISH);
-        LOG.debug("Analysis layer publish permissions", permissions);
-        final String permissionKey = "analysis+"+analysis.getId();
-
-        LOG.debug("PublishPermissions:", permissions);
-        boolean hasPermission = permissions.contains(permissionKey);
-        if (hasPermission) {
-            // write publisher name for analysis
-            analysisService.updatePublisherName(analysisId, user.getUuid(), user.getScreenname());
-        } else {
-            LOG.warn("Found analysis layer in selected that isn't publishable any more! Permissionkey:", permissionKey, "User:", user);
-        }
-        return hasPermission;
     }
 
     private boolean hasRightToPublishUserLayer(final String layerId, final User user) {
