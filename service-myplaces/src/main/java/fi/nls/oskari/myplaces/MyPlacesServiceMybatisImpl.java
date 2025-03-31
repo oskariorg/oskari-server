@@ -218,19 +218,6 @@ public class MyPlacesServiceMybatisImpl extends MyPlacesService {
         return Collections.emptyList();
     }
 
-    public List<MyPlaceCategory> getMyPlaceLayersBySearchKey(final String search) {
-        Map<String, Object> data = new HashMap<String, Object>();
-        data.put("searchKey", search + ":*");
-        try (final SqlSession session = factory.openSession()) {
-            final MyPlaceMapper mapper = session.getMapper(MyPlaceMapper.class);
-            return mapper.freeFind(data);
-        } catch (Exception e) {
-            LOG.error(e, "Failed searchwith", search);
-        }
-        return Collections.emptyList();
-    }
-
-
     public void deleteByUid(final String uid) {
         try (final SqlSession session = factory.openSession()) {
             final MyPlaceMapper mapper = session.getMapper(MyPlaceMapper.class);
