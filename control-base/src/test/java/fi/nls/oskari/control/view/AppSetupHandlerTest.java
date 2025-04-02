@@ -6,7 +6,6 @@ import org.oskari.user.Role;
 import fi.nls.oskari.domain.map.view.Bundle;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
-import fi.nls.oskari.map.analysis.service.AnalysisDbService;
 import fi.nls.oskari.map.view.AppSetupServiceMybatisImpl;
 import fi.nls.oskari.map.view.BundleService;
 import fi.nls.oskari.map.view.BundleServiceMybatisImpl;
@@ -80,7 +79,6 @@ public class AppSetupHandlerTest extends JSONActionRouteTest {
         handler.setViewService(viewService);
         handler.setMyPlacesService(myPlaceService);
         handler.setUserLayerService(mock(UserLayerDbService.class));
-        handler.setAnalysisService(mock(AnalysisDbService.class));
         handler.setPermissionsService(permissionsService);
         handler.setBundleService(bundleService);
 

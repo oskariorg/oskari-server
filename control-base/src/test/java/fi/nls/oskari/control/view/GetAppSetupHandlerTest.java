@@ -7,7 +7,6 @@ import org.oskari.user.User;
 import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
-import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
 import fi.nls.oskari.map.layer.DataProviderService;
 import fi.nls.oskari.map.layer.DataProviderServiceMybatisImpl;
 import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
@@ -293,7 +292,6 @@ public class GetAppSetupHandlerTest extends JSONActionRouteTest {
         final PermissionService service = mock(PermissionServiceMybatisImpl.class);
         // permission check is skipped here so just mock the call
         Mockito.lenient().doReturn(Optional.empty()).when(service).findResource(eq(ResourceType.maplayer.name()), any(String.class));
-        Mockito.lenient().doReturn(Collections.emptySet()).when(service).getResourcesWithGrantedPermissions(eq(AnalysisLayer.TYPE), any(User.class), eq(PermissionType.VIEW_PUBLISHED.name()));
 
         permissionServiceMybatisMockedConstruction = Mockito.mockConstruction(PermissionServiceMybatisImpl.class);
 

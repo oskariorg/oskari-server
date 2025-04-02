@@ -8,7 +8,6 @@ import fi.nls.oskari.domain.map.view.View;
 import fi.nls.oskari.domain.map.view.ViewTypes;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.analysis.service.AnalysisDbService;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.view.*;
 import fi.nls.oskari.map.view.util.ViewHelper;
@@ -81,10 +80,6 @@ public class AppSetupHandler extends RestActionHandler {
 
     public void setMyPlacesService(final MyPlacesService service) {
         permissionHelper.setMyPlacesService(service);
-    }
-
-    public void setAnalysisService(final AnalysisDbService service) {
-        permissionHelper.setAnalysisService(service);
     }
 
     public void setUserLayerService(final UserLayerDbService service) {
