@@ -52,7 +52,7 @@ public class V3_1_1__remove_analysis_from_appsetups extends BaseJavaMigration {
             JSONObject mapfull = mapfullConfigs.optJSONObject(i);
             JSONObject state = new JSONObject(mapfull.getString("state"));
 
-            if (state == null || !state.has("selectedLayers")) {
+            if (!state.has("selectedLayers")) {
                 continue;
             }
 
@@ -107,32 +107,30 @@ public class V3_1_1__remove_analysis_from_appsetups extends BaseJavaMigration {
         for (int i = 0; i < mapfullConfigs.length(); i++) {
             JSONObject mapfull = mapfullConfigs.optJSONObject(i);
             JSONObject config = new JSONObject(mapfull.getString("config"));
-            if (config != null) {
-                JSONArray plugins = Optional.ofNullable(config.getJSONArray("plugins")).orElse(new JSONArray());
-                JSONArray newPlugins = new JSONArray();
-                for (int j = 0; j < plugins.length(); j++) {
-                    JSONObject plugin = plugins.optJSONObject(j);
-                    if (plugin != null) {
-                        String id = plugin.getString("id");
-                        if (id.indexOf(ANALYSIS_LAYER_PLUGIN_ID) == -1) {
-                            newPlugins.put(plugin);
-                        }
+
+            JSONArray plugins = Optional.ofNullable(config.getJSONArray("plugins")).orElse(new JSONArray());
+            JSONArray newPlugins = new JSONArray();
+            for (int j = 0; j < plugins.length(); j++) {
+                JSONObject plugin = plugins.optJSONObject(j);
+                if (plugin != null) {
+                    String id = plugin.getString("id");
+                    if (id.indexOf(ANALYSIS_LAYER_PLUGIN_ID) == -1) {
+                        newPlugins.put(plugin);
                     }
                 }
-                config.put("plugins", newPlugins);
+            }
+            config.put("plugins", newPlugins);
 
-                int appsetupId = mapfull.getInt("appsetup_id");
-                int bundleId = mapfull.getInt("bundle_id");
-                String valueString = "(" + appsetupId + ", " + bundleId + ", '" + config.toString() + "')";
-                values.add(valueString);
+            int appsetupId = mapfull.getInt("appsetup_id");
+            int bundleId = mapfull.getInt("bundle_id");
+            String valueString = "(" + appsetupId + ", " + bundleId + ", '" + config.toString() + "')";
+            values.add(valueString);
 
-                // execute once a batch size or when we reach the end
-                if (values.size() == BATCH_SIZE || i == mapfullConfigs.length() - 1) {
-                    String query = sql.replace("${values}", String.join(",\n", values));
-                    statement.addBatch(query);
-                    values.clear();
-                }
-
+            // execute once a batch size or when we reach the end
+            if (values.size() == BATCH_SIZE || i == mapfullConfigs.length() - 1) {
+                String query = sql.replace("${values}", String.join(",\n", values));
+                statement.addBatch(query);
+                values.clear();
             }
         }
         LOG.debug(OffsetDateTime.now().format(dtf) + " Finished processing the statements into batch: " + mapfullConfigs.length());
