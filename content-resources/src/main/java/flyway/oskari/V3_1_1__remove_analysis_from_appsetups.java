@@ -48,7 +48,7 @@ public class V3_1_1__remove_analysis_from_appsetups extends BaseJavaMigration {
 
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.YYYY HH:mm:ss");
         LOG.debug(OffsetDateTime.now().format(dtf) + " Starting update.");
-        for (int i = 0, counter = 0; i < mapfullConfigs.length(); i++, counter++) {
+        for (int i = 0; i < mapfullConfigs.length(); i++) {
             JSONObject mapfull = mapfullConfigs.optJSONObject(i);
             JSONObject state = new JSONObject(mapfull.getString("state"));
 
@@ -75,11 +75,10 @@ public class V3_1_1__remove_analysis_from_appsetups extends BaseJavaMigration {
             values.add(valueString);
 
             // execute once a batch size or when we reach the end
-            if (counter == BATCH_SIZE - 1 || i == mapfullConfigs.length() - 1) {
+            if (values.size() == BATCH_SIZE || i == mapfullConfigs.length() - 1) {
                 String query = sql.replace("${values}", String.join(",\n", values));
                 statement.addBatch(query);
-                counter = 0;
-                values.clear();;
+                values.clear();
             }
         }
 
@@ -105,7 +104,7 @@ public class V3_1_1__remove_analysis_from_appsetups extends BaseJavaMigration {
 
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.YYYY HH:mm:ss");
         LOG.debug(OffsetDateTime.now().format(dtf) + " Starting update.");
-        for (int i = 0, counter = 0; i < mapfullConfigs.length(); i++, counter++) {
+        for (int i = 0; i < mapfullConfigs.length(); i++) {
             JSONObject mapfull = mapfullConfigs.optJSONObject(i);
             JSONObject config = new JSONObject(mapfull.getString("config"));
             if (config != null) {
@@ -128,11 +127,10 @@ public class V3_1_1__remove_analysis_from_appsetups extends BaseJavaMigration {
                 values.add(valueString);
 
                 // execute once a batch size or when we reach the end
-                if (counter == BATCH_SIZE - 1 || i == mapfullConfigs.length() - 1) {
+                if (values.size() == BATCH_SIZE || i == mapfullConfigs.length() - 1) {
                     String query = sql.replace("${values}", String.join(",\n", values));
                     statement.addBatch(query);
-                    counter = 0;
-                    values.clear();;
+                    values.clear();
                 }
 
             }
