@@ -45,7 +45,6 @@ public class V3_1_1__remove_analysis_from_appsetups extends BaseJavaMigration {
 
         List<String> values = new ArrayList<>();
         Statement statement = conn.createStatement();
-        conn.setAutoCommit(false);
 
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.YYYY HH:mm:ss");
         LOG.debug(OffsetDateTime.now().format(dtf) + " Starting update.");
@@ -86,8 +85,6 @@ public class V3_1_1__remove_analysis_from_appsetups extends BaseJavaMigration {
 
         int[] results = statement.executeBatch();
         LOG.debug("results: ", results.length);
-        conn.commit();
-        conn.setAutoCommit(true);
         LOG.debug(OffsetDateTime.now().format(dtf) + " Finished removing analysis layers from " + mapfullConfigs.length() + " views.");
     }
 
@@ -105,7 +102,6 @@ public class V3_1_1__remove_analysis_from_appsetups extends BaseJavaMigration {
         List<String> values = new ArrayList<>();
 
         Statement statement = conn.createStatement();
-        conn.setAutoCommit(false);
 
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.YYYY HH:mm:ss");
         LOG.debug(OffsetDateTime.now().format(dtf) + " Starting update.");
@@ -145,8 +141,6 @@ public class V3_1_1__remove_analysis_from_appsetups extends BaseJavaMigration {
 
         int[] results = statement.executeBatch();
         LOG.debug("results: ", results.length);
-        conn.commit();
-        conn.setAutoCommit(true);
         LOG.debug(OffsetDateTime.now().format(dtf) + " Finished updating " + mapfullConfigs.length() + " views.");
 
     }
