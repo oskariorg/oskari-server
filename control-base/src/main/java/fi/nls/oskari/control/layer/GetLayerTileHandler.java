@@ -154,7 +154,11 @@ public class GetLayerTileHandler extends ActionHandler {
 
                 // if response type is not something textual, i.e. json / xml we probably do not want to log the content.
                 if (isContentTypeHumanReadable(contentType)) {
-                    LOG.info("Response was:", msg.substring(0, ERRORMESSAGE_MAX_LENGTH));
+                    int lastIndex = ERRORMESSAGE_MAX_LENGTH - 1;
+                    if (msg.length() < ERRORMESSAGE_MAX_LENGTH) {
+                        lastIndex = msg.length() -1;
+                    }
+                    LOG.info("Response was:", msg.substring(0, lastIndex));
                 } else {
                     LOG.info("Not logging response message due to content-type " + contentType);
                 }
