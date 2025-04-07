@@ -5,20 +5,26 @@ import com.codahale.metrics.Timer;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.cache.Cache;
 import fi.nls.oskari.cache.CacheManager;
-import fi.nls.oskari.control.*;
+import fi.nls.oskari.control.ActionCommonException;
+import fi.nls.oskari.control.ActionControl;
+import fi.nls.oskari.control.ActionException;
+import fi.nls.oskari.control.ActionHandler;
+import fi.nls.oskari.control.ActionParameters;
+import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatterVectorTile;
 import fi.nls.oskari.service.OskariComponentManager;
+import fi.nls.oskari.service.capabilities.CapabilitiesConstants;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
 import fi.nls.oskari.util.PropertyUtil;
-
 import fi.nls.oskari.util.ResponseHelper;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import org.oskari.capabilities.CapabilitiesService;
 import org.oskari.capabilities.ogc.LayerCapabilitiesWMTS;
 import org.oskari.capabilities.ogc.wmts.ResourceUrl;
@@ -26,15 +32,17 @@ import org.oskari.permissions.PermissionService;
 import org.oskari.service.user.LayerAccessHandler;
 import org.oskari.service.util.ServiceFactory;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.net.HttpURLConnection;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import fi.nls.oskari.service.capabilities.CapabilitiesConstants;
 import static fi.nls.oskari.control.ActionConstants.KEY_ID;
-import static fi.nls.oskari.map.layer.formatters.LayerJSONFormatter.KEY_LEGENDS;
 import static fi.nls.oskari.map.layer.formatters.LayerJSONFormatter.KEY_GLOBAL_LEGEND;
+import static fi.nls.oskari.map.layer.formatters.LayerJSONFormatter.KEY_LEGENDS;
 
 
 @OskariActionRoute("GetLayerTile")
@@ -48,6 +56,10 @@ public class GetLayerTileHandler extends ActionHandler {
     private static final int TIMEOUT_READ = PropertyUtil.getOptional("GetLayerTile.timeout.read", 5000);
     private static final boolean GATHER_METRICS = PropertyUtil.getOptional("GetLayerTile.metrics", true);
     private static final String METRICS_PREFIX = "Oskari.GetLayerTile";
+    private static final String TEXT_CONTENT_TYPE_PREFIX = "text/";
+    private static final String APPLICATION_JSON_CONTENT_TYPE = "application/json";
+    private static final String APPLICATION_XML_CONTENT_TYPE = "application/xml";
+    private static final int ERRORMESSAGE_MAX_LENGTH = 1000;
     private PermissionHelper permissionHelper;
     private Collection<LayerAccessHandler> layerAccessHandlers;
     private Cache<String> cache_WMTS_URL;
@@ -139,7 +151,14 @@ public class GetLayerTileHandler extends ActionHandler {
                 LOG.warn("URL", url, "returned HTTP response code", responseCode,
                         "with message", con.getResponseMessage(), "and content-type:", contentType);
                 String msg = IOHelper.readString(con);
-                LOG.info("Response was:", msg);
+
+                // if response type is not something textual, i.e. json / xml we probably do not want to log the content.
+                if (isContentTypeHumanReadable(contentType)) {
+                    LOG.info("Response was:", msg.substring(0, ERRORMESSAGE_MAX_LENGTH));
+                } else {
+                    LOG.info("Not logging response message due to content-type " + contentType);
+                }
+
                 throw new ActionParamsException("Problematic response from actual service");
             }
 
@@ -164,6 +183,12 @@ public class GetLayerTileHandler extends ActionHandler {
                 con.disconnect();
             }
         }
+    }
+
+    private boolean isContentTypeHumanReadable(String contentType) {
+        return contentType.startsWith(TEXT_CONTENT_TYPE_PREFIX) ||
+            contentType.startsWith(APPLICATION_JSON_CONTENT_TYPE) ||
+            contentType.startsWith(APPLICATION_XML_CONTENT_TYPE);
     }
 
     private boolean isContentTypeOK(String contentType) {
