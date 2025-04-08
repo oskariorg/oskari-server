@@ -107,12 +107,13 @@ public class CSWCoverageUpdateService extends ScheduledJob {
         } catch (Exception e) {
             List<String> messages = new ArrayList<>();
             Throwable loopEx = e;
-            messages.add(e.getMessage());
+            messages.add(" - " + loopEx.getClass().getCanonicalName() + ": " + loopEx.getMessage());
             while (loopEx.getCause() != null) {
                 loopEx = loopEx.getCause();
-                messages.add(loopEx.getMessage());
+                messages.add(loopEx.getClass().getCanonicalName() + ": " + loopEx.getMessage());
             }
-            log.error("Error fetching metadata for id:", metadataId, "Causes:", messages);
+            log.error("Error fetching metadata for id:", metadataId,
+                    "Causes:\n", String.join("\n - ", messages));
         }
         return null;
     }
