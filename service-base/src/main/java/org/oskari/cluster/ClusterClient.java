@@ -5,6 +5,7 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.util.OskariRuntimeException;
 import redis.clients.jedis.*;
+import redis.clients.jedis.exceptions.JedisConnectionException;
 
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -75,6 +76,13 @@ public class ClusterClient extends JedisPubSub {
     public long sendMessage(String channel, String message) {
         if (stopped) {
             LOG.error("Listener for " + functionalityId + " stopped, but still trying to send messages!");
+        } else {
+            if (client == null) {
+                // if the connection has been broken, but we should still be listening
+                LOG.info("Listener for " + functionalityId + " has terminated. Reconnecting...");
+                // self-healing
+                startListening(getFullChannelPrefix());
+            }
         }
         return ClusterClient.sendMessage(functionalityId, channel, message);
     }
@@ -152,7 +160,11 @@ public class ClusterClient extends JedisPubSub {
                 if (!stopped) {
                     // something unexpected happened since it wasn't stopped by calling the stopped function
                     // if we don't handle it with this flag, there's unnecessary noise on server log on shutdown
-                    LOG.error(e,"Problem listening to channel:", prefix);
+                    if (e instanceof JedisConnectionException) {
+                        LOG.error(e.getMessage(), "Problem listening to channel:", prefix);
+                    } else {
+                        LOG.error(e, "Problem listening to channel:", prefix);
+                    }
                 }
             } finally {
                 client = null;
