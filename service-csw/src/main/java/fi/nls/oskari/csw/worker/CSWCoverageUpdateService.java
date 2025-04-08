@@ -16,9 +16,7 @@ import fi.nls.oskari.util.PropertyUtil;
 import fi.nls.oskari.worker.ScheduledJob;
 
 import javax.sql.DataSource;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Scheduled job for retrieving coverage data for maplayers having metadataids.
@@ -107,7 +105,14 @@ public class CSWCoverageUpdateService extends ScheduledJob {
         try {
             return cswService.getRecordById(metadataId, language);
         } catch (Exception e) {
-            log.error(e, "Error fetching metadata for id:", metadataId);
+            List<String> messages = new ArrayList<>();
+            Throwable loopEx = e;
+            messages.add(e.getMessage());
+            while (loopEx.getCause() != null) {
+                loopEx = loopEx.getCause();
+                messages.add(loopEx.getMessage());
+            }
+            log.error("Error fetching metadata for id:", metadataId, "Causes:", messages);
         }
         return null;
     }
