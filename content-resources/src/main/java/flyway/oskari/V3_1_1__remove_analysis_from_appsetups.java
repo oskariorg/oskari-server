@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class V3_1_1__remove_analysis_from_appsetups extends BaseJavaMigration {
-    private static final Logger LOG = LogFactory.getLogger(flyway.oskari.V3_0_1__infobox_colourscheme_to_theme.class);
+    private static final Logger LOG = LogFactory.getLogger(V3_1_1__remove_analysis_from_appsetups.class);
     private static final String ANALYSIS_LAYER_PLUGIN_ID = "Oskari.mapframework.bundle.mapanalysis.plugin.AnalysisLayerPlugin";
     private static final String ANALYSIS_LAYER_PREFIX = "analysis_";
     private static final int BATCH_SIZE = 1000;
