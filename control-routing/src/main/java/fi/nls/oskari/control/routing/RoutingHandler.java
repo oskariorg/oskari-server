@@ -73,7 +73,7 @@ public class RoutingHandler extends ActionHandler {
         routeparams.setIsArriveBy("true".equals(params.getHttpParam(PARAM_ARRIVEBY)));
         routeparams.setIsWheelChair("true".equals(params.getHttpParam(PARAM_WHEELCHAIR)));
 
-        routeparams.setSrs(params.getHttpParam(PARAM_SRS));
+        routeparams.setSrs(params.getRequiredParam(PARAM_SRS));
         routeparams.setLang(params.getHttpParam(PARAM_LANGUAGE));
         routeparams.setMode(params.getHttpParam(PARAM_MODE, PropertyUtil.get("routing.default.mode")));
 

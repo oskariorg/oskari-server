@@ -138,4 +138,13 @@ public class RoutingHandlerTest extends JSONActionRouteTest {
         ActionParamsException ex = Assertions.assertThrows(ActionParamsException.class, () -> routingHandler.handleAction(createActionParams(parameters)));
         Assertions.assertEquals("Couldn't parse date", ex.getMessage());
     }
+
+    @Test
+    public void testHandleActionMissingSrsThrows() {
+        final Map<String, String> parameters = getParameters();
+        parameters.remove("srs");
+        ActionParamsException ex = Assertions.assertThrows(ActionParamsException.class, () -> routingHandler.handleAction(createActionParams(parameters)));
+        Assertions.assertEquals("Required parameter 'srs' missing!", ex.getMessage());
+
+    }
 }
