@@ -880,7 +880,6 @@ The one packaged without this is 2.15.1
                 <executions>
                     <execution>
                         <id>attach-sources</id>
-                        <phase>deploy</phase>
                         <goals>
                             <goal>jar-no-fork</goal>
                         </goals>
@@ -895,8 +894,7 @@ The one packaged without this is 2.15.1
                 </configuration>
                 <executions>
                     <execution>
-                        <id>attach-sources</id>
-                        <phase>deploy</phase>
+                        <id>attach-javadoc</id>
                         <goals>
                             <goal>jar</goal>
                         </goals>
@@ -966,18 +964,8 @@ The one packaged without this is 2.15.1
                 </configuration>
             </plugin>
             <plugin>
-                <!-- explicitly define maven-deploy-plugin after other to force exec order -->
                 <artifactId>maven-deploy-plugin</artifactId>
                 <version>3.1.3</version>
-                <executions>
-                    <execution>
-                        <id>deploy</id>
-                        <phase>deploy</phase>
-                        <goals>
-                            <goal>deploy</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <!-- initialize git revision info -->
             <plugin>
