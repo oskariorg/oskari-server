@@ -1,5 +1,16 @@
 # Release Notes
 
+## 3.0.2
+
+For a full list of changes see:
+https://github.com/oskariorg/oskari-server/milestone/55?closed=1
+
+- Migrate featuredata and metadatasearch in database automatically for applications (sice featuredata2 and metadatacatalogue were removed in 3.0)
+- DigiTransit API: signal an error if SRS-param is not sent with the request
+- Fixed an error where setting visibility of a my places layer to public failed (publishing new my places layers as layers on embedded maps couldn't be done)
+- Made errors for proxying layer legend image and CSW coverage data less noisy in the log
+- Fixed an issue where clustered server environment messaging was not re-established after loosing Redis connection.
+
 ## 3.0.1
 
 For a full list of changes see:
