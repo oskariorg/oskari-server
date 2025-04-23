@@ -47,29 +47,28 @@
         <jdk.version>17</jdk.version>
         <oskari.version>${project.version}</oskari.version>
 
-        <spring.version>6.2.2</spring.version>
-        <spring-security.version>6.4.2</spring-security.version>
+        <spring.version>6.2.6</spring.version>
+        <spring-security.version>6.4.5</spring-security.version>
         <!--
         session-bom 3.4.1 uses:
-        https://github.com/spring-projects/spring-session/blob/3.4.1/gradle/libs.versions.toml#L61-L62
-        which is aligned with core 6.2.1 and security 6.4.2 versions
-        https://central.sonatype.com/artifact/org.springframework.session/spring-session-bom/3.4.1
-        https://mvnrepository.com/artifact/org.springframework.session/spring-session-bom/3.4.1
-         and spring-data 2024.1.1 (https://github.com/spring-projects/spring-session/blob/3.4.1/gradle/libs.versions.toml#L60)
+        https://github.com/spring-projects/spring-session/blob/3.4.2/gradle/libs.versions.toml#L61-L62
+        which is aligned with core 6.2.3 and security 6.4.2 versions
+        https://central.sonatype.com/artifact/org.springframework.session/spring-session-bom/3.4.2
+        https://mvnrepository.com/artifact/org.springframework.session/spring-session-bom/3.4.2
+         and spring-data 2024.1.3 (https://github.com/spring-projects/spring-session/blob/3.4.2/gradle/libs.versions.toml#L60)
          which uses spring-data-redis 3.4.2:
-         - https://github.com/spring-projects/spring-data-redis/releases/tag/3.4.2
-         - https://github.com/spring-projects/spring-data-bom/releases/tag/2024.1.2
+         - https://github.com/spring-projects/spring-data-redis/releases/tag/3.4.3
+         - https://github.com/spring-projects/spring-data-bom/releases/tag/2024.1.3
          Which uses Jedis 5.2.0:
-         - https://github.com/spring-projects/spring-data-redis/blob/3.4.2/pom.xml#L28
+         - https://github.com/spring-projects/spring-data-redis/blob/3.4.3/pom.xml#L28
          Hence we need the same jedis version
          -->
-        <spring.session.version>3.4.1</spring.session.version>
+        <spring.session.version>3.4.2</spring.session.version>
 
         <jakarta.servlet.version>6.0.0</jakarta.servlet.version>
         <jakarta.servlet.jsp.version>3.1.0</jakarta.servlet.jsp.version>
         <jakarta.servlet.jsp.jstl-api.version>3.0.0</jakarta.servlet.jsp.jstl-api.version>
         <jakarta.servlet.jsp.jstl.version>3.0.1</jakarta.servlet.jsp.jstl.version>
-        <!-- vecmath.version>1.5.2</vecmath.version -->
 
         <commons-lang3.version>3.17.0</commons-lang3.version>
         <commons-text.version>1.13.0</commons-text.version>
@@ -98,10 +97,10 @@ The one packaged without this is 2.15.1
         <tomcat.version>10.1.39</tomcat.version>
         <mybatis.version>3.5.19</mybatis.version>
         <flyway.version>11.1.1</flyway.version>
-        <postgresql.version>42.7.4</postgresql.version>
+        <postgresql.version>42.7.5</postgresql.version>
         <hikaricp.version>6.2.1</hikaricp.version>
 
-        <!-- https://github.com/spring-projects/spring-data-redis/blob/3.4.2/pom.xml#L28 -->
+        <!-- https://github.com/spring-projects/spring-data-redis/blob/3.4.3/pom.xml#L28 -->
         <jedis.version>5.2.0</jedis.version>
         <!-- Jedis depends on org.json/json -->
         <json.version>20240303</json.version>
@@ -727,13 +726,6 @@ The one packaged without this is 2.15.1
                 <artifactId>gt-mif</artifactId>
                 <version>${project.version}</version>
             </dependency>
-
-            <!-- dependency>
-                <groupId>javax.vecmath</groupId>
-                <artifactId>vecmath</artifactId>
-                <version>${vecmath.version}</version>
-            </dependency -->
-
             <dependency>
                 <groupId>fi.mml</groupId>
                 <artifactId>nameregister</artifactId>
