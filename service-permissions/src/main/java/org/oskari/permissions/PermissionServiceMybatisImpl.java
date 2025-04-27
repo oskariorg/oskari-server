@@ -35,7 +35,16 @@ public class PermissionServiceMybatisImpl extends PermissionService {
     private final Cache<Resource> cache;
 
     public PermissionServiceMybatisImpl() {
-        this(DatasourceHelper.getInstance().getDataSource());
+        this(getSource());
+    }
+
+    private static DataSource getSource() {
+        final DatasourceHelper helper = DatasourceHelper.getInstance();
+        DataSource dataSource = helper.getDataSource();
+        if (dataSource != null) {
+            return dataSource;
+        }
+        return helper.createDataSource();
     }
 
     public PermissionServiceMybatisImpl(DataSource ds) {
