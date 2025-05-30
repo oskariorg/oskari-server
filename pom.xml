@@ -412,6 +412,12 @@ The one packaged without this is 2.15.1
 
             <dependency>
                 <groupId>org.oskari</groupId>
+                <artifactId>service-myfeatures</artifactId>
+                <version>${oskari.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.oskari</groupId>
                 <artifactId>control-mvt</artifactId>
                 <version>${oskari.version}</version>
             </dependency>
@@ -1192,6 +1198,8 @@ The one packaged without this is 2.15.1
 
         <module>control-userlayer</module>
         <module>service-userlayer</module>
+
+        <module>service-myfeatures</module>
 
         <module>control-mvt</module>
         <module>service-mvt</module>
