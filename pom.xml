@@ -98,7 +98,7 @@ The one packaged without this is 2.15.1
         <tomcat.version>10.1.39</tomcat.version>
         <mybatis.version>3.5.19</mybatis.version>
         <flyway.version>11.1.1</flyway.version>
-        <postgresql.version>42.7.4</postgresql.version>
+        <postgresql.version>42.7.7</postgresql.version>
         <hikaricp.version>6.2.1</hikaricp.version>
 
         <!-- https://github.com/spring-projects/spring-data-redis/blob/3.4.2/pom.xml#L28 -->
