@@ -14,7 +14,7 @@ import org.geotools.api.referencing.FactoryException;
 import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 import org.geotools.api.referencing.operation.MathTransform;
 import org.locationtech.jts.geom.Geometry;
-import org.oskari.map.myfeatures.service.UserLayerException;
+import org.oskari.map.myfeatures.service.MyFeaturesException;
 
 import fi.nls.oskari.service.ServiceException;
 
@@ -58,10 +58,10 @@ public class FeatureCollectionParsers {
      * Read Features from FeatureSource to memory (ensure they won't
      * disappear when DataStore#dispose() is called) while transforming
      * their geometries from source projection to target projection
-     * @throws UserLayerException lots can go wrong
+     * @throws MyFeaturesException lots can go wrong
      */
     public static SimpleFeatureCollection read(SimpleFeatureSource src,
-            CoordinateReferenceSystem sourceCRS, CoordinateReferenceSystem targetCRS) throws ServiceException, UserLayerException {
+            CoordinateReferenceSystem sourceCRS, CoordinateReferenceSystem targetCRS) throws ServiceException, MyFeaturesException {
         MathTransform transform = getTransform(sourceCRS, targetCRS);
         try {
             SimpleFeatureType newSchema = SimpleFeatureTypeBuilder.retype(src.getSchema(), targetCRS);
@@ -86,17 +86,17 @@ public class FeatureCollectionParsers {
             }
             return fc;
         } catch (Exception e) {
-            throw new UserLayerException("Failed to read feature collection from source: " + e.getMessage(),
-                        UserLayerException.ErrorType.PARSER, UserLayerException.ErrorType.INVALID_FORMAT);
+            throw new MyFeaturesException("Failed to read feature collection from source: " + e.getMessage(),
+                        MyFeaturesException.ErrorType.PARSER, MyFeaturesException.ErrorType.INVALID_FORMAT);
         }
     }
 
     public static MathTransform getTransform(
             CoordinateReferenceSystem sourceCRS,
-            CoordinateReferenceSystem targetCRS) throws UserLayerException, ServiceException {
+            CoordinateReferenceSystem targetCRS) throws MyFeaturesException, ServiceException {
         if (sourceCRS == null) {
-            throw new UserLayerException("sourceCRS must be known!",
-                    UserLayerException.ErrorType.PARSER, UserLayerException.ErrorType.NO_SOURCE_EPSG);
+            throw new MyFeaturesException("sourceCRS must be known!",
+                    MyFeaturesException.ErrorType.PARSER, MyFeaturesException.ErrorType.NO_SOURCE_EPSG);
         }
         if (targetCRS == null) {
             throw new ServiceException("targetCRS isn't configured in Oskari properties");

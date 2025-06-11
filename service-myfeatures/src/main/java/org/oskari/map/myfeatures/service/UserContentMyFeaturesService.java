@@ -11,10 +11,10 @@ import fi.nls.oskari.service.db.UserContentService;
 public class UserContentMyFeaturesService extends UserContentService {
     
     public void deleteUserContent(User user) throws ServiceException {
-        if(!DatasourceHelper.isModuleEnabled(getName())) {
+        if (!DatasourceHelper.isModuleEnabled(getName())) {
             return;
         }
-        UserLayerDbService userLayerService = OskariComponentManager.getComponentOfType(UserLayerDbService.class);
-        userLayerService.deleteUserLayersByUuid(user.getUuid());
+        MyFeaturesService myFeaturesService = OskariComponentManager.getComponentOfType(MyFeaturesService.class);
+        myFeaturesService.deleteLayersByOwnerUuid(user.getUuid());
     }
 }

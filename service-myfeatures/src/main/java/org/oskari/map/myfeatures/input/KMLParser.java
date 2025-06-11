@@ -27,7 +27,7 @@ import org.geotools.api.referencing.operation.MathTransform;
 import org.xml.sax.SAXException;
 
 import org.locationtech.jts.geom.Geometry;
-import org.oskari.map.myfeatures.service.UserLayerException;
+import org.oskari.map.myfeatures.service.MyFeaturesException;
 
 import fi.nls.oskari.service.ServiceException;
 
@@ -84,11 +84,11 @@ public class KMLParser implements FeatureCollectionParser {
             }
             return processFeatures(targetCRS, fc, extendedData);
         } catch (XMLStreamException e) {
-            throw new UserLayerException("XMLStreamException occured: " + e.getMessage(), UserLayerException.ErrorType.PARSER, UserLayerException.ErrorType.INVALID_FORMAT);
+            throw new MyFeaturesException("XMLStreamException occured: " + e.getMessage(), MyFeaturesException.ErrorType.PARSER, MyFeaturesException.ErrorType.INVALID_FORMAT);
         } catch (IOException e) {
             throw new ServiceException("IOException occured: " + e.getMessage());
         } catch (SAXException e) {
-            throw new UserLayerException("Invalid KML file: " + e.getMessage(), UserLayerException.ErrorType.PARSER, UserLayerException.ErrorType.INVALID_FORMAT);
+            throw new MyFeaturesException("Invalid KML file: " + e.getMessage(), MyFeaturesException.ErrorType.PARSER, MyFeaturesException.ErrorType.INVALID_FORMAT);
         }
     }
 

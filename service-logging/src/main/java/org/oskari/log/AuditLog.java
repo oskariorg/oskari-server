@@ -23,6 +23,8 @@ public class AuditLog {
         DATAPROVIDER,
         MYPLACES,
         MYPLACES_LAYER,
+        MYFEATURES,
+        MYFEATURES_LAYER,
         USERLAYER,
         ANALYSIS,
         SYSTEM_VIEW,

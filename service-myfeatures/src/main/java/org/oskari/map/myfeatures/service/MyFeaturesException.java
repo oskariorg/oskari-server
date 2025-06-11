@@ -9,26 +9,26 @@ import org.json.JSONObject;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.JSONHelper;
 
-public class UserLayerException extends ServiceException {
+public class MyFeaturesException extends ServiceException {
     private JSONObject options;
     private static final long serialVersionUID = 1L;
     private static final String ERROR_KEY = "error";
     private static final String CAUSE_KEY = "cause";
 
-    public UserLayerException(final String message, final Exception e) {
+    public MyFeaturesException(final String message, final Exception e) {
         super(message, e);
     }
 
-    public UserLayerException(final String message) {
+    public MyFeaturesException(final String message) {
         super(message);
     }
 
-    public UserLayerException (final String message, ErrorType error) {
+    public MyFeaturesException (final String message, ErrorType error) {
         super(message);
         this.options = error.getJSON();
     }
 
-    public UserLayerException (final String message, ErrorType error, ErrorType additionalError) {
+    public MyFeaturesException (final String message, ErrorType error, ErrorType additionalError) {
         super(message);
         JSONObject json = error.getJSON();
         JSONHelper.putValue(json, CAUSE_KEY, additionalError.getErrorKey());
