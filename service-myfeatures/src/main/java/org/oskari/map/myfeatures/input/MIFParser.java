@@ -10,7 +10,7 @@ import java.util.Map;
 import org.geotools.api.data.DataStore;
 import org.geotools.api.data.DataStoreFinder;
 import org.geotools.data.simple.SimpleFeatureCollection;
-import org.oskari.map.myfeatures.service.UserLayerException;
+import org.oskari.map.myfeatures.service.MyFeaturesException;
 import org.geotools.api.data.SimpleFeatureSource;
 import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 
@@ -30,8 +30,8 @@ public class MIFParser implements FeatureCollectionParser {
         try {
             url = file.toURI().toURL();
         } catch (MalformedURLException e) {
-            throw new UserLayerException("Failed to parse MIF: " + e.getMessage(),
-                    UserLayerException.ErrorType.PARSER);
+            throw new MyFeaturesException("Failed to parse MIF: " + e.getMessage(),
+                    MyFeaturesException.ErrorType.PARSER);
         }
 
         Map<String, Serializable> params = new HashMap<>();
@@ -53,8 +53,8 @@ public class MIFParser implements FeatureCollectionParser {
             // forward error on read: if in file UserLayerException. if in service ServiceException
             throw e;
         } catch (Exception e) {
-            throw new UserLayerException("Failed to parse MIF: " + e.getMessage(),
-                    UserLayerException.ErrorType.PARSER, UserLayerException.ErrorType.INVALID_FORMAT);
+            throw new MyFeaturesException("Failed to parse MIF: " + e.getMessage(),
+                    MyFeaturesException.ErrorType.PARSER, MyFeaturesException.ErrorType.INVALID_FORMAT);
         } finally {
             if (store != null) {
                 store.dispose();

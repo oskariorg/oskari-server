@@ -1,33 +1,32 @@
 package org.oskari.map.myfeatures.service;
 
 import java.util.List;
-
-import org.geotools.api.feature.simple.SimpleFeature;
-import org.geotools.data.simple.SimpleFeatureCollection;
-import org.locationtech.jts.geom.Envelope;
+import java.util.UUID;
 
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesFeature;
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayer;
+import fi.nls.oskari.service.OskariComponent;
 
-public interface MyFeaturesService {
+public abstract class MyFeaturesService extends OskariComponent {
 
-    public MyFeaturesLayer getLayerById(long id);
+    public abstract MyFeaturesLayer getLayer(UUID layerId);
+    public abstract void createLayer(MyFeaturesLayer layer);
+    public abstract void updateLayer(MyFeaturesLayer layer);
+    public abstract void deleteLayer(UUID layerId);
 
-    public void createLayer(MyFeaturesLayer layer);
-    public void updateLayer(MyFeaturesLayer layer);
+    public abstract MyFeaturesFeature getFeature(UUID layerId, String featureId);
+    public abstract void createFeature(UUID layerId, MyFeaturesFeature f);
+    public abstract void updateFeature(UUID layerId, MyFeaturesFeature feature);
+    public abstract void deleteFeature(UUID layerId, String featureId);
 
-    public int addFeatures(MyFeaturesLayer layer, List<MyFeaturesFeature> features);
-    
-    public void addFeature(MyFeaturesLayer layer, MyFeaturesFeature f);
-    public void updateFeature(MyFeaturesLayer layer, MyFeaturesFeature f);
-    public int deleteFeature(MyFeaturesLayer layer, String featureId);
+    public abstract List<MyFeaturesFeature> getFeatures(UUID layerId);
+    public abstract List<MyFeaturesFeature> getFeaturesByBbox(UUID layerId, double minX, double minY, double maxX, double maxY);
 
-    public Envelope getLayerExtent(final long id);
-    public Envelope getLayerExtentFromData(final long id);
-    public Envelope updateLayerExtentFromData(final long id);
+    public abstract void createFeatures(UUID layerId, List<MyFeaturesFeature> features);
 
-    public Envelope swapAxisOrder(MyFeaturesLayer layer);
+    public abstract List<MyFeaturesLayer> getLayersByOwnerUuid(String ownerUuid);
+    public abstract void deleteLayersByOwnerUuid(String ownerUuid);
 
-    public void deleteLayerAndFeaturesById(long id);
+    public abstract void swapAxisOrder(UUID layerId);
 
 }

@@ -1,0 +1,35 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.oskari</groupId>
+        <artifactId>oskari-server</artifactId>
+        <version>3.1.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>control-myfeatures</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.oskari</groupId>
+            <artifactId>service-control</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.oskari</groupId>
+            <artifactId>service-myfeatures</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-fileupload2-jakarta-servlet6</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.oskari</groupId>
+            <artifactId>test-helper</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>

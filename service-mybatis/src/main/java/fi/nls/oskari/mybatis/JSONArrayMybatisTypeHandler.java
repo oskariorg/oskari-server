@@ -2,6 +2,7 @@ package fi.nls.oskari.mybatis;
 
 import java.sql.*;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.MappedJdbcTypes;
@@ -38,9 +39,18 @@ public class JSONArrayMybatisTypeHandler extends BaseTypeHandler<JSONArray> {
     }
 
     public JSONArray valueOf(String s) {
+        if (s == null) {
+            // Mimic JSONObjectMybatisTypeHandler
+            return new JSONArray();
+        }
         try {
             return new JSONArray(s);
         } catch (JSONException e) {
+            if (s.startsWith("\"[") && s.endsWith("]\"")) {
+                // H2 DB wraps a stringified json to quotes and escapes the content
+                String unwrapped = s.substring(1, s.length()  - 1);
+                return valueOf(StringEscapeUtils.unescapeJava(unwrapped));
+            }
             log.error("Couldn't parse DB string to JSONArray:", s, e);
             return new JSONArray();
         }

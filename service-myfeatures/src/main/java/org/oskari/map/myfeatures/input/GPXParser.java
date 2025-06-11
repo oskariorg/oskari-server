@@ -20,7 +20,7 @@ import org.geotools.gpx.gpx10.GPX10;
 import org.geotools.gpx.gpx10.GPX10Configuration;
 import org.geotools.referencing.CRS;
 import org.geotools.xsd.PullParser;
-import org.oskari.map.myfeatures.service.UserLayerException;
+import org.oskari.map.myfeatures.service.MyFeaturesException;
 import org.geotools.api.feature.simple.SimpleFeature;
 import org.geotools.api.referencing.FactoryException;
 import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
@@ -75,8 +75,8 @@ public class GPXParser implements FeatureCollectionParser {
             // Return the empty FeatureCollection
             return parsed;
         } catch (Exception e) {
-            throw new UserLayerException("Failed to parse GPX: " + e.getMessage(),
-                    UserLayerException.ErrorType.PARSER, UserLayerException.ErrorType.INVALID_FORMAT);
+            throw new MyFeaturesException("Failed to parse GPX: " + e.getMessage(),
+                    MyFeaturesException.ErrorType.PARSER, MyFeaturesException.ErrorType.INVALID_FORMAT);
         }
     }
 

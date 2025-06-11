@@ -12,7 +12,7 @@ import java.nio.file.Paths;
 
 import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.data.simple.SimpleFeatureCollection;
-import org.oskari.map.myfeatures.service.UserLayerException;
+import org.oskari.map.myfeatures.service.MyFeaturesException;
 import org.geotools.api.data.SimpleFeatureSource;
 import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 
@@ -49,8 +49,8 @@ public class SHPParser implements FeatureCollectionParser {
             // forward error on read: if in file UserLayerException. if in service ServiceException
             throw e;
         } catch (Exception e) {
-            throw new UserLayerException("Failed to parse SHP: " + e.getMessage(),
-                    UserLayerException.ErrorType.PARSER, UserLayerException.ErrorType.INVALID_FORMAT);
+            throw new MyFeaturesException("Failed to parse SHP: " + e.getMessage(),
+                    MyFeaturesException.ErrorType.PARSER, MyFeaturesException.ErrorType.INVALID_FORMAT);
         } finally {
             if (store != null) {
                 store.dispose();
