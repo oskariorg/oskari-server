@@ -47,23 +47,23 @@
         <jdk.version>17</jdk.version>
         <oskari.version>${project.version}</oskari.version>
 
-        <spring.version>6.2.6</spring.version>
-        <spring-security.version>6.4.5</spring-security.version>
+        <spring.version>6.2.7</spring.version>
+        <spring-security.version>6.5.0</spring-security.version>
         <!--
         session-bom 3.4.1 uses:
-        https://github.com/spring-projects/spring-session/blob/3.4.2/gradle/libs.versions.toml#L61-L62
-        which is aligned with core 6.2.3 and security 6.4.2 versions
+        https://github.com/spring-projects/spring-session/blob/3.5.0/gradle/libs.versions.toml#L41-L43
+        which is aligned with core 6.2.7 and security 6.5.0 versions
         https://central.sonatype.com/artifact/org.springframework.session/spring-session-bom/3.4.2
-        https://mvnrepository.com/artifact/org.springframework.session/spring-session-bom/3.4.2
-         and spring-data 2024.1.3 (https://github.com/spring-projects/spring-session/blob/3.4.2/gradle/libs.versions.toml#L60)
+        https://mvnrepository.com/artifact/org.springframework.session/spring-session-bom/3.5.0
+         and spring-data 2025.0.0 (https://github.com/spring-projects/spring-session/blob/3.5.0/gradle/libs.versions.toml#L41)
          which uses spring-data-redis 3.4.2:
-         - https://github.com/spring-projects/spring-data-redis/releases/tag/3.4.3
-         - https://github.com/spring-projects/spring-data-bom/releases/tag/2024.1.3
-         Which uses Jedis 5.2.0:
-         - https://github.com/spring-projects/spring-data-redis/blob/3.4.3/pom.xml#L28
+         - https://github.com/spring-projects/spring-data-redis/releases/tag/3.5.0
+         - https://github.com/spring-projects/spring-data-bom/releases/tag/2025.0.0
+         Which uses Jedis 6.0.0:
+         - https://github.com/spring-projects/spring-data-redis/blob/3.5.0/pom.xml#L27
          Hence we need the same jedis version
          -->
-        <spring.session.version>3.4.2</spring.session.version>
+        <spring.session.version>3.5.0</spring.session.version>
 
         <jakarta.servlet.version>6.0.0</jakarta.servlet.version>
         <jakarta.servlet.jsp.version>3.1.0</jakarta.servlet.jsp.version>
@@ -100,10 +100,10 @@ The one packaged without this is 2.15.1
         <postgresql.version>42.7.5</postgresql.version>
         <hikaricp.version>6.2.1</hikaricp.version>
 
-        <!-- https://github.com/spring-projects/spring-data-redis/blob/3.4.3/pom.xml#L28 -->
-        <jedis.version>5.2.0</jedis.version>
-        <!-- Jedis depends on org.json/json -->
-        <json.version>20240303</json.version>
+        <!-- https://github.com/spring-projects/spring-data-redis/blob/3.5.0/pom.xml#L27 -->
+        <jedis.version>6.0.0</jedis.version>
+        <!-- Jedis depends on org.json/json https://github.com/redis/jedis/blob/v6.0.0/pom.xml#L83 -->
+        <json.version>20250107</json.version>
 
         <quartz-scheduler.version>2.3.2</quartz-scheduler.version>
 
