@@ -53,7 +53,7 @@ public class GetWFSFeaturesHandler extends AbstractWFSFeaturesHandler {
         String targetSRS = params.getHttpParam(ActionConstants.PARAM_SRS, "EPSG:3857");
         CoordinateReferenceSystem targetCRS;
         try {
-            targetCRS = CRS.decode(targetSRS);
+            targetCRS = CRS.decode(targetSRS, true);
         } catch (Exception e) {
             throw new ActionParamsException("Invalid " + ActionConstants.PARAM_SRS);
         }

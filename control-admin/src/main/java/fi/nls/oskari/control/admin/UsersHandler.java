@@ -209,7 +209,8 @@ public class UsersHandler extends RestActionHandler {
         uo.put("lastName", user.getLastname());
         uo.put("user", user.getScreenname());
         uo.put("email", user.getEmail());
-
+        uo.put("created", user.getCreated());
+        uo.put("lastLogin", user.getLastLogin());
         JSONArray rolesArray = new JSONArray();
         for (Role role : user.getRoles()) {
             rolesArray.put(role.getId());

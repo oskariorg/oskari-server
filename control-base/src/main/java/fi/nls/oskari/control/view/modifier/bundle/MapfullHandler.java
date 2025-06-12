@@ -1,19 +1,14 @@
 package fi.nls.oskari.control.view.modifier.bundle;
 
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
-import fi.nls.oskari.analysis.AnalysisHelper;
 import fi.nls.oskari.annotation.OskariViewModifier;
 import org.oskari.user.User;
 import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.domain.map.analysis.Analysis;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.domain.map.view.ViewTypes;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
-import fi.nls.oskari.map.analysis.domain.AnalysisLayer;
-import fi.nls.oskari.map.analysis.service.AnalysisDataService;
-import fi.nls.oskari.map.analysis.service.AnalysisDbService;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatter;
 import fi.nls.oskari.myplaces.MyPlacesService;
@@ -30,9 +25,6 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.oskari.map.userlayer.service.UserLayerDataService;
 import org.oskari.map.userlayer.service.UserLayerDbService;
-import org.oskari.permissions.PermissionService;
-import org.oskari.permissions.model.PermissionType;
-import org.oskari.service.util.ServiceFactory;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -45,7 +37,6 @@ import java.util.Set;
 public class MapfullHandler extends BundleHandler {
 
     private static final Logger LOGGER = LogFactory.getLogger(MapfullHandler.class);
-    private static PermissionService permissionsService;
 
     // FIXME: default srs is hardcoded into frontend if srs is not defined in mapOptions!!
     public static final String DEFAULT_MAP_SRS = "EPSG:3067";
@@ -74,7 +65,6 @@ public class MapfullHandler extends BundleHandler {
     private static final String TERRAIN_URL = PropertyUtil.getOptional("oskari.map.terrain.url");
 
     private static final String PREFIX_MYPLACES = "myplaces_";
-    private static final String PREFIX_ANALYSIS = "analysis_";
     private static final String PREFIX_USERLAYERS = "userlayer_";
     private static final Set<String> BUNDLES_HANDLING_MYPLACES_LAYERS = ConversionHelper.asSet(ViewModifier.BUNDLE_MYPLACES3);
 
@@ -85,7 +75,6 @@ public class MapfullHandler extends BundleHandler {
     public static final String EPSG_PROJ4_FORMATS = "epsg_proj4_formats.json";
 
     private static MyPlacesService myPlaceService = null;
-    private static AnalysisDbService analysisService;
     private static UserLayerDbService userLayerService;
     private static OskariLayerService mapLayerService;
 
@@ -97,9 +86,6 @@ public class MapfullHandler extends BundleHandler {
         myPlaceService = OskariComponentManager.getComponentOfType(MyPlacesService.class);
         userLayerService = OskariComponentManager.getComponentOfType(UserLayerDbService.class);
         mapLayerService = OskariComponentManager.getComponentOfType(OskariLayerService.class);
-        analysisService = OskariComponentManager.getComponentOfType(AnalysisDbService.class);
-        // to prevent mocking issues in JUnit tests....
-        permissionsService = ServiceFactory.getPermissionsService(); // OskariComponentManager.getComponentOfType(PermissionService.class);
         epsgInit();
         pluginHandlers = new HashMap<>();
         registerPluginHandler(LogoPluginHandler.PLUGIN_NAME, new LogoPluginHandler());
@@ -250,7 +236,6 @@ public class MapfullHandler extends BundleHandler {
         // Create a list of layer ids
         final List<Integer> layerIdList = new ArrayList<>();
         final List<Long> publishedMyPlaces = new ArrayList<>();
-        final List<Long> publishedAnalysis = new ArrayList<>();
         final List<Long> publishedUserLayers = new ArrayList<>();
 
         for (int i = 0; i < layersArray.length(); i++) {
@@ -261,7 +246,7 @@ public class MapfullHandler extends BundleHandler {
                 if (layerId == null || layerIdList.contains(layerId)) {
                     continue;
                 }
-                // special handling for myplaces and analysis layers
+                // special handling for myplaces and userlayer layers
                 if (layerId.startsWith(PREFIX_MYPLACES)) {
                     final long categoryId =
                             ConversionHelper.getLong(layerId.substring(PREFIX_MYPLACES.length()), -1);
@@ -269,13 +254,6 @@ public class MapfullHandler extends BundleHandler {
                         publishedMyPlaces.add(categoryId);
                     } else {
                         LOGGER.warn("Found my places layer in selected. Error parsing id with category id: ", layerId);
-                    }
-                } else if (layerId.startsWith(PREFIX_ANALYSIS)) {
-                    final long categoryId = AnalysisHelper.getAnalysisIdFromLayerId(layerId);
-                    if (categoryId != -1) {
-                        publishedAnalysis.add(categoryId);
-                    } else {
-                        LOGGER.warn("Found analysis layer in selected. Error parsing id with category id: ", layerId);
                     }
                 } else if (layerId.startsWith(PREFIX_USERLAYERS)) {
                     final long userLayerId = ConversionHelper
@@ -324,47 +302,8 @@ public class MapfullHandler extends BundleHandler {
         // construct layers JSON
         final JSONArray prefetch = getLayersArray(struct);
         appendMyPlacesLayers(prefetch, publishedMyPlaces, user, viewID, lang, bundleIds, mapSRS);
-        appendAnalysisLayers(prefetch, publishedAnalysis, user, viewID, lang, bundleIds, mapSRS);
         appendUserLayers(prefetch, publishedUserLayers, user, viewID, lang, bundleIds, mapSRS);
         return prefetch;
-    }
-
-    private static void appendAnalysisLayers(final JSONArray layerList,
-                                             final List<Long> publishedAnalysis,
-                                             final User user,
-                                             final long viewID,
-                                             final String lang,
-                                             final Set<String> bundleIds,
-                                             final String mapSrs) {
-        if (publishedAnalysis.isEmpty()) {
-            return;
-        }
-        final boolean analyseBundlePresent = bundleIds.contains(BUNDLE_ANALYSE);
-        final Set<String> permissions = permissionsService.getResourcesWithGrantedPermissions(
-                AnalysisLayer.TYPE, user, PermissionType.VIEW_PUBLISHED.name());
-        LOGGER.debug("Analysis layer permissions for published view", permissions);
-        for (Long id : publishedAnalysis) {
-            final Analysis analysis = analysisService.getAnalysisById(id);
-            if(analysis == null){
-                continue;
-            }
-            boolean ownLayer = analysis.isOwnedBy(user.getUuid());
-            if (analyseBundlePresent && ownLayer) {
-                // skip it's an own bundle and analysis bundle is present -> will be loaded via analysisbundle
-                continue;
-            }
-            final String permissionKey = "analysis+" + id;
-            boolean containsKey = permissions.contains(permissionKey);
-            if (!ownLayer && !containsKey) {
-                LOGGER.info("Found analysis layer in selected that is no longer published. ViewID:",
-                        viewID, "Analysis id:", id);
-                continue;
-            }
-            final JSONObject json = AnalysisDataService.parseAnalysis2JSON(analysis, mapSrs, lang);
-            if (json != null) {
-                layerList.put(json);
-            }
-        }
     }
 
     private static boolean isMyplacesBundlePresent(Set<String> bundleIdList) {
