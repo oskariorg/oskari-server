@@ -2,6 +2,7 @@ package fi.nls.oskari.map.geometry;
 
 import fi.nls.oskari.domain.geo.Point;
 import org.geotools.referencing.CRS;
+import org.geotools.referencing.operation.AuthorityBackedFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -48,8 +49,21 @@ public class ProjectionHelperTest {
         }
     }
 
+    /**
+     * This test fails with GeoTools 33.1/33.0 (used to pass with 32.x),
+     * but only if java assertations are enabled (which they are by default when running tests with jUnit).
+     * With java assertations disabled it works just fine.
+     *
+     * As it's not customary to run the actual Java program with assertations enabled it should not cause issues at runtime
+     */
     @Test
     public void testTransformPoint() throws Exception {
+        // Temporarily disable assertations for AuthorityBackedFactory class
+        boolean ea = AuthorityBackedFactory.class.desiredAssertionStatus();
+        if (ea) {
+            AuthorityBackedFactory.class.getClassLoader().setClassAssertionStatus(AuthorityBackedFactory.class.getName(), false);
+        }
+
         double y = 60.113924;
         double x = 25.017104;
 
@@ -64,6 +78,11 @@ public class ProjectionHelperTest {
         16:25:15,235 DEBUG [ELFGeoLocatorParser:39] Original coordinates - x: 60.113924 y: 25.017104
         16:25:15,235 DEBUG [ELFGeoLocatorParser:39] Transformed coordinates - x: 389790.2122344108 y: 6665752.471279182
         */
+
+        if (ea) {
+            // Set it back to what it was (try to influence just and only this test)
+            AuthorityBackedFactory.class.getClassLoader().setClassAssertionStatus(AuthorityBackedFactory.class.getName(), ea);
+        }
     }
 
     @Test
