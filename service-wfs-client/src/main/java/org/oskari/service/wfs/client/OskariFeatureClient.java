@@ -77,20 +77,17 @@ public class OskariFeatureClient {
     private SimpleFeatureCollection getFeaturesNoTransform(String id, OskariLayer layer,
             ReferencedEnvelope bbox, CoordinateReferenceSystem crs,
             Optional<UserLayerService> processor) {
-        SimpleFeatureCollection sfc;
         if (processor.isPresent()) {
             try {
-                sfc = processor.get().getFeatures(id, layer, bbox, crs);
-            } catch(ServiceException e) {
+                return processor.get().getFeatures(id, layer, bbox);
+            } catch (ServiceException e) {
                 // FIXME: for debugging purposes, remove once no longer needed.
                 LOG.error(e, "Failed to get features.");
                 throw new ServiceRuntimeException("Failed to get features for user layer", e);
             }
-        } else {
-            Filter filter = wfsClient.getWFSFilter(id, layer, bbox, processor);
-            sfc = wfsClient.getFeatures(layer, bbox, crs, filter);
         }
-
-        return sfc;
+    
+        Filter filter = OskariWFSClient.getWFSFilter(id, layer, bbox);
+        return wfsClient.getFeatures(layer, bbox, crs, filter);
     }
 }

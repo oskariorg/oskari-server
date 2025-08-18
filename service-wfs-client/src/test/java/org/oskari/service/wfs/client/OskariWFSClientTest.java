@@ -9,8 +9,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.geotools.api.filter.Filter;
 
-import java.util.Optional;
-
 public class OskariWFSClientTest {
     OskariWFSClient client = new OskariWFSClient();
     private static final String FILTER = "{\"filter\":{\"property\":{\"key\": \"foo\", \"value\": \"bar\"}}}";
@@ -19,7 +17,7 @@ public class OskariWFSClientTest {
     public void noFilter() throws Exception {
         OskariLayer layer = new OskariLayer();
         layer.setType(OskariLayer.TYPE_WFS);
-        Filter filter = client.getWFSFilter(null, layer, null, Optional.empty());
+        Filter filter = OskariWFSClient.getWFSFilter(null, layer, null);
         Assertions.assertNull(filter, "Layer without filter should get null filter");
     }
     @Test
@@ -29,7 +27,7 @@ public class OskariWFSClientTest {
         layer.setCapabilities(new JSONObject(CAPABILITIES));
         layer.setAttributes(new JSONObject(FILTER));
         ReferencedEnvelope bbox = new ReferencedEnvelope(0, 10, 0, 10, DefaultGeographicCRS.WGS84);
-        Filter filter = client.getWFSFilter(null, layer, bbox, Optional.empty());
+        Filter filter = OskariWFSClient.getWFSFilter(null, layer, bbox);
         Assertions.assertNotNull(filter, "Layer should get filter");
         Assertions.assertEquals("foo = 'bar' AND BBOX(geomName, 0.0,0.0,10.0,10.0)", CQL.toCQL(filter));
     }

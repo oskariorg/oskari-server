@@ -4,6 +4,7 @@ import fi.nls.oskari.annotation.Oskari;
 import org.oskari.user.User;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
+import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.JSONHelper;
@@ -17,6 +18,7 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.locationtech.jts.geom.Envelope;
 import org.geotools.api.feature.simple.SimpleFeature;
 import org.geotools.api.feature.simple.SimpleFeatureType;
 import org.geotools.api.filter.Filter;
@@ -27,8 +29,6 @@ import org.oskari.geojson.GeoJSONFeatureCollection;
 import org.oskari.map.userlayer.service.UserLayerDataService;
 import org.oskari.map.userlayer.service.UserLayerDbService;
 import org.oskari.service.user.UserLayerService;
-import org.oskari.service.wfs.client.CachingOskariWFSClient;
-import org.oskari.service.wfs.client.OskariWFSClient;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,7 +49,6 @@ public class UserLayerWFSHelper extends UserLayerService {
     private FilterFactory ff;
     private int userlayerLayerId;
     private UserLayerDbService service;
-    private OskariWFSClient wfsClient = new CachingOskariWFSClient();
 
     public UserLayerWFSHelper() {
         init();
@@ -90,7 +89,6 @@ public class UserLayerWFSHelper extends UserLayerService {
         return ff.and(Arrays.asList(userlayerIdEquals, bboxFilter));
     }
 
-    @SuppressWarnings("unchecked")
     public SimpleFeatureCollection postProcess(SimpleFeatureCollection sfc) throws Exception {
         if (sfc.isEmpty()) {
             // return early as no need for processing and getSchema() throws npe if we move forward
@@ -159,13 +157,23 @@ public class UserLayerWFSHelper extends UserLayerService {
     }
 
     @Override
-    public SimpleFeatureCollection getFeatures(String layerId, OskariLayer layer, ReferencedEnvelope bbox, CoordinateReferenceSystem crs) throws ServiceException {
+    public SimpleFeatureCollection getFeatures(String layerId, OskariLayer layer, Envelope bbox) throws ServiceException {
         try {
             int id = parseId(layerId);
-            SimpleFeatureCollection featureCollection = service.getFeatures(id, bbox, crs);
+            SimpleFeatureCollection featureCollection = service.getFeatures(id, bbox);
             return postProcess(featureCollection);
         } catch(Exception e) {
             throw new ServiceException("Failed to get features. ", e);
         }
+    }
+
+    @Override
+    public WFSLayerOptions getWFSLayerOptions(String layerId) {
+        int id = parseId(layerId);
+        WFSLayerOptions wfsOpts = getLayer(id).getWFSLayerOptions();
+        OskariLayer baseLayer = getBaseLayer();
+        JSONObject baseOptions = baseLayer == null ? new JSONObject() : baseLayer.getOptions();
+        wfsOpts.injectBaseLayerOptions(baseOptions);
+        return wfsOpts;
     }
 }

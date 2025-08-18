@@ -5,6 +5,7 @@ import org.oskari.user.User;
 import fi.nls.oskari.domain.map.MyPlace;
 import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
 import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.myplaces.service.MyPlacesFeaturesService;
 import fi.nls.oskari.service.OskariComponentManager;
@@ -22,6 +23,7 @@ import org.geotools.referencing.CRS;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
 import org.geotools.api.feature.simple.SimpleFeature;
 import org.geotools.api.feature.simple.SimpleFeatureType;
@@ -29,7 +31,6 @@ import org.geotools.api.feature.type.AttributeDescriptor;
 import org.geotools.api.filter.Filter;
 import org.geotools.api.filter.FilterFactory;
 import org.geotools.api.filter.expression.Expression;
-import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.geojson.GeoJSONFeatureCollection;
 import org.oskari.geojson.GeoJSONReader;
 import org.oskari.myplaces.service.mybatis.MyPlacesFeaturesServiceMybatisImpl;
@@ -220,9 +221,19 @@ public class MyPlacesWFSHelper extends UserLayerService {
     }
 
     @Override
-    public SimpleFeatureCollection getFeatures(String layerId, OskariLayer layer, ReferencedEnvelope bbox, CoordinateReferenceSystem crs) throws ServiceException{
+    public SimpleFeatureCollection getFeatures(String layerId, OskariLayer layer, Envelope bbox) throws ServiceException{
         int categoryId = parseId(layerId);
-        SimpleFeatureCollection featureCollection = featureService.getFeatures(categoryId, bbox, crs);
+        SimpleFeatureCollection featureCollection = featureService.getFeatures(categoryId, bbox);
         return featureCollection != null ? featureCollection : new EmptyFeatureCollection(null);
+    }
+
+    @Override
+    public WFSLayerOptions getWFSLayerOptions(String layerId) {
+        int id = parseId(layerId);
+        WFSLayerOptions wfsOpts = getLayer(id).getWFSLayerOptions();
+        OskariLayer baseLayer = getBaseLayer();
+        JSONObject baseOptions = baseLayer == null ? new JSONObject() : baseLayer.getOptions();
+        wfsOpts.injectBaseLayerOptions(baseOptions);
+        return wfsOpts;
     }
 }

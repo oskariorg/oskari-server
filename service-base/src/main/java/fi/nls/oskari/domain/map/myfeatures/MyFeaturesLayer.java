@@ -162,7 +162,12 @@ public class MyFeaturesLayer extends JSONLocalizedName {
     private static MyFeaturesFieldInfo toFieldInfo(JSONObject info) {
         String name = info.getString("name");
         String type = info.getString("type");
-        return MyFeaturesFieldInfo.of(name, type);
+        try {
+            return MyFeaturesFieldInfo.of(name, Class.forName(type));
+        } catch (Exception e) {
+            // This won't happen...
+            throw new RuntimeException(e);
+        }
     }
 
     public JSONObject getOptions() {
@@ -179,6 +184,10 @@ public class MyFeaturesLayer extends JSONLocalizedName {
 
     public void setAttributes(JSONObject attributes) {
         setLayerAttributes(new WFSLayerAttributes(attributes));
+    }
+
+    public boolean isPublished() {
+        throw new UnsupportedOperationException("Unimplemented method 'isPublished'");
     }
 
 }

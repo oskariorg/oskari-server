@@ -19,7 +19,6 @@ import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import org.oskari.geojson.GeoJSONReader2;
 import org.oskari.geojson.GeoJSONSchemaDetector;
-import org.oskari.service.user.UserLayerService;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -198,10 +197,7 @@ public class OskariWFSClient {
         }
         return DEFAULT_MAX_FEATURES;
     }
-    protected static Filter getWFSFilter (String id, OskariLayer layer, ReferencedEnvelope bbox, Optional<UserLayerService> processor) {
-        if (processor.isPresent()) {
-            return processor.get().getWFSFilter(id, bbox);
-        }
+    protected static Filter getWFSFilter(String id, OskariLayer layer, ReferencedEnvelope bbox) {
         JSONObject attr = layer.getAttributes();
         JSONObject attFilter = attr.optJSONObject(KEY_FILTER);
         if (attFilter == null) {

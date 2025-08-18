@@ -10,8 +10,6 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
-import org.locationtech.jts.geom.Envelope;
 
 import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesFeature;
