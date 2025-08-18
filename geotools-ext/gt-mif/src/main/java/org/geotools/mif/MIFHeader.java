@@ -122,15 +122,20 @@ public class MIFHeader {
         if (i < 0 || j < 0) {
             throw new IllegalArgumentException("Invalid Charset header");
         }
-        String charset = line.substring(i + 1, j).toLowerCase();
-        switch (charset) {
+        String charset = line.substring(i + 1, j);
+        switch (charset.toLowerCase()) {
         case "windowslatin1":
+        case "iso8859_1":
             return StandardCharsets.ISO_8859_1;
         case "macroman":
             return Charset.forName("MacRoman");
         case "neutral":
             return StandardCharsets.US_ASCII;
         default:
+            try {
+                return Charset.forName(charset);
+            } catch (Exception ignore) {
+            }
             throw new IllegalArgumentException("Unknown charset");
         }
     }

@@ -54,4 +54,38 @@ public class MIFHeaderTest {
         Assertions.assertArrayEquals(src, dst, 0.0);
     }
 
+    @Test
+    public void tm35fin_kiinteistoraja() throws URISyntaxException, IOException, NoSuchAuthorityCodeException, FactoryException, TransformException {
+        File mif = new File(getClass().getResource("tm35fin_kiinteistoraja.mif").toURI());
+        MIFDataStore store = new MIFDataStore(mif, null);
+        MIFHeader header = store.readHeader();
+        Assertions.assertEquals(300, header.getVersion());
+        Assertions.assertEquals(StandardCharsets.ISO_8859_1, header.getCharset());
+        CoordinateReferenceSystem actual = header.getCoordSys();
+        MathTransform t = CRS.findMathTransform(actual, CRS.decode("EPSG:3067", true));
+        double[] src = new double[2];
+        double[] dst = new double[2];
+        src[0] = 357517.2;
+        src[1] = 6860602.8;
+        t.transform(src, 0, dst, 0, 1);
+        Assertions.assertArrayEquals(src, dst, 0.0);
+    }
+
+    @Test
+    public void gk23_kiinteistoraja() throws URISyntaxException, IOException, NoSuchAuthorityCodeException, FactoryException, TransformException {
+        File mif = new File(getClass().getResource("gk23_kiinteistoraja.mif").toURI());
+        MIFDataStore store = new MIFDataStore(mif, null);
+        MIFHeader header = store.readHeader();
+        Assertions.assertEquals(300, header.getVersion());
+        Assertions.assertEquals(StandardCharsets.ISO_8859_1, header.getCharset());
+        CoordinateReferenceSystem actual = header.getCoordSys();
+        MathTransform t = CRS.findMathTransform(actual, CRS.decode("EPSG:3877", true));
+        double[] src = new double[2];
+        double[] dst = new double[2];
+        src[0] = 23521271.015;
+        src[1] = 7001167.539;
+        t.transform(src, 0, dst, 0, 1);
+        Assertions.assertArrayEquals(src, dst, 0.0);
+    }
+
 }

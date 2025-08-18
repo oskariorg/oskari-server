@@ -319,10 +319,7 @@ public class MIFDataReader implements Iterator<Geometry>, AutoCloseable {
     }
 
     private void skipOptional(String s) throws IOException {
-        String line = mif.peek();
-        if (startsWithIgnoreCase(line, s)) {
-            mif.poll();
-        }
+        skipOptional(new String[] { s });
     }
 
     private void skipOptional(String[] a) throws IOException {
