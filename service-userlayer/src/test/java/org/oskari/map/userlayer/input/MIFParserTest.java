@@ -9,8 +9,10 @@ import org.junit.jupiter.api.Test;
 import org.geotools.api.feature.simple.SimpleFeature;
 import org.geotools.api.referencing.FactoryException;
 import org.geotools.api.referencing.NoSuchAuthorityCodeException;
-
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.CoordinateSequence;
+import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.geom.Polygon;
@@ -56,6 +58,56 @@ public class MIFParserTest {
             Assertions.assertEquals(6675036.999, c.y, 1e-7);
         } finally {
             it.close();
+        }
+    }
+
+    @Test
+    public void kiinteistoraja() throws URISyntaxException, NoSuchAuthorityCodeException, ServiceException, FactoryException {
+        CoordinateReferenceSystem target = CRS.decode("EPSG:3067", true);
+
+        MIFParser parser = new MIFParser();
+
+        File gkFile = new File(getClass().getResource("gk_kiinteistoraja.mif").toURI());
+        File tmFile = new File(getClass().getResource("tm35fin_kiinteistoraja.mif").toURI());
+
+        SimpleFeatureCollection fcGK = parser.parse(gkFile, null, target);
+        SimpleFeatureCollection fcTM = parser.parse(tmFile, null, target);
+
+        Assertions.assertEquals(fcTM.size(), fcGK.size());
+
+        SimpleFeatureIterator itGK = fcGK.features();
+        SimpleFeatureIterator itTM = fcTM.features();
+        try {
+            while (true) {
+                boolean a = itTM.hasNext();
+                boolean b = itGK.hasNext();
+                Assertions.assertEquals(a, b);
+                if (!a) {
+                    break;
+                }
+                // As the input numbers have been rounded to nearest millimeter
+                // allow coordinate reprojection to generate difference of up to 1mm
+                double tolerance = 1e-3;
+                geometriesAreEqualLineStrings(itGK.next(), itTM.next(), tolerance);
+            }
+        } finally {
+            itGK.close();
+            itTM.close();
+        }
+    }
+
+    private static void geometriesAreEqualLineStrings(SimpleFeature a, SimpleFeature b, double tolerance) {
+        Geometry ga = (Geometry) a.getDefaultGeometry();
+        Geometry gb = (Geometry) b.getDefaultGeometry();
+        Assertions.assertEquals(ga.getClass(), gb.getClass());
+        CoordinateSequence csa = ((LineString) ga).getCoordinateSequence();
+        CoordinateSequence csb = ((LineString) gb).getCoordinateSequence();
+        Assertions.assertEquals(csa.size(), csb.size());
+        Assertions.assertEquals(csa.getDimension(), csb.getDimension());
+        for (int i = 0; i < csa.size(); i++) {
+            for (int d = 0; d < csa.getDimension(); d++) {
+                Assertions.assertEquals(csa.getOrdinate(i, d), csb.getOrdinate(i, d), tolerance);
+            }
         }
     }
 

@@ -1,0 +1,11 @@
+VERSION 300
+CHARSET "ISO8859_1"
+DELIMITER ","
+CoordSys Earth Projection 24, 115, "m", 27, 0, 0.9996, 500000, 0
+COLUMNS 4
+  id Integer
+  rajalaji Integer
+  lahdeaineisto Integer
+  interpolointitapa Integer
+DATA
+LINE 319512.69 7003326.825 318943.05 7003297.117
