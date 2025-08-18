@@ -2,7 +2,6 @@ package org.oskari.control.userlayer;
 
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
-import fi.nls.oskari.util.PropertyUtil;
 import org.oskari.log.AuditLog;
 import org.json.JSONObject;
 

@@ -3,11 +3,9 @@ package org.oskari.control.myfeatures;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -23,10 +21,11 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import fi.nls.oskari.control.*;
 import org.oskari.log.AuditLog;
-import org.oskari.map.myfeatures.input.FeatureCollectionParser;
-import org.oskari.map.myfeatures.input.FeatureCollectionParsers;
 import org.oskari.map.myfeatures.service.MyFeaturesService;
 import org.oskari.map.myfeatures.service.MyFeaturesServiceMybatisImpl;
+import org.oskari.map.userlayer.input.FeatureCollectionParser;
+import org.oskari.map.userlayer.input.FeatureCollectionParsers;
+
 import org.apache.commons.fileupload2.core.FileItem;
 import org.apache.commons.fileupload2.core.FileUploadException;
 import org.apache.commons.fileupload2.core.DiskFileItemFactory;
@@ -36,7 +35,6 @@ import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.referencing.CRS;
 import org.json.JSONObject;
 import org.locationtech.jts.geom.Geometry;
-import org.geotools.api.feature.Feature;
 import org.geotools.api.feature.simple.SimpleFeature;
 import org.geotools.api.feature.type.AttributeDescriptor;
 import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
@@ -45,8 +43,6 @@ import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesFeature;
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesFieldInfo;
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayer;
-import fi.nls.oskari.domain.map.userlayer.UserLayer;
-import fi.nls.oskari.domain.map.userlayer.UserLayerData;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.ServiceException;
@@ -482,24 +478,26 @@ public class ImportMyFeaturesHandler extends RestActionHandler {
     }
 
     public static Optional<MyFeaturesFieldInfo> attribute(AttributeDescriptor attr) {
-        String bindingType = attr.getType().getBinding().getName();
+        Class<?> type = attr.getType().getBinding();
         String name = attr.getLocalName();
-        return Optional.of(MyFeaturesFieldInfo.of(name, bindingType));
+        return Optional.of(MyFeaturesFieldInfo.of(name, type));
     }
 
     private void writeResponse(ActionParameters params, MyFeaturesLayer layer) {
+        /*
         String mapSrs = params.getHttpParam(ActionConstants.PARAM_SRS);
         JSONObject userLayer = UserLayerDataService.parseUserLayer2JSON(ulayer, mapSrs);
         JSONHelper.putValue(userLayer, "featuresCount", ulayer.getFeatures_count());
         JSONObject permissions = UserLayerHandlerHelper.getPermissions();
         JSONHelper.putValue(userLayer, "permissions", permissions);
-        //add warning if features were skipped
         if (ulayer.getFeatures_skipped() > 0) {
             JSONObject featuresSkipped = new JSONObject();
             JSONHelper.putValue(featuresSkipped, "featuresSkipped", ulayer.getFeatures_skipped());
             JSONHelper.putValue(userLayer, "warning", featuresSkipped);
         }
-        ResponseHelper.writeResponse(params, userLayer);
+        */
+        JSONObject resp = new JSONObject();
+        ResponseHelper.writeResponse(params, resp);
     }
 
 }

@@ -3,7 +3,7 @@ package fi.nls.oskari.domain.map.myfeatures;
 public class MyFeaturesFieldInfo {
 
     private String name;
-    private String type;
+    private Class<?> type;
     
     public String getName() {
         return name;
@@ -11,14 +11,14 @@ public class MyFeaturesFieldInfo {
     public void setName(String name) {
         this.name = name;
     }
-    public String getType() {
+    public Class<?> getType() {
         return type;
     }
-    public void setType(String type) {
+    public void setType(Class<?> type) {
         this.type = type;
     }
 
-    public static MyFeaturesFieldInfo of(String name, String type) {
+    public static MyFeaturesFieldInfo of(String name, Class<?> type) {
         MyFeaturesFieldInfo fieldInfo = new MyFeaturesFieldInfo();
         fieldInfo.setName(name);
         fieldInfo.setType(type);

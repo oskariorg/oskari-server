@@ -5,8 +5,7 @@ import fi.nls.oskari.domain.map.userlayer.UserLayerData;
 import fi.nls.oskari.service.OskariComponent;
 import fi.nls.oskari.service.ServiceException;
 import org.geotools.data.simple.SimpleFeatureCollection;
-import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
+import org.locationtech.jts.geom.Envelope;
 
 import java.util.List;
 
@@ -26,6 +25,6 @@ public abstract class UserLayerDbService extends OskariComponent {
     //UserLayerData related
     public abstract int updateUserLayerData(final UserLayerData userlayerdata);
 
-    public abstract SimpleFeatureCollection getFeatures(int layerId, ReferencedEnvelope bbox, CoordinateReferenceSystem crs) throws ServiceException;
+    public abstract SimpleFeatureCollection getFeatures(int layerId, Envelope bbox) throws ServiceException;
 
 }
