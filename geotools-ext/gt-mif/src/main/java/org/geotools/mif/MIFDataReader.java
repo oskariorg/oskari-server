@@ -253,9 +253,17 @@ public class MIFDataReader implements Iterator<Geometry>, AutoCloseable {
     }
 
     private Point parseText(String line) throws IOException {
-        // Skip TEXT line
-        line = mif.poll();
+        if (line.equalsIgnoreCase("TEXT")) {
+            // TEXT
+            //   "textstring"
+            line = mif.poll();
+            line = mif.poll();
+        } else {
+            // TEXT "textstring"
+            line = mif.poll();
+        }
 
+        //   x1 y1 x2 y2
         String[] a = line.split("\\s+");
         double x1 = Double.parseDouble(a[1]);
         double y1 = Double.parseDouble(a[2]);
