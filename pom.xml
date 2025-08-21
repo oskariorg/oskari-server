@@ -47,23 +47,23 @@
         <jdk.version>17</jdk.version>
         <oskari.version>${project.version}</oskari.version>
 
-        <spring.version>6.2.7</spring.version>
-        <spring-security.version>6.5.0</spring-security.version>
+        <spring.version>6.2.9</spring.version>
+        <spring-security.version>6.5.3</spring-security.version>
         <!--
         session-bom 3.4.1 uses:
         https://github.com/spring-projects/spring-session/blob/3.5.0/gradle/libs.versions.toml#L41-L43
         which is aligned with core 6.2.7 and security 6.5.0 versions
         https://central.sonatype.com/artifact/org.springframework.session/spring-session-bom/3.4.2
-        https://mvnrepository.com/artifact/org.springframework.session/spring-session-bom/3.5.0
-         and spring-data 2025.0.0 (https://github.com/spring-projects/spring-session/blob/3.5.0/gradle/libs.versions.toml#L41)
-         which uses spring-data-redis 3.4.2:
+        https://mvnrepository.com/artifact/org.springframework.session/spring-session-bom/3.5.2
+         and spring-data 2025.0.0 (https://github.com/spring-projects/spring-session/blob/3.5.2/gradle/libs.versions.toml#L41)
+         which uses spring-data-redis 3.5.0:
          - https://github.com/spring-projects/spring-data-redis/releases/tag/3.5.0
          - https://github.com/spring-projects/spring-data-bom/releases/tag/2025.0.0
          Which uses Jedis 6.0.0:
          - https://github.com/spring-projects/spring-data-redis/blob/3.5.0/pom.xml#L27
          Hence we need the same jedis version
          -->
-        <spring.session.version>3.5.0</spring.session.version>
+        <spring.session.version>3.5.2</spring.session.version>
 
         <jakarta.servlet.version>6.0.0</jakarta.servlet.version>
         <jakarta.servlet.jsp.version>3.1.0</jakarta.servlet.jsp.version>
@@ -71,8 +71,8 @@
         <jakarta.servlet.jsp.jstl.version>3.0.1</jakarta.servlet.jsp.jstl.version>
 
         <commons-lang3.version>3.18.0</commons-lang3.version>
-        <commons-text.version>1.13.0</commons-text.version>
-        <commons-codec.version>1.16.0</commons-codec.version>
+        <commons-text.version>1.14.0</commons-text.version>
+        <commons-codec.version>1.19.0</commons-codec.version>
         <commons-fileupload.version>2.0.0-M2</commons-fileupload.version>
 
 <!-- This will override commons-io to be packaged with version 2.18.0, otherwise
@@ -89,25 +89,25 @@ The one packaged without this is 2.15.1
 
         <jsoup.version>1.18.3</jsoup.version>
 
-        <jackson.version>2.18.2</jackson.version>
-        <jackson-databind.version>2.18.2</jackson-databind.version>
+        <jackson.version>2.19.2</jackson.version>
+        <jackson-databind.version>2.19.2</jackson-databind.version>
 
         <fi.mml.nameregister.version>1.0</fi.mml.nameregister.version>
 
-        <tomcat.version>10.1.39</tomcat.version>
+        <tomcat.version>10.1.44</tomcat.version>
         <mybatis.version>3.5.19</mybatis.version>
-        <flyway.version>11.1.1</flyway.version>
+        <flyway.version>11.11.1</flyway.version>
         <postgresql.version>42.7.7</postgresql.version>
-        <hikaricp.version>6.2.1</hikaricp.version>
+        <hikaricp.version>7.0.2</hikaricp.version>
 
         <!-- https://github.com/spring-projects/spring-data-redis/blob/3.5.0/pom.xml#L27 -->
-        <jedis.version>6.0.0</jedis.version>
+        <jedis.version>6.1.0</jedis.version>
         <!-- Jedis depends on org.json/json https://github.com/redis/jedis/blob/v6.0.0/pom.xml#L83 -->
         <json.version>20250107</json.version>
 
         <quartz-scheduler.version>2.3.2</quartz-scheduler.version>
 
-        <geotools.version>33.1</geotools.version>
+        <geotools.version>33.2</geotools.version>
         <jts.version>1.20.0</jts.version>
         <!-- https://github.com/ElectronicChartCentre/java-vector-tile -->
         <mvt.version>1.4.1</mvt.version>
