@@ -1,6 +1,7 @@
 package org.oskari.service.user;
 
 import org.oskari.user.User;
+
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
 import fi.nls.oskari.service.OskariComponent;
@@ -10,10 +11,10 @@ import org.locationtech.jts.geom.Envelope;
 
 public abstract class UserLayerService extends OskariComponent {
 
-    public abstract int getBaselayerId();
+    public abstract OskariLayer getOskariLayer(String layerId);
     public abstract boolean isUserContentLayer(String layerId);
     public abstract boolean hasViewPermission(String layerId, User user);
     public abstract WFSLayerOptions getWFSLayerOptions(String layerId);
-    public abstract SimpleFeatureCollection getFeatures(String layerId, OskariLayer layer, Envelope bbox) throws ServiceException;
+    public abstract SimpleFeatureCollection getFeatures(String layerId, Envelope bbox) throws ServiceException;
 
 }

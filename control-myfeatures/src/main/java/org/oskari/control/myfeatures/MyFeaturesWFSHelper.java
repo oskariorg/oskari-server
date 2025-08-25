@@ -59,13 +59,7 @@ public final class MyFeaturesWFSHelper extends UserLayerService {
     }
 
     @Override
-    public WFSLayerOptions getWFSLayerOptions(String layerId) {
-        MyFeaturesLayer layer = getLayer(layerId);
-        return layer != null ? layer.getLayerOptions() : null;
-    }
-
-    @Override
-    public SimpleFeatureCollection getFeatures(String fullLayerId, OskariLayer layer, Envelope bbox) throws ServiceException {
+    public SimpleFeatureCollection getFeatures(String fullLayerId, Envelope bbox) throws ServiceException {
         try {
             UUID layerId = parseLayerId(fullLayerId);
             MyFeaturesLayer featuresLayer = getLayer(layerId);
@@ -118,18 +112,26 @@ public final class MyFeaturesWFSHelper extends UserLayerService {
         return UUID.fromString(fullLayerId.substring(PREFIX_MYFEATURES.length()));
     }
 
-    private MyFeaturesLayer getLayer(String fullLayerId) {
-        return getLayer(parseLayerId(fullLayerId));
-    }
-
     private MyFeaturesLayer getLayer(UUID layerId) {
         return service.getLayer(layerId);
     }
 
     @Override
-    public int getBaselayerId() {
-        // MyFeatureLayers don't have a base OskariLayer
-        return -1;
+    public WFSLayerOptions getWFSLayerOptions(String layerId) {
+        return getLayer(parseLayerId(layerId)).getLayerOptions();
+    }
+
+    @Override
+    public OskariLayer getOskariLayer(String layerId) {
+        MyFeaturesLayer myLayer = getLayer(parseLayerId(layerId));
+        OskariLayer layer = new OskariLayer();
+        layer.setId(-1);
+        layer.setType(OskariLayer.TYPE_MYFEATURES);
+        layer.setInternal(true);
+        layer.setName(layerId);
+        layer.setOptions(myLayer.getOptions());
+        layer.setAttributes(myLayer.getAttributes());
+        return layer;
     }
 
 }
