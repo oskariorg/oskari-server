@@ -17,4 +17,5 @@ public class UserContentMyFeaturesService extends UserContentService {
         MyFeaturesService myFeaturesService = OskariComponentManager.getComponentOfType(MyFeaturesService.class);
         myFeaturesService.deleteLayersByOwnerUuid(user.getUuid());
     }
+
 }

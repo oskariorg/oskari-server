@@ -1,5 +1,6 @@
 package org.oskari.map.myfeatures.service;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -10,6 +11,8 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
+import org.geotools.referencing.CRS;
 
 import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesFeature;
@@ -28,7 +31,7 @@ public class MyFeaturesServiceMybatisImpl extends MyFeaturesService {
     private static final String NATIVE_SRS = "oskari.native.srs";
     private static final String FALLBACK_NATIVE_SRS = "EPSG:4326";
 
-    private final int storageSrid;
+    private final CoordinateReferenceSystem nativeCRS;
     private final int batchSize;
     private final SqlSessionFactory factory;
 
@@ -43,7 +46,7 @@ public class MyFeaturesServiceMybatisImpl extends MyFeaturesService {
             LOG.error("Couldn't get datasource for myfeatures");
             factory = null;
         }
-        storageSrid = getStorageSrid();
+        nativeCRS = createNativeCRS();
         batchSize = PropertyUtil.getOptional(INSERT_BATCH_SIZE, 1000);
     }
 
@@ -54,9 +57,9 @@ public class MyFeaturesServiceMybatisImpl extends MyFeaturesService {
         return new SqlSessionFactoryBuilder().build(configuration);
     }
 
-    private static int getStorageSrid() {
-        String epsg = PropertyUtil.get(NATIVE_SRS, FALLBACK_NATIVE_SRS);
-        return Integer.parseInt(epsg.substring(epsg.lastIndexOf(':') + 1));
+    @Override
+    public CoordinateReferenceSystem getNativeCRS() {
+        return nativeCRS;
     }
 
     @Override
@@ -72,7 +75,11 @@ public class MyFeaturesServiceMybatisImpl extends MyFeaturesService {
             layer.setId(UUID.randomUUID());
         }        
         try (SqlSession session = factory.openSession()) {
-            getMapper(session).insertLayer(layer);
+            MyFeaturesMapper mapper = getMapper(session);
+            mapper.insertLayer(layer);
+            OffsetDateTime now = mapper.now();
+            layer.setCreated(now);
+            layer.setUpdated(now);
             session.commit();
         }
     }
@@ -83,7 +90,9 @@ public class MyFeaturesServiceMybatisImpl extends MyFeaturesService {
             throw new IllegalArgumentException("Layer must have id when updating");
         }
         try (SqlSession session = factory.openSession()) {
-            getMapper(session).updateLayer(layer);
+            MyFeaturesMapper mapper = getMapper(session);
+            mapper.updateLayer(layer);
+            layer.setUpdated(mapper.now());
             session.commit();
         }
     }
@@ -110,6 +119,11 @@ public class MyFeaturesServiceMybatisImpl extends MyFeaturesService {
             MyFeaturesMapper mapper = getMapper(session);
             mapper.insertFeature(layerId, feature);
             mapper.refreshLayerMetadata(layerId);
+            // H2 doesn't support PostgreSQL RETURNING on INSERT/UPDATE
+            // so just get now() "manually" instead of having insertFeature return it
+            OffsetDateTime now = mapper.now();
+            feature.setCreated(now);
+            feature.setUpdated(now);
             session.commit();
         }
     }
@@ -120,6 +134,7 @@ public class MyFeaturesServiceMybatisImpl extends MyFeaturesService {
             MyFeaturesMapper mapper = getMapper(session);
             mapper.updateFeature(layerId, feature);
             mapper.refreshLayerMetadata(layerId);
+            feature.setUpdated(mapper.now());
             session.commit();
         }
     }
@@ -160,9 +175,12 @@ public class MyFeaturesServiceMybatisImpl extends MyFeaturesService {
         }
         try (SqlSession session = factory.openSession()) {
             MyFeaturesMapper mapper = getMapper(session);
+            OffsetDateTime now = mapper.now();
             int batchCount = 0;
             for (MyFeaturesFeature feature : features) {
                 mapper.insertFeature(layerId, feature);
+                feature.setCreated(now);
+                feature.setUpdated(now);
                 batchCount++;
                 // Flushes batch statements and clears local session cache
                 if (batchCount == batchSize) {
@@ -202,6 +220,16 @@ public class MyFeaturesServiceMybatisImpl extends MyFeaturesService {
             mapper.swapAxisOrder(layerId);
             mapper.refreshLayerMetadata(layerId);
             session.commit();
+        }
+    }
+
+    private static CoordinateReferenceSystem createNativeCRS() {
+        try {
+            String epsg = PropertyUtil.get(NATIVE_SRS, FALLBACK_NATIVE_SRS);
+            return CRS.decode(epsg, true);
+        } catch (Exception e) {
+            LOG.error(e, "Failed to create nativeCRS!");
+            return null;
         }
     }
 

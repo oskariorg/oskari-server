@@ -63,6 +63,8 @@ public class MyFeaturesServiceMybatisImplTest {
         
         service.updateLayer(expected);
 
+        Assertions.assertNotEquals(expected.getCreated(), expected.getUpdated());
+
         actual = service.getLayer(expected.getId());
         assertEq(expected, actual);
 
@@ -157,6 +159,8 @@ public class MyFeaturesServiceMybatisImplTest {
         Assertions.assertEquals(24, layer.getExtent().getMaxX());
         Assertions.assertEquals(69, layer.getExtent().getMaxY());
 
+        Assertions.assertEquals(layer.getCreated(), layer.getUpdated());
+
         service.swapAxisOrder(layer.getId());
         layer = service.getLayer(layer.getId());
         Assertions.assertEquals(2, layer.getFeatureCount());
@@ -164,6 +168,8 @@ public class MyFeaturesServiceMybatisImplTest {
         Assertions.assertEquals(23, layer.getExtent().getMinY());
         Assertions.assertEquals(69, layer.getExtent().getMaxX());
         Assertions.assertEquals(24, layer.getExtent().getMaxY());
+
+        Assertions.assertEquals(layer.getCreated(), layer.getUpdated(), "swapAxisOrder should not update `updated`");
 
         service.deleteLayer(layer.getId());
         Assertions.assertTrue(service.getFeatures(layer.getId()).isEmpty(), "deleteLayer should delete features also");
@@ -174,6 +180,5 @@ public class MyFeaturesServiceMybatisImplTest {
         Assertions.assertEquals(expected.getGeometry(), actual.getGeometry());
         JSONTestHelper.shouldEqual(actual.getProperties(), expected.getProperties());
         Assertions.assertEquals(expected.getCreated(), actual.getCreated());
-        Assertions.assertEquals(expected.getUpdated(), actual.getUpdated());
     }
 }

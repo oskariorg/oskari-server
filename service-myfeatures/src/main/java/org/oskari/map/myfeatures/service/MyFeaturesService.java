@@ -3,11 +3,19 @@ package org.oskari.map.myfeatures.service;
 import java.util.List;
 import java.util.UUID;
 
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
+
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesFeature;
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayer;
 import fi.nls.oskari.service.OskariComponent;
 
+/**
+ * All input geometries are expected to be in native coordinate reference system
+ * All returned geometries will be in native coordinate reference system
+ */
 public abstract class MyFeaturesService extends OskariComponent {
+
+    public abstract CoordinateReferenceSystem getNativeCRS();
 
     public abstract MyFeaturesLayer getLayer(UUID layerId);
     public abstract void createLayer(MyFeaturesLayer layer);

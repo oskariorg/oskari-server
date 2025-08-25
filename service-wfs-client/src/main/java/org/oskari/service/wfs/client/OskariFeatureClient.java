@@ -79,7 +79,7 @@ public class OskariFeatureClient {
             Optional<UserLayerService> processor) {
         if (processor.isPresent()) {
             try {
-                return processor.get().getFeatures(id, layer, bbox);
+                return processor.get().getFeatures(id, bbox);
             } catch (ServiceException e) {
                 // FIXME: for debugging purposes, remove once no longer needed.
                 LOG.error(e, "Failed to get features.");

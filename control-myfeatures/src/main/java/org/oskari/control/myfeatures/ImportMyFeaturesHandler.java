@@ -74,7 +74,6 @@ public class ImportMyFeaturesHandler extends RestActionHandler {
 
     private static final String PROPERTY_MYFEATURES_MAX_FILE_SIZE_MB = "myfeatures.max.filesize.mb";
     private static final int MAX_FILES_IN_ZIP = 10;
-    private static final String PROPERTY_NATIVE_SRS = "oskari.native.srs";
 
     private static final Charset[] POSSIBLE_CHARSETS_USED_IN_ZIP_FILE_NAMES = {
             StandardCharsets.UTF_8,
@@ -97,7 +96,6 @@ public class ImportMyFeaturesHandler extends RestActionHandler {
 
     Path tempDir = Paths.get(System.getProperty("java.io.tmpdir"));
     private final DiskFileItemFactory diskFileItemFactory = DiskFileItemFactory.builder().setPath(tempDir).setBufferSize(MAX_SIZE_MEMORY).get();
-    private String targetEPSG = "EPSG:4326";
     private int myFeaturesMaxFileSize = -1;
     private long unzippiedFileSizeLimit = -1;
 
@@ -122,7 +120,6 @@ public class ImportMyFeaturesHandler extends RestActionHandler {
             // initialized here to workaround timing issue for reading config from properties
             myFeaturesMaxFileSize = PropertyUtil.getOptional(PROPERTY_MYFEATURES_MAX_FILE_SIZE_MB, 10) * MB;
             unzippiedFileSizeLimit = 15 * myFeaturesMaxFileSize; // Max size of unzipped data, 15 * the zip size
-            targetEPSG = PropertyUtil.get(PROPERTY_NATIVE_SRS, targetEPSG);
         }
 
         String sourceEPSG = params.getHttpParam(PARAM_SOURCE_EPSG_KEY);
@@ -133,7 +130,7 @@ public class ImportMyFeaturesHandler extends RestActionHandler {
         FileItem zipFile = null;
         try {
             CoordinateReferenceSystem sourceCRS = decodeCRS(sourceEPSG);
-            CoordinateReferenceSystem targetCRS = decodeCRS(targetEPSG);
+            CoordinateReferenceSystem targetCRS = myFeaturesService.getNativeCRS();
             zipFile = fileItems.stream()
                     .filter(f -> !f.isFormField())
                     .findAny() // If there are more files we'll get the zip or fail miserably
@@ -183,9 +180,6 @@ public class ImportMyFeaturesHandler extends RestActionHandler {
             });
         }
     }
-
-
-
 
     private Charset determineCharsetForZipFileNames(FileItem zipFile) throws ActionException {
         try {
@@ -466,6 +460,7 @@ public class ImportMyFeaturesHandler extends RestActionHandler {
 
     private MyFeaturesLayer createLayer(String ownerUuid, List<MyFeaturesFieldInfo> fields, Map<String, String> formParams) {
         JSONObject locale = JSONHelper.createJSONObject(formParams.get(KEY_LOCALE));
+        // TODO: Do something with the style
         JSONObject style = JSONHelper.createJSONObject(formParams.get(KEY_STYLE));
 
         MyFeaturesLayer layer = new MyFeaturesLayer();
@@ -477,7 +472,7 @@ public class ImportMyFeaturesHandler extends RestActionHandler {
         return layer;
     }
 
-    public static Optional<MyFeaturesFieldInfo> attribute(AttributeDescriptor attr) {
+    private static Optional<MyFeaturesFieldInfo> attribute(AttributeDescriptor attr) {
         Class<?> type = attr.getType().getBinding();
         String name = attr.getLocalName();
         return Optional.of(MyFeaturesFieldInfo.of(name, type));
