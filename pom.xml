@@ -117,7 +117,7 @@ The one packaged without this is 2.15.1
         <resilience4j.version>2.3.0</resilience4j.version>
         <!-- Test deps versions -->
         <mockito.version>5.15.2</mockito.version>
-        <junit.version>5.11.4</junit.version>
+        <junit.version>5.13.4</junit.version>
         <hamcrest.version>2.2</hamcrest.version>
         <xmlunit.version>1.6</xmlunit.version>
         <h2database.version>2.3.232</h2database.version>
