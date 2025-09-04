@@ -81,8 +81,6 @@ public class OskariFeatureClient {
             try {
                 return processor.get().getFeatures(id, bbox);
             } catch (ServiceException e) {
-                // FIXME: for debugging purposes, remove once no longer needed.
-                LOG.error(e, "Failed to get features.");
                 throw new ServiceRuntimeException("Failed to get features for user layer", e);
             }
         }

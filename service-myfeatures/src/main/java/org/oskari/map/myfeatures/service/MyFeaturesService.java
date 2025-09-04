@@ -22,10 +22,10 @@ public abstract class MyFeaturesService extends OskariComponent {
     public abstract void updateLayer(MyFeaturesLayer layer);
     public abstract void deleteLayer(UUID layerId);
 
-    public abstract MyFeaturesFeature getFeature(UUID layerId, String featureId);
+    public abstract MyFeaturesFeature getFeature(UUID layerId, long featureId);
     public abstract void createFeature(UUID layerId, MyFeaturesFeature f);
     public abstract void updateFeature(UUID layerId, MyFeaturesFeature feature);
-    public abstract void deleteFeature(UUID layerId, String featureId);
+    public abstract void deleteFeature(UUID layerId, long featureId);
 
     public abstract List<MyFeaturesFeature> getFeatures(UUID layerId);
     public abstract List<MyFeaturesFeature> getFeaturesByBbox(UUID layerId, double minX, double minY, double maxX, double maxY);
