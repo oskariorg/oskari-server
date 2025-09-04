@@ -69,13 +69,10 @@ public abstract class AbstractWFSFeaturesHandler extends ActionHandler {
     }
 
     private OskariLayer findUserLayer(String id, User user, UserLayerService processor) throws ActionException {
-        int layerId = processor.getBaselayerId();
-        OskariLayer layer = permissionHelper.getLayer(layerId, user);
-        requireWFSLayer(layer);
         if (!processor.hasViewPermission(id, user)) {
             throw new ActionDeniedException("User doesn't have permissions for requested layer");
         }
-        return layer;
+        return processor.getOskariLayer(id);
     }
 
     protected OskariLayer findMapLayer(String id, User user) throws ActionException {

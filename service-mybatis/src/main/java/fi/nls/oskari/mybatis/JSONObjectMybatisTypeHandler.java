@@ -47,7 +47,7 @@ public class JSONObjectMybatisTypeHandler extends BaseTypeHandler<JSONObject> {
         try {
             return new JSONObject(s);
         } catch (JSONException e) {
-            if (s.startsWith("\"{") && s.endsWith("}\"") && s.length() > 5) {
+            if (s.startsWith("\"{") && s.endsWith("}\"")) {
                 // H2 DB wraps a stringified json to quotes and escapes the content
                 String unwrapped = s.substring(1, s.length()  - 1);
                 return valueOf(StringEscapeUtils.unescapeJava(unwrapped));

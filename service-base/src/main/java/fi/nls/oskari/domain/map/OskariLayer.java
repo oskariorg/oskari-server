@@ -19,6 +19,7 @@ public class OskariLayer extends JSONLocalizedNameAndTitle implements Comparable
     public static final String TYPE_ANALYSIS = "analysislayer";
     public static final String TYPE_USERLAYER = "userlayer";
     public static final String TYPE_MYPLACES = "myplaces";
+    public static final String TYPE_MYFEATURES = "myfeatures";
     // "ArcGIS rest"
     public static final String TYPE_ARCGIS93 = "arcgis93layer";
     // "ArcGIS image cache"

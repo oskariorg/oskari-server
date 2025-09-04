@@ -23,11 +23,11 @@ import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.JTS;
-import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
 import org.geotools.api.feature.simple.SimpleFeature;
 import org.geotools.api.feature.simple.SimpleFeatureType;
@@ -114,14 +114,12 @@ public class MyPlacesFeaturesServiceMybatisImpl implements MyPlacesFeaturesServi
     }
 
     @Override
-    public SimpleFeatureCollection getFeatures(int categoryId, ReferencedEnvelope bbox, CoordinateReferenceSystem crs)  throws ServiceException{
+    public SimpleFeatureCollection getFeatures(int categoryId, Envelope bbox) throws ServiceException{
         try (SqlSession session = factory.openSession()) {
             LOG.debug("getFeatures by bbox: ", bbox);
 
             final MyPlaceMapper mapper = session.getMapper(MyPlaceMapper.class);
-            String nativeSrsName = PropertyUtil.get("oskari.native.srs", "EPSG:3857");
-            int nativeSrid = getSRID(nativeSrsName);
-            List<MyPlace> places = mapper.findAllByBBOX(categoryId, bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY(), nativeSrid);
+            List<MyPlace> places = mapper.findAllByBBOX(categoryId, bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY());
             return this.toSimpleFeatureCollection(places);
         } catch (Exception e) {
             LOG.warn(e, "Exception when trying to get features by bounding box ", bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY());
