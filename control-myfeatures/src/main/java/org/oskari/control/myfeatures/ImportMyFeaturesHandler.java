@@ -42,6 +42,7 @@ import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesFeature;
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesFieldInfo;
+import fi.nls.oskari.domain.map.myfeatures.MyFeaturesFieldType;
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -473,9 +474,15 @@ public class ImportMyFeaturesHandler extends RestActionHandler {
     }
 
     private static Optional<MyFeaturesFieldInfo> attribute(AttributeDescriptor attr) {
-        Class<?> type = attr.getType().getBinding();
         String name = attr.getLocalName();
-        return Optional.of(MyFeaturesFieldInfo.of(name, type));
+        Class<?> c = attr.getType().getBinding();
+        Optional<MyFeaturesFieldType> type = MyFeaturesFieldType.valueFromBinding(c);
+        if (type.isEmpty()) {
+            // Reduce the level once we have a better understanding of most common binding classes
+            log.info("Ignoring attribute:", name, ", no type match for class:", c.getCanonicalName());
+            return Optional.empty();
+        }
+        return Optional.of(MyFeaturesFieldInfo.of(name, type.get()));
     }
 
     private void writeResponse(ActionParameters params, MyFeaturesLayer layer) {

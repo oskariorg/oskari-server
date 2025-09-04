@@ -29,7 +29,7 @@ public class MyFeaturesServiceMybatisImpl extends MyFeaturesService {
 
     private static final String INSERT_BATCH_SIZE = "myfeatures.mybatis.batch.size";
     private static final String NATIVE_SRS = "oskari.native.srs";
-    private static final String FALLBACK_NATIVE_SRS = "EPSG:4326";
+    private static final String FALLBACK_NATIVE_SRS = "EPSG:3857";
 
     private final CoordinateReferenceSystem nativeCRS;
     private final int batchSize;
@@ -76,10 +76,13 @@ public class MyFeaturesServiceMybatisImpl extends MyFeaturesService {
         }        
         try (SqlSession session = factory.openSession()) {
             MyFeaturesMapper mapper = getMapper(session);
-            mapper.insertLayer(layer);
+
             OffsetDateTime now = mapper.now();
             layer.setCreated(now);
             layer.setUpdated(now);
+
+            mapper.insertLayer(layer);
+
             session.commit();
         }
     }
@@ -91,8 +94,12 @@ public class MyFeaturesServiceMybatisImpl extends MyFeaturesService {
         }
         try (SqlSession session = factory.openSession()) {
             MyFeaturesMapper mapper = getMapper(session);
+
+            OffsetDateTime now = mapper.now();
+            layer.setUpdated(now);
+
             mapper.updateLayer(layer);
-            layer.setUpdated(mapper.now());
+
             session.commit();
         }
     }
@@ -107,9 +114,9 @@ public class MyFeaturesServiceMybatisImpl extends MyFeaturesService {
     }
 
     @Override
-    public MyFeaturesFeature getFeature(UUID layerId, String fid) {
+    public MyFeaturesFeature getFeature(UUID layerId, long featureId) {
         try (SqlSession session = factory.openSession()) {
-            return getMapper(session).findFeatureById(layerId, fid);
+            return getMapper(session).findFeatureById(featureId);
         }
     }
 
@@ -117,13 +124,14 @@ public class MyFeaturesServiceMybatisImpl extends MyFeaturesService {
     public void createFeature(UUID layerId, MyFeaturesFeature feature) {
         try (SqlSession session = factory.openSession()) {
             MyFeaturesMapper mapper = getMapper(session);
-            mapper.insertFeature(layerId, feature);
-            mapper.refreshLayerMetadata(layerId);
-            // H2 doesn't support PostgreSQL RETURNING on INSERT/UPDATE
-            // so just get now() "manually" instead of having insertFeature return it
+
             OffsetDateTime now = mapper.now();
             feature.setCreated(now);
             feature.setUpdated(now);
+
+            mapper.insertFeature(layerId, feature);
+            mapper.refreshLayerMetadata(layerId);
+
             session.commit();
         }
     }
@@ -132,20 +140,24 @@ public class MyFeaturesServiceMybatisImpl extends MyFeaturesService {
     public void updateFeature(UUID layerId, MyFeaturesFeature feature) {
         try (SqlSession session = factory.openSession()) {
             MyFeaturesMapper mapper = getMapper(session);
-            mapper.updateFeature(layerId, feature);
+
+            OffsetDateTime now = mapper.now();
+            feature.setUpdated(now);
+
+            mapper.updateFeature(feature);
             mapper.refreshLayerMetadata(layerId);
-            feature.setUpdated(mapper.now());
+
             session.commit();
         }
     }
 
     @Override
-    public void deleteFeature(UUID layerId, String featureId) {
+    public void deleteFeature(UUID layerId, long featureId) {
         layerId = Objects.requireNonNull(layerId);
         featureId = Objects.requireNonNull(featureId);
         try (SqlSession session = factory.openSession()) {
             MyFeaturesMapper mapper = getMapper(session);
-            mapper.deleteFeature(layerId, featureId);
+            mapper.deleteFeature(featureId);
             mapper.refreshLayerMetadata(layerId);
             session.commit();
         }
@@ -178,9 +190,9 @@ public class MyFeaturesServiceMybatisImpl extends MyFeaturesService {
             OffsetDateTime now = mapper.now();
             int batchCount = 0;
             for (MyFeaturesFeature feature : features) {
-                mapper.insertFeature(layerId, feature);
                 feature.setCreated(now);
                 feature.setUpdated(now);
+                mapper.insertFeature(layerId, feature);
                 batchCount++;
                 // Flushes batch statements and clears local session cache
                 if (batchCount == batchSize) {
@@ -217,7 +229,8 @@ public class MyFeaturesServiceMybatisImpl extends MyFeaturesService {
         layerId = Objects.requireNonNull(layerId);
         try (SqlSession session = factory.openSession()) {
             MyFeaturesMapper mapper = getMapper(session);
-            mapper.swapAxisOrder(layerId);
+            OffsetDateTime now = mapper.now();
+            mapper.swapAxisOrder(layerId, now);
             mapper.refreshLayerMetadata(layerId);
             session.commit();
         }

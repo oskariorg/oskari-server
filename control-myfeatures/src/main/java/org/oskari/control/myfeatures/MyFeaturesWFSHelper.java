@@ -103,7 +103,7 @@ public final class MyFeaturesWFSHelper extends UserLayerService {
         b.add(UPDATED_PROP_NAME, OffsetDateTime.class);
         b.setDefaultGeometry(GEOM_PROP_NAME);
         for (MyFeaturesFieldInfo field : fields) {
-            b.add(field.getName(), field.getType());
+            b.add(field.getName(), field.getType().getOutputBinding());
         }
         return b.buildFeatureType();
     }

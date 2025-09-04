@@ -22,16 +22,19 @@ public class MyFeaturesLayer extends JSONLocalizedName {
 
     private UUID id;
     private String ownerUuid;
-    
-    private int featureCount;
-    private Envelope extent;
-    
-    private List<MyFeaturesFieldInfo> layerFields;
-    private WFSLayerOptions layerOptions;
-    private WFSLayerAttributes layerAttributes;
- 
     private OffsetDateTime created;
     private OffsetDateTime updated;
+
+    private List<MyFeaturesFieldInfo> layerFields;
+    private int featureCount;
+    private Envelope extent;
+
+    private int opacity = 80;
+    private boolean published;
+
+    private WFSLayerOptions layerOptions;
+    private WFSLayerAttributes layerAttributes;
+
 
     public final String getType() {
         return OskariLayer.TYPE_MYFEATURES;
@@ -52,9 +55,25 @@ public class MyFeaturesLayer extends JSONLocalizedName {
     public String getOwnerUuid() {
         return ownerUuid;
     }
-    
+
     public void setOwnerUuid(String ownerUuid) {
         this.ownerUuid = ownerUuid;
+    }
+
+    public OffsetDateTime getCreated() {
+        return created;
+    }
+
+    public void setCreated(OffsetDateTime created) {
+        this.created = created;
+    }
+
+    public OffsetDateTime getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(OffsetDateTime updated) {
+        this.updated = updated;
     }
 
     public String getDesc(final String language) {
@@ -97,6 +116,26 @@ public class MyFeaturesLayer extends JSONLocalizedName {
         this.extent = extent;
     }
 
+    public void setOpacity(int opacity) {
+        this.opacity = opacity;
+    }
+
+    public int getOpacity() {
+        return opacity;
+    }
+
+    public void setPublished(boolean published) {
+        this.published = published;
+    }
+
+    public boolean getPublished() {
+        return isPublished();
+    }
+
+    public boolean isPublished() {
+        return published;
+    }
+
     public WFSLayerOptions getLayerOptions() {
         if (layerOptions == null) {
             setLayerOptions(new WFSLayerOptions());
@@ -119,22 +158,6 @@ public class MyFeaturesLayer extends JSONLocalizedName {
         this.layerAttributes = layerAttributes;
     }
 
-    public OffsetDateTime getCreated() {
-        return created;
-    }
-
-    public void setCreated(OffsetDateTime created) {
-        this.created = created;
-    }
-
-    public OffsetDateTime getUpdated() {
-        return updated;
-    }
-
-    public void setUpdated(OffsetDateTime updated) {
-        this.updated = updated;
-    }
-
     /* Helpers operating with JSON */
 
     public JSONArray getFields() {
@@ -143,10 +166,10 @@ public class MyFeaturesLayer extends JSONLocalizedName {
             return new JSONArray();
         }
         return new JSONArray(fields.stream()
-            .map(f -> new JSONObject()
-                .append("name", f.getName())
-                .append("type", f.getType()))
-            .collect(Collectors.toList()));
+                .map(f -> new JSONObject()
+                        .append("name", f.getName())
+                        .append("type", f.getType()))
+                .collect(Collectors.toList()));
     }
 
     public void setFields(JSONArray fields) {
@@ -163,7 +186,7 @@ public class MyFeaturesLayer extends JSONLocalizedName {
         String name = info.getString("name");
         String type = info.getString("type");
         try {
-            return MyFeaturesFieldInfo.of(name, Class.forName(type));
+            return MyFeaturesFieldInfo.of(name, MyFeaturesFieldType.valueOf(type));
         } catch (Exception e) {
             // This won't happen...
             throw new RuntimeException(e);
@@ -184,10 +207,6 @@ public class MyFeaturesLayer extends JSONLocalizedName {
 
     public void setAttributes(JSONObject attributes) {
         setLayerAttributes(new WFSLayerAttributes(attributes));
-    }
-
-    public boolean isPublished() {
-        throw new UnsupportedOperationException("Unimplemented method 'isPublished'");
     }
 
 }

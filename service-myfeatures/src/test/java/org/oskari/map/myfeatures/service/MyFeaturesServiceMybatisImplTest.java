@@ -39,16 +39,21 @@ public class MyFeaturesServiceMybatisImplTest {
         options.put("qux", 112);
 
         MyFeaturesLayer expected = new MyFeaturesLayer();
+        expected.setOpacity(100);
         expected.setOwnerUuid(uuid);
         expected.setName("en", "foobar");
         expected.setLayerOptions(new WFSLayerOptions(options));
+        expected.setPublished(true);
 
-        Assertions.assertEquals(null, expected.getId());
+        Assertions.assertNull(expected.getId());
+        Assertions.assertNull(expected.getCreated());
+        Assertions.assertNull(expected.getUpdated());
 
         service.createLayer(expected);
 
-        Assertions.assertNotEquals(0L, expected.getId().getLeastSignificantBits(), "createLayer should modify id of the layer");
-        Assertions.assertNotEquals(0L, expected.getId().getMostSignificantBits(), "createLayer should modify id of the layer");
+        Assertions.assertNotNull(expected.getId());
+        Assertions.assertNotNull(expected.getCreated());
+        Assertions.assertNotNull(expected.getUpdated());
 
         Assertions.assertEquals("foobar", expected.getName("en"));
         
@@ -58,12 +63,15 @@ public class MyFeaturesServiceMybatisImplTest {
         
         // Test updating the layer
         expected.setName("sv", "fååbar");
+        expected.setOpacity(65);
+        expected.setPublished(false);
+
         Assertions.assertEquals("foobar", expected.getName("en"));       
         Assertions.assertEquals("fååbar", expected.getName("sv"));
         
         service.updateLayer(expected);
 
-        Assertions.assertNotEquals(expected.getCreated(), expected.getUpdated());
+        Assertions.assertNotEquals(expected.getCreated(), expected.getUpdated(), "Update should modify updated, but not created");
 
         actual = service.getLayer(expected.getId());
         assertEq(expected, actual);
@@ -76,6 +84,8 @@ public class MyFeaturesServiceMybatisImplTest {
     private static void assertEq(MyFeaturesLayer expected, MyFeaturesLayer actual) {
         Assertions.assertEquals(expected.getId(), actual.getId());
         Assertions.assertEquals(expected.getOwnerUuid(), actual.getOwnerUuid());
+        Assertions.assertEquals(expected.getOpacity(), actual.getOpacity());
+        Assertions.assertEquals(expected.isPublished(), actual.isPublished());
         Assertions.assertEquals(expected.getNames(), actual.getNames());
         JSONTestHelper.shouldEqual(actual.getAttributes(), expected.getAttributes());
         JSONTestHelper.shouldEqual(actual.getOptions(), expected.getOptions());
@@ -113,15 +123,38 @@ public class MyFeaturesServiceMybatisImplTest {
             .put("my_prop", 1)
             .put("my_other_prop", "baz"));
 
+        // Generated properties should be null/default by this point
+        Assertions.assertEquals(0, f1.getId());
+        Assertions.assertNull(f1.getCreated());
+        Assertions.assertNull(f1.getUpdated());
+        Assertions.assertEquals(0, f2.getId());
+        Assertions.assertNull(f2.getCreated());
+        Assertions.assertNull(f2.getUpdated());
+        Assertions.assertEquals(0, f3.getId());
+        Assertions.assertNull(f3.getCreated());
+        Assertions.assertNull(f3.getUpdated());
+
         service.createFeature(layer.getId(), f1);
         service.createFeature(layer.getId(), f2);
         service.createFeature(layer.getId(), f3);
+
+        // Make sure createFeature did set the generated properties
+        Assertions.assertNotEquals(0, f1.getId());
+        Assertions.assertNotNull(f1.getCreated());
+        Assertions.assertNotNull(f1.getUpdated());
+        Assertions.assertNotEquals(0, f2.getId());
+        Assertions.assertNotNull(f2.getCreated());
+        Assertions.assertNotNull(f2.getUpdated());
+        Assertions.assertNotEquals(0, f3.getId());
+        Assertions.assertNotNull(f3.getCreated());
+        Assertions.assertNotNull(f3.getUpdated());
 
         List<MyFeaturesFeature> features = service.getFeatures(layer.getId());
         Assertions.assertEquals(3, features.size());
         assertEq(f1, features.stream().filter(x -> x.getFid().equals(f1.getFid())).findAny().get());
         assertEq(f2, features.stream().filter(x -> x.getFid().equals(f2.getFid())).findAny().get());
         assertEq(f3, features.stream().filter(x -> x.getFid().equals(f3.getFid())).findAny().get());
+        // Check that layer metadata was also updated
         layer = service.getLayer(layer.getId());
         Assertions.assertEquals(3, layer.getFeatureCount());
         Assertions.assertEquals(23, layer.getExtent().getMinX());
@@ -135,7 +168,7 @@ public class MyFeaturesServiceMybatisImplTest {
             .put("my_other_prop", "qux"));
         service.updateFeature(layer.getId(), f3);
 
-        assertEq(f3, service.getFeature(layer.getId(), f3.getFid()));
+        assertEq(f3, service.getFeature(layer.getId(), f3.getId()));
 
         layer = service.getLayer(layer.getId());
         Assertions.assertEquals(3, layer.getFeatureCount());
@@ -144,9 +177,9 @@ public class MyFeaturesServiceMybatisImplTest {
         Assertions.assertEquals(26, layer.getExtent().getMaxX());
         Assertions.assertEquals(71, layer.getExtent().getMaxY());
 
-        service.deleteFeature(layer.getId(), f3.getFid());
+        service.deleteFeature(layer.getId(), f3.getId());
 
-        Assertions.assertNull(service.getFeature(layer.getId(), f3.getFid()));
+        Assertions.assertNull(service.getFeature(layer.getId(), f3.getId()));
 
         features = service.getFeatures(layer.getId());
         Assertions.assertEquals(2, features.size());
