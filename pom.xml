@@ -82,21 +82,21 @@ https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml/5.4.0
 - poi-ooxml 5.4.0 uses 2.18.0 (https://github.com/apache/poi/blob/REL_5_4_0/build.gradle#L124)
 The one packaged without this is 2.15.1
   -->
-        <commons-io.version>2.18.0</commons-io.version>
-        <commons-csv.version>1.13.0</commons-csv.version>
-        <xmlgraphics-fop.version>2.10</xmlgraphics-fop.version>
-        <poi-ooxml.version>5.4.0</poi-ooxml.version>
+        <commons-io.version>2.20.0</commons-io.version>
+        <commons-csv.version>1.14.1</commons-csv.version>
+        <xmlgraphics-fop.version>2.11</xmlgraphics-fop.version>
+        <poi-ooxml.version>5.4.1</poi-ooxml.version>
 
-        <jsoup.version>1.18.3</jsoup.version>
+        <jsoup.version>1.21.2</jsoup.version>
 
-        <jackson.version>2.19.2</jackson.version>
-        <jackson-databind.version>2.19.2</jackson-databind.version>
-
+        <jackson.version>2.20.0</jackson.version>
+        <jackson-databind.version>2.20.0</jackson-databind.version>
+        <jackson-annotations.version>2.20</jackson-annotations.version>
         <fi.mml.nameregister.version>1.0</fi.mml.nameregister.version>
 
-        <tomcat.version>10.1.44</tomcat.version>
+        <tomcat.version>10.1.46</tomcat.version>
         <mybatis.version>3.5.19</mybatis.version>
-        <flyway.version>11.11.1</flyway.version>
+        <flyway.version>11.12.0</flyway.version>
         <postgresql.version>42.7.7</postgresql.version>
         <hikaricp.version>7.0.2</hikaricp.version>
 
@@ -116,16 +116,16 @@ The one packaged without this is 2.15.1
         <pdfbox.version>3.0.3</pdfbox.version>
         <resilience4j.version>2.3.0</resilience4j.version>
         <!-- Test deps versions -->
-        <mockito.version>5.15.2</mockito.version>
+        <mockito.version>5.19.0</mockito.version>
         <junit.version>5.13.4</junit.version>
         <hamcrest.version>2.2</hamcrest.version>
         <xmlunit.version>1.6</xmlunit.version>
         <h2database.version>2.3.232</h2database.version>
 
-        <log4j.version>2.24.1</log4j.version>
+        <log4j.version>2.25.1</log4j.version>
 
-        <slf4j.version>2.0.11</slf4j.version>
-        <metrics.version>4.2.30</metrics.version>
+        <slf4j.version>2.0.17</slf4j.version>
+        <metrics.version>4.2.36</metrics.version>
     </properties>
 
     <dependencies>
@@ -615,7 +615,7 @@ The one packaged without this is 2.15.1
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-annotations</artifactId>
-                <version>${jackson.version}</version>
+                <version>${jackson-annotations.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.dataformat</groupId>
