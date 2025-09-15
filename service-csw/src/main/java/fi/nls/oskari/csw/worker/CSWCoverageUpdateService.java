@@ -55,6 +55,7 @@ public class CSWCoverageUpdateService extends ScheduledJob {
             return;
         }
         final OskariLayerMetadataDao dao = new OskariLayerMetadataDao(dataSource);
+        int updateCount = 0;
         for (String metadataId : metadataIdSet) {
             final CSWIsoRecord csw = getMetadata(cswService, metadataId);
             final Geometry geom = getGeometry(csw);
@@ -69,8 +70,9 @@ public class CSWCoverageUpdateService extends ScheduledJob {
             dto.wkt = geom.getEnvelope().toText();
             dto.json = csw.toJSON().toString();
             dao.saveMetadata(dto);
+            updateCount++;
         }
-        log.info("Done with the CSW coverage update service call");
+        log.info("Done with the CSW coverage update service call. Updated:", updateCount, "/", metadataIdSet.size(), "metadata geometries.");
     }
 
     private DataSource getDatasource() {
