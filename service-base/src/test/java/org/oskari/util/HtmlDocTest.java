@@ -37,7 +37,7 @@ public class HtmlDocTest {
     @Test
     public void getFiltered() {
         String result = new HtmlDoc(html).getFiltered();
-        String expected = "<h4><a>Allowed</a></h4>" +
+        String expected = "<h4><a>Allowed</a></h4>\n" +
                 "<img>" +
                 "<a href=\"https://my.domain.com\">My site</a>";
         Assertions.assertEquals(expected, result);
@@ -55,7 +55,7 @@ public class HtmlDocTest {
 
     @Test
     public void getFilteredLinkFix() {
-        Assertions.assertEquals("<h4><a href=\"https://oskari.org/testing/hello.html\" target=\"_blank\">Allowed</a></h4>" +
+        Assertions.assertEquals("<h4><a href=\"https://oskari.org/testing/hello.html\" target=\"_blank\">Allowed</a></h4>\n" +
                 "<img src=\"https://oskari.org/image.png\">" +
                 "<a href=\"https://my.domain.com\" target=\"_blank\">My site</a>", new HtmlDoc(html)
                 .modifyLinks("https://oskari.org/testing/?test=true&param=4")
