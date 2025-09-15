@@ -1,2 +1,0 @@
-DROP TABLE IF EXISTS analysis_style CASCADE;
-ALTER TABLE analysis DROP COLUMN IF EXISTS style_id;
