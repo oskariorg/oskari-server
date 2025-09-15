@@ -105,7 +105,7 @@ The one packaged without this is 2.15.1
         <!-- Jedis depends on org.json/json https://github.com/redis/jedis/blob/v6.0.0/pom.xml#L83 -->
         <json.version>20250107</json.version>
 
-        <quartz-scheduler.version>2.3.2</quartz-scheduler.version>
+        <quartz-scheduler.version>2.5.0</quartz-scheduler.version>
 
         <geotools.version>33.2</geotools.version>
         <jts.version>1.20.0</jts.version>

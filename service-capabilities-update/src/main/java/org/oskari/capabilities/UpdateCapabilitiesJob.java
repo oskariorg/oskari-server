@@ -66,12 +66,15 @@ public class UpdateCapabilitiesJob extends ScheduledJob {
                 .map(l -> l.getLayerId())
                 .collect(Collectors.toList());
 
+        int updateCount = 0;
         for (OskariLayer layer : layersToUpdate) {
             if (!updatedLayers.contains("" + layer.getId())) {
                 continue;
             }
             layerService.update(layer);
+            updateCount++;
         }
+        LOG.info("UpdateCapabilitiesJob done - updated", updateCount, "/", layersToUpdate, "layers.");
     }
 
     protected static boolean shouldUpdate(OskariLayer layer) {
