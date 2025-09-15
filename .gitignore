@@ -16,6 +16,7 @@ target/
 */nbproject/
 */nbactions.xml
 */nb-configuration.xml
+.vscode/
 
 .metadata
 control-base/workbook.xlsx
