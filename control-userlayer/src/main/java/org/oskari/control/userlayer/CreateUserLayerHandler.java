@@ -3,7 +3,6 @@ package org.oskari.control.userlayer;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -297,7 +296,16 @@ public class CreateUserLayerHandler extends RestActionHandler {
                 .filter(f -> f.isFormField())
                 .collect(Collectors.toMap(
                         f -> f.getFieldName(),
-                        f -> new String(f.get(), StandardCharsets.UTF_8)));
+                        f -> getFieldValue(f)));
+    }
+
+    private String getFieldValue(FileItem item) {
+        try {
+            return item.getString(StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            log.debug("Unable to read value for field", item.getFieldName());
+        }
+        return null;
     }
 
     private SimpleFeatureCollection parseFeatures(FileItem zipFile,
