@@ -20,7 +20,6 @@ import org.geotools.api.feature.simple.SimpleFeature;
 import org.geotools.api.feature.simple.SimpleFeatureType;
 import org.oskari.geojson.GeoJSONFeatureCollection;
 import org.oskari.map.myfeatures.service.MyFeaturesService;
-import org.oskari.map.myfeatures.service.MyFeaturesServiceMybatisImpl;
 import org.oskari.service.user.UserLayerService;
 
 import java.time.OffsetDateTime;
@@ -44,7 +43,7 @@ public final class MyFeaturesWFSHelper extends UserLayerService {
 
     @Override
     public void init() {
-        service = OskariComponentManager.getComponentOfType(MyFeaturesServiceMybatisImpl.class);
+        service = OskariComponentManager.getComponentOfType(MyFeaturesService.class);
     }
 
     @Override

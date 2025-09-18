@@ -46,6 +46,7 @@ import fi.nls.oskari.domain.map.myfeatures.MyFeaturesFieldType;
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.JSONHelper;
@@ -109,7 +110,7 @@ public class ImportMyFeaturesHandler extends RestActionHandler {
     @Override
     public void init() {
         if (myFeaturesService == null) {
-            myFeaturesService = new MyFeaturesServiceMybatisImpl();
+            myFeaturesService = OskariComponentManager.getComponentOfType(MyFeaturesService.class);
         }
     }
 
