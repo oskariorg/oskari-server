@@ -94,13 +94,14 @@ public interface MyFeaturesMapper {
     public void swapAxisOrder(UUID layerId, OffsetDateTime now);
 
     // Don't touch `updated` as this is caused by update of the features, not an update on the layer
-    @Update("MERGE INTO myfeatures_layer AS a "
-        + "USING (SELECT layer_id, COUNT(*) AS count, ST_Extent(geom) AS extent FROM myfeatures_feature WHERE layer_id = #{layerId}) AS b "
-        + "ON a.id = b.layer_id "
-        + "WHEN MATCHED THEN "
-        + "UPDATE SET "
-        + "a.feature_count = b.count,"
-        + "a.extent = ARRAY [ST_XMin(b.extent), ST_YMin(b.extent), ST_XMax(b.extent), ST_YMax(b.extent)]")
+    @Update(
+          "UPDATE myfeatures_layer a SET feature_count = b.count, extent = b.extent FROM ("
+        + "  SELECT cnt AS count, ARRAY [ST_XMin(xtent), ST_YMin(xtent), ST_XMax(xtent), ST_YMax(xtent)] AS extent "
+        + "  FROM ("
+        + "    SELECT COUNT(*) AS cnt, ST_Extent(geom) AS xtent FROM myfeatures_feature WHERE layer_id = #{layerId}"
+        + "  )"
+        + ") AS b "
+        + "WHERE a.id = #{layerId}")
     public void refreshLayerMetadata(UUID layerId);
 
     @Select("SELECT current_timestamp")
