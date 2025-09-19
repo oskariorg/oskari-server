@@ -22,7 +22,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import fi.nls.oskari.control.*;
 import org.oskari.log.AuditLog;
 import org.oskari.map.myfeatures.service.MyFeaturesService;
-import org.oskari.map.myfeatures.service.MyFeaturesServiceMybatisImpl;
 import org.oskari.map.userlayer.input.FeatureCollectionParser;
 import org.oskari.map.userlayer.input.FeatureCollectionParsers;
 
