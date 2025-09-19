@@ -37,13 +37,13 @@ public final class MyFeaturesWFSHelper extends UserLayerService {
 
     private MyFeaturesService service;
 
-    public MyFeaturesWFSHelper() {
-        init();
-    }
-
-    @Override
-    public void init() {
-        service = OskariComponentManager.getComponentOfType(MyFeaturesService.class);
+    private MyFeaturesService getService() {
+        // Lazy init service, doesn't work done in ctor/init()
+        // due to some timing of components being initialized
+        if (service == null) {
+            service = OskariComponentManager.getComponentOfType(MyFeaturesService.class);
+        }
+        return service;
     }
 
     @Override
@@ -62,7 +62,7 @@ public final class MyFeaturesWFSHelper extends UserLayerService {
         try {
             UUID layerId = parseLayerId(fullLayerId);
             MyFeaturesLayer featuresLayer = getLayer(layerId);
-            List<MyFeaturesFeature> features = service.getFeaturesByBbox(layerId, bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY());
+            List<MyFeaturesFeature> features = getService().getFeaturesByBbox(layerId, bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY());
             return convertToSimpleFeatureCollection(featuresLayer, features);
         } catch(Exception e) {
             throw new ServiceException("Failed to get features", e);
@@ -112,7 +112,7 @@ public final class MyFeaturesWFSHelper extends UserLayerService {
     }
 
     private MyFeaturesLayer getLayer(UUID layerId) {
-        return service.getLayer(layerId);
+        return getService().getLayer(layerId);
     }
 
     @Override
