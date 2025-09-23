@@ -99,7 +99,7 @@ public interface MyFeaturesMapper {
         + "  SELECT cnt AS count, ARRAY [ST_XMin(xtent), ST_YMin(xtent), ST_XMax(xtent), ST_YMax(xtent)] AS extent "
         + "  FROM ("
         + "    SELECT COUNT(*) AS cnt, ST_Extent(geom) AS xtent FROM myfeatures_feature WHERE layer_id = #{layerId}"
-        + "  )"
+        + "  ) AS sub"
         + ") AS b "
         + "WHERE a.id = #{layerId}")
     public void refreshLayerMetadata(UUID layerId);
