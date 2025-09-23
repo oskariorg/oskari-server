@@ -104,6 +104,9 @@ public interface MyFeaturesMapper {
         + "WHERE a.id = #{layerId}")
     public void refreshLayerMetadata(UUID layerId);
 
+    @Delete("DELETE FROM myfeatures_feature WHERE layer_id = #{layerId}")
+    public void deleteFeaturesByLayerId(UUID layerId);
+
     @Select("SELECT current_timestamp")
     @Options(useCache = false)
     OffsetDateTime now();

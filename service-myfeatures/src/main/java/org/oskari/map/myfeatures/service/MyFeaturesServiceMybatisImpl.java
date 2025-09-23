@@ -238,6 +238,19 @@ public class MyFeaturesServiceMybatisImpl extends MyFeaturesService {
         }
     }
 
+    @Override
+    public void deleteFeaturesByLayerId(UUID layerId) {
+        layerId = Objects.requireNonNull(layerId);
+        try (SqlSession session = factory.openSession()) {
+            MyFeaturesMapper mapper = getMapper(session);
+            mapper.deleteFeaturesByLayerId(layerId);
+            mapper.refreshLayerMetadata(layerId);
+            session.commit();
+        }
+
+        throw new UnsupportedOperationException("Unimplemented method 'deleteAllFeatures'");
+    }
+
     private static CoordinateReferenceSystem createNativeCRS() {
         try {
             String epsg = PropertyUtil.get(NATIVE_SRS, FALLBACK_NATIVE_SRS);
