@@ -30,6 +30,8 @@ public abstract class MyFeaturesService extends OskariComponent {
     public abstract List<MyFeaturesFeature> getFeatures(UUID layerId);
     public abstract List<MyFeaturesFeature> getFeaturesByBbox(UUID layerId, double minX, double minY, double maxX, double maxY);
 
+    public abstract void deleteFeaturesByLayerId(UUID layerId);
+
     public abstract void createFeatures(UUID layerId, List<MyFeaturesFeature> features);
 
     public abstract List<MyFeaturesLayer> getLayersByOwnerUuid(String ownerUuid);
