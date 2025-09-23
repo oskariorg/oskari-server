@@ -19,6 +19,38 @@ public class CreateMyFeaturesFeature {
     private Geometry geometry;
     private Map<String, Object> properties;
 
+    public UUID getLayerId() {
+        return layerId;
+    }
+
+    public void setLayerId(UUID layerId) {
+        this.layerId = layerId;
+    }
+
+    public String getFid() {
+        return fid;
+    }
+
+    public void setFid(String fid) {
+        this.fid = fid;
+    }
+
+    public Geometry getGeometry() {
+        return geometry;
+    }
+
+    public void setGeometry(Geometry geometry) {
+        this.geometry = geometry;
+    }
+
+    public Map<String, Object> getProperties() {
+        return properties;
+    }
+
+    public void setProperties(Map<String, Object> properties) {
+        this.properties = properties;
+    }
+
     public List<String> validate() {
         List<String> errors = new ArrayList<>();
         if (layerId == null) {
@@ -28,10 +60,6 @@ public class CreateMyFeaturesFeature {
             errors.add("geometry is required");
         }
         return errors;
-    }
-
-    public UUID getLayerId() {
-        return layerId;
     }
 
     public MyFeaturesFeature toDomain(ObjectMapper om) throws Exception {
