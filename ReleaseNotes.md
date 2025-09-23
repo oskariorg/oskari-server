@@ -1,5 +1,47 @@
 # Release Notes
 
+## 3.1.0
+
+For a full list of changes see:
+https://github.com/oskariorg/oskari-server/milestone/54?closed=1
+
+### Changes
+
+- Improved parsing for MIF/MID files for userlayer import
+- Added created and last login timestamp for getting user info for the frontend
+- Removal of code and migrations related to the analysis functionality. The functionality has been removed from oskari-server for now.
+- Coordinate order change for GetWfsFeatureHandler (https://github.com/oskariorg/oskari-server/pull/1167)
+
+### Updated libraries
+
+- Spring framework 6.2.2 -> 6.2.9
+- Spring security 6.4.2 -> 6.5.3
+- Spring session 3.4.1 -> 3.5.2
+- Postgresql JDBC 42.7.4 -> 42.7.7
+- GeoTools 32.2 -> 33.2
+- Jedis 5.2.0 -> 6.1.0
+- org.json 20240303 -> 20250107
+- commons-lang 3.17.0 -> 3.18.0
+- commons-text 1.13.0 -> 1.14.0
+- commons-codec 1.16.0 -> 1.19.0
+- commons-fileupload 2.0.0-M2 -> 2.0.0-M4
+- commons-io 2.18.0 -> 2.20.0
+- commons-csv 1.13.0 -> 1.14.1
+- jackson 2.18.2 -> 2.19.2
+- tomcat 10.1.39 -> 10.1.46
+- flywaydb 11.1.1 -> 11.12.0
+- hikaricp 6.2.1 -> 7.0.2
+- Quartz scheduler 2.3.2 -> 2.5.0
+- JUnit 5.11.4 -> 5.13.4
+- xmlgraphics-fop 2.10 -> 2.11
+- poi-ooxml 5.4.0 -> 5.4.1
+- jsoup 1.18.3 -> 1.21.2
+- jackson 2.19.2 -> 2.20.0
+- mockito 5.15.2 -> 5.19.0
+- log4j 2.24.1 -> 2.25.1
+- slf4j 2.0.11 -> 2.0.17
+- dropwizard metrics 4.2.30 -> 4.2.36
+
 ## 3.0.2
 
 For a full list of changes see:
