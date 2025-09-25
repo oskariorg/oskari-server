@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesFeature;
 
 public class UpdateMyFeaturesFeature extends CreateMyFeaturesFeature {
@@ -26,7 +27,7 @@ public class UpdateMyFeaturesFeature extends CreateMyFeaturesFeature {
         return errors;
     }
 
-    public MyFeaturesFeature toDomain(ObjectMapper om) throws Exception {
+    public MyFeaturesFeature toDomain(ObjectMapper om) throws ActionParamsException {
         MyFeaturesFeature feature = super.toDomain(om);
         feature.setId(id);
         return feature;

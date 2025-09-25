@@ -6,12 +6,20 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+import org.json.JSONObject;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.impl.PackedCoordinateSequenceFactory;
 import org.oskari.control.myfeatures.dto.CreateMyFeaturesFeature;
 import org.oskari.control.myfeatures.dto.UpdateMyFeaturesFeature;
 import org.oskari.map.myfeatures.service.MyFeaturesService;
 import org.oskari.user.User;
+import org.oskari.util.GeometryDeserializer;
+import org.oskari.util.GeometrySerializer;
+import org.oskari.util.JSONObjectSerializer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionDeniedException;
@@ -37,12 +45,26 @@ public class MyFeaturesFeatureHandler extends RestActionHandler {
         this.service = Objects.requireNonNull(myFeaturesService);
     }
 
+    void initObjectMapper() {
+        if (om == null) {
+            om = new ObjectMapper();
+            GeometryFactory gf = new GeometryFactory(PackedCoordinateSequenceFactory.DOUBLE_FACTORY);
+            SimpleModule jtsModule = new SimpleModule();
+            jtsModule.addSerializer(Geometry.class, new GeometrySerializer());
+            jtsModule.addDeserializer(Geometry.class, new GeometryDeserializer(gf));
+            om.registerModule(jtsModule);
+            SimpleModule jsonModule = new SimpleModule();
+            jsonModule.addSerializer(JSONObject.class, new JSONObjectSerializer());
+            om.registerModule(jsonModule);
+        }
+    }
+
     @Override
     public void init() {
         if (service == null) {
             setService(OskariComponentManager.getComponentOfType(MyFeaturesService.class));
         }
-        this.om = new ObjectMapper();
+        initObjectMapper();
     }
 
     @Override
@@ -74,29 +96,17 @@ public class MyFeaturesFeatureHandler extends RestActionHandler {
 
     @Override
     public void handlePost(ActionParameters params) throws ActionException {
-        String payload = params.getPayLoad();
-
-        CreateMyFeaturesFeature createFeature;
-        try {
-            createFeature = om.readValue(payload, CreateMyFeaturesFeature.class);
-        } catch (Exception e) {
-            throw new ActionParamsException("Failed to parse payload", e);
-        }
+        CreateMyFeaturesFeature createFeature = parsePayload(params, CreateMyFeaturesFeature.class);
 
         List<String> validationErrors = createFeature.validate();
         if (!validationErrors.isEmpty()) {
             throw new ActionParamsException(toJSONString(validationErrors));
         }
 
-        MyFeaturesFeature feature;
-        try {
-            feature = createFeature.toDomain(om);
-        } catch (Exception e) {
-            throw new ActionParamsException("Failed to convert to domain model", e);
-        }
+        MyFeaturesFeature feature = createFeature.toDomain(om);
+        UUID layerId = createFeature.getLayerId();
 
         User user = params.getUser();
-        UUID layerId = createFeature.getLayerId();
         if (!canEdit(user, layerId)) {
             throw new ActionDeniedException("User: " + user.getId() + " tried to insert feature to layer " + layerId);
         }
@@ -108,29 +118,17 @@ public class MyFeaturesFeatureHandler extends RestActionHandler {
 
     @Override
     public void handlePut(ActionParameters params) throws ActionException {
-        String payload = params.getPayLoad();
-
-        UpdateMyFeaturesFeature updateFeature;
-        try {
-            updateFeature = om.readValue(payload, UpdateMyFeaturesFeature.class);
-        } catch (Exception e) {
-            throw new ActionParamsException("Failed to parse payload", e);
-        }
+        UpdateMyFeaturesFeature updateFeature = parsePayload(params, UpdateMyFeaturesFeature.class);
 
         List<String> validationErrors = updateFeature.validate();
         if (!validationErrors.isEmpty()) {
             throw new ActionParamsException(toJSONString(validationErrors));
         }
 
-        MyFeaturesFeature feature;
-        try {
-            feature = updateFeature.toDomain(om);
-        } catch (Exception e) {
-            throw new ActionParamsException("Failed to convert to domain model", e);
-        }
+        MyFeaturesFeature feature = updateFeature.toDomain(om);
+        UUID layerId = updateFeature.getLayerId();
 
         User user = params.getUser();
-        UUID layerId = updateFeature.getLayerId();
         if (!canEdit(user, layerId)) {
             throw new ActionDeniedException("User: " + user.getId() + " tried to modify feature " + feature.getId());
         }
@@ -144,16 +142,25 @@ public class MyFeaturesFeatureHandler extends RestActionHandler {
     public void handleDelete(ActionParameters params) throws ActionException {
         UUID layerId = parseLayerId(params);
         long featureId = params.getHttpParam(PARAM_ID, Long.MIN_VALUE);
-        User user = params.getUser();
 
+        User user = params.getUser();
         if (!canEdit(user, layerId)) {
-            throw new ActionDeniedException("User: " + user.getId() + " tried to delete feature(s) from layer " + layerId);
+            throw new ActionDeniedException(
+                    "User: " + user.getId() + " tried to delete feature(s) from layer " + layerId);
         }
 
         if (featureId == Long.MIN_VALUE) {
             service.deleteFeaturesByLayerId(layerId);
         } else {
             service.deleteFeature(layerId, featureId);
+        }
+    }
+
+    <T> T parsePayload(ActionParameters params, Class<T> c) throws ActionParamsException {
+        try {
+            return om.readValue(params.getPayLoad(), c);
+        } catch (Exception e) {
+            throw new ActionParamsException("Failed to parse payload", e);
         }
     }
 
@@ -171,7 +178,7 @@ public class MyFeaturesFeatureHandler extends RestActionHandler {
         return existing != null && existing.getOwnerUuid().equals(user.getUuid());
     }
 
-    private String toJSONString(Object obj) throws ActionException {
+    String toJSONString(Object obj) throws ActionException {
         try {
             return om.writeValueAsString(obj);
         } catch (Exception e) {
