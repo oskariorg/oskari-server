@@ -9,6 +9,7 @@ import org.locationtech.jts.geom.Geometry;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesFeature;
 import fi.nls.oskari.util.JSONHelper;
 
@@ -62,14 +63,18 @@ public class CreateMyFeaturesFeature {
         return errors;
     }
 
-    public MyFeaturesFeature toDomain(ObjectMapper om) throws Exception {
-        MyFeaturesFeature feature = new MyFeaturesFeature();
-        feature.setFid(fid);
-        feature.setGeometry(geometry);
-        if (properties != null) {
-            feature.setProperties(JSONHelper.createJSONObject(om.writeValueAsString(properties)));
+    public MyFeaturesFeature toDomain(ObjectMapper om) throws ActionParamsException {
+        try {
+            MyFeaturesFeature feature = new MyFeaturesFeature();
+            feature.setFid(fid);
+            feature.setGeometry(geometry);
+            if (properties != null) {
+                feature.setProperties(JSONHelper.createJSONObject(om.writeValueAsString(properties)));
+            }
+            return feature;
+        } catch (Exception e) {
+            throw new ActionParamsException("Failed to convert to domain model", e);
         }
-        return feature;
     }
 
 }
