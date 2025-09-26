@@ -158,6 +158,11 @@ public class PropertyUtil {
     }
 
     public static String getOptionalNonLocalized(final String propertyName) {
+        // first check environment variables
+        final String envValue = getEnv(propertyName);
+        if (envValue != null) {
+            return envValue;
+        }
         return properties.getProperty(propertyName);
     }
 
