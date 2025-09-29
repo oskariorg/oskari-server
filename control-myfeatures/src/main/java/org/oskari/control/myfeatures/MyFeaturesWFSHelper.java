@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 @Oskari
 public final class MyFeaturesWFSHelper extends UserLayerService {
 
-    public static final String PREFIX_MYFEATURES = "myfeatures_";
+    public static final String PREFIX_MYFEATURES = "myf_";
     public static final String GEOM_PROP_NAME = "geom";
     public static final String CREATED_PROP_NAME = "created";
     public static final String UPDATED_PROP_NAME = "updated";
