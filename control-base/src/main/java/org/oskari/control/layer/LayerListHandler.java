@@ -75,15 +75,11 @@ public class LayerListHandler extends RestActionHandler {
         List<OskariLayer> layers = OskariLayerWorker.getLayersForUser(user, false);
 
         LayerListResponse response = new LayerListResponse();
-        response.layers = mapLayers(layers, language);
+        response.layers = layers.stream().map(l -> mapLayer(l, language)).collect(Collectors.toList());
         response.groups = getLayerGroups(layers, language, user.isAdmin());
         response.providers = getProviders(layers, language, user.isAdmin());
 
         ResponseHelper.writeResponse(params, response);
-    }
-
-    private static List<LayerOutput> mapLayers(List<OskariLayer> layers, String language) {
-        return layers.stream().map(l -> mapLayer(l, language)).collect(Collectors.toList());
     }
 
     private static LayerOutput mapLayer(OskariLayer layer, String language) {
@@ -182,6 +178,7 @@ public class LayerListHandler extends RestActionHandler {
     private Map<Integer, DataProviderOutput> getProviders(List<OskariLayer> layers, String language, boolean isAdmin) {
         Predicate<DataProvider> filterFn = __ -> true;
         if (!isAdmin) {
+            // For non-admins return only the providers that are referenced by some layer we're about to return
             Set<Integer> providerIds = layers.stream().map(OskariLayer::getDataproviderId).collect(Collectors.toSet());
             filterFn = p -> providerIds.contains(p.getId());
         }
