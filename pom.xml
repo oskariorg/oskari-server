@@ -47,8 +47,8 @@
         <jdk.version>17</jdk.version>
         <oskari.version>${project.version}</oskari.version>
 
-        <spring.version>6.2.9</spring.version>
-        <spring-security.version>6.5.3</spring-security.version>
+        <spring.version>6.2.11</spring.version>
+        <spring-security.version>6.5.5</spring-security.version>
         <!--
         session-bom 3.4.1 uses:
         https://github.com/spring-projects/spring-session/blob/3.5.0/gradle/libs.versions.toml#L41-L43
