@@ -92,14 +92,13 @@ public interface MyPlaceMapper {
             " category_id = #{categoryId} " +
             " AND " +
             " ST_INTERSECTS(" +
-            "   ST_MAKEENVELOPE(#{minX}, #{minY}, #{maxX}, #{maxY}, #{srid}), " +
+            "   ST_MAKEENVELOPE(#{minX}, #{minY}, #{maxX}, #{maxY}), " +
         "       geometry)")
     List<MyPlace> findAllByBBOX(@Param("categoryId") int categoryId,
                                 @Param("minX") double minX,
                                 @Param("minY") double minY,
                                 @Param("maxX") double maxX,
-                                @Param("maxY") double maxY,
-                                @Param("srid") int srid);
+                                @Param("maxY") double maxY);
     MyPlace findPlace(long id);
     MyPlaceCategory find(long categoryId);
     @Update("update categories set " +

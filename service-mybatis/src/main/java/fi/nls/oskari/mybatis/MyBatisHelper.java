@@ -27,6 +27,9 @@ public class MyBatisHelper {
         configuration.getTypeHandlerRegistry().register(JsonMapMybatisTypeHandler.class);
         configuration.getTypeHandlerRegistry().register(JSONObjectMybatisTypeHandler.class);
         configuration.getTypeHandlerRegistry().register(JSONArrayMybatisTypeHandler.class);
+        configuration.getTypeHandlerRegistry().register(EnvelopeMybatisTypeHandler.class);
+        configuration.getTypeHandlerRegistry().register(UUIDMybatisTypeHandler.class);
+        configuration.getTypeHandlerRegistry().register(GeometryMybatisTypeHandler.class);
         addMappers(configuration, mappers);
         return configuration;
     }

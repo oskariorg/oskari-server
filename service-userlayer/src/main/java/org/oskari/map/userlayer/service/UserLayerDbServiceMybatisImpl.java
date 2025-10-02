@@ -23,18 +23,15 @@ import org.geotools.data.store.EmptyFeatureCollection;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
-import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
 import org.geotools.api.feature.simple.SimpleFeature;
 import org.geotools.api.feature.simple.SimpleFeatureType;
-import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
-import org.oskari.geojson.GeoJSONWriter;
 
 import javax.sql.DataSource;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-import static fi.nls.oskari.map.geometry.ProjectionHelper.getSRID;
 import static fi.nls.oskari.map.geometry.WKTHelper.GEOM_ATTRIBUTE;
 import static fi.nls.oskari.map.geometry.WKTHelper.parseWKT;
 
@@ -48,8 +45,6 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
     private final int srid;
     private final Cache<UserLayer> cache;
     private SqlSessionFactory factory = null;
-
-    private static final GeoJSONWriter geojsonWriter = new GeoJSONWriter();
 
     public UserLayerDbServiceMybatisImpl() {
         final DatasourceHelper helper = DatasourceHelper.getInstance();
@@ -270,14 +265,12 @@ public class UserLayerDbServiceMybatisImpl extends UserLayerDbService {
 	}
 
     @Override
-    public SimpleFeatureCollection getFeatures(int layerId, ReferencedEnvelope bbox, CoordinateReferenceSystem crs) throws ServiceException {
+    public SimpleFeatureCollection getFeatures(int layerId, Envelope bbox) throws ServiceException {
         try (SqlSession session = factory.openSession()) {
             log.debug("getFeatures by bbox: ", bbox);
 
             final UserLayerMapper mapper = getMapper(session);
-            String nativeSrsName = PropertyUtil.get("oskari.native.srs", "EPSG:3857");
-            int nativeSrid = getSRID(nativeSrsName);
-            List<UserLayerData> features = mapper.findAllByLooseBBOX(layerId, bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY(), nativeSrid);
+            List<UserLayerData> features = mapper.findAllByLooseBBOX(layerId, bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY());
             return this.toSimpleFeatureCollection(features);
         } catch (Exception e) {
             log.warn(e, "Exception when trying to get features by bounding box ", bbox.getMinX(), bbox.getMinY(), bbox.getMaxX(), bbox.getMaxY());

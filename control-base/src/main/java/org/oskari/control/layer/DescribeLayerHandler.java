@@ -29,6 +29,8 @@ import org.oskari.control.layer.model.FeatureProperties;
 import org.oskari.control.layer.model.LayerExtendedOutput;
 import org.oskari.control.layer.model.LayerOutput;
 import org.oskari.permissions.PermissionService;
+import org.oskari.service.user.UserLayerService;
+import org.oskari.user.User;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -41,7 +43,12 @@ import static fi.nls.oskari.control.ActionConstants.PARAM_SRS;
  */
 @OskariActionRoute("DescribeLayer")
 public class DescribeLayerHandler extends RestActionHandler {
+
+    private static final String ERR_INVALID_ID = "Invalid id";
+
     private PermissionHelper permissionHelper;
+    private Collection<UserLayerService> userContentProcessors;
+
     private static final ObjectMapper MAPPER = new ObjectMapper();
     static {
         MAPPER.setSerializationInclusion(JsonInclude.Include.NON_NULL);
@@ -62,6 +69,9 @@ public class DescribeLayerHandler extends RestActionHandler {
         } catch (Exception e) {
             throw new ServiceRuntimeException("Exception occurred while initializing map layer service", e);
         }
+
+        Map<String, UserLayerService> components = OskariComponentManager.getComponentsOfType(UserLayerService.class);
+        this.userContentProcessors = components.values();
     }
 
     public void setPermissionHelper(PermissionHelper helper) {
@@ -74,12 +84,44 @@ public class DescribeLayerHandler extends RestActionHandler {
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
-        final int layerId = params.getRequiredParamInt(PARAM_ID);
-        final OskariLayer layer = permissionHelper.getLayer(layerId, params.getUser());
+        final String layerId = params.getRequiredParam(PARAM_ID);
+        final User user = params.getUser();
+
+        final Optional<UserLayerService> processor = getUserContentProsessor(layerId);
+        final OskariLayer layer = findLayer(layerId, user, processor);
 
         LayerExtendedOutput output = getLayerDetails(params, layer);
 
         writeResponse(params, output);
+    }
+
+    private Optional<UserLayerService> getUserContentProsessor(String layerId) {
+        return userContentProcessors.stream()
+                .filter(proc -> proc.isUserContentLayer(layerId))
+                .findAny();
+    }
+
+    private OskariLayer findLayer(String layerId, User user, Optional<UserLayerService> processor) throws ActionException {
+        return processor.isPresent()
+            ? findUserContentLayer(layerId, user, processor.get())
+            : findMapLayer(layerId, user);
+    }
+
+    private OskariLayer findUserContentLayer(String layerId, User user, UserLayerService processor) throws ActionDeniedException {
+        if (!processor.hasViewPermission(layerId, user)) {
+            throw new ActionDeniedException("User doesn't have permissions for requested layer");
+        }
+        return processor.getOskariLayer(layerId);
+    }
+
+    private OskariLayer findMapLayer(String layerId, User user) throws ActionException {
+        int id;
+        try {
+            id = Integer.parseInt(layerId);
+        } catch (NumberFormatException e) {
+            throw new ActionParamsException(ERR_INVALID_ID);
+        }
+        return permissionHelper.getLayer(id, user);
     }
 
     private void writeResponse(ActionParameters params, LayerOutput output) throws ActionCommonException {

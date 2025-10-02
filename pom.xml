@@ -121,6 +121,7 @@ The one packaged without this is 2.15.1
         <hamcrest.version>2.2</hamcrest.version>
         <xmlunit.version>1.6</xmlunit.version>
         <h2database.version>2.3.232</h2database.version>
+        <h2gis.version>2.2.3</h2gis.version>
 
         <log4j.version>2.25.1</log4j.version>
 
@@ -412,6 +413,17 @@ The one packaged without this is 2.15.1
 
             <dependency>
                 <groupId>org.oskari</groupId>
+                <artifactId>control-myfeatures</artifactId>
+                <version>${oskari.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.oskari</groupId>
+                <artifactId>service-myfeatures</artifactId>
+                <version>${oskari.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.oskari</groupId>
                 <artifactId>control-mvt</artifactId>
                 <version>${oskari.version}</version>
             </dependency>
@@ -475,6 +487,11 @@ The one packaged without this is 2.15.1
                 <groupId>com.h2database</groupId>
                 <artifactId>h2</artifactId>
                 <version>${h2database.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.orbisgis</groupId>
+                <artifactId>h2gis</artifactId>
+                <version>${h2gis.version}</version>
             </dependency>
 
             <!-- Spring -->
@@ -1192,6 +1209,9 @@ The one packaged without this is 2.15.1
 
         <module>control-userlayer</module>
         <module>service-userlayer</module>
+
+        <module>control-myfeatures</module>
+        <module>service-myfeatures</module>
 
         <module>control-mvt</module>
         <module>service-mvt</module>
