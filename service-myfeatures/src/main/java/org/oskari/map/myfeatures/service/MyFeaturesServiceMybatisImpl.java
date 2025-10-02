@@ -156,7 +156,6 @@ public class MyFeaturesServiceMybatisImpl extends MyFeaturesService {
     @Override
     public void deleteFeature(UUID layerId, long featureId) {
         layerId = Objects.requireNonNull(layerId);
-        featureId = Objects.requireNonNull(featureId);
         try (SqlSession session = factory.openSession()) {
             MyFeaturesMapper mapper = getMapper(session);
             mapper.deleteFeature(featureId);
@@ -247,8 +246,6 @@ public class MyFeaturesServiceMybatisImpl extends MyFeaturesService {
             mapper.refreshLayerMetadata(layerId);
             session.commit();
         }
-
-        throw new UnsupportedOperationException("Unimplemented method 'deleteAllFeatures'");
     }
 
     private static CoordinateReferenceSystem createNativeCRS() {

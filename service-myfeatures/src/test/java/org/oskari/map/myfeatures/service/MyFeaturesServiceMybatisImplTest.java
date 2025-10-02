@@ -204,6 +204,11 @@ public class MyFeaturesServiceMybatisImplTest {
 
         Assertions.assertEquals(layer.getCreated(), layer.getUpdated(), "swapAxisOrder should not update `updated`");
 
+        service.deleteFeaturesByLayerId(layer.getId());
+        Assertions.assertTrue(service.getFeatures(layer.getId()).isEmpty());
+
+        // Re-add one feature to test deleteLayer CASCADE
+        service.createFeature(layer.getId(), f1);
         service.deleteLayer(layer.getId());
         Assertions.assertTrue(service.getFeatures(layer.getId()).isEmpty(), "deleteLayer should delete features also");
     }
