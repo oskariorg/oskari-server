@@ -299,7 +299,16 @@ public class ImportMyFeaturesHandler extends RestActionHandler {
                 .filter(f -> f.isFormField())
                 .collect(Collectors.toMap(
                         f -> f.getFieldName(),
-                        f -> new String(f.get(), StandardCharsets.UTF_8)));
+                        f -> getFieldValue(f)));
+    }
+
+    private String getFieldValue(FileItem item) {
+        try {
+            return item.getString(StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            log.debug("Unable to read value for field", item.getFieldName());
+        }
+        return null;
     }
 
     private SimpleFeatureCollection parseFeatures(FileItem zipFile,
