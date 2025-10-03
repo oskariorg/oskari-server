@@ -9,6 +9,8 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import org.oskari.capabilities.MetadataHelper;
+import org.oskari.capabilities.ogc.LayerCapabilitiesOGC;
 import org.oskari.control.layer.model.DataProviderOutput;
 import org.oskari.control.layer.model.LayerGroupOutput;
 import org.oskari.control.layer.model.LayerLinkOutput;
@@ -32,6 +34,7 @@ import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLink;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkService;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkServiceMybatisImpl;
 import fi.nls.oskari.service.OskariComponentManager;
+import fi.nls.oskari.service.capabilities.CapabilitiesConstants;
 import fi.nls.oskari.util.ResponseHelper;
 
 @OskariActionRoute("LayerList")
@@ -84,9 +87,26 @@ public class LayerListHandler extends RestActionHandler {
 
     private static LayerOutput mapLayer(OskariLayer layer, String language) {
         LayerOutput out = new LayerOutput();
-        out.id = layer.getId();
+        out.id = Integer.toString(layer.getId());
+        out.type = layer.getType();
         out.name = layer.getName(language);
+        out.metadataUuid = getMetadataUuid(layer);
+        out.dataproviderId = layer.getDataproviderId();
+        out.created = layer.getCreated();
+        out.updated = layer.getUpdated();
         return out;
+    }
+
+    private static String getMetadataUuid(OskariLayer layer) {
+        String fixed = MetadataHelper.getIdFromMetadataUrl(layer.getMetadataId());
+        if (fixed != null) {
+            return fixed;
+        }
+        String olderMetadataCaps = layer.getCapabilities().optString(CapabilitiesConstants.KEY_METADATA, null);
+        if (olderMetadataCaps != null && !olderMetadataCaps.trim().isEmpty()) {
+            return olderMetadataCaps;
+        }
+        return layer.getCapabilities().optString(LayerCapabilitiesOGC.METADATA_UUID, null);
     }
 
     private List<LayerGroupOutput> getLayerGroups(List<OskariLayer> layers, String language, boolean isAdmin) {
