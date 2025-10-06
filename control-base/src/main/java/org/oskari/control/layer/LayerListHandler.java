@@ -2,12 +2,14 @@ package org.oskari.control.layer;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.json.JSONObject;
 import org.oskari.capabilities.MetadataHelper;
@@ -17,6 +19,7 @@ import org.oskari.control.layer.model.LayerGroupOutput;
 import org.oskari.control.layer.model.LayerLinkOutput;
 import org.oskari.control.layer.model.LayerListResponse;
 import org.oskari.control.layer.model.LayerOutput;
+import org.oskari.map.myfeatures.service.MyFeaturesService;
 import org.oskari.permissions.PermissionService;
 import org.oskari.permissions.model.PermissionSet;
 import org.oskari.permissions.model.PermissionType;
@@ -34,10 +37,12 @@ import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.domain.map.JSONLocalized;
 import fi.nls.oskari.domain.map.MaplayerGroup;
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayer;
 import fi.nls.oskari.map.layer.DataProviderService;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLink;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkService;
+import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.capabilities.CapabilitiesConstants;
 import fi.nls.oskari.util.ResponseHelper;
 
@@ -49,6 +54,7 @@ public class LayerListHandler extends RestActionHandler {
     private OskariMapLayerGroupService groupService;
     private OskariLayerGroupLinkService linkService;
     private DataProviderService dataProviderService;
+    private MyFeaturesService myFeaturesService;
 
     public void setMapLayerService(OskariLayerService mapLayerService) {
         this.mapLayerService = mapLayerService;
@@ -70,6 +76,10 @@ public class LayerListHandler extends RestActionHandler {
         this.dataProviderService = service;
     }
 
+    public void setMyFeaturesService(MyFeaturesService myFeaturesService) {
+        this.myFeaturesService = myFeaturesService;
+    }
+
     @Override
     public void init() {
         // setup services if they haven't been initialized
@@ -88,6 +98,9 @@ public class LayerListHandler extends RestActionHandler {
         if (dataProviderService == null) {
             setDataProviderService(ServiceFactory.getDataProviderService());
         }
+        if (myFeaturesService == null) {
+            setMyFeaturesService(OskariComponentManager.getComponentOfType(MyFeaturesService.class));
+        }
     }
 
     @Override
@@ -99,12 +112,17 @@ public class LayerListHandler extends RestActionHandler {
     }
 
     protected LayerListResponse getLayerList(User user, String language) {
-        List<OskariLayer> layers = getLayers(user);
+        List<OskariLayer> mapLayers = getLayers(user);
+        List<MyFeaturesLayer> myFeaturesLayers = myFeaturesService.getLayersByOwnerUuid(user.getUuid());
+
+        List<LayerOutput> layers = Stream.concat(
+                mapLayers.stream().map(l -> mapLayer(l, language)),
+                myFeaturesLayers.stream().map(l -> mapMyFeaturesLayer(l, language))).collect(Collectors.toList());
 
         LayerListResponse response = new LayerListResponse();
-        response.layers = layers.stream().map(l -> mapLayer(l, language)).collect(Collectors.toList());
-        response.groups = getLayerGroups(layers, language, user.isAdmin());
-        response.providers = getProviders(layers, language, user.isAdmin());
+        response.layers = layers;
+        response.groups = getLayerGroups(mapLayers, language, user.isAdmin());
+        response.providers = getProviders(mapLayers, language, user.isAdmin());
 
         return response;
     }
@@ -130,6 +148,18 @@ public class LayerListHandler extends RestActionHandler {
         out.dataproviderId = layer.getDataproviderId();
         out.created = layer.getCreated();
         out.updated = layer.getUpdated();
+        return out;
+    }
+
+    private static LayerOutput mapMyFeaturesLayer(MyFeaturesLayer layer, String language) {
+        LayerOutput out = new LayerOutput();
+        out.id = layer.getId().toString();
+        out.type = layer.getType();
+        out.name = layer.getName(language);
+        out.metadataUuid = null;
+        out.dataproviderId = null;
+        out.created = layer.getCreated() != null ? new Date(layer.getCreated().toInstant().toEpochMilli()) : null;
+        out.updated = layer.getUpdated() != null ? new Date(layer.getUpdated().toInstant().toEpochMilli()) : null;
         return out;
     }
 

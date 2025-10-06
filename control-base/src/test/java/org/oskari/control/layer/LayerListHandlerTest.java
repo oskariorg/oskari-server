@@ -1,18 +1,18 @@
 package org.oskari.control.layer;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
+import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
+import java.util.UUID;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.oskari.control.layer.model.LayerListResponse;
+import org.oskari.map.myfeatures.service.MyFeaturesService;
 import org.oskari.permissions.PermissionService;
 import org.oskari.permissions.model.Permission;
 import org.oskari.permissions.model.PermissionExternalType;
@@ -27,6 +27,7 @@ import org.oskari.user.User;
 import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.domain.map.MaplayerGroup;
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayer;
 import fi.nls.oskari.map.layer.DataProviderService;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLink;
@@ -69,27 +70,48 @@ public class LayerListHandlerTest {
         OskariLayerGroupLink link = new OskariLayerGroupLink(layer.getId(), group.getId());
 
         User guest = new GuestUser();
+        guest.setUuid(UUID.randomUUID().toString());
         guest.addRole(guestRole);
 
+        MyFeaturesLayer myFeaturesLayer = new MyFeaturesLayer();
+        myFeaturesLayer.setId(UUID.randomUUID());
+        myFeaturesLayer.setName(language, "My very own feature layer");
+        myFeaturesLayer.setCreated(OffsetDateTime.now());
+        myFeaturesLayer.setUpdated(OffsetDateTime.now());
+
         LayerListHandler handler = new LayerListHandler();
-        handler.setMapLayerService(when(Mockito.mock(OskariLayerService.class).findAll()).thenReturn(Arrays.asList(layer)).getMock());
-        handler.setPermissionService(when(Mockito.mock(PermissionService.class).findResourcesByUser(guest, ResourceType.maplayer)).thenReturn(Arrays.asList(resource)).getMock());
-        handler.setGroupService(when(Mockito.mock(OskariMapLayerGroupService.class).findAll()).thenReturn(Arrays.asList(group)).getMock());
-        handler.setLinkService(when(Mockito.mock(OskariLayerGroupLinkService.class).findAll()).thenReturn(Arrays.asList(link)).getMock());
-        handler.setDataProviderService(when(Mockito.mock(DataProviderService.class).findAll()).thenReturn(Arrays.asList(provider)).getMock());
+        handler.setMapLayerService(
+                when(mock(OskariLayerService.class).findAll())
+                        .thenReturn(Arrays.asList(layer)).getMock());
+        handler.setPermissionService(
+                when(mock(PermissionService.class).findResourcesByUser(guest, ResourceType.maplayer))
+                        .thenReturn(Arrays.asList(resource)).getMock());
+        handler.setGroupService(
+                when(mock(OskariMapLayerGroupService.class).findAll())
+                        .thenReturn(Arrays.asList(group)).getMock());
+        handler.setLinkService(
+                when(mock(OskariLayerGroupLinkService.class).findAll())
+                        .thenReturn(Arrays.asList(link)).getMock());
+        handler.setDataProviderService(
+                when(mock(DataProviderService.class).findAll())
+                        .thenReturn(Arrays.asList(provider)).getMock());
+        handler.setMyFeaturesService(
+                when(mock(MyFeaturesService.class).getLayersByOwnerUuid(guest.getUuid()))
+                        .thenReturn(Arrays.asList(myFeaturesLayer)).getMock());
 
         LayerListResponse response = handler.getLayerList(guest, language);
-        Assertions.assertEquals(1, response.layers.size());
+        Assertions.assertEquals(2, response.layers.size());
         Assertions.assertEquals(1, response.groups.size());
         Assertions.assertEquals(1, response.providers.size());
 
-        Assertions.assertEquals("My testcase", response.layers.get(0).name);
+        Assertions.assertTrue(response.layers.stream().anyMatch(l -> "My testcase".equals(l.name)));
+        Assertions.assertTrue(response.layers.stream().anyMatch(l -> "My very own feature layer".equals(l.name)));
         Assertions.assertEquals("The very best Group", response.groups.get(0).name);
         Assertions.assertEquals("Teapot", response.providers.values().stream().findAny().get().name);
     }
 
     @Test
-    public void adminsGetEverythingBack() {
+    public void adminsGetEverythingBackButOtherPeoplesMyFeaturesLayers() {
         String language = "en";
 
         DataProvider dp1 = new DataProvider();
@@ -102,6 +124,7 @@ public class LayerListHandlerTest {
 
         OskariLayer layer = new OskariLayer();
         layer.setId(400);
+        layer.setName(language, "My testcase");
         layer.setDataproviderId(dp1.getId());
 
         Permission anyPermission = new Permission();
@@ -123,17 +146,40 @@ public class LayerListHandlerTest {
         User admin = new User();
         admin.addRole(Role.getAdminRole());
 
+        MyFeaturesLayer myFeaturesLayer = new MyFeaturesLayer();
+        myFeaturesLayer.setId(UUID.randomUUID());
+        myFeaturesLayer.setName(language, "My very own feature layer");
+        myFeaturesLayer.setCreated(OffsetDateTime.now());
+        myFeaturesLayer.setUpdated(OffsetDateTime.now());
+
         LayerListHandler handler = new LayerListHandler();
-        handler.setMapLayerService(when(Mockito.mock(OskariLayerService.class).findAll()).thenReturn(Arrays.asList(layer)).getMock());
-        handler.setPermissionService(when(Mockito.mock(PermissionService.class).findResourcesByUser(admin, ResourceType.maplayer)).thenReturn(Arrays.asList(resource)).getMock());
-        handler.setGroupService(when(Mockito.mock(OskariMapLayerGroupService.class).findAll()).thenReturn(Arrays.asList(g1, g2)).getMock());
-        handler.setLinkService(when(Mockito.mock(OskariLayerGroupLinkService.class).findAll()).thenReturn(Collections.emptyList()).getMock());
-        handler.setDataProviderService(when(Mockito.mock(DataProviderService.class).findAll()).thenReturn(Arrays.asList(dp1, dp2)).getMock());
+        handler.setMapLayerService(
+                when(mock(OskariLayerService.class).findAll())
+                        .thenReturn(Arrays.asList(layer)).getMock());
+        handler.setPermissionService(
+                when(mock(PermissionService.class).findResourcesByUser(admin, ResourceType.maplayer))
+                        .thenReturn(Arrays.asList(resource)).getMock());
+        handler.setGroupService(
+                when(mock(OskariMapLayerGroupService.class).findAll())
+                        .thenReturn(Arrays.asList(g1, g2)).getMock());
+        handler.setLinkService(
+                when(mock(OskariLayerGroupLinkService.class).findAll())
+                        .thenReturn(Collections.emptyList()).getMock());
+        handler.setDataProviderService(
+                when(mock(DataProviderService.class).findAll())
+                        .thenReturn(Arrays.asList(dp1, dp2)).getMock());
+        handler.setMyFeaturesService(
+                when(mock(MyFeaturesService.class).getLayersByOwnerUuid(any()))
+                        .thenReturn(Collections.emptyList()).getMock());
 
         LayerListResponse response = handler.getLayerList(admin, language);
         Assertions.assertEquals(1, response.layers.size());
         Assertions.assertEquals(2, response.groups.size());
         Assertions.assertEquals(2, response.providers.size());
+
+        Assertions.assertTrue(response.layers.stream().anyMatch(l -> "My testcase".equals(l.name)));
+        Assertions.assertFalse(response.layers.stream().anyMatch(l -> "My very own feature layer".equals(l.name)));
+
     }
 
 }
