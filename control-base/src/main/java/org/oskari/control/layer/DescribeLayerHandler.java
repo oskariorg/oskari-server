@@ -51,7 +51,7 @@ public class DescribeLayerHandler extends RestActionHandler {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
     static {
-        MAPPER.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        MAPPER.setDefaultPropertyInclusion(JsonInclude.Include.NON_NULL);
     }
 
     private Set<String> preferredSRS;
