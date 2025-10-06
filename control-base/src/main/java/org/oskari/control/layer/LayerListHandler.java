@@ -16,8 +16,12 @@ import org.oskari.control.layer.model.LayerGroupOutput;
 import org.oskari.control.layer.model.LayerLinkOutput;
 import org.oskari.control.layer.model.LayerListResponse;
 import org.oskari.control.layer.model.LayerOutput;
+import org.oskari.permissions.PermissionService;
+import org.oskari.permissions.model.PermissionSet;
 import org.oskari.service.maplayer.OskariMapLayerGroupService;
 import org.oskari.service.util.ServiceFactory;
+import org.oskari.permissions.model.Resource;
+import org.oskari.permissions.model.ResourceType;
 import org.oskari.user.User;
 
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
@@ -30,9 +34,9 @@ import fi.nls.oskari.domain.map.JSONLocalized;
 import fi.nls.oskari.domain.map.MaplayerGroup;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.map.layer.DataProviderService;
+import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLink;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkService;
-import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkServiceMybatisImpl;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.capabilities.CapabilitiesConstants;
 import fi.nls.oskari.util.ResponseHelper;
@@ -40,9 +44,19 @@ import fi.nls.oskari.util.ResponseHelper;
 @OskariActionRoute("LayerList")
 public class LayerListHandler extends RestActionHandler {
 
+    private OskariLayerService mapLayerService;
+    private PermissionService permissionService;
     private OskariMapLayerGroupService groupService;
     private OskariLayerGroupLinkService linkService;
     private DataProviderService dataProviderService;
+
+    public void setMapLayerService(OskariLayerService mapLayerService) {
+        this.mapLayerService = mapLayerService;
+    }
+
+    public void setPermissionService(PermissionService permissionService) {
+        this.permissionService = permissionService;
+    }
 
     public void setGroupService(OskariMapLayerGroupService groupService) {
         this.groupService = groupService;
@@ -59,30 +73,47 @@ public class LayerListHandler extends RestActionHandler {
     @Override
     public void init() {
         // setup services if they haven't been initialized
+        if (mapLayerService == null) {
+            setMapLayerService(ServiceFactory.getMapLayerService());
+        }
+        if (permissionService == null) {
+            setPermissionService(ServiceFactory.getPermissionsService());
+        }
         if (groupService == null) {
             setGroupService(ServiceFactory.getOskariMapLayerGroupService());
         }
         if (linkService == null) {
-            setLinkService(new OskariLayerGroupLinkServiceMybatisImpl());
+            setLinkService(ServiceFactory.getOskariLayerGroupLinkService());
         }
         if (dataProviderService == null) {
-            setDataProviderService(OskariComponentManager.getComponentOfType(DataProviderService.class));
+            setDataProviderService(ServiceFactory.getDataProviderService());
         }
     }
 
     @Override
     public void handleAction(ActionParameters params) throws ActionException {
-        String language = params.getLocale().getLanguage();
         User user = params.getUser();
+        String language = params.getLocale().getLanguage();
+        LayerListResponse response = getLayerList(user, language);
+        ResponseHelper.writeResponse(params, response);
+    }
 
-        List<OskariLayer> layers = OskariLayerWorker.getLayersForUser(user, false);
+    protected LayerListResponse getLayerList(User user, String language) {
+        List<OskariLayer> layers = getLayers(user);
 
         LayerListResponse response = new LayerListResponse();
         response.layers = layers.stream().map(l -> mapLayer(l, language)).collect(Collectors.toList());
         response.groups = getLayerGroups(layers, language, user.isAdmin());
         response.providers = getProviders(layers, language, user.isAdmin());
 
-        ResponseHelper.writeResponse(params, response);
+        return response;
+    }
+
+    private List<OskariLayer> getLayers(User user) {
+        List<Resource> resources = permissionService.findResourcesByUser(user, ResourceType.maplayer);
+        List<OskariLayer> all = mapLayerService.findAll();
+        boolean isPublished = false;
+        return OskariLayerWorker.filterLayersWithResources(all, new PermissionSet(resources), user, isPublished);
     }
 
     private static LayerOutput mapLayer(OskariLayer layer, String language) {
