@@ -139,7 +139,7 @@ public class DescribeLayerHandler extends RestActionHandler {
         final String layerType = layer.getType();
 
         LayerExtendedOutput output = new LayerExtendedOutput();
-        output.id = layerId;
+        output.id = Integer.toString(layerId);
         output.name = layer.getName(lang);
         JSONObject attributes = layer.getAttributes();
         if (!attributes.optBoolean(LayerJSONFormatter.KEY_ATTRIBUTE_IGNORE_COVERAGE, false)) {
