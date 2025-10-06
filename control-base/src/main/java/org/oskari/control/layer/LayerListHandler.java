@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import org.json.JSONObject;
 import org.oskari.capabilities.MetadataHelper;
 import org.oskari.capabilities.ogc.LayerCapabilitiesOGC;
 import org.oskari.control.layer.model.DataProviderOutput;
@@ -18,13 +19,13 @@ import org.oskari.control.layer.model.LayerListResponse;
 import org.oskari.control.layer.model.LayerOutput;
 import org.oskari.permissions.PermissionService;
 import org.oskari.permissions.model.PermissionSet;
+import org.oskari.permissions.model.PermissionType;
 import org.oskari.service.maplayer.OskariMapLayerGroupService;
 import org.oskari.service.util.ServiceFactory;
 import org.oskari.permissions.model.Resource;
 import org.oskari.permissions.model.ResourceType;
 import org.oskari.user.User;
 
-import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
@@ -37,7 +38,6 @@ import fi.nls.oskari.map.layer.DataProviderService;
 import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLink;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkService;
-import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.capabilities.CapabilitiesConstants;
 import fi.nls.oskari.util.ResponseHelper;
 
@@ -111,9 +111,14 @@ public class LayerListHandler extends RestActionHandler {
 
     private List<OskariLayer> getLayers(User user) {
         List<Resource> resources = permissionService.findResourcesByUser(user, ResourceType.maplayer);
-        List<OskariLayer> all = mapLayerService.findAll();
-        boolean isPublished = false;
-        return OskariLayerWorker.filterLayersWithResources(all, new PermissionSet(resources), user, isPublished);
+        PermissionSet permissionSet = new PermissionSet(resources);
+        return mapLayerService.findAll().stream()
+                .filter(layer -> !layer.isInternal())
+                .filter(layer -> layer.isSublayer() ||
+                        permissionSet.get(ResourceType.maplayer, Integer.toString(layer.getId()))
+                                .map(r -> r.hasPermission(user, PermissionType.VIEW_LAYER))
+                                .orElse(false))
+                .collect(Collectors.toList());
     }
 
     private static LayerOutput mapLayer(OskariLayer layer, String language) {
@@ -142,7 +147,7 @@ public class LayerListHandler extends RestActionHandler {
 
     private List<LayerGroupOutput> getLayerGroups(List<OskariLayer> layers, String language, boolean isAdmin) {
         Map<Integer, List<OskariLayerGroupLink>> linksByGroupId = linkService.findAll().stream()
-            .collect(Collectors.groupingBy(OskariLayerGroupLink::getGroupId));
+                .collect(Collectors.groupingBy(OskariLayerGroupLink::getGroupId));
 
         Predicate<OskariLayerGroupLink> linkFilter = __ -> true;
         if (!isAdmin) {
@@ -156,34 +161,39 @@ public class LayerListHandler extends RestActionHandler {
 
         // Add groups that contain layers
         for (MaplayerGroup g : groups) {
-            List<OskariLayerGroupLink> links = linksByGroupId.getOrDefault(g.getId(), Collections.emptyList())
-                .stream()
-                .filter(linkFilter)
-                .collect(Collectors.toList());
-            // if admin then always include the group in result, otherwise only if layer is used
+            List<OskariLayerGroupLink> links = linksByGroupId.getOrDefault(g.getId(), Collections.emptyList());
+            links = links
+                    .stream()
+                    .filter(linkFilter)
+                    .collect(Collectors.toList());
+            // if admin then always include the group in result, otherwise only if layer is
+            // used
             if (isAdmin || !links.isEmpty()) {
                 LayerGroupOutput gOut = toLayerGroupOutput(g, links, language);
                 out.add(gOut);
             }
         }
 
-        // Optimization: No need to do the next part if admin as all groups were already included
+        // Optimization: No need to do the next part if admin as all groups were already
+        // included
         if (isAdmin) {
             return out;
         }
 
         final int NULL_PARENT_ID = -1;
 
-        // Add groups that didn't contain layers directly, but are parents of groups that got selected earlier
+        // Add groups that didn't contain layers directly, but are parents of groups
+        // that got selected earlier
         Set<Integer> selectedGroupIds = out.stream().map(x -> x.id).collect(Collectors.toSet());
         Set<Integer> missingGroupIds = out.stream()
-            .filter(x -> x.parentId != NULL_PARENT_ID && !selectedGroupIds.contains(x.parentId))
-            .map(x -> x.parentId)
-            .collect(Collectors.toSet());
+                .filter(x -> x.parentId != NULL_PARENT_ID && !selectedGroupIds.contains(x.parentId))
+                .map(x -> x.parentId)
+                .collect(Collectors.toSet());
 
         // Recursively process one level of groups at a time
         // Example: Group A -> Group B -> Group C
-        // Group A and B do not have any layers themselves, so they aren't part of `out` (yet)
+        // Group A and B do not have any layers themselves, so they aren't part of `out`
+        // (yet)
         // Group C is included in `out`
         // First iteration: Parent of Group C is missing -> Add Group B
         // Second iteration: Parent of group B is missing -> Add Group A
@@ -207,14 +217,16 @@ public class LayerListHandler extends RestActionHandler {
         return out;
     }
 
-    private static LayerGroupOutput toLayerGroupOutput(MaplayerGroup g, List<OskariLayerGroupLink> layers, String language) {
+    private static LayerGroupOutput toLayerGroupOutput(MaplayerGroup g, List<OskariLayerGroupLink> layers,
+            String language) {
+        JSONObject gg = g.getAsJSON(language);
         LayerGroupOutput out = new LayerGroupOutput();
         out.id = g.getId();
         out.orderNumber = g.getOrderNumber();
         out.parentId = g.getParentId();
         out.selectable = g.isSelectable();
-        out.name = g.getName(language);
-        out.desc = g.getLocale().getJSONObject(language).optString(JSONLocalized.LOCALE_DESCRIPTION);
+        out.name = gg.optString(JSONLocalized.LOCALE_NAME);
+        out.desc = gg.optString(JSONLocalized.LOCALE_DESCRIPTION);
         out.layers = layers.stream().map(LayerListHandler::toLayerLinkOutput).collect(Collectors.toList());
         return out;
     }
@@ -229,14 +241,15 @@ public class LayerListHandler extends RestActionHandler {
     private Map<Integer, DataProviderOutput> getProviders(List<OskariLayer> layers, String language, boolean isAdmin) {
         Predicate<DataProvider> filterFn = __ -> true;
         if (!isAdmin) {
-            // For non-admins return only the providers that are referenced by some layer we're about to return
+            // For non-admins return only the providers that are referenced by some layer
+            // we're about to return
             Set<Integer> providerIds = layers.stream().map(OskariLayer::getDataproviderId).collect(Collectors.toSet());
             filterFn = p -> providerIds.contains(p.getId());
         }
         return dataProviderService.findAll().stream()
-            .filter(filterFn)
-            .map(p -> toDataProviderOutput(p, language))
-            .collect(Collectors.toMap(x -> x.id, x -> x));
+                .filter(filterFn)
+                .map(p -> toDataProviderOutput(p, language))
+                .collect(Collectors.toMap(x -> x.id, x -> x));
     }
 
     private static DataProviderOutput toDataProviderOutput(DataProvider d, String language) {
