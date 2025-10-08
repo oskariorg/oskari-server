@@ -1,6 +1,8 @@
 package org.oskari.map.myfeatures.service;
 
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesFeature;
+import fi.nls.oskari.domain.map.myfeatures.MyFeaturesFieldInfo;
+import fi.nls.oskari.domain.map.myfeatures.MyFeaturesFieldType;
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayer;
 import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
 import fi.nls.test.util.JSONTestHelper;
@@ -16,6 +18,7 @@ import org.locationtech.jts.geom.GeometryFactory;
 
 import javax.sql.DataSource;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,6 +45,7 @@ public class MyFeaturesServiceMybatisImplTest {
         expected.setOpacity(100);
         expected.setOwnerUuid(uuid);
         expected.setName("en", "foobar");
+        expected.setLayerFields(Arrays.asList(MyFeaturesFieldInfo.of("TEXT", MyFeaturesFieldType.String)));
         expected.setLayerOptions(new WFSLayerOptions(options));
         expected.setPublished(true);
 
@@ -60,7 +64,7 @@ public class MyFeaturesServiceMybatisImplTest {
         // Test getLayer
         MyFeaturesLayer actual = service.getLayer(expected.getId());
         assertEq(expected, actual);
-        
+
         // Test updating the layer
         expected.setName("sv", "fååbar");
         expected.setOpacity(65);
@@ -87,6 +91,8 @@ public class MyFeaturesServiceMybatisImplTest {
         Assertions.assertEquals(expected.getOpacity(), actual.getOpacity());
         Assertions.assertEquals(expected.isPublished(), actual.isPublished());
         Assertions.assertEquals(expected.getNames(), actual.getNames());
+        Assertions.assertIterableEquals(expected.getLayerFields(), actual.getLayerFields());
+        JSONTestHelper.shouldEqual(actual.getFields(), expected.getFields());
         JSONTestHelper.shouldEqual(actual.getAttributes(), expected.getAttributes());
         JSONTestHelper.shouldEqual(actual.getOptions(), expected.getOptions());
     }
