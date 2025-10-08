@@ -450,7 +450,7 @@ public class ImportMyFeaturesHandler extends RestActionHandler {
             .collect(Collectors.toList());
     }
 
-    private static List<MyFeaturesFeature> toFeatures(SimpleFeatureCollection fc, List<MyFeaturesFieldInfo> fields) {
+    static List<MyFeaturesFeature> toFeatures(SimpleFeatureCollection fc, List<MyFeaturesFieldInfo> fields) {
         List<MyFeaturesFeature> features = new ArrayList<>(fc.size());
         try (SimpleFeatureIterator it = fc.features()) {
             while (it.hasNext()) {
