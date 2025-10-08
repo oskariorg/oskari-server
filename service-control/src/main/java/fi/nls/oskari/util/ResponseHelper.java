@@ -7,6 +7,9 @@ import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -20,6 +23,8 @@ public class ResponseHelper {
     public static final String CONTENT_TYPE_JSON_UTF8 = "application/json;charset=UTF-8";
 
     private static final Logger LOG = LogFactory.getLogger(ResponseHelper.class);
+
+    private static final ObjectMapper OM = new ObjectMapper();
 
     /**
      * Writes out the given response
@@ -38,6 +43,35 @@ public class ResponseHelper {
             LOG.info("Couldn't write answer:", e.getMessage());
             LOG.debug(e);
         }
+    }
+
+    /**
+     * Writes out the given response as JSON
+     *
+     * @param params   reference to params to get the backing response
+     * @param response response to write
+     */
+    public static final void writeJsonResponse(ActionParameters params, final Object response) {
+        writeJsonResponse(params, ResponseHelper.OM, response);
+    }
+
+    /**
+     * Writes out the given response as JSON
+     *
+     * @param params   reference to params to get the backing response
+     * @param om       ObjectMapper to serialize to JSON with
+     * @param response response to write
+     */
+    public static final void writeJsonResponse(ActionParameters params, ObjectMapper om, final Object response) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
+        try {
+            om.writeValue(baos, response);
+        } catch (IOException e) {
+            LOG.info("Couldn't serialize response to JSON:", e.getMessage());
+            LOG.debug(e);
+            return;
+        }
+        writeResponse(params, 200, CONTENT_TYPE_JSON_UTF8, baos);
     }
 
     /**
