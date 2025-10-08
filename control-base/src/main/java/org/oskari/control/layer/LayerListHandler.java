@@ -79,7 +79,7 @@ public class LayerListHandler extends RestActionHandler {
         response.groups = getLayerGroups(layers, language, user.isAdmin());
         response.providers = getProviders(layers, language, user.isAdmin());
 
-        ResponseHelper.writeResponse(params, response);
+        ResponseHelper.writeJsonResponse(params, response);
     }
 
     private static LayerOutput mapLayer(OskariLayer layer, String language) {
