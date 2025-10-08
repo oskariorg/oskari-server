@@ -1,5 +1,6 @@
 package org.oskari.control.layer;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -17,6 +18,8 @@ import org.oskari.control.layer.model.LayerOutput;
 import org.oskari.service.maplayer.OskariMapLayerGroupService;
 import org.oskari.service.util.ServiceFactory;
 import org.oskari.user.User;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.OskariActionRoute;
@@ -40,6 +43,7 @@ public class LayerListHandler extends RestActionHandler {
     private OskariMapLayerGroupService groupService;
     private OskariLayerGroupLinkService linkService;
     private DataProviderService dataProviderService;
+    private ObjectMapper om;
 
     public void setGroupService(OskariMapLayerGroupService groupService) {
         this.groupService = groupService;
@@ -53,6 +57,10 @@ public class LayerListHandler extends RestActionHandler {
         this.dataProviderService = service;
     }
 
+    public void setObjectMapper(ObjectMapper om) {
+        this.om = om;
+    }
+
     @Override
     public void init() {
         // setup services if they haven't been initialized
@@ -64,6 +72,9 @@ public class LayerListHandler extends RestActionHandler {
         }
         if (dataProviderService == null) {
             setDataProviderService(OskariComponentManager.getComponentOfType(DataProviderService.class));
+        }
+        if (om == null) {
+            om = new ObjectMapper();
         }
     }
 
@@ -79,7 +90,17 @@ public class LayerListHandler extends RestActionHandler {
         response.groups = getLayerGroups(layers, language, user.isAdmin());
         response.providers = getProviders(layers, language, user.isAdmin());
 
-        ResponseHelper.writeResponse(params, response);
+        ResponseHelper.writeResponse(params, toJSON(response));
+    }
+
+    ByteArrayOutputStream toJSON(LayerListResponse response) throws ActionException {
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
+            om.writeValue(baos, response);
+            return baos;
+        } catch (Exception e) {
+            throw new ActionException("Failed to encode response to JSON", e);
+        }
     }
 
     private static LayerOutput mapLayer(OskariLayer layer, String language) {
