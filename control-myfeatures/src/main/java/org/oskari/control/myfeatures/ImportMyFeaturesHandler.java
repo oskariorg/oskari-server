@@ -35,7 +35,9 @@ import org.geotools.referencing.CRS;
 import org.json.JSONObject;
 import org.locationtech.jts.geom.Geometry;
 import org.geotools.api.feature.simple.SimpleFeature;
+import org.geotools.api.feature.simple.SimpleFeatureType;
 import org.geotools.api.feature.type.AttributeDescriptor;
+import org.geotools.api.feature.type.GeometryDescriptor;
 import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
@@ -429,11 +431,7 @@ public class ImportMyFeaturesHandler extends RestActionHandler {
     }
 
     private MyFeaturesLayer store(SimpleFeatureCollection fc, String ownerUuid, Map<String, String> formParams) throws ImportMyFeaturesException {
-        List<MyFeaturesFieldInfo> fields = fc.getSchema().getAttributeDescriptors().stream()
-            .map(x -> attribute(x))
-            .filter(opt -> !opt.isEmpty())
-            .map(Optional::get)
-            .collect(Collectors.toList());
+        List<MyFeaturesFieldInfo> fields = getFields(fc.getSchema());
         List<MyFeaturesFeature> features = toFeatures(fc, fields);
 
         MyFeaturesLayer layer = createLayer(ownerUuid, fields, formParams);
@@ -442,7 +440,17 @@ public class ImportMyFeaturesHandler extends RestActionHandler {
         return layer;
     }
 
-    private static List<MyFeaturesFeature> toFeatures(SimpleFeatureCollection fc, List<MyFeaturesFieldInfo> fields) {
+    static List<MyFeaturesFieldInfo> getFields(SimpleFeatureType schema) {
+        GeometryDescriptor geom = schema.getGeometryDescriptor();
+        return schema.getAttributeDescriptors().stream()
+            .filter(x -> x != geom) // Skip (default) geometry, compare references
+            .map(x -> attribute(x))
+            .filter(opt -> !opt.isEmpty())
+            .map(Optional::get)
+            .collect(Collectors.toList());
+    }
+
+    static List<MyFeaturesFeature> toFeatures(SimpleFeatureCollection fc, List<MyFeaturesFieldInfo> fields) {
         List<MyFeaturesFeature> features = new ArrayList<>(fc.size());
         try (SimpleFeatureIterator it = fc.features()) {
             while (it.hasNext()) {
@@ -464,8 +472,35 @@ public class ImportMyFeaturesHandler extends RestActionHandler {
 
     private static JSONObject toProperties(SimpleFeature f, List<MyFeaturesFieldInfo> fields) {
         JSONObject properties = new JSONObject();
-
+        for (MyFeaturesFieldInfo field : fields) {
+            String name = field.getName();
+            MyFeaturesFieldType type = field.getType();
+            Object value = f.getAttribute(name);
+            if (value != null) {
+                addProperty(properties, name, type, value);
+            }
+        }
         return properties;
+    }
+
+    private static void addProperty(JSONObject properties, String name, MyFeaturesFieldType type, Object v) {
+        switch (type) {
+            case Boolean:
+                properties.put(name, ((Boolean) v));
+                break;
+            case Integer:
+                properties.put(name, ((Number) v).longValue());
+                break;
+            case Double:
+                properties.put(name, ((Number) v).doubleValue());
+                break;
+            case String:
+            case Date:
+            case Timestamp:
+            case UUID:
+                properties.put(name, v.toString());
+                break;
+        }
     }
 
     private MyFeaturesLayer createLayer(String ownerUuid, List<MyFeaturesFieldInfo> fields, Map<String, String> formParams) {
