@@ -78,6 +78,9 @@ public class ImportMyFeaturesHandler extends RestActionHandler {
     private static final String PROPERTY_MYFEATURES_MAX_FILE_SIZE_MB = "myfeatures.max.filesize.mb";
     private static final int MAX_FILES_IN_ZIP = 10;
 
+    private static final String PROPERTY_MYFEATURES_MAXFEATURES_COUNT = "myfeatures.maxfeatures.count";
+    private static final int MAX_FEATURES = PropertyUtil.getOptional(PROPERTY_MYFEATURES_MAXFEATURES_COUNT, -1);
+
     private static final Charset[] POSSIBLE_CHARSETS_USED_IN_ZIP_FILE_NAMES = {
             StandardCharsets.UTF_8,
             StandardCharsets.ISO_8859_1,
@@ -432,7 +435,7 @@ public class ImportMyFeaturesHandler extends RestActionHandler {
 
     private MyFeaturesLayer store(SimpleFeatureCollection fc, String ownerUuid, Map<String, String> formParams) throws ImportMyFeaturesException {
         List<MyFeaturesFieldInfo> fields = getFields(fc.getSchema());
-        List<MyFeaturesFeature> features = toFeatures(fc, fields);
+        List<MyFeaturesFeature> features = toFeatures(fc, fields, MAX_FEATURES);
 
         MyFeaturesLayer layer = createLayer(ownerUuid, fields, formParams);
         myFeaturesService.createFeatures(layer.getId(), features);
@@ -450,13 +453,25 @@ public class ImportMyFeaturesHandler extends RestActionHandler {
             .collect(Collectors.toList());
     }
 
-    static List<MyFeaturesFeature> toFeatures(SimpleFeatureCollection fc, List<MyFeaturesFieldInfo> fields) {
-        List<MyFeaturesFeature> features = new ArrayList<>(fc.size());
+    static List<MyFeaturesFeature> toFeatures(SimpleFeatureCollection fc, List<MyFeaturesFieldInfo> fields, int maxFeatures) {
+        // Make sure limit it always positive
+        final int limit = maxFeatures > 0 ? maxFeatures : Integer.MAX_VALUE;
+        // Expect we don't skip any features in most cases (missing geometry) => optimal
+        final int initialCapacity = Math.min(fc.size(), limit);
+
+        List<MyFeaturesFeature> features = new ArrayList<>(initialCapacity);
         try (SimpleFeatureIterator it = fc.features()) {
+            int n = 0;
             while (it.hasNext()) {
                 SimpleFeature f = it.next();
+                if (f.getDefaultGeometry() == null) {
+                    continue;
+                }
                 MyFeaturesFeature myFeature = toFeature(f, fields);
                 features.add(myFeature);
+                if (++n == limit) {
+                    break;
+                }
             }
         }
         return features;

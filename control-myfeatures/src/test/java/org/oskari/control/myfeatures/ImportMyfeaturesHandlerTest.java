@@ -37,7 +37,7 @@ public class ImportMyfeaturesHandlerTest {
         assertEquals(MyFeaturesFieldType.String, getFieldType(fields, "AJ_KAUPUNG"));
         assertEquals(MyFeaturesFieldType.String, getFieldType(fields, "AJ_KAUPU00"));
 
-        List<MyFeaturesFeature> myFeatures = ImportMyFeaturesHandler.toFeatures(sfc, fields);
+        List<MyFeaturesFeature> myFeatures = ImportMyFeaturesHandler.toFeatures(sfc, fields, -1);
         assertEquals(sfc.size(), myFeatures.size());
 
         List<String> fieldNames = fields.stream().map(MyFeaturesFieldInfo::getName).toList();
@@ -62,6 +62,17 @@ public class ImportMyfeaturesHandlerTest {
                 assertEquals(expected, actual);
             }
         }
+    }
+
+    @Test
+    public void testMaxFeatures() throws Exception {
+        File file = new File(getClass().getClassLoader().getResource("kosa_1401_etrs-gk26_a_region.shp").toURI());
+        SimpleFeatureCollection sfc = new SHPParser().parse(file, null, CRS.decode("EPSG:3067", true));
+
+        int maxFeatures = 5;
+        List<MyFeaturesFieldInfo> fields = ImportMyFeaturesHandler.getFields(sfc.getSchema());
+        List<MyFeaturesFeature> myFeatures = ImportMyFeaturesHandler.toFeatures(sfc, fields, maxFeatures);
+        assertEquals(maxFeatures, myFeatures.size());
     }
 
     private static MyFeaturesFieldType getFieldType(List<MyFeaturesFieldInfo> fields, String name) {
