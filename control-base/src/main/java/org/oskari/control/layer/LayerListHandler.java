@@ -108,7 +108,7 @@ public class LayerListHandler extends RestActionHandler {
         User user = params.getUser();
         String language = params.getLocale().getLanguage();
         LayerListResponse response = getLayerList(user, language);
-        ResponseHelper.writeResponse(params, response);
+        ResponseHelper.writeJsonResponse(params, response);
     }
 
     protected LayerListResponse getLayerList(User user, String language) {

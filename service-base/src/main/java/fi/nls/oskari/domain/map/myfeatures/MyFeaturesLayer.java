@@ -167,8 +167,8 @@ public class MyFeaturesLayer extends JSONLocalizedName {
         }
         return new JSONArray(fields.stream()
                 .map(f -> new JSONObject()
-                        .append("name", f.getName())
-                        .append("type", f.getType()))
+                        .put("name", f.getName())
+                        .put("type", f.getType()))
                 .collect(Collectors.toList()));
     }
 
