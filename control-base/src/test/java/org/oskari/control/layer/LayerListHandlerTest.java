@@ -144,6 +144,7 @@ public class LayerListHandlerTest {
         g2.setId(404);
 
         User admin = new User();
+        // Expected: Outputs an ERROR and a WARNING to log but works
         admin.addRole(Role.getAdminRole());
 
         MyFeaturesLayer myFeaturesLayer = new MyFeaturesLayer();
