@@ -20,6 +20,7 @@ import org.oskari.control.layer.model.LayerLinkOutput;
 import org.oskari.control.layer.model.LayerListResponse;
 import org.oskari.control.layer.model.LayerOutput;
 import org.oskari.map.myfeatures.service.MyFeaturesService;
+import org.oskari.maplayer.util.OskariLayerUtil;
 import org.oskari.permissions.PermissionService;
 import org.oskari.permissions.model.PermissionSet;
 import org.oskari.permissions.model.PermissionType;
@@ -29,6 +30,7 @@ import org.oskari.permissions.model.Resource;
 import org.oskari.permissions.model.ResourceType;
 import org.oskari.user.User;
 
+import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
@@ -128,15 +130,7 @@ public class LayerListHandler extends RestActionHandler {
     }
 
     private List<OskariLayer> getLayers(User user) {
-        List<Resource> resources = permissionService.findResourcesByUser(user, ResourceType.maplayer);
-        PermissionSet permissionSet = new PermissionSet(resources);
-        return mapLayerService.findAll().stream()
-                .filter(layer -> !layer.isInternal())
-                .filter(layer -> layer.isSublayer() ||
-                        permissionSet.get(ResourceType.maplayer, Integer.toString(layer.getId()))
-                                .map(r -> r.hasPermission(user, PermissionType.VIEW_LAYER))
-                                .orElse(false))
-                .collect(Collectors.toList());
+        return OskariLayerUtil.getLayersForUser(mapLayerService, permissionService, user, false);
     }
 
     private static LayerOutput mapLayer(OskariLayer layer, String language) {
