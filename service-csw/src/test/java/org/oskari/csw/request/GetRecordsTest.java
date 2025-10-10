@@ -18,7 +18,6 @@ import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.oskari.geojson.GeoJSONReader;
 import org.xml.sax.SAXException;
-import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.diff.Diff;
 import org.xmlunit.diff.Difference;
 
@@ -26,6 +25,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static fi.nls.test.util.XmlTestHelper.compareXML;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -34,15 +34,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class GetRecordsTest {
 
     private FilterFactory filterFactory = CommonFactoryFinder.getFilterFactory();
-
-    private static Diff compareXML(String request, String expected) {
-        return DiffBuilder.compare(request)
-            .withTest(expected)
-            .ignoreComments()
-            .ignoreWhitespace()
-            .checkForSimilar() // .withDifferenceEvaluator(DifferenceEvaluators.ignoreDifferencesWithinCDATA()) -> are always considered similar in 2.x
-            .build();
-    }
 
     @Test()
     public void testWithNoFilter() {
@@ -112,8 +103,8 @@ public class GetRecordsTest {
         // read expected result and compare
         String expected = IOHelper.readString(getClass().getResourceAsStream("GetRecords-coverage.xml"));
         Diff xmlDiff = compareXML(request, expected);
-        //for getting detailed differences between two xml files
 
+        //for getting detailed differences between two xml files
         List<Difference> differences = new ArrayList();
         xmlDiff.getDifferences().forEach(differences::add);
 

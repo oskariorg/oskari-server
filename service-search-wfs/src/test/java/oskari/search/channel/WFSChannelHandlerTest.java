@@ -8,8 +8,9 @@ import fi.nls.test.util.ResourceHelper;
 import org.json.JSONArray;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.diff.Diff;
+
+import static fi.nls.test.util.XmlTestHelper.compareXML;
 
 /**
  * These test cases might not make sense (or the filter impl).
@@ -17,15 +18,6 @@ import org.xmlunit.diff.Diff;
  * It's another conversation if the actual filters make sense...
  */
 public class WFSChannelHandlerTest  {
-
-    private static Diff compareXML(String request, String expected) {
-        return DiffBuilder.compare(request)
-            .withTest(expected)
-            .ignoreComments()
-            .ignoreWhitespace()
-            .checkForSimilar() // .withDifferenceEvaluator(DifferenceEvaluators.ignoreDifferencesWithinCDATA()) -> are always considered similar in 2.x
-            .build();
-    }
 
     @Test
     public void createSimpleFilter() throws Exception {
