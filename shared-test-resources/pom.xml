@@ -36,6 +36,11 @@
             <groupId>org.oskari</groupId>
             <artifactId>test-helper</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.xmlunit</groupId>
+            <artifactId>xmlunit-core</artifactId>
+            <scope>compile</scope>
+      </dependency>
     </dependencies>
 
 </project>
