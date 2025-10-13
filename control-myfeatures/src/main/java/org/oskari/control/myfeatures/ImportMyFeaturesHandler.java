@@ -155,7 +155,9 @@ public class ImportMyFeaturesHandler extends RestActionHandler {
                     .withParam("id", layer.getId())
                     .added(AuditLog.ResourceType.MYFEATURES_LAYER);
 
-            writeResponse(params, layer);
+            MyFeaturesImportResponse response = getResponse(layer, fc);
+
+            ResponseHelper.writeJsonResponse(params, response);
         } catch (ImportMyFeaturesException e) {
             if (!validFiles.isEmpty()){ // avoid to override with empty list
                 e.addContent(ImportMyFeaturesException.InfoType.FILES, validFiles);
@@ -185,6 +187,19 @@ public class ImportMyFeaturesHandler extends RestActionHandler {
                 }
             });
         }
+    }
+
+    private static MyFeaturesImportResponse getResponse(MyFeaturesLayer layer, SimpleFeatureCollection fc) {
+        int featuresSkipped = fc.size() - layer.getFeatureCount();
+
+        MyFeaturesImportWarning warning = new MyFeaturesImportWarning();
+        warning.setFeaturesSkipped(featuresSkipped);
+
+        MyFeaturesImportResponse response = new MyFeaturesImportResponse();
+        response.setLayer(layer);
+        response.setWarning(warning);
+
+        return response;
     }
 
     private Charset determineCharsetForZipFileNames(FileItem zipFile) throws ActionException {
@@ -439,6 +454,8 @@ public class ImportMyFeaturesHandler extends RestActionHandler {
 
         MyFeaturesLayer layer = createLayer(ownerUuid, fields, formParams);
         myFeaturesService.createFeatures(layer.getId(), features);
+        // Fetch updated version (featureCount and extent)
+        layer = myFeaturesService.getLayer(layer.getId());
 
         return layer;
     }
@@ -542,23 +559,6 @@ public class ImportMyFeaturesHandler extends RestActionHandler {
             return Optional.empty();
         }
         return Optional.of(MyFeaturesFieldInfo.of(name, type.get()));
-    }
-
-    private void writeResponse(ActionParameters params, MyFeaturesLayer layer) {
-        /*
-        String mapSrs = params.getHttpParam(ActionConstants.PARAM_SRS);
-        JSONObject userLayer = UserLayerDataService.parseUserLayer2JSON(ulayer, mapSrs);
-        JSONHelper.putValue(userLayer, "featuresCount", ulayer.getFeatures_count());
-        JSONObject permissions = UserLayerHandlerHelper.getPermissions();
-        JSONHelper.putValue(userLayer, "permissions", permissions);
-        if (ulayer.getFeatures_skipped() > 0) {
-            JSONObject featuresSkipped = new JSONObject();
-            JSONHelper.putValue(featuresSkipped, "featuresSkipped", ulayer.getFeatures_skipped());
-            JSONHelper.putValue(userLayer, "warning", featuresSkipped);
-        }
-        */
-        JSONObject resp = new JSONObject();
-        ResponseHelper.writeResponse(params, resp);
     }
 
 }
