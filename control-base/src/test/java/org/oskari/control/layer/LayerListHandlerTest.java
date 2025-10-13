@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Assertions;
@@ -76,8 +77,8 @@ public class LayerListHandlerTest {
         MyFeaturesLayer myFeaturesLayer = new MyFeaturesLayer();
         myFeaturesLayer.setId(UUID.randomUUID());
         myFeaturesLayer.setName(language, "My very own feature layer");
-        myFeaturesLayer.setCreated(OffsetDateTime.now());
-        myFeaturesLayer.setUpdated(OffsetDateTime.now());
+        myFeaturesLayer.setCreated(new Date());
+        myFeaturesLayer.setUpdated(new Date());
 
         LayerListHandler handler = new LayerListHandler();
         handler.setMapLayerService(
@@ -150,8 +151,8 @@ public class LayerListHandlerTest {
         MyFeaturesLayer myFeaturesLayer = new MyFeaturesLayer();
         myFeaturesLayer.setId(UUID.randomUUID());
         myFeaturesLayer.setName(language, "My very own feature layer");
-        myFeaturesLayer.setCreated(OffsetDateTime.now());
-        myFeaturesLayer.setUpdated(OffsetDateTime.now());
+        myFeaturesLayer.setCreated(new Date());
+        myFeaturesLayer.setUpdated(new Date());
 
         LayerListHandler handler = new LayerListHandler();
         handler.setMapLayerService(
