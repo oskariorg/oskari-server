@@ -1,7 +1,5 @@
 package org.oskari.control.layer;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.control.layer.PermissionHelper;
@@ -27,7 +25,6 @@ import org.oskari.capabilities.ogc.wfs.FeaturePropertyType;
 import org.oskari.capabilities.ogc.wmts.TileMatrixLink;
 import org.oskari.control.layer.model.FeatureProperties;
 import org.oskari.control.layer.model.LayerExtendedOutput;
-import org.oskari.control.layer.model.LayerOutput;
 import org.oskari.permissions.PermissionService;
 import org.oskari.service.user.UserLayerService;
 import org.oskari.user.User;
@@ -48,11 +45,6 @@ public class DescribeLayerHandler extends RestActionHandler {
 
     private PermissionHelper permissionHelper;
     private Collection<UserLayerService> userContentProcessors;
-
-    private static final ObjectMapper MAPPER = new ObjectMapper();
-    static {
-        MAPPER.setDefaultPropertyInclusion(JsonInclude.Include.NON_NULL);
-    }
 
     private Set<String> preferredSRS;
     private static final Logger LOG = LogFactory.getLogger(DescribeLayerHandler.class);
@@ -92,7 +84,7 @@ public class DescribeLayerHandler extends RestActionHandler {
 
         LayerExtendedOutput output = getLayerDetails(params, layer);
 
-        writeResponse(params, output);
+        ResponseHelper.writeJsonResponse(params, output);
     }
 
     private Optional<UserLayerService> getUserContentProsessor(String layerId) {
@@ -122,14 +114,6 @@ public class DescribeLayerHandler extends RestActionHandler {
             throw new ActionParamsException(ERR_INVALID_ID);
         }
         return permissionHelper.getLayer(id, user);
-    }
-
-    private void writeResponse(ActionParameters params, LayerOutput output) throws ActionCommonException {
-        try {
-            ResponseHelper.writeResponse(params, MAPPER.writeValueAsString(output));
-        } catch (Exception e) {
-            throw new ActionCommonException("Error writing response", e);
-        }
     }
 
     private LayerExtendedOutput getLayerDetails(ActionParameters params, OskariLayer layer) throws ActionException {
