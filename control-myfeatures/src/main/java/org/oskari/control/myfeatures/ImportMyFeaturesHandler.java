@@ -21,6 +21,8 @@ import java.util.zip.ZipInputStream;
 import jakarta.servlet.http.HttpServletRequest;
 
 import fi.nls.oskari.control.*;
+
+import org.oskari.control.myfeatures.dto.MyFeaturesLayerInfo;
 import org.oskari.log.AuditLog;
 import org.oskari.map.myfeatures.service.MyFeaturesService;
 import org.oskari.map.userlayer.input.FeatureCollectionParser;
@@ -201,13 +203,14 @@ public class ImportMyFeaturesHandler extends RestActionHandler {
     }
 
     private static MyFeaturesImportResponse getResponse(MyFeaturesLayer layer, SimpleFeatureCollection fc) {
+        MyFeaturesLayerInfo layerInfo = MyFeaturesLayerInfo.from(layer);
         int featuresSkipped = fc.size() - layer.getFeatureCount();
 
         MyFeaturesImportWarning warning = new MyFeaturesImportWarning();
         warning.setFeaturesSkipped(featuresSkipped);
 
         MyFeaturesImportResponse response = new MyFeaturesImportResponse();
-        response.setLayer(layer);
+        response.setLayer(layerInfo);
         response.setWarning(warning);
 
         return response;
