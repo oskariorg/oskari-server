@@ -22,6 +22,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import fi.nls.oskari.control.*;
 
+import org.oskari.control.myfeatures.dto.MyFeaturesLayerFullInfo;
 import org.oskari.control.myfeatures.dto.MyFeaturesLayerInfo;
 import org.oskari.log.AuditLog;
 import org.oskari.map.myfeatures.service.MyFeaturesService;
@@ -203,7 +204,7 @@ public class ImportMyFeaturesHandler extends RestActionHandler {
     }
 
     private static MyFeaturesImportResponse getResponse(MyFeaturesLayer layer, SimpleFeatureCollection fc) {
-        MyFeaturesLayerInfo layerInfo = MyFeaturesLayerInfo.from(layer);
+        MyFeaturesLayerFullInfo layerInfo = MyFeaturesLayerFullInfo.from(layer);
         int featuresSkipped = fc.size() - layer.getFeatureCount();
 
         MyFeaturesImportWarning warning = new MyFeaturesImportWarning();

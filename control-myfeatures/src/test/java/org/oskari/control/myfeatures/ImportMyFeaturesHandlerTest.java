@@ -19,7 +19,7 @@ import fi.nls.oskari.domain.map.myfeatures.MyFeaturesFeature;
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesFieldInfo;
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesFieldType;
 
-public class ImportMyfeaturesHandlerTest {
+public class ImportMyFeaturesHandlerTest {
 
     @Test
     public void testMappingFeaturesFromSHP() throws Exception {

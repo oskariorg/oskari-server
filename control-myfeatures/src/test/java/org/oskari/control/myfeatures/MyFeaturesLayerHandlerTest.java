@@ -9,6 +9,8 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Arrays;
+import java.util.Locale;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
@@ -24,7 +26,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class MyFeaturesLayerHandlerTest {
 
     @Test
-    public void getLayerByIdWorks() throws Exception {
+    public void getLayerByIdReturnsFullInfo() throws Exception {
         MyFeaturesLayer layer = new MyFeaturesLayer();
         layer.setId(UUID.fromString("d4ea8bb7-b323-4c8e-ab5d-a529ee9416f8"));
         layer.setName("en", "foo");
@@ -63,11 +65,63 @@ public class MyFeaturesLayerHandlerTest {
 
         handler.handleGet(params);
 
-        String expected = "[{'id':'d4ea8bb7-b323-4c8e-ab5d-a529ee9416f8','locale':{'fi':{'desc':'bar'},'en':{'name':'foo'}},'ownerUuid':'foo','created':null,'updated':null,'layerFields':[],'featureCount':0,'extent':[0.0,0.0,10.0,10.0],'layerOptions':{},'layerAttributes':{}}]"
+        String expected = "{'id':'myf_d4ea8bb7-b323-4c8e-ab5d-a529ee9416f8','type':'myf','created':null,'updated':null,'featureCount':0,'options':{},'attributes':{},'locale':{'fi':{'desc':'bar'},'en':{'name':'foo'}},'layerFields':[],'coverage':'POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0))'}"
                 .replace('\'', '"');
         String actual = baos.toString();
 
         assertEquals(expected, actual);
     }
+
+    @Test
+    public void getLayerWithoutIdReturnsInfoOfAllUserOwnedLayers() throws Exception {
+        MyFeaturesLayer layer = new MyFeaturesLayer();
+        layer.setId(UUID.fromString("d4ea8bb7-b323-4c8e-ab5d-a529ee9416f8"));
+        layer.setName("en", "foo");
+        layer.setDesc("fi", "bar");
+        layer.setOwnerUuid("foo");
+        layer.setExtent(new Envelope(0, 10, 0, 10));
+
+        User user = new User();
+        user.setUuid("foo");
+
+        MyFeaturesLayerHandler handler = new MyFeaturesLayerHandler();
+        handler.setService(
+                when(mock(MyFeaturesService.class).getLayersByOwnerUuid(user.getUuid()))
+                        .thenReturn(Arrays.asList(layer)).getMock());
+        handler.init();
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        ServletOutputStream sos = spy(ServletOutputStream.class);
+        doAnswer(invocation -> {
+            baos.write(
+                    invocation.getArgument(0, byte[].class),
+                    invocation.getArgument(1, Integer.class),
+                    invocation.getArgument(2, Integer.class));
+            return null;
+
+        }).when(sos).write(any(byte[].class), anyInt(), anyInt());
+
+        HttpServletResponse servletResponse = mock(HttpServletResponse.class);
+        when(servletResponse.getOutputStream()).thenReturn(sos);
+
+        Locale locale = mock(Locale.class);
+        when(locale.getLanguage()).thenReturn("fi");
+
+        ActionParameters params = mock(ActionParameters.class);
+        when(params.getUser()).thenReturn(user);
+        when(params.getLocale()).thenReturn(locale);
+        when(params.getResponse()).thenReturn(servletResponse);
+
+        handler.handleGet(params);
+
+        String expected = "[{'id':'myf_d4ea8bb7-b323-4c8e-ab5d-a529ee9416f8','type':'myf','name':'foo','subtitle':'bar','created':null,'updated':null,'featureCount':0,'options':{},'attributes':{}}]"
+                .replace('\'', '"');
+        String actual = baos.toString();
+
+        assertEquals(expected, actual);
+    }
+
+
 
 }

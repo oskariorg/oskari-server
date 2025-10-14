@@ -1,43 +1,38 @@
 package org.oskari.control.myfeatures.dto;
 
 import java.time.Instant;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.json.JSONObject;
-import org.locationtech.jts.geom.Envelope;
 
-import fi.nls.oskari.domain.map.myfeatures.MyFeaturesFieldInfo;
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayer;
 
 public class MyFeaturesLayerInfo {
 
-    private UUID id;
-    private Map<String, Map<String, Object>> locale;
-    private String ownerUuid;
+    private String id;
+    private String type = "myf";
+    private String name;
+    private String subtitle;
     private Instant created;
     private Instant updated;
-
-    private List<MyFeaturesFieldInfo> layerFields;
     private int featureCount;
-    private double[] extent;
+    // No actual model for these (yet)
+    private JSONObject options;
+    private JSONObject attributes;
 
-    // No simple model for these yet
-    private JSONObject layerOptions;
-    private JSONObject layerAttributes;
-
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
-    public Map<String, Map<String, Object>> getLocale() {
-        return locale;
+    public String getType() {
+        return type;
     }
 
-    public String getOwnerUuid() {
-        return ownerUuid;
+    public String getName() {
+        return name;
+    }
+
+    public String getSubtitle() {
+        return subtitle;
     }
 
     public Instant getCreated() {
@@ -48,46 +43,29 @@ public class MyFeaturesLayerInfo {
         return updated;
     }
 
-    public List<MyFeaturesFieldInfo> getLayerFields() {
-        return layerFields;
-    }
-
     public int getFeatureCount() {
         return featureCount;
     }
 
-    public double[] getExtent() {
-        return extent;
+    public JSONObject getOptions() {
+        return options;
     }
 
-    public JSONObject getLayerOptions() {
-        return layerOptions;
+    public JSONObject getAttributes() {
+        return attributes;
     }
 
-    public JSONObject getLayerAttributes() {
-        return layerAttributes;
-    }
-
-    public static MyFeaturesLayerInfo from(MyFeaturesLayer layer) {
+    public static MyFeaturesLayerInfo from(MyFeaturesLayer layer, String lang) {
         MyFeaturesLayerInfo info = new MyFeaturesLayerInfo();
-        info.id = layer.getId();
-        info.locale = layer.getLocale() == null ? null : layer.getLocale().keySet().stream()
-            .collect(Collectors.toMap(lang -> lang, lang -> layer.getLocale().getJSONObject(lang).toMap()));
-        info.ownerUuid = layer.getOwnerUuid();
+        info.id = info.type + "_" + layer.getId();
+        info.name = layer.getName(lang);
+        info.subtitle = layer.getDesc(lang);
         info.created = layer.getCreated();
         info.updated = layer.getUpdated();
-        info.layerFields = layer.getLayerFields();
         info.featureCount = layer.getFeatureCount();
-        info.extent = from(layer.getExtent());
-        info.layerOptions = layer.getOptions();
-        info.layerAttributes = layer.getAttributes();
+        info.options = layer.getOptions();
+        info.attributes = layer.getAttributes();
         return info;
     }
 
-    private static double[] from(Envelope e) {
-        if (e == null) {
-            return null;
-        }
-        return new double[] { e.getMinX(), e.getMinY(), e.getMaxX(), e.getMaxY() };
-    }
 }
