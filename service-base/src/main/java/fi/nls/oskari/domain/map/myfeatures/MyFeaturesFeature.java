@@ -1,6 +1,6 @@
 package fi.nls.oskari.domain.map.myfeatures;
 
-import java.util.Date;
+import java.time.Instant;
 
 import org.json.JSONObject;
 import org.locationtech.jts.geom.Geometry;
@@ -8,8 +8,8 @@ import org.locationtech.jts.geom.Geometry;
 public class MyFeaturesFeature {
 
     private long id;
-    private Date created;
-    private Date updated;
+    private Instant created;
+    private Instant updated;
     private String fid;
     private Geometry geometry;
     private JSONObject properties;
@@ -22,19 +22,19 @@ public class MyFeaturesFeature {
         this.id = id;
     }
 
-    public Date getCreated() {
+    public Instant getCreated() {
         return created;
     }
 
-    public void setCreated(Date created) {
+    public void setCreated(Instant created) {
         this.created = created;
     }
 
-    public Date getUpdated() {
+    public Instant getUpdated() {
         return updated;
     }
 
-    public void setUpdated(Date updated) {
+    public void setUpdated(Instant updated) {
         this.updated = updated;
     }
 

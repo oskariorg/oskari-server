@@ -1,7 +1,7 @@
 package org.oskari.map.myfeatures.service;
 
 import java.time.OffsetDateTime;
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -92,7 +92,7 @@ public interface MyFeaturesMapper {
     public List<MyFeaturesFeature> findFeaturesByBbox(UUID layerId, double minX, double minY, double maxX, double maxY);
 
     @Update("UPDATE myfeatures_feature SET geom = ST_FlipCoordinates(geom), updated = #{now} WHERE layer_id = #{layerId}")
-    public void swapAxisOrder(UUID layerId, Date now);
+    public void swapAxisOrder(UUID layerId, Instant now);
 
     // Don't touch `updated` as this is caused by update of the features, not an update on the layer
     @Update(
@@ -110,6 +110,6 @@ public interface MyFeaturesMapper {
 
     @Select("SELECT current_timestamp")
     @Options(useCache = false)
-    Date now();
+    OffsetDateTime now();
 
 }

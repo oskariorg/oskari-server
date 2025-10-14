@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -24,6 +25,8 @@ import org.oskari.log.AuditLog;
 import org.oskari.map.myfeatures.service.MyFeaturesService;
 import org.oskari.map.userlayer.input.FeatureCollectionParser;
 import org.oskari.map.userlayer.input.FeatureCollectionParsers;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.apache.commons.fileupload2.core.FileItem;
 import org.apache.commons.fileupload2.core.FileUploadException;
@@ -106,15 +109,23 @@ public class ImportMyFeaturesHandler extends RestActionHandler {
     private long unzippiedFileSizeLimit = -1;
 
     private MyFeaturesService myFeaturesService;
+    private ObjectMapper om;
 
-    public void setMyFeaturesService(MyFeaturesService myFeaturesService) {
-        this.myFeaturesService = myFeaturesService;
+    void setMyFeaturesService(MyFeaturesService myFeaturesService) {
+        this.myFeaturesService = Objects.requireNonNull(myFeaturesService);
+    }
+
+    void setObjectMapper(ObjectMapper om) {
+        this.om = Objects.requireNonNull(om);
     }
 
     @Override
     public void init() {
         if (myFeaturesService == null) {
-            myFeaturesService = OskariComponentManager.getComponentOfType(MyFeaturesService.class);
+            setMyFeaturesService(OskariComponentManager.getComponentOfType(MyFeaturesService.class));
+        }
+        if (om == null) {
+            setObjectMapper(ObjectMapperProvider.OM);
         }
     }
 
@@ -157,7 +168,7 @@ public class ImportMyFeaturesHandler extends RestActionHandler {
 
             MyFeaturesImportResponse response = getResponse(layer, fc);
 
-            ResponseHelper.writeJsonResponse(params, response);
+            ResponseHelper.writeJsonResponse(params, om, response);
         } catch (ImportMyFeaturesException e) {
             if (!validFiles.isEmpty()){ // avoid to override with empty list
                 e.addContent(ImportMyFeaturesException.InfoType.FILES, validFiles);

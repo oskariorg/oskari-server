@@ -22,15 +22,10 @@ import org.oskari.control.layer.model.LayerOutput;
 import org.oskari.map.myfeatures.service.MyFeaturesService;
 import org.oskari.maplayer.util.OskariLayerUtil;
 import org.oskari.permissions.PermissionService;
-import org.oskari.permissions.model.PermissionSet;
-import org.oskari.permissions.model.PermissionType;
 import org.oskari.service.maplayer.OskariMapLayerGroupService;
 import org.oskari.service.util.ServiceFactory;
-import org.oskari.permissions.model.Resource;
-import org.oskari.permissions.model.ResourceType;
 import org.oskari.user.User;
 
-import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionException;
 import fi.nls.oskari.control.ActionParameters;
@@ -152,8 +147,8 @@ public class LayerListHandler extends RestActionHandler {
         out.name = layer.getName(language);
         out.metadataUuid = null;
         out.dataproviderId = null;
-        out.created = layer.getCreated() != null ? new Date(layer.getCreated().toInstant().toEpochMilli()) : null;
-        out.updated = layer.getUpdated() != null ? new Date(layer.getUpdated().toInstant().toEpochMilli()) : null;
+        out.created = layer.getCreated() != null ? new Date(layer.getCreated().toEpochMilli()) : null;
+        out.updated = layer.getUpdated() != null ? new Date(layer.getUpdated().toEpochMilli()) : null;
         return out;
     }
 
