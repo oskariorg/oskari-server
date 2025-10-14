@@ -95,6 +95,9 @@ public class MyFeaturesLayer extends JSONLocalizedName {
     }
 
     public List<MyFeaturesFieldInfo> getLayerFields() {
+        if (layerFields == null) {
+            layerFields = new ArrayList<>();
+        }
         return layerFields;
     }
 

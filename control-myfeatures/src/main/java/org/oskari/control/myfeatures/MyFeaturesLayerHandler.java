@@ -4,8 +4,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.oskari.control.myfeatures.dto.CreateMyFeaturesLayer;
+import org.oskari.control.myfeatures.dto.MyFeaturesLayerInfo;
 import org.oskari.control.myfeatures.dto.UpdateMyFeaturesLayer;
 import org.oskari.map.myfeatures.service.MyFeaturesService;
 import org.oskari.user.User;
@@ -56,7 +58,7 @@ public class MyFeaturesLayerHandler extends RestActionHandler {
     public void handleGet(ActionParameters params) throws ActionException {
         String paramId = params.getHttpParam(PARAM_ID);
         User user = params.getUser();
-        List<MyFeaturesLayer> layers = getLayers(paramId, user);
+        List<MyFeaturesLayerInfo> layers = getLayers(paramId, user);
         ResponseHelper.writeJsonResponse(params, om, layers);
     }
 
@@ -87,7 +89,9 @@ public class MyFeaturesLayerHandler extends RestActionHandler {
 
         service.createLayer(layer);
 
-        ResponseHelper.writeJsonResponse(params, om, layer);
+        MyFeaturesLayerInfo response = MyFeaturesLayerInfo.from(layer);
+
+        ResponseHelper.writeJsonResponse(params, om, response);
     }
 
     @Override
@@ -115,10 +119,12 @@ public class MyFeaturesLayerHandler extends RestActionHandler {
 
         if (!canEdit(params.getUser(), layer.getId())) {
             ResponseHelper.writeError(params, "No such layer", 404);
-        } else {
-            service.updateLayer(layer);
-            ResponseHelper.writeJsonResponse(params, om, layer);
+            return;
         }
+
+        service.updateLayer(layer);
+        MyFeaturesLayerInfo response = MyFeaturesLayerInfo.from(layer);
+        ResponseHelper.writeJsonResponse(params, om, response);
     }
 
     @Override
@@ -140,20 +146,22 @@ public class MyFeaturesLayerHandler extends RestActionHandler {
         }
     }
 
-    private List<MyFeaturesLayer> getLayers(String paramId, User user) throws ActionException {
+    private List<MyFeaturesLayerInfo> getLayers(String paramId, User user) throws ActionException {
         if (paramId != null && !paramId.isBlank()) {
             UUID layerId = parseLayerId(paramId);
             MyFeaturesLayer layer = service.getLayer(layerId);
             if (!canRead(user, layer)) {
                 return Collections.emptyList();
             }
-            return Collections.singletonList(layer);
+            return Collections.singletonList(MyFeaturesLayerInfo.from(layer));
         }
-        return service.getLayersByOwnerUuid(user.getUuid());
+        return service.getLayersByOwnerUuid(user.getUuid()).stream()
+            .map(MyFeaturesLayerInfo::from)
+            .collect(Collectors.toList());
     }
 
     private boolean canRead(User user, MyFeaturesLayer layer) {
-        return layer.isPublished() && layer.getOwnerUuid().equals(user.getUuid());
+        return layer.isPublished() || layer.getOwnerUuid().equals(user.getUuid());
     }
 
     private boolean canEdit(User user, UUID layerId) {
