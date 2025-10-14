@@ -6,7 +6,9 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.json.JSONObject;
 import org.oskari.control.myfeatures.dto.CreateMyFeaturesLayer;
+import org.oskari.control.myfeatures.dto.MyFeaturesLayerFullInfo;
 import org.oskari.control.myfeatures.dto.MyFeaturesLayerInfo;
 import org.oskari.control.myfeatures.dto.UpdateMyFeaturesLayer;
 import org.oskari.map.myfeatures.service.MyFeaturesService;
@@ -58,8 +60,18 @@ public class MyFeaturesLayerHandler extends RestActionHandler {
     public void handleGet(ActionParameters params) throws ActionException {
         String paramId = params.getHttpParam(PARAM_ID);
         User user = params.getUser();
-        List<MyFeaturesLayerInfo> layers = getLayers(paramId, user);
-        ResponseHelper.writeJsonResponse(params, om, layers);
+        if (paramId == null || paramId.isBlank()) {
+            String language = params.getLocale().getLanguage();
+            List<MyFeaturesLayerInfo> layers = getLayersByUser(user, language);
+            ResponseHelper.writeJsonResponse(params, om, layers);
+        } else {
+            MyFeaturesLayerFullInfo layer = getLayerById(paramId, user);
+            if (layer == null) {
+                ResponseHelper.writeResponse(params, 404, new JSONObject().put("msg", "No such layer"));
+            } else {
+                ResponseHelper.writeJsonResponse(params, om, layer);
+            }
+        }
     }
 
     @Override
@@ -89,7 +101,7 @@ public class MyFeaturesLayerHandler extends RestActionHandler {
 
         service.createLayer(layer);
 
-        MyFeaturesLayerInfo response = MyFeaturesLayerInfo.from(layer);
+        MyFeaturesLayerFullInfo response = MyFeaturesLayerFullInfo.from(layer);
 
         ResponseHelper.writeJsonResponse(params, om, response);
     }
@@ -123,7 +135,7 @@ public class MyFeaturesLayerHandler extends RestActionHandler {
         }
 
         service.updateLayer(layer);
-        MyFeaturesLayerInfo response = MyFeaturesLayerInfo.from(layer);
+        MyFeaturesLayerFullInfo response = MyFeaturesLayerFullInfo.from(layer);
         ResponseHelper.writeJsonResponse(params, om, response);
     }
 
@@ -146,17 +158,18 @@ public class MyFeaturesLayerHandler extends RestActionHandler {
         }
     }
 
-    private List<MyFeaturesLayerInfo> getLayers(String paramId, User user) throws ActionException {
-        if (paramId != null && !paramId.isBlank()) {
-            UUID layerId = parseLayerId(paramId);
-            MyFeaturesLayer layer = service.getLayer(layerId);
-            if (!canRead(user, layer)) {
-                return Collections.emptyList();
-            }
-            return Collections.singletonList(MyFeaturesLayerInfo.from(layer));
+    private MyFeaturesLayerFullInfo getLayerById(String paramId, User user) throws ActionException {
+        UUID layerId = parseLayerId(paramId);
+        MyFeaturesLayer layer = service.getLayer(layerId);
+        if (layer == null || !canRead(user, layer)) {
+            return null;
         }
+        return MyFeaturesLayerFullInfo.from(layer);
+    }
+
+    private List<MyFeaturesLayerInfo> getLayersByUser(User user, String lang) throws ActionException {
         return service.getLayersByOwnerUuid(user.getUuid()).stream()
-            .map(MyFeaturesLayerInfo::from)
+            .map(layer -> MyFeaturesLayerInfo.from(layer, lang))
             .collect(Collectors.toList());
     }
 

@@ -1,17 +1,17 @@
 package org.oskari.control.myfeatures;
 
-import org.oskari.control.myfeatures.dto.MyFeaturesLayerInfo;
+import org.oskari.control.myfeatures.dto.MyFeaturesLayerFullInfo;
 
 public class MyFeaturesImportResponse {
 
-    private MyFeaturesLayerInfo layer;
+    private MyFeaturesLayerFullInfo layer;
     private MyFeaturesImportWarning warning;
 
-    public MyFeaturesLayerInfo getLayer() {
+    public MyFeaturesLayerFullInfo getLayer() {
         return layer;
     }
 
-    public void setLayer(MyFeaturesLayerInfo layer) {
+    public void setLayer(MyFeaturesLayerFullInfo layer) {
         this.layer = layer;
     }
 
