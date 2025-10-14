@@ -1,6 +1,6 @@
 package org.oskari.map.myfeatures.service;
 
-import java.time.OffsetDateTime;
+import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -79,7 +79,7 @@ public class MyFeaturesServiceMybatisImpl extends MyFeaturesService {
         try (SqlSession session = factory.openSession()) {
             MyFeaturesMapper mapper = getMapper(session);
 
-            OffsetDateTime now = mapper.now();
+            Instant now = mapper.now().toInstant();
             layer.setCreated(now);
             layer.setUpdated(now);
 
@@ -97,7 +97,7 @@ public class MyFeaturesServiceMybatisImpl extends MyFeaturesService {
         try (SqlSession session = factory.openSession()) {
             MyFeaturesMapper mapper = getMapper(session);
 
-            OffsetDateTime now = mapper.now();
+            Instant now = mapper.now().toInstant();
             layer.setUpdated(now);
 
             mapper.updateLayer(layer);
@@ -127,7 +127,7 @@ public class MyFeaturesServiceMybatisImpl extends MyFeaturesService {
         try (SqlSession session = factory.openSession()) {
             MyFeaturesMapper mapper = getMapper(session);
 
-            OffsetDateTime now = mapper.now();
+            Instant now = mapper.now().toInstant();
             feature.setCreated(now);
             feature.setUpdated(now);
 
@@ -143,7 +143,7 @@ public class MyFeaturesServiceMybatisImpl extends MyFeaturesService {
         try (SqlSession session = factory.openSession()) {
             MyFeaturesMapper mapper = getMapper(session);
 
-            OffsetDateTime now = mapper.now();
+            Instant now = mapper.now().toInstant();
             feature.setUpdated(now);
 
             mapper.updateFeature(feature);
@@ -188,7 +188,7 @@ public class MyFeaturesServiceMybatisImpl extends MyFeaturesService {
         }
         try (SqlSession session = factory.openSession()) {
             MyFeaturesMapper mapper = getMapper(session);
-            OffsetDateTime now = mapper.now();
+            Instant now = mapper.now().toInstant();
             int batchCount = 0;
             for (MyFeaturesFeature feature : features) {
                 feature.setCreated(now);
@@ -230,7 +230,7 @@ public class MyFeaturesServiceMybatisImpl extends MyFeaturesService {
         layerId = Objects.requireNonNull(layerId);
         try (SqlSession session = factory.openSession()) {
             MyFeaturesMapper mapper = getMapper(session);
-            OffsetDateTime now = mapper.now();
+            Instant now = mapper.now().toInstant();
             mapper.swapAxisOrder(layerId, now);
             mapper.refreshLayerMetadata(layerId);
             session.commit();

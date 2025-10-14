@@ -1,6 +1,8 @@
 package fi.nls.oskari.domain.map.myfeatures;
 
+import java.time.Instant;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -22,8 +24,8 @@ public class MyFeaturesLayer extends JSONLocalizedName {
 
     private UUID id;
     private String ownerUuid;
-    private OffsetDateTime created;
-    private OffsetDateTime updated;
+    private Instant created;
+    private Instant updated;
 
     private List<MyFeaturesFieldInfo> layerFields;
     private int featureCount;
@@ -60,19 +62,19 @@ public class MyFeaturesLayer extends JSONLocalizedName {
         this.ownerUuid = ownerUuid;
     }
 
-    public OffsetDateTime getCreated() {
+    public Instant getCreated() {
         return created;
     }
 
-    public void setCreated(OffsetDateTime created) {
+    public void setCreated(Instant created) {
         this.created = created;
     }
 
-    public OffsetDateTime getUpdated() {
+    public Instant getUpdated() {
         return updated;
     }
 
-    public void setUpdated(OffsetDateTime updated) {
+    public void setUpdated(Instant updated) {
         this.updated = updated;
     }
 

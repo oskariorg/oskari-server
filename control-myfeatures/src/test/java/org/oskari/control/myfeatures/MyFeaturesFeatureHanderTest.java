@@ -25,7 +25,8 @@ public class MyFeaturesFeatureHanderTest {
     @BeforeAll
     public static void init() {
         handler = new MyFeaturesFeatureHandler();
-        handler.initObjectMapper();
+        // Don't init(), we haven't initialized MyFeaturesService and don't want the default
+        handler.setObjectMapper(ObjectMapperProvider.OM);
     }
 
     @Test

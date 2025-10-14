@@ -4,7 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.time.OffsetDateTime;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.UUID;
@@ -76,8 +76,8 @@ public class LayerListHandlerTest {
         MyFeaturesLayer myFeaturesLayer = new MyFeaturesLayer();
         myFeaturesLayer.setId(UUID.randomUUID());
         myFeaturesLayer.setName(language, "My very own feature layer");
-        myFeaturesLayer.setCreated(OffsetDateTime.now());
-        myFeaturesLayer.setUpdated(OffsetDateTime.now());
+        myFeaturesLayer.setCreated(Instant.now());
+        myFeaturesLayer.setUpdated(Instant.now());
 
         LayerListHandler handler = new LayerListHandler();
         handler.setMapLayerService(
@@ -150,8 +150,8 @@ public class LayerListHandlerTest {
         MyFeaturesLayer myFeaturesLayer = new MyFeaturesLayer();
         myFeaturesLayer.setId(UUID.randomUUID());
         myFeaturesLayer.setName(language, "My very own feature layer");
-        myFeaturesLayer.setCreated(OffsetDateTime.now());
-        myFeaturesLayer.setUpdated(OffsetDateTime.now());
+        myFeaturesLayer.setCreated(Instant.now());
+        myFeaturesLayer.setUpdated(Instant.now());
 
         LayerListHandler handler = new LayerListHandler();
         handler.setMapLayerService(

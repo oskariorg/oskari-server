@@ -1,6 +1,5 @@
 package org.oskari.control.myfeatures;
 
-import java.io.ByteArrayOutputStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -34,12 +33,18 @@ public class MyFeaturesLayerHandler extends RestActionHandler {
         this.service = Objects.requireNonNull(service);
     }
 
+    void setObjectMapper(ObjectMapper om) {
+        this.om = Objects.requireNonNull(om);
+    }
+
     @Override
     public void init() {
         if (service == null) {
             setService(OskariComponentManager.getComponentOfType(MyFeaturesService.class));
         }
-        this.om = new ObjectMapper();
+        if (om == null) {
+            setObjectMapper(ObjectMapperProvider.OM);
+        }
     }
 
     @Override
@@ -52,7 +57,7 @@ public class MyFeaturesLayerHandler extends RestActionHandler {
         String paramId = params.getHttpParam(PARAM_ID);
         User user = params.getUser();
         List<MyFeaturesLayer> layers = getLayers(paramId, user);
-        ResponseHelper.writeResponse(params, toJSON(layers));
+        ResponseHelper.writeJsonResponse(params, om, layers);
     }
 
     @Override
@@ -82,7 +87,7 @@ public class MyFeaturesLayerHandler extends RestActionHandler {
 
         service.createLayer(layer);
 
-        ResponseHelper.writeResponse(params, toJSON(layer));
+        ResponseHelper.writeJsonResponse(params, om, layer);
     }
 
     @Override
@@ -112,7 +117,7 @@ public class MyFeaturesLayerHandler extends RestActionHandler {
             ResponseHelper.writeError(params, "No such layer", 404);
         } else {
             service.updateLayer(layer);
-            ResponseHelper.writeResponse(params, toJSON(layer));
+            ResponseHelper.writeJsonResponse(params, om, layer);
         }
     }
 
@@ -159,17 +164,6 @@ public class MyFeaturesLayerHandler extends RestActionHandler {
     private String toJSONString(Object obj) throws ActionException {
         try {
             return om.writeValueAsString(obj);
-        } catch (Exception e) {
-            throw new ActionException("Failed to encode response to JSON", e);
-        }
-    }
-
-    private ByteArrayOutputStream toJSON(Object obj) throws ActionException {
-        try {
-            int initialBufSize = 2048; // 2kB approriate initial size
-            ByteArrayOutputStream baos = new ByteArrayOutputStream(initialBufSize);
-            om.writeValue(baos, obj);
-            return baos;
         } catch (Exception e) {
             throw new ActionException("Failed to encode response to JSON", e);
         }

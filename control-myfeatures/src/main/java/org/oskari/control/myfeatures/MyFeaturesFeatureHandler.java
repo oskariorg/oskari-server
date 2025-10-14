@@ -6,20 +6,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-import org.json.JSONObject;
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.impl.PackedCoordinateSequenceFactory;
 import org.oskari.control.myfeatures.dto.CreateMyFeaturesFeature;
 import org.oskari.control.myfeatures.dto.UpdateMyFeaturesFeature;
 import org.oskari.map.myfeatures.service.MyFeaturesService;
 import org.oskari.user.User;
-import org.oskari.util.GeometryDeserializer;
-import org.oskari.util.GeometrySerializer;
-import org.oskari.util.JSONObjectSerializer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.ActionDeniedException;
@@ -45,18 +37,8 @@ public class MyFeaturesFeatureHandler extends RestActionHandler {
         this.service = Objects.requireNonNull(myFeaturesService);
     }
 
-    void initObjectMapper() {
-        if (om == null) {
-            om = new ObjectMapper();
-            GeometryFactory gf = new GeometryFactory(PackedCoordinateSequenceFactory.DOUBLE_FACTORY);
-            SimpleModule jtsModule = new SimpleModule();
-            jtsModule.addSerializer(Geometry.class, new GeometrySerializer());
-            jtsModule.addDeserializer(Geometry.class, new GeometryDeserializer(gf));
-            om.registerModule(jtsModule);
-            SimpleModule jsonModule = new SimpleModule();
-            jsonModule.addSerializer(JSONObject.class, new JSONObjectSerializer());
-            om.registerModule(jsonModule);
-        }
+    void setObjectMapper(ObjectMapper om) {
+        this.om = om;
     }
 
     @Override
@@ -64,7 +46,9 @@ public class MyFeaturesFeatureHandler extends RestActionHandler {
         if (service == null) {
             setService(OskariComponentManager.getComponentOfType(MyFeaturesService.class));
         }
-        initObjectMapper();
+        if (om == null) {
+            setObjectMapper(ObjectMapperProvider.OM);
+        }
     }
 
     @Override
@@ -91,7 +75,7 @@ public class MyFeaturesFeatureHandler extends RestActionHandler {
             features = f != null ? Collections.singletonList(f) : Collections.emptyList();
         }
 
-        ResponseHelper.writeResponse(params, toJSON(features));
+        ResponseHelper.writeJsonResponse(params, om, features);
     }
 
     @Override
@@ -113,7 +97,7 @@ public class MyFeaturesFeatureHandler extends RestActionHandler {
 
         service.createFeature(layerId, feature);
 
-        ResponseHelper.writeResponse(params, toJSON(feature));
+        ResponseHelper.writeJsonResponse(params, om, feature);
     }
 
     @Override
@@ -135,7 +119,7 @@ public class MyFeaturesFeatureHandler extends RestActionHandler {
 
         service.updateFeature(layerId, feature);
 
-        ResponseHelper.writeResponse(params, toJSON(feature));
+        ResponseHelper.writeJsonResponse(params, om, feature);
     }
 
     @Override
@@ -181,17 +165,6 @@ public class MyFeaturesFeatureHandler extends RestActionHandler {
     String toJSONString(Object obj) throws ActionException {
         try {
             return om.writeValueAsString(obj);
-        } catch (Exception e) {
-            throw new ActionException("Failed to encode response to JSON", e);
-        }
-    }
-
-    private ByteArrayOutputStream toJSON(Object obj) throws ActionException {
-        try {
-            int initialBufSize = 2048; // 2kB approriate initial size
-            ByteArrayOutputStream baos = new ByteArrayOutputStream(initialBufSize);
-            om.writeValue(baos, obj);
-            return baos;
         } catch (Exception e) {
             throw new ActionException("Failed to encode response to JSON", e);
         }
