@@ -10,6 +10,7 @@ import org.oskari.control.myfeatures.dto.CreateMyFeaturesFeature;
 import org.oskari.control.myfeatures.dto.UpdateMyFeaturesFeature;
 import org.oskari.map.myfeatures.service.MyFeaturesService;
 import org.oskari.user.User;
+import org.oskari.util.ObjectMapperProvider;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

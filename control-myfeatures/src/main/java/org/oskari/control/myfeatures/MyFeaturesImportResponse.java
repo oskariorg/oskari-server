@@ -1,6 +1,6 @@
 package org.oskari.control.myfeatures;
 
-import org.oskari.control.myfeatures.dto.MyFeaturesLayerFullInfo;
+import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayerFullInfo;
 
 public class MyFeaturesImportResponse {
 
