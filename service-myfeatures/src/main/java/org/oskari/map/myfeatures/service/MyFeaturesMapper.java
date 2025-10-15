@@ -66,7 +66,7 @@ public interface MyFeaturesMapper {
     @Options(useGeneratedKeys = true, keyProperty = "feature.id", keyColumn = "id")
     public void insertFeature(UUID layerId, MyFeaturesFeature feature);
 
-    @Select("SELECT id, created, updated, fid, geom, properties FROM myfeatures_feature WHERE id = #{featureId}")
+    @Select("SELECT id, created, updated, fid, ST_AsBinary(geom) AS geom, properties FROM myfeatures_feature WHERE id = #{featureId}")
     @Results(id = "MyFeaturesFeatureResult", value = {
         @Result(property="id", column="id", id=true),
         @Result(property="created", column="created"),
@@ -83,11 +83,11 @@ public interface MyFeaturesMapper {
     @Delete("DELETE FROM myfeatures_feature WHERE id = #{featureId}")
     public void deleteFeature(long featureId);
 
-    @Select("SELECT id, created, updated, fid, geom, properties FROM myfeatures_feature WHERE layer_id = #{layerId}")
+    @Select("SELECT id, created, updated, fid, ST_AsBinary(geom) AS geom, properties FROM myfeatures_feature WHERE layer_id = #{layerId}")
     @ResultMap("MyFeaturesFeatureResult")
     public List<MyFeaturesFeature> findFeatures(UUID layerId);
 
-    @Select("SELECT id, created, updated, fid, geom, properties FROM myfeatures_feature WHERE layer_id = #{layerId} AND geom && ST_MakeEnvelope(#{minX}, #{minY}, #{maxX}, #{maxY})")
+    @Select("SELECT id, created, updated, fid, ST_AsBinary(geom) AS geom, properties FROM myfeatures_feature WHERE layer_id = #{layerId} AND geom && ST_MakeEnvelope(#{minX}, #{minY}, #{maxX}, #{maxY})")
     @ResultMap("MyFeaturesFeatureResult")
     public List<MyFeaturesFeature> findFeaturesByBbox(UUID layerId, double minX, double minY, double maxX, double maxY);
 
