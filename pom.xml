@@ -119,7 +119,7 @@ The one packaged without this is 2.15.1
         <mockito.version>5.19.0</mockito.version>
         <junit.version>5.13.4</junit.version>
         <hamcrest.version>2.2</hamcrest.version>
-        <xmlunit.version>1.6</xmlunit.version>
+        <xmlunit.version>2.10.4</xmlunit.version>
         <h2database.version>2.3.232</h2database.version>
         <h2gis.version>2.2.3</h2gis.version>
 
@@ -603,12 +603,11 @@ The one packaged without this is 2.15.1
                 <version>${jsoup.version}</version>
             </dependency>
             <dependency>
-                <groupId>xmlunit</groupId>
-                <artifactId>xmlunit</artifactId>
+                <groupId>org.xmlunit</groupId>
+                <artifactId>xmlunit-core</artifactId>
                 <version>${xmlunit.version}</version>
                 <scope>test</scope>
             </dependency>
-
             <dependency>
                 <groupId>org.json</groupId>
                 <artifactId>json</artifactId>
