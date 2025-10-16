@@ -8,8 +8,6 @@ import java.util.stream.Collectors;
 
 import org.json.JSONObject;
 import org.oskari.control.myfeatures.dto.CreateMyFeaturesLayer;
-import org.oskari.control.myfeatures.dto.MyFeaturesLayerFullInfo;
-import org.oskari.control.myfeatures.dto.MyFeaturesLayerInfo;
 import org.oskari.control.myfeatures.dto.UpdateMyFeaturesLayer;
 import org.oskari.map.myfeatures.service.MyFeaturesService;
 import org.oskari.user.User;
@@ -22,6 +20,8 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.control.RestActionHandler;
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayer;
+import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayerFullInfo;
+import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayerInfo;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.ResponseHelper;
 

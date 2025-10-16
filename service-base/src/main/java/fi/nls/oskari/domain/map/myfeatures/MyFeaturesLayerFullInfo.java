@@ -1,4 +1,4 @@
-package org.oskari.control.myfeatures.dto;
+package fi.nls.oskari.domain.map.myfeatures;
 
 import java.time.Instant;
 import java.util.List;
@@ -11,9 +11,6 @@ import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.io.WKTWriter;
-
-import fi.nls.oskari.domain.map.myfeatures.MyFeaturesFieldInfo;
-import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayer;
 
 public class MyFeaturesLayerFullInfo {
 

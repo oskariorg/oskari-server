@@ -1,10 +1,8 @@
-package org.oskari.control.myfeatures.dto;
+package fi.nls.oskari.domain.map.myfeatures;
 
 import java.time.Instant;
 
 import org.json.JSONObject;
-
-import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayer;
 
 public class MyFeaturesLayerInfo {
 
