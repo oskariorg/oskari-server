@@ -28,7 +28,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.oskari.map.myfeatures.service.MyFeaturesService;
-import org.oskari.map.userlayer.service.UserContentUserLayerService;
 import org.oskari.map.userlayer.service.UserLayerDataService;
 import org.oskari.map.userlayer.service.UserLayerDbService;
 

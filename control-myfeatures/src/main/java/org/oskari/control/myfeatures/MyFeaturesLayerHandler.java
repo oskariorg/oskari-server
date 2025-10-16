@@ -1,6 +1,5 @@
 package org.oskari.control.myfeatures;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -11,6 +10,7 @@ import org.oskari.control.myfeatures.dto.CreateMyFeaturesLayer;
 import org.oskari.control.myfeatures.dto.UpdateMyFeaturesLayer;
 import org.oskari.map.myfeatures.service.MyFeaturesService;
 import org.oskari.user.User;
+import org.oskari.util.ObjectMapperProvider;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
