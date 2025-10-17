@@ -18,7 +18,7 @@ import org.oskari.control.layer.model.DataProviderOutput;
 import org.oskari.control.layer.model.LayerGroupOutput;
 import org.oskari.control.layer.model.LayerLinkOutput;
 import org.oskari.control.layer.model.LayerListResponse;
-import org.oskari.control.layer.model.LayerOutput;
+import org.oskari.domain.map.LayerOutput;
 import org.oskari.map.myfeatures.service.MyFeaturesService;
 import org.oskari.maplayer.util.OskariLayerUtil;
 import org.oskari.permissions.PermissionService;

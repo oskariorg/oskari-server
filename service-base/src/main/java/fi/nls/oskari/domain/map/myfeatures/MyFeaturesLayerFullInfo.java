@@ -81,7 +81,7 @@ public class MyFeaturesLayerFullInfo {
         return info;
     }
 
-    private static String getCoverage(Envelope e) {
+    public static Polygon toGeometry(Envelope e) {
         if (e == null) {
             return null;
         }
@@ -92,8 +92,14 @@ public class MyFeaturesLayerFullInfo {
             new Coordinate(e.getMaxX(), e.getMinY()),
             new Coordinate(e.getMinX(), e.getMinY()),
         };
-        Polygon p = new GeometryFactory().createPolygon(cornerCoordinates);
-        return new WKTWriter(2).write(p);
+        return new GeometryFactory().createPolygon(cornerCoordinates);
+    }
+
+    private static String getCoverage(Envelope e) {
+        if (e == null) {
+            return null;
+        }
+        return new WKTWriter(2).write(toGeometry(e));
     }
 
 }

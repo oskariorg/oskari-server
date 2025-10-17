@@ -151,11 +151,8 @@ public class MyFeaturesLayerHandler extends RestActionHandler {
     }
 
     private UUID parseLayerId(String paramId) throws ActionParamsException {
-        try {
-            return UUID.fromString(paramId);
-        } catch (Exception e) {
-            throw new ActionParamsException("Param " + PARAM_ID + " must be a valid UUID");
-        }
+        return MyFeaturesLayer.parseLayerId(paramId).orElseThrow(() ->
+            new ActionParamsException("Param " + PARAM_ID + " must be a valid UUID"));
     }
 
     private MyFeaturesLayerFullInfo getLayerById(String paramId, User user) throws ActionException {
