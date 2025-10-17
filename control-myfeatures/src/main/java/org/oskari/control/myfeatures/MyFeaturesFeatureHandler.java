@@ -1,6 +1,5 @@
 package org.oskari.control.myfeatures;
 
-import java.io.ByteArrayOutputStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -151,11 +150,8 @@ public class MyFeaturesFeatureHandler extends RestActionHandler {
 
     private UUID parseLayerId(ActionParameters params) throws ActionParamsException {
         String layerId = params.getRequiredParam(PARAM_LAYER_ID);
-        try {
-            return UUID.fromString(layerId);
-        } catch (Exception e) {
-            throw new ActionParamsException("Param " + PARAM_LAYER_ID + " must be a valid UUID");
-        }
+        return MyFeaturesLayer.parseLayerId(layerId).orElseThrow(() ->
+            new ActionParamsException("Param " + PARAM_LAYER_ID + " must be a valid UUID"));
     }
 
     private boolean canEdit(User user, UUID layerId) {
