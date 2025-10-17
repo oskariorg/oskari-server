@@ -1,4 +1,4 @@
-package org.oskari.control.layer.model;
+package org.oskari.domain.map;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
