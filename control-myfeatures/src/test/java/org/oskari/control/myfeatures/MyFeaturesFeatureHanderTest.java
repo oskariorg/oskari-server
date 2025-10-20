@@ -1,7 +1,6 @@
 package org.oskari.control.myfeatures;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -13,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.oskari.control.myfeatures.dto.CreateMyFeaturesFeature;
+import org.oskari.util.ObjectMapperProvider;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

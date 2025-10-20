@@ -1,4 +1,4 @@
-package org.oskari.control.myfeatures.dto;
+package fi.nls.oskari.domain.map.myfeatures;
 
 import java.time.Instant;
 import java.util.List;
@@ -11,9 +11,6 @@ import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.io.WKTWriter;
-
-import fi.nls.oskari.domain.map.myfeatures.MyFeaturesFieldInfo;
-import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayer;
 
 public class MyFeaturesLayerFullInfo {
 
@@ -84,7 +81,7 @@ public class MyFeaturesLayerFullInfo {
         return info;
     }
 
-    private static String getCoverage(Envelope e) {
+    public static Polygon toGeometry(Envelope e) {
         if (e == null) {
             return null;
         }
@@ -95,8 +92,14 @@ public class MyFeaturesLayerFullInfo {
             new Coordinate(e.getMaxX(), e.getMinY()),
             new Coordinate(e.getMinX(), e.getMinY()),
         };
-        Polygon p = new GeometryFactory().createPolygon(cornerCoordinates);
-        return new WKTWriter(2).write(p);
+        return new GeometryFactory().createPolygon(cornerCoordinates);
+    }
+
+    private static String getCoverage(Envelope e) {
+        if (e == null) {
+            return null;
+        }
+        return new WKTWriter(2).write(toGeometry(e));
     }
 
 }

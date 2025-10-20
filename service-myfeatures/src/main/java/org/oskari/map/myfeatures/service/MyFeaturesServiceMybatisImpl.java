@@ -1,6 +1,7 @@
 package org.oskari.map.myfeatures.service;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -66,6 +67,9 @@ public class MyFeaturesServiceMybatisImpl extends MyFeaturesService {
 
     @Override
     public MyFeaturesLayer getLayer(UUID layerId) {
+        if (factory == null) {
+            return null;
+        }
         try (SqlSession session = factory.openSession()) {
             return getMapper(session).findLayer(layerId);
         }
@@ -117,6 +121,9 @@ public class MyFeaturesServiceMybatisImpl extends MyFeaturesService {
 
     @Override
     public MyFeaturesFeature getFeature(UUID layerId, long featureId) {
+        if (factory == null) {
+            return null;
+        }
         try (SqlSession session = factory.openSession()) {
             return getMapper(session).findFeatureById(featureId);
         }
@@ -166,6 +173,9 @@ public class MyFeaturesServiceMybatisImpl extends MyFeaturesService {
 
     @Override
     public List<MyFeaturesFeature> getFeatures(UUID layerId) {
+        if (factory == null) {
+            return Collections.emptyList();
+        }
         layerId = Objects.requireNonNull(layerId);
         try (SqlSession session = factory.openSession()) {
             return getMapper(session).findFeatures(layerId);
@@ -174,6 +184,9 @@ public class MyFeaturesServiceMybatisImpl extends MyFeaturesService {
     
     @Override
     public List<MyFeaturesFeature> getFeaturesByBbox(UUID layerId, double minX, double minY, double maxX, double maxY) {
+        if (factory == null) {
+            return Collections.emptyList();
+        }
         layerId = Objects.requireNonNull(layerId);
         try (SqlSession session = factory.openSession()) {
             return getMapper(session).findFeaturesByBbox(layerId, minX, minY, maxX, maxY);
@@ -212,6 +225,9 @@ public class MyFeaturesServiceMybatisImpl extends MyFeaturesService {
 
     @Override
     public List<MyFeaturesLayer> getLayersByOwnerUuid(String ownerId) {
+        if (factory == null) {
+            return Collections.emptyList();
+        }
         try (SqlSession session = factory.openSession()) {
             return getMapper(session).findLayersByOwnerUuid(ownerId);
         }

@@ -22,12 +22,11 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import fi.nls.oskari.control.*;
 
-import org.oskari.control.myfeatures.dto.MyFeaturesLayerFullInfo;
-import org.oskari.control.myfeatures.dto.MyFeaturesLayerInfo;
 import org.oskari.log.AuditLog;
 import org.oskari.map.myfeatures.service.MyFeaturesService;
 import org.oskari.map.userlayer.input.FeatureCollectionParser;
 import org.oskari.map.userlayer.input.FeatureCollectionParsers;
+import org.oskari.util.ObjectMapperProvider;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -51,6 +50,8 @@ import fi.nls.oskari.domain.map.myfeatures.MyFeaturesFeature;
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesFieldInfo;
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesFieldType;
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayer;
+import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayerFullInfo;
+import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayerInfo;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.OskariComponentManager;

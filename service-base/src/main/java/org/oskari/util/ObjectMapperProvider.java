@@ -1,12 +1,9 @@
-package org.oskari.control.myfeatures;
+package org.oskari.util;
 
 import org.json.JSONObject;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.impl.PackedCoordinateSequenceFactory;
-import org.oskari.util.GeometryDeserializer;
-import org.oskari.util.GeometrySerializer;
-import org.oskari.util.JSONObjectSerializer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;

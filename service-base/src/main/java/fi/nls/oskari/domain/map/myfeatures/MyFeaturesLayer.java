@@ -1,10 +1,9 @@
 package fi.nls.oskari.domain.map.myfeatures;
 
 import java.time.Instant;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -18,6 +17,8 @@ import fi.nls.oskari.domain.map.wfs.WFSLayerAttributes;
 import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
 
 public class MyFeaturesLayer extends JSONLocalizedName {
+
+    public static final String PREFIX_LAYER_ID = "myf_";
 
     private static final String LOCALE_DESC = "desc";
     private static final String LOCALE_SOURCE = "source";
@@ -214,4 +215,18 @@ public class MyFeaturesLayer extends JSONLocalizedName {
         setLayerAttributes(new WFSLayerAttributes(attributes));
     }
 
+    public static Optional<UUID> parseLayerId(String id) {
+        if (id == null || id.isBlank()) {
+            return Optional.empty();
+        }
+        id = id.trim();
+        if (id.startsWith(PREFIX_LAYER_ID)) {
+            id = id.substring(PREFIX_LAYER_ID.length());
+        }
+        try {
+            return Optional.of(UUID.fromString(id));
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
 }

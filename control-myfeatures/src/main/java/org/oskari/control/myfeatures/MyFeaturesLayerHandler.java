@@ -1,6 +1,5 @@
 package org.oskari.control.myfeatures;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -8,11 +7,10 @@ import java.util.stream.Collectors;
 
 import org.json.JSONObject;
 import org.oskari.control.myfeatures.dto.CreateMyFeaturesLayer;
-import org.oskari.control.myfeatures.dto.MyFeaturesLayerFullInfo;
-import org.oskari.control.myfeatures.dto.MyFeaturesLayerInfo;
 import org.oskari.control.myfeatures.dto.UpdateMyFeaturesLayer;
 import org.oskari.map.myfeatures.service.MyFeaturesService;
 import org.oskari.user.User;
+import org.oskari.util.ObjectMapperProvider;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -22,6 +20,8 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.control.RestActionHandler;
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayer;
+import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayerFullInfo;
+import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayerInfo;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.ResponseHelper;
 
@@ -151,11 +151,8 @@ public class MyFeaturesLayerHandler extends RestActionHandler {
     }
 
     private UUID parseLayerId(String paramId) throws ActionParamsException {
-        try {
-            return UUID.fromString(paramId);
-        } catch (Exception e) {
-            throw new ActionParamsException("Param " + PARAM_ID + " must be a valid UUID");
-        }
+        return MyFeaturesLayer.parseLayerId(paramId).orElseThrow(() ->
+            new ActionParamsException("Param " + PARAM_ID + " must be a valid UUID"));
     }
 
     private MyFeaturesLayerFullInfo getLayerById(String paramId, User user) throws ActionException {
