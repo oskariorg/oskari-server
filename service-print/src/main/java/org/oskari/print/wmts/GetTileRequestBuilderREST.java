@@ -1,7 +1,11 @@
 package org.oskari.print.wmts;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+
+import fi.nls.oskari.util.IOHelper;
 
 /**
  * WMTS GetTile Request Builder (REST)
@@ -31,6 +35,7 @@ public class GetTileRequestBuilderREST implements GetTileRequestBuilder {
     private String tileMatrix;
     private int tileRow;
     private int tileCol;
+    private Map<String, Object> additionalParams;
 
     public GetTileRequestBuilderREST(String template) throws IllegalArgumentException {
         if (template == null || template.length() == 0) {
@@ -108,6 +113,12 @@ public class GetTileRequestBuilderREST implements GetTileRequestBuilder {
         return this;
     }
 
+    public GetTileRequestBuilderREST additionalParams(Map<String, Object> additionalParams) {
+        this.additionalParams = additionalParams;
+        return this;
+    }
+
+
     public String build() {
         StringBuilder sb = new StringBuilder();
         int templateCounter = 0;
@@ -121,7 +132,12 @@ public class GetTileRequestBuilderREST implements GetTileRequestBuilder {
                 sb.append(part);
             }
         }
-        return sb.toString();
+        String url = sb.toString();
+        Map<String, String> params = new LinkedHashMap<>();
+        if (additionalParams != null && !additionalParams.isEmpty()) {
+            additionalParams.forEach((k, v) -> params.put(k, v.toString()));
+        }
+        return IOHelper.constructUrl(url, params);
     }
 
     private static int getTemplateIndex(String key) {

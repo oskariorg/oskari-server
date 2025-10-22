@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class GetTileRequestBuilderKVPTest {
 
@@ -24,6 +26,10 @@ public class GetTileRequestBuilderKVPTest {
                 "tileRow",
                 "tileCol"
         };
+
+        final Map<String, Object> additionalParams = new LinkedHashMap<>();
+        additionalParams.put("api-key", "0e10838f-de3c-429d-afc8-808c3bcb32a5");
+        additionalParams.put("client-id", 678);
 
         final String exceptionPattern = "Required parameter '%s' missing";
 
@@ -59,7 +65,12 @@ public class GetTileRequestBuilderKVPTest {
             m.invoke(builder, 1);
         }
 
-        String expected = "foo?SERVICE=WMTS"
+        builder.additionalParams(additionalParams);
+
+        String expected = "foo"
+                + "?api-key=0e10838f-de3c-429d-afc8-808c3bcb32a5"
+                + "&client-id=678"
+                + "&SERVICE=WMTS"
                 + "&VERSION=1.0.0"
                 + "&REQUEST=GetTile"
                 + "&LAYER=foo"
@@ -82,8 +93,11 @@ public class GetTileRequestBuilderKVPTest {
                 .tileMatrix("ETRS_TM35-FIN:8")
                 .tileRow(114)
                 .tileCol(208)
+                .additionalParams(Map.of("api-key", "0e10838f-de3c-429d-afc8-808c3bcb32a5"))
                 .build();
-        String expected = "foo?SERVICE=WMTS"
+        String expected = "foo"
+                + "?api-key=0e10838f-de3c-429d-afc8-808c3bcb32a5"
+                + "&SERVICE=WMTS"
                 + "&VERSION=1.0.0"
                 + "&REQUEST=GetTile"
                 + "&LAYER=foo%20bar"
