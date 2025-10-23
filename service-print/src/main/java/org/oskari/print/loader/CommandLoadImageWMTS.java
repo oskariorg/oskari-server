@@ -101,6 +101,11 @@ public class CommandLoadImageWMTS {
             requestBuilder = getTileRequestBuilderKVP(tms.getId(), tm.getId(), caps.getFormats(), layer);
         }
 
+        JSONObject params = layer.getOskariLayer().getParams();
+        if (params != null && !params.isEmpty()) {
+            requestBuilder = requestBuilder.additionalParams(params.toMap());
+        }
+
         for (int row = 0; row < countTileRows; row++) {
             int r = minTileRow + row;
             if (r < 0 || r >= tm.getMatrixHeight()) {

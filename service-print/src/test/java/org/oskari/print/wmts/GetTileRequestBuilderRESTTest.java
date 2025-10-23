@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.Map;
+
 public class GetTileRequestBuilderRESTTest {
 
     @Test()
@@ -70,6 +72,10 @@ public class GetTileRequestBuilderRESTTest {
 
         builder.tileMatrix("2g");
         expected = "http://www.maps.bob/wmts/1.0.0/etopo2/default/WholeWorld_CRS_84/2g/2/0.png";
+        assertEquals(expected, builder.build());
+
+        builder.additionalParams(Map.of("foo", 123));
+        expected = "http://www.maps.bob/wmts/1.0.0/etopo2/default/WholeWorld_CRS_84/2g/2/0.png?foo=123";
         assertEquals(expected, builder.build());
     }
 

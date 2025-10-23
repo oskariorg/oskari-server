@@ -18,6 +18,7 @@ public class GetTileRequestBuilderKVP implements GetTileRequestBuilder {
     private String tileMatrix;
     private int tileRow = -1;
     private int tileCol = -1;
+    private Map<String, Object> additionalParams;
 
     public GetTileRequestBuilderKVP endPoint(String endPoint) {
         this.endPoint = endPoint;
@@ -59,6 +60,11 @@ public class GetTileRequestBuilderKVP implements GetTileRequestBuilder {
         return this;
     }
 
+    public GetTileRequestBuilderKVP additionalParams(Map<String, Object> additionalParams) {
+        this.additionalParams = additionalParams;
+        return this;
+    }
+
     public String build() throws IllegalArgumentException {
         if (endPoint == null || endPoint.length() == 0) {
             throw new IllegalArgumentException("Required parameter 'endPoint' missing");
@@ -83,6 +89,9 @@ public class GetTileRequestBuilderKVP implements GetTileRequestBuilder {
         }
 
         Map<String, String> params = new LinkedHashMap<>();
+        if (additionalParams != null && !additionalParams.isEmpty()) {
+            additionalParams.forEach((k, v) -> params.put(k, v.toString()));
+        }
         params.put("SERVICE", "WMTS");
         params.put("VERSION", "1.0.0");
         params.put("REQUEST", "GetTile");
