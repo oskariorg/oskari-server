@@ -6,11 +6,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.json.JSONObject;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.Envelope;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.Polygon;
-import org.locationtech.jts.io.WKTWriter;
 
 public class MyFeaturesLayerFullInfo {
 
@@ -19,12 +14,12 @@ public class MyFeaturesLayerFullInfo {
     private Instant created;
     private Instant updated;
     private int featureCount;
+    private int opacity;
     // No actual model for these (yet)
     private JSONObject options;
     private JSONObject attributes;
     private Map<String, Map<String, Object>> locale;
     private List<MyFeaturesFieldInfo> layerFields;
-    private String coverage;
 
     public String getId() {
         return id;
@@ -46,6 +41,10 @@ public class MyFeaturesLayerFullInfo {
         return featureCount;
     }
 
+    public int getOpacity() {
+        return opacity;
+    }
+
     public JSONObject getOptions() {
         return options;
     }
@@ -62,44 +61,18 @@ public class MyFeaturesLayerFullInfo {
         return layerFields;
     }
 
-    public String getCoverage() {
-        return coverage;
-    }
-
     public static MyFeaturesLayerFullInfo from(MyFeaturesLayer layer) {
         MyFeaturesLayerFullInfo info = new MyFeaturesLayerFullInfo();
         info.id = info.type + "_" + layer.getId();
         info.created = layer.getCreated();
         info.updated = layer.getUpdated();
         info.featureCount = layer.getFeatureCount();
+        info.opacity = layer.getOpacity();
         info.options = layer.getOptions();
         info.attributes = layer.getAttributes();
         info.locale = layer.getLocale() == null ? null : layer.getLocale().keySet().stream()
                 .collect(Collectors.toMap(lang -> lang, lang -> layer.getLocale().getJSONObject(lang).toMap()));
         info.layerFields = layer.getLayerFields();
-        info.coverage = getCoverage(layer.getExtent());
         return info;
     }
-
-    public static Polygon toGeometry(Envelope e) {
-        if (e == null) {
-            return null;
-        }
-        Coordinate[] cornerCoordinates = new Coordinate[] {
-            new Coordinate(e.getMinX(), e.getMinY()),
-            new Coordinate(e.getMinX(), e.getMaxY()),
-            new Coordinate(e.getMaxX(), e.getMaxY()),
-            new Coordinate(e.getMaxX(), e.getMinY()),
-            new Coordinate(e.getMinX(), e.getMinY()),
-        };
-        return new GeometryFactory().createPolygon(cornerCoordinates);
-    }
-
-    private static String getCoverage(Envelope e) {
-        if (e == null) {
-            return null;
-        }
-        return new WKTWriter(2).write(toGeometry(e));
-    }
-
 }
