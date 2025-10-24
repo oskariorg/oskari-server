@@ -21,11 +21,12 @@ public class PropertyUtil {
     // this cannot be fetched from LogFactory on init since LogFactory uses PropertyUtil -> results a ExceptionInInitializerError
     private static Logger log = new NullLogger(PropertyUtil.class.getCanonicalName());
 
-    public static String[] getSupportedLocales() {
-        String sl = properties.getProperty("oskari.locales", null);
-        if (sl == null) {
-            sl = "en_US";
+    private static final String[] FALLBACK_LOCALE = {"en_US"};
 
+    public static String[] getSupportedLocales() {
+        String sl = getOptionalNonLocalized("oskari.locales");
+        if (sl == null) {
+            return FALLBACK_LOCALE;
         }
         return sl.split("\\s*,\\s*");
     }
@@ -35,7 +36,7 @@ public class PropertyUtil {
         if (supportedLocales != null && supportedLocales.length > 0 && supportedLocales[0] != null) {
             return supportedLocales[0];
         }
-        return "en_US";
+        return FALLBACK_LOCALE[0];
     }
 
     public static String[] getSupportedLanguages() {
