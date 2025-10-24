@@ -52,6 +52,7 @@ import fi.nls.oskari.domain.map.myfeatures.MyFeaturesFieldType;
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayer;
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayerFullInfo;
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayerInfo;
+import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.OskariComponentManager;
@@ -170,7 +171,8 @@ public class ImportMyFeaturesHandler extends RestActionHandler {
                     .withParam("id", layer.getId())
                     .added(AuditLog.ResourceType.MYFEATURES_LAYER);
 
-            MyFeaturesImportResponse response = getResponse(layer, fc);
+            String lang = params.getLocale().getLanguage();
+            MyFeaturesImportResponse response = getResponse(layer, lang, fc);
 
             ResponseHelper.writeJsonResponse(params, om, response);
         } catch (ImportMyFeaturesException e) {
@@ -204,8 +206,8 @@ public class ImportMyFeaturesHandler extends RestActionHandler {
         }
     }
 
-    private static MyFeaturesImportResponse getResponse(MyFeaturesLayer layer, SimpleFeatureCollection fc) {
-        MyFeaturesLayerFullInfo layerInfo = MyFeaturesLayerFullInfo.from(layer);
+    private static MyFeaturesImportResponse getResponse(MyFeaturesLayer layer, String lang, SimpleFeatureCollection fc) {
+        MyFeaturesLayerInfo layerInfo = MyFeaturesLayerInfo.from(layer, lang);
         int featuresSkipped = fc.size() - layer.getFeatureCount();
 
         MyFeaturesImportWarning warning = new MyFeaturesImportWarning();
@@ -553,14 +555,17 @@ public class ImportMyFeaturesHandler extends RestActionHandler {
 
     private MyFeaturesLayer createLayer(String ownerUuid, List<MyFeaturesFieldInfo> fields, Map<String, String> formParams) {
         JSONObject locale = JSONHelper.createJSONObject(formParams.get(KEY_LOCALE));
-        // TODO: Do something with the style
         JSONObject style = JSONHelper.createJSONObject(formParams.get(KEY_STYLE));
+
+        WFSLayerOptions options = new WFSLayerOptions();
+        options.setDefaultFeatureStyle(style);
 
         MyFeaturesLayer layer = new MyFeaturesLayer();
         layer.setOwnerUuid(ownerUuid);
         layer.setLayerFields(fields);
         layer.setLocale(locale);
-        
+        layer.setLayerOptions(options);
+
         myFeaturesService.createLayer(layer);
         return layer;
     }

@@ -1,17 +1,17 @@
 package org.oskari.control.myfeatures;
 
-import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayerFullInfo;
+import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayerInfo;
 
 public class MyFeaturesImportResponse {
 
-    private MyFeaturesLayerFullInfo layer;
+    private MyFeaturesLayerInfo layer;
     private MyFeaturesImportWarning warning;
 
-    public MyFeaturesLayerFullInfo getLayer() {
+    public MyFeaturesLayerInfo getLayer() {
         return layer;
     }
 
-    public void setLayer(MyFeaturesLayerFullInfo layer) {
+    public void setLayer(MyFeaturesLayerInfo layer) {
         this.layer = layer;
     }
 
