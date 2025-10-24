@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.oskari.map.userlayer.service.UserLayerException;
 
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.JSONHelper;
@@ -17,6 +18,11 @@ public class ImportMyFeaturesException extends ServiceException {
 
     public ImportMyFeaturesException(final String message, final Exception e) {
         super(message, e);
+    }
+
+    public ImportMyFeaturesException(UserLayerException e) {
+        super(e.getMessage());
+        this.options = e.getOptions();
     }
 
     public ImportMyFeaturesException(final String message) {
