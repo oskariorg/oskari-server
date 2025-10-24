@@ -1,38 +1,60 @@
 package org.oskari.control.myfeatures.dto;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+import java.util.Map;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONObject;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayer;
 
-public class UpdateMyFeaturesLayer extends CreateMyFeaturesLayer {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class UpdateMyFeaturesLayer {
 
-    private UUID id;
+    private String id;
+    private Map<String, Map<String, Object>> locale;
+    private JSONObject style;
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    @Override
-    public List<String> validate() {
-        List<String> errors = super.validate();
-        if (id == null) {
-            errors.add("id is required");
-        }
-        return errors;
+    public Map<String, Map<String, Object>> getLocale() {
+        return locale;
     }
 
-    @Override
-    public MyFeaturesLayer toDomain(ObjectMapper om) throws Exception {
-        MyFeaturesLayer l = super.toDomain(om);
-        l.setId(id);
-        return l;
+    public void setLocale(Map<String, Map<String, Object>> locale) {
+        this.locale = locale;
+    }
+
+    public JSONObject getStyle() {
+        return style;
+    }
+
+    public void setStyle(JSONObject style) {
+        this.style = style;
+    }
+
+    public List<String> validate() {
+        List<String> errors = new ArrayList<>();
+
+        if (id == null || id.isBlank()) {
+            errors.add("id is required");
+        } else if (MyFeaturesLayer.parseLayerId(id).isEmpty()) {
+            errors.add("id unexpected format");
+        }
+
+        if (locale == null || locale.isEmpty()) {
+            errors.add("locale must be non-null and non-empty");
+        }
+
+        return errors;
     }
 
 }
