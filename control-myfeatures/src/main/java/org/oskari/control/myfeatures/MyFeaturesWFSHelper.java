@@ -7,22 +7,21 @@ import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesFeature;
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesFieldInfo;
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayer;
-import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayerFullInfo;
-import fi.nls.oskari.domain.map.wfs.WFSLayerAttributes;
+import fi.nls.oskari.domain.map.style.VectorStyle;
 import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
 import fi.nls.oskari.map.geometry.WKTHelper;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
-import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.util.WFSConversionHelper;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.referencing.CRS;
 import org.json.JSONObject;
+import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.io.WKTWriter;
 import org.geotools.api.feature.simple.SimpleFeature;
@@ -36,7 +35,7 @@ import org.oskari.service.user.UserLayerService;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -153,7 +152,7 @@ public final class MyFeaturesWFSHelper extends UserLayerService {
 
         LayerExtendedOutput describe = new LayerExtendedOutput();
         describe.id = layerId;
-        describe.type = "myf";
+        describe.type = OskariLayer.TYPE_WFS;
         describe.name = layer.getName(lang);
         describe.metadataUuid = null;
         describe.dataproviderId = null;
@@ -161,7 +160,7 @@ public final class MyFeaturesWFSHelper extends UserLayerService {
         describe.updated = layer.getUpdated() == null ? null : new Date(layer.getUpdated().toEpochMilli());
 
         describe.coverage = getCoverageWKT(layer.getExtent(), crs);
-        describe.styles = null;
+        describe.styles = getVectorStyles(layer);
         describe.hover = null;
         describe.capabilities = null;
 
@@ -169,6 +168,17 @@ public final class MyFeaturesWFSHelper extends UserLayerService {
         describe.controlData = null;
 
         return describe;
+    }
+
+    static List<VectorStyle> getVectorStyles(MyFeaturesLayer layer) {
+        JSONObject defaultStyle = layer.getLayerOptions().getDefaultStyle();
+
+        VectorStyle vectorStyle = new VectorStyle();
+        vectorStyle.setType(VectorStyle.TYPE_OSKARI);
+        vectorStyle.setName("default");
+        vectorStyle.setStyle(defaultStyle);
+
+        return Collections.singletonList(vectorStyle);
     }
 
     private String getCoverageWKT(Envelope extent, CoordinateReferenceSystem crs) {
@@ -180,7 +190,7 @@ public final class MyFeaturesWFSHelper extends UserLayerService {
             if (CRS.equalsIgnoreMetadata(sourceCRS, crs)) {
                 return WKTHelper.getBBOX(extent.getMinX(), extent.getMinY(), extent.getMaxX(), extent.getMaxY());
             }
-            Polygon p = MyFeaturesLayerFullInfo.toGeometry(extent);
+            Polygon p = toGeometry(extent);
             Geometry transformed = WKTHelper.transform(p, sourceCRS, crs);
             return new WKTWriter(2).write(transformed);
         } catch (Exception ignore) {
@@ -188,6 +198,20 @@ public final class MyFeaturesWFSHelper extends UserLayerService {
             // that's ok since client can't handle it if it's in unknown projection
             return null;
         }
+    }
+
+    public static Polygon toGeometry(Envelope e) {
+        if (e == null) {
+            return null;
+        }
+        Coordinate[] cornerCoordinates = new Coordinate[] {
+            new Coordinate(e.getMinX(), e.getMinY()),
+            new Coordinate(e.getMinX(), e.getMaxY()),
+            new Coordinate(e.getMaxX(), e.getMaxY()),
+            new Coordinate(e.getMaxX(), e.getMinY()),
+            new Coordinate(e.getMinX(), e.getMinY()),
+        };
+        return new GeometryFactory().createPolygon(cornerCoordinates);
     }
 
     private List<FeatureProperties> getProperties(MyFeaturesLayer layer, String lang) {

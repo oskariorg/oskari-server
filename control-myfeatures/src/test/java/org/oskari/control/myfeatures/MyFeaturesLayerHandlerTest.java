@@ -32,7 +32,7 @@ public class MyFeaturesLayerHandlerTest {
         layer.setName("en", "foo");
         layer.setDesc("fi", "bar");
         layer.setOwnerUuid("foo");
-        layer.setExtent(new Envelope(0, 10, 0, 10));
+        layer.setOpacity(95);
 
         User user = new User();
         user.setUuid("foo");
@@ -65,7 +65,7 @@ public class MyFeaturesLayerHandlerTest {
 
         handler.handleGet(params);
 
-        String expected = "{'id':'myf_d4ea8bb7-b323-4c8e-ab5d-a529ee9416f8','type':'myf','created':null,'updated':null,'featureCount':0,'options':{},'attributes':{},'locale':{'fi':{'desc':'bar'},'en':{'name':'foo'}},'layerFields':[],'coverage':'POLYGON ((0 0, 0 10, 10 10, 10 0, 0 0))'}"
+        String expected = "{'id':'myf_d4ea8bb7-b323-4c8e-ab5d-a529ee9416f8','type':'myf','created':null,'updated':null,'featureCount':0,'opacity':95,'options':{},'attributes':{},'locale':{'fi':{'desc':'bar'},'en':{'name':'foo'}},'layerFields':[]}"
                 .replace('\'', '"');
         String actual = baos.toString();
 
