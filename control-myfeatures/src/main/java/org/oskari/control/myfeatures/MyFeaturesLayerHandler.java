@@ -122,19 +122,19 @@ public class MyFeaturesLayerHandler extends RestActionHandler {
             throw new ActionParamsException(toJSONString(validationErrors));
         }
 
-        MyFeaturesLayer layer;
-        try {
-            layer = updateLayer.toDomain(om);
-        } catch (Exception e) {
-            throw new ActionParamsException("Failed to convert to domain model", e);
-        }
-
-        if (!canEdit(params.getUser(), layer.getId())) {
+        // layerId parsing won't fail due to previous validation
+        UUID layerId = MyFeaturesLayer.parseLayerId(updateLayer.getId()).get();
+        MyFeaturesLayer layer = service.getLayer(layerId);
+        if (!canEdit(params.getUser(), layer)) {
             ResponseHelper.writeError(params, "No such layer", 404);
             return;
         }
 
+        layer.setLocale(new JSONObject(updateLayer.getLocale()));
+        layer.getLayerOptions().setDefaultFeatureStyle(updateLayer.getStyle());
+
         service.updateLayer(layer);
+
         MyFeaturesLayerFullInfo response = MyFeaturesLayerFullInfo.from(layer);
         ResponseHelper.writeJsonResponse(params, om, response);
     }
@@ -175,8 +175,12 @@ public class MyFeaturesLayerHandler extends RestActionHandler {
     }
 
     private boolean canEdit(User user, UUID layerId) {
-        MyFeaturesLayer existing = service.getLayer(layerId);
-        return existing != null && existing.getOwnerUuid().equals(user.getUuid());
+        MyFeaturesLayer layer = service.getLayer(layerId);
+        return canEdit(user, layer);
+    }
+
+    private boolean canEdit(User user, MyFeaturesLayer layer) {
+        return layer != null && layer.getOwnerUuid().equals(user.getUuid());
     }
 
     private String toJSONString(Object obj) throws ActionException {
