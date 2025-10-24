@@ -90,14 +90,11 @@ public class MyFeaturesLayerHandler extends RestActionHandler {
             throw new ActionParamsException(toJSONString(validationErrors));
         }
 
-        MyFeaturesLayer layer;
-        try {
-            layer = createLayer.toDomain(om);
-        } catch (Exception e) {
-            throw new ActionParamsException("Failed to convert to domain model", e);
-        }
-
+        MyFeaturesLayer layer = new MyFeaturesLayer();
         layer.setOwnerUuid(params.getUser().getUuid());
+        layer.setLayerFields(createLayer.getLayerFields());
+        layer.setLocale(new JSONObject(createLayer.getLocale()));
+        layer.getLayerOptions().setDefaultFeatureStyle(createLayer.getStyle());
 
         service.createLayer(layer);
 
@@ -136,6 +133,7 @@ public class MyFeaturesLayerHandler extends RestActionHandler {
         service.updateLayer(layer);
 
         MyFeaturesLayerFullInfo response = MyFeaturesLayerFullInfo.from(layer);
+
         ResponseHelper.writeJsonResponse(params, om, response);
     }
 
