@@ -26,6 +26,7 @@ import org.oskari.log.AuditLog;
 import org.oskari.map.myfeatures.service.MyFeaturesService;
 import org.oskari.map.userlayer.input.FeatureCollectionParser;
 import org.oskari.map.userlayer.input.FeatureCollectionParsers;
+import org.oskari.map.userlayer.service.UserLayerException;
 import org.oskari.util.ObjectMapperProvider;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -50,7 +51,6 @@ import fi.nls.oskari.domain.map.myfeatures.MyFeaturesFeature;
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesFieldInfo;
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesFieldType;
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayer;
-import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayerFullInfo;
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayerInfo;
 import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
 import fi.nls.oskari.log.LogFactory;
@@ -367,11 +367,12 @@ public class ImportMyFeaturesHandler extends RestActionHandler {
             File mainFile = unZip(zipFile, cs, validFiles, dir);
             parser = getParser(mainFile);
             return parser.parse(mainFile, sourceCRS, targetCRS);
-        } catch (ImportMyFeaturesException e) {
+        } catch (UserLayerException e) {
+            ImportMyFeaturesException ex = new ImportMyFeaturesException(e);
             if (parser != null) {
-                e.addContent(ImportMyFeaturesException.InfoType.PARSER, parser.getSuffix().toLowerCase());
+                ex.addContent(ImportMyFeaturesException.InfoType.PARSER, parser.getSuffix().toLowerCase());
             }
-            throw e;
+            throw ex;
         } catch (ServiceException e) {
             throw new ActionParamsException (e.getMessage());
         } finally {
