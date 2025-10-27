@@ -125,7 +125,7 @@ public class MyFeaturesLayerHandlerTest {
     }
 
     @Test
-    public void testupdatingLayer() throws Exception {
+    public void testUpdatingLayer() throws Exception {
         String json = ResourceHelper.readStringResource("/update-payload.json", this);
         MyFeaturesLayer layer = new MyFeaturesLayer();
         layer.setId(UUID.fromString("d4ea8bb7-b323-4c8e-ab5d-a529ee9416f8"));
@@ -139,8 +139,8 @@ public class MyFeaturesLayerHandlerTest {
 
         MyFeaturesLayerHandler handler = new MyFeaturesLayerHandler();
         handler.setService(
-                when(mock(MyFeaturesService.class).getLayersByOwnerUuid(user.getUuid()))
-                        .thenReturn(Arrays.asList(layer)).getMock());
+                when(mock(MyFeaturesService.class).getLayer(any())) // can't get eq() matcher to work
+                        .thenReturn(layer).getMock());
         handler.init();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -149,7 +149,7 @@ public class MyFeaturesLayerHandlerTest {
         when(params.getPayLoad()).thenReturn(json);
 
         handler.handlePut(params);
-        String expected = "TODO: expect something - Currently throws a parse error before we get here";
+        String expected = "{'id':'myf_d4ea8bb7-b323-4c8e-ab5d-a529ee9416f8','type':'myf','created':null,'updated':null,'featureCount':0,'opacity':80,'options':{'styles':{'default':{'featureStyle':{'fill':{'area':{'pattern':5},'color':'#7c29bc'},'image':{'shape':5,'size':3,'fill':{'color':'#FAEBD7'}},'stroke':{'area':{'width':1,'lineJoin':'round','color':'#000000','lineDash':'dash'},'width':1,'lineJoin':'round','color':'#000000','lineCap':'round','lineDash':'solid'}}}}},'attributes':{},'locale':{'fi':{'name':'moi'},'sv':{},'en':{'name':'oulu10sty','desc':'freswaf jee'},'es':{}},'layerFields':[]}".replace('\'', '"');
         String actual = baos.toString();
 
         assertEquals(expected, actual);
