@@ -128,7 +128,7 @@ public class MyFeaturesLayerHandler extends RestActionHandler {
         }
 
         layer.setLocale(new JSONObject(updateLayer.getLocale()));
-        layer.getLayerOptions().setDefaultFeatureStyle(updateLayer.getStyle());
+        layer.getLayerOptions().setDefaultFeatureStyle(new JSONObject(updateLayer.getStyle()));
 
         service.updateLayer(layer);
 

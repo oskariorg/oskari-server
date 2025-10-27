@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.json.JSONObject;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayer;
@@ -15,7 +13,7 @@ public class UpdateMyFeaturesLayer {
 
     private String id;
     private Map<String, Map<String, Object>> locale;
-    private JSONObject style;
+    private Map<String, Object> style;
 
     public String getId() {
         return id;
@@ -33,11 +31,11 @@ public class UpdateMyFeaturesLayer {
         this.locale = locale;
     }
 
-    public JSONObject getStyle() {
+    public Map<String, Object> getStyle() {
         return style;
     }
 
-    public void setStyle(JSONObject style) {
+    public void setStyle(Map<String, Object> style) {
         this.style = style;
     }
 
