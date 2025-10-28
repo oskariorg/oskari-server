@@ -7,6 +7,7 @@ import org.oskari.user.Role;
 import org.oskari.user.User;
 import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayer;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
@@ -18,6 +19,7 @@ import fi.nls.oskari.util.ConversionHelper;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.oskari.map.myfeatures.service.MyFeaturesService;
 import org.oskari.map.userlayer.service.UserLayerDbService;
 import org.oskari.permissions.PermissionService;
 import org.oskari.permissions.model.*;
@@ -25,6 +27,8 @@ import org.oskari.service.util.ServiceFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Created by SMAKINEN on 17.8.2015.
@@ -35,11 +39,13 @@ public class PublishPermissionHelper {
 
     private MyPlacesService myPlaceService = null;
     private UserLayerDbService userLayerService = null;
+    private MyFeaturesService myFeaturesService = null;
     private OskariLayerService layerService = null;
     private PermissionService permissionsService = null;
 
     private static final String PREFIX_MYPLACES = "myplaces_";
     private static final String PREFIX_USERLAYER = "userlayer_";
+    private static final String PREFIX_MYFEATURES = "myf_";
 
     public void init() {
         if (myPlaceService == null) {
@@ -48,6 +54,10 @@ public class PublishPermissionHelper {
 
         if (userLayerService == null) {
             setUserLayerService(OskariComponentManager.getComponentOfType(UserLayerDbService.class));
+        }
+
+        if (myFeaturesService == null) {
+            setMyFeaturesService(OskariComponentManager.getComponentOfType(MyFeaturesService.class));
         }
 
         if (permissionsService == null) {
@@ -65,6 +75,10 @@ public class PublishPermissionHelper {
 
     public void setUserLayerService(final UserLayerDbService service) {
         userLayerService = service;
+    }
+
+    public void setMyFeaturesService(final MyFeaturesService service) {
+        myFeaturesService = service;
     }
 
     public void setPermissionsService(final PermissionService service) {
@@ -120,6 +134,10 @@ public class PublishPermissionHelper {
                     if (hasRightToPublishUserLayer(layerId, user)) {
                         filteredList.put(layer);
                     }
+                } else if (layerId.startsWith(PREFIX_MYFEATURES)) {
+                    if (hasRightToPublishMyFeaturesLayer(layerId, user)) {
+                        filteredList.put(layer);
+                    }
                 } else if (hasRightToPublishLayer(layerId, user)) {
                     // check publish right for normal layer
                     filteredList.put(layer);
@@ -164,6 +182,20 @@ public class PublishPermissionHelper {
         } else {
             return false;
         }
+    }
+
+    private boolean hasRightToPublishMyFeaturesLayer(final String layerId, final User user) {
+        Optional<UUID> myFeaturesLayerId = MyFeaturesLayer.parseLayerId(layerId);
+        if (myFeaturesLayerId.isEmpty()) {
+            return false;
+        }
+        MyFeaturesLayer myFeaturesLayer = myFeaturesService.getLayer(myFeaturesLayerId.get());
+        if (myFeaturesLayer != null && myFeaturesLayer.getOwnerUuid().equals(user.getUuid())) {
+            myFeaturesLayer.setPublished(true);
+            myFeaturesService.updateLayer(myFeaturesLayer);
+            return true;
+        }
+        return false;
     }
 
     private boolean hasRightToPublishLayer(final String layerId, final User user) {
