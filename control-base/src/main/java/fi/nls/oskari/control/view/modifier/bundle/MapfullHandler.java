@@ -275,7 +275,7 @@ public class MapfullHandler extends BundleHandler {
                     }
                 } else if (layerId.startsWith(PREFIX_MYFEATURES)) {
                     try {
-                        UUID myFeaturesLayerId = UUID.fromString(layerId.substring(PREFIX_MYFEATURES.length()));
+                        UUID myFeaturesLayerId = MyFeaturesLayer.parseLayerId(layerId).get();
                         publishedMyFeatures.add(myFeaturesLayerId);
                     } catch (Exception ignore) {
                         LOGGER.warn("Found myfeatures layer in selected. Error parsing id with prefixed id: ", layerId);
