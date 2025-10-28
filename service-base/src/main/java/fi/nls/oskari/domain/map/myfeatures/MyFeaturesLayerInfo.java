@@ -7,7 +7,7 @@ import org.json.JSONObject;
 public class MyFeaturesLayerInfo {
 
     private String id;
-    private String type = "myf";
+    private String type;
     private String name;
     private String subtitle;
     private Instant created;
@@ -54,8 +54,13 @@ public class MyFeaturesLayerInfo {
     }
 
     public static MyFeaturesLayerInfo from(MyFeaturesLayer layer, String lang) {
+        return from(layer, lang, "myf");
+    }
+
+    public static MyFeaturesLayerInfo from(MyFeaturesLayer layer, String lang, String type) {
         MyFeaturesLayerInfo info = new MyFeaturesLayerInfo();
-        info.id = info.type + "_" + layer.getId();
+        info.id = MyFeaturesLayer.prefixLayerId(layer.getId());
+        info.type = type;
         info.name = layer.getName(lang);
         info.subtitle = layer.getDesc(lang);
         info.created = layer.getCreated();

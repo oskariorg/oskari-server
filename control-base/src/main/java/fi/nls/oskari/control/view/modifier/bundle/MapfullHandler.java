@@ -427,7 +427,8 @@ public class MapfullHandler extends BundleHandler {
                 continue;
             }
 
-            MyFeaturesLayerInfo info = MyFeaturesLayerInfo.from(layer, lang);
+            // Override type to wfslayer
+            MyFeaturesLayerInfo info = MyFeaturesLayerInfo.from(layer, lang, OskariLayer.TYPE_WFS);
             try {
                 String jsonString = ObjectMapperProvider.OM.writeValueAsString(info);
                 JSONObject json = new JSONObject(jsonString);
