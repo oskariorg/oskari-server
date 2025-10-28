@@ -229,4 +229,9 @@ public class MyFeaturesLayer extends JSONLocalizedName {
             return Optional.empty();
         }
     }
+
+    public static String prefixLayerId(UUID layerId) {
+        return PREFIX_LAYER_ID + layerId;
+    }
+
 }
