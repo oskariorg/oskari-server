@@ -1,49 +1,219 @@
 {
   "links" : [ {
-    "href" : "https://beta-paikkatieto.maanmittauslaitos.fi/geographic-names/wfs3/v1/collections",
+    "href" : "https://avoin-paikkatieto.maanmittauslaitos.fi/kiinteisto-avoin/simple-features/v3/collections",
     "rel" : "self",
     "type" : "application/json",
     "title" : "This document"
   } ],
   "collections" : [ {
-    "name" : "placenames",
-    "title" : "PlaceNames",
-    "description" : "NLS Finland GNR: Place names",
+    "id" : "ProjisoidunPalstanSijaintitiedot",
+    "title" : "Projisoidun palstan sijaintitiedot",
+    "description" : "projisoidun palstan sijainti ja kiinteistötunnuksen sijainti, kiinteistötunnus ja kiinteistötunnuksen esitysmuoto ja lisäksi rekisteriyksikön suhde peruskiinteistöön. Projisoitu palsta on 3D-kiinteistön vaakatasoon projisoitu palsta.",
     "links" : [ {
-      "href" : "https://beta-paikkatieto.maanmittauslaitos.fi/geographic-names/wfs3/v1/collections/placenames/items",
+      "href" : "https://avoin-paikkatieto.maanmittauslaitos.fi/kiinteisto-avoin/simple-features/v3/collections/ProjisoidunPalstanSijaintitiedot/items",
       "rel" : "items",
       "type" : "application/geo+json"
+    }, {
+      "href" : "https://avoin-paikkatieto.maanmittauslaitos.fi/kiinteisto-avoin/simple-features/v3/collections/ProjisoidunPalstanSijaintitiedot/items?f=json",
+      "rel" : "items",
+      "type" : "application/geo+json"
+    }, {
+      "href" : "https://avoin-paikkatieto.maanmittauslaitos.fi/kiinteisto-avoin/simple-features/v3/collections/ProjisoidunPalstanSijaintitiedot/schema",
+      "rel" : "describedby",
+      "type" : "application/schema+json"
+    }, {
+      "href" : "https://avoin-paikkatieto.maanmittauslaitos.fi/kiinteisto-avoin/simple-features/v3/collections/ProjisoidunPalstanSijaintitiedot/queryables",
+      "rel" : "http://www.opengis.net/def/rel/ogc/1.0/queryables",
+      "type" : "application/schema+json"
     } ],
-    "crs" : [ "http://www.opengis.net/def/crs/EPSG/0/3067", "http://www.opengis.net/def/crs/EPSG/0/4258", "http://www.opengis.net/def/crs/OGC/1.3/CRS84", "http://www.opengis.net/def/crs/EPSG/0/3046", "http://www.opengis.net/def/crs/EPSG/0/3047", "http://www.opengis.net/def/crs/EPSG/0/3048", "http://www.opengis.net/def/crs/EPSG/0/3873", "http://www.opengis.net/def/crs/EPSG/0/3874", "http://www.opengis.net/def/crs/EPSG/0/3875", "http://www.opengis.net/def/crs/EPSG/0/3876", "http://www.opengis.net/def/crs/EPSG/0/3877", "http://www.opengis.net/def/crs/EPSG/0/3878", "http://www.opengis.net/def/crs/EPSG/0/3879", "http://www.opengis.net/def/crs/EPSG/0/3880", "http://www.opengis.net/def/crs/EPSG/0/3881", "http://www.opengis.net/def/crs/EPSG/0/3882", "http://www.opengis.net/def/crs/EPSG/0/3883", "http://www.opengis.net/def/crs/EPSG/0/3884", "http://www.opengis.net/def/crs/EPSG/0/3885" ]
+    "extent" : {
+      "spatial" : {
+        "bbox" : [ [ 14.32794961, 58.9983814, 33.43375806, 70.47891766 ] ],
+        "crs" : "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+      }
+    },
+    "itemType" : "feature",
+    "crs" : [ "http://www.opengis.net/def/crs/OGC/1.3/CRS84", "http://www.opengis.net/def/crs/EPSG/0/4326", "http://www.opengis.net/def/crs/EPSG/0/3067", "http://www.opengis.net/def/crs/EPSG/0/3046", "http://www.opengis.net/def/crs/EPSG/0/3047", "http://www.opengis.net/def/crs/EPSG/0/3048", "http://www.opengis.net/def/crs/EPSG/0/4258", "http://www.opengis.net/def/crs/EPSG/0/3857", "http://www.opengis.net/def/crs/EPSG/0/3873", "http://www.opengis.net/def/crs/EPSG/0/3874", "http://www.opengis.net/def/crs/EPSG/0/3875", "http://www.opengis.net/def/crs/EPSG/0/3876", "http://www.opengis.net/def/crs/EPSG/0/3877", "http://www.opengis.net/def/crs/EPSG/0/3878", "http://www.opengis.net/def/crs/EPSG/0/3879", "http://www.opengis.net/def/crs/EPSG/0/3880", "http://www.opengis.net/def/crs/EPSG/0/3881", "http://www.opengis.net/def/crs/EPSG/0/3882", "http://www.opengis.net/def/crs/EPSG/0/3883", "http://www.opengis.net/def/crs/EPSG/0/3884", "http://www.opengis.net/def/crs/EPSG/0/3885" ],
+    "storageCrs" : "http://www.opengis.net/def/crs/EPSG/0/3067"
   }, {
-    "name" : "places",
-    "title" : "Places",
-    "description" : "NLS Finland GNR: Places",
+    "id" : "KiinteistotunnuksenSijaintitiedot",
+    "title" : "Kiinteistötunnuksen sijaintitiedot",
+    "description" : "palstan kiinteistötunnuksen sijainti, kiinteistötunnus ja kiinteistötunnuksen esitysmuoto",
     "links" : [ {
-      "href" : "https://beta-paikkatieto.maanmittauslaitos.fi/geographic-names/wfs3/v1/collections/places/items",
+      "href" : "https://avoin-paikkatieto.maanmittauslaitos.fi/kiinteisto-avoin/simple-features/v3/collections/KiinteistotunnuksenSijaintitiedot/items",
       "rel" : "items",
       "type" : "application/geo+json"
+    }, {
+      "href" : "https://avoin-paikkatieto.maanmittauslaitos.fi/kiinteisto-avoin/simple-features/v3/collections/KiinteistotunnuksenSijaintitiedot/items?f=json",
+      "rel" : "items",
+      "type" : "application/geo+json"
+    }, {
+      "href" : "https://avoin-paikkatieto.maanmittauslaitos.fi/kiinteisto-avoin/simple-features/v3/collections/KiinteistotunnuksenSijaintitiedot/schema",
+      "rel" : "describedby",
+      "type" : "application/schema+json"
+    }, {
+      "href" : "https://avoin-paikkatieto.maanmittauslaitos.fi/kiinteisto-avoin/simple-features/v3/collections/KiinteistotunnuksenSijaintitiedot/queryables",
+      "rel" : "http://www.opengis.net/def/rel/ogc/1.0/queryables",
+      "type" : "application/schema+json"
     } ],
-    "crs" : [ "http://www.opengis.net/def/crs/EPSG/0/3067", "http://www.opengis.net/def/crs/EPSG/0/4258", "http://www.opengis.net/def/crs/OGC/1.3/CRS84", "http://www.opengis.net/def/crs/EPSG/0/3046", "http://www.opengis.net/def/crs/EPSG/0/3047", "http://www.opengis.net/def/crs/EPSG/0/3048", "http://www.opengis.net/def/crs/EPSG/0/3873", "http://www.opengis.net/def/crs/EPSG/0/3874", "http://www.opengis.net/def/crs/EPSG/0/3875", "http://www.opengis.net/def/crs/EPSG/0/3876", "http://www.opengis.net/def/crs/EPSG/0/3877", "http://www.opengis.net/def/crs/EPSG/0/3878", "http://www.opengis.net/def/crs/EPSG/0/3879", "http://www.opengis.net/def/crs/EPSG/0/3880", "http://www.opengis.net/def/crs/EPSG/0/3881", "http://www.opengis.net/def/crs/EPSG/0/3882", "http://www.opengis.net/def/crs/EPSG/0/3883", "http://www.opengis.net/def/crs/EPSG/0/3884", "http://www.opengis.net/def/crs/EPSG/0/3885" ]
+    "extent" : {
+      "spatial" : {
+        "bbox" : [ [ 14.32794961, 58.9983814, 33.43375806, 70.47891766 ] ],
+        "crs" : "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+      }
+    },
+    "itemType" : "feature",
+    "crs" : [ "http://www.opengis.net/def/crs/OGC/1.3/CRS84", "http://www.opengis.net/def/crs/EPSG/0/4326", "http://www.opengis.net/def/crs/EPSG/0/3067", "http://www.opengis.net/def/crs/EPSG/0/3046", "http://www.opengis.net/def/crs/EPSG/0/3047", "http://www.opengis.net/def/crs/EPSG/0/3048", "http://www.opengis.net/def/crs/EPSG/0/4258", "http://www.opengis.net/def/crs/EPSG/0/3857", "http://www.opengis.net/def/crs/EPSG/0/3873", "http://www.opengis.net/def/crs/EPSG/0/3874", "http://www.opengis.net/def/crs/EPSG/0/3875", "http://www.opengis.net/def/crs/EPSG/0/3876", "http://www.opengis.net/def/crs/EPSG/0/3877", "http://www.opengis.net/def/crs/EPSG/0/3878", "http://www.opengis.net/def/crs/EPSG/0/3879", "http://www.opengis.net/def/crs/EPSG/0/3880", "http://www.opengis.net/def/crs/EPSG/0/3881", "http://www.opengis.net/def/crs/EPSG/0/3882", "http://www.opengis.net/def/crs/EPSG/0/3883", "http://www.opengis.net/def/crs/EPSG/0/3884", "http://www.opengis.net/def/crs/EPSG/0/3885" ],
+    "storageCrs" : "http://www.opengis.net/def/crs/EPSG/0/3067"
   }, {
-    "name" : "mapnames",
-    "title" : "MapNames",
-    "description" : "NLS Finland GNR: Map names",
+    "id" : "MaaraalanOsanSijaintitiedot",
+    "title" : "Määräalan osan sijaintitiedot",
+    "description" : "mm. määräalan osan sijainti ja määräalatunnuksen sijainti, määräalatunnus ja määräalatunnuksen esitysmuoto ja lisäksi määräalan suhde peruskiinteistöön. Määräalan osan sijainti voi olla joko pistegeometria tai aluegeometria.",
     "links" : [ {
-      "href" : "https://beta-paikkatieto.maanmittauslaitos.fi/geographic-names/wfs3/v1/collections/mapnames/items",
+      "href" : "https://avoin-paikkatieto.maanmittauslaitos.fi/kiinteisto-avoin/simple-features/v3/collections/MaaraalanOsanSijaintitiedot/items",
       "rel" : "items",
       "type" : "application/geo+json"
+    }, {
+      "href" : "https://avoin-paikkatieto.maanmittauslaitos.fi/kiinteisto-avoin/simple-features/v3/collections/MaaraalanOsanSijaintitiedot/items?f=json",
+      "rel" : "items",
+      "type" : "application/geo+json"
+    }, {
+      "href" : "https://avoin-paikkatieto.maanmittauslaitos.fi/kiinteisto-avoin/simple-features/v3/collections/MaaraalanOsanSijaintitiedot/schema",
+      "rel" : "describedby",
+      "type" : "application/schema+json"
+    }, {
+      "href" : "https://avoin-paikkatieto.maanmittauslaitos.fi/kiinteisto-avoin/simple-features/v3/collections/MaaraalanOsanSijaintitiedot/queryables",
+      "rel" : "http://www.opengis.net/def/rel/ogc/1.0/queryables",
+      "type" : "application/schema+json"
     } ],
-    "crs" : [ "http://www.opengis.net/def/crs/EPSG/0/3067", "http://www.opengis.net/def/crs/EPSG/0/4258", "http://www.opengis.net/def/crs/OGC/1.3/CRS84", "http://www.opengis.net/def/crs/EPSG/0/3046", "http://www.opengis.net/def/crs/EPSG/0/3047", "http://www.opengis.net/def/crs/EPSG/0/3048", "http://www.opengis.net/def/crs/EPSG/0/3873", "http://www.opengis.net/def/crs/EPSG/0/3874", "http://www.opengis.net/def/crs/EPSG/0/3875", "http://www.opengis.net/def/crs/EPSG/0/3876", "http://www.opengis.net/def/crs/EPSG/0/3877", "http://www.opengis.net/def/crs/EPSG/0/3878", "http://www.opengis.net/def/crs/EPSG/0/3879", "http://www.opengis.net/def/crs/EPSG/0/3880", "http://www.opengis.net/def/crs/EPSG/0/3881", "http://www.opengis.net/def/crs/EPSG/0/3882", "http://www.opengis.net/def/crs/EPSG/0/3883", "http://www.opengis.net/def/crs/EPSG/0/3884", "http://www.opengis.net/def/crs/EPSG/0/3885" ]
+    "extent" : {
+      "spatial" : {
+        "bbox" : [ [ 14.32794961, 58.9983814, 33.43375806, 70.47891766 ] ],
+        "crs" : "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+      }
+    },
+    "itemType" : "feature",
+    "crs" : [ "http://www.opengis.net/def/crs/OGC/1.3/CRS84", "http://www.opengis.net/def/crs/EPSG/0/4326", "http://www.opengis.net/def/crs/EPSG/0/3067", "http://www.opengis.net/def/crs/EPSG/0/3046", "http://www.opengis.net/def/crs/EPSG/0/3047", "http://www.opengis.net/def/crs/EPSG/0/3048", "http://www.opengis.net/def/crs/EPSG/0/4258", "http://www.opengis.net/def/crs/EPSG/0/3857", "http://www.opengis.net/def/crs/EPSG/0/3873", "http://www.opengis.net/def/crs/EPSG/0/3874", "http://www.opengis.net/def/crs/EPSG/0/3875", "http://www.opengis.net/def/crs/EPSG/0/3876", "http://www.opengis.net/def/crs/EPSG/0/3877", "http://www.opengis.net/def/crs/EPSG/0/3878", "http://www.opengis.net/def/crs/EPSG/0/3879", "http://www.opengis.net/def/crs/EPSG/0/3880", "http://www.opengis.net/def/crs/EPSG/0/3881", "http://www.opengis.net/def/crs/EPSG/0/3882", "http://www.opengis.net/def/crs/EPSG/0/3883", "http://www.opengis.net/def/crs/EPSG/0/3884", "http://www.opengis.net/def/crs/EPSG/0/3885" ],
+    "storageCrs" : "http://www.opengis.net/def/crs/EPSG/0/3067"
   }, {
-    "name" : "placenames_simple",
-    "title" : "PlaceNames simple",
-    "description" : "NLS Finland GNR: Place names (simple)",
+    "id" : "KiinteistorajanSijaintitiedot",
+    "title" : "Kiinteistörajan sijaintitiedot",
+    "description" : "kiinteistörajan sijainti ja muut tiedot esim. kiinteistörajalaji ja interpolointitapa",
     "links" : [ {
-      "href" : "https://beta-paikkatieto.maanmittauslaitos.fi/geographic-names/wfs3/v1/collections/placenames_simple/items",
+      "href" : "https://avoin-paikkatieto.maanmittauslaitos.fi/kiinteisto-avoin/simple-features/v3/collections/KiinteistorajanSijaintitiedot/items",
       "rel" : "items",
       "type" : "application/geo+json"
+    }, {
+      "href" : "https://avoin-paikkatieto.maanmittauslaitos.fi/kiinteisto-avoin/simple-features/v3/collections/KiinteistorajanSijaintitiedot/items?f=json",
+      "rel" : "items",
+      "type" : "application/geo+json"
+    }, {
+      "href" : "https://avoin-paikkatieto.maanmittauslaitos.fi/kiinteisto-avoin/simple-features/v3/collections/KiinteistorajanSijaintitiedot/schema",
+      "rel" : "describedby",
+      "type" : "application/schema+json"
+    }, {
+      "href" : "https://avoin-paikkatieto.maanmittauslaitos.fi/kiinteisto-avoin/simple-features/v3/collections/KiinteistorajanSijaintitiedot/queryables",
+      "rel" : "http://www.opengis.net/def/rel/ogc/1.0/queryables",
+      "type" : "application/schema+json"
     } ],
-    "crs" : [ "http://www.opengis.net/def/crs/EPSG/0/3067", "http://www.opengis.net/def/crs/EPSG/0/4258", "http://www.opengis.net/def/crs/OGC/1.3/CRS84", "http://www.opengis.net/def/crs/EPSG/0/3046", "http://www.opengis.net/def/crs/EPSG/0/3047", "http://www.opengis.net/def/crs/EPSG/0/3048", "http://www.opengis.net/def/crs/EPSG/0/3873", "http://www.opengis.net/def/crs/EPSG/0/3874", "http://www.opengis.net/def/crs/EPSG/0/3875", "http://www.opengis.net/def/crs/EPSG/0/3876", "http://www.opengis.net/def/crs/EPSG/0/3877", "http://www.opengis.net/def/crs/EPSG/0/3878", "http://www.opengis.net/def/crs/EPSG/0/3879", "http://www.opengis.net/def/crs/EPSG/0/3880", "http://www.opengis.net/def/crs/EPSG/0/3881", "http://www.opengis.net/def/crs/EPSG/0/3882", "http://www.opengis.net/def/crs/EPSG/0/3883", "http://www.opengis.net/def/crs/EPSG/0/3884", "http://www.opengis.net/def/crs/EPSG/0/3885" ]
+    "extent" : {
+      "spatial" : {
+        "bbox" : [ [ 14.32794961, 58.9983814, 33.43375806, 70.47891766 ] ],
+        "crs" : "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+      }
+    },
+    "itemType" : "feature",
+    "crs" : [ "http://www.opengis.net/def/crs/OGC/1.3/CRS84", "http://www.opengis.net/def/crs/EPSG/0/4326", "http://www.opengis.net/def/crs/EPSG/0/3067", "http://www.opengis.net/def/crs/EPSG/0/3046", "http://www.opengis.net/def/crs/EPSG/0/3047", "http://www.opengis.net/def/crs/EPSG/0/3048", "http://www.opengis.net/def/crs/EPSG/0/4258", "http://www.opengis.net/def/crs/EPSG/0/3857", "http://www.opengis.net/def/crs/EPSG/0/3873", "http://www.opengis.net/def/crs/EPSG/0/3874", "http://www.opengis.net/def/crs/EPSG/0/3875", "http://www.opengis.net/def/crs/EPSG/0/3876", "http://www.opengis.net/def/crs/EPSG/0/3877", "http://www.opengis.net/def/crs/EPSG/0/3878", "http://www.opengis.net/def/crs/EPSG/0/3879", "http://www.opengis.net/def/crs/EPSG/0/3880", "http://www.opengis.net/def/crs/EPSG/0/3881", "http://www.opengis.net/def/crs/EPSG/0/3882", "http://www.opengis.net/def/crs/EPSG/0/3883", "http://www.opengis.net/def/crs/EPSG/0/3884", "http://www.opengis.net/def/crs/EPSG/0/3885" ],
+    "storageCrs" : "http://www.opengis.net/def/crs/EPSG/0/3067"
+  }, {
+    "id" : "PalstanSijaintitiedot",
+    "title" : "Palstan sijaintitiedot",
+    "description" : "palstan sijainti ja palstan kiinteistötunnuksen sijainti, kiinteistötunnus ja kiinteistötunnuksen esitysmuoto",
+    "links" : [ {
+      "href" : "https://avoin-paikkatieto.maanmittauslaitos.fi/kiinteisto-avoin/simple-features/v3/collections/PalstanSijaintitiedot/items",
+      "rel" : "items",
+      "type" : "application/geo+json"
+    }, {
+      "href" : "https://avoin-paikkatieto.maanmittauslaitos.fi/kiinteisto-avoin/simple-features/v3/collections/PalstanSijaintitiedot/items?f=json",
+      "rel" : "items",
+      "type" : "application/geo+json"
+    }, {
+      "href" : "https://avoin-paikkatieto.maanmittauslaitos.fi/kiinteisto-avoin/simple-features/v3/collections/PalstanSijaintitiedot/schema",
+      "rel" : "describedby",
+      "type" : "application/schema+json"
+    }, {
+      "href" : "https://avoin-paikkatieto.maanmittauslaitos.fi/kiinteisto-avoin/simple-features/v3/collections/PalstanSijaintitiedot/queryables",
+      "rel" : "http://www.opengis.net/def/rel/ogc/1.0/queryables",
+      "type" : "application/schema+json"
+    } ],
+    "extent" : {
+      "spatial" : {
+        "bbox" : [ [ 14.32794961, 58.9983814, 33.43375806, 70.47891766 ] ],
+        "crs" : "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+      }
+    },
+    "itemType" : "feature",
+    "crs" : [ "http://www.opengis.net/def/crs/OGC/1.3/CRS84", "http://www.opengis.net/def/crs/EPSG/0/4326", "http://www.opengis.net/def/crs/EPSG/0/3067", "http://www.opengis.net/def/crs/EPSG/0/3046", "http://www.opengis.net/def/crs/EPSG/0/3047", "http://www.opengis.net/def/crs/EPSG/0/3048", "http://www.opengis.net/def/crs/EPSG/0/4258", "http://www.opengis.net/def/crs/EPSG/0/3857", "http://www.opengis.net/def/crs/EPSG/0/3873", "http://www.opengis.net/def/crs/EPSG/0/3874", "http://www.opengis.net/def/crs/EPSG/0/3875", "http://www.opengis.net/def/crs/EPSG/0/3876", "http://www.opengis.net/def/crs/EPSG/0/3877", "http://www.opengis.net/def/crs/EPSG/0/3878", "http://www.opengis.net/def/crs/EPSG/0/3879", "http://www.opengis.net/def/crs/EPSG/0/3880", "http://www.opengis.net/def/crs/EPSG/0/3881", "http://www.opengis.net/def/crs/EPSG/0/3882", "http://www.opengis.net/def/crs/EPSG/0/3883", "http://www.opengis.net/def/crs/EPSG/0/3884", "http://www.opengis.net/def/crs/EPSG/0/3885" ],
+    "storageCrs" : "http://www.opengis.net/def/crs/EPSG/0/3067"
+  }, {
+    "id" : "RajamerkinSijaintitiedot",
+    "title" : "Rajamerkin sijaintitiedot",
+    "description" : "rajamerkin sijainti ja muut tiedot esim. numero ja  tasosijaintitarkkuus",
+    "links" : [ {
+      "href" : "https://avoin-paikkatieto.maanmittauslaitos.fi/kiinteisto-avoin/simple-features/v3/collections/RajamerkinSijaintitiedot/items",
+      "rel" : "items",
+      "type" : "application/geo+json"
+    }, {
+      "href" : "https://avoin-paikkatieto.maanmittauslaitos.fi/kiinteisto-avoin/simple-features/v3/collections/RajamerkinSijaintitiedot/items?f=json",
+      "rel" : "items",
+      "type" : "application/geo+json"
+    }, {
+      "href" : "https://avoin-paikkatieto.maanmittauslaitos.fi/kiinteisto-avoin/simple-features/v3/collections/RajamerkinSijaintitiedot/schema",
+      "rel" : "describedby",
+      "type" : "application/schema+json"
+    }, {
+      "href" : "https://avoin-paikkatieto.maanmittauslaitos.fi/kiinteisto-avoin/simple-features/v3/collections/RajamerkinSijaintitiedot/queryables",
+      "rel" : "http://www.opengis.net/def/rel/ogc/1.0/queryables",
+      "type" : "application/schema+json"
+    } ],
+    "extent" : {
+      "spatial" : {
+        "bbox" : [ [ 14.32794961, 58.9983814, 33.43375806, 70.47891766 ] ],
+        "crs" : "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+      }
+    },
+    "itemType" : "feature",
+    "crs" : [ "http://www.opengis.net/def/crs/OGC/1.3/CRS84", "http://www.opengis.net/def/crs/EPSG/0/4326", "http://www.opengis.net/def/crs/EPSG/0/3067", "http://www.opengis.net/def/crs/EPSG/0/3046", "http://www.opengis.net/def/crs/EPSG/0/3047", "http://www.opengis.net/def/crs/EPSG/0/3048", "http://www.opengis.net/def/crs/EPSG/0/4258", "http://www.opengis.net/def/crs/EPSG/0/3857", "http://www.opengis.net/def/crs/EPSG/0/3873", "http://www.opengis.net/def/crs/EPSG/0/3874", "http://www.opengis.net/def/crs/EPSG/0/3875", "http://www.opengis.net/def/crs/EPSG/0/3876", "http://www.opengis.net/def/crs/EPSG/0/3877", "http://www.opengis.net/def/crs/EPSG/0/3878", "http://www.opengis.net/def/crs/EPSG/0/3879", "http://www.opengis.net/def/crs/EPSG/0/3880", "http://www.opengis.net/def/crs/EPSG/0/3881", "http://www.opengis.net/def/crs/EPSG/0/3882", "http://www.opengis.net/def/crs/EPSG/0/3883", "http://www.opengis.net/def/crs/EPSG/0/3884", "http://www.opengis.net/def/crs/EPSG/0/3885" ],
+    "storageCrs" : "http://www.opengis.net/def/crs/EPSG/0/3067"
+  }, {
+    "id" : "ProjisoidunPalstanKiinteistotunnuksenSijaintitiedot",
+    "title" : "Projisoidun palstan kiinteistötunnuksen sijaintitiedot",
+    "description" : "projisoidun palstan kiinteistötunnuksen sijainti, kiinteistötunnus ja kiinteistötunnuksen esitysmuoto ja lisäksi rekisteriyksikön suhde peruskiinteistöön. Projisoitu palsta on 3D-kiinteistön vaakatasoon projisoitu palsta.",
+    "links" : [ {
+      "href" : "https://avoin-paikkatieto.maanmittauslaitos.fi/kiinteisto-avoin/simple-features/v3/collections/ProjisoidunPalstanKiinteistotunnuksenSijaintitiedot/items",
+      "rel" : "items",
+      "type" : "application/geo+json"
+    }, {
+      "href" : "https://avoin-paikkatieto.maanmittauslaitos.fi/kiinteisto-avoin/simple-features/v3/collections/ProjisoidunPalstanKiinteistotunnuksenSijaintitiedot/items?f=json",
+      "rel" : "items",
+      "type" : "application/geo+json"
+    }, {
+      "href" : "https://avoin-paikkatieto.maanmittauslaitos.fi/kiinteisto-avoin/simple-features/v3/collections/ProjisoidunPalstanKiinteistotunnuksenSijaintitiedot/schema",
+      "rel" : "describedby",
+      "type" : "application/schema+json"
+    }, {
+      "href" : "https://avoin-paikkatieto.maanmittauslaitos.fi/kiinteisto-avoin/simple-features/v3/collections/ProjisoidunPalstanKiinteistotunnuksenSijaintitiedot/queryables",
+      "rel" : "http://www.opengis.net/def/rel/ogc/1.0/queryables",
+      "type" : "application/schema+json"
+    } ],
+    "extent" : {
+      "spatial" : {
+        "bbox" : [ [ 14.32794961, 58.9983814, 33.43375806, 70.47891766 ] ],
+        "crs" : "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+      }
+    },
+    "itemType" : "feature",
+    "crs" : [ "http://www.opengis.net/def/crs/OGC/1.3/CRS84", "http://www.opengis.net/def/crs/EPSG/0/4326", "http://www.opengis.net/def/crs/EPSG/0/3067", "http://www.opengis.net/def/crs/EPSG/0/3046", "http://www.opengis.net/def/crs/EPSG/0/3047", "http://www.opengis.net/def/crs/EPSG/0/3048", "http://www.opengis.net/def/crs/EPSG/0/4258", "http://www.opengis.net/def/crs/EPSG/0/3857", "http://www.opengis.net/def/crs/EPSG/0/3873", "http://www.opengis.net/def/crs/EPSG/0/3874", "http://www.opengis.net/def/crs/EPSG/0/3875", "http://www.opengis.net/def/crs/EPSG/0/3876", "http://www.opengis.net/def/crs/EPSG/0/3877", "http://www.opengis.net/def/crs/EPSG/0/3878", "http://www.opengis.net/def/crs/EPSG/0/3879", "http://www.opengis.net/def/crs/EPSG/0/3880", "http://www.opengis.net/def/crs/EPSG/0/3881", "http://www.opengis.net/def/crs/EPSG/0/3882", "http://www.opengis.net/def/crs/EPSG/0/3883", "http://www.opengis.net/def/crs/EPSG/0/3884", "http://www.opengis.net/def/crs/EPSG/0/3885" ],
+    "storageCrs" : "http://www.opengis.net/def/crs/EPSG/0/3067"
   } ]
 }
