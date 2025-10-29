@@ -1,12 +1,5 @@
 package org.oskari.capabilities.ogc.api;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.oskari.ogcapi.OGCAPIReqClasses;
-import org.oskari.ogcapi.features.FeaturesCollectionInfo;
-import org.oskari.ogcapi.features.FeaturesContent;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -17,6 +10,13 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.oskari.ogcapi.OGCAPIReqClasses;
+import org.oskari.ogcapi.features.FeaturesCollectionInfo;
+import org.oskari.ogcapi.features.FeaturesContent;
 
 public class OGCAPIFeaturesServiceTest {
 
@@ -43,7 +43,14 @@ public class OGCAPIFeaturesServiceTest {
 
     @Test
     public void testCollectionsWereParsedCorrectly() throws Exception {
-        List<String> expected = Stream.of("placenames", "places", "mapnames", "placenames_simple")
+        List<String> expected = Stream.of(
+                "ProjisoidunPalstanSijaintitiedot",
+                "KiinteistotunnuksenSijaintitiedot",
+                "MaaraalanOsanSijaintitiedot",
+                "KiinteistorajanSijaintitiedot",
+                "PalstanSijaintitiedot",
+                "RajamerkinSijaintitiedot",
+                "ProjisoidunPalstanKiinteistotunnuksenSijaintitiedot")
                 .sorted()
                 .collect(Collectors.toList());
 
@@ -58,27 +65,28 @@ public class OGCAPIFeaturesServiceTest {
     @Test
     public void testGetSupportedCrsURIs() throws Exception {
         Set<String> expected = Stream.of(
-                "http://www.opengis.net/def/crs/EPSG/0/3067",
-                "http://www.opengis.net/def/crs/EPSG/0/4258",
-                "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
-                "http://www.opengis.net/def/crs/EPSG/0/3046",
-                "http://www.opengis.net/def/crs/EPSG/0/3047",
-                "http://www.opengis.net/def/crs/EPSG/0/3048",
-                "http://www.opengis.net/def/crs/EPSG/0/3873",
-                "http://www.opengis.net/def/crs/EPSG/0/3874",
-                "http://www.opengis.net/def/crs/EPSG/0/3875",
-                "http://www.opengis.net/def/crs/EPSG/0/3876",
-                "http://www.opengis.net/def/crs/EPSG/0/3877",
-                "http://www.opengis.net/def/crs/EPSG/0/3878",
-                "http://www.opengis.net/def/crs/EPSG/0/3879",
-                "http://www.opengis.net/def/crs/EPSG/0/3880",
-                "http://www.opengis.net/def/crs/EPSG/0/3881",
-                "http://www.opengis.net/def/crs/EPSG/0/3882",
-                "http://www.opengis.net/def/crs/EPSG/0/3883",
-                "http://www.opengis.net/def/crs/EPSG/0/3884",
-                "http://www.opengis.net/def/crs/EPSG/0/3885")
-                .collect(Collectors.toSet());
-        Set<String> actual = service.getSupportedCrsURIs("placenames");
+            "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+            "http://www.opengis.net/def/crs/EPSG/0/4326",
+            "http://www.opengis.net/def/crs/EPSG/0/3067",
+            "http://www.opengis.net/def/crs/EPSG/0/3046",
+            "http://www.opengis.net/def/crs/EPSG/0/3047",
+            "http://www.opengis.net/def/crs/EPSG/0/3048",
+            "http://www.opengis.net/def/crs/EPSG/0/4258",
+            "http://www.opengis.net/def/crs/EPSG/0/3857",
+            "http://www.opengis.net/def/crs/EPSG/0/3873",
+            "http://www.opengis.net/def/crs/EPSG/0/3874",
+            "http://www.opengis.net/def/crs/EPSG/0/3875",
+            "http://www.opengis.net/def/crs/EPSG/0/3876",
+            "http://www.opengis.net/def/crs/EPSG/0/3877",
+            "http://www.opengis.net/def/crs/EPSG/0/3878",
+            "http://www.opengis.net/def/crs/EPSG/0/3879",
+            "http://www.opengis.net/def/crs/EPSG/0/3880",
+            "http://www.opengis.net/def/crs/EPSG/0/3881",
+            "http://www.opengis.net/def/crs/EPSG/0/3882",
+            "http://www.opengis.net/def/crs/EPSG/0/3883",
+            "http://www.opengis.net/def/crs/EPSG/0/3884",
+            "http://www.opengis.net/def/crs/EPSG/0/3885").collect(Collectors.toSet());
+        Set<String> actual = service.getSupportedCrsURIs("ProjisoidunPalstanSijaintitiedot");
 
         List<String> expectedList = new ArrayList<>(expected);
         List<String> actualList = new ArrayList<>(actual);

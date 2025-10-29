@@ -1,37 +1,24 @@
 package org.oskari.ogcapi;
 
-import java.time.Instant;
-import java.util.Arrays;
-
 public class OGCAPIExtent {
 
-    private final String crs = "http://www.opengis.net/def/crs/OGC/1.3/CRS84";
-    private double[] spatial;
-    private final String trs = "http://www.opengis.net/def/uom/ISO-8601/0/Gregorian";
-    private Instant[] temporal;
+    private OGCAPISpatialExtent spatial;
+    // No support for temporal extent
 
-    public String getCrs() {
-        return crs;
-    }
-
-    public double[] getSpatial() {
+    public OGCAPISpatialExtent getSpatial() {
         return spatial;
     }
 
-    public void setSpatial(double[] spatial) {
+    public void setSpatial(OGCAPISpatialExtent spatial) {
         this.spatial = spatial;
     }
 
-    public String getTrs() {
-        return trs;
-    }
-
-    public Instant[] getTemporal() {
-        return temporal;
-    }
-
-    public void setTemporal(Instant[] temporal) {
-        this.temporal = temporal;
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((spatial == null) ? 0 : spatial.hashCode());
+        return result;
     }
 
     @Override
@@ -43,19 +30,10 @@ public class OGCAPIExtent {
         if (getClass() != obj.getClass())
             return false;
         OGCAPIExtent other = (OGCAPIExtent) obj;
-        if (crs == null) {
-            if (other.crs != null)
+        if (spatial == null) {
+            if (other.spatial != null)
                 return false;
-        } else if (!crs.equals(other.crs))
-            return false;
-        if (!Arrays.equals(spatial, other.spatial))
-            return false;
-        if (!Arrays.equals(temporal, other.temporal))
-            return false;
-        if (trs == null) {
-            if (other.trs != null)
-                return false;
-        } else if (!trs.equals(other.trs))
+        } else if (!spatial.equals(other.spatial))
             return false;
         return true;
     }
