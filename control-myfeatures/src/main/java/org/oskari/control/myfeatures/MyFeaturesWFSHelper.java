@@ -7,22 +7,36 @@ import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesFeature;
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesFieldInfo;
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayer;
+import fi.nls.oskari.domain.map.style.VectorStyle;
 import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
+import fi.nls.oskari.map.geometry.WKTHelper;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
+
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
+import org.geotools.referencing.CRS;
 import org.json.JSONObject;
+import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Polygon;
+import org.locationtech.jts.io.WKTWriter;
 import org.geotools.api.feature.simple.SimpleFeature;
 import org.geotools.api.feature.simple.SimpleFeatureType;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
+import org.oskari.domain.map.FeatureProperties;
+import org.oskari.domain.map.LayerExtendedOutput;
 import org.oskari.geojson.GeoJSONFeatureCollection;
 import org.oskari.map.myfeatures.service.MyFeaturesService;
 import org.oskari.service.user.UserLayerService;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -30,7 +44,6 @@ import java.util.stream.Collectors;
 @Oskari
 public final class MyFeaturesWFSHelper extends UserLayerService {
 
-    public static final String PREFIX_MYFEATURES = "myf_";
     public static final String GEOM_PROP_NAME = "geom";
     public static final String CREATED_PROP_NAME = "created";
     public static final String UPDATED_PROP_NAME = "updated";
@@ -48,7 +61,7 @@ public final class MyFeaturesWFSHelper extends UserLayerService {
 
     @Override
     public boolean isUserContentLayer(String layerId) {
-        return layerId.startsWith(PREFIX_MYFEATURES);
+        return layerId.startsWith(MyFeaturesLayer.PREFIX_LAYER_ID);
     }
 
     @Override
@@ -108,7 +121,7 @@ public final class MyFeaturesWFSHelper extends UserLayerService {
     }
 
     private static UUID parseLayerId(String fullLayerId) {
-        return UUID.fromString(fullLayerId.substring(PREFIX_MYFEATURES.length()));
+        return MyFeaturesLayer.parseLayerId(fullLayerId).get();
     }
 
     private MyFeaturesLayer getLayer(UUID layerId) {
@@ -131,6 +144,93 @@ public final class MyFeaturesWFSHelper extends UserLayerService {
         layer.setOptions(myLayer.getOptions());
         layer.setAttributes(myLayer.getAttributes());
         return layer;
+    }
+
+    @Override
+    public LayerExtendedOutput describeLayer(String layerId, String lang, CoordinateReferenceSystem crs) {
+        MyFeaturesLayer layer = getLayer(parseLayerId(layerId));
+
+        LayerExtendedOutput describe = new LayerExtendedOutput();
+        describe.id = layerId;
+        describe.type = OskariLayer.TYPE_WFS;
+        describe.name = layer.getName(lang);
+        describe.metadataUuid = null;
+        describe.dataproviderId = null;
+        describe.created = layer.getCreated() == null ? null : new Date(layer.getCreated().toEpochMilli());
+        describe.updated = layer.getUpdated() == null ? null : new Date(layer.getUpdated().toEpochMilli());
+
+        describe.coverage = getCoverageWKT(layer.getExtent(), crs);
+        describe.styles = getVectorStyles(layer);
+        describe.hover = null;
+        describe.capabilities = null;
+
+        describe.properties = getProperties(layer, lang);
+        describe.controlData = null;
+
+        return describe;
+    }
+
+    static List<VectorStyle> getVectorStyles(MyFeaturesLayer layer) {
+        JSONObject defaultStyle = layer.getLayerOptions().getDefaultStyle();
+
+        VectorStyle vectorStyle = new VectorStyle();
+        vectorStyle.setType(VectorStyle.TYPE_OSKARI);
+        vectorStyle.setName("default");
+        vectorStyle.setStyle(defaultStyle);
+
+        return Collections.singletonList(vectorStyle);
+    }
+
+    private String getCoverageWKT(Envelope extent, CoordinateReferenceSystem crs) {
+        if (extent == null || crs == null) {
+            return null;
+        }
+        try {
+            CoordinateReferenceSystem sourceCRS = getService().getNativeCRS();
+            if (CRS.equalsIgnoreMetadata(sourceCRS, crs)) {
+                return WKTHelper.getBBOX(extent.getMinX(), extent.getMinY(), extent.getMaxX(), extent.getMaxY());
+            }
+            Polygon p = toGeometry(extent);
+            Geometry transformed = WKTHelper.transform(p, sourceCRS, crs);
+            return new WKTWriter(2).write(transformed);
+        } catch (Exception ignore) {
+            // Will not report back coverage if transform failed
+            // that's ok since client can't handle it if it's in unknown projection
+            return null;
+        }
+    }
+
+    public static Polygon toGeometry(Envelope e) {
+        if (e == null) {
+            return null;
+        }
+        Coordinate[] cornerCoordinates = new Coordinate[] {
+            new Coordinate(e.getMinX(), e.getMinY()),
+            new Coordinate(e.getMinX(), e.getMaxY()),
+            new Coordinate(e.getMaxX(), e.getMaxY()),
+            new Coordinate(e.getMaxX(), e.getMinY()),
+            new Coordinate(e.getMinX(), e.getMinY()),
+        };
+        return new GeometryFactory().createPolygon(cornerCoordinates);
+    }
+
+    private List<FeatureProperties> getProperties(MyFeaturesLayer layer, String lang) {
+        List<FeatureProperties> props = new ArrayList<>();
+
+        int i = 0;
+        for (MyFeaturesFieldInfo field : layer.getLayerFields()) {
+            FeatureProperties p = new FeatureProperties();
+            p.name = field.getName();
+            p.type = field.getType().getSimpleType();
+            p.rawType = field.getType().getOutputBinding().getName();
+            p.label = field.getName();
+            p.hidden = false;
+            p.format = null;
+            p.order = i++;
+            props.add(p);
+        }
+
+        return props;
     }
 
 }

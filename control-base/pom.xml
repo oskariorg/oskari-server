@@ -60,6 +60,10 @@
             <artifactId>service-userlayer</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.oskari</groupId>
+            <artifactId>service-myfeatures</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-csv</artifactId>
         </dependency>

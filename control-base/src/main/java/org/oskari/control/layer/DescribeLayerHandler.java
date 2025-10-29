@@ -1,7 +1,5 @@
 package org.oskari.control.layer;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.nls.oskari.annotation.OskariActionRoute;
 import fi.nls.oskari.control.*;
 import fi.nls.oskari.control.layer.PermissionHelper;
@@ -19,15 +17,16 @@ import fi.nls.oskari.map.style.VectorStyleService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.*;
+
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 import org.json.JSONObject;
 import org.oskari.capabilities.CapabilitiesService;
 import org.oskari.capabilities.ogc.LayerCapabilitiesWFS;
 import org.oskari.capabilities.ogc.LayerCapabilitiesWMTS;
 import org.oskari.capabilities.ogc.wfs.FeaturePropertyType;
 import org.oskari.capabilities.ogc.wmts.TileMatrixLink;
-import org.oskari.control.layer.model.FeatureProperties;
-import org.oskari.control.layer.model.LayerExtendedOutput;
-import org.oskari.control.layer.model.LayerOutput;
+import org.oskari.domain.map.FeatureProperties;
+import org.oskari.domain.map.LayerExtendedOutput;
 import org.oskari.permissions.PermissionService;
 import org.oskari.service.user.UserLayerService;
 import org.oskari.user.User;
@@ -48,11 +47,6 @@ public class DescribeLayerHandler extends RestActionHandler {
 
     private PermissionHelper permissionHelper;
     private Collection<UserLayerService> userContentProcessors;
-
-    private static final ObjectMapper MAPPER = new ObjectMapper();
-    static {
-        MAPPER.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-    }
 
     private Set<String> preferredSRS;
     private static final Logger LOG = LogFactory.getLogger(DescribeLayerHandler.class);
@@ -86,32 +80,32 @@ public class DescribeLayerHandler extends RestActionHandler {
     public void handleAction(ActionParameters params) throws ActionException {
         final String layerId = params.getRequiredParam(PARAM_ID);
         final User user = params.getUser();
+        final String lang = params.getLocale().getLanguage();
+        final CoordinateReferenceSystem crs = params.getHttpParam(PARAM_SRS) == null
+            ? null
+            : WKTHelper.getCRS(params.getHttpParam(PARAM_SRS));
 
-        final Optional<UserLayerService> processor = getUserContentProsessor(layerId);
-        final OskariLayer layer = findLayer(layerId, user, processor);
+        LayerExtendedOutput output = null;
 
-        LayerExtendedOutput output = getLayerDetails(params, layer);
+        Optional<UserLayerService> processorOpt = getUserContentProsessor(layerId);
+        if (processorOpt.isPresent()) {
+            UserLayerService proc = processorOpt.get();
+            if (!proc.hasViewPermission(layerId, user)) {
+                throw new ActionDeniedException("User doesn't have permissions for requested layer");
+            }
+            output = proc.describeLayer(layerId, lang, crs);
+        } else {
+            final OskariLayer layer = findMapLayer(layerId, user);
+            output = getLayerDetails(params, layer);
+        }
 
-        writeResponse(params, output);
+        ResponseHelper.writeJsonResponse(params, output);
     }
 
     private Optional<UserLayerService> getUserContentProsessor(String layerId) {
         return userContentProcessors.stream()
                 .filter(proc -> proc.isUserContentLayer(layerId))
                 .findAny();
-    }
-
-    private OskariLayer findLayer(String layerId, User user, Optional<UserLayerService> processor) throws ActionException {
-        return processor.isPresent()
-            ? findUserContentLayer(layerId, user, processor.get())
-            : findMapLayer(layerId, user);
-    }
-
-    private OskariLayer findUserContentLayer(String layerId, User user, UserLayerService processor) throws ActionDeniedException {
-        if (!processor.hasViewPermission(layerId, user)) {
-            throw new ActionDeniedException("User doesn't have permissions for requested layer");
-        }
-        return processor.getOskariLayer(layerId);
     }
 
     private OskariLayer findMapLayer(String layerId, User user) throws ActionException {
@@ -124,14 +118,6 @@ public class DescribeLayerHandler extends RestActionHandler {
         return permissionHelper.getLayer(id, user);
     }
 
-    private void writeResponse(ActionParameters params, LayerOutput output) throws ActionCommonException {
-        try {
-            ResponseHelper.writeResponse(params, MAPPER.writeValueAsString(output));
-        } catch (Exception e) {
-            throw new ActionCommonException("Error writing response", e);
-        }
-    }
-
     private LayerExtendedOutput getLayerDetails(ActionParameters params, OskariLayer layer) throws ActionException {
         final String lang = params.getLocale().getLanguage();
         final String crs = params.getHttpParam(PARAM_SRS);
@@ -139,7 +125,7 @@ public class DescribeLayerHandler extends RestActionHandler {
         final String layerType = layer.getType();
 
         LayerExtendedOutput output = new LayerExtendedOutput();
-        output.id = layerId;
+        output.id = Integer.toString(layerId);
         output.name = layer.getName(lang);
         JSONObject attributes = layer.getAttributes();
         if (!attributes.optBoolean(LayerJSONFormatter.KEY_ATTRIBUTE_IGNORE_COVERAGE, false)) {

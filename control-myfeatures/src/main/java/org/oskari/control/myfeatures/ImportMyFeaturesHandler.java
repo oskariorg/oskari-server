@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -20,10 +21,15 @@ import java.util.zip.ZipInputStream;
 import jakarta.servlet.http.HttpServletRequest;
 
 import fi.nls.oskari.control.*;
+
 import org.oskari.log.AuditLog;
 import org.oskari.map.myfeatures.service.MyFeaturesService;
 import org.oskari.map.userlayer.input.FeatureCollectionParser;
 import org.oskari.map.userlayer.input.FeatureCollectionParsers;
+import org.oskari.map.userlayer.service.UserLayerException;
+import org.oskari.util.ObjectMapperProvider;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.apache.commons.fileupload2.core.FileItem;
 import org.apache.commons.fileupload2.core.FileUploadException;
@@ -45,6 +51,8 @@ import fi.nls.oskari.domain.map.myfeatures.MyFeaturesFeature;
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesFieldInfo;
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesFieldType;
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayer;
+import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayerInfo;
+import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.service.OskariComponentManager;
@@ -78,6 +86,9 @@ public class ImportMyFeaturesHandler extends RestActionHandler {
     private static final String PROPERTY_MYFEATURES_MAX_FILE_SIZE_MB = "myfeatures.max.filesize.mb";
     private static final int MAX_FILES_IN_ZIP = 10;
 
+    private static final String PROPERTY_MYFEATURES_MAXFEATURES_COUNT = "myfeatures.maxfeatures.count";
+    private static final int MAX_FEATURES = PropertyUtil.getOptional(PROPERTY_MYFEATURES_MAXFEATURES_COUNT, -1);
+
     private static final Charset[] POSSIBLE_CHARSETS_USED_IN_ZIP_FILE_NAMES = {
             StandardCharsets.UTF_8,
             StandardCharsets.ISO_8859_1,
@@ -103,15 +114,23 @@ public class ImportMyFeaturesHandler extends RestActionHandler {
     private long unzippiedFileSizeLimit = -1;
 
     private MyFeaturesService myFeaturesService;
+    private ObjectMapper om;
 
-    public void setMyFeaturesService(MyFeaturesService myFeaturesService) {
-        this.myFeaturesService = myFeaturesService;
+    void setMyFeaturesService(MyFeaturesService myFeaturesService) {
+        this.myFeaturesService = Objects.requireNonNull(myFeaturesService);
+    }
+
+    void setObjectMapper(ObjectMapper om) {
+        this.om = Objects.requireNonNull(om);
     }
 
     @Override
     public void init() {
         if (myFeaturesService == null) {
-            myFeaturesService = OskariComponentManager.getComponentOfType(MyFeaturesService.class);
+            setMyFeaturesService(OskariComponentManager.getComponentOfType(MyFeaturesService.class));
+        }
+        if (om == null) {
+            setObjectMapper(ObjectMapperProvider.OM);
         }
     }
 
@@ -152,7 +171,10 @@ public class ImportMyFeaturesHandler extends RestActionHandler {
                     .withParam("id", layer.getId())
                     .added(AuditLog.ResourceType.MYFEATURES_LAYER);
 
-            writeResponse(params, layer);
+            String lang = params.getLocale().getLanguage();
+            MyFeaturesImportResponse response = getResponse(layer, lang, fc);
+
+            ResponseHelper.writeJsonResponse(params, om, response);
         } catch (ImportMyFeaturesException e) {
             if (!validFiles.isEmpty()){ // avoid to override with empty list
                 e.addContent(ImportMyFeaturesException.InfoType.FILES, validFiles);
@@ -182,6 +204,20 @@ public class ImportMyFeaturesHandler extends RestActionHandler {
                 }
             });
         }
+    }
+
+    private static MyFeaturesImportResponse getResponse(MyFeaturesLayer layer, String lang, SimpleFeatureCollection fc) {
+        MyFeaturesLayerInfo layerInfo = MyFeaturesLayerInfo.from(layer, lang);
+        int featuresSkipped = fc.size() - layer.getFeatureCount();
+
+        MyFeaturesImportWarning warning = new MyFeaturesImportWarning();
+        warning.setFeaturesSkipped(featuresSkipped);
+
+        MyFeaturesImportResponse response = new MyFeaturesImportResponse();
+        response.setLayer(layerInfo);
+        response.setWarning(warning);
+
+        return response;
     }
 
     private Charset determineCharsetForZipFileNames(FileItem zipFile) throws ActionException {
@@ -331,11 +367,12 @@ public class ImportMyFeaturesHandler extends RestActionHandler {
             File mainFile = unZip(zipFile, cs, validFiles, dir);
             parser = getParser(mainFile);
             return parser.parse(mainFile, sourceCRS, targetCRS);
-        } catch (ImportMyFeaturesException e) {
+        } catch (UserLayerException e) {
+            ImportMyFeaturesException ex = new ImportMyFeaturesException(e);
             if (parser != null) {
-                e.addContent(ImportMyFeaturesException.InfoType.PARSER, parser.getSuffix().toLowerCase());
+                ex.addContent(ImportMyFeaturesException.InfoType.PARSER, parser.getSuffix().toLowerCase());
             }
-            throw e;
+            throw ex;
         } catch (ServiceException e) {
             throw new ActionParamsException (e.getMessage());
         } finally {
@@ -432,10 +469,12 @@ public class ImportMyFeaturesHandler extends RestActionHandler {
 
     private MyFeaturesLayer store(SimpleFeatureCollection fc, String ownerUuid, Map<String, String> formParams) throws ImportMyFeaturesException {
         List<MyFeaturesFieldInfo> fields = getFields(fc.getSchema());
-        List<MyFeaturesFeature> features = toFeatures(fc, fields);
+        List<MyFeaturesFeature> features = toFeatures(fc, fields, MAX_FEATURES);
 
         MyFeaturesLayer layer = createLayer(ownerUuid, fields, formParams);
         myFeaturesService.createFeatures(layer.getId(), features);
+        // Fetch updated version (featureCount and extent)
+        layer = myFeaturesService.getLayer(layer.getId());
 
         return layer;
     }
@@ -450,13 +489,25 @@ public class ImportMyFeaturesHandler extends RestActionHandler {
             .collect(Collectors.toList());
     }
 
-    static List<MyFeaturesFeature> toFeatures(SimpleFeatureCollection fc, List<MyFeaturesFieldInfo> fields) {
-        List<MyFeaturesFeature> features = new ArrayList<>(fc.size());
+    static List<MyFeaturesFeature> toFeatures(SimpleFeatureCollection fc, List<MyFeaturesFieldInfo> fields, int maxFeatures) {
+        // Make sure limit it always positive
+        final int limit = maxFeatures > 0 ? maxFeatures : Integer.MAX_VALUE;
+        // Expect we don't skip any features in most cases (missing geometry) => optimal
+        final int initialCapacity = Math.min(fc.size(), limit);
+
+        List<MyFeaturesFeature> features = new ArrayList<>(initialCapacity);
         try (SimpleFeatureIterator it = fc.features()) {
+            int n = 0;
             while (it.hasNext()) {
                 SimpleFeature f = it.next();
+                if (f.getDefaultGeometry() == null) {
+                    continue;
+                }
                 MyFeaturesFeature myFeature = toFeature(f, fields);
                 features.add(myFeature);
+                if (++n == limit) {
+                    break;
+                }
             }
         }
         return features;
@@ -505,14 +556,17 @@ public class ImportMyFeaturesHandler extends RestActionHandler {
 
     private MyFeaturesLayer createLayer(String ownerUuid, List<MyFeaturesFieldInfo> fields, Map<String, String> formParams) {
         JSONObject locale = JSONHelper.createJSONObject(formParams.get(KEY_LOCALE));
-        // TODO: Do something with the style
         JSONObject style = JSONHelper.createJSONObject(formParams.get(KEY_STYLE));
+
+        WFSLayerOptions options = new WFSLayerOptions();
+        options.setDefaultFeatureStyle(style);
 
         MyFeaturesLayer layer = new MyFeaturesLayer();
         layer.setOwnerUuid(ownerUuid);
         layer.setLayerFields(fields);
         layer.setLocale(locale);
-        
+        layer.setLayerOptions(options);
+
         myFeaturesService.createLayer(layer);
         return layer;
     }
@@ -527,23 +581,6 @@ public class ImportMyFeaturesHandler extends RestActionHandler {
             return Optional.empty();
         }
         return Optional.of(MyFeaturesFieldInfo.of(name, type.get()));
-    }
-
-    private void writeResponse(ActionParameters params, MyFeaturesLayer layer) {
-        /*
-        String mapSrs = params.getHttpParam(ActionConstants.PARAM_SRS);
-        JSONObject userLayer = UserLayerDataService.parseUserLayer2JSON(ulayer, mapSrs);
-        JSONHelper.putValue(userLayer, "featuresCount", ulayer.getFeatures_count());
-        JSONObject permissions = UserLayerHandlerHelper.getPermissions();
-        JSONHelper.putValue(userLayer, "permissions", permissions);
-        if (ulayer.getFeatures_skipped() > 0) {
-            JSONObject featuresSkipped = new JSONObject();
-            JSONHelper.putValue(featuresSkipped, "featuresSkipped", ulayer.getFeatures_skipped());
-            JSONHelper.putValue(userLayer, "warning", featuresSkipped);
-        }
-        */
-        JSONObject resp = new JSONObject();
-        ResponseHelper.writeResponse(params, resp);
     }
 
 }

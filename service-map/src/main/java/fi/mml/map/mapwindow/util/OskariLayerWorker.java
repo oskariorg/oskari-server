@@ -15,6 +15,8 @@ import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.OskariLayerServiceMybatisImpl;
 import fi.nls.oskari.map.layer.formatters.LayerJSONFormatter;
 import fi.nls.oskari.util.JSONHelper;
+
+import org.oskari.maplayer.util.OskariLayerUtil;
 import org.oskari.permissions.PermissionService;
 import org.oskari.permissions.PermissionServiceMybatisImpl;
 import org.oskari.permissions.model.PermissionSet;
@@ -97,25 +99,20 @@ public class OskariLayerWorker {
         return getListOfMapLayers(layers, user, lang, isSecure, crs, isPublished, new PermissionSet(resources));
     }
 
+    @Deprecated
+    /**
+     * @deprecated {@link OskariLayerUtil#getLayersForUser}
+     */
     public static List<OskariLayer> getLayersForUser(User user, boolean isPublished) {
-        long start = System.currentTimeMillis();
-        List<OskariLayer> layers = mapLayerService.findAll();
-        LOG.info("Layers read in", System.currentTimeMillis() - start, "ms");
-        start = System.currentTimeMillis();
-        List<Resource> resources = permissionService.findResourcesByUser(user, ResourceType.maplayer);
-        LOG.info("Permissions read in", System.currentTimeMillis() - start, "ms");
-        return filterLayersWithResources(layers, new PermissionSet(resources), user, isPublished);
+        return OskariLayerUtil.getLayersForUser(mapLayerService, permissionService, user, isPublished);
     }
 
+    @Deprecated
+    /**
+     * @deprecated {@link OskariLayerUtil#filterLayersWithResources}
+     */
     public static List<OskariLayer> filterLayersWithResources(List<OskariLayer> layers, PermissionSet permissionSet, User user, boolean isPublished) {
-        PermissionType forViewing = isPublished ? PermissionType.VIEW_PUBLISHED : PermissionType.VIEW_LAYER;
-        return layers.stream()
-                .filter(layer -> !layer.isInternal())
-                .filter(layer -> layer.isSublayer() ||
-                        permissionSet.get(ResourceType.maplayer, getPermissionKey(layer))
-                                .map(r -> r.hasPermission(user, forViewing))
-                                .orElse(false))
-                .collect(Collectors.toList());
+        return OskariLayerUtil.filterLayersWithResources(layers, permissionSet, user, isPublished);
     }
 
     public static JSONObject getListOfMapLayers(final List<OskariLayer> layers,
@@ -154,8 +151,12 @@ public class OskariLayerWorker {
         return result;
     }
 
+    @Deprecated
+    /**
+     * @deprecated {@link OskariLayerUtil#getPermissionKey}
+     */
     public static String getPermissionKey(OskariLayer layer) {
-        return Integer.toString(layer.getId());
+        return OskariLayerUtil.getPermissionKey(layer);
     }
 
     /**

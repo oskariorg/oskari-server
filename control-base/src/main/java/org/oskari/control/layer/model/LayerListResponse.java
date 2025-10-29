@@ -3,6 +3,8 @@ package org.oskari.control.layer.model;
 import java.util.List;
 import java.util.Map;
 
+import org.oskari.domain.map.LayerOutput;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)

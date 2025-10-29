@@ -1,15 +1,16 @@
 package org.oskari.control.myfeatures;
 
-import java.io.ByteArrayOutputStream;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
+import org.json.JSONObject;
 import org.oskari.control.myfeatures.dto.CreateMyFeaturesLayer;
 import org.oskari.control.myfeatures.dto.UpdateMyFeaturesLayer;
 import org.oskari.map.myfeatures.service.MyFeaturesService;
 import org.oskari.user.User;
+import org.oskari.util.ObjectMapperProvider;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -19,6 +20,8 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.control.RestActionHandler;
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayer;
+import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayerFullInfo;
+import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayerInfo;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.util.ResponseHelper;
 
@@ -34,12 +37,18 @@ public class MyFeaturesLayerHandler extends RestActionHandler {
         this.service = Objects.requireNonNull(service);
     }
 
+    void setObjectMapper(ObjectMapper om) {
+        this.om = Objects.requireNonNull(om);
+    }
+
     @Override
     public void init() {
         if (service == null) {
             setService(OskariComponentManager.getComponentOfType(MyFeaturesService.class));
         }
-        this.om = new ObjectMapper();
+        if (om == null) {
+            setObjectMapper(ObjectMapperProvider.OM);
+        }
     }
 
     @Override
@@ -51,8 +60,18 @@ public class MyFeaturesLayerHandler extends RestActionHandler {
     public void handleGet(ActionParameters params) throws ActionException {
         String paramId = params.getHttpParam(PARAM_ID);
         User user = params.getUser();
-        List<MyFeaturesLayer> layers = getLayers(paramId, user);
-        ResponseHelper.writeResponse(params, toJSON(layers));
+        if (paramId == null || paramId.isBlank()) {
+            String language = params.getLocale().getLanguage();
+            List<MyFeaturesLayerInfo> layers = getLayersByUser(user, language);
+            ResponseHelper.writeJsonResponse(params, om, layers);
+        } else {
+            MyFeaturesLayerFullInfo layer = getLayerById(paramId, user);
+            if (layer == null) {
+                ResponseHelper.writeResponse(params, 404, new JSONObject().put("msg", "No such layer"));
+            } else {
+                ResponseHelper.writeJsonResponse(params, om, layer);
+            }
+        }
     }
 
     @Override
@@ -71,18 +90,17 @@ public class MyFeaturesLayerHandler extends RestActionHandler {
             throw new ActionParamsException(toJSONString(validationErrors));
         }
 
-        MyFeaturesLayer layer;
-        try {
-            layer = createLayer.toDomain(om);
-        } catch (Exception e) {
-            throw new ActionParamsException("Failed to convert to domain model", e);
-        }
-
+        MyFeaturesLayer layer = new MyFeaturesLayer();
         layer.setOwnerUuid(params.getUser().getUuid());
+        layer.setLayerFields(createLayer.getLayerFields());
+        layer.setLocale(new JSONObject(createLayer.getLocale()));
+        layer.getLayerOptions().setDefaultFeatureStyle(createLayer.getStyle());
 
         service.createLayer(layer);
 
-        ResponseHelper.writeResponse(params, toJSON(layer));
+        MyFeaturesLayerFullInfo response = MyFeaturesLayerFullInfo.from(layer);
+
+        ResponseHelper.writeJsonResponse(params, om, response);
     }
 
     @Override
@@ -101,19 +119,22 @@ public class MyFeaturesLayerHandler extends RestActionHandler {
             throw new ActionParamsException(toJSONString(validationErrors));
         }
 
-        MyFeaturesLayer layer;
-        try {
-            layer = updateLayer.toDomain(om);
-        } catch (Exception e) {
-            throw new ActionParamsException("Failed to convert to domain model", e);
+        // layerId parsing won't fail due to previous validation
+        UUID layerId = MyFeaturesLayer.parseLayerId(updateLayer.getId()).get();
+        MyFeaturesLayer layer = service.getLayer(layerId);
+        if (!canEdit(params.getUser(), layer)) {
+            ResponseHelper.writeError(params, "No such layer", 404);
+            return;
         }
 
-        if (!canEdit(params.getUser(), layer.getId())) {
-            ResponseHelper.writeError(params, "No such layer", 404);
-        } else {
-            service.updateLayer(layer);
-            ResponseHelper.writeResponse(params, toJSON(layer));
-        }
+        layer.setLocale(new JSONObject(updateLayer.getLocale()));
+        layer.getLayerOptions().setDefaultFeatureStyle(new JSONObject(updateLayer.getStyle()));
+
+        service.updateLayer(layer);
+
+        MyFeaturesLayerFullInfo response = MyFeaturesLayerFullInfo.from(layer);
+
+        ResponseHelper.writeJsonResponse(params, om, response);
     }
 
     @Override
@@ -128,48 +149,41 @@ public class MyFeaturesLayerHandler extends RestActionHandler {
     }
 
     private UUID parseLayerId(String paramId) throws ActionParamsException {
-        try {
-            return UUID.fromString(paramId);
-        } catch (Exception e) {
-            throw new ActionParamsException("Param " + PARAM_ID + " must be a valid UUID");
-        }
+        return MyFeaturesLayer.parseLayerId(paramId).orElseThrow(() ->
+            new ActionParamsException("Param " + PARAM_ID + " must be a valid UUID"));
     }
 
-    private List<MyFeaturesLayer> getLayers(String paramId, User user) throws ActionException {
-        if (paramId != null && !paramId.isBlank()) {
-            UUID layerId = parseLayerId(paramId);
-            MyFeaturesLayer layer = service.getLayer(layerId);
-            if (!canRead(user, layer)) {
-                return Collections.emptyList();
-            }
-            return Collections.singletonList(layer);
+    private MyFeaturesLayerFullInfo getLayerById(String paramId, User user) throws ActionException {
+        UUID layerId = parseLayerId(paramId);
+        MyFeaturesLayer layer = service.getLayer(layerId);
+        if (layer == null || !canRead(user, layer)) {
+            return null;
         }
-        return service.getLayersByOwnerUuid(user.getUuid());
+        return MyFeaturesLayerFullInfo.from(layer);
+    }
+
+    private List<MyFeaturesLayerInfo> getLayersByUser(User user, String lang) throws ActionException {
+        return service.getLayersByOwnerUuid(user.getUuid()).stream()
+            .map(layer -> MyFeaturesLayerInfo.from(layer, lang))
+            .collect(Collectors.toList());
     }
 
     private boolean canRead(User user, MyFeaturesLayer layer) {
-        return layer.isPublished() && layer.getOwnerUuid().equals(user.getUuid());
+        return layer.isPublished() || layer.getOwnerUuid().equals(user.getUuid());
     }
 
     private boolean canEdit(User user, UUID layerId) {
-        MyFeaturesLayer existing = service.getLayer(layerId);
-        return existing != null && existing.getOwnerUuid().equals(user.getUuid());
+        MyFeaturesLayer layer = service.getLayer(layerId);
+        return canEdit(user, layer);
+    }
+
+    private boolean canEdit(User user, MyFeaturesLayer layer) {
+        return layer != null && layer.getOwnerUuid().equals(user.getUuid());
     }
 
     private String toJSONString(Object obj) throws ActionException {
         try {
             return om.writeValueAsString(obj);
-        } catch (Exception e) {
-            throw new ActionException("Failed to encode response to JSON", e);
-        }
-    }
-
-    private ByteArrayOutputStream toJSON(Object obj) throws ActionException {
-        try {
-            int initialBufSize = 2048; // 2kB approriate initial size
-            ByteArrayOutputStream baos = new ByteArrayOutputStream(initialBufSize);
-            om.writeValue(baos, obj);
-            return baos;
         } catch (Exception e) {
             throw new ActionException("Failed to encode response to JSON", e);
         }

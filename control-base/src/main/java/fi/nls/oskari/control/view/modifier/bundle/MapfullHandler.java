@@ -3,8 +3,12 @@ package fi.nls.oskari.control.view.modifier.bundle;
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.OskariViewModifier;
 import org.oskari.user.User;
+import org.oskari.util.ObjectMapperProvider;
+
 import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayer;
+import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayerInfo;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.domain.map.view.ViewTypes;
 import fi.nls.oskari.log.LogFactory;
@@ -23,6 +27,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.oskari.map.myfeatures.service.MyFeaturesService;
 import org.oskari.map.userlayer.service.UserLayerDataService;
 import org.oskari.map.userlayer.service.UserLayerDbService;
 
@@ -32,6 +37,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @OskariViewModifier("mapfull")
 public class MapfullHandler extends BundleHandler {
@@ -66,6 +72,7 @@ public class MapfullHandler extends BundleHandler {
 
     private static final String PREFIX_MYPLACES = "myplaces_";
     private static final String PREFIX_USERLAYERS = "userlayer_";
+    private static final String PREFIX_MYFEATURES = "myf_";
     private static final Set<String> BUNDLES_HANDLING_MYPLACES_LAYERS = ConversionHelper.asSet(ViewModifier.BUNDLE_MYPLACES3);
 
     private static final String PLUGIN_LAYERSELECTION = "Oskari.mapframework.bundle.mapmodule.plugin.LayerSelectionPlugin";
@@ -76,6 +83,7 @@ public class MapfullHandler extends BundleHandler {
 
     private static MyPlacesService myPlaceService = null;
     private static UserLayerDbService userLayerService;
+    private static MyFeaturesService myFeaturesService;
     private static OskariLayerService mapLayerService;
 
     private JSONObject epsgMap = null;
@@ -85,6 +93,7 @@ public class MapfullHandler extends BundleHandler {
     public void init() {
         myPlaceService = OskariComponentManager.getComponentOfType(MyPlacesService.class);
         userLayerService = OskariComponentManager.getComponentOfType(UserLayerDbService.class);
+        myFeaturesService = OskariComponentManager.getComponentOfType(MyFeaturesService.class);
         mapLayerService = OskariComponentManager.getComponentOfType(OskariLayerService.class);
         epsgInit();
         pluginHandlers = new HashMap<>();
@@ -237,6 +246,7 @@ public class MapfullHandler extends BundleHandler {
         final List<Integer> layerIdList = new ArrayList<>();
         final List<Long> publishedMyPlaces = new ArrayList<>();
         final List<Long> publishedUserLayers = new ArrayList<>();
+        final List<UUID> publishedMyFeatures = new ArrayList<>();
 
         for (int i = 0; i < layersArray.length(); i++) {
             String layerId = null;
@@ -262,6 +272,13 @@ public class MapfullHandler extends BundleHandler {
                         publishedUserLayers.add(userLayerId);
                     } else {
                         LOGGER.warn("Found user layer in selected. Error parsing id with prefixed id: ", layerId);
+                    }
+                } else if (layerId.startsWith(PREFIX_MYFEATURES)) {
+                    try {
+                        UUID myFeaturesLayerId = MyFeaturesLayer.parseLayerId(layerId).get();
+                        publishedMyFeatures.add(myFeaturesLayerId);
+                    } catch (Exception ignore) {
+                        LOGGER.warn("Found myfeatures layer in selected. Error parsing id with prefixed id: ", layerId);
                     }
                 } else {
                     int id = ConversionHelper.getInt(layerId, -1);
@@ -303,6 +320,7 @@ public class MapfullHandler extends BundleHandler {
         final JSONArray prefetch = getLayersArray(struct);
         appendMyPlacesLayers(prefetch, publishedMyPlaces, user, viewID, lang, bundleIds, mapSRS);
         appendUserLayers(prefetch, publishedUserLayers, user, viewID, lang, bundleIds, mapSRS);
+        appendMyFeaturesLayers(prefetch, publishedMyFeatures, user, viewID, lang, bundleIds, mapSRS);
         return prefetch;
     }
 
@@ -382,6 +400,43 @@ public class MapfullHandler extends BundleHandler {
             final JSONObject json = UserLayerDataService.parseUserLayer2JSON(userLayer, mapSrs, lang);
             if (json != null) {
                 layerList.put(json);
+            }
+        }
+    }
+
+    private static void appendMyFeaturesLayers(
+        final JSONArray layerList,
+        final List<UUID> publishedMyFeaturesLayers,
+        final User user,
+        final long viewID,
+        final String lang,
+        final Set<String> bundleIds,
+        final String mapSrs) {
+        for (UUID id : publishedMyFeaturesLayers) {
+            final MyFeaturesLayer layer = myFeaturesService.getLayer(id);
+
+            if (layer == null) {
+                LOGGER.warn("Unable to find published myfeatures layer with id", id);
+                continue;
+            }
+
+            if (!layer.isPublished() && !layer.getOwnerUuid().equals(user.getUuid())) {
+                LOGGER.info("Found myfeatures layer in selected that is no longer published. ViewID:",
+                        viewID, "myfeatures layer id:", id);
+                // no longer published -> skip if isn't owned by user
+                continue;
+            }
+
+            // Override type to wfslayer
+            MyFeaturesLayerInfo info = MyFeaturesLayerInfo.from(layer, lang, OskariLayer.TYPE_WFS);
+            try {
+                String jsonString = ObjectMapperProvider.OM.writeValueAsString(info);
+                JSONObject json = new JSONObject(jsonString);
+                if (json != null) {
+                    layerList.put(json);
+                }
+            } catch (Exception e) {
+                LOGGER.warn(e, "Failed to encode/decode layer info");
             }
         }
     }

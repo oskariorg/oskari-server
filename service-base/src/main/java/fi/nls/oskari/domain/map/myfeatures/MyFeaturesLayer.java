@@ -1,8 +1,9 @@
 package fi.nls.oskari.domain.map.myfeatures;
 
-import java.time.OffsetDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -17,13 +18,15 @@ import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
 
 public class MyFeaturesLayer extends JSONLocalizedName {
 
+    public static final String PREFIX_LAYER_ID = "myf_";
+
     private static final String LOCALE_DESC = "desc";
     private static final String LOCALE_SOURCE = "source";
 
     private UUID id;
     private String ownerUuid;
-    private OffsetDateTime created;
-    private OffsetDateTime updated;
+    private Instant created;
+    private Instant updated;
 
     private List<MyFeaturesFieldInfo> layerFields;
     private int featureCount;
@@ -60,19 +63,19 @@ public class MyFeaturesLayer extends JSONLocalizedName {
         this.ownerUuid = ownerUuid;
     }
 
-    public OffsetDateTime getCreated() {
+    public Instant getCreated() {
         return created;
     }
 
-    public void setCreated(OffsetDateTime created) {
+    public void setCreated(Instant created) {
         this.created = created;
     }
 
-    public OffsetDateTime getUpdated() {
+    public Instant getUpdated() {
         return updated;
     }
 
-    public void setUpdated(OffsetDateTime updated) {
+    public void setUpdated(Instant updated) {
         this.updated = updated;
     }
 
@@ -93,6 +96,9 @@ public class MyFeaturesLayer extends JSONLocalizedName {
     }
 
     public List<MyFeaturesFieldInfo> getLayerFields() {
+        if (layerFields == null) {
+            layerFields = new ArrayList<>();
+        }
         return layerFields;
     }
 
@@ -207,6 +213,25 @@ public class MyFeaturesLayer extends JSONLocalizedName {
 
     public void setAttributes(JSONObject attributes) {
         setLayerAttributes(new WFSLayerAttributes(attributes));
+    }
+
+    public static Optional<UUID> parseLayerId(String id) {
+        if (id == null || id.isBlank()) {
+            return Optional.empty();
+        }
+        id = id.trim();
+        if (id.startsWith(PREFIX_LAYER_ID)) {
+            id = id.substring(PREFIX_LAYER_ID.length());
+        }
+        try {
+            return Optional.of(UUID.fromString(id));
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
+
+    public static String prefixLayerId(UUID layerId) {
+        return PREFIX_LAYER_ID + layerId;
     }
 
 }
