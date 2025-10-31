@@ -6,15 +6,12 @@ import fi.nls.oskari.domain.map.MyPlace;
 import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.domain.map.style.VectorStyle;
-import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
-import fi.nls.oskari.map.geometry.WKTHelper;
 import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.myplaces.service.MyPlacesFeaturesService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.JSONHelper;
-import fi.nls.oskari.util.WFSConversionHelper;
 
 import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 import org.geotools.data.simple.SimpleFeatureCollection;
@@ -24,7 +21,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
-import org.oskari.domain.map.FeatureProperties;
 import org.oskari.domain.map.LayerExtendedOutput;
 import org.oskari.geojson.GeoJSONReader;
 import org.oskari.myplaces.service.mybatis.MyPlacesFeaturesServiceMybatisImpl;
@@ -32,7 +28,6 @@ import org.oskari.service.user.UserLayerService;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 @Oskari
