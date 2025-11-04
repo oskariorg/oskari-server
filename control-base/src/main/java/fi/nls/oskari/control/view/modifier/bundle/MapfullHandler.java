@@ -97,8 +97,8 @@ public class MapfullHandler extends BundleHandler {
         mapLayerService = OskariComponentManager.getComponentOfType(OskariLayerService.class);
         epsgInit();
         pluginHandlers = new HashMap<>();
+        // Note! atleast WFSVectorLayerPluginViewModifier is being registered outside this handler
         registerPluginHandler(LogoPluginHandler.PLUGIN_NAME, new LogoPluginHandler());
-        registerPluginHandler(WfsLayerPluginHandler.PLUGIN_NAME, new WfsLayerPluginHandler());
     }
 
     public void registerPluginHandler (String pluginId, PluginHandler handler) {
