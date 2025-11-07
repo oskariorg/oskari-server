@@ -102,6 +102,21 @@ public class WKTHelper {
      *  possibly with extra interpolated points in-between of the original segments
      */
     public static String transformLayerCoverage(final String wkt, final String targetSRS) {
+        CoordinateReferenceSystem targetCrs = getCRS(targetSRS);
+        return transformLayerCoverage(wkt, targetCrs);
+    }
+
+    /**
+     * @param wkt       original geometry in EPSG:4326
+     * @param targetCrs
+     * @return null if:
+     *  - geometry is null
+     *  - geometry is not a Polygon
+     *  - any of the coordinates in the exterior ring is not within [-180,-90,180,90]
+     *  otherwise return the exterior ring of the polygon projected to the targetCrs and
+     *  possibly with extra interpolated points in-between of the original segments
+     */
+    public static String transformLayerCoverage(final String wkt, final CoordinateReferenceSystem targetCrs) {
         GeometryFactory gf = new GeometryFactory();
         Geometry geom = parseWKT(wkt, gf);
         if (geom == null || !(geom instanceof Polygon)) {
@@ -119,7 +134,6 @@ public class WKTHelper {
         CoordinateSequence cs = GeometryHelper.interpolateLinear(exterior, INTERPOLATE_THRESHOLD, gf);
         polygon = gf.createPolygon(cs);
         // input axis orientation is / must be x=lon y=lat
-        CoordinateReferenceSystem targetCrs = getCRS(targetSRS);
         final Geometry transformed = transform(polygon, CRS_EPSG_4326, targetCrs);
         // output is x=lon y=lat always in every projection
         return getWKT(transformed);
