@@ -1,0 +1,94 @@
+{
+  "lineageStatements": ["Aineisto pohjautuu ratainfratietojen hallintajärjestelmän aineistoon."],
+  "onlineResources": [
+    {
+      "name": "Radan kilometripisteet",
+      "url": "https://avoinapi.vaylapilvi.fi/vaylatiedot/ows?service=wms&request=getCapabilities"
+    },
+    {
+      "name": "Radan kilometripisteet",
+      "url": "https://avoinapi.vaylapilvi.fi/vaylatiedot/ows?service=wfs&request=getCapabilities"
+    },
+    {
+      "name": "Suomen Väylät",
+      "url": "https://suomenvaylat.vayla.fi/"
+    },
+    {
+      "name": "Ratatiedon tietosisällön kuvaus",
+      "url": "https://ava.vaylapilvi.fi/ava/Muut/Paikkatietopalvelut/Tietokuvaus/Vesivayla-_ja_rataverkkoaineistojen_tietokuvaus.xlsx"
+    }
+  ],
+  "fileIdentifier": "8af92011-b7a3-458d-a931-a6490daffb12",
+  "metadataResponsibleParties": [{
+    "organisationName": "Väylävirasto",
+    "electronicMailAddresses": ["paikkatieto@vayla.fi"]
+  }],
+  "metadataDateStamp": "2025-09-30T10:57Z",
+  "dataQualities": [{
+    "nodeName": "domainConsistency",
+    "dateTime": [],
+    "evaluationMethodType": null,
+    "measureIdentificationCode": null,
+    "measureIdentificationAuthorization": null,
+    "evaluationProcecdure": null,
+    "measureDescription": null,
+    "conformanceResultList": [{
+      "pass": false,
+      "specification": "KOMISSION ASETUS (EU) N:o 1089/2010, annettu 23 päivänä marraskuuta 2010, Euroopan parlamentin ja neuvoston direktiivin 2007/2/EY täytäntöönpanosta paikkatietoaineistojen ja -palvelujen yhteentoimivuuden osalta",
+      "explanation": "Aineisto ei ole INSPIRE-tietotuotemäärittelyn mukainen."
+    }],
+    "nameOfMeasure": null,
+    "evaluationMethodDescription": null,
+    "quantitativeResultList": []
+  }],
+  "referenceSystems": [],
+  "scopeCodes": ["dataset"],
+  "identifications": [{
+    "languages": [],
+    "citation": {
+      "date": {
+        "date": "2023-07-06",
+        "dateType": "publication"
+      },
+      "resourceIdentifiers": [],
+      "title": "Ratakilometrit"
+    },
+    "type": "data",
+    "useLimitations": [],
+    "otherConstraints": [],
+    "classifications": [],
+    "spatialResolutions": [],
+    "spatialRepresentationTypes": ["vector"],
+    "responsibleParties": [{
+      "organisationName": "Väylävirasto",
+      "electronicMailAddresses": ["paikkatieto@vayla.fi"]
+    }],
+    "descriptiveKeywords": [""],
+    "characterSets": [],
+    "abstractText": "Aineistossa on esitetty rataverkon tasakilometripisteet. Aineisto kattaa Väyläviraston omistamat rautatiet. Aineiston lähdejärjestelmä on Ratainfratietojen hallintajärjestelmän ratakohteiden hallintasovellus (RATKO).",
+    "temporalExtents": [],
+    "browseGraphics": [],
+    "topicCategories": ["transportation"],
+    "envelopes": [{
+      "northBoundLatitude": 6.321890015015153E-4,
+      "southBoundLatitude": 5.362393818161068E-4,
+      "westBoundLongitude": 22.511427081130197,
+      "eastBoundLongitude": 22.51153910055132
+    }],
+    "accessConstraints": ["otherRestrictions"]
+  }],
+  "distributionFormats": [
+    {
+      "name": "OGC:WMS",
+      "version": ""
+    },
+    {
+      "name": "OGC:WFS",
+      "version": ""
+    },
+    {
+      "name": "ESRI Shapefile",
+      "version": ""
+    }
+  ]
+}
