@@ -1,5 +1,11 @@
 # Migration guide
 
+## 3.2.0
+
+Changes related to library updates have been made to the frontend. You can more information about them in https://github.com/oskariorg/oskari-frontend/blob/develop/ReleaseNotes.md#320
+
+XMLUnit dependency has been updated. If you used it on application specific JUnit tests, you will need to modify the code. We have added a XmlTestHelper class on `shared-test-resources` that helps with the migration. See https://github.com/oskariorg/oskari-server/pull/1199 for details.
+
 ## 3.0.0
 
 The minimum Java version for Oskari 3.0 has been upgraded from 8 to 17.
