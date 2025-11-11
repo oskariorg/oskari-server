@@ -55,7 +55,10 @@
     },
     "type": "data",
     "useLimitations": [],
-    "otherConstraints": [],
+    "otherConstraints": [
+      "julkista saatavuutta ei ole rajoitettu",
+      "Nimeä 4.0 Kansainvälinen (CC BY 4.0)"
+    ],
     "classifications": [],
     "spatialResolutions": [],
     "spatialRepresentationTypes": ["vector"],

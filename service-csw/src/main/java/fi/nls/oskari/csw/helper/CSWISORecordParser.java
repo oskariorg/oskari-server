@@ -91,6 +91,7 @@ public class CSWISORecordParser {
     private XPathExpression XPATH_METADATA_RESPONSIBLE_PARTIES = null;
     private XPathExpression XPATH_METADATA_DATE = null;
     private XPathExpression XPATH_METADATA_REFERENCESYSTEM = null;
+    private XPathExpression XPATH_CHARACTER_STRING = null;
 
     public CSWISORecordParser() throws XPathExpressionException {
         xpath.setNamespaceContext(new CSWISORecordNamespaceContext());
@@ -195,7 +196,7 @@ public class CSWISORecordParser {
                 "./gmd:MD_LegalConstraints/gmd:accessConstraints/gmd:MD_RestrictionCode/@codeListValue");
 
         XPATH_DI_SI_RESOURCE_CONSTRAINTS_OTHER_CONSTRAINTS = xpath.compile(
-                "./gmd:MD_LegalConstraints/gmd:otherConstraints/gco:CharacterString");
+                "./gmd:MD_LegalConstraints/gmd:otherConstraints");
 
         XPATH_DI_SI_RESOURCE_CONSTRAINTS_CLASSIFICATIONS = xpath.compile(
                 "./gmd:MD_SecurityConstraints/gmd:classification/gmd:MD_ClassificationCode/@codeListValue");
@@ -260,7 +261,8 @@ public class CSWISORecordParser {
         // From root
         XPATH_METADATA_REFERENCESYSTEM = xpath.compile(
                 "./gmd:referenceSystemInfo/gmd:MD_ReferenceSystem/gmd:referenceSystemIdentifier/gmd:RS_Identifier/gmd:code/gco:CharacterString");
-
+        // OtherRestrictions can have characterString with locales or an anchor
+        XPATH_CHARACTER_STRING = xpath.compile("./gco:CharacterString");
 
     }
 
@@ -618,14 +620,28 @@ public class CSWISORecordParser {
         for (i = 0; i < rcNodes.getLength(); i++) {
             node = rcNodes.item(i);
             list = identification.getAccessConstraints();
-            nodeList = (NodeList) XPATH_DI_SI_RESOURCE_CONSTRAINTS_ACCESS_CONSTRAINTS.evaluate(node, XPathConstants.NODESET);
-            parseNodeListStrings(nodeList, list, pathToLocalizedValue);
+            // ./gmd:MD_LegalConstraints/gmd:accessConstraints/gmd:MD_RestrictionCode/@codeListValue
+            String codeListValue = (String) XPATH_DI_SI_RESOURCE_CONSTRAINTS_ACCESS_CONSTRAINTS.evaluate(node, XPathConstants.STRING);
+            if (codeListValue != null && !codeListValue.isEmpty()) {
+                list.add(codeListValue);
+            }
 
             list = identification.getOtherConstraints();
+            // ./gmd:MD_LegalConstraints/gmd:otherConstraints/
             nodeList = (NodeList) XPATH_DI_SI_RESOURCE_CONSTRAINTS_OTHER_CONSTRAINTS.evaluate(node, XPathConstants.NODESET);
-            parseNodeListStrings(nodeList, list, pathToLocalizedValue);
+            String anchor = getAnchor(nodeList);
+            if (anchor != null) {
+                // use anchor if it is available
+                list.add(anchor);
+            } else {
+                // parse localized free text
+                // "./gmd:MD_LegalConstraints/gmd:otherConstraints/gco:CharacterString" +
+                // "../gmd:PT_FreeText/gmd:textGroup/gmd:LocalisedCharacterString[@locale='#" + locales.get(locale.getISO3Language()) + "']"
+                parseFreeTextNodeFromOtherConstraints(nodeList, list, pathToLocalizedValue);
+            }
 
             list = identification.getClassifications();
+            // /gmd:MD_SecurityConstraints/gmd:classification/gmd:MD_ClassificationCode/@codeListValue
             nodeList = (NodeList) XPATH_DI_SI_RESOURCE_CONSTRAINTS_CLASSIFICATIONS.evaluate(node, XPathConstants.NODESET);
             parseNodeListStrings(nodeList, list, pathToLocalizedValue);
 
@@ -633,8 +649,43 @@ public class CSWISORecordParser {
             nodeList = (NodeList) XPATH_DI_SI_RESOURCE_CONSTRAINTS_USE_LIMITATIONS.evaluate(node, XPathConstants.NODESET);
             parseNodeListStrings(nodeList, list, pathToLocalizedValue);
         }
+    }
 
+    private void parseFreeTextNodeFromOtherConstraints(NodeList nodeList, List<String> list, XPathExpression pathToLocalizedValue) throws XPathExpressionException {
+        if (nodeList == null || nodeList.getLength() == 0) {
+            return;
+        }
 
+        Node node = nodeList.item(0);
+        // get the "CharacterString" as base node for the parseNodeListStrings() as it refers to ../PT_FreeText
+        nodeList = (NodeList) XPATH_CHARACTER_STRING.evaluate(node, XPathConstants.NODESET);
+        parseNodeListStrings(nodeList, list, pathToLocalizedValue);
+    }
+
+    /*
+    Just a very loopy way of parsing the anchor text value from this kind of structure:
+    <gmd:otherConstraints>
+        <gmx:Anchor xlink:href="http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/noLimitations">julkista saatavuutta ei ole rajoitettu</gmx:Anchor>
+    </gmd:otherConstraints>
+    */
+    private String getAnchor(NodeList nodeList) {
+        if (nodeList == null || nodeList.getLength() == 0) {
+            return null;
+        }
+        for (int i = 0; i < nodeList.getLength(); i++) {
+            Node otherConstraintNode = nodeList.item(i);
+            nodeList = otherConstraintNode.getChildNodes();
+            if (nodeList == null || nodeList.getLength() == 0) {
+                return null;
+            }
+            for (int n = 0; n < nodeList.getLength(); n++) {
+                Node node = nodeList.item(n);
+                if ("Anchor".equals(node.getLocalName())) {
+                    return getText(node);
+                }
+            }
+        }
+        return null;
     }
 
     private void parseBBoxes(final CSWIsoRecord.Identification identification, final NodeList extentNodes, MathTransform transform) throws TransformException {
