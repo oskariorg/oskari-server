@@ -5,7 +5,7 @@
 For a full list of changes see:
 https://github.com/oskariorg/oskari-server/milestone/56?closed=1
 
-### New functionality: myfeatures
+### Preview of upcoming functionality: myfeatures
 
 Server-side functionality for `myfeatures` functionality has been added for testing purposes. Testing the functionality requires the `myfeatures` Flyway-module to be enabled on `oskari-ext.properties` with:
 ```properties
