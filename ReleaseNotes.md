@@ -23,7 +23,7 @@ The functionality is not production ready and lacks UI for feature editing etc, 
 ### Other changes
 
 Fixed an issue with OGC API Features "capabilities" parsing that prevented layers from being added easily by pointing to a service url: https://github.com/oskariorg/oskari-server/pull/1219
-
+Improved parsing of restrictions for metadata (CSW).
 Fixed an issue with printing when layer required an additional parameter like apikey. Now params are included from the  `oskari_maplayer` database tables `params` column to requests from print functionality.
 
 Library updates:
