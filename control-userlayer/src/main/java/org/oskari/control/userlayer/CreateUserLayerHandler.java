@@ -257,7 +257,7 @@ public class CreateUserLayerHandler extends RestActionHandler {
             return null;
         }
         String name = ze.getName();
-        if (name.indexOf('.') == 0) {
+        if (isFileIgnored(name)) {
             ignored.put(name, "hidden");
             log.debug(name, "starts with '.', ignoring");
             return null;
@@ -275,6 +275,19 @@ public class CreateUserLayerHandler extends RestActionHandler {
         }
         log.debug(name, "accepted as valid filename");
         return name;
+    }
+
+    protected static boolean isFileIgnored(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            return true;
+        }
+        String[] parts = name.split("/");
+        for (int i = 0; i < parts.length; i++) {
+            if (parts[i].indexOf('.') == 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void checkZipContainsExactlyOneMainFile(Set<String> extensions) throws UserLayerException {

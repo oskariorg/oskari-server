@@ -12,6 +12,7 @@ import org.geotools.api.feature.simple.SimpleFeature;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.referencing.CRS;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.oskari.map.userlayer.input.SHPParser;
 
@@ -79,4 +80,12 @@ public class ImportMyFeaturesHandlerTest {
         return fields.stream().filter(x -> name.equals(x.getName())).findAny().get().getType();
     }
 
+    @Test
+    void isFileIgnored() {
+        Assertions.assertFalse(ImportMyFeaturesHandler.isFileIgnored("test.mif"));
+        Assertions.assertFalse(ImportMyFeaturesHandler.isFileIgnored("some/test.mif"));
+        Assertions.assertTrue(ImportMyFeaturesHandler.isFileIgnored(".test.mif"));
+        Assertions.assertTrue(ImportMyFeaturesHandler.isFileIgnored(".some/test.mif"));
+        Assertions.assertTrue(ImportMyFeaturesHandler.isFileIgnored("some/.test.mif"));
+    }
 }
