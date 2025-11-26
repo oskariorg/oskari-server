@@ -1,5 +1,36 @@
 # Release Notes
 
+## 3.2.0
+
+For a full list of changes see:
+https://github.com/oskariorg/oskari-server/milestone/56?closed=1
+
+### Preview of upcoming functionality: myfeatures
+
+Server-side functionality for `myfeatures` functionality has been added for testing purposes. Testing the functionality requires the `myfeatures` Flyway-module to be enabled on `oskari-ext.properties` with:
+```properties
+db.additional.modules=myfeatures
+```
+and the `control-myfeatures` included in the application dependencies:
+```xml
+<dependency>
+    <groupId>org.oskari</groupId>
+    <artifactId>control-myfeatures</artifactId>
+</dependency
+```
+The functionality is not production ready and lacks UI for feature editing etc, but at this stage could be used as a replacement for `userlayer` functionality (importing layers from files).
+
+### Other changes
+
+Fixed an issue with OGC API Features "capabilities" parsing that prevented layers from being added easily by pointing to a service url: https://github.com/oskariorg/oskari-server/pull/1219
+Improved parsing of restrictions for metadata (CSW).
+Fixed an issue with printing when layer required an additional parameter like apikey. Now params are included from the  `oskari_maplayer` database tables `params` column to requests from print functionality.
+
+Library updates:
+- XMLUnit updated 1.6 -> 2.10.4. See [Migration Guide](MigrationGuide.md) for details.
+- Spring core 6.2.9 -> 6.2.11
+- Spring security 6.5.3 -> 6.5.5
+
 ## 3.1.0
 
 For a full list of changes see:
