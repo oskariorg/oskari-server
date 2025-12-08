@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 import org.json.JSONObject;
 import org.oskari.capabilities.CapabilitiesService;
 import org.oskari.capabilities.MetadataHelper;
@@ -282,7 +281,7 @@ public class OskariMapLayerProvider extends LayerProvider {
     }
 
     // value will be not added if transform failed, that's ok since client can't handle it if it's in unknown projection
-    private String getCoverageWKT(final String wktWGS84, CoordinateReferenceSystem mapCrs) {
+    private String getCoverageWKT(final String wktWGS84, String mapCrs) {
         if (wktWGS84 == null || wktWGS84.isEmpty() || mapCrs == null) {
             return null;
         }
@@ -290,7 +289,7 @@ public class OskariMapLayerProvider extends LayerProvider {
             // WTK is saved as EPSG:4326 in database
             return WKTHelper.transformLayerCoverage(wktWGS84, mapCrs);
         } catch (Exception ex) {
-            LOG.debug("Error transforming coverage to", mapCrs.getName().toString(), "from", wktWGS84);
+            LOG.debug("Error transforming coverage to", mapCrs, "from", wktWGS84);
         }
         return null;
     }
@@ -305,14 +304,14 @@ public class OskariMapLayerProvider extends LayerProvider {
         output.controlData = getControlData(caps, attr, opts);
     }
 
-    private Map<String, Object> getCapabilitiesJSON(OskariLayer layer, CoordinateReferenceSystem crs) throws IllegalArgumentException {
+    private Map<String, Object> getCapabilitiesJSON(OskariLayer layer, String crs) throws IllegalArgumentException {
         if (!OskariLayer.TYPE_WMTS.equals(layer.getType())) {
             return JSONHelper.getObjectAsMap(layer.getCapabilities());
         }
         try {
             String capsJSON = layer.getCapabilities().toString();
             LayerCapabilitiesWMTS caps = CapabilitiesService.fromJSON(layer.getCapabilities().toString(), OskariLayer.TYPE_WMTS);
-            String crsName = CapabilitiesService.shortSyntaxEpsg(crs.getName().toString());
+            String crsName = CapabilitiesService.shortSyntaxEpsg(crs);
             TileMatrixLink link = determineTileMatrix(caps, crsName);
 
             // Make a copy so we don't mutate layer in cache

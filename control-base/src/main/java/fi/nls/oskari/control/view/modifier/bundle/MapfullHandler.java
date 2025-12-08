@@ -27,17 +27,24 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.oskari.domain.map.LayerExtendedOutput;
 import org.oskari.map.myfeatures.service.MyFeaturesService;
 import org.oskari.map.userlayer.service.UserLayerDataService;
 import org.oskari.map.userlayer.service.UserLayerDbService;
+import org.oskari.service.maplayer.DescribeLayerQuery;
+import org.oskari.service.maplayer.LayerProvider;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @OskariViewModifier("mapfull")
 public class MapfullHandler extends BundleHandler {
@@ -70,31 +77,23 @@ public class MapfullHandler extends BundleHandler {
     private static final String TERRAIN_TOKEN = PropertyUtil.getOptional("oskari.map.terrain.token");
     private static final String TERRAIN_URL = PropertyUtil.getOptional("oskari.map.terrain.url");
 
-    private static final String PREFIX_MYPLACES = "myplaces_";
-    private static final String PREFIX_USERLAYERS = "userlayer_";
-    private static final String PREFIX_MYFEATURES = "myf_";
-    private static final Set<String> BUNDLES_HANDLING_MYPLACES_LAYERS = ConversionHelper.asSet(ViewModifier.BUNDLE_MYPLACES3);
-
     private static final String PLUGIN_LAYERSELECTION = "Oskari.mapframework.bundle.mapmodule.plugin.LayerSelectionPlugin";
     private static final String PLUGIN_GEOLOCATION = "Oskari.mapframework.bundle.mapmodule.plugin.GeoLocationPlugin";
     private static final String PLUGIN_MYLOCATION = "Oskari.mapframework.bundle.mapmodule.plugin.MyLocationPlugin";
 
     public static final String EPSG_PROJ4_FORMATS = "epsg_proj4_formats.json";
 
-    private static MyPlacesService myPlaceService = null;
-    private static UserLayerDbService userLayerService;
-    private static MyFeaturesService myFeaturesService;
-    private static OskariLayerService mapLayerService;
+    private Collection<LayerProvider> layerProviders;
 
     private JSONObject epsgMap = null;
     private HashMap<String, PluginHandler> pluginHandlers = null;
 
 
     public void init() {
-        myPlaceService = OskariComponentManager.getComponentOfType(MyPlacesService.class);
-        userLayerService = OskariComponentManager.getComponentOfType(UserLayerDbService.class);
-        myFeaturesService = OskariComponentManager.getComponentOfType(MyFeaturesService.class);
-        mapLayerService = OskariComponentManager.getComponentOfType(OskariLayerService.class);
+        if (layerProviders == null) {
+            Map<String, LayerProvider> components = OskariComponentManager.getComponentsOfType(LayerProvider.class);
+            layerProviders = components.values();
+        }
         epsgInit();
         pluginHandlers = new HashMap<>();
         // Note! atleast WFSVectorLayerPluginViewModifier is being registered outside this handler
@@ -139,7 +138,7 @@ public class MapfullHandler extends BundleHandler {
             LOGGER.error(e, "Unable to overwrite layers");
         }
         // init terrain profile from properties if given
-        setTerrainFromProperties (mapfullConfig);
+        setTerrainFromProperties(mapfullConfig);
 
         // dummyfix: because migration tool added layer selection to all migrated maps
         // remove it from old published maps if only one layer is selected
@@ -235,78 +234,21 @@ public class MapfullHandler extends BundleHandler {
      * @param forceProxy              false to keep urls as is, true to proxy all layers
      * @return
      */
-    public static JSONArray getFullLayerConfig(final JSONArray layersArray,
+    public List<LayerExtendedOutput> getFullLayerConfig(final JSONArray layersArray,
                                                final User user, final String lang, final long viewID,
                                                final String viewType, final Set<String> bundleIds,
                                                final boolean modifyURLs,
                                                final String mapSRS,
                                                final boolean forceProxy) {
 
-        // Create a list of layer ids
-        final List<Integer> layerIdList = new ArrayList<>();
-        final List<Long> publishedMyPlaces = new ArrayList<>();
-        final List<Long> publishedUserLayers = new ArrayList<>();
-        final List<UUID> publishedMyFeatures = new ArrayList<>();
+        Set<String> layerIds = getLayerIds(layersArray);
 
-        for (int i = 0; i < layersArray.length(); i++) {
-            String layerId = null;
-            try {
-                final JSONObject layer = layersArray.getJSONObject(i);
-                layerId = layer.optString(KEY_ID);
-                if (layerId == null || layerIdList.contains(layerId)) {
-                    continue;
-                }
-                // special handling for myplaces and userlayer layers
-                if (layerId.startsWith(PREFIX_MYPLACES)) {
-                    final long categoryId =
-                            ConversionHelper.getLong(layerId.substring(PREFIX_MYPLACES.length()), -1);
-                    if (categoryId != -1) {
-                        publishedMyPlaces.add(categoryId);
-                    } else {
-                        LOGGER.warn("Found my places layer in selected. Error parsing id with category id: ", layerId);
-                    }
-                } else if (layerId.startsWith(PREFIX_USERLAYERS)) {
-                    final long userLayerId = ConversionHelper
-                            .getLong(layerId.substring(PREFIX_USERLAYERS.length()), -1);
-                    if (userLayerId != -1) {
-                        publishedUserLayers.add(userLayerId);
-                    } else {
-                        LOGGER.warn("Found user layer in selected. Error parsing id with prefixed id: ", layerId);
-                    }
-                } else if (layerId.startsWith(PREFIX_MYFEATURES)) {
-                    try {
-                        UUID myFeaturesLayerId = MyFeaturesLayer.parseLayerId(layerId).get();
-                        publishedMyFeatures.add(myFeaturesLayerId);
-                    } catch (Exception ignore) {
-                        LOGGER.warn("Found myfeatures layer in selected. Error parsing id with prefixed id: ", layerId);
-                    }
-                } else {
-                    int id = ConversionHelper.getInt(layerId, -1);
-                    if (id != -1) {
-                        // these should all be pointing at a layer in oskari_maplayer
-                        layerIdList.add(id);
-                    }
-                }
-            } catch (JSONException je) {
-                LOGGER.error(je, "Problem handling layer id:", layerId, "skipping it!.");
-            }
-        }
-
-        final List<OskariLayer> layers = mapLayerService.findByIdList(layerIdList);
-        if (forceProxy) {
-            layers.forEach(lyr -> {
-                if (lyr.getType().equals(OskariLayer.TYPE_3DTILES)) {
-                    // Proxy is not supported for 3D layers
-                    return;
-                }
-                JSONObject attributes = lyr.getAttributes();
-                if (attributes == null) {
-                    attributes = new JSONObject();
-                }
-                JSONHelper.putValue(attributes, "forceProxy", forceProxy);
-                lyr.setAttributes(attributes);
-            });
-        }
+        List<LayerExtendedOutput> described = layerProviders.stream()
+            .flatMap(provider -> layerIds.stream()
+                .filter(provider::maybeProvides)
+                .map(layerId -> new DescribeLayerQuery(viewID, layerId, user, lang, mapSRS))
+                .map(provider::describeLayer))
+            .collect(Collectors.toList());
 
         final JSONObject struct = OskariLayerWorker.getListOfMapLayers(
                 layers, user, lang, mapSRS, ViewTypes.PUBLISHED.equals(viewType), modifyURLs);
@@ -316,7 +258,6 @@ public class MapfullHandler extends BundleHandler {
                     layerIdList);
         }
 
-        // construct layers JSON
         final JSONArray prefetch = getLayersArray(struct);
         appendMyPlacesLayers(prefetch, publishedMyPlaces, user, viewID, lang, bundleIds, mapSRS);
         appendUserLayers(prefetch, publishedUserLayers, user, viewID, lang, bundleIds, mapSRS);
@@ -324,166 +265,39 @@ public class MapfullHandler extends BundleHandler {
         return prefetch;
     }
 
-    private static boolean isMyplacesBundlePresent(Set<String> bundleIdList) {
-        for(String bundleId : BUNDLES_HANDLING_MYPLACES_LAYERS) {
-            if(bundleIdList.contains(bundleId)) {
-                return true;
-            }
-        }
-        return false;
-    }
+    private List<
 
-    private static void appendMyPlacesLayers(final JSONArray layerList,
-                                             final List<Long> publishedMyPlaces,
-                                             final User user,
-                                             final long viewID,
-                                             final String lang,
-                                             final Set<String> bundleIds,
-                                             final String mapSrs) {
-        if (publishedMyPlaces.isEmpty()) {
-            return;
-        }
-        final boolean myPlacesBundlePresent = isMyplacesBundlePresent(bundleIds);
-        // get myplaces categories from service and generate layer jsons
-        final String uuid = user.getUuid();
-        final List<MyPlaceCategory> myPlacesLayers = myPlaceService
-                .getMyPlaceLayersById(publishedMyPlaces);
-
-        for (MyPlaceCategory mpLayer : myPlacesLayers) {
-            if (!mpLayer.isPublished() && !mpLayer.isOwnedBy(uuid)) {
-                LOGGER.info("Found my places layer in selected that is no longer published. ViewID:",
-                        viewID, "Myplaces layerId:", mpLayer.getId());
-                // no longer published -> skip if isn't current users layer
-                continue;
-            }
-            if (myPlacesBundlePresent && mpLayer.isOwnedBy(uuid)) {
-                // if the layer is users own -> myplaces2 bundle handles it
-                // so if myplaces2 is present we must skip the users layers
-                continue;
-            }
-
-            JSONObject myPlaceLayer = MyPlacesService.parseLayerToJSON(mpLayer, mapSrs, lang);
-            // Get as WFS layer
-            JSONHelper.putValue(myPlaceLayer, LayerJSONFormatter.KEY_TYPE, OskariLayer.TYPE_WFS);
-            layerList.put(myPlaceLayer);
-        }
-    }
-
-    private static void appendUserLayers(final JSONArray layerList,
-                                         final List<Long> publishedUserLayers,
-                                         final User user,
-                                         final long viewID,
-                                         final String lang,
-                                         final Set<String> bundleIds,
-                                         final String mapSrs) {
-        final boolean userLayersBundlePresent = bundleIds.contains(BUNDLE_MYPLACESIMPORT);
-        for (Long id : publishedUserLayers) {
-            final UserLayer userLayer = userLayerService.getUserLayerById(id);
-
-            if (userLayer == null) {
-                LOGGER.warn("Unable to find published user layer with id", id);
-                continue;
-            }
-
-            if (userLayersBundlePresent && userLayer.isOwnedBy(user.getUuid())) {
-                // skip if it's an own layer and myplacesimport bundle is present ->
-                // will be loaded via aforementioned bundle
-                continue;
-            }
-
-            if (!userLayer.isPublished() && !userLayer.isOwnedBy(user.getUuid())) {
-                LOGGER.info("Found user layer in selected that is no longer published. ViewID:",
-                        viewID, "User layer id:", userLayer.getId());
-                // no longer published -> skip if isn't current users layer
-                continue;
-            }
-            final JSONObject json = UserLayerDataService.parseUserLayer2JSON(userLayer, mapSrs, lang);
-            if (json != null) {
-                layerList.put(json);
-            }
-        }
-    }
-
-    private static void appendMyFeaturesLayers(
-        final JSONArray layerList,
-        final List<UUID> publishedMyFeaturesLayers,
-        final User user,
-        final long viewID,
-        final String lang,
-        final Set<String> bundleIds,
-        final String mapSrs) {
-        for (UUID id : publishedMyFeaturesLayers) {
-            final MyFeaturesLayer layer = myFeaturesService.getLayer(id);
-
-            if (layer == null) {
-                LOGGER.warn("Unable to find published myfeatures layer with id", id);
-                continue;
-            }
-
-            if (!layer.isPublished() && !layer.getOwnerUuid().equals(user.getUuid())) {
-                LOGGER.info("Found myfeatures layer in selected that is no longer published. ViewID:",
-                        viewID, "myfeatures layer id:", id);
-                // no longer published -> skip if isn't owned by user
-                continue;
-            }
-
-            // Override type to wfslayer
-            MyFeaturesLayerInfo info = MyFeaturesLayerInfo.from(layer, lang, OskariLayer.TYPE_WFS);
-            try {
-                String jsonString = ObjectMapperProvider.OM.writeValueAsString(info);
-                JSONObject json = new JSONObject(jsonString);
-                if (json != null) {
-                    layerList.put(json);
+    private static Set<String> getLayerIds(final JSONArray layersArray) {
+        Set<String> layerIds = new HashSet<>();
+        for (int i = 0; i < layersArray.length(); i++) {
+            JSONObject layer = layersArray.optJSONObject(i);
+            if (layer != null) {
+                String layerId = layer.optString(KEY_ID);
+                if (layerId != null) {
+                    layerIds.add(layerId);
                 }
-            } catch (Exception e) {
-                LOGGER.warn(e, "Failed to encode/decode layer info");
             }
         }
-    }
-
-    private static JSONArray getLayersArray(final JSONObject struct) {
-        try {
-            final Object layers = struct.get(KEY_LAYERS);
-            if (layers instanceof JSONArray) {
-                return (JSONArray) layers;
-            } else if (layers instanceof JSONObject) {
-                final JSONArray list = new JSONArray();
-                list.put(layers);
-                return list;
-            } else {
-                LOGGER.error("getSelectedLayersStructure returned garbage layers.");
-            }
-        } catch (JSONException jsonex) {
-            LOGGER.error("Could not set prefetch layers.");
-        }
-        return new JSONArray();
-    }
+        return layerIds;
+    } 
 
     private void copySelectedLayersToConfigLayers(final JSONArray mfConfigLayers,
                                                   final JSONArray mfStateLayers) {
+        if (mfStateLayers.isEmpty()) {
+            return;
+        }
+        Set<String> layerIds = getLayerIds(mfConfigLayers);
         for (int i = 0; i < mfStateLayers.length(); i++) {
-            String stateLayerId = null;
-            String confLayerId = null;
-            JSONObject stateLayer = null;
-            JSONObject confLayer = null;
-            try {
-                boolean inConfigLayers = false;
-                stateLayer = mfStateLayers.getJSONObject(i);
-                stateLayerId = stateLayer.optString(KEY_ID);
-
-                for (int j = 0; j < mfConfigLayers.length(); j++) {
-                    confLayer = mfConfigLayers.getJSONObject(j);
-                    confLayerId = confLayer.optString(KEY_ID);
-                    if (stateLayerId.equals(confLayerId)) {
-                        inConfigLayers = true;
-                    }
-                }
-                if (!inConfigLayers) {
-                    mfConfigLayers.put(stateLayer);
-                }
-            } catch (JSONException je) {
-                LOGGER.error(je, "Problem comparing layers - StateLayerId:",
-                        stateLayerId, "vs confLayerId:", confLayerId);
+            JSONObject stateLayer = mfStateLayers.optJSONObject(i);
+            if (stateLayer == null) {
+                continue;
+            }
+            String stateLayerId = stateLayer.optString(KEY_ID);
+            if (stateLayerId == null) {
+                continue;
+            }
+            if (layerIds.add(stateLayerId)) {
+                mfConfigLayers.put(stateLayer);
             }
         }
     }

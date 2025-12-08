@@ -1,17 +1,21 @@
 package org.oskari.service.maplayer;
 
-import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.user.User;
 
 import java.util.List;
 
 public class DescribeLayerQuery {
 
+    private final Long viewId;
     private final String layerId;
     private final User user;
     private final String lang;
-    private final CoordinateReferenceSystem crs;
+    private final String crs;
     private final List<String> styles;
+
+    public Long getViewId() {
+        return viewId;
+    }
 
     public String getLayerId() {
         return layerId;
@@ -25,7 +29,7 @@ public class DescribeLayerQuery {
         return lang;
     }
 
-    public CoordinateReferenceSystem getCrs() {
+    public String getCrs() {
         return crs;
     }
 
@@ -33,7 +37,12 @@ public class DescribeLayerQuery {
         return styles;
     }
 
-    public DescribeLayerQuery(String layerId, User user, String lang, CoordinateReferenceSystem crs, List<String> styles) {
+    public DescribeLayerQuery(Long viewId, String layerId, User user, String lang, String crs) {
+        this(viewId, layerId, user, lang, crs, null);
+    }
+
+    public DescribeLayerQuery(Long viewId, String layerId, User user, String lang, String crs, List<String> styles) {
+        this.viewId = viewId;
         this.layerId = layerId;
         this.user = user;
         this.lang = lang;

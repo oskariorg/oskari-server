@@ -15,8 +15,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
-import org.geotools.referencing.CRS;
 import org.json.JSONObject;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Envelope;
@@ -107,13 +105,13 @@ public class MyFeaturesLayerProvider extends LayerProvider {
         return describe;
     }
 
-    private String getCoverageWKT(Envelope extent, CoordinateReferenceSystem crs) {
+    private String getCoverageWKT(Envelope extent, String crs) {
         if (extent == null || crs == null) {
             return null;
         }
         try {
-            CoordinateReferenceSystem sourceCRS = getService().getNativeCRS();
-            if (CRS.equalsIgnoreMetadata(sourceCRS, crs)) {
+            String sourceCRS = getService().getNativeCRS();
+            if (sourceCRS.equals(crs)) {
                 return WKTHelper.getBBOX(extent.getMinX(), extent.getMinY(), extent.getMaxX(), extent.getMaxY());
             }
             Polygon p = toGeometry(extent);
