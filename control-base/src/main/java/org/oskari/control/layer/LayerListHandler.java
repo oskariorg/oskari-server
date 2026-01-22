@@ -1,27 +1,22 @@
 package org.oskari.control.layer;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.json.JSONObject;
-import org.oskari.capabilities.MetadataHelper;
-import org.oskari.capabilities.ogc.LayerCapabilitiesOGC;
 import org.oskari.control.layer.model.DataProviderOutput;
 import org.oskari.control.layer.model.LayerGroupOutput;
 import org.oskari.control.layer.model.LayerLinkOutput;
 import org.oskari.control.layer.model.LayerListResponse;
 import org.oskari.domain.map.LayerOutput;
-import org.oskari.map.myfeatures.service.MyFeaturesService;
-import org.oskari.maplayer.util.OskariLayerUtil;
-import org.oskari.permissions.PermissionService;
+import org.oskari.service.maplayer.LayerProvider;
 import org.oskari.service.maplayer.OskariMapLayerGroupService;
 import org.oskari.service.util.ServiceFactory;
 import org.oskari.user.User;
@@ -33,32 +28,22 @@ import fi.nls.oskari.control.RestActionHandler;
 import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.domain.map.JSONLocalized;
 import fi.nls.oskari.domain.map.MaplayerGroup;
-import fi.nls.oskari.domain.map.OskariLayer;
-import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayer;
 import fi.nls.oskari.map.layer.DataProviderService;
-import fi.nls.oskari.map.layer.OskariLayerService;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLink;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkService;
 import fi.nls.oskari.service.OskariComponentManager;
-import fi.nls.oskari.service.capabilities.CapabilitiesConstants;
 import fi.nls.oskari.util.ResponseHelper;
 
 @OskariActionRoute("LayerList")
 public class LayerListHandler extends RestActionHandler {
 
-    private OskariLayerService mapLayerService;
-    private PermissionService permissionService;
+    private Collection<LayerProvider> layerProviders;
     private OskariMapLayerGroupService groupService;
     private OskariLayerGroupLinkService linkService;
     private DataProviderService dataProviderService;
-    private MyFeaturesService myFeaturesService;
 
-    public void setMapLayerService(OskariLayerService mapLayerService) {
-        this.mapLayerService = mapLayerService;
-    }
-
-    public void setPermissionService(PermissionService permissionService) {
-        this.permissionService = permissionService;
+    public void setLayerProviders(Collection<LayerProvider> layerProviders) {
+        this.layerProviders = layerProviders;
     }
 
     public void setGroupService(OskariMapLayerGroupService groupService) {
@@ -73,18 +58,12 @@ public class LayerListHandler extends RestActionHandler {
         this.dataProviderService = service;
     }
 
-    public void setMyFeaturesService(MyFeaturesService myFeaturesService) {
-        this.myFeaturesService = myFeaturesService;
-    }
-
     @Override
     public void init() {
         // setup services if they haven't been initialized
-        if (mapLayerService == null) {
-            setMapLayerService(ServiceFactory.getMapLayerService());
-        }
-        if (permissionService == null) {
-            setPermissionService(ServiceFactory.getPermissionsService());
+        if (layerProviders == null) {
+            Map<String, LayerProvider> components = OskariComponentManager.getComponentsOfType(LayerProvider.class);
+            setLayerProviders(components.values());
         }
         if (groupService == null) {
             setGroupService(ServiceFactory.getOskariMapLayerGroupService());
@@ -94,9 +73,6 @@ public class LayerListHandler extends RestActionHandler {
         }
         if (dataProviderService == null) {
             setDataProviderService(ServiceFactory.getDataProviderService());
-        }
-        if (myFeaturesService == null) {
-            setMyFeaturesService(OskariComponentManager.getComponentOfType(MyFeaturesService.class));
         }
     }
 
@@ -109,68 +85,33 @@ public class LayerListHandler extends RestActionHandler {
     }
 
     protected LayerListResponse getLayerList(User user, String language) {
-        List<OskariLayer> mapLayers = getLayers(user);
-        List<MyFeaturesLayer> myFeaturesLayers = myFeaturesService.getLayersByOwnerUuid(user.getUuid());
-
-        List<LayerOutput> layers = Stream.concat(
-                mapLayers.stream().map(l -> mapLayer(l, language)),
-                myFeaturesLayers.stream().map(l -> mapMyFeaturesLayer(l, language))).collect(Collectors.toList());
+        List<LayerOutput> layers = getLayers(user, language);
 
         LayerListResponse response = new LayerListResponse();
         response.layers = layers;
-        response.groups = getLayerGroups(mapLayers, language, user.isAdmin());
-        response.providers = getProviders(mapLayers, language, user.isAdmin());
+        response.groups = getLayerGroups(layers, language, user.isAdmin());
+        response.providers = getProviders(layers, language, user.isAdmin());
 
         return response;
     }
 
-    private List<OskariLayer> getLayers(User user) {
-        return OskariLayerUtil.getLayersForUser(mapLayerService, permissionService, user, false);
+    private List<LayerOutput> getLayers(User user, String language) {
+        return layerProviders.stream()
+            .map(service -> service.listLayers(user, language))
+            .flatMap(List::stream)
+            .collect(Collectors.toList());
     }
 
-    private static LayerOutput mapLayer(OskariLayer layer, String language) {
-        LayerOutput out = new LayerOutput();
-        out.id = Integer.toString(layer.getId());
-        out.type = layer.getType();
-        out.name = layer.getName(language);
-        out.metadataUuid = getMetadataUuid(layer);
-        out.dataproviderId = layer.getDataproviderId();
-        out.created = layer.getCreated();
-        out.updated = layer.getUpdated();
-        return out;
-    }
-
-    private static LayerOutput mapMyFeaturesLayer(MyFeaturesLayer layer, String language) {
-        LayerOutput out = new LayerOutput();
-        out.id = layer.getId().toString();
-        out.type = layer.getType();
-        out.name = layer.getName(language);
-        out.metadataUuid = null;
-        out.dataproviderId = null;
-        out.created = layer.getCreated() != null ? new Date(layer.getCreated().toEpochMilli()) : null;
-        out.updated = layer.getUpdated() != null ? new Date(layer.getUpdated().toEpochMilli()) : null;
-        return out;
-    }
-
-    private static String getMetadataUuid(OskariLayer layer) {
-        String fixed = MetadataHelper.getIdFromMetadataUrl(layer.getMetadataId());
-        if (fixed != null) {
-            return fixed;
-        }
-        String olderMetadataCaps = layer.getCapabilities().optString(CapabilitiesConstants.KEY_METADATA, null);
-        if (olderMetadataCaps != null && !olderMetadataCaps.trim().isEmpty()) {
-            return olderMetadataCaps;
-        }
-        return layer.getCapabilities().optString(LayerCapabilitiesOGC.METADATA_UUID, null);
-    }
-
-    private List<LayerGroupOutput> getLayerGroups(List<OskariLayer> layers, String language, boolean isAdmin) {
+    private List<LayerGroupOutput> getLayerGroups(List<LayerOutput> layers, String language, boolean isAdmin) {
         Map<Integer, List<OskariLayerGroupLink>> linksByGroupId = linkService.findAll().stream()
                 .collect(Collectors.groupingBy(OskariLayerGroupLink::getGroupId));
 
         Predicate<OskariLayerGroupLink> linkFilter = __ -> true;
         if (!isAdmin) {
-            Set<Integer> layerIds = layers.stream().map(OskariLayer::getId).collect(Collectors.toSet());
+            Set<Integer> layerIds = layers.stream()
+                .filter(l -> isInteger(l.id))
+                .map(l -> Integer.parseInt(l.id))
+                .collect(Collectors.toSet());
             linkFilter = link -> layerIds.contains(link.getLayerId());
         }
 
@@ -236,6 +177,15 @@ public class LayerListHandler extends RestActionHandler {
         return out;
     }
 
+    private static boolean isInteger(String s) {
+        try {
+            Integer.parseInt(s);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     private static LayerGroupOutput toLayerGroupOutput(MaplayerGroup g, List<OskariLayerGroupLink> layers,
             String language) {
         JSONObject gg = g.getAsJSON(language);
@@ -257,12 +207,15 @@ public class LayerListHandler extends RestActionHandler {
         return out;
     }
 
-    private Map<Integer, DataProviderOutput> getProviders(List<OskariLayer> layers, String language, boolean isAdmin) {
+    private Map<Integer, DataProviderOutput> getProviders(List<LayerOutput> layers, String language, boolean isAdmin) {
         Predicate<DataProvider> filterFn = __ -> true;
         if (!isAdmin) {
             // For non-admins return only the providers that are referenced by some layer
             // we're about to return
-            Set<Integer> providerIds = layers.stream().map(OskariLayer::getDataproviderId).collect(Collectors.toSet());
+            Set<Integer> providerIds = layers.stream()
+                .filter(l -> l.dataproviderId != null)
+                .map(l -> l.dataproviderId)
+                .collect(Collectors.toSet());
             filterFn = p -> providerIds.contains(p.getId());
         }
         return dataProviderService.findAll().stream()

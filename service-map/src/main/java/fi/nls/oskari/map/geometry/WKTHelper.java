@@ -110,8 +110,8 @@ public class WKTHelper {
         Polygon polygon = (Polygon) geom;
         LineString exterior = polygon.getExteriorRing();
         boolean withinWGS84Bounds = GeometryHelper.isWithin(exterior.getCoordinateSequence(),
-                WGS84_LON_MIN, WGS84_LAT_MIN,
-                WGS84_LON_MAX, WGS84_LAT_MAX);
+        WGS84_LON_MIN, WGS84_LAT_MIN,
+        WGS84_LON_MAX, WGS84_LAT_MAX);
         if (!withinWGS84Bounds) {
             log.info("Layer coverage not within WGS84 bounds, not interpolating or transforming extent");
             return null;

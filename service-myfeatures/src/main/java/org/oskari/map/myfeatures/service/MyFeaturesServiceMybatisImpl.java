@@ -12,8 +12,6 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
-import org.geotools.referencing.CRS;
 
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.db.DatasourceHelper;
@@ -34,7 +32,7 @@ public class MyFeaturesServiceMybatisImpl extends MyFeaturesService {
     private static final String NATIVE_SRS = "oskari.native.srs";
     private static final String FALLBACK_NATIVE_SRS = "EPSG:3857";
 
-    private final CoordinateReferenceSystem nativeCRS;
+    private final String nativeCRS;
     private final int batchSize;
     private final SqlSessionFactory factory;
 
@@ -61,7 +59,7 @@ public class MyFeaturesServiceMybatisImpl extends MyFeaturesService {
     }
 
     @Override
-    public CoordinateReferenceSystem getNativeCRS() {
+    public String getNativeCRS() {
         return nativeCRS;
     }
 
@@ -264,14 +262,8 @@ public class MyFeaturesServiceMybatisImpl extends MyFeaturesService {
         }
     }
 
-    private static CoordinateReferenceSystem createNativeCRS() {
-        try {
-            String epsg = PropertyUtil.get(NATIVE_SRS, FALLBACK_NATIVE_SRS);
-            return CRS.decode(epsg, true);
-        } catch (Exception e) {
-            LOG.error(e, "Failed to create nativeCRS!");
-            return null;
-        }
+    private static String createNativeCRS() {
+        return PropertyUtil.get(NATIVE_SRS, FALLBACK_NATIVE_SRS);
     }
 
     private MyFeaturesMapper getMapper(SqlSession session) {

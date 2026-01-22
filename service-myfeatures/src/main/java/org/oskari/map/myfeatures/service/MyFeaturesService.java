@@ -3,8 +3,6 @@ package org.oskari.map.myfeatures.service;
 import java.util.List;
 import java.util.UUID;
 
-import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
-
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesFeature;
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayer;
 import fi.nls.oskari.service.OskariComponent;
@@ -15,7 +13,7 @@ import fi.nls.oskari.service.OskariComponent;
  */
 public abstract class MyFeaturesService extends OskariComponent {
 
-    public abstract CoordinateReferenceSystem getNativeCRS();
+    public abstract String getNativeCRS();
 
     public abstract MyFeaturesLayer getLayer(UUID layerId);
     public abstract void createLayer(MyFeaturesLayer layer);
