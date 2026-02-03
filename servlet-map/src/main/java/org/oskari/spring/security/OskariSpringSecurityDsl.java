@@ -19,22 +19,25 @@ public class OskariSpringSecurityDsl extends AbstractHttpConfigurer<OskariSpring
     private String logoutSuccessUrl = "/";
 
     @Override
-    public void init(HttpSecurity http) throws Exception {
+    public void init(HttpSecurity http) {
         // any method that adds another configurer
         // must be done in the init method
-
-        disableCSRF(http);
-        if (disableFrameOpts) {
-            disableFrameOptions(http);
-        }
-        if (disableHSTS) {
-            disableHSTS(http);
-        }
-        if (disableUnnecessarySessions) {
-            disableUnnecessarySessions(http);
-        }
-        if (useCommonLogout) {
-            configLogout(http);
+        try {
+            disableCSRF(http);
+            if (disableFrameOpts) {
+                disableFrameOptions(http);
+            }
+            if (disableHSTS) {
+                disableHSTS(http);
+            }
+            if (disableUnnecessarySessions) {
+                disableUnnecessarySessions(http);
+            }
+            if (useCommonLogout) {
+                configLogout(http);
+            }
+        } catch (Exception e) {
+            throw new IllegalStateException("Initialising OskariSpringSecurityDsl failed: ", e);
         }
     }
 
@@ -42,7 +45,7 @@ public class OskariSpringSecurityDsl extends AbstractHttpConfigurer<OskariSpring
         return new OskariSpringSecurityDsl();
     }
     @Override
-    public void configure(HttpSecurity http) throws Exception {
+    public void configure(HttpSecurity http) {
 
         if (loginFilter != null) {
             http.addFilterBefore(loginFilter, UsernamePasswordAuthenticationFilter.class);
