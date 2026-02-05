@@ -100,10 +100,10 @@ The one packaged without this is 2.15.1
         <postgresql.version>42.7.7</postgresql.version>
         <hikaricp.version>7.0.2</hikaricp.version>
 
-        <!-- https://github.com/spring-projects/spring-data-redis/blob/3.5.0/pom.xml#L27 -->
-        <jedis.version>6.1.0</jedis.version>
-        <!-- Jedis depends on org.json/json https://github.com/redis/jedis/blob/v6.0.0/pom.xml#L83 -->
-        <json.version>20250107</json.version>
+        <!-- https://github.com/spring-projects/spring-data-redis/blob/4.0.1/pom.xml#L27 -->
+        <jedis.version>7.0.0</jedis.version>
+        <!-- Jedis depends on org.json/json https://github.com/redis/jedis/blob/v7.0.0/pom.xml#L98 -->
+        <json.version>20250517</json.version>
 
         <quartz-scheduler.version>2.5.0</quartz-scheduler.version>
 
