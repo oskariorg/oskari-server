@@ -26,6 +26,22 @@ public class FeatureCollectionParsers {
 
     private FeatureCollectionParsers() {}
 
+    public static boolean hasDirectUploadByFileExt(String fileExt) {
+        if (fileExt == null) {
+            return false;
+        }
+        switch (fileExt.toUpperCase()) {
+        case GPXParser.SUFFIX:
+        case KMLParser.SUFFIX:
+        case GPKGParser.SUFFIX:
+        case JSONParser.SUFFIX:
+        case GeoJSONParser.SUFFIX:
+            return true;
+        default:
+            return false;
+        }
+    }
+
     public static boolean hasByFileExt(String fileExt) {
         if (fileExt == null) {
             return false;

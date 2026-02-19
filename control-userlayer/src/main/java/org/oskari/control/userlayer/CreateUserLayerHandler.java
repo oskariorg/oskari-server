@@ -50,12 +50,16 @@ import fi.nls.oskari.util.ResponseHelper;
 /**
  * CreateUserLayer allows users to upload a collection of features to be stored in the system.
  *
- * The uploaded file must be a ZIP file and must contain a set of valid files within.
- * Currently supported file formats are:
- * - GPX ({name}.gpx file must be found within the zip)
- * - KML ({name}.kml)
- * - MIF ({name}.mif)
- * - SHP ({name}.shp)
+ * Single-file formats can be uploaded directly (without ZIP wrapping):
+ * - GPX (.gpx)
+ * - KML (.kml)
+ * - GeoJSON (.geojson, .json)
+ * - GeoPackage (.gpkg)
+ *
+ * Multi-file formats must be uploaded as a ZIP file:
+ * - SHP (.shp with sidecar .dbf, .prj, .cpg files)
+ * - MIF (.mif with sidecar .mid file)
+ *
  * @see org.oskari.map.userlayer.input.FeatureCollectionParsers
  *
  * For some of the file formats (GPX, KML) the coordinate reference system is fixed
@@ -126,24 +130,29 @@ public class CreateUserLayerHandler extends RestActionHandler {
         SimpleFeatureCollection fc;
         Map<String, String> formParams;
         Set<String> validFiles = new HashSet<>();
-        FileItem zipFile = null;
+        FileItem uploadedFile = null;
         try {
             CoordinateReferenceSystem sourceCRS = decodeCRS(sourceEPSG);
             CoordinateReferenceSystem targetCRS = decodeCRS(targetEPSG);
-            zipFile = fileItems.stream()
+            uploadedFile = fileItems.stream()
                     .filter(f -> !f.isFormField())
-                    .findAny() // If there are more files we'll get the zip or fail miserably
+                    .findAny()
                     .orElseThrow(() -> new ActionParamsException("No file entries in FormData"));
-            log.debug("Using value from field:", zipFile.getFieldName(), "as the zip file");
-            Charset cs = determineCharsetForZipFileNames(zipFile);
-            validFiles = checkZip(zipFile, cs);
-            fc = parseFeatures(zipFile, cs, validFiles, sourceCRS, targetCRS);
+            log.debug("Using value from field:", uploadedFile.getFieldName(), "as uploaded file:", uploadedFile.getName());
+            String uploadedExt = getFileExt(uploadedFile.getName());
+            if (FeatureCollectionParsers.hasDirectUploadByFileExt(uploadedExt)) {
+                fc = parseDirectFile(uploadedFile, uploadedExt.toLowerCase(), sourceCRS, targetCRS);
+            } else {
+                Charset cs = determineCharsetForZipFileNames(uploadedFile);
+                validFiles = checkZip(uploadedFile, cs);
+                fc = parseFeatures(uploadedFile, cs, validFiles, sourceCRS, targetCRS);
+            }
             formParams = getFormParams(fileItems);
             log.debug("Parsed form parameters:", formParams);
             UserLayer userLayer = store(fc, params.getUser().getUuid(), formParams);
 
             AuditLog.user(params.getClientIp(), params.getUser())
-                    .withParam("filename", zipFile.getName())
+                    .withParam("filename", uploadedFile.getName())
                     .withParam("id", userLayer.getId())
                     .added(AuditLog.ResourceType.USERLAYER);
 
@@ -153,18 +162,18 @@ public class CreateUserLayerHandler extends RestActionHandler {
                 e.addContent(UserLayerException.InfoType.FILES, validFiles);
             }
             log.error("User uuid:", params.getUser().getUuid(),
-                    "zip:", zipFile == null ? "no file" : zipFile.getName(),
+                    "file:", uploadedFile == null ? "no file" : uploadedFile.getName(),
                     "info:", e.getOptions().toString());
 
             AuditLog.user(params.getClientIp(), params.getUser())
-                    .withParam("filename", zipFile.getName())
+                    .withParam("filename", uploadedFile.getName())
                     .withMsg(e.getMessage())
                     .errored(AuditLog.ResourceType.USERLAYER);
 
             throw new ActionParamsException(e.getMessage(), e.getOptions());
         } catch (ActionException e) {
             log.error("User uuid:", params.getUser().getUuid(),
-                    "zip:", zipFile == null ? "no file" : zipFile.getName(),
+                    "file:", uploadedFile == null ? "no file" : uploadedFile.getName(),
                     "files found ("+ validFiles.size() + ") including:",
                     validFiles.stream().collect(Collectors.joining(",")));
             throw e;
@@ -208,7 +217,7 @@ public class CreateUserLayerHandler extends RestActionHandler {
         }
     }
 
-    private List<FileItem> getFileItems(HttpServletRequest request) throws ActionException {
+    protected List<FileItem> getFileItems(HttpServletRequest request) throws ActionException {
         try {
             request.setCharacterEncoding("UTF-8");
             JakartaServletFileUpload upload = new JakartaServletFileUpload(diskFileItemFactory);
@@ -320,6 +329,41 @@ public class CreateUserLayerHandler extends RestActionHandler {
             log.debug("Unable to read value for field", item.getFieldName());
         }
         return null;
+    }
+
+    SimpleFeatureCollection parseDirectFile(FileItem uploadedFile,
+            String ext,
+            CoordinateReferenceSystem sourceCRS,
+            CoordinateReferenceSystem targetCRS) throws UserLayerException, ActionParamsException {
+        File dir = null;
+        FeatureCollectionParser parser = null;
+        try {
+            dir = makeRandomTempDirectory();
+            File mainFile = new File(dir, "a." + ext);
+            try (InputStream in = uploadedFile.getInputStream();
+                    FileOutputStream fos = new FileOutputStream(mainFile)) {
+                IOHelper.copy(in, fos, userlayerMaxFileSize);
+            } catch (EOFException e) {
+                throw new UserLayerException("File too large. " + e.getMessage(),
+                        UserLayerException.ErrorType.INVALID_SIZE);
+            } catch (IOException e) {
+                throw new UserLayerException("Failed to write uploaded file",
+                        UserLayerException.ErrorType.INVALID_ZIP);
+            }
+            parser = getParser(mainFile);
+            return parser.parse(mainFile, sourceCRS, targetCRS);
+        } catch (UserLayerException e) {
+            if (parser != null) {
+                e.addContent(UserLayerException.InfoType.PARSER, parser.getSuffix().toLowerCase());
+            }
+            throw e;
+        } catch (ServiceException e) {
+            throw new ActionParamsException(e.getMessage());
+        } finally {
+            if (dir != null) {
+                deleteDir(dir);
+            }
+        }
     }
 
     private SimpleFeatureCollection parseFeatures(FileItem zipFile,
@@ -439,7 +483,7 @@ public class CreateUserLayerHandler extends RestActionHandler {
         return FeatureCollectionParsers.getByFileExt(ext);
     }
 
-    private UserLayer store(SimpleFeatureCollection fc, String uuid, Map<String, String> formParams)
+    protected UserLayer store(SimpleFeatureCollection fc, String uuid, Map<String, String> formParams)
             throws UserLayerException {
             UserLayer userLayer = createUserLayer(fc, uuid, formParams);
             List<UserLayerData> userLayerDataList = UserLayerDataService.createUserLayerData(fc, uuid);
@@ -455,7 +499,7 @@ public class CreateUserLayerHandler extends RestActionHandler {
         return UserLayerDataService.createUserLayer(fc, uuid, locale, style);
     }
 
-    private void writeResponse(ActionParameters params, UserLayer ulayer) {
+    protected void writeResponse(ActionParameters params, UserLayer ulayer) {
         String mapSrs = params.getHttpParam(ActionConstants.PARAM_SRS);
         JSONObject userLayer = UserLayerDataService.parseUserLayer2JSON(ulayer, mapSrs);
 
