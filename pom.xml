@@ -89,7 +89,7 @@ The one packaged without this is 2.15.1
 
         <jsoup.version>1.21.2</jsoup.version>
 
-        <jackson.version>2.20.0</jackson.version>
+        <jackson.version>2.21.1</jackson.version>
         <jackson-databind.version>2.20.0</jackson-databind.version>
         <jackson-annotations.version>2.20</jackson-annotations.version>
         <fi.mml.nameregister.version>1.0</fi.mml.nameregister.version>
