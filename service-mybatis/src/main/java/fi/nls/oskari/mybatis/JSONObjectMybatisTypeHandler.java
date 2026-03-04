@@ -40,7 +40,7 @@ public class JSONObjectMybatisTypeHandler extends BaseTypeHandler<JSONObject> {
         return valueOf(cs.getString(columnIndex));
     }
 
-    public JSONObject valueOf(String s) {
+    public static JSONObject valueOf(String s) {
         if (s == null) {
             return new JSONObject();
         }
