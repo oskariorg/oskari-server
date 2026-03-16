@@ -4,6 +4,7 @@ import fi.nls.oskari.cache.JedisManager;
 import fi.nls.oskari.control.ActionControl;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import jakarta.servlet.http.Cookie;
 import org.oskari.cluster.ClusterManager;
 import org.oskari.spring.extension.OskariParamMethodArgumentResolver;
 import org.oskari.spring.extension.OskariViewResolver;
@@ -31,6 +32,8 @@ import org.springframework.web.servlet.view.JstlView;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.servlet.ServletContext;
+
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -78,14 +81,12 @@ public class SpringConfig implements WebMvcConfigurer, ServletContextAware, Appl
 
     @Bean(name = "localeResolver")
     public LocaleResolver localeResolver() {
-        ValidatingCookieLocaleResolver resolver = new ValidatingCookieLocaleResolver();
+        ValidatingCookieLocaleResolver resolver = new ValidatingCookieLocaleResolver("oskari.language");
         resolver.setDefaultLocale(new Locale(PropertyUtil.getDefaultLanguage()));
         resolver.setSupportedLocales(PropertyUtil.getSupportedLocales());
         resolver.setSupportedLanguages(PropertyUtil.getSupportedLanguages());
-        resolver.setCookieName("oskari.language");
-        resolver.setCookieMaxAge(-1);
+        resolver.setCookieMaxAge(Duration.ofSeconds(-1));
         resolver.setCookiePath(servletContext.getContextPath());
-
         return resolver;
     }
     //  --------- /locale handling -------------

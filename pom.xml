@@ -47,8 +47,8 @@
         <jdk.version>17</jdk.version>
         <oskari.version>${project.version}</oskari.version>
 
-        <spring.version>6.2.11</spring.version>
-        <spring-security.version>6.5.5</spring-security.version>
+        <spring.version>7.0.3</spring.version>
+        <spring-security.version>7.0.2</spring-security.version>
         <!--
         session-bom 3.4.1 uses:
         https://github.com/spring-projects/spring-session/blob/3.5.0/gradle/libs.versions.toml#L41-L43
@@ -63,7 +63,7 @@
          - https://github.com/spring-projects/spring-data-redis/blob/3.5.0/pom.xml#L27
          Hence we need the same jedis version
          -->
-        <spring.session.version>3.5.2</spring.session.version>
+        <spring.session.version>4.0.1</spring.session.version>
 
         <jakarta.servlet.version>6.0.0</jakarta.servlet.version>
         <jakarta.servlet.jsp.version>3.1.0</jakarta.servlet.jsp.version>
@@ -100,10 +100,10 @@ The one packaged without this is 2.15.1
         <postgresql.version>42.7.7</postgresql.version>
         <hikaricp.version>7.0.2</hikaricp.version>
 
-        <!-- https://github.com/spring-projects/spring-data-redis/blob/3.5.0/pom.xml#L27 -->
-        <jedis.version>6.1.0</jedis.version>
-        <!-- Jedis depends on org.json/json https://github.com/redis/jedis/blob/v6.0.0/pom.xml#L83 -->
-        <json.version>20250107</json.version>
+        <!-- https://github.com/spring-projects/spring-data-redis/blob/4.0.1/pom.xml#L27 -->
+        <jedis.version>7.0.0</jedis.version>
+        <!-- Jedis depends on org.json/json https://github.com/redis/jedis/blob/v7.0.0/pom.xml#L98 -->
+        <json.version>20250517</json.version>
 
         <quartz-scheduler.version>2.5.0</quartz-scheduler.version>
 

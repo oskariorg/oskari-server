@@ -20,6 +20,11 @@ public class ValidatingCookieLocaleResolver extends CookieLocaleResolver {
         super();
     }
 
+    public ValidatingCookieLocaleResolver(String cookieName) {
+        super(cookieName);
+
+    }
+
     public void setSupportedLocales(String[] locales) {
         this.supportedLocales = locales;
     }
@@ -51,7 +56,11 @@ public class ValidatingCookieLocaleResolver extends CookieLocaleResolver {
             request.setAttribute(CookieLocaleResolver.LOCALE_REQUEST_ATTRIBUTE_NAME, locale);
             return locale;
         }
-        return super.determineDefaultLocale(request);
+        if (this.getDefaultLocale() != null) {
+            return StringUtils.parseLocaleString(this.getDefaultLocale().getLanguage());
+        }
+
+        return null;
     }
 
 }
