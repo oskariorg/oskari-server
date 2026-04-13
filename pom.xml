@@ -123,7 +123,7 @@ The one packaged without this is 2.15.1
         <!-- Test deps versions -->
         <mockito.version>5.19.0</mockito.version>
         <!-- https://github.com/junit-team/junit-framework/wiki/Upgrading-to-JUnit-6.0 -->
-        <junit.version>5.14.3</junit.version>
+        <junit.version>6.0.3</junit.version>
         <hamcrest.version>2.2</hamcrest.version>
         <xmlunit.version>2.11.0</xmlunit.version>
         <h2database.version>2.4.240</h2database.version>
