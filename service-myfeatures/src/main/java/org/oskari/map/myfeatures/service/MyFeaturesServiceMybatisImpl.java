@@ -126,7 +126,7 @@ public class MyFeaturesServiceMybatisImpl extends MyFeaturesService {
             return null;
         }
         try (SqlSession session = factory.openSession()) {
-            MyFeaturesFeature f = getMapper(session).findFeatureById(featureId);
+            MyFeaturesFeature f = getMapper(session).findFeatureById(layerId, featureId);
             if (f != null) {
                 setNativeSRID(f);
             }
@@ -159,7 +159,7 @@ public class MyFeaturesServiceMybatisImpl extends MyFeaturesService {
             feature.setUpdated(now);
             feature.getGeometry();
 
-            mapper.updateFeature(feature);
+            mapper.updateFeature(layerId, feature);
             mapper.refreshLayerMetadata(layerId);
 
             session.commit();
@@ -171,7 +171,7 @@ public class MyFeaturesServiceMybatisImpl extends MyFeaturesService {
         layerId = Objects.requireNonNull(layerId);
         try (SqlSession session = factory.openSession()) {
             MyFeaturesMapper mapper = getMapper(session);
-            mapper.deleteFeature(featureId);
+            mapper.deleteFeature(layerId, featureId);
             mapper.refreshLayerMetadata(layerId);
             session.commit();
         }

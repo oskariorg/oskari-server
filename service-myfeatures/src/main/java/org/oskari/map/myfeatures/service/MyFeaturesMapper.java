@@ -80,17 +80,17 @@ public interface MyFeaturesMapper {
         @Result(property="geometry", column="geom"),
         @Result(property="properties", column="properties")
     })
-    public MyFeaturesFeature findFeatureById(long featureId);
+    public MyFeaturesFeature findFeatureById(UUID layerId, long featureId);
 
     @Select("UPDATE myfeatures_feature SET " +
-            "updated = #{updated}, " +
-            "geom = #{geometry}, " +
-            "properties = #{properties}::json " +
-            "WHERE id = #{id}")
-    public void updateFeature(MyFeaturesFeature feature);
+            "updated = #{feature.updated}, " +
+            "geom = #{feature.geometry}, " +
+            "properties = #{feature.properties}::json " +
+            "WHERE layer_id = #{layerId} AND id = #{feature.id}")
+    public void updateFeature(UUID layerId, MyFeaturesFeature feature);
 
-    @Delete("DELETE FROM myfeatures_feature WHERE id = #{featureId}")
-    public void deleteFeature(long featureId);
+    @Delete("DELETE FROM myfeatures_feature WHERE layer_id = #{layerId} AND id = #{featureId}")
+    public void deleteFeature(UUID layerId, long featureId);
 
     @Select("SELECT id, created, updated, ST_AsBinary(geom) AS geom, properties FROM myfeatures_feature WHERE layer_id = #{layerId}")
     @ResultMap("MyFeaturesFeatureResult")
