@@ -29,7 +29,7 @@ public class V1_1__migrate_published_userlayers extends BaseJavaMigration {
     public void migrate(Context ctx) throws Exception {
         DatasourceHelper helper = DatasourceHelper.getInstance();
         List<UserLayerIdToLayerId> mapping = null;
-        try (Connection c = helper.getDataSource(helper.getOskariDataSourceName("userlayer")).getConnection()) {
+        try (Connection c = helper.getDataSource(helper.getOskariDataSourceName("myfeatures")).getConnection()) {
             mapping = getMapping(c);
         }
         if (mapping.isEmpty()) {
