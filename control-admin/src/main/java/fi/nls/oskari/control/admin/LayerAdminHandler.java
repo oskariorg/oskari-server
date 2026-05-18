@@ -12,6 +12,8 @@ import fi.nls.oskari.csw.helper.CSW;
 import fi.nls.oskari.csw.helper.CSW.RefreshResult;
 import fi.nls.oskari.db.DatasourceHelper;
 
+import fi.nls.oskari.map.geometry.WKTHelper;
+import fi.nls.oskari.map.layer.formatters.LayerJSONFormatter;
 import org.oskari.user.User;
 import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.domain.map.OskariLayer;
@@ -47,6 +49,7 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
     private static final Logger LOG = LogFactory.getLogger(LayerAdminHandler.class);
 
     private static final String PARAM_LAYER_ID = "id";
+    private static final String PARAM_SRS = "srs";
     private static final String KEY_LOCALIZED_NAME = "name";
     private static final String KEY_LOCALIZED_TITLE = "subtitle";
     // Response from service
@@ -102,9 +105,14 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
     @Override
     public void handleGet(ActionParameters params) throws ActionException {
         final int layerId = params.getRequiredParamInt(PARAM_LAYER_ID);
+        String srs = params.getHttpParam(PARAM_SRS, PropertyUtil.get("oskari.native.srs", "EPSG:4326"));
         OskariLayer ml = getMapLayer(params.getUser(), layerId);
         boolean capabilitiesUpdated = updateCapabilities(ml);
         MapLayerAdminOutput output = getLayerForEdit(params.getUser(), ml);
+        final JSONObject attributes = ml.getAttributes();
+        if (!attributes.optBoolean(LayerJSONFormatter.KEY_ATTRIBUTE_IGNORE_COVERAGE, false)) {
+            output.setCoverage(WKTHelper.transformLayerCoverage(ml.getGeometry(), srs));
+        }
         if (!capabilitiesUpdated) {
             output.setWarn(KEY_UPDATE_CAPA_FAIL);
         }
