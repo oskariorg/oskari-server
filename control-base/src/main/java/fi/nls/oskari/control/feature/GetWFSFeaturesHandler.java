@@ -32,6 +32,7 @@ public class GetWFSFeaturesHandler extends AbstractWFSFeaturesHandler {
 
     protected static final String ERR_BBOX_INVALID = "Invalid bbox";
     protected static final String ERR_GEOJSON_ENCODE_FAIL = "Failed to write GeoJSON";
+    protected static final String HEADER_HAS_MORE_FEATURES = "X-Maybe-Has-More-Features";
 
     private static final String PARAM_BBOX = "bbox";
 
@@ -69,6 +70,14 @@ public class GetWFSFeaturesHandler extends AbstractWFSFeaturesHandler {
             OutputStreamWriter writer = new OutputStreamWriter(baos, StandardCharsets.UTF_8);
             int decimals = GeoJSONUtil.getNumDecimals(ProjectionHelper.isUnitDegrees(targetCRS));
             new FeatureJSON(new GeometryJSON(decimals)).writeFeatureCollection(fc, writer);
+            // Oskari-specific layers (userlayer/myplaces/myfeatures) don't apply maxFeatures limit
+            int maxFeatures = contentProcessor.isPresent()
+                ? Integer.MAX_VALUE
+                : OskariWFSClient.getMaxFeatures(layer);
+            // fc should be an in-memory collection by this point, so size() should be cheap
+            if (fc.size() >= maxFeatures) {
+                params.getResponse().setHeader(HEADER_HAS_MORE_FEATURES, "true");
+            }
             ResponseHelper.writeResponse(params, 200, GEOJSON_CONTENT_TYPE, baos);
         } catch (IOException e) {
             throw new ActionCommonException(ERR_GEOJSON_ENCODE_FAIL, e);
