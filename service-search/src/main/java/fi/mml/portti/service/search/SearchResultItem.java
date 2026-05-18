@@ -31,6 +31,7 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
     public static final String KEY_ZOOMSCALE = "zoomScale";
 	public static final String KEY_REGION = "region";
 	public static final String KEY_CHANNELID = "channelId";
+	public static final String KEY_CONTENTURL = "contentURL";
 
     public static final String KEY_BBOX = "bbox";
     public static final String KEY_LEFT = "left";
@@ -494,6 +495,7 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
         JSONHelper.putValue(node, KEY_RANK, getRank());
         JSONHelper.putValue(node, KEY_TYPE, getType());
 		JSONHelper.putValue(node, KEY_CHANNELID, getChannelId());
+		JSONHelper.putValue(node, KEY_CONTENTURL, getContentURL());
 
         String region = ConversionHelper.getString(getRegion(), "");
 		JSONHelper.putValue(node, KEY_REGION, Jsoup.clean(region, Safelist.none()));
