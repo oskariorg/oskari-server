@@ -8,6 +8,7 @@ import fi.nls.oskari.control.ActionParameters;
 import fi.nls.oskari.control.ActionParamsException;
 import fi.nls.oskari.control.layer.GetMapLayerGroupsHandler;
 import fi.nls.oskari.csw.dao.OskariLayerMetadataDao;
+import fi.nls.oskari.csw.dto.OskariLayerMetadataDto;
 import fi.nls.oskari.csw.helper.CSW;
 import fi.nls.oskari.csw.helper.CSW.RefreshResult;
 import fi.nls.oskari.db.DatasourceHelper;
@@ -112,6 +113,12 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
         final JSONObject attributes = ml.getAttributes();
         if (!attributes.optBoolean(LayerJSONFormatter.KEY_ATTRIBUTE_IGNORE_COVERAGE, false)) {
             output.setCoverage(WKTHelper.transformLayerCoverage(ml.getGeometry(), srs));
+        }
+        if (!attributes.optBoolean(LayerJSONFormatter.KEY_ATTRIBUTE_IGNORE_METADATA_COVERAGE, false)) {
+            OskariLayerMetadataDto metadataDto = metadataDao.findMetadata(ml.getMetadataId());
+            if (metadataDto != null && metadataDto.wkt != null) {
+                output.setCoverageMetadata(WKTHelper.transformLayerCoverage(metadataDto.wkt, srs));
+            }
         }
         if (!capabilitiesUpdated) {
             output.setWarn(KEY_UPDATE_CAPA_FAIL);

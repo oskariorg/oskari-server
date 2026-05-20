@@ -29,6 +29,22 @@ public class OskariLayerMetadataDao {
         return new SqlSessionFactoryBuilder().build(configuration);
     }
 
+    public OskariLayerMetadataDto findMetadata(String metadataId) {
+        if (metadataId == null || metadataId.isEmpty()) {
+            return null;
+        }
+        final SqlSession session = factory.openSession();
+        try {
+            final OskariLayerMetadataDto.Mapper mapper = session.getMapper(OskariLayerMetadataDto.Mapper.class);
+            return mapper.find(metadataId);
+        } catch (Exception e) {
+            log.error(e, "Error finding metadata for metadataId:", metadataId);
+            return null;
+        } finally {
+            session.close();
+        }
+    }
+
     public void saveMetadata(OskariLayerMetadataDto dto) {
         final SqlSession session = factory.openSession();
         try {
