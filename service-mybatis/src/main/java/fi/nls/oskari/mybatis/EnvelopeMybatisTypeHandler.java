@@ -54,6 +54,10 @@ public class EnvelopeMybatisTypeHandler extends BaseTypeHandler<Envelope> {
         // Envelope constructor takes parameters in order minX, maxX, minY, maxY
         // whereas we stored them in more humane order of minX, minY, maxX, maxY
         if (javaArray instanceof Object[] oa) {
+            if (oa[0] == null) {
+                // {NULL,NULL,NULL,NULL}
+                return new Envelope();
+            }
             return new Envelope(
                 ((Number)oa[0]).doubleValue(),
                 ((Number)oa[2]).doubleValue(),
@@ -61,7 +65,12 @@ public class EnvelopeMybatisTypeHandler extends BaseTypeHandler<Envelope> {
                 ((Number)oa[3]).doubleValue()
             );
         } else if (javaArray instanceof Double[] da) {
-            return new Envelope(da[0], da[2], da[1], da[3]);
+            if (da[0] == null) {
+                // {NULL,NULL,NULL,NULL}
+                return new Envelope();
+            } else {
+                return new Envelope(da[0], da[2], da[1], da[3]);
+            }
         } else {
             throw new IllegalArgumentException();
         }

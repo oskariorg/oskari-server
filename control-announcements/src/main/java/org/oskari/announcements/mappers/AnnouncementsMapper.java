@@ -27,6 +27,14 @@ public interface AnnouncementsMapper {
             + " ORDER BY id desc")
     List<Announcement> getAnnouncements();
 
+    @ResultMap("AnnouncementResult")
+    @Select("SELECT id, locale, begin_date, end_date, options FROM oskari_announcements"
+            + " WHERE options IS NOT NULL"
+            + " AND options::json ->> 'externalId' = #{externalId}"
+            + " ORDER BY id desc"
+            + " LIMIT 1")
+    Announcement getAnnouncementByExternalId(@Param("externalId") final String externalId);
+
     @Select("DELETE FROM oskari_announcements"
             + " WHERE id = #{id}"
             + " RETURNING id")

@@ -11,5 +11,6 @@ public abstract class AnnouncementsService extends OskariComponent {
     public abstract int saveAnnouncement(final Announcement announcement);
     public abstract int updateAnnouncement(final Announcement announcement);
     public abstract int deleteAnnouncement(final int id);
+    public abstract Announcement getAnnouncementByExternalId(final String externalId);
 
 }

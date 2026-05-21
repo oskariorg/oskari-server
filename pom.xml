@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.oskari</groupId>
     <artifactId>oskari-server</artifactId>
-    <version>3.3.0</version>
+    <version>3.4.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Oskari server</name>
@@ -98,7 +98,7 @@ The one packaged without this is 2.15.1
         <mybatis.version>3.5.19</mybatis.version>
         <!-- Version 12 of Flywaydb uses Jackson 3.x -->
         <flyway.version>11.20.3</flyway.version>
-        <postgresql.version>42.7.10</postgresql.version>
+        <postgresql.version>42.7.11</postgresql.version>
         <hikaricp.version>7.0.2</hikaricp.version>
 
         <!-- https://github.com/spring-projects/spring-data-redis/blob/3.5.0/pom.xml#L27 -->
@@ -123,13 +123,13 @@ The one packaged without this is 2.15.1
         <!-- Test deps versions -->
         <mockito.version>5.19.0</mockito.version>
         <!-- https://github.com/junit-team/junit-framework/wiki/Upgrading-to-JUnit-6.0 -->
-        <junit.version>5.14.3</junit.version>
+        <junit.version>6.0.3</junit.version>
         <hamcrest.version>2.2</hamcrest.version>
         <xmlunit.version>2.11.0</xmlunit.version>
         <h2database.version>2.4.240</h2database.version>
         <h2gis.version>2.2.5</h2gis.version>
 
-        <log4j.version>2.25.3</log4j.version>
+        <log4j.version>2.25.4</log4j.version>
 
         <slf4j.version>2.0.17</slf4j.version>
         <metrics.version>4.2.36</metrics.version>

@@ -38,7 +38,7 @@ public class JSONArrayMybatisTypeHandler extends BaseTypeHandler<JSONArray> {
         return valueOf(cs.getString(columnIndex));
     }
 
-    public JSONArray valueOf(String s) {
+    public static JSONArray valueOf(String s) {
         if (s == null) {
             // Mimic JSONObjectMybatisTypeHandler
             return new JSONArray();
