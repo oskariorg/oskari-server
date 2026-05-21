@@ -41,14 +41,18 @@ import fi.nls.oskari.service.ServiceRuntimeException;
 import fi.nls.oskari.util.IOHelper;
 import fi.nls.oskari.util.ResponseHelper;
 import org.oskari.service.mvt.WFSTileGridProperties;
+import org.oskari.service.wfs.client.OskariWFSClient;
 
 @OskariActionRoute("GetWFSVectorTile")
 public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
 
     protected static final String MVT_CONTENT_TYPE = "application/vnd.mapbox-vector-tile";
+    protected static final String HEADER_HAS_MORE_FEATURES = "X-Maybe-Has-More-Features";
     protected static final String PARAM_Z = "z";
     protected static final String PARAM_X = "x";
     protected static final String PARAM_Y = "y";
+
+    private record TileResult(byte[] bytes, boolean hasMore) {}
 
     // Resolution (metres per px) we are aiming for with the WFS requests
     // This value is used to find the zoom level that is closest to the resolution specified here
@@ -71,7 +75,7 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
     private static final int CACHE_LIMIT = 256;
     private static final long CACHE_EXPIRATION = TimeUnit.MINUTES.toMillis(5);
 
-    private ComputeOnceCache<byte[]> tileCache;
+    private ComputeOnceCache<TileResult> tileCache;
     private WFSTileGridProperties tileGridProperties;
     private Map<String, Integer> cacheZLevels;
 
@@ -119,7 +123,7 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
         }
 
         final String cacheKey = getCacheKey(id, srs, z, x, y);
-        final byte[] resp;
+        final TileResult resp;
         try {
             if (contentProcessor.isPresent() && contentProcessor.get().isUserContentLayer(id)) {
                 // Don't cache user content tiles
@@ -132,7 +136,10 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
         }
         params.getResponse().addHeader("Access-Control-Allow-Origin", "*");
         params.getResponse().addHeader("Content-Encoding", "gzip");
-        ResponseHelper.writeResponse(params, 200, MVT_CONTENT_TYPE, resp);
+        if (resp.hasMore()) {
+            params.getResponse().setHeader(HEADER_HAS_MORE_FEATURES, "true");
+        }
+        ResponseHelper.writeResponse(params, 200, MVT_CONTENT_TYPE, resp.bytes());
     }
 
     private void setGridToModifiers (WFSVectorLayerPluginViewModifier handler, String srsName, WFSTileGrid grid) {
@@ -207,14 +214,20 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
      * @return an MVT tile as a GZipped byte array
      * @throws ActionException
      */
-    private byte[] createTile(String id, OskariLayer layer, CoordinateReferenceSystem crs,
+    private TileResult createTile(String id, OskariLayer layer, CoordinateReferenceSystem crs,
             WFSTileGrid grid, int targetZ, int z, int x, int y,
             Optional<UserLayerService> contentProcessor) {
         List<TileCoord> tilesToLoad = getTilesToLoad(targetZ, z, x, y);
 
+        // Oskari-specific layers (userlayer/myplaces/myfeatures) don't apply maxFeatures limit
+        int maxFeatures = contentProcessor.isPresent() ? Integer.MAX_VALUE : OskariWFSClient.getMaxFeatures(layer);
+        boolean hasMore = false;
         DefaultFeatureCollection sfc = new DefaultFeatureCollection();
         for (TileCoord tile : tilesToLoad) {
             SimpleFeatureCollection tileFeatures = getFeatures(id, layer, crs, grid, tile, contentProcessor);
+            if (!hasMore && tileFeatures.size() >= maxFeatures) {
+                hasMore = true;
+            }
             sfc.addAll(tileFeatures);
         }
 
@@ -225,7 +238,7 @@ public class GetWFSVectorTileHandler extends AbstractWFSFeaturesHandler {
 
         byte[] encoded = SimpleFeaturesMVTEncoder.encodeToByteArray(sfc, mvtLayer, bbox, extent, buffer);
         try {
-            return IOHelper.gzip(encoded).toByteArray();
+            return new TileResult(IOHelper.gzip(encoded).toByteArray(), hasMore);
         } catch (IOException e) {
             throw new ServiceRuntimeException("Unexpected IOException occured");
         }
