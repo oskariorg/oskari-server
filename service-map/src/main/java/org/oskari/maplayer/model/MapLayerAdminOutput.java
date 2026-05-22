@@ -7,6 +7,8 @@ import java.util.*;
  */
 public class MapLayerAdminOutput extends MapLayer {
 
+    public String coverage;
+    public String coverageMetadata;
     private String warn;
     private Map<String, Object> capabilities;
     private Date created;
@@ -55,5 +57,21 @@ public class MapLayerAdminOutput extends MapLayer {
 
     public void setCapabilities_last_updated(Date capabilities_last_updated) {
         this.capabilities_last_updated = capabilities_last_updated;
+    }
+
+    public String getCoverage() {
+        return coverage;
+    }
+
+    public void setCoverage(String coverage) {
+        this.coverage = coverage;
+    }
+
+    public String getCoverageMetadata() {
+        return coverageMetadata;
+    }
+
+    public void setCoverageMetadata(String coverageMetadata) {
+        this.coverageMetadata = coverageMetadata;
     }
 }
