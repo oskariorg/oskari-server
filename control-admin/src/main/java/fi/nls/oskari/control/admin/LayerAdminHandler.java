@@ -111,14 +111,11 @@ public class LayerAdminHandler extends AbstractLayerAdminHandler {
         boolean capabilitiesUpdated = updateCapabilities(ml);
         MapLayerAdminOutput output = getLayerForEdit(params.getUser(), ml);
         final JSONObject attributes = ml.getAttributes();
-        if (!attributes.optBoolean(LayerJSONFormatter.KEY_ATTRIBUTE_IGNORE_COVERAGE, false)) {
-            output.setCoverage(WKTHelper.transformLayerCoverage(ml.getGeometry(), srs));
-        }
-        if (!attributes.optBoolean(LayerJSONFormatter.KEY_ATTRIBUTE_IGNORE_METADATA_COVERAGE, false)) {
-            OskariLayerMetadataDto metadataDto = metadataDao.findMetadata(ml.getMetadataId());
-            if (metadataDto != null && metadataDto.wkt != null) {
-                output.setCoverageMetadata(WKTHelper.transformLayerCoverage(metadataDto.wkt, srs));
-            }
+
+        output.setCoverage(WKTHelper.transformLayerCoverage(ml.getGeometry(), srs));
+        OskariLayerMetadataDto metadataDto = metadataDao.findMetadata(ml.getMetadataId());
+        if (metadataDto != null && metadataDto.wkt != null) {
+            output.setCoverageMetadata(WKTHelper.transformLayerCoverage(metadataDto.wkt, srs));
         }
         if (!capabilitiesUpdated) {
             output.setWarn(KEY_UPDATE_CAPA_FAIL);
