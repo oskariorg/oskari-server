@@ -6,6 +6,8 @@ import java.net.HttpURLConnection;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import org.oskari.ogcapi.OpenAPILink;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -137,6 +139,23 @@ public class OGCAPIFeaturesService {
 
     public List<FeaturesCollectionInfo> getCollections() {
         return new ArrayList<>(content.getCollections());
+    }
+
+    public String getDatasetMetadataUrl() {
+        return findMetadataUrl(content.getLinks());
+    }
+
+    public static String findMetadataUrl(List<OpenAPILink> links) {
+        if (links == null) {
+            return null;
+        }
+        return links.stream()
+                .filter(l -> "describedby".equalsIgnoreCase(l.getRel()))
+                .filter(l -> l.getType() != null
+                        && l.getType().toLowerCase().startsWith("application/xml"))
+                .map(OpenAPILink::getHref)
+                .findFirst()
+                .orElse(null);
     }
 
     public Optional<FeaturesCollectionInfo> getCollection(String id) {
