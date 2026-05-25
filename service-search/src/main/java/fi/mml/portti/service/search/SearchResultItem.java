@@ -106,44 +106,48 @@ public class SearchResultItem implements Comparable<SearchResultItem>, Serializa
 	}
 
 	public int compareTo(SearchResultItem sri) {
-		if (this.rank != sri.getRank()) {
-			// TODO: rank should be normalized throughout different channels, currently it's not
-			return this.rank - sri.getRank();
-		}
-		// TODO: should make a function to compare if the other one has value and return 1/-1
-		if(this.title == null || sri.getTitle() == null) {
-			return 0;
+		// TODO: rank should be normalized throughout different channels, currently it's not
+		int cmp = Integer.compare(this.rank, sri.getRank());
+		if (cmp != 0) {
+			return cmp;
 		}
 
-		if (this.title.equals(sri.getTitle())) {
-			// Same title, order is determined by region
-			// Should we use type instead of region here?
-			if(this.region == null || sri.getRegion() == null) {
-				return 0;
-			}
-			return this.region.compareTo(sri.getRegion());
+		cmp = compare(this.title, sri.title);
+		if (cmp != 0) {
+			return cmp;
+		}
+
+		// Same title, order is determined by region
+		// Should we use type instead of region here?
+		cmp = compare(this.region, sri.getRegion());
+		if (cmp != 0) {
+			return cmp;
 		}
 
 		// TODO: streetname ranking should be done internally in the search channel impl which knows about the title content
-		String[] streetName1 = this.getTitle().split("\\s");
-		String[] streetName2 = sri.getTitle().split("\\s");
+		String[] streetName1 = this.title.split("\\s");
+		String[] streetName2 = sri.title.split("\\s");
 
 		// without street number
-		if (streetName1.length != streetName2.length) {
-			return streetName1.length - streetName2.length;
+		cmp = Integer.compare(streetName1.length, streetName2.length);
+		if (cmp != 0) {
+			return cmp;
 		}
 
 		// Same street names
-		if (streetName1[0].equals(streetName2[0])) {
-			if (streetName1[1] == null || streetName2[1] != null) {
-				return 0;
-			}
-			if (streetName1[1].length() == streetName2[1].length()) {
-				return streetName1[1].compareTo(streetName2[1]);
-			}
-			return streetName1[1].length() - streetName2[1].length();
+		if (streetName1[0].equals(streetName2[0]) && streetName1.length > 1 && streetName2.length > 1) {
+			cmp = Integer.compare(streetName1[1].length(), streetName2[1].length());
+			return cmp != 0 ? cmp : streetName1[1].compareTo(streetName2[1]);
 		}
-		return title.compareTo(sri.getTitle());
+
+		return 0;
+	}
+
+	private static int compare(String a, String b) {
+		if (a == null) {
+			return b == null ? 0 : -1;
+		}
+		return a.compareTo(b);
 	}
 
 	public String getLang() {
