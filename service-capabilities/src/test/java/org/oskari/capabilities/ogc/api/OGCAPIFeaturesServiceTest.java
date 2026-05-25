@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.oskari.ogcapi.OGCAPIReqClasses;
+import org.oskari.ogcapi.OpenAPILink;
 import org.oskari.ogcapi.features.FeaturesCollectionInfo;
 import org.oskari.ogcapi.features.FeaturesContent;
 
@@ -95,6 +96,52 @@ public class OGCAPIFeaturesServiceTest {
         Collections.sort(actualList);
 
         assertIterablesEquals(expectedList, actualList);
+    }
+
+    @Test
+    public void testFixtureHasNoMetadataLinks() {
+        Assertions.assertNull(service.getDatasetMetadataUrl());
+        service.getCollections().forEach(c ->
+                Assertions.assertNull(OGCAPIFeaturesService.findMetadataUrl(c.getLinks())));
+    }
+
+    @Test
+    public void testFindMetadataUrlFiltersDescribedbyXml() {
+        String url = OGCAPIFeaturesService.findMetadataUrl(List.of(
+                new OpenAPILink("https://example.org/schema", "describedby", "application/schema+json", null, null),
+                new OpenAPILink("https://example.org/meta.xml", "DescribedBy", "application/xml", null, "iso"),
+                new OpenAPILink("https://example.org/meta2.xml", "describedby", "application/xml", null, "second")));
+        Assertions.assertEquals("https://example.org/meta.xml", url);
+    }
+
+    @Test
+    public void testFindMetadataUrlAcceptsXmlSubtype() {
+        String url = OGCAPIFeaturesService.findMetadataUrl(List.of(
+                new OpenAPILink("https://example.org/iso.xml", "describedby", "application/xml; charset=utf-8", null, null)));
+        Assertions.assertEquals("https://example.org/iso.xml", url);
+    }
+
+    @Test
+    public void testFindMetadataUrlNullWhenNoMatch() {
+        String url = OGCAPIFeaturesService.findMetadataUrl(List.of(
+                new OpenAPILink("https://example.org/x", "self", "application/xml", null, null),
+                new OpenAPILink("https://example.org/y.html", "describedby", "text/html", null, null)));
+        Assertions.assertNull(url);
+    }
+
+    @Test
+    public void testDatasetMetadataUrlFromTopLevelLinks() throws Exception {
+        FeaturesContent content = new FeaturesContent();
+        content.setLinks(List.of(
+                new OpenAPILink("https://example.org/self", "self", "application/json", null, null),
+                new OpenAPILink("https://example.org/dataset.xml", "describedby", "application/xml", null, null)));
+        content.setCollections(Collections.emptyList());
+        OGCAPIReqClasses reqClasses;
+        try (InputStream in = getClass().getResourceAsStream("OGCAPIFeatures_Conformance.json")) {
+            reqClasses = OGCAPIFeaturesService.load(in, OGCAPIReqClasses.class);
+        }
+        OGCAPIFeaturesService svc = new OGCAPIFeaturesService(reqClasses, content);
+        Assertions.assertEquals("https://example.org/dataset.xml", svc.getDatasetMetadataUrl());
     }
 
     private <T> void assertIterablesEquals(Iterable<T> expected, Iterable<T> actual) {
