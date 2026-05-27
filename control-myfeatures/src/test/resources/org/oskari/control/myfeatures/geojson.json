@@ -1,0 +1,232 @@
+{
+    "type": "FeatureCollection",
+    "totalFeatures": 40938,
+    "features": [{
+        "type": "Feature",
+        "id": "vuser_layer_data.2970316",
+        "geometry": {
+            "type": "MultiLineString",
+            "coordinates": [
+                [
+                    [316125.872, 6744907.0961],
+                    [316062.693, 6744820.0691]
+                ]
+            ]
+        },
+        "geometry_name": "geometry",
+        "properties": {
+            "uuid": "e1419f41-d092-44a2-a404-c15ee3520218",
+            "user_layer_id": 6217,
+            "feature_id": "Tilat5777033552889752525.21",
+            "property_json": "{\"INTERPOLOI\":1,\"LAHDEAINEI\":\"0\",\"ID\":1.48627129E8,\"LAJI\":\"696\"}",
+            "created": "2017-04-19T06:35:59.381Z",
+            "updated": null,
+            "bbox": [316062.693, 6744820.0691, 316125.872, 6744907.0961]
+        }
+    }, {
+        "type": "Feature",
+        "id": "vuser_layer_data.2970317",
+        "geometry": {
+            "type": "MultiLineString",
+            "coordinates": [
+                [
+                    [316029.455, 6744774.6421],
+                    [316062.693, 6744820.0691]
+                ]
+            ]
+        },
+        "geometry_name": "geometry",
+        "properties": {
+            "uuid": "e1419f41-d092-44a2-a404-c15ee3520218",
+            "user_layer_id": 6217,
+            "feature_id": "Tilat5777033552889752525.22",
+            "property_json": "{\"INTERPOLOI\":1,\"LAHDEAINEI\":\"0\",\"ID\":1.48627624E8,\"LAJI\":\"696\"}",
+            "created": "2017-04-19T06:35:59.385Z",
+            "updated": null,
+            "bbox": [316029.455, 6744774.6421, 316062.693, 6744820.0691]
+        }
+    }, {
+        "type": "Feature",
+        "id": "vuser_layer_data.2970318",
+        "geometry": {
+            "type": "MultiLineString",
+            "coordinates": [
+                [
+                    [316003.157, 6744738.7011],
+                    [316029.455, 6744774.6421]
+                ]
+            ]
+        },
+        "geometry_name": "geometry",
+        "properties": {
+            "uuid": "e1419f41-d092-44a2-a404-c15ee3520218",
+            "user_layer_id": 6217,
+            "feature_id": "Tilat5777033552889752525.23",
+            "property_json": "{\"INTERPOLOI\":1,\"LAHDEAINEI\":\"0\",\"ID\":1.48627625E8,\"LAJI\":\"696\"}",
+            "created": "2017-04-19T06:35:59.388Z",
+            "updated": null,
+            "bbox": [316003.157, 6744738.7011, 316029.455, 6744774.6421]
+        }
+    }, {
+        "type": "Feature",
+        "id": "vuser_layer_data.2970319",
+        "geometry": {
+            "type": "MultiLineString",
+            "coordinates": [
+                [
+                    [315959.454, 6744678.8541],
+                    [316003.157, 6744738.7011]
+                ]
+            ]
+        },
+        "geometry_name": "geometry",
+        "properties": {
+            "uuid": "e1419f41-d092-44a2-a404-c15ee3520218",
+            "user_layer_id": 6217,
+            "feature_id": "Tilat5777033552889752525.24",
+            "property_json": "{\"INTERPOLOI\":1,\"LAHDEAINEI\":\"0\",\"ID\":1.48628218E8,\"LAJI\":\"696\"}",
+            "created": "2017-04-19T06:35:59.391Z",
+            "updated": null,
+            "bbox": [315959.454, 6744678.8541, 316003.157, 6744738.7011]
+        }
+    }, {
+        "type": "Feature",
+        "id": "vuser_layer_data.2970320",
+        "geometry": {
+            "type": "MultiLineString",
+            "coordinates": [
+                [
+                    [315959.22, 6744679.0301],
+                    [315959.454, 6744678.8541]
+                ]
+            ]
+        },
+        "geometry_name": "geometry",
+        "properties": {
+            "uuid": "e1419f41-d092-44a2-a404-c15ee3520218",
+            "user_layer_id": 6217,
+            "feature_id": "Tilat5777033552889752525.25",
+            "property_json": "{\"INTERPOLOI\":1,\"LAHDEAINEI\":\"0\",\"ID\":1.48628217E8,\"LAJI\":\"696\"}",
+            "created": "2017-04-19T06:35:59.394Z",
+            "updated": null,
+            "bbox": [315959.22, 6744678.8541, 315959.454, 6744679.0301]
+        }
+    }, {
+        "type": "Feature",
+        "id": "vuser_layer_data.2970321",
+        "geometry": {
+            "type": "MultiLineString",
+            "coordinates": [
+                [
+                    [315896.913, 6744726.1411],
+                    [315959.22, 6744679.0301]
+                ]
+            ]
+        },
+        "geometry_name": "geometry",
+        "properties": {
+            "uuid": "e1419f41-d092-44a2-a404-c15ee3520218",
+            "user_layer_id": 6217,
+            "feature_id": "Tilat5777033552889752525.26",
+            "property_json": "{\"INTERPOLOI\":1,\"LAHDEAINEI\":\"0\",\"ID\":1.48628216E8,\"LAJI\":\"696\"}",
+            "created": "2017-04-19T06:35:59.397Z",
+            "updated": null,
+            "bbox": [315896.913, 6744679.0301, 315959.22, 6744726.1411]
+        }
+    }, {
+        "type": "Feature",
+        "id": "vuser_layer_data.2970322",
+        "geometry": {
+            "type": "MultiLineString",
+            "coordinates": [
+                [
+                    [315095.387, 6747177.4161],
+                    [315060.761, 6747161.7571]
+                ]
+            ]
+        },
+        "geometry_name": "geometry",
+        "properties": {
+            "uuid": "e1419f41-d092-44a2-a404-c15ee3520218",
+            "user_layer_id": 6217,
+            "feature_id": "Tilat5777033552889752525.27",
+            "property_json": "{\"INTERPOLOI\":1,\"LAHDEAINEI\":\"0\",\"ID\":1.4859457E8,\"LAJI\":\"696\"}",
+            "created": "2017-04-19T06:35:59.399Z",
+            "updated": null,
+            "bbox": [315060.761, 6747161.7571, 315095.387, 6747177.4161]
+        }
+    }, {
+        "type": "Feature",
+        "id": "vuser_layer_data.2970323",
+        "geometry": {
+            "type": "MultiLineString",
+            "coordinates": [
+                [
+                    [315043.866, 6747199.1141],
+                    [315060.761, 6747161.7571]
+                ]
+            ]
+        },
+        "geometry_name": "geometry",
+        "properties": {
+            "uuid": "e1419f41-d092-44a2-a404-c15ee3520218",
+            "user_layer_id": 6217,
+            "feature_id": "Tilat5777033552889752525.28",
+            "property_json": "{\"INTERPOLOI\":1,\"LAHDEAINEI\":\"0\",\"ID\":1.48594568E8,\"LAJI\":\"696\"}",
+            "created": "2017-04-19T06:35:59.402Z",
+            "updated": null,
+            "bbox": [315043.866, 6747161.7571, 315060.761, 6747199.1141]
+        }
+    }, {
+        "type": "Feature",
+        "id": "vuser_layer_data.2970324",
+        "geometry": {
+            "type": "MultiLineString",
+            "coordinates": [
+                [
+                    [315043.866, 6747199.1141],
+                    [315071.2, 6747211.4761]
+                ]
+            ]
+        },
+        "geometry_name": "geometry",
+        "properties": {
+            "uuid": "e1419f41-d092-44a2-a404-c15ee3520218",
+            "user_layer_id": 6217,
+            "feature_id": "Tilat5777033552889752525.29",
+            "property_json": "{\"INTERPOLOI\":1,\"LAHDEAINEI\":\"0\",\"ID\":1.48592223E8,\"LAJI\":\"696\"}",
+            "created": "2017-04-19T06:35:59.406Z",
+            "updated": null,
+            "bbox": [315043.866, 6747199.1141, 315071.2, 6747211.4761]
+        }
+    }, {
+        "type": "Feature",
+        "id": "vuser_layer_data.2970325",
+        "geometry": {
+            "type": "MultiLineString",
+            "coordinates": [
+                [
+                    [315071.2, 6747211.4761],
+                    [315078.668, 6747209.1531]
+                ]
+            ]
+        },
+        "geometry_name": "geometry",
+        "properties": {
+            "uuid": "e1419f41-d092-44a2-a404-c15ee3520218",
+            "user_layer_id": 6217,
+            "feature_id": "Tilat5777033552889752525.30",
+            "property_json": "{\"INTERPOLOI\":1,\"LAHDEAINEI\":\"0\",\"ID\":1.48592224E8,\"LAJI\":\"696\"}",
+            "created": "2017-04-19T06:35:59.409Z",
+            "updated": null,
+            "bbox": [315071.2, 6747209.1531, 315078.668, 6747211.4761]
+        }
+    }],
+    "crs": {
+        "type": "name",
+        "properties": {
+            "name": "urn:ogc:def:crs:EPSG::3067"
+        }
+    },
+    "bbox": [315043.866, 6744678.8541, 316125.872, 6747211.4761]
+}
