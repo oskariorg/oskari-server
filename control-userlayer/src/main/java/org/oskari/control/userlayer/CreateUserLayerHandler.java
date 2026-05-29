@@ -53,6 +53,7 @@ import fi.nls.oskari.util.ResponseHelper;
  * Single-file formats can be uploaded directly (without ZIP wrapping):
  * - GPX (.gpx)
  * - KML (.kml)
+ * - KMZ (.kmz)
  * - GeoJSON (.geojson, .json)
  * - GeoPackage (.gpkg)
  *

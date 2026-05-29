@@ -33,6 +33,7 @@ public class FeatureCollectionParsers {
         switch (fileExt.toUpperCase()) {
         case GPXParser.SUFFIX:
         case KMLParser.SUFFIX:
+        case KMZParser.SUFFIX:
         case GPKGParser.SUFFIX:
         case JSONParser.SUFFIX:
         case GeoJSONParser.SUFFIX:
@@ -50,6 +51,7 @@ public class FeatureCollectionParsers {
         switch (fileExt) {
         case GPXParser.SUFFIX:
         case KMLParser.SUFFIX:
+        case KMZParser.SUFFIX:
         case MIFParser.SUFFIX:
         case SHPParser.SUFFIX:
         case GPKGParser.SUFFIX:
@@ -69,6 +71,7 @@ public class FeatureCollectionParsers {
         switch (fileExt) {
         case GPXParser.SUFFIX: return new GPXParser();
         case KMLParser.SUFFIX: return new KMLParser();
+        case KMZParser.SUFFIX: return new KMZParser();
         case MIFParser.SUFFIX: return new MIFParser();
         case SHPParser.SUFFIX: return new SHPParser();
         case GPKGParser.SUFFIX: return new GPKGParser();
