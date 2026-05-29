@@ -161,6 +161,20 @@ public class ImportMyFeaturesHandlerTest extends JSONActionRouteTest {
         assertEquals(10, capturedFeatureCount);
     }
 
+    @Test
+    void handlePost_kmzUpload() throws Exception {
+        byte[] kmzBytes = getClass().getResourceAsStream("/org/oskari/control/myfeatures/iceland.kmz").readAllBytes();
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ActionParameters params = createActionParams(getLoggedInUser());
+        params.setResponse(mockHttpServletResponse(baos));
+        createHandler("iceland.kmz", kmzBytes).handlePost(params);
+
+        JSONObject response = new JSONObject(baos.toString());
+        assertNotNull(response.getJSONObject("layer"));
+        Assertions.assertTrue(capturedFeatureCount > 0, "KMZ should contain features");
+    }
+
     private int capturedFeatureCount;
 
     private ImportMyFeaturesHandler createHandler(String filename, byte[] data) throws IOException {
@@ -190,7 +204,7 @@ public class ImportMyFeaturesHandlerTest extends JSONActionRouteTest {
     private MyFeaturesService stubService() {
         return new MyFeaturesService() {
             @Override public CoordinateReferenceSystem getNativeCRS() {
-                try { return CRS.decode("EPSG:3067", true); } catch (Exception e) { throw new RuntimeException(e); }
+                try { return CRS.decode("EPSG:4326", true); } catch (Exception e) { throw new RuntimeException(e); }
             }
             @Override public MyFeaturesLayer getLayer(UUID layerId) { return null; }
             @Override public void createLayer(MyFeaturesLayer layer) {}
