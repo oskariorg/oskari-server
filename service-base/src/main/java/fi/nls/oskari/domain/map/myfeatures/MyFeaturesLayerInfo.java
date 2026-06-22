@@ -10,6 +10,7 @@ public class MyFeaturesLayerInfo {
     private String type;
     private String name;
     private String subtitle;
+    private String orgName;
     private Instant created;
     private Instant updated;
     private int featureCount;
@@ -31,6 +32,10 @@ public class MyFeaturesLayerInfo {
 
     public String getSubtitle() {
         return subtitle;
+    }
+
+    public String getOrgName() {
+        return orgName;
     }
 
     public Instant getCreated() {
@@ -63,6 +68,7 @@ public class MyFeaturesLayerInfo {
         info.type = type;
         info.name = layer.getName(lang);
         info.subtitle = layer.getDesc(lang);
+        info.orgName = layer.getSource(lang);
         info.created = layer.getCreated();
         info.updated = layer.getUpdated();
         info.featureCount = layer.getFeatureCount();
