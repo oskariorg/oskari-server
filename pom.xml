@@ -87,7 +87,7 @@ The one packaged without this is 2.15.1
         <xmlgraphics-fop.version>2.11</xmlgraphics-fop.version>
         <poi-ooxml.version>5.5.1</poi-ooxml.version>
 
-        <jsoup.version>1.22.1</jsoup.version>
+        <jsoup.version>1.23.1</jsoup.version>
 
         <jackson.version>2.21.1</jackson.version>
         <jackson-databind.version>2.21.1</jackson-databind.version>
