@@ -98,7 +98,7 @@ The one packaged without this is 2.15.1
         <mybatis.version>3.5.19</mybatis.version>
         <!-- Version 12 of Flywaydb uses Jackson 3.x -->
         <flyway.version>11.20.3</flyway.version>
-        <postgresql.version>42.7.11</postgresql.version>
+        <postgresql.version>42.7.13</postgresql.version>
         <hikaricp.version>7.0.2</hikaricp.version>
 
         <!-- https://github.com/spring-projects/spring-data-redis/blob/3.5.0/pom.xml#L27 -->
