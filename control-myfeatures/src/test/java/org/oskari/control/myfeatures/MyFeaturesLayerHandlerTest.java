@@ -117,7 +117,7 @@ public class MyFeaturesLayerHandlerTest {
 
         handler.handleGet(params);
 
-        String expected = "[{'id':'myf_d4ea8bb7-b323-4c8e-ab5d-a529ee9416f8','type':'myf','name':'foo','subtitle':'bar','created':null,'updated':null,'featureCount':0,'options':{},'attributes':{}}]"
+        String expected = "[{'id':'myf_d4ea8bb7-b323-4c8e-ab5d-a529ee9416f8','type':'myf','name':'foo','subtitle':'bar','orgName':'','created':null,'updated':null,'featureCount':0,'options':{},'attributes':{}}]"
                 .replace('\'', '"');
         String actual = baos.toString();
 
