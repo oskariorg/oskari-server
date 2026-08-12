@@ -354,7 +354,7 @@ public class GeoJSONSchemaDetector {
 
         try {
             String name = GeoJSONUtil.getString(properties, "name");
-            return CRS.decode(name);
+            return CRS.decode(name, true);
         } catch (Exception e) {
             return null;
         }

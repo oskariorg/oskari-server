@@ -11,6 +11,7 @@ import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
+import org.geotools.referencing.operation.projection.ProjectionException;
 import org.geotools.api.feature.simple.SimpleFeature;
 import org.geotools.api.feature.simple.SimpleFeatureType;
 import org.geotools.api.referencing.FactoryException;
@@ -97,6 +98,7 @@ public class FeatureCollectionParsers {
         CoordinateReferenceSystem sourceCRS,
         CoordinateReferenceSystem targetCRS) throws ServiceException, UserLayerException {
         MathTransform transform = getTransform(sourceCRS, targetCRS);
+        boolean firstGeom = true;
         try {
             SimpleFeatureCollection sfc = providerFn.call();
             SimpleFeatureType newSchema = SimpleFeatureTypeBuilder.retype(sfc.getSchema(), targetCRS);
@@ -111,10 +113,25 @@ public class FeatureCollectionParsers {
                     }
                     SimpleFeature copy = b.buildFeature(f.getID());
                     Object g = f.getDefaultGeometry();
-                    if (g != null) {
-                        Geometry transformed = JTS.transform((Geometry) g, transform);
-                        copy.setDefaultGeometry(transformed);
+                    if (g == null) {
+                        fc.add(copy);
+                        continue;
                     }
+
+                    if (firstGeom) {
+                        try {
+                            JTS.transform((Geometry) g, transform);
+                        } catch (Exception e) {
+                            // Transformation failed, try axis order flip trick
+                            // sourceCRS was fetched with longitude = true, try without
+                            CoordinateReferenceSystem src = CRS.decode(CRS.lookupIdentifier(sourceCRS, true));
+                            transform = getTransform(src, targetCRS);
+                        }
+                        firstGeom = false;
+                    }
+
+                    Geometry transformed = JTS.transform((Geometry) g, transform);
+                    copy.setDefaultGeometry(transformed);
                     fc.add(copy);
                 }
             }
