@@ -129,7 +129,7 @@ The one packaged without this is 2.15.1
         <h2database.version>2.4.240</h2database.version>
         <h2gis.version>2.2.5</h2gis.version>
 
-        <log4j.version>2.25.3</log4j.version>
+        <log4j.version>2.25.5</log4j.version>
 
         <slf4j.version>2.0.17</slf4j.version>
         <metrics.version>4.2.36</metrics.version>
