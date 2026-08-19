@@ -40,9 +40,7 @@ public class V3_4_2__update_userguide extends BaseJavaMigration {
         });
         if (errorCount.get() > 0) {
             LOG.error("Failed to update", errorCount.get(), "userguide bundles (tried removing flyoutClazz config).");
-
         }
-        BundleHelper.registerBundle(connection, "myfeatures");
     }
 
     private List<UserGuide> getUserGuides(Connection conn) throws SQLException {
