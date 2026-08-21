@@ -1,25 +1,39 @@
 package fi.nls.oskari.csw.helper;
 
-import org.locationtech.jts.geom.*;
-import fi.nls.oskari.csw.domain.CSWIsoRecord;
-import fi.nls.oskari.log.LogFactory;
-import fi.nls.oskari.log.Logger;
-import org.geotools.geometry.jts.JTS;
-import org.geotools.api.referencing.operation.MathTransform;
-import org.geotools.api.referencing.operation.TransformException;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import javax.xml.xpath.*;
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.time.format.DateTimeParseException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Stream;
+
+import org.oskari.xml.XmlHelper;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
+import fi.nls.oskari.csw.domain.CSWIsoRecord;
+import fi.nls.oskari.csw.domain.CSWIsoRecord.BrowseGraphic;
+import fi.nls.oskari.csw.domain.CSWIsoRecord.DataIdentification;
+import fi.nls.oskari.csw.domain.CSWIsoRecord.DataQualityObject;
+import fi.nls.oskari.csw.domain.CSWIsoRecord.DistributionFormat;
+import fi.nls.oskari.csw.domain.CSWIsoRecord.Identification;
+import fi.nls.oskari.csw.domain.CSWIsoRecord.Identification.Citation;
+import fi.nls.oskari.csw.domain.CSWIsoRecord.Identification.Citation.ResourceIdentifier;
+import fi.nls.oskari.csw.domain.CSWIsoRecord.Identification.DateWithType;
+import fi.nls.oskari.csw.domain.CSWIsoRecord.Identification.TemporalExtent;
+import fi.nls.oskari.csw.domain.CSWIsoRecord.OnlineResource;
+import fi.nls.oskari.csw.domain.CSWIsoRecord.ResponsibleParty;
+import fi.nls.oskari.csw.domain.CSWIsoRecord.ServiceIdentification;
+import fi.nls.oskari.log.LogFactory;
+import fi.nls.oskari.log.Logger;
 
 /**
- * Helper class for parsing search results for MetadataCatalogue:
- * Created by TMIKKOLAINEN on 2.9.2014.
+ * Helper class for parsing search results for MetadataCatalogue
  */
 public class CSWISORecordParser {
 
@@ -27,9 +41,6 @@ public class CSWISORecordParser {
 
     // we need to map languages from 3-letter codes to 2-letter codes so initialize a global codeMapping property
     private static final Map<String, String> ISO3letterOskariLangMapping = new HashMap<>();
-    private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'kk:mm:ss"); // or ISO_DATE_TIME
-    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
     static {
         for (final String language : Locale.getISOLanguages()) {
             final Locale locale = new Locale(language);
@@ -37,828 +48,626 @@ public class CSWISORecordParser {
         }
     }
 
-    GeometryFactory gf = new GeometryFactory(new PrecisionModel(), 4326);
-    private XPath xpath = XPathFactory.newInstance().newXPath();
-
-    private XPathExpression XPATH_DATA_QUALITY = null;
-    private XPathExpression XPATH_DISTRIBUTION_INFO = null;
-    private XPathExpression XPATH_DISTRIBUTION_INFO_DISTRIBUTION_FORMATS = null;
-    private XPathExpression XPATH_DISTRIBUTION_INFO_DISTRIBUTION_FORMAT_NAME = null;
-    private XPathExpression XPATH_DISTRIBUTION_INFO_DISTRIBUTION_FORMAT_VERSION = null;
-    private XPathExpression XPATH_DISTRIBUTION_INFO_ONLINE_RESOURCES = null;
-    private XPathExpression XPATH_DISTRIBUTION_INFO_ONLINE_RESOURCES_LINK_NAME = null;
-    private XPathExpression XPATH_DISTRIBUTION_INFO_ONLINE_RESOURCES_LINK_URL = null;
-    private XPathExpression XPATH_DI_SI = null;
-    private XPathExpression XPATH_DI_SI_ABSTRACT = null;
-    private XPathExpression XPATH_DI_SI_TEMPORAL_EXTENTS = null;
-    private XPathExpression XPATH_DI_SI_TEMPORAL_EXTENTS_PERIOD_BEGIN = null;
-    private XPathExpression XPATH_DI_SI_TEMPORAL_EXTENTS_PERIOD_END = null;
-    private XPathExpression XPATH_DI_SI_CITATION = null;
-    private XPathExpression XPATH_DI_SI_CITATION_TITLE = null;
-    private XPathExpression XPATH_DI_SI_CITATION_DATE_TYPE = null;
-    private XPathExpression XPATH_DI_SI_CITATION_DATE_VALUE = null;
-    private XPathExpression XPATH_DI_SI_CITATION_RESOURCE_IDENTIFIERS = null;
-    private XPathExpression XPATH_DI_SI_CITATION_RESOURCE_IDENTIFIERS_CODE = null;
-    private XPathExpression XPATH_DI_SI_CITATION_RESOURCE_IDENTIFIERS_CODESPACE = null;
-    private XPathExpression XPATH_DI_SI_KEYWORDS = null;
-    private XPathExpression XPATH_DI_SI_BROWSE_GRAPHICS = null;
-    private XPathExpression XPATH_DI_SI_BROWSE_GRAPHICS_FILE_NAME = null;
-    private XPathExpression XPATH_DI_SI_BROWSE_GRAPHICS_FILE_DESCRIPTION = null;
-    private XPathExpression XPATH_DI_SI_BROWSE_GRAPHICS_FILE_TYPE = null;
-    private XPathExpression XPATH_DI_SI_RESPONSIBLE_PARTIES = null;
-    private XPathExpression XPATH_RESPONSIBLE_PARTY_ORG_NAME = null;
-    private XPathExpression XPATH_RESPONSIBLE_PARTY_ORG_EMAILS = null;
-    private XPathExpression XPATH_DI_SI_RESOURCE_CONSTRAINTS = null;
-    private XPathExpression XPATH_DI_SI_RESOURCE_CONSTRAINTS_ACCESS_CONSTRAINTS = null;
-    private XPathExpression XPATH_DI_SI_RESOURCE_CONSTRAINTS_OTHER_CONSTRAINTS = null;
-    private XPathExpression XPATH_DI_SI_RESOURCE_CONSTRAINTS_CLASSIFICATIONS = null;
-    private XPathExpression XPATH_DI_SI_RESOURCE_CONSTRAINTS_USE_LIMITATIONS = null;
-    private XPathExpression XPATH_DI_CHARSETS = null;
-    private XPathExpression XPATH_DI_TOPICS = null;
-    private XPathExpression XPATH_DI_RESOLUTIONS = null;
-    private XPathExpression XPATH_DI_SPATIAL_REPR_TYPES = null;
-    private XPathExpression XPATH_SI_SERVICE_TYPE = null;
-    private XPathExpression XPATH_SI_SERVICE_TYPE_VERSION = null;
-    private XPathExpression XPATH_SI_OPERATES_ON = null;
-    private XPathExpression XPATH_DI_SI_EXTENT = null;
-    private XPathExpression XPATH_FILE_IDENTIFIER = null;
-    private XPathExpression XPATH_SCOPE_CODES = null;
-    private XPathExpression XPATH_LOCALE_MAP = null;
-    private XPathExpression XPATH_METADATA_STANDARD_NAME = null;
-    private XPathExpression XPATH_METADATA_STANDARD_VERSION = null;
-    private XPathExpression XPATH_LANGUAGE = null;
-    private XPathExpression XPATH_METADATA_CHARSET = null;
-    private XPathExpression XPATH_METADATA_RESPONSIBLE_PARTIES = null;
-    private XPathExpression XPATH_METADATA_DATE = null;
-    private XPathExpression XPATH_METADATA_REFERENCESYSTEM = null;
-    private XPathExpression XPATH_CHARACTER_STRING = null;
-
-    public CSWISORecordParser() throws XPathExpressionException {
-        xpath.setNamespaceContext(new CSWISORecordNamespaceContext());
-        // Some parents that have multiple evaluated children
-        //(0..*)
-        XPATH_DATA_QUALITY = xpath.compile(
-                "./gmd:dataQualityInfo/gmd:DQ_DataQuality");
-
-        //(0..1)
-        XPATH_DISTRIBUTION_INFO = xpath.compile(
-                "./gmd:distributionInfo/gmd:MD_Distribution");
-
-        //(0..*)
-        XPATH_DISTRIBUTION_INFO_DISTRIBUTION_FORMATS = xpath.compile(
-                "./gmd:distributionFormat/gmd:MD_Format");
-
-        XPATH_DISTRIBUTION_INFO_DISTRIBUTION_FORMAT_NAME = xpath.compile(
-                "./gmd:name/gco:CharacterString"
-        );
-
-        XPATH_DISTRIBUTION_INFO_DISTRIBUTION_FORMAT_VERSION = xpath.compile(
-                "./gmd:version/gco:CharacterString"
-        );
-
-        //(0..*)
-        XPATH_DISTRIBUTION_INFO_ONLINE_RESOURCES = xpath.compile(
-                "./gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource[not(gmd:protocol/gco:CharacterString='WWW:DOWNLOAD-1.0-ftp--download')]");
-
-        //(1)
-        XPATH_DISTRIBUTION_INFO_ONLINE_RESOURCES_LINK_NAME = xpath.compile(
-                "./gmd:name/gco:CharacterString");
-        //(0..1)
-        XPATH_DISTRIBUTION_INFO_ONLINE_RESOURCES_LINK_URL = xpath.compile(
-                "./gmd:linkage/gmd:URL");
-
-
-        //(0..*)
-        XPATH_DI_SI = xpath.compile(
-                "./gmd:identificationInfo/gmd:MD_DataIdentification | ./gmd:identificationInfo/srv:SV_ServiceIdentification");
-        //(1..1)
-        XPATH_DI_SI_ABSTRACT = xpath.compile(
-                "./gmd:abstract/gco:CharacterString");
-        //(0..*)
-        try {
-            XPATH_DI_SI_TEMPORAL_EXTENTS = xpath.compile(
-                    "./gmd:extent/gmd:EX_Extent/gmd:temporalElement/gmd:EX_TemporalExtent/gmd:extent/gml:TimePeriod");
-        } catch (Exception e) {
-            log.error(e, "Error compiling xpath XPATH_DI_SI_TEMPORAL_EXTENTS");
-        }
-        //(0..1) (0..1 as these could be gml:begin and gml:end)
-        XPATH_DI_SI_TEMPORAL_EXTENTS_PERIOD_BEGIN = xpath.compile(
-                "./gml:beginPosition");
-        XPATH_DI_SI_TEMPORAL_EXTENTS_PERIOD_END = xpath.compile(
-                "./gml:endPosition");
-
-        XPATH_DI_SI_CITATION = xpath.compile(
-                "./gmd:citation/gmd:CI_Citation");
-        //(1..1)
-        XPATH_DI_SI_CITATION_TITLE = xpath.compile(
-                "./gmd:title/gco:CharacterString");
-        XPATH_DI_SI_CITATION_DATE_TYPE = xpath.compile(
-                "./gmd:date/gmd:CI_Date/gmd:dateType/gmd:CI_DateTypeCode/@codeListValue");
-        XPATH_DI_SI_CITATION_DATE_VALUE = xpath.compile(
-                "./gmd:date/gmd:CI_Date/gmd:date/gco:Date");
-        //(0..*)
-        XPATH_DI_SI_CITATION_RESOURCE_IDENTIFIERS = xpath.compile(
-                "./gmd:identifier/gmd:RS_Identifier");
-        XPATH_DI_SI_CITATION_RESOURCE_IDENTIFIERS_CODE = xpath.compile(
-                "./gmd:code/gco:CharacterString");
-        XPATH_DI_SI_CITATION_RESOURCE_IDENTIFIERS_CODESPACE = xpath.compile(
-                "./gmd:codeSpace/gco:CharacterString");
-
-        XPATH_DI_SI_KEYWORDS = xpath.compile(
-                "./gmd:descriptiveKeywords/gmd:MD_Keywords/gmd:keyword/gco:CharacterString");
-
-        XPATH_DI_SI_BROWSE_GRAPHICS = xpath.compile(
-                "./gmd:graphicOverview/gmd:MD_BrowseGraphic");
-        //(1..1)
-        XPATH_DI_SI_BROWSE_GRAPHICS_FILE_NAME = xpath.compile(
-                "./gmd:fileName/gco:CharacterString");
-        //(0..1)
-        XPATH_DI_SI_BROWSE_GRAPHICS_FILE_DESCRIPTION = xpath.compile(
-                "./gmd:fileDescription/gco:CharacterString");
-        //(0..1)
-        XPATH_DI_SI_BROWSE_GRAPHICS_FILE_TYPE = xpath.compile(
-                "./gmd:fileType/gco:CharacterString");
-
-        XPATH_DI_SI_RESPONSIBLE_PARTIES = xpath.compile(
-                "./gmd:pointOfContact/gmd:CI_ResponsibleParty");
-
-        XPATH_RESPONSIBLE_PARTY_ORG_NAME = xpath.compile(
-                "./gmd:organisationName/gco:CharacterString");
-
-        XPATH_RESPONSIBLE_PARTY_ORG_EMAILS = xpath.compile(
-                "./gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:electronicMailAddress/gco:CharacterString");
-
-
-        XPATH_DI_SI_RESOURCE_CONSTRAINTS = xpath.compile(
-                "./gmd:resourceConstraints");
-
-        XPATH_DI_SI_RESOURCE_CONSTRAINTS_ACCESS_CONSTRAINTS = xpath.compile(
-                "./gmd:MD_LegalConstraints/gmd:accessConstraints/gmd:MD_RestrictionCode/@codeListValue");
-
-        XPATH_DI_SI_RESOURCE_CONSTRAINTS_OTHER_CONSTRAINTS = xpath.compile(
-                "./gmd:MD_LegalConstraints/gmd:otherConstraints");
-
-        XPATH_DI_SI_RESOURCE_CONSTRAINTS_CLASSIFICATIONS = xpath.compile(
-                "./gmd:MD_SecurityConstraints/gmd:classification/gmd:MD_ClassificationCode/@codeListValue");
-
-        XPATH_DI_SI_RESOURCE_CONSTRAINTS_USE_LIMITATIONS = xpath.compile(
-                "./gmd:MD_Constraints/gmd:useLimitation/gco:CharacterString");
-
-        // DI ONLY
-        XPATH_DI_CHARSETS = xpath.compile(
-                "./gmd:characterSet/@codeListValue");
-        XPATH_DI_TOPICS = xpath.compile(
-                "./gmd:topicCategory/gmd:MD_TopicCategoryCode");
-        XPATH_DI_RESOLUTIONS = xpath.compile(
-                "./gmd:spatialResolution/gmd:MD_Resolution/gmd:equivalentScale/gmd:MD_RepresentativeFraction/gmd:denominator/gco:Integer");
-        XPATH_DI_SPATIAL_REPR_TYPES = xpath.compile(
-                "./gmd:spatialRepresentationType/gmd:MD_SpatialRepresentationTypeCode/@codeListValue");
-
-        // SI ONLY
-        XPATH_SI_SERVICE_TYPE = xpath.compile(
-                "./srv:serviceType/gco:LocalName");
-
-        // SI ONLY
-        XPATH_SI_SERVICE_TYPE_VERSION = xpath.compile(
-                "./srv:serviceTypeVersion/gco:LocalName");
-
-        XPATH_SI_OPERATES_ON = xpath.compile(
-                "./srv:operatesOn/@uuidref");
-
-        //(0..*)
-        XPATH_DI_SI_EXTENT = xpath.compile(
-                "./*[local-name()='extent']/gmd:EX_Extent/gmd:geographicElement/gmd:EX_GeographicBoundingBox");
-
-
-        // From root
-        XPATH_FILE_IDENTIFIER = xpath.compile(
-                "./gmd:fileIdentifier/gco:CharacterString");
-
-        // From root
-        XPATH_SCOPE_CODES = xpath.compile(
-                "./gmd:hierarchyLevel/gmd:MD_ScopeCode/@codeListValue");
-        // From root
-        XPATH_LOCALE_MAP = xpath.compile(
-                "./gmd:locale/gmd:PT_Locale");
-        // From root
-        XPATH_METADATA_STANDARD_NAME = xpath.compile(
-                "./gmd:metadataStandardName/gco:CharacterString");
-        // From root
-        XPATH_METADATA_STANDARD_VERSION = xpath.compile(
-                "./gmd:metadataStandardVersion/gco:CharacterString");
-        // WAS METADATA_LANGUAGE (which is from root, but this is also used elsewhere from another parent)
-        XPATH_LANGUAGE = xpath.compile(
-                "./gmd:language/gco:CharacterString");
-        // From root
-        XPATH_METADATA_CHARSET = xpath.compile(
-                "./gmd:characterSet/gmd:MD_CharacterSetCode/@codeListValue");
-        // From root
-        XPATH_METADATA_RESPONSIBLE_PARTIES = xpath.compile(
-                "./gmd:contact/gmd:CI_ResponsibleParty");
-        // From root
-        XPATH_METADATA_DATE = xpath.compile(
-                "./gmd:dateStamp/gco:DateTime");
-        // From root
-        XPATH_METADATA_REFERENCESYSTEM = xpath.compile(
-                "./gmd:referenceSystemInfo/gmd:MD_ReferenceSystem/gmd:referenceSystemIdentifier/gmd:RS_Identifier/gmd:code/gco:CharacterString");
-        // OtherRestrictions can have characterString with locales or an anchor
-        XPATH_CHARACTER_STRING = xpath.compile("./gco:CharacterString");
-
+    public static CSWIsoRecord parse(final Node node, final Locale locale) {
+        return node instanceof Element elem ? parse(elem, locale) : null;
     }
 
-    public CSWIsoRecord parse(final Node elem, final Locale locale, MathTransform transform) throws XPathExpressionException, ParseException, TransformException {
-        int i;
-        Node node;
-        NodeList nodeList;
+    public static CSWIsoRecord parse(final Element mdMetadata, final Locale locale) {
+        // Null when the record has no translations for the requested language. The localized
+        // content then falls back to the gco:CharacterString values, see parseLocalizedContent()
+        String localeId = parseLocaleMap(mdMetadata).get(locale.getISO3Language());
+
         CSWIsoRecord record = new CSWIsoRecord();
-        final Map<String, String> locales = getLocaleMap(elem);
-        String value;
-        XPathExpression pathToLocalizedValue = null;
-        if (locales != null && locales.containsKey(locale.getISO3Language())) {
-            pathToLocalizedValue = xpath.compile(
-                    "../gmd:PT_FreeText/gmd:textGroup/gmd:LocalisedCharacterString[@locale='#" + locales.get(locale.getISO3Language()) + "']");
-        }
 
-        nodeList = (NodeList) XPATH_DI_SI.evaluate(elem, XPathConstants.NODESET);
-        if (nodeList.getLength() > 0) {
-            parseIdentifications(nodeList, record.getIdentifications(), transform, pathToLocalizedValue);
-        }
-
-        nodeList = (NodeList) XPATH_DATA_QUALITY.evaluate(elem, XPathConstants.NODESET);
-        if (nodeList.getLength() > 0) {
-            try {
-                CSWISORecordDataQualityParser dataQualityParser = new CSWISORecordDataQualityParser();
-                record.setDataQualityObject(dataQualityParser.parseDataQualities(nodeList, pathToLocalizedValue));
-            }
-            catch (Exception e) {
-                log.warn("parseDataQualities FAIL! "+e.getMessage());
-            }
-        }
-
-        node = (Node) XPATH_DISTRIBUTION_INFO.evaluate(elem, XPathConstants.NODE);
-        if (node != null) {
-            parseDistributionInfo(node, record, pathToLocalizedValue);
-        }
-
-        node = (Node) XPATH_FILE_IDENTIFIER.evaluate(elem, XPathConstants.NODE);
-        if (node != null) {
-            record.setFileIdentifier(getLocalizedContent(node, pathToLocalizedValue));
-        }
-
-        nodeList = (NodeList) XPATH_SCOPE_CODES.evaluate(elem, XPathConstants.NODESET);
-        List<String> list = record.getScopeCodes();
-        for (i = 0; i < nodeList.getLength(); i++) {
-            list.add(getText(nodeList.item(i)));
-        }
-
-        node = (Node) XPATH_METADATA_STANDARD_NAME.evaluate(elem, XPathConstants.NODE);
-        if (node != null) {
-            record.setMetadataStandardName(getLocalizedContent(node, pathToLocalizedValue));
-        }
-
-        node = (Node) XPATH_METADATA_STANDARD_VERSION.evaluate(elem, XPathConstants.NODE);
-        if (node != null) {
-            record.setMetadataStandardVersion(getLocalizedContent(node, pathToLocalizedValue));
-        }
-
-        node = (Node) XPATH_LANGUAGE.evaluate(elem, XPathConstants.NODE);
-        if (node != null) {
-            record.setMetadataLanguage(getLanguageIfAvailable(getLocalizedContent(node, pathToLocalizedValue)));
-        }
-
-        node = (Node) XPATH_METADATA_CHARSET.evaluate(elem, XPathConstants.NODE);
-        if (node != null) {
-            record.setMetadataCharacterSet(getLocalizedContent(node, pathToLocalizedValue));
-        }
-
-        nodeList = (NodeList) XPATH_METADATA_RESPONSIBLE_PARTIES.evaluate(elem, XPathConstants.NODESET);
-        List<CSWIsoRecord.ResponsibleParty> rpList = record.getMetadataResponsibleParties();
-        parseResponsibleParties(nodeList, rpList, pathToLocalizedValue);
-
-        node = (Node) XPATH_METADATA_DATE.evaluate(elem, XPathConstants.NODE);
-        if (node != null) {
-            value = getLocalizedContent(node, pathToLocalizedValue);
-            try{
-                record.setMetadataDateStamp(LocalDateTime.parse(value, DATE_TIME_FORMAT));
-            }catch (Exception e){
-                // TODO: should we add raw xml content if parsing fails
-            }
-        }
-
-        nodeList = (NodeList) XPATH_METADATA_REFERENCESYSTEM.evaluate(elem, XPathConstants.NODESET);
-        List<String> referenceSystemList = record.getReferenceSystems();
-        for (i = 0; i < nodeList.getLength(); i++) {
-            referenceSystemList.add(getText(nodeList.item(i)));
-        }
+        record.setIdentifications(parseIdentifications(mdMetadata, localeId));
+        record.setDataQualityObject(parseDataQualityObject(mdMetadata, localeId));
+        record.setDistributionFormats(parseDistributionFormats(mdMetadata, localeId));
+        record.setOnlineResources(parseOnlineResources(mdMetadata, localeId));
+        record.setFileIdentifier(
+            XmlHelper.getAnyChild(mdMetadata, "fileIdentifier")
+                .map(e -> parseLocalizedContent(e, localeId))
+                .orElse(null));
+        record.setMetadataStandardName(
+            XmlHelper.getAnyChild(mdMetadata, "metadataStandardName")
+                .map(e -> parseLocalizedContent(e, localeId))
+                .orElse(null));
+        record.setMetadataStandardVersion(
+            XmlHelper.getAnyChild(mdMetadata, "metadataStandardVersion")
+                .map(e -> parseLocalizedContent(e, localeId))
+                .orElse(null));
+        record.setMetadataLanguage(
+            XmlHelper.getAnyChild(mdMetadata, "language")
+                .map(e -> parseLocalizedContent(e, localeId))
+                .map(e -> getLanguageIfAvailable(e))
+                .orElse(null));
+        record.setMetadataCharacterSet(parseMetadataCharacterSet(mdMetadata));
+        record.setScopeCodes(parseScopeCodes(mdMetadata));
+        record.setMetadataResponsibleParties(parseResponsibleParties(mdMetadata, localeId));
+        record.setMetadataDateStamp(
+            XmlHelper.getAnyChild(mdMetadata, "dateStamp")
+                .map(dateStamp -> parseDateStamp(dateStamp))
+                .orElse(null));
+        record.setReferenceSystems(parseReferenceSystems(mdMetadata));
 
         return record;
     }
 
-    private void parseIdentifications(NodeList nodeList, List<CSWIsoRecord.Identification> identifications, MathTransform transform, XPathExpression pathToLocalizedValue) throws XPathExpressionException, ParseException, TransformException {
-        CSWIsoRecord.Identification identification;
-        Node node;
-        for (int i = 0; i < nodeList.getLength(); i++) {
-            node = nodeList.item(i);
-            // See if type is data (gmd:MD_DataIdentification) or service (srv:SV_ServiceIdentification)
-            if ("MD_DataIdentification".equals(node.getLocalName())) {
-                identification = new CSWIsoRecord.DataIdentification();
-                // Parse data specific stuff
-                parseDataIdentificationFields(node, (CSWIsoRecord.DataIdentification) identification, pathToLocalizedValue);
-            } else {
-                identification = new CSWIsoRecord.ServiceIdentification();
-                // Parse service specific stuff
-                parseServiceIdentificationFields(node, (CSWIsoRecord.ServiceIdentification) identification, pathToLocalizedValue);
-            }
-            parseCommonIdentificationFields(node, identification, transform, pathToLocalizedValue);
+    private static Map<String, String> parseLocaleMap(Element mdMetadata) {
+        /**
+        <gmd:locale xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:gml="http://www.opengis.net/gml">
+            <gmd:PT_Locale id="SV">
+                <gmd:languageCode>
+                    <gmd:LanguageCode codeList="http://www.loc.gov/standards/iso639-2/" codeListValue="swe" />
+                </gmd:languageCode>
+                <gmd:characterEncoding>
+                    <gmd:MD_CharacterSetCode codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/ML_gmxCodelists.xml#MD_CharacterSetCode" codeListValue="UTF-8" />
+                </gmd:characterEncoding>
+            </gmd:PT_Locale>
+        </gmd:locale>
+        => { "swe": "SV" }
+         */
+        List<Element> ptLocales = XmlHelper.getChildElements(mdMetadata, "locale", "PT_Locale")
+            .filter(ptLocale -> XmlHelper.getAttributeValue(ptLocale, "id") != null)
+            .toList();
 
-            identifications.add(identification);
-        }
-    }
-
-    private void parseCommonIdentificationFields(Node idNode, CSWIsoRecord.Identification identification, MathTransform transform, XPathExpression pathToLocalizedValue) throws XPathExpressionException, ParseException, TransformException {
-        Node node;
-        NodeList nodeList;
-        List<String> list;
-        node = (Node) XPATH_DI_SI_ABSTRACT.evaluate(idNode, XPathConstants.NODE);
-        identification.setAbstractText(getLocalizedContent(node, pathToLocalizedValue));
-        nodeList = (NodeList) XPATH_DI_SI_TEMPORAL_EXTENTS.evaluate(idNode, XPathConstants.NODESET);
-        if (nodeList.getLength() > 0) {
-            parseTemporalExtents(nodeList, identification.getTemporalExtents());
-        }
-        node = (Node) XPATH_DI_SI_CITATION.evaluate(idNode, XPathConstants.NODE);
-        if (node != null) {
-            CSWIsoRecord.Identification.Citation citation = new CSWIsoRecord.Identification.Citation();
-            identification.setCitation(citation);
-            parseCitation(node, citation, pathToLocalizedValue);
-        }
-        list = identification.getDescriptiveKeywords();
-        nodeList = (NodeList) XPATH_DI_SI_KEYWORDS.evaluate(idNode, XPathConstants.NODESET);
-        parseNodeListStrings(nodeList, list, pathToLocalizedValue);
-        nodeList = (NodeList) XPATH_DI_SI_BROWSE_GRAPHICS.evaluate(idNode, XPathConstants.NODESET);
-        if (nodeList.getLength() > 0) {
-            parseBrowseGraphics(nodeList, identification.getBrowseGraphics(), pathToLocalizedValue);
-        }
-        nodeList = (NodeList) XPATH_DI_SI_RESPONSIBLE_PARTIES.evaluate(idNode, XPathConstants.NODESET);
-        if (nodeList.getLength() > 0) {
-            parseResponsibleParties(nodeList, identification.getResponsibleParties(), pathToLocalizedValue);
-        }
-        nodeList = (NodeList) XPATH_DI_SI_RESOURCE_CONSTRAINTS.evaluate(idNode, XPathConstants.NODESET);
-        if (nodeList.getLength() > 0) {
-            parseResourceConstraints(nodeList, identification, pathToLocalizedValue);
-        }
-        // TODO double triple check that extents are common
-        nodeList = (NodeList) XPATH_DI_SI_EXTENT.evaluate(idNode, XPathConstants.NODESET);
-        if (nodeList.getLength() > 0) {
-            parseBBoxes(identification, nodeList, transform);
-        }
-    }
-
-    private void parseDataIdentificationFields(Node diNode, CSWIsoRecord.DataIdentification identification, XPathExpression pathToLocalizedValue) throws XPathExpressionException {
-        int i;
-        List<Integer> intList;
-        List<String> list;
-        Node node;
-        NodeList nodeList;
-
-        nodeList = (NodeList) XPATH_DI_CHARSETS.evaluate(diNode, XPathConstants.NODESET);
-        list = identification.getCharacterSets();
-        parseNodeListStrings(nodeList, list, pathToLocalizedValue);
-
-        nodeList = (NodeList) XPATH_LANGUAGE.evaluate(diNode, XPathConstants.NODESET);
-        list = identification.getLanguages();
-        for (i = 0; i < nodeList.getLength(); i++) {
-            list.add(getLanguageIfAvailable(getLocalizedContent(nodeList.item(i), pathToLocalizedValue)));
-        }
-
-        nodeList = (NodeList) XPATH_DI_TOPICS.evaluate(diNode, XPathConstants.NODESET);
-        list = identification.getTopicCategories();
-        parseNodeListStrings(nodeList, list, pathToLocalizedValue);
-
-        nodeList = (NodeList) XPATH_DI_RESOLUTIONS.evaluate(diNode, XPathConstants.NODESET);
-        intList = identification.getSpatialResolutions();
-        for (i = 0; i < nodeList.getLength(); i++) {
-            node = nodeList.item(i);
-            try {
-                intList.add(Integer.parseInt(getText(node)));
-            } catch (NumberFormatException nfe) {
-                log.warn("Invalid resolution integer:", getText(node));
-            }
-        }
-
-        nodeList = (NodeList) XPATH_DI_SPATIAL_REPR_TYPES.evaluate(diNode, XPathConstants.NODESET);
-        list = identification.getSpatialRepresentationTypes();
-        parseNodeListStrings(nodeList, list, pathToLocalizedValue);
-    }
-
-    private void parseServiceIdentificationFields(Node siNode, CSWIsoRecord.ServiceIdentification identification, XPathExpression pathToLocalizedValue) throws XPathExpressionException {
-        List<String> list;
-        Node node;
-        NodeList nodeList;
-
-        nodeList = (NodeList) XPATH_SI_OPERATES_ON.evaluate(siNode, XPathConstants.NODESET);
-        list = identification.getOperatesOn();
-        parseNodeListStrings(nodeList, list, pathToLocalizedValue);
-
-        node = (Node) XPATH_SI_SERVICE_TYPE.evaluate(siNode, XPathConstants.NODE);
-        if (node != null) {
-            identification.setServiceType(getLocalizedContent(node, pathToLocalizedValue));
-        }
-
-        node = (Node) XPATH_SI_SERVICE_TYPE_VERSION.evaluate(siNode, XPathConstants.NODE);
-        if (node != null) {
-            identification.setServiceTypeVersion(getLocalizedContent(node, pathToLocalizedValue));
-        }
-    }
-
-    private void parseResponsibleParties(NodeList rpNodes, List<CSWIsoRecord.ResponsibleParty> rpList, XPathExpression pathToLocalizedValue) throws XPathExpressionException {
-        int i;
-        Node node;
-        NodeList nodeList;
-        List<String> list;
-        CSWIsoRecord.ResponsibleParty responsibleParty;
-        for (i = 0; i < rpNodes.getLength(); i++) {
-            node = rpNodes.item(i);
-            responsibleParty = new CSWIsoRecord.ResponsibleParty();
-            responsibleParty.setOrganisationName(
-                    getLocalizedContent(((Node) XPATH_RESPONSIBLE_PARTY_ORG_NAME.evaluate(node, XPathConstants.NODE)), pathToLocalizedValue)
-            );
-            nodeList = (NodeList) XPATH_RESPONSIBLE_PARTY_ORG_EMAILS.evaluate(node, XPathConstants.NODESET);
-            list = responsibleParty.getElectronicMailAddresses();
-            parseNodeListStrings(nodeList, list, pathToLocalizedValue);
-            rpList.add(responsibleParty);
-        }
-    }
-
-    private void parseBrowseGraphics(NodeList bgNodes, List<CSWIsoRecord.BrowseGraphic> browseGraphics, XPathExpression pathToLocalizedValue) throws XPathExpressionException {
-        Node node, node2;
-        CSWIsoRecord.BrowseGraphic browseGraphic;
-        for (int i = 0; i < bgNodes.getLength(); i++) {
-            node = bgNodes.item(i);
-            browseGraphic = new CSWIsoRecord.BrowseGraphic();
-            node2 = (Node) XPATH_DI_SI_BROWSE_GRAPHICS_FILE_NAME.evaluate(node, XPathConstants.NODE);
-            if (node2 != null) {
-                browseGraphic.setFileName(getLocalizedContent(node2, pathToLocalizedValue));
-            }
-            node2 = (Node) XPATH_DI_SI_BROWSE_GRAPHICS_FILE_DESCRIPTION.evaluate(node, XPathConstants.NODE);
-            if (node2 != null) {
-                browseGraphic.setFileDescription(getLocalizedContent(node2, pathToLocalizedValue));
-            }
-            node2 = (Node) XPATH_DI_SI_BROWSE_GRAPHICS_FILE_TYPE.evaluate(node, XPathConstants.NODE);
-            if (node2 != null) {
-                browseGraphic.setFileType(getLocalizedContent(node2, pathToLocalizedValue));
-            }
-            browseGraphics.add(browseGraphic);
-        }
-    }
-
-    private void parseTemporalExtents(NodeList teNodes, List<CSWIsoRecord.Identification.TemporalExtent> temporalExtents) throws XPathExpressionException, ParseException {
-        Node node, node2, node3;
-        CSWIsoRecord.Identification.TemporalExtent temporalExtent;
-        for (int i = 0; i < teNodes.getLength(); i++) {
-            node = teNodes.item(i);
-            node2 = (Node) XPATH_DI_SI_TEMPORAL_EXTENTS_PERIOD_BEGIN.evaluate(node, XPathConstants.NODE);
-            node3 = (Node) XPATH_DI_SI_TEMPORAL_EXTENTS_PERIOD_END.evaluate(node, XPathConstants.NODE);
-            temporalExtent = new CSWIsoRecord.Identification.TemporalExtent();
-            if (node2 != null) {
-                temporalExtent.setBegin(getText(node2));
-            }
-            if (node3 != null){
-                temporalExtent.setEnd(getText(node3));
-            }
-            temporalExtents.add(temporalExtent);
-        }
-    }
-
-    private void parseCitation(Node cNode, CSWIsoRecord.Identification.Citation citation, XPathExpression pathToLocalizedValue) throws XPathExpressionException, ParseException {
-        Node node;
-        NodeList nodeList;
-        node = (Node) XPATH_DI_SI_CITATION_TITLE.evaluate(cNode, XPathConstants.NODE);
-        if (node != null) {
-            citation.setTitle(getLocalizedContent(node, pathToLocalizedValue));
-        }
-        CSWIsoRecord.Identification.DateWithType dateWithType = new CSWIsoRecord.Identification.DateWithType();
-        node = (Node) XPATH_DI_SI_CITATION_DATE_TYPE.evaluate(cNode, XPathConstants.NODE);
-        if (node != null) {
-            dateWithType.setDateType(getText(node));
-        }
-        node = (Node) XPATH_DI_SI_CITATION_DATE_VALUE.evaluate(cNode, XPathConstants.NODE);
-        if (node != null) {
-            try {
-                dateWithType.setDate(LocalDate.parse(getText(node), DATE_FORMAT));
-            }
-            catch (Exception e) {
-                dateWithType.setXmlDate(getText(node));
-            }
-
-        }
-        citation.setDate(dateWithType);
-        nodeList = (NodeList) XPATH_DI_SI_CITATION_RESOURCE_IDENTIFIERS.evaluate(cNode, XPathConstants.NODESET);
-        if (nodeList.getLength() > 0) {
-            List<CSWIsoRecord.Identification.Citation.ResourceIdentifier> resourceIdentifiers = citation.getResourceIdentifiers();
-            CSWIsoRecord.Identification.Citation.ResourceIdentifier resourceIdentifier;
-            for (int i = 0; i < nodeList.getLength(); i++) {
-                resourceIdentifier = new CSWIsoRecord.Identification.Citation.ResourceIdentifier();
-                node = (Node) XPATH_DI_SI_CITATION_RESOURCE_IDENTIFIERS_CODE.evaluate(nodeList.item(i), XPathConstants.NODE);
-                if (node != null) {
-                    resourceIdentifier.setCode(getLocalizedContent(node, pathToLocalizedValue));
-                }
-                node = (Node) XPATH_DI_SI_CITATION_RESOURCE_IDENTIFIERS_CODESPACE.evaluate(nodeList.item(i), XPathConstants.NODE);
-                if (node != null) {
-                    resourceIdentifier.setCodeSpace(getLocalizedContent(node, pathToLocalizedValue));
-                }
-                resourceIdentifiers.add(resourceIdentifier);
-            }
-        }
-    }
-
-    private void parseDistributionInfo(Node diNode, CSWIsoRecord record, XPathExpression pathToLocalizedValue) throws XPathExpressionException {
-        int i;
-        Node node;
-        NodeList nodeList;
-        String s1, s2;
-        List<CSWIsoRecord.DistributionFormat> list = record.getDistributionFormats();
-        nodeList = (NodeList) XPATH_DISTRIBUTION_INFO_DISTRIBUTION_FORMATS.evaluate(diNode, XPathConstants.NODESET);
-        for (i = 0; i < nodeList.getLength(); i++) {
-            s1 = null;
-            s2 = null;
-            node = (Node) XPATH_DISTRIBUTION_INFO_DISTRIBUTION_FORMAT_NAME.evaluate(nodeList.item(i), XPathConstants.NODE);
-            if (node != null) {
-                s1 = getLocalizedContent(node, pathToLocalizedValue);
-            }
-            node = (Node) XPATH_DISTRIBUTION_INFO_DISTRIBUTION_FORMAT_VERSION.evaluate(nodeList.item(i), XPathConstants.NODE);
-            if (node != null) {
-                s2 = getLocalizedContent(node, pathToLocalizedValue);
-            }
-            list.add(new CSWIsoRecord.DistributionFormat(s1, s2));
-        }
-
-        nodeList = (NodeList) XPATH_DISTRIBUTION_INFO_ONLINE_RESOURCES.evaluate(diNode, XPathConstants.NODESET);
-        List<CSWIsoRecord.OnlineResource> onlineResources = record.getOnlineResources();
-        for (i = 0; i < nodeList.getLength(); i++) {
-            s1 = null;
-            s2 = null;
-            node = (Node) XPATH_DISTRIBUTION_INFO_ONLINE_RESOURCES_LINK_NAME.evaluate(nodeList.item(i), XPathConstants.NODE);
-            if (node != null) {
-                s1 = getLocalizedContent(node, pathToLocalizedValue);
-            }
-            node = (Node) XPATH_DISTRIBUTION_INFO_ONLINE_RESOURCES_LINK_URL.evaluate(nodeList.item(i), XPathConstants.NODE);
-            if (node != null) {
-                s2 = getLocalizedContent(node, pathToLocalizedValue);
-            }
-            onlineResources.add(new CSWIsoRecord.OnlineResource(s1, s2));
-        }
-    }
-
-    // Piles up constraint types from multiple resource constraint elements as there doesn't seem to be much difference between them
-    private void parseResourceConstraints(NodeList rcNodes, CSWIsoRecord.Identification identification, XPathExpression pathToLocalizedValue) throws XPathExpressionException {
-        int i;
-        Node node;
-        NodeList nodeList;
-        List<String> list;
-
-        // evaluate doesn't take in nodelists... ffs
-        for (i = 0; i < rcNodes.getLength(); i++) {
-            node = rcNodes.item(i);
-            list = identification.getAccessConstraints();
-            // ./gmd:MD_LegalConstraints/gmd:accessConstraints/gmd:MD_RestrictionCode/@codeListValue
-            String codeListValue = (String) XPATH_DI_SI_RESOURCE_CONSTRAINTS_ACCESS_CONSTRAINTS.evaluate(node, XPathConstants.STRING);
-            if (codeListValue != null && !codeListValue.isEmpty()) {
-                list.add(codeListValue);
-            }
-
-            list = identification.getOtherConstraints();
-            // ./gmd:MD_LegalConstraints/gmd:otherConstraints/
-            nodeList = (NodeList) XPATH_DI_SI_RESOURCE_CONSTRAINTS_OTHER_CONSTRAINTS.evaluate(node, XPathConstants.NODESET);
-            String anchor = getAnchor(nodeList);
-            if (anchor != null) {
-                // use anchor if it is available
-                list.add(anchor);
-            } else {
-                // parse localized free text
-                // "./gmd:MD_LegalConstraints/gmd:otherConstraints/gco:CharacterString" +
-                // "../gmd:PT_FreeText/gmd:textGroup/gmd:LocalisedCharacterString[@locale='#" + locales.get(locale.getISO3Language()) + "']"
-                parseFreeTextNodeFromOtherConstraints(nodeList, list, pathToLocalizedValue);
-            }
-
-            list = identification.getClassifications();
-            // /gmd:MD_SecurityConstraints/gmd:classification/gmd:MD_ClassificationCode/@codeListValue
-            nodeList = (NodeList) XPATH_DI_SI_RESOURCE_CONSTRAINTS_CLASSIFICATIONS.evaluate(node, XPathConstants.NODESET);
-            parseNodeListStrings(nodeList, list, pathToLocalizedValue);
-
-            list = identification.getUseLimitations();
-            nodeList = (NodeList) XPATH_DI_SI_RESOURCE_CONSTRAINTS_USE_LIMITATIONS.evaluate(node, XPathConstants.NODESET);
-            parseNodeListStrings(nodeList, list, pathToLocalizedValue);
-        }
-    }
-
-    private void parseFreeTextNodeFromOtherConstraints(NodeList nodeList, List<String> list, XPathExpression pathToLocalizedValue) throws XPathExpressionException {
-        if (nodeList == null || nodeList.getLength() == 0) {
-            return;
-        }
-
-        Node node = nodeList.item(0);
-        // get the "CharacterString" as base node for the parseNodeListStrings() as it refers to ../PT_FreeText
-        nodeList = (NodeList) XPATH_CHARACTER_STRING.evaluate(node, XPathConstants.NODESET);
-        parseNodeListStrings(nodeList, list, pathToLocalizedValue);
-    }
-
-    /*
-    Just a very loopy way of parsing the anchor text value from this kind of structure:
-    <gmd:otherConstraints>
-        <gmx:Anchor xlink:href="http://inspire.ec.europa.eu/metadata-codelist/LimitationsOnPublicAccess/noLimitations">julkista saatavuutta ei ole rajoitettu</gmx:Anchor>
-    </gmd:otherConstraints>
-    */
-    private String getAnchor(NodeList nodeList) {
-        if (nodeList == null || nodeList.getLength() == 0) {
-            return null;
-        }
-        for (int i = 0; i < nodeList.getLength(); i++) {
-            Node otherConstraintNode = nodeList.item(i);
-            nodeList = otherConstraintNode.getChildNodes();
-            if (nodeList == null || nodeList.getLength() == 0) {
-                return null;
-            }
-            for (int n = 0; n < nodeList.getLength(); n++) {
-                Node node = nodeList.item(n);
-                if ("Anchor".equals(node.getLocalName())) {
-                    return getText(node);
-                }
-            }
-        }
-        return null;
-    }
-
-    private void parseBBoxes(final CSWIsoRecord.Identification identification, final NodeList extentNodes, MathTransform transform) throws TransformException {
-        if (extentNodes == null || extentNodes.getLength() == 0) {
-            // Nothing to do
-            return;
-        }
-        int i, n;
-        Node node;
-        NodeList nodeList;
-        String westBoundLongitude, southBoundLatitude, eastBoundLongitude, northBoundLatitude;
-        List<Polygon> extents = new ArrayList<Polygon>();
-        List<CSWIsoRecord.Envelope> wktExtents = identification.getEnvelopes();
-
-        for (n = 0; n < extentNodes.getLength(); n++) {
-            westBoundLongitude = null;
-            southBoundLatitude = null;
-            eastBoundLongitude = null;
-            northBoundLatitude = null;
-
-            nodeList = extentNodes.item(n).getChildNodes();
-
-            for (i = 0; i < nodeList.getLength(); i++) {
-                node = nodeList.item(i);
-                if ("westBoundLongitude".equals(node.getLocalName())) {
-                    westBoundLongitude = getLatLonValue(node);
-                } else if ("southBoundLatitude".equals(node.getLocalName())) {
-                    southBoundLatitude = getLatLonValue(node);
-                } else if ("eastBoundLongitude".equals(node.getLocalName())) {
-                    eastBoundLongitude = getLatLonValue(node);
-                } else if ("northBoundLatitude".equals(node.getLocalName())) {
-                    northBoundLatitude = getLatLonValue(node);
-                }
-            }
-
-            // Skippety skip if we're missing one
-
-            if (westBoundLongitude == null || westBoundLongitude.isEmpty()) {
-                continue;
-            }
-            if (southBoundLatitude == null || southBoundLatitude.isEmpty()) {
-                continue;
-            }
-            if (eastBoundLongitude == null || eastBoundLongitude.isEmpty()) {
-                continue;
-            }
-            if (northBoundLatitude == null || northBoundLatitude.isEmpty()) {
-                continue;
-            }
-            double x1 = Double.parseDouble(westBoundLongitude),
-                   x2 = Double.parseDouble(eastBoundLongitude),
-                   y1 = Double.parseDouble(northBoundLatitude),
-                   y2 = Double.parseDouble(southBoundLatitude);
-
-            // Coordinate axis order is a kinky issue.
-            // We'll do it like GeoTools sees it, that is
-            // it's lat, lon unless otherwise defined
-
-            // GeoTools
-            CSWIsoRecord.Envelope envStr = new CSWIsoRecord.Envelope();
-            Envelope env = new Envelope(x1, x2, y1, y2);
-            if (transform != null) {
-                env = JTS.transform(env, transform);
-            }
-            envStr.setWestBoundLongitude(env.getMinX());
-            envStr.setEastBoundLongitude(env.getMaxX());
-            envStr.setSouthBoundLatitude(env.getMinY());
-            envStr.setNorthBoundLatitude(env.getMaxY());
-            wktExtents.add(envStr);
-            Polygon extent = gf
-                    .createPolygon(gf
-                            .createLinearRing(new Coordinate[]{
-                                    new Coordinate(env.getMinX(), env
-                                            .getMinY()),
-                                    new Coordinate(env.getMaxX(), env
-                                            .getMinY()),
-                                    new Coordinate(env.getMaxX(), env
-                                            .getMaxY()),
-                                    new Coordinate(env.getMinX(), env
-                                            .getMaxY()),
-                                    new Coordinate(env.getMinX(), env
-                                            .getMinY())}), null);
-
-            extents.add(extent);
-        }
-        if (extents.size() > 0) {
-            GeometryCollection gc = gf.createGeometryCollection(
-                    extents.toArray(new Polygon[extents.size()])
-            );
-            identification.setExtents(gc);
-        }
-    }
-
-    private String getLatLonValue(Node element) {
-        NodeList children = element.getChildNodes();
-        String ret = null;
-        for (int i = 0; i < children.getLength(); i++) {
-            if ("Decimal".equals(children.item(i).getLocalName())) {
-                ret = children.item(i).getTextContent();
-            }
-        }
-        return ret;
-    }
-
-    private Map<String, String> getLocaleMap(final Node elem) {
-        final Map<String, String> locales = new HashMap<>();
-        try {
-            final NodeList localeNodes = (NodeList) XPATH_LOCALE_MAP.evaluate(elem, XPathConstants.NODESET);
-            Node loc;
-            for (int i = 0; i < localeNodes.getLength(); i++) {
-                loc = localeNodes.item(i);
-                final String localeKey = loc.getAttributes().getNamedItem("id").getTextContent();
-                // Note! assuming only one exists
-                NodeList locChildren = loc.getChildNodes();
-                Node langCode = null;
-                Node theLangCode;
-                for (int j = 0; j < locChildren.getLength(); j++) {
-                    if ("languageCode".equals(locChildren.item(j).getLocalName())) {
-                        langCode = locChildren.item(j);
-                        break;
-                    }
-                }
-                if (langCode != null) {
-                    locChildren = langCode.getChildNodes();
-                    for (int j = 0; j < locChildren.getLength(); j++) {
-                        if ("LanguageCode".equals(locChildren.item(j).getLocalName())) {
-                            theLangCode = locChildren.item(j);
-                            final String lang3letter = theLangCode.getAttributes().getNamedItem("codeListValue").getTextContent();
-                            if (lang3letter != null) {
-                                locales.put(lang3letter, localeKey);
-                            } else {
-                                log.warn("Failed to find locale mapping");
-                            }
-                            break;
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
-            log.warn("Error parsing locales:", e.getMessage());
+        Map<String, String> locales = new HashMap<>();
+        for (Element ptLocale : ptLocales) {
+            String id = XmlHelper.getAttributeValue(ptLocale, "id");
+            XmlHelper.getChildElements(ptLocale, "languageCode", "LanguageCode")
+                .map(languageCode -> XmlHelper.getAttributeValue(languageCode, "codeListValue"))
+                .findAny()
+                .ifPresent(code -> locales.put(code, id));
         }
         return locales;
     }
 
-    private void parseNodeListStrings(NodeList nodeList, List<String> list, XPathExpression pathToLocalizedValue) {
-        if (nodeList == null || nodeList.getLength() == 0) {
-            return;
-        }
-        for (int i = 0; i < nodeList.getLength(); i++) {
-            list.add(getLocalizedContent(nodeList.item(i), pathToLocalizedValue));
+    private static List<Identification> parseIdentifications(Element mdMetadata, String localeId) {
+        return Stream.concat(
+            parseDataIdentifications(mdMetadata, localeId),
+            parseServiceIdentifications(mdMetadata, localeId)
+        ).toList();
+    }
+
+    private static Stream<DataIdentification> parseDataIdentifications(Element mdMetadata, String localeId) {
+        return XmlHelper.getChildElements(mdMetadata, "identificationInfo", "MD_DataIdentification")
+            .map(di -> parseDataIdentification(di, localeId));
+    }
+
+    private static DataIdentification parseDataIdentification(Element dataIdentification, String localeId) {
+        DataIdentification di = new DataIdentification();
+        parseAndSetIdentification(di, dataIdentification, localeId);
+        di.setCharacterSets(
+            XmlHelper.getChildElements(dataIdentification, "characterSet", "MD_CharacterSetCode")
+                .map(x -> XmlHelper.getAttributeValue(x, "codeListValue"))
+                .filter(Objects::nonNull)
+                .toList());
+        di.setLanguages(
+            XmlHelper.getChildElements(dataIdentification, "language")
+                .map(x -> parseLocalizedContent(x, localeId))
+                .filter(Objects::nonNull)
+                .map(CSWISORecordParser::getLanguageIfAvailable)
+                .toList());
+        di.setTopicCategories(
+            XmlHelper.getChildElements(dataIdentification, "topicCategory", "MD_TopicCategoryCode")
+                .map(x -> getText(x))
+                .filter(Objects::nonNull)
+                .toList());
+        di.setSpatialResolutions(parseSpatialResolutions(dataIdentification));
+        di.setSpatialRepresentationTypes(
+            XmlHelper.getChildElements(dataIdentification, "spatialRepresentationType", "MD_SpatialRepresentationTypeCode")
+                .map(x -> XmlHelper.getAttributeValue(x, "codeListValue"))
+                .filter(Objects::nonNull)
+                .toList());
+        return di;
+    }
+
+    private static List<Integer> parseSpatialResolutions(Element dataIdentification) {
+        /**
+        <gmd:spatialResolution>
+            <gmd:MD_Resolution>
+                <gmd:equivalentScale>
+                    <gmd:MD_RepresentativeFraction>
+                        <gmd:denominator>
+                            <gco:Integer>10000</gco:Integer>
+                        </gmd:denominator>
+                    </gmd:MD_RepresentativeFraction>
+                </gmd:equivalentScale>
+            </gmd:MD_Resolution>
+        </gmd:spatialResolution>
+         */
+        return XmlHelper.getChildElements(dataIdentification, "spatialResolution", "MD_Resolution",
+                "equivalentScale", "MD_RepresentativeFraction", "denominator", "Integer")
+            .map(x -> getText(x))
+            .map(CSWISORecordParser::parseIntOrNull)
+            .filter(Objects::nonNull)
+            .toList();
+    }
+
+    private static Integer parseIntOrNull(String value) {
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            log.warn("Invalid resolution integer:", value);
+            return null;
         }
     }
 
-    private String getLanguageIfAvailable(String langCode) {
+    private static Stream<ServiceIdentification> parseServiceIdentifications(Element mdMetadata, String localeId) {
+        return XmlHelper.getChildElements(mdMetadata, "identificationInfo", "SV_ServiceIdentification")
+            .map(si -> parseServiceIdentification(si, localeId));
+    }
+
+    private static ServiceIdentification parseServiceIdentification(Element serviceIdentification, String localeId) {
+        /**
+        <srv:SV_ServiceIdentification>
+            <srv:serviceType>
+                <gco:LocalName>view</gco:LocalName>
+            </srv:serviceType>
+            <srv:serviceTypeVersion>
+                <gco:LocalName>1.3.0</gco:LocalName>
+            </srv:serviceTypeVersion>
+            <srv:operatesOn uuidref="1234-5678" />
+        </srv:SV_ServiceIdentification>
+         */
+        ServiceIdentification si = new ServiceIdentification();
+        parseAndSetIdentification(si, serviceIdentification, localeId);
+        si.setOperatesOn(
+            XmlHelper.getChildElements(serviceIdentification, "operatesOn")
+                .map(x -> XmlHelper.getAttributeValue(x, "uuidref"))
+                .filter(Objects::nonNull)
+                .toList());
+        si.setServiceType(
+            XmlHelper.getChildElements(serviceIdentification, "serviceType", "LocalName")
+                .map(x -> getText(x))
+                .findAny()
+                .orElse(null));
+        si.setServiceTypeVersion(
+            XmlHelper.getChildElements(serviceIdentification, "serviceTypeVersion", "LocalName")
+                .map(x -> getText(x))
+                .findAny()
+                .orElse(null));
+        return si;
+    }
+
+    private static void parseAndSetIdentification(Identification identification, Element e, String localeId) {
+        identification.setCitation(
+            XmlHelper.getChildElements(e, "citation", "CI_Citation")
+                .map(citation -> parseCitation(citation, localeId))
+                .findAny()
+                .orElse(null));
+        identification.setAbstractText(
+            XmlHelper.getAnyChild(e, "abstract")
+                .map(x -> parseLocalizedContent(x, localeId))
+                .orElse(null));
+        identification.setResponsibleParties(
+            XmlHelper.getChildElements(e, "pointOfContact", "CI_ResponsibleParty")
+                .map(rp -> parseResponsibleParty(rp, localeId))
+                .toList());
+        identification.setBrowseGraphics(
+            XmlHelper.getChildElements(e, "graphicOverview", "MD_BrowseGraphic")
+                .map(bg -> parseBrowseGraphic(bg, localeId))
+                .toList());
+        identification.setDescriptiveKeywords(
+            XmlHelper.getChildElements(e, "descriptiveKeywords", "MD_Keywords", "keyword")
+                .map(x -> parseAnchorOrLocalizedContent(x, localeId))
+                // the keyword can be explicitly missing: <gmd:keyword gco:nilReason="missing">
+                .filter(keyword -> keyword != null && !keyword.isEmpty())
+                .toList());
+        identification.setAccessConstraints(
+            XmlHelper.getChildElements(e, "resourceConstraints", "MD_LegalConstraints", "accessConstraints", "MD_RestrictionCode")
+                .map(x -> XmlHelper.getAttributeValue(x, "codeListValue"))
+                .filter(Objects::nonNull)
+                .toList());
+        identification.setOtherConstraints(
+            XmlHelper.getChildElements(e, "resourceConstraints", "MD_LegalConstraints", "otherConstraints")
+                .map(x -> parseAnchorOrLocalizedContent(x, localeId))
+                .filter(Objects::nonNull)
+                .toList());
+        identification.setClassifications(
+            XmlHelper.getChildElements(e, "resourceConstraints", "MD_SecurityConstraints", "classification", "MD_ClassificationCode")
+                .map(x -> XmlHelper.getAttributeValue(x, "codeListValue"))
+                .filter(Objects::nonNull)
+                .toList());
+        identification.setUseLimitations(
+            XmlHelper.getChildElements(e, "resourceConstraints", "MD_Constraints", "useLimitation")
+                .map(x -> parseLocalizedContent(x, localeId))
+                .filter(Objects::nonNull)
+                .toList());
+        identification.setTemporalExtents(
+            XmlHelper.getChildElements(e, "extent", "EX_Extent", "temporalElement", "EX_TemporalExtent", "extent", "TimePeriod")
+                .map(x -> parseTimePeriod(x))
+                .toList());
+        identification.setEnvelopes(
+            XmlHelper.getChildElements(e, "extent", "EX_Extent", "geographicElement", "EX_GeographicBoundingBox")
+                .map(x -> parseGeographicBoundingBox(x))
+                .toList());
+    }
+
+    private static Citation parseCitation(Element ciCitation, String localeId) {
+        /**
+        <gmd:CI_Citation>
+            <gmd:title xsi:type="gmd:PT_FreeText_PropertyType">
+                <gco:CharacterString>Maastotietokanta</gco:CharacterString>
+            </gmd:title>
+            <gmd:date>
+                <gmd:CI_Date>
+                    <gmd:date>
+                        <gco:Date>2010-04-01</gco:Date>
+                    </gmd:date>
+                    <gmd:dateType>
+                        <gmd:CI_DateTypeCode codeListValue="revision" />
+                    </gmd:dateType>
+                </gmd:CI_Date>
+            </gmd:date>
+            <gmd:identifier>
+                <gmd:RS_Identifier>
+                    <gmd:code>
+                        <gco:CharacterString>1000007</gco:CharacterString>
+                    </gmd:code>
+                    <gmd:codeSpace>
+                        <gco:CharacterString>FI</gco:CharacterString>
+                    </gmd:codeSpace>
+                </gmd:RS_Identifier>
+            </gmd:identifier>
+        </gmd:CI_Citation>
+         */
+        Citation citation = new Citation();
+        citation.setTitle(
+            XmlHelper.getAnyChild(ciCitation, "title")
+                .map(x -> parseLocalizedContent(x, localeId))
+                .orElse(null));
+        citation.setAlternateTitle(
+            XmlHelper.getAnyChild(ciCitation, "alternateTitle")
+                .map(x -> parseLocalizedContent(x, localeId))
+                .orElse(null));
+        citation.setDate(
+            XmlHelper.getChildElements(ciCitation, "date", "CI_Date")
+                .map(ciDate -> parseDateWithType(ciDate))
+                .findAny()
+                .orElseGet(DateWithType::new));
+        citation.setResourceIdentifiers(
+            XmlHelper.getChildElements(ciCitation, "identifier", "RS_Identifier")
+                .map(rsIdentifier -> parseResourceIdentifier(rsIdentifier, localeId))
+                .toList());
+        return citation;
+    }
+
+    private static DateWithType parseDateWithType(Element ciDate) {
+        DateWithType dateWithType = new DateWithType();
+        dateWithType.setDateType(
+            XmlHelper.getChildElements(ciDate, "dateType", "CI_DateTypeCode")
+                .map(x -> XmlHelper.getAttributeValue(x, "codeListValue"))
+                .filter(Objects::nonNull)
+                .findAny()
+                .orElse(null));
+        String date = XmlHelper.getChildElements(ciDate, "date", "Date")
+            .map(x -> getText(x))
+            .findAny()
+            .orElse(null);
+        if (date != null) {
+            try {
+                dateWithType.setDate(LocalDate.parse(date));
+            } catch (DateTimeParseException e) {
+                // keep the raw value around when it isn't an ISO date
+                dateWithType.setXmlDate(date);
+            }
+        }
+        return dateWithType;
+    }
+
+    private static ResourceIdentifier parseResourceIdentifier(Element rsIdentifier, String localeId) {
+        ResourceIdentifier resourceIdentifier = new ResourceIdentifier();
+        resourceIdentifier.setCode(
+            XmlHelper.getAnyChild(rsIdentifier, "code")
+                .map(x -> parseLocalizedContent(x, localeId))
+                .orElse(null));
+        resourceIdentifier.setCodeSpace(
+            XmlHelper.getAnyChild(rsIdentifier, "codeSpace")
+                .map(x -> parseLocalizedContent(x, localeId))
+                .orElse(null));
+        return resourceIdentifier;
+    }
+
+    private static List<String> parseScopeCodes(Element mdMetadata) {
+        /**
+        <gmd:hierarchyLevel>
+            <gmd:MD_ScopeCode codeListValue="dataset" codeList="..." />
+        </gmd:hierarchyLevel>
+         */
+        return XmlHelper.getChildElements(mdMetadata, "hierarchyLevel", "MD_ScopeCode")
+            .map(scopeCode -> XmlHelper.getAttributeValue(scopeCode, "codeListValue"))
+            .filter(Objects::nonNull)
+            .toList();
+    }
+
+    private static List<ResponsibleParty> parseResponsibleParties(Element mdMetadata, String localeId) {
+        return XmlHelper.getChildElements(mdMetadata, "contact", "CI_ResponsibleParty")
+            .map(rp -> parseResponsibleParty(rp, localeId))
+            .toList();
+    }
+
+    private static ResponsibleParty parseResponsibleParty(Element responsibleParty, String localeId) {
+        /**
+        <gmd:CI_ResponsibleParty>
+            <gmd:organisationName xsi:type="gmd:PT_FreeText_PropertyType">
+                <gco:CharacterString>Maanmittauslaitos</gco:CharacterString>
+                <gmd:PT_FreeText>
+                    <gmd:textGroup>
+                        <gmd:LocalisedCharacterString locale="#SV">Lantmäteriverket</gmd:LocalisedCharacterString>
+                    </gmd:textGroup>
+                    <gmd:textGroup>
+                        <gmd:LocalisedCharacterString locale="#EN">National Land Survey of Finland</gmd:LocalisedCharacterString>
+                    </gmd:textGroup>
+                </gmd:PT_FreeText>
+            </gmd:organisationName>
+            <gmd:contactInfo>
+                <gmd:CI_Contact>
+                    <gmd:address>
+                        <gmd:CI_Address>
+                            <gmd:electronicMailAddress xsi:type="gmd:PT_FreeText_PropertyType">
+                                <gco:CharacterString>asiakaspalvelu@maanmittauslaitos.fi</gco:CharacterString>
+                                <gmd:PT_FreeText>
+                                    <gmd:textGroup>
+                                        <gmd:LocalisedCharacterString locale="#SV">kundservice@lantmateriverket.fi</gmd:LocalisedCharacterString>
+                                    </gmd:textGroup>
+                                    <gmd:textGroup>
+                                        <gmd:LocalisedCharacterString locale="#EN">customerservice@nls.fi</gmd:LocalisedCharacterString>
+                                    </gmd:textGroup>
+                                </gmd:PT_FreeText>
+                            </gmd:electronicMailAddress>
+                        </gmd:CI_Address>
+                    </gmd:address>
+                </gmd:CI_Contact>
+            </gmd:contactInfo>
+            <gmd:role>
+                <gmd:CI_RoleCode codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/codelist/ML_gmxCodelists.xml#CI_RoleCode" codeListValue="owner" />
+            </gmd:role>
+        </gmd:CI_ResponsibleParty>
+         */
+        String organisationName = XmlHelper.getAnyChild(responsibleParty, "organisationName")
+            .map(orgName -> parseLocalizedContent(orgName, localeId))
+            .orElse(null);
+        List<String> emailAddresses = XmlHelper.getChildElements(responsibleParty, "contactInfo", "CI_Contact", "address", "CI_Address", "electronicMailAddress")
+            .map(electronicMailAddress -> parseLocalizedContent(electronicMailAddress, localeId))
+            .toList();
+
+        ResponsibleParty p = new ResponsibleParty();
+        p.setOrganisationName(organisationName);
+        p.setElectronicMailAddresses(emailAddresses);
+        return p;
+    }
+
+    private static BrowseGraphic parseBrowseGraphic(Element e, String localeId) {
+        /**
+        <gmd:MD_BrowseGraphic>
+            <gmd:fileName xsi:type="gmd:PT_FreeText_PropertyType">
+                <gco:CharacterString>maastotietokanta_s.png</gco:CharacterString>
+                <gmd:PT_FreeText>
+                    <gmd:textGroup>
+                        <gmd:LocalisedCharacterString locale="#SV">maastotietokanta_s.png</gmd:LocalisedCharacterString>
+                    </gmd:textGroup>
+                    <gmd:textGroup>
+                        <gmd:LocalisedCharacterString locale="#EN">maastotietokanta_s.png</gmd:LocalisedCharacterString>
+                    </gmd:textGroup>
+                </gmd:PT_FreeText>
+            </gmd:fileName>
+            <gmd:fileDescription xsi:type="gmd:PT_FreeText_PropertyType">
+                <gco:CharacterString>thumbnail</gco:CharacterString>
+                <gmd:PT_FreeText>
+                    <gmd:textGroup>
+                        <gmd:LocalisedCharacterString locale="#SV">thumbnail</gmd:LocalisedCharacterString>
+                    </gmd:textGroup>
+                    <gmd:textGroup>
+                        <gmd:LocalisedCharacterString locale="#EN">thumbnail</gmd:LocalisedCharacterString>
+                    </gmd:textGroup>
+                </gmd:PT_FreeText>
+            </gmd:fileDescription>
+            <gmd:fileType xsi:type="gmd:PT_FreeText_PropertyType">
+                <gco:CharacterString>png</gco:CharacterString>
+                <gmd:PT_FreeText>
+                    <gmd:textGroup>
+                        <gmd:LocalisedCharacterString locale="#SV">png</gmd:LocalisedCharacterString>
+                    </gmd:textGroup>
+                    <gmd:textGroup>
+                        <gmd:LocalisedCharacterString locale="#EN">png</gmd:LocalisedCharacterString>
+                    </gmd:textGroup>
+                </gmd:PT_FreeText>
+            </gmd:fileType>
+        </gmd:MD_BrowseGraphic>
+         */
+        BrowseGraphic g = new BrowseGraphic();
+        g.setFileName(XmlHelper.getAnyChild(e, "fileName").map(x -> parseLocalizedContent(x, localeId)).orElse(null));
+        g.setFileDescription(XmlHelper.getAnyChild(e, "fileDescription").map(x -> parseLocalizedContent(x, localeId)).orElse(null));
+        g.setFileType(XmlHelper.getAnyChild(e, "fileType").map(x -> parseLocalizedContent(x, localeId)).orElse(null));
+        return g;
+    }
+
+
+    private static DataQualityObject parseDataQualityObject(Element mdMetadata, String localeId) {
+        return CSWISORecordDataQualityParser.parseDataQualities(mdMetadata, localeId);
+    }
+
+    private static List<DistributionFormat> parseDistributionFormats(Element mdMetadata, String localeId) {
+        return XmlHelper.getChildElements(mdMetadata, "distributionInfo", "MD_Distribution", "distributionFormat", "MD_Format")
+            .map(mdFormat -> parseDistributionFormat(mdFormat, localeId))
+            .toList();
+    }
+
+    private static DistributionFormat parseDistributionFormat(Element mdFormat, String localeId) {
+        /**
+        <gmd:MD_Format>
+            <gmd:name xsi:type="gmd:PT_FreeText_PropertyType">
+                <gco:CharacterString>GML</gco:CharacterString>
+                <gmd:PT_FreeText>
+                    <gmd:textGroup>
+                        <gmd:LocalisedCharacterString locale="#SV">MIF</gmd:LocalisedCharacterString>
+                    </gmd:textGroup>
+                    <gmd:textGroup>
+                        <gmd:LocalisedCharacterString locale="#EN">MIF</gmd:LocalisedCharacterString>
+                    </gmd:textGroup>
+                </gmd:PT_FreeText>
+            </gmd:name>
+            <gmd:version gco:nilReason="missing">
+                <gco:CharacterString />
+            </gmd:version>
+        </gmd:MD_Format>
+         */
+        String name = XmlHelper.getAnyChild(mdFormat, "name")
+            .map(n -> parseLocalizedContent(n, localeId))
+            .orElse(null);
+        String version = XmlHelper.getAnyChild(mdFormat, "version")
+            .map(v -> parseLocalizedContent(v, localeId))
+            .orElse(null);
+        return new DistributionFormat(name, version);
+    }
+
+    private static List<OnlineResource> parseOnlineResources(Element mdMetadata, String localeId) {
+        return XmlHelper.getChildElements(mdMetadata, "distributionInfo", "MD_Distribution", "transferOptions", "MD_DigitalTransferOptions", "onLine")
+            .map(onLine -> parseOnLine(onLine, localeId))
+            .toList();
+    }
+
+    private static OnlineResource parseOnLine(Element onLine, String localeId) {
+        /**
+        <gmd:onLine>
+            <gmd:CI_OnlineResource>
+                <gmd:linkage>
+                    <gmd:URL>https://avoinapi.vaylapilvi.fi/vaylatiedot/ows?service=wms&amp;request=getCapabilities</gmd:URL>
+                </gmd:linkage>
+                <gmd:protocol>
+                    <gco:CharacterString>http://www.opengis.net/def/serviceType/ogc/wms</gco:CharacterString>
+                </gmd:protocol>
+                <gmd:name>
+                    <gco:CharacterString>Radan kilometripisteet</gco:CharacterString>
+                </gmd:name>
+                <gmd:description>
+                    <gco:CharacterString>track_kilometer</gco:CharacterString>
+                </gmd:description>
+            </gmd:CI_OnlineResource>
+        </gmd:onLine>
+         */
+        String name = XmlHelper.getChildElements(onLine, "CI_OnlineResource", "name", "CharacterString")
+            .map(Element::getTextContent)
+            .findAny()
+            .orElse(null);
+        String url = XmlHelper.getChildElements(onLine, "CI_OnlineResource", "linkage", "URL")
+            .map(Element::getTextContent)
+            .findAny()
+            .orElse(null);
+        
+        return new OnlineResource(name, url);
+    }
+
+    private static CSWIsoRecord.Envelope parseGeographicBoundingBox(Element geographicBoundingBox) {
+        /**
+        <gmd:EX_GeographicBoundingBox>
+            <gmd:westBoundLongitude>
+                <gco:Decimal>19.08317359</gco:Decimal>
+            </gmd:westBoundLongitude>
+            <gmd:eastBoundLongitude>
+                <gco:Decimal>31.58672881</gco:Decimal>
+            </gmd:eastBoundLongitude>
+            <gmd:southBoundLatitude>
+                <gco:Decimal>59.45414258</gco:Decimal>
+            </gmd:southBoundLatitude>
+            <gmd:northBoundLatitude>
+                <gco:Decimal>70.09229553</gco:Decimal>
+            </gmd:northBoundLatitude>
+        </gmd:EX_GeographicBoundingBox>
+         */
+        List<Double> decimals = Stream.of("westBoundLongitude", "eastBoundLongitude", "southBoundLatitude", "northBoundLatitude")
+            .map(name -> XmlHelper.getChildElements(geographicBoundingBox, name, "Decimal").findAny())
+            .flatMap(Optional::stream)
+            .map(decimal -> getText(decimal))
+            .map(Double::parseDouble)
+            .toList();
+        CSWIsoRecord.Envelope e = new CSWIsoRecord.Envelope();
+        e.setWestBoundLongitude(decimals.get(0));
+        e.setEastBoundLongitude(decimals.get(1));
+        e.setSouthBoundLatitude(decimals.get(2));
+        e.setNorthBoundLatitude(decimals.get(3));
+        return e;
+    }
+
+    private static String getLanguageIfAvailable(String langCode) {
         String ret = ISO3letterOskariLangMapping.get(langCode);
         return ret != null ? ret : langCode;
     }
 
-    private String getLocalizedContent(final Node elem, final XPathExpression pathToLocaledValue) {
-        String ret = getText(elem);
-        String localized;
-        if (elem != null && pathToLocaledValue != null) {
-            try {
-                final Node localeNode = (Node) pathToLocaledValue.evaluate(elem, XPathConstants.NODE);
-                localized  = getText(localeNode);
-                if (localized != null && !localized.isEmpty()) {
-                    ret = localized;
-                }
-            } catch (Exception e) {
-                log.warn("Error parsing localized value for:", elem.getLocalName(), ". Message:", e.getMessage());
-            }
-        }
-        return ret;
+    /**
+     * The value can be given as a gmx:Anchor instead of the usual localized gco:CharacterString, for example:
+     * <gmd:keyword>
+     *     <gmx:Anchor xlink:href="http://rdfdata.eionet.europa.eu/inspirethemes/themes/7">Liikenneverkot</gmx:Anchor>
+     * </gmd:keyword>
+     */
+    private static String parseAnchorOrLocalizedContent(Element e, String localeId) {
+        return XmlHelper.getAnyChild(e, "Anchor")
+            .map(x -> getText(x))
+            .orElseGet(() -> parseLocalizedContent(e, localeId));
+    }
+
+    private static String parseMetadataCharacterSet(Element mdMetadata) {
+        return XmlHelper.getChildElements(mdMetadata, "characterSet", "MD_CharacterSetCode")
+            .map(code -> XmlHelper.getAttributeValue(code, "codeListValue"))
+            .findAny()
+            .orElse(null);
+    }
+
+    private static LocalDateTime parseDateStamp(Element dateStamp) {
+        return XmlHelper.getAnyChild(dateStamp, "DateTime")
+            .map(x -> getText(x))
+            .map(dateTime -> LocalDateTime.parse(dateTime, DateTimeFormatter.ISO_DATE_TIME))
+            .or(() -> XmlHelper.getAnyChild(dateStamp, "Date")
+                .map(x -> getText(x))
+                .map(LocalDate::parse)
+                .map(LocalDate::atStartOfDay)
+            )
+            .orElse(null);
+    }
+
+    private static TemporalExtent parseTimePeriod(Element e) {
+        /**
+        <gml:TimePeriod gml:id="d1360720e941a1051934">
+            <gml:beginPosition />
+            <gml:endPosition />
+        </gml:TimePeriod>
+         */
+        return new TemporalExtent(
+            XmlHelper.getAnyChild(e, "beginPosition").map(x -> getText(x)).orElse(null),
+            XmlHelper.getAnyChild(e, "endPosition").map(x -> getText(x)).orElse(null)
+        );
+    }
+
+    private static List<String> parseReferenceSystems(Element mdMetadata) {
+        return XmlHelper.getChildElements(mdMetadata, "referenceSystemInfo", "MD_ReferenceSystem", "referenceSystemIdentifier", "RS_Identifier", "code")
+            .map(code -> parseLocalizedContent(code, null))
+            .filter(Objects::nonNull)
+            .toList();
+    }
+
+    static String parseLocalizedContent(Element e, String localeId) {
+        /**
+        <e>
+            <gco:CharacterString>GML</gco:CharacterString>
+            <gmd:PT_FreeText>
+                <gmd:textGroup>
+                    <gmd:LocalisedCharacterString locale="#SV">MIF</gmd:LocalisedCharacterString>
+                </gmd:textGroup>
+                <gmd:textGroup>
+                    <gmd:LocalisedCharacterString locale="#EN">MIF</gmd:LocalisedCharacterString>
+                </gmd:textGroup>
+            </gmd:PT_FreeText>
+        </e>
+         */
+        return Optional.ofNullable(localeId)
+            .flatMap(id -> XmlHelper.getChildElements(e, "PT_FreeText", "textGroup", "LocalisedCharacterString")
+                .filter(x -> ("#" + id).equals(XmlHelper.getAttributeValue(x, "locale")))
+                .map(x -> getText(x))
+                // the translation can be an empty element, use the default value in that case
+                .filter(text -> text != null && !text.isEmpty())
+                .findAny())
+            .or(() -> XmlHelper.getAnyChild(e, "CharacterString").map(x -> getText(x)))
+            .orElse(null);
     }
 
     /**
@@ -867,7 +676,7 @@ public class CSWISORecordParser {
      * @param element Node
      * @return Element's text content or null if there's no element
      */
-    private String getText(final Node element) {
+    private static String getText(final Node element) {
         String ret = null;
         if (element != null) {
             ret = element.getTextContent();
