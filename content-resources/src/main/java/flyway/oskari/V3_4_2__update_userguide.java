@@ -13,7 +13,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Removes the flyoutClazz config that was used in sample-apps to get a single tab userguide.
@@ -27,28 +26,20 @@ public class V3_4_2__update_userguide extends BaseJavaMigration {
     public void migrate(Context context) throws Exception {
         Connection connection = context.getConnection();
         List<UserGuide> guides = getUserGuides(connection);
-        AtomicInteger errorCount = new AtomicInteger();
-        guides.forEach(guide -> {
+        for (UserGuide guide: guides) {
             boolean neededUpdate = removeFlyoutClazz(guide.config);
-            if(neededUpdate) {
-                try {
-                    updateGuide(connection, guide);
-                } catch (SQLException e) {
-                    errorCount.getAndIncrement();
-                }
+            if (neededUpdate) {
+                updateGuide(connection, guide);
             }
-        });
-        if (errorCount.get() > 0) {
-            LOG.error("Failed to update", errorCount.get(), "userguide bundles (tried removing flyoutClazz config).");
         }
     }
 
     private List<UserGuide> getUserGuides(Connection conn) throws SQLException {
         List<UserGuide> results = new ArrayList<>();
         final String sql = "SELECT appsetup_id, bundle_id, config FROM oskari_appsetup_bundles where bundle_id = (select id from oskari_bundle where name = 'userguide')";
-        try(PreparedStatement statement = conn.prepareStatement(sql)) {
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
             try (ResultSet rs = statement.executeQuery()) {
-                while(rs.next()) {
+                while (rs.next()) {
                     UserGuide userGuide = new UserGuide();
                     userGuide.appsetup = rs.getInt("appsetup_id");
                     userGuide.id = rs.getInt("bundle_id");
