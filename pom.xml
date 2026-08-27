@@ -77,7 +77,7 @@
 
 <!-- This will override commons-io to be packaged with version 2.18.0, otherwise
 https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml/5.4.0
-- geotools 34.2 uses 2.21.0 (https://github.com/geotools/geotools/blob/34.x/platform-dependencies/pom.xml#L26)
+- geotools 34.5 uses 2.21.0 (https://github.com/geotools/geotools/blob/34.x/platform-dependencies/pom.xml#L26)
 - fileupload 2.0.0-M2 uses 2.15.1 (https://commons.apache.org/proper/commons-fileupload/commons-fileupload2-jakarta-servlet6/dependency-management.html)
 - poi-ooxml 5.4.0 uses 2.18.0 (https://github.com/apache/poi/blob/REL_5_4_0/build.gradle#L124)
 The one packaged without this is 2.15.1
@@ -108,7 +108,7 @@ The one packaged without this is 2.15.1
 
         <quartz-scheduler.version>2.5.0</quartz-scheduler.version>
 
-        <geotools.version>34.2</geotools.version>
+        <geotools.version>34.5</geotools.version>
         <jts.version>1.20.0</jts.version>
         <!-- https://github.com/ElectronicChartCentre/java-vector-tile -->
         <mvt.version>1.4.1</mvt.version>
