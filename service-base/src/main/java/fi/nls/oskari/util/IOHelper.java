@@ -447,12 +447,13 @@ public class IOHelper {
         }
 
         if (expectedContentType != null) {
-            String contentType = conn.getContentType();
+            String contentType = getContentType(conn.getContentType());
             if (contentType != null && !expectedContentType.equals(contentType)) {
                 throw new ServiceRuntimeException("Unexpected content type " + contentType);
             }
         }
     }
+
     /**
      * If logger is set to debug this method reads the input stream, prints the response as text
      * and wraps it to another input stream for further consumption.
@@ -471,6 +472,14 @@ public class IOHelper {
 
         final ByteArrayInputStream debug = new ByteArrayInputStream(response);
         return debug;
+    }
+
+    public static String getContentType(final String contentType) {
+        if (contentType == null) {
+            return null;
+        }
+        final String[] values = contentType.split(";");
+        return values[0].trim();
     }
 
     public static String getCharset(final HttpURLConnection con) {
