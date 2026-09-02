@@ -448,7 +448,7 @@ public class IOHelper {
 
         if (expectedContentType != null) {
             String contentType = getContentType(conn.getContentType());
-            if (contentType != null && !expectedContentType.equals(contentType)) {
+            if (contentType != null && !expectedContentType.equalsIgnoreCase(contentType)) {
                 throw new ServiceRuntimeException("Unexpected content type " + contentType);
             }
         }
