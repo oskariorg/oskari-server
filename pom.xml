@@ -94,7 +94,7 @@ The one packaged without this is 2.15.1
         <jackson-annotations.version>2.21</jackson-annotations.version>
         <fi.mml.nameregister.version>1.0</fi.mml.nameregister.version>
 
-        <tomcat.version>10.1.52</tomcat.version>
+        <tomcat.version>10.1.59</tomcat.version>
         <mybatis.version>3.5.19</mybatis.version>
         <!-- Version 12 of Flywaydb uses Jackson 3.x -->
         <flyway.version>11.20.3</flyway.version>
