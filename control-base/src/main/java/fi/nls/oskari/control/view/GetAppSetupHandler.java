@@ -46,6 +46,14 @@ public class GetAppSetupHandler extends ActionHandler {
 
     public static final String COOKIE_SAVED_STATE = "oskaristate";
 
+    protected static final String PROPERTY_TELEMETRY = "actionhandler.GetAppSetup.telemetry";
+    protected static final String ATTR_EVENT_CATEGORY = "org.oskari.event.category";
+    protected static final String ATTR_EVENT_ACTION = "org.oskari.event.action";
+    protected static final String ATTR_EVENT_NAME = "org.oskari.event.name";
+    protected static final String EVENT_CATEGORY = "appsetup";
+
+    private boolean writeTelemetry = false;
+
     // for adding extra bundle(s) for users with specific roles
     private Map<String, List<Bundle>> bundlesForRole = new HashMap<String, List<Bundle>>();
 
@@ -61,6 +69,7 @@ public class GetAppSetupHandler extends ActionHandler {
     }
 
     public void init() {
+        writeTelemetry = PropertyUtil.getOptional(PROPERTY_TELEMETRY, false);
         // setup services if they haven't been initialized
         if(viewService == null) {
             setViewService(new AppSetupServiceMybatisImpl());
@@ -253,6 +262,16 @@ public class GetAppSetupHandler extends ActionHandler {
                 } catch (ModifierException e) {
                     log.error(e, "Unable to modify bundle:", bundle);
                 }
+            }
+        }
+
+        if (writeTelemetry) {
+            params.getRequest().setAttribute(ATTR_EVENT_CATEGORY, EVENT_CATEGORY);
+            if (view.getType() != null) {
+                params.getRequest().setAttribute(ATTR_EVENT_ACTION, view.getType().toLowerCase(Locale.ROOT));
+            }
+            if (view.getUuid() != null) {
+                params.getRequest().setAttribute(ATTR_EVENT_NAME, view.getUuid());
             }
         }
 
