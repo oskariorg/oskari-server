@@ -186,7 +186,7 @@ public class OskariWFSClient {
         }
         return true;
     }
-    protected static int getMaxFeatures(OskariLayer layer) {
+    public static int getMaxFeatures(OskariLayer layer) {
         int maxFeatures = layer.getAttributes().optInt(WFSLayerAttributes.KEY_MAXFEATURES, -1);
         if (maxFeatures > 0) {
             return maxFeatures;

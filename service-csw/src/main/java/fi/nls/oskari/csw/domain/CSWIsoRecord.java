@@ -1,7 +1,6 @@
 package fi.nls.oskari.csw.domain;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.locationtech.jts.geom.GeometryCollection;
 import fi.nls.oskari.util.JSONHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -17,22 +16,25 @@ import java.util.List;
  * Created by TMIKKOLAINEN on 2.9.2014.
  */
 public class CSWIsoRecord {
+
+    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'kk:mm'Z'");
+
     private String fileIdentifier;
     private String metadataLanguage;
     private String metadataCharacterSet;
-    private List<String> scopeCodes = new ArrayList<String>();
-    private List<ResponsibleParty> metadataResponsibleParties = new ArrayList<ResponsibleParty>();
+    private List<String> scopeCodes;
+    private List<ResponsibleParty> metadataResponsibleParties;
     private LocalDateTime metadataDateStamp;
     private String metadataStandardName;
     private String metadataStandardVersion;
-    private List<Identification> identifications = new ArrayList<Identification>();
-    private List<DistributionFormat> distributionFormats = new ArrayList<DistributionFormat>();
-    private List<OnlineResource> onlineResources = new ArrayList<OnlineResource>();
+    private List<Identification> identifications;
+    private List<DistributionFormat> distributionFormats;
+    private List<OnlineResource> onlineResources;
     private DataQualityObject dataQualityObject;
     private URL metadataURL;
-    private List<String> referenceSystems = new ArrayList<String>();
-    private static final ObjectMapper mapper = new ObjectMapper();
-    private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'kk:mm'Z'");
+    private List<String> referenceSystems;
+
 
     public DataQualityObject getDataQualityObject() {
         return dataQualityObject;
@@ -138,6 +140,14 @@ public class CSWIsoRecord {
         this.metadataURL = metadataURL;
     }
 
+    public List<String> getReferenceSystems() {
+        return referenceSystems;
+    }
+
+    public void setReferenceSystems(List<String> referenceSystems) {
+        this.referenceSystems = referenceSystems;
+    }
+
     public JSONObject toJSON() {
         JSONObject ret = new JSONObject();
         JSONHelper.putValue(ret, "fileIdentifier", fileIdentifier);
@@ -191,10 +201,6 @@ public class CSWIsoRecord {
             JSONHelper.putValue(ret, "lineageStatements", arr);
         }
         return ret;
-    }
-
-    public List<String> getReferenceSystems() {
-        return referenceSystems;
     }
 
     public static class DataQualityObject {
@@ -298,8 +304,16 @@ public class CSWIsoRecord {
             return conformanceResultList;
         }
 
+        public void setConformanceResultList(List<DataQualityConformanceResult> conformanceResultList) {
+            this.conformanceResultList = conformanceResultList;
+        }
+
         public List<DataQualityQuantitativeResult> getQuantitativeResultList() {
             return quantitativeResultList;
+        }
+
+        public void setQuantitativeResultList(List<DataQualityQuantitativeResult> quantitativeResultList) {
+            this.quantitativeResultList = quantitativeResultList;
         }
 
         public String getEvaluationMethodDescription() {
@@ -493,7 +507,6 @@ public class CSWIsoRecord {
         private List<String> classifications = new ArrayList<String>();
         private List<String> useLimitations = new ArrayList<String>();
         private List<TemporalExtent> temporalExtents = new ArrayList<TemporalExtent>();
-        private GeometryCollection extents;
         private List<Envelope> envelopes = new ArrayList<Envelope>();
 
         public Citation getCitation() {
@@ -576,14 +589,6 @@ public class CSWIsoRecord {
             this.temporalExtents = temporalExtents;
         }
 
-        public GeometryCollection getExtents() {
-            return extents;
-        }
-
-        public void setExtents(GeometryCollection extents) {
-            this.extents = extents;
-        }
-
         public List<Envelope> getEnvelopes() {
             return envelopes;
         }
@@ -618,7 +623,6 @@ public class CSWIsoRecord {
                 arr.put(temporalExtent.toJSON());
             }
             JSONHelper.putValue(ret, "temporalExtents", arr);
-            // TODO magic up JSON from extents
             arr = new JSONArray();
             for (Envelope envelope : envelopes) {
                 arr.put(envelope.toJSON());

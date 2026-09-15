@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.oskari</groupId>
         <artifactId>oskari-server</artifactId>
-        <version>3.3.0</version>
+        <version>3.4.0-SNAPSHOT</version>
     </parent>
     <artifactId>control-userlayer</artifactId>
 
@@ -33,6 +33,11 @@
         <dependency>
             <groupId>org.oskari</groupId>
             <artifactId>test-helper</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.oskari</groupId>
+            <artifactId>shared-test-resources</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

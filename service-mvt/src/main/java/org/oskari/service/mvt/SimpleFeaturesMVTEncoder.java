@@ -1,5 +1,6 @@
 package org.oskari.service.mvt;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import no.ecc.vectortile.VectorTileEncoder;
@@ -28,6 +29,9 @@ public class SimpleFeaturesMVTEncoder {
 
     private static final GeometryFactory GF = new GeometryFactory();
 
+    private static final long FNV_OFFSET_BASIS = 0xcbf29ce484222325L;
+    private static final long FNV_PRIME = 0x100000001b3L;
+
     public static byte[] encodeToByteArray(SimpleFeatureCollection sfc,
             String layer, double[] bbox, int extent, int buffer) {
 
@@ -37,9 +41,28 @@ public class SimpleFeaturesMVTEncoder {
                 .map(geom -> SimpleFeatureConverter.fromGeometry(geom))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .forEach(f -> encoder.addFeature(layer, f.properties, f.geom));
+                .forEach(f -> encoder.addFeature(layer, f.properties, f.geom, toNumericId(f.id)));
 
         return encoder.encode();
+    }
+
+    /**
+     * Hashes the string id of the source feature to the uint64 the MVT feature id is. The
+     * same feature appears in several tiles (tiles are encoded with a buffer) and the client
+     * relies on the id to recognize those as one feature, so the hash must be stable.
+     */
+    static long toNumericId(String id) {
+        if (id == null) {
+            // VectorTileEncoder writes no id at all for a negative one
+            return -1L;
+        }
+        long hash = FNV_OFFSET_BASIS;
+        for (byte b : id.getBytes(StandardCharsets.UTF_8)) {
+            hash ^= (b & 0xff);
+            hash *= FNV_PRIME;
+        }
+        // Keep it non-negative, see above
+        return hash & Long.MAX_VALUE;
     }
 
     public static List<Geometry> asMVTGeoms(SimpleFeatureCollection sfc, double[] bbox, int extent, int buffer) {

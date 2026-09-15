@@ -1,6 +1,12 @@
 package fi.nls.oskari.csw.helper;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.json.JSONObject;
+import org.locationtech.jts.geom.Envelope;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.PrecisionModel;
 import org.oskari.capabilities.ogc.LayerCapabilitiesOGC;
 
 import fi.nls.oskari.csw.dao.OskariLayerMetadataDao;
@@ -18,6 +24,8 @@ public class CSW {
     private static final Logger LOG = LogFactory.getLogger(CSW.class);
 
     private static final String LAYER_ATTRIBUTE_METADATA_URL = "metadataUrl";
+
+    private static final GeometryFactory GF = new GeometryFactory(new PrecisionModel(), 4326);
 
     private CSW() {
     }
@@ -38,9 +46,7 @@ public class CSW {
             }
 
             String json = rec.toJSON().toString();
-            String wkt = rec.getIdentifications().stream().findAny()
-                    .map(x -> x.getExtents().getEnvelope().toText())
-                    .orElse(null);
+            String wkt = getCoverageWKT(rec);
             if (wkt == null) {
                 return RefreshResult.GEOMETRY_NOT_FOUND;
             }
@@ -56,6 +62,34 @@ public class CSW {
             LOG.warn(e, "CSW metadata handling failed, baseURL", baseURL, "id", metadataid);
             return RefreshResult.FAILED;
         }
+    }
+
+    /**
+     * Builds the WKT for the overall bounding box covering the envelopes of the first identification.
+     * Note! The envelopes are in WGS84 as EX_GeographicBoundingBox is always in decimal degrees.
+     *
+     * @return WKT for the bbox or null if there are no usable envelopes
+     */
+    protected static String getCoverageWKT(CSWIsoRecord rec) {
+        List<CSWIsoRecord.Envelope> envelopes = rec.getIdentifications().stream()
+                .findAny()
+                .map(CSWIsoRecord.Identification::getEnvelopes)
+                .orElse(Collections.emptyList());
+
+        Envelope coverage = new Envelope();
+        for (CSWIsoRecord.Envelope e : envelopes) {
+            if (e.getWestBoundLongitude() == null || e.getEastBoundLongitude() == null
+                    || e.getSouthBoundLatitude() == null || e.getNorthBoundLatitude() == null) {
+                // skip the ones missing any of the bounds
+                continue;
+            }
+            coverage.expandToInclude(e.getWestBoundLongitude(), e.getSouthBoundLatitude());
+            coverage.expandToInclude(e.getEastBoundLongitude(), e.getNorthBoundLatitude());
+        }
+        if (coverage.isNull()) {
+            return null;
+        }
+        return GF.toGeometry(coverage).toText();
     }
 
     public enum RefreshResult {
@@ -87,13 +121,7 @@ public class CSW {
     }
 
     public static CSWIsoRecord getCSWRecord(String serviceUrl, String metadataid, String lang) throws ServiceException {
-        CSWService service;
-        try {
-            service = new CSWService(serviceUrl);
-        } catch (Exception e) {
-            throw new ServiceException("Failed to initialize CSWService:" + e.getMessage());
-        }
-
+        CSWService service = new CSWService(serviceUrl);
         try {
             return service.getRecordById(metadataid, lang);
         } catch (Exception e) {

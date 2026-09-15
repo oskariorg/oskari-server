@@ -26,6 +26,7 @@ import fi.nls.oskari.domain.map.DataProvider;
 import fi.nls.oskari.domain.map.OskariLayer;
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
+import fi.nls.oskari.map.layer.formatters.LayerJSONFormatter;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLink;
 import fi.nls.oskari.map.layer.group.link.OskariLayerGroupLinkService;
 import fi.nls.oskari.util.JSONHelper;
@@ -111,7 +112,13 @@ public class OskariLayerServiceMybatisImpl extends OskariLayerService {
         result.setUsername((String) data.get("username"));
         result.setPassword((String) data.get("password"));
 
-        result.setGeometry((String) data.get("geom"));
+        // Use metadata coverage when available unless explicitly disabled.
+        // If not set here, OskariLayer.getGeometry() falls back to capabilities geom/bbox.
+        final boolean ignoreMetadataCoverage = result.getAttributes()
+                .optBoolean(LayerJSONFormatter.KEY_ATTRIBUTE_IGNORE_METADATA_COVERAGE, false);
+        if (!ignoreMetadataCoverage) {
+            result.setGeometry((String) data.get("geom"));
+        }
 
         result.setSrs_name((String) data.get("srs_name"));
         result.setVersion((String) data.get("version"));

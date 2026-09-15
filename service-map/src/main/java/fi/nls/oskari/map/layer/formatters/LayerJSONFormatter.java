@@ -32,6 +32,7 @@ public class LayerJSONFormatter {
     public static final String PROPERTY_AJAXURL = "oskari.ajax.url.prefix";
     public static final String KEY_ATTRIBUTE_FORCED_SRS = "forcedSRS";
     public static final String KEY_ATTRIBUTE_IGNORE_COVERAGE = "ignoreCoverage";
+    public static final String KEY_ATTRIBUTE_IGNORE_METADATA_COVERAGE = "ignoreMetadataCoverage";
     public static final String KEY_LEGENDS = "legends";
     public static final String KEY_GLOBAL_LEGEND = "legendImage";
     public static final String KEY_TYPE = "type";

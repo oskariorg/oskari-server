@@ -1,12 +1,14 @@
 package org.oskari.service.mvt;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import no.ecc.vectortile.VectorTileDecoder;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
@@ -30,6 +32,10 @@ import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
 
 public class SimpleFeaturesMVTEncoderTest {
+
+    private static final int EXTENT = 4096;
+    private static final int BUFFER = 256;
+    private static final String LAYER = "test";
 
     @Test
     public void pointFeaturesInBufferZoneWontBeRemoved() throws Exception {
@@ -304,13 +310,13 @@ public class SimpleFeaturesMVTEncoderTest {
 */
         double[] bbox = grid.getTileExtent(new TileCoord(7, 50, 102));
         List<Geometry> mvtGeoms = SimpleFeaturesMVTEncoder.asMVTGeoms(sfc, bbox, 4096, 256);
-        Assertions.assertEquals(175, mvtGeoms.size()); // wdtinc & no.ecc both 33063 bytes (~200ms)
+        Assertions.assertEquals(175, mvtGeoms.size()); // wdtinc & no.ecc both 33063 bytes (~200ms), 34813 since feature ids are written
 
         long start = System.currentTimeMillis();
         byte[] bytes = SimpleFeaturesMVTEncoder.encodeToByteArray(sfc, "test", bbox, 4096, 256);
         long duration = System.currentTimeMillis() - start;
         System.out.println(duration + "ms -> " + bytes.length);
-        Assertions.assertEquals(33063, bytes.length, "Check size");
+        Assertions.assertEquals(34813, bytes.length, "Check size");
         Assertions.assertTrue(duration < 400, "Check time"); // Should be around ~200ms but CI might be slower
     }
     @Test
@@ -328,14 +334,14 @@ public class SimpleFeaturesMVTEncoderTest {
 
         double[] bbox = grid.getTileExtent(new TileCoord(10, 456, 826));
         List<Geometry> mvtGeoms = SimpleFeaturesMVTEncoder.asMVTGeoms(sfc, bbox, 4096, 256);
-        Assertions.assertEquals(28, mvtGeoms.size()); // wdtinc 3941bytes (~300ms) / no.ecc 4539bytes (~300ms)
+        Assertions.assertEquals(28, mvtGeoms.size()); // wdtinc 3941bytes (~300ms) / no.ecc 4819bytes (~300ms)
 
         long start = System.currentTimeMillis();
         byte[] bytes = SimpleFeaturesMVTEncoder.encodeToByteArray(sfc, "test", bbox, 4096, 256);
 
         long duration = System.currentTimeMillis() - start;
         System.out.println(duration + "ms -> " + bytes.length);
-        Assertions.assertEquals(4539, bytes.length, "Check size");
+        Assertions.assertEquals(4819, bytes.length, "Check size");
         Assertions.assertTrue(duration < 500, "Check time"); // Should be around ~300ms but CI might be slower
     }
     @Test
@@ -352,15 +358,59 @@ public class SimpleFeaturesMVTEncoderTest {
         SimpleFeatureCollection sfc = GeoJSONReader2.toFeatureCollection(json, schema);
         double[] bbox = grid.getTileExtent(new TileCoord(10, 459, 838));
         List<Geometry> mvtGeoms = SimpleFeaturesMVTEncoder.asMVTGeoms(sfc, bbox, 4096, 256);
-        Assertions.assertEquals(284, mvtGeoms.size()); // wdtinc 3941bytes (~300ms) / no.ecc 32083bytes (~300ms)
+        Assertions.assertEquals(284, mvtGeoms.size()); // wdtinc 3941bytes (~300ms) / no.ecc 34908bytes (~300ms)
 
         long start = System.currentTimeMillis();
         byte[] bytes = SimpleFeaturesMVTEncoder.encodeToByteArray(sfc, "test", bbox, 4096, 256);
 
         long duration = System.currentTimeMillis() - start;
         System.out.println(duration + "ms -> " + bytes.length);
-        Assertions.assertEquals(32083, bytes.length, "Check size");
+        Assertions.assertEquals(34908, bytes.length, "Check size");
         Assertions.assertTrue(duration < 500, "Check time"); // Should be around ~300ms but CI might be slower
 
     }
+
+    @Test
+    public void featureKeepsItsIdAcrossAdjacentTiles() throws Exception {
+        GeometryFactory gf = new GeometryFactory();
+
+        SimpleFeatureTypeBuilder tBuilder = new SimpleFeatureTypeBuilder();
+        tBuilder.setName("test");
+        tBuilder.add("geom", Point.class);
+        SimpleFeatureType featureType = tBuilder.buildFeatureType();
+        SimpleFeatureBuilder fBuilder = new SimpleFeatureBuilder(featureType);
+
+        // A point right on the shared edge of two vertically adjacent tiles,
+        // so it falls within the buffer of both
+        Point p = gf.createPoint(new Coordinate(50, 100));
+        fBuilder.set("geom", p);
+        DefaultFeatureCollection fc = new DefaultFeatureCollection("test", featureType);
+        fc.add(fBuilder.buildFeature("EP_KOHDE.210791"));
+
+        byte[] lower = SimpleFeaturesMVTEncoder.encodeToByteArray(
+                fc, LAYER, new double[] { 0, 0, 100, 100 }, EXTENT, BUFFER);
+        byte[] upper = SimpleFeaturesMVTEncoder.encodeToByteArray(
+                fc, LAYER, new double[] { 0, 100, 100, 200 }, EXTENT, BUFFER);
+
+        List<VectorTileDecoder.Feature> inLower = decode(lower);
+        List<VectorTileDecoder.Feature> inUpper = decode(upper);
+
+        Assertions.assertEquals(1, inLower.size(), "feature is in the lower tile");
+        Assertions.assertEquals(1, inUpper.size(), "feature is in the upper tile");
+        Assertions.assertEquals(inLower.get(0).getId(), inUpper.get(0).getId(),
+                "same feature must have the same id in both tiles");
+        Assertions.assertEquals(SimpleFeaturesMVTEncoder.toNumericId("EP_KOHDE.210791"), inLower.get(0).getId(),
+                "id is derived from the feature id");
+        Assertions.assertEquals("EP_KOHDE.210791", inLower.get(0).getAttributes().get("_oid"),
+                "_oid property is still written");
+    }
+
+    private static List<VectorTileDecoder.Feature> decode(byte[] tile) throws Exception {
+        List<VectorTileDecoder.Feature> features = new ArrayList<>();
+        for (VectorTileDecoder.Feature f : new VectorTileDecoder().decode(tile)) {
+            features.add(f);
+        }
+        return features;
+    }
+
 }

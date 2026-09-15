@@ -66,17 +66,17 @@
       "organisationName": "Väylävirasto",
       "electronicMailAddresses": ["paikkatieto@vayla.fi"]
     }],
-    "descriptiveKeywords": [""],
+    "descriptiveKeywords": ["Liikenneverkot", "Rautatieliikenne", "avoindata.fi", "Rataverkko", "Ei-Inspire", "Kansallinen"],
     "characterSets": [],
     "abstractText": "Aineistossa on esitetty rataverkon tasakilometripisteet. Aineisto kattaa Väyläviraston omistamat rautatiet. Aineiston lähdejärjestelmä on Ratainfratietojen hallintajärjestelmän ratakohteiden hallintasovellus (RATKO).",
     "temporalExtents": [],
     "browseGraphics": [],
     "topicCategories": ["transportation"],
     "envelopes": [{
-      "northBoundLatitude": 6.321890015015153E-4,
-      "southBoundLatitude": 5.362393818161068E-4,
-      "westBoundLongitude": 22.511427081130197,
-      "eastBoundLongitude": 22.51153910055132
+      "northBoundLatitude": 70.09229553,
+      "southBoundLatitude": 59.45414258,
+      "westBoundLongitude": 19.08317359,
+      "eastBoundLongitude": 31.58672881
     }],
     "accessConstraints": ["otherRestrictions"]
   }],

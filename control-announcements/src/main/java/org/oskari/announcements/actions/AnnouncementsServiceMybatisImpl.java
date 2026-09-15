@@ -86,4 +86,13 @@ public class AnnouncementsServiceMybatisImpl extends AnnouncementsService{
             throw new ServiceRuntimeException("Failed to delete announcements", e);
         }
     }
+
+    public Announcement getAnnouncementByExternalId(String externalId) {
+        try (final SqlSession session = factory.openSession()) {
+            final AnnouncementsMapper mapper = session.getMapper(AnnouncementsMapper.class);
+            return mapper.getAnnouncementByExternalId(externalId);
+        } catch (Exception e) {
+            throw new ServiceRuntimeException("Failed to get announcement by external id", e);
+        }
+    }
 }

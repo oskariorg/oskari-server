@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.oskari</groupId>
     <artifactId>oskari-server</artifactId>
-    <version>3.3.0</version>
+    <version>3.4.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Oskari server</name>
@@ -47,23 +47,23 @@
         <jdk.version>17</jdk.version>
         <oskari.version>${project.version}</oskari.version>
 
-        <spring.version>6.2.17</spring.version>
-        <spring-security.version>6.5.9</spring-security.version>
+        <spring.version>6.2.19</spring.version>
+        <spring-security.version>6.5.11</spring-security.version>
         <!--
         session-bom 3.5.5 uses:
-        https://github.com/spring-projects/spring-session/blob/3.5.5/gradle/libs.versions.toml#L41-L43
-        which is aligned with core 6.2.16 and security 6.5.8 versions
-        https://central.sonatype.com/artifact/org.springframework.session/spring-session-bom/3.5.5
-        https://mvnrepository.com/artifact/org.springframework.session/spring-session-bom/3.5.5
-         and spring-data 2025.0.9 (https://github.com/spring-projects/spring-session/blob/3.5.5/gradle/libs.versions.toml#L41)
-         which uses spring-data-redis 3.5.9:
-         - https://github.com/spring-projects/spring-data-redis/releases/tag/3.5.9
-         - https://github.com/spring-projects/spring-data-bom/releases/tag/2025.0.9
+        https://github.com/spring-projects/spring-session/blob/3.5.7/gradle/libs.versions.toml#L41-L43
+        which is aligned with core 6.2.19 and security 6.5.11 versions
+        https://central.sonatype.com/artifact/org.springframework.session/spring-session-bom/3.5.7
+        https://mvnrepository.com/artifact/org.springframework.session/spring-session-bom/3.5.7
+         and spring-data 2025.0.12 (https://github.com/spring-projects/spring-session/blob/3.5.7/gradle/libs.versions.toml#L41)
+         which uses spring-data-redis 3.5.12:
+         - https://github.com/spring-projects/spring-data-redis/releases/tag/3.5.12
+         - https://github.com/spring-projects/spring-data-bom/releases/tag/2025.0.12
          Which uses Jedis 6.0.0:
-         - https://github.com/spring-projects/spring-data-redis/blob/3.5.9/pom.xml#L27
+         - https://github.com/spring-projects/spring-data-redis/blob/3.5.12/pom.xml#L27
          Hence we need the same jedis version
          -->
-        <spring.session.version>3.5.5</spring.session.version>
+        <spring.session.version>3.5.7</spring.session.version>
 
         <jakarta.servlet.version>6.0.0</jakarta.servlet.version>
         <jakarta.servlet.jsp.version>3.1.0</jakarta.servlet.jsp.version>
@@ -77,7 +77,7 @@
 
 <!-- This will override commons-io to be packaged with version 2.18.0, otherwise
 https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml/5.4.0
-- geotools 34.2 uses 2.21.0 (https://github.com/geotools/geotools/blob/34.x/platform-dependencies/pom.xml#L26)
+- geotools 34.5 uses 2.21.0 (https://github.com/geotools/geotools/blob/34.x/platform-dependencies/pom.xml#L26)
 - fileupload 2.0.0-M2 uses 2.15.1 (https://commons.apache.org/proper/commons-fileupload/commons-fileupload2-jakarta-servlet6/dependency-management.html)
 - poi-ooxml 5.4.0 uses 2.18.0 (https://github.com/apache/poi/blob/REL_5_4_0/build.gradle#L124)
 The one packaged without this is 2.15.1
@@ -87,18 +87,18 @@ The one packaged without this is 2.15.1
         <xmlgraphics-fop.version>2.11</xmlgraphics-fop.version>
         <poi-ooxml.version>5.5.1</poi-ooxml.version>
 
-        <jsoup.version>1.22.1</jsoup.version>
+        <jsoup.version>1.23.1</jsoup.version>
 
-        <jackson.version>2.21.1</jackson.version>
-        <jackson-databind.version>2.21.1</jackson-databind.version>
-        <jackson-annotations.version>2.21</jackson-annotations.version>
+        <jackson.version>2.22.2</jackson.version>
+        <jackson-databind.version>2.22.2</jackson-databind.version>
+        <jackson-annotations.version>2.22</jackson-annotations.version>
         <fi.mml.nameregister.version>1.0</fi.mml.nameregister.version>
 
         <tomcat.version>10.1.59</tomcat.version>
         <mybatis.version>3.5.19</mybatis.version>
         <!-- Version 12 of Flywaydb uses Jackson 3.x -->
         <flyway.version>11.20.3</flyway.version>
-        <postgresql.version>42.7.10</postgresql.version>
+        <postgresql.version>42.7.13</postgresql.version>
         <hikaricp.version>7.0.2</hikaricp.version>
 
         <!-- https://github.com/spring-projects/spring-data-redis/blob/3.5.0/pom.xml#L27 -->
@@ -108,7 +108,7 @@ The one packaged without this is 2.15.1
 
         <quartz-scheduler.version>2.5.0</quartz-scheduler.version>
 
-        <geotools.version>34.2</geotools.version>
+        <geotools.version>34.5</geotools.version>
         <jts.version>1.20.0</jts.version>
         <!-- https://github.com/ElectronicChartCentre/java-vector-tile -->
         <mvt.version>1.4.1</mvt.version>
@@ -120,18 +120,23 @@ The one packaged without this is 2.15.1
         https://github.com/resilience4j/resilience4j/pull/2415
          -->
         <resilience4j.version>2.4.0</resilience4j.version>
+        <!--
+        Resilience4j 2.4.0 uses vulnerable micrometer 1.16.0 version.
+        When updating resilience4j, remove micrometer from managed dependencies and try again
+         -->
+        <micrometer.version>1.16.7</micrometer.version>
         <!-- Test deps versions -->
         <mockito.version>5.19.0</mockito.version>
         <!-- https://github.com/junit-team/junit-framework/wiki/Upgrading-to-JUnit-6.0 -->
-        <junit.version>5.14.3</junit.version>
+        <junit.version>6.0.3</junit.version>
         <hamcrest.version>2.2</hamcrest.version>
         <xmlunit.version>2.11.0</xmlunit.version>
         <h2database.version>2.4.240</h2database.version>
         <h2gis.version>2.2.5</h2gis.version>
 
-        <log4j.version>2.25.3</log4j.version>
+        <log4j.version>2.26.1</log4j.version>
 
-        <slf4j.version>2.0.17</slf4j.version>
+        <slf4j.version>2.0.18</slf4j.version>
         <metrics.version>4.2.36</metrics.version>
     </properties>
 
@@ -798,6 +803,11 @@ The one packaged without this is 2.15.1
                 <groupId>io.github.resilience4j</groupId>
                 <artifactId>resilience4j-all</artifactId>
                 <version>${resilience4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.micrometer</groupId>
+                <artifactId>micrometer-core</artifactId>
+                <version>${micrometer.version}</version>
             </dependency>
 
             <!-- Managed test dependencies -->

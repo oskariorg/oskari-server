@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -75,6 +76,14 @@ public class XmlHelper {
             }
         }
         return builder.build();
+    }
+
+    public static Stream<Element> getChildElements(Element from, String localName, final String... restOfTheLocalNames) {
+        Stream<Element> s = getChildElements(from, localName);
+        for (String name : restOfTheLocalNames) {
+            s = s.flatMap(e -> getChildElements(e, name));
+        }
+        return s;
     }
 
     // if namespace declarations are missing the local name isn't working and we need to split it manually
@@ -138,12 +147,22 @@ public class XmlHelper {
      * @throws XMLStreamException if there is more than one matching element
      */
     public static Element getFirstChild(final Element elem, final String localName) {
-        if (elem == null || localName == null) {
-           return null;
-        }
-        return getChildElements(elem, localName).findFirst().orElse(null);
+        return getAnyChild(elem, localName).orElse(null);
     }
 
+    /**
+     * Returns the first child element with the specified localName
+     * @param elem parent element
+     * @param localName to search
+     * @return the child element, null if not available
+     * @throws XMLStreamException if there is more than one matching element
+     */
+    public static Optional<Element> getAnyChild(final Element elem, final String localName) {
+        if (elem == null || localName == null) {
+           return Optional.empty();
+        }
+        return getChildElements(elem, localName).findFirst();
+    }
 
     public static Map<String, String> getAttributesAsMap(final Element elem) {
         final Map<String, String> attributes = new HashMap<>();

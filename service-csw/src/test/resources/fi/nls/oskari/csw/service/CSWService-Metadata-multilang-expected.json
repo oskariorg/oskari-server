@@ -109,7 +109,7 @@
       "fileName": "maastotietokanta_s.png",
       "fileType": "png"
     }],
-    "characterSets": [],
+    "characterSets": ["8859part10", "8859part15"],
     "citation": {
       "date": {
         "date": "2010-04-01",

@@ -176,7 +176,7 @@ public class MapLayer {
     }
 
     public void setMetadataid(String metadataid) {
-        this.metadataid = metadataid;
+        this.metadataid = metadataid == null ? null : metadataid.trim();
     }
 
     public Map<String, String> getParams() {

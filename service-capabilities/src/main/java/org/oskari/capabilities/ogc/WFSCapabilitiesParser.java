@@ -176,6 +176,7 @@ public class WFSCapabilitiesParser extends OGCCapabilitiesParser {
     }
 
     protected List<LayerCapabilitiesWFS> getOGCAPIFeatures(OGCAPIFeaturesService service) {
+        String datasetMetadataUrl = service.getDatasetMetadataUrl();
         return service.getCollections().stream().map(collection -> {
                     String name = collection.getId();
                     String title = collection.getTitle();
@@ -187,6 +188,12 @@ public class WFSCapabilitiesParser extends OGCCapabilitiesParser {
                     featureType.setSupportedCrsURIs(service.getSupportedCrsURIs(name));
 
                     featureType.setFormats(service.getSupportedFormats(name));
+
+                    String metadataUrl = OGCAPIFeaturesService.findMetadataUrl(collection.getLinks());
+                    if (metadataUrl == null) {
+                        metadataUrl = datasetMetadataUrl;
+                    }
+                    featureType.setMetadataUrl(metadataUrl);
                     return featureType;
                 })
                 .collect(Collectors.toList());

@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * Created with IntelliJ IDEA.
@@ -155,5 +156,13 @@ public class IOHelperTest {
     @Test
     public void testUserAgent() {
         assertEquals("Oskari/0.0", IOHelper.getUserAgent(), "Test that the default version is returned when we don't have a MANIFEST.MF");
+    }
+
+    @Test
+    public void testGetContentType() {
+        assertEquals("application/geo+json", IOHelper.getContentType("application/geo+json; charset=utf-8"), "Test that charset from header value isn't returned");
+        assertEquals("application/geo+json", IOHelper.getContentType("application/geo+json"), "Test that ct without charset works");
+        assertEquals("test", IOHelper.getContentType("test"), "Test that random ct works");
+        assertNull(IOHelper.getContentType(null), "Test that null value is returned as null");
     }
 }
