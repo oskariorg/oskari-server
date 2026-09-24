@@ -18,12 +18,15 @@ import org.geotools.referencing.CRS;
 import fi.nls.oskari.annotation.Oskari;
 import fi.nls.oskari.db.DatasourceHelper;
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesFeature;
+import fi.nls.oskari.domain.map.myfeatures.MyFeaturesFieldInfo;
 import fi.nls.oskari.domain.map.myfeatures.MyFeaturesLayer;
 
 import fi.nls.oskari.log.LogFactory;
 import fi.nls.oskari.log.Logger;
 import fi.nls.oskari.mybatis.MyBatisHelper;
 import fi.nls.oskari.util.PropertyUtil;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 @Oskari
 public class MyFeaturesServiceMybatisImpl extends MyFeaturesService {
@@ -78,6 +81,7 @@ public class MyFeaturesServiceMybatisImpl extends MyFeaturesService {
 
     @Override
     public void createLayer(MyFeaturesLayer layer) {
+        initializeDefaultFilter(layer);
         if (layer.getId() == null) {
             layer.setId(UUID.randomUUID());
         }        
@@ -92,6 +96,29 @@ public class MyFeaturesServiceMybatisImpl extends MyFeaturesService {
 
             session.commit();
         }
+    }
+
+    private static void initializeDefaultFilter(MyFeaturesLayer layer) {
+        JSONObject attributes = layer.getAttributes();
+        JSONObject data = attributes.optJSONObject("data");
+        if (data == null) {
+            data = new JSONObject();
+            attributes.put("data", data);
+        }
+
+        JSONObject filter = data.optJSONObject("filter");
+        if (filter == null) {
+            filter = new JSONObject();
+            data.put("filter", filter);
+        }
+
+        JSONArray fields = new JSONArray();
+        for (MyFeaturesFieldInfo field : layer.getLayerFields()) {
+            fields.put(field.getName());
+        }
+        filter.put("default", fields);
+        // Re-parse the attributes so WFSLayerAttributes reflects the initialized filter.
+        layer.setAttributes(attributes);
     }
 
     @Override

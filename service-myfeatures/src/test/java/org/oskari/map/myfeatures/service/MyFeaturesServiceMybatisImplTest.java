@@ -58,6 +58,10 @@ public class MyFeaturesServiceMybatisImplTest {
         Assertions.assertNotNull(expected.getId());
         Assertions.assertNotNull(expected.getCreated());
         Assertions.assertNotNull(expected.getUpdated());
+        org.json.JSONArray defaultFilter = expected.getAttributes().getJSONObject("data")
+                .getJSONObject("filter").getJSONArray("default");
+        Assertions.assertEquals(1, defaultFilter.length());
+        Assertions.assertEquals("TEXT", defaultFilter.getString(0));
 
         Assertions.assertEquals("foobar", expected.getName("en"));
         
