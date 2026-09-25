@@ -246,6 +246,10 @@ public final class MyFeaturesWFSHelper extends UserLayerService {
 
     private Boolean getHidden(MyFeaturesFieldInfo field, JSONObject attributes) {
         List<String> list = getFilter(attributes);
+        // no filter defined == all fields are shown
+        if (list == null || list.isEmpty()) {
+            return false;
+        }
         return !list.contains(field.getName());
     }
 
