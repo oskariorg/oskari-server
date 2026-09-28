@@ -1,5 +1,51 @@
 # Release Notes
 
+## 3.4.0
+
+For a full list of changes see:
+https://github.com/oskariorg/oskari-server/milestone/58?closed=1
+
+### MyFeatures functionality 1.0
+
+The functionality combining the previous user data for map features is now considered production ready. See [MigrationGuide](MigrationGuide.md) for details on replacing functionality and migrating user data.
+
+- Registered the `myfeatures` bundle so applications can use it as part of the appsetup.
+- Added configurable table partitioning for `myfeatures_feature` to improve scalability (See [MigrationGuide](MigrationGuide.md) for details).
+- Added migration tooling for moving data from `myplaces` and `userlayers` into `myfeatures` and migrating references to layers in for example embedded maps.
+- `myfeatures` uploads now support direct file uploads without ZIP packaging (through shared code this applies to the to-be-removed `userlayers` functionality as well).
+- Added support for importing KMZ files.
+- GeoJSON handling (import/export) now defaults to longitude/latitude coordinate ordering.
+
+### Other changes
+
+- Added an indicator to `GetWFSFeatures` and `GetWFSVectorTile` responses when additional features are available beyond the current response. This enables the frontend to signal if there would have been more features available on a service that can be shown.
+- MVT feature IDs are now derived from source feature IDs instead of tile-specific counters, resulting in more stable identifiers across tiles (improved handling for features that extend to multiple tiles).
+- Content-Type header comparisons now ignore charset information, improving compatibility with external services and APIs.
+- SearchChannels can now add `contentURL` to a search result, enabling clients to link directly to related content and fixed an issue with result sorting.
+- Added support for reading `metadataURL` from OGC API Features layers for automatic parsing of metadata id.
+- Refactored `CSWISORecordParser` for metadata parsing from CSW service to improve maintainability.
+- Metadata identifiers are now trimmed automatically to avoid issues caused by leading or trailing whitespace.
+- Announcements now support an RSS feed as source of announcements (See [MigrationGuide](MigrationGuide.md) for details)
+- Added opt-in telemetry functionality to `GetAppSetup` for collecting usage information by an external/customizable filter/valve.
+- Information for layer coverage bbox has been improved to help debugging issues using the admin user-interface (both capabilities and metadata coverage bbox is included).
+- Migration added for `userguide` bundle database config to remove the defaulted config (used by the sample-server-extension) that does not work with the new React-based userguide functionality.
+
+### Library updates:
+
+- JUnit 5.14.3 -> 6.0.3
+- Log4J 2.25.3 -> 2.25.4
+- Tomcat 10.1.52 -> 10.1.59
+- Jsoup 1.22.1 -> 1.23.1
+- GeoTools 34.2 -> 34.5
+- Jackson 2.21.1 -> 2.22.2
+- Postgres JDBC 42.7.11 -> 42.7.13
+- Spring framework 6.2.17 -> 6.2.19
+- Spring security 6.5.9 -> 6.5.11
+- Spring session 3.5.5 -> 3.5.7
+- Log4j 2.25.4 -> 2.26.1
+- slf4j 2.0.17 -> 2.0.18
+- Added Micrometer version override for 1.16.7 (Resilience4j uses older one by default).
+
 ## 3.3.0
 
 For a full list of changes see:
