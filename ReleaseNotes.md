@@ -7,9 +7,9 @@ https://github.com/oskariorg/oskari-server/milestone/58?closed=1
 
 ### MyFeatures functionality 1.0
 
-The functionality combining the previous user data for map features is now considered production ready. See [MigrationGuide](MigrationGuide.md) for details on replacing functionality and migrating user data.
+The functionality combining the functionalities of `myplaces` and `userlayer` that allow user-generated geographic data is now considered production ready. See [MigrationGuide](MigrationGuide.md) for details on replacing functionality and migrating user data.
 
-- Registered the `myfeatures` bundle so applications can use it as part of the appsetup.
+- Registered the `myfeatures` bundle so applications can use it as part of an appsetup.
 - Added configurable table partitioning for `myfeatures_feature` to improve scalability (See [MigrationGuide](MigrationGuide.md) for details).
 - Added migration tooling for moving data from `myplaces` and `userlayers` into `myfeatures` and migrating references to layers in for example embedded maps.
 - `myfeatures` uploads now support direct file uploads without ZIP packaging (through shared code this applies to the to-be-removed `userlayers` functionality as well).
