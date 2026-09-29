@@ -25,9 +25,10 @@ The functionality combining the functionalities of `myplaces` and `userlayer` th
 - Added support for reading `metadataURL` from OGC API Features layers for automatic parsing of metadata id.
 - Refactored `CSWISORecordParser` for metadata parsing from CSW service to improve maintainability.
 - Metadata identifiers are now trimmed automatically to avoid issues caused by leading or trailing whitespace.
+- Information for layer coverage bbox has been improved to help debugging issues using the admin user-interface (both capabilities and metadata coverage bbox is included).
+- Coverage information from metadata catalogue is now updated when a layer is updated by admin  (when metadata id is present). Previously it was only updated through scheduled updates (by default nightly).
 - Announcements now support an RSS feed as source of announcements (See [MigrationGuide](MigrationGuide.md) for details)
 - Added opt-in telemetry functionality to `GetAppSetup` for collecting usage information by an external/customizable filter/valve.
-- Information for layer coverage bbox has been improved to help debugging issues using the admin user-interface (both capabilities and metadata coverage bbox is included).
 - Migration added for `userguide` bundle database config to remove the defaulted config (used by the sample-server-extension) that does not work with the new React-based userguide functionality.
 
 ### Library updates:
