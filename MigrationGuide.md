@@ -8,6 +8,19 @@ The `myfeatures` functionality is a replacement for user-generated geographic da
 
 The `myfeatures` functionality can be enabled in an application like most other functionalities: migrating any appsetups for users (default and user-specific appsetups) by adding the `myfeatures` bundle to the appsetups in the database and including the frontend code by importing the bundle in `main.js` (https://oskari.org/documentation/docs/3.3.0/8-Configuration-instructions#How-to-modify-app-setups).
 
+Changes for:
+- sample-application: https://github.com/oskariorg/sample-application/pull/53
+- sample-server-extension: https://github.com/oskariorg/sample-server-extension/pull/77
+
+Also add the maven module for the application like done on this commit https://github.com/oskariorg/sample-server-extension/commit/4cb2db5d77d68b4bc961f21c785b06bb6be6c4cd:
+
+```xml
+<dependency>
+    <groupId>org.oskari</groupId>
+    <artifactId>control-myfeatures</artifactId>
+</dependency>
+```
+
 In addition the functionality uses a new Flyway-migration module `myfeatures` that needs to be added to the `oskari-ext.properties` configuration in `db.additional.modules=...,myfeatures`. The Flyway-module adds the database tables that is used by the functionality and can be configured to partition the feature table for scalability. For enabling partitioning add this to `oskari-ext.properties` (Sensible value for most users would probably be in the range of 16-64. See https://github.com/oskariorg/oskari-server/pull/1267 for details):
 
 ```
