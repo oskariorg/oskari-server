@@ -9,6 +9,7 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -35,6 +36,11 @@ import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.json.JSONObject;
+import org.oskari.print.mvt.MVTLayerData;
+import org.oskari.print.mvt.MVTStyleLayer;
+import org.oskari.print.mvt.MVTStyleResources;
+import org.oskari.print.mvt.MVTTileGrid;
 import org.oskari.print.request.PrintLayer;
 import org.oskari.print.request.PrintRequest;
 
@@ -155,23 +161,100 @@ public class PrintLoader {
         return featureCollections;
     }
 
+    public Map<Integer, Future<MVTLayerData>> initMVTLayers(PrintRequest request) {
+        Map<Integer, Future<MVTLayerData>> tilesByLayer = new HashMap<>();
+
+        List<PrintLayer> requestedLayers = request.getLayers();
+        if (requestedLayers == null) {
+            return tilesByLayer;
+        }
+
+        double[] bbox = request.getBoundingBox();
+        double resolution = request.getResolution();
+        double[] extent = getProjectionExtent(request.getSrsName());
+
+        for (PrintLayer layer : requestedLayers) {
+            if (!OskariLayer.TYPE_VECTOR_TILE.equals(layer.getType())) {
+                continue;
+            }
+            MVTTileGrid tileGrid = MVTTileGrid.create(layer.getOskariLayer(), extent);
+            if (tileGrid == null) {
+                LOG.info("Skipping vector tile layer", layer.getId(),
+                        "- no tile grid for srs:", request.getSrsName());
+                continue;
+            }
+            int zoom = tileGrid.getClosestZoom(resolution);
+            // The style is read at the viewed zoom, which may be past the grid's last level
+            double styleZoom = tileGrid.getZoomForResolution(resolution);
+            tilesByLayer.put(layer.getZIndex(), loadMVTLayer(layer, tileGrid, bbox, zoom, styleZoom));
+        }
+        return tilesByLayer;
+    }
+
+    /**
+     * Loads the tiles and, once their labels are known, the glyphs and icons
+     * the style needs for them, so that drawing doesn't wait on the network.
+     */
+    private CompletableFuture<MVTLayerData> loadMVTLayer(PrintLayer layer, MVTTileGrid tileGrid,
+            double[] bbox, int zoom, double styleZoom) {
+        JSONObject style = layer.getMapboxStyle();
+        if (style == null) {
+            LOG.info("No Mapbox style for vector tile layer:", layer.getId());
+            return CompletableFuture.completedFuture(MVTLayerData.empty());
+        }
+        List<MVTStyleLayer> styleLayers = MVTStyleLayer.parseAll(style.optJSONArray("layers"), styleZoom);
+        if (styleLayers.isEmpty()) {
+            LOG.info("Mapbox style of layer", layer.getId(), "draws nothing at zoom", styleZoom);
+            return CompletableFuture.completedFuture(MVTLayerData.empty());
+        }
+        String commandKey = Integer.toString(layer.getId());
+        return CommandLoadMVT.loadTiles(layer, tileGrid, bbox, zoom, this)
+                .thenCompose(tiles -> tiles.isEmpty()
+                        ? CompletableFuture.completedFuture(MVTLayerData.empty())
+                        : MVTStyleResources.load(style, styleLayers, tiles, commandKey, this)
+                                .thenApply(resources -> new MVTLayerData(tiles, styleLayers, resources)));
+    }
+
+    /**
+     * Extent used as the tile grid fallback when the layer doesn't define one.
+     */
+    private static double[] getProjectionExtent(String srs) {
+        String[] extent = PropertyUtil.getCommaSeparatedList(
+                "oskari.wfs.mvt." + srs.toUpperCase().replace("EPSG:", "") + ".extent");
+        if (extent.length != 4) {
+            return null;
+        }
+        try {
+            double[] values = new double[4];
+            for (int i = 0; i < 4; i++) {
+                values[i] = Double.parseDouble(extent[i]);
+            }
+            return values;
+        } catch (NumberFormatException e) {
+            LOG.warn("Invalid tile grid extent configured for srs:", srs);
+            return null;
+        }
+    }
+
     public Future<BufferedImage> runImageSupplier(String commandKey, Supplier<BufferedImage> supplier) {
-        return Decorators.ofSupplier(supplier)
-                .withThreadPoolBulkhead(bulkhead)
-                .withTimeLimiter(timeLimiter, executor)
-                .withCircuitBreaker(circuitBreakerRegistry.circuitBreaker(commandKey))
-                .withRetry(retryRegistry.retry(commandKey), executor)
-                .withFallback(throwable -> null)
-                .get().toCompletableFuture();
+        return runSupplier(commandKey, supplier, () -> null);
     }
 
     public Future<SimpleFeatureCollection> runFeatureSupplier(String commandKey, Supplier<SimpleFeatureCollection> supplier) {
+        return runSupplier(commandKey, supplier, DefaultFeatureCollection::new);
+    }
+
+    /**
+     * Runs the supplier with the shared bulkhead, timeout, circuit breaker and retry.
+     * @param fallback value to use when the call fails
+     */
+    <T> CompletableFuture<T> runSupplier(String commandKey, Supplier<T> supplier, Supplier<T> fallback) {
         return Decorators.ofSupplier(supplier)
                 .withThreadPoolBulkhead(bulkhead)
                 .withTimeLimiter(timeLimiter, executor)
                 .withCircuitBreaker(circuitBreakerRegistry.circuitBreaker(commandKey))
                 .withRetry(retryRegistry.retry(commandKey), executor)
-                .withFallback(throwable -> new DefaultFeatureCollection())
+                .withFallback(throwable -> fallback.get())
                 .get().toCompletableFuture();
     }
 
