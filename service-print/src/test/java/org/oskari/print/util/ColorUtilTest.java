@@ -24,4 +24,33 @@ public class ColorUtilTest {
         Assertions.assertTrue(128 == rgba.getAlpha());
         Assertions.assertTrue(Transparency.TRANSLUCENT == rgba.getTransparency());
     }
+
+    @Test
+    public void testParseShorthandHex() {
+        // Each digit is doubled, "#fff" is white rather than 0x000fff
+        Assertions.assertEquals(Color.WHITE, ColorUtil.parseColor("#fff"), "#fff");
+        Assertions.assertEquals(Color.RED, ColorUtil.parseColor("#f00"), "#f00");
+        Assertions.assertEquals(new Color(255, 204, 136), ColorUtil.parseColor("#fc8"), "#fc8");
+    }
+
+    @Test
+    public void testParseHexWithAlpha() {
+        Assertions.assertEquals(new Color(255, 0, 0, 128), ColorUtil.parseColor("#ff000080"),
+                "#rrggbbaa");
+        Assertions.assertEquals(new Color(255, 0, 0, 136), ColorUtil.parseColor("#f008"),
+                "#rgba");
+    }
+
+    @Test
+    public void testParseHSL() {
+        // The water colour of the OSM Bright style
+        Assertions.assertEquals(new Color(191, 217, 242),
+                ColorUtil.parseColor("hsl(210, 67%, 85%)"), "hsl()");
+        Assertions.assertEquals(Color.RED, ColorUtil.parseColor("hsl(0, 100%, 50%)"), "pure red");
+        Assertions.assertEquals(new Color(128, 128, 128),
+                ColorUtil.parseColor("hsl(0, 0%, 50%)"), "grey has no hue");
+        Color hsla = ColorUtil.parseColor("hsla(0, 0%, 89%, 0.56)");
+        Assertions.assertEquals(227, hsla.getRed(), "lightness");
+        Assertions.assertEquals(143, hsla.getAlpha(), "alpha");
+    }
 }

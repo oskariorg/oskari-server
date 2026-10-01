@@ -2,6 +2,7 @@ package org.oskari.print.request;
 
 import java.util.Optional;
 
+import fi.nls.oskari.domain.map.style.VectorStyle;
 import fi.nls.oskari.map.style.VectorStyleService;
 import fi.nls.oskari.service.OskariComponentManager;
 import org.json.JSONObject;
@@ -110,6 +111,22 @@ public class PrintLayer {
     public void setCustomStyle (JSONObject customStyle) { this.customStyle = customStyle; }
 
     public JSONObject getCustomStyle () { return customStyle; }
+
+    /**
+     * Mapbox style by style id. Custom styles from the request are ignored, the
+     * server would fetch the glyphs and sprite urls they reference.
+     */
+    public JSONObject getMapboxStyle() {
+        try {
+            VectorStyle vectorStyle = getVectorStyleService().getStyleById(Long.parseLong(getStyle()));
+            if (vectorStyle != null && VectorStyle.TYPE_MAPBOX.equals(vectorStyle.getType())) {
+                return vectorStyle.getStyle();
+            }
+        } catch (NumberFormatException ignored) {
+            // style is not a style id
+        }
+        return null;
+    }
 
     // TODO: print should support optionalStyles and whole style should be returned
     // For now this handles and returns only Oskari style's featureStyle
