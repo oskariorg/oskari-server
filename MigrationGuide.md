@@ -1,5 +1,68 @@
 # Migration guide
 
+## 3.4.0
+
+### Enabling `myfeatures` functionality
+
+The `myfeatures` functionality is a replacement for user-generated geographic data provided by `myplaces` and `userlayer` functionalities. All 3 functionalities will be supported by Oskari 3.4.x, but `myplaces` and `userlayer` functionalities are considered deprecated and are being dropped from Oskari 4.0 as `myfeatures` combines the functionality of the other two (allow user to import features from file and draw/modify features on the map).
+
+The `myfeatures` functionality can be enabled in an application like most other functionalities: migrating any appsetups for users (default and user-specific appsetups) by adding the `myfeatures` bundle to the appsetups in the database and including the frontend code by importing the bundle in `main.js` (https://oskari.org/documentation/docs/3.3.0/8-Configuration-instructions#How-to-modify-app-setups).
+
+Changes for:
+- sample-application: https://github.com/oskariorg/sample-application/pull/53
+- sample-server-extension: https://github.com/oskariorg/sample-server-extension/pull/77
+
+Also add the maven module for the application like done on this commit https://github.com/oskariorg/sample-server-extension/commit/4cb2db5d77d68b4bc961f21c785b06bb6be6c4cd:
+
+```xml
+<dependency>
+    <groupId>org.oskari</groupId>
+    <artifactId>control-myfeatures</artifactId>
+</dependency>
+```
+
+In addition the functionality uses a new Flyway-migration module `myfeatures` that needs to be added to the `oskari-ext.properties` configuration in `db.additional.modules=...,myfeatures`. The Flyway-module adds the database tables that is used by the functionality and can be configured to partition the feature table for scalability. For enabling partitioning add this to `oskari-ext.properties` (Sensible value for most users would probably be in the range of 16-64. See https://github.com/oskariorg/oskari-server/pull/1267 for details):
+
+```
+myfeatures.numPartitions={number of partitions to use}
+```
+
+Note that the partitioning configuration needs to be set when the Flyway-migration module is enabled as the partitioning commands are part of that module. If you forget to do it, you should replicate the migration code for partitioning in an application specific migration to re-run the migration. If you are migrating from 3.3.0, you can also remove `myplaces, userlayer` from `db.additional.modules=...,myplaces, userlayer` in `oskari-ext.properties`. Otherwise, you can remove them after the migration modules have been fully run and you have upgraded your application to an Oskari 3.4 based version.
+
+See https://github.com/oskariorg/oskari-server/pull/1267 for more details. Note that you can just enable `myfeatures` without disabling `myplaces` or `userlayer` and without migrating previous data and have all three functionalities enabled at the same time, but the user-interface re-uses some icons and naming so it will be confusing for users with such combination (however, it could be useful for testing).
+
+### Data migrations from myplaces/userlayers
+
+New flyway-modules added that will migrate the content from my places and userlayers to myfeatures: `myfeatures_myplaces` and `myfeatures_userlayer`. See details: https://github.com/oskariorg/oskari-server/pull/1264
+
+The modules can be configured as usual for applications to migrate the content on `oskari-ext.properties` configuration by adding one or both in `db.additional.modules=...,myfeatures_myplaces, myfeatures_userlayer`. As the migrations take some time, depending on the amount of data users have uploaded (can be hours), you can either disable access to the service for users when you start the migration (resulting in downtime) or to prevent downtime, do a staged upgrade with multiple/gradual updates of the application if you have multiple Oskari instances running in parallel/clustered system:
+
+1) Update your application to an Oskari 3.4 based version and remove the frontend funtionality of myplaces/userlayers:
+
+This will remove the user-interface that allow users to generate more content/modify the existing ones. Remove bundles `myplaces3` (myplaces) and `myplacesimport` (userlayers) from your application by modifying `main.js` and/or delete rows referencing the bundles in the database table `oskari_appsetup_bundles`. If you only change `main.js` the developer console will show warnings that it tried to start a bundle that is not included in the application, but the warning is harmless.
+
+2) Restart one of your instances and include the Flyway-modules for `myfeatures_myplaces` and/or `myfeatures_userlayer` (`oskari-ext.properties` configuration for `db.additional.modules`) so migrations start running while the other parallel instances continue to serve users with the functionalities to add/edit data removed.
+
+Note that you can use the same installed app and just enable the migrating modules, but you only want to do it for one server instance so any other instances can run, serve users and not interfere with the migration process.
+This way users can't add new features while the migrations are running, but can continue to use the system for viewing the map etc.
+The migrations track which layers have been migrated to the new format, so if some failure happens or server is shutdown during migration etc, the migrations can continue from where they were after an unexpected stop.
+
+3) Update all of the instances to a version that includes the new myfeatures functionality for the frontend (`myfeatures` bundle).
+
+This allows users to add features with the new functionality by adding the necessary user-interface to manage the data.
+
+### RSS feed as annoucement source
+
+Can be configured in `oskari-ext.properties`:
+
+```
+oskari.scheduler.job.AnnouncementsRssImport.url=https://your-rss-feed-org/feed
+# Runs every 5 minutes by default (even without the config)
+oskari.scheduler.job.AnnouncementsRssImport.cronLine=0 0/5 * * * ?
+```
+
+See https://github.com/oskariorg/oskari-server/pull/1266 for more details.
+
 ## 3.2.0
 
 Changes related to library updates have been made to the frontend. You can more information about them in https://github.com/oskariorg/oskari-frontend/blob/develop/ReleaseNotes.md#320
