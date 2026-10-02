@@ -38,7 +38,7 @@ The functionality combining the functionalities of `myplaces` and `userlayer` th
 - Tomcat 10.1.52 -> 10.1.59
 - Jsoup 1.22.1 -> 1.23.1
 - GeoTools 34.2 -> 34.5
-- Jackson 2.21.1 -> 2.22.2
+- Jackson 2.21.1 -> 2.22.3
 - Postgres JDBC 42.7.11 -> 42.7.13
 - Spring framework 6.2.17 -> 6.2.19
 - Spring security 6.5.9 -> 6.5.11
