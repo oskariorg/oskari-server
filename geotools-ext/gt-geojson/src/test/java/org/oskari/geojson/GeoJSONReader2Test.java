@@ -288,6 +288,14 @@ public class GeoJSONReader2Test {
     }
 
     @Test
+    public void testMixedGeometryTypes() throws Exception {
+        Map<String, Object> json = loadJSONResource("featureCollectionMixedGeometries.json");
+        CoordinateReferenceSystem crs84 = CRS.decode("EPSG:4326", true);
+        SimpleFeatureType schema = GeoJSONSchemaDetector.getSchema(json, crs84);
+        Assertions.assertEquals(Geometry.class, schema.getGeometryDescriptor().getType().getBinding());
+    }
+
+    @Test
     public void testEmptyFeatureCollection() throws Exception {
         Map<String, Object> json = loadJSONResource("featureCollectionEmpty.json");
         CoordinateReferenceSystem crs84 = CRS.decode("EPSG:4326", true);

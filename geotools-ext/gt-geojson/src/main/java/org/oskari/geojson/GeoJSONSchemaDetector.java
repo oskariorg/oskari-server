@@ -12,7 +12,6 @@ import org.geotools.api.feature.simple.SimpleFeatureType;
 import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 
 import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.GeometryCollection;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.MultiLineString;
 import org.locationtech.jts.geom.MultiPoint;
@@ -170,8 +169,8 @@ public class GeoJSONSchemaDetector {
         if (currentStoredType == null) {
             return geometryType;
         }
-        // Already at GeometryCollection - do nothing
-        if (currentStoredType == GeometryCollection.class) {
+        // Already at Geometry - do nothing
+        if (currentStoredType == Geometry.class) {
             return currentStoredType;
         }
         // If they are equal do nothing - what's stored is good
@@ -189,8 +188,8 @@ public class GeoJSONSchemaDetector {
             return geometryType;
         }
         // They weren't the same and they weren't compatible Multi* versions of each other
-        // => Widen to Geometrycollection
-        return GeometryCollection.class;
+        // => Widen to Geometry
+        return Geometry.class;
     }
 
     private static boolean isMultiVersionOf(
