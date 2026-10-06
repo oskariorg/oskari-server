@@ -31,7 +31,7 @@
         "date": "2018-06-28",
         "dateType": "publication"
       },
-      "resourceIdentifiers": [],
+      "resourceIdentifiers": [{"code": "http://metadata.helcom.fi/geonetwork/srv/eng/catalog.search#/metadata/821b33a7-35b3-489c-93ab-9ef8f4422f2a"}],
       "title": "Integrated biodiversity status assessment - pelagic habitats 2018"
     },
     "classifications": [],

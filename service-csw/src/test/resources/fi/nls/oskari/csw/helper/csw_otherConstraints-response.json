@@ -51,7 +51,7 @@
         "date": "2023-07-06",
         "dateType": "publication"
       },
-      "resourceIdentifiers": [],
+      "resourceIdentifiers": [{"code": "http://paikkatiedot.fi/so/1001259"}],
       "title": "Ratakilometrit"
     },
     "type": "data",

@@ -326,7 +326,9 @@ public class CSWISORecordParser {
                 .findAny()
                 .orElseGet(DateWithType::new));
         citation.setResourceIdentifiers(
-            XmlHelper.getChildElements(ciCitation, "identifier", "RS_Identifier")
+            // gmd:RS_Identifier or gmd:MD_Identifier
+            XmlHelper.getChildElements(ciCitation, "identifier")
+                .flatMap(x -> XmlHelper.getChildElements(x, null))
                 .map(rsIdentifier -> parseResourceIdentifier(rsIdentifier, localeId))
                 .toList());
         return citation;
@@ -359,7 +361,7 @@ public class CSWISORecordParser {
         ResourceIdentifier resourceIdentifier = new ResourceIdentifier();
         resourceIdentifier.setCode(
             XmlHelper.getAnyChild(rsIdentifier, "code")
-                .map(x -> parseLocalizedContent(x, localeId))
+                .map(x -> parseAnchorOrLocalizedContent(x, localeId))
                 .orElse(null));
         resourceIdentifier.setCodeSpace(
             XmlHelper.getAnyChild(rsIdentifier, "codeSpace")

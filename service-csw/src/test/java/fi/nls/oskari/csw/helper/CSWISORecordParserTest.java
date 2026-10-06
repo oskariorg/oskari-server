@@ -2,6 +2,7 @@ package fi.nls.oskari.csw.helper;
 
 import fi.nls.oskari.csw.domain.CSWIsoRecord;
 import fi.nls.oskari.csw.domain.CSWIsoRecord.DataIdentification;
+import fi.nls.oskari.csw.domain.CSWIsoRecord.Identification.Citation.ResourceIdentifier;
 import fi.nls.test.util.ResourceHelper;
 import fi.nls.oskari.util.JSONHelper;
 import org.oskari.xml.XmlHelper;
@@ -55,6 +56,31 @@ public class CSWISORecordParserTest {
         Assertions.assertEquals("fi", record.getMetadataLanguage());
         DataIdentification di = (DataIdentification) record.getIdentifications().get(0);
         Assertions.assertEquals(List.of("sv"), di.getLanguages());
+    }
+
+    @Test
+    public void testResourceIdentifiers() {
+        CSWIsoRecord record = parseMetadata("""
+            <gmd:identificationInfo>
+                <gmd:MD_DataIdentification>
+                    <gmd:citation>
+                        <gmd:CI_Citation>
+                            <gmd:identifier>
+                                <gmd:MD_Identifier>
+                                    <gmd:code>
+                                        <gmx:Anchor xlink:href="http://paikkatiedot.fi/so/1002032/lc/LandCoverUnit/">http://paikkatiedot.fi/so/1002032/lc/LandCoverUnit/</gmx:Anchor>
+                                    </gmd:code>
+                                </gmd:MD_Identifier>
+                            </gmd:identifier>
+                        </gmd:CI_Citation>
+                    </gmd:citation>
+                </gmd:MD_DataIdentification>
+            </gmd:identificationInfo>
+            """);
+        List<ResourceIdentifier> identifiers = record.getIdentifications().get(0).getCitation().getResourceIdentifiers();
+        Assertions.assertEquals(1, identifiers.size());
+        Assertions.assertEquals("http://paikkatiedot.fi/so/1002032/lc/LandCoverUnit/", identifiers.get(0).getCode());
+        Assertions.assertNull(identifiers.get(0).getCodeSpace());
     }
 
     @Test
