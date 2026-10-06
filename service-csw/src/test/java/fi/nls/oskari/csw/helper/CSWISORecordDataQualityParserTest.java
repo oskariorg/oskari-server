@@ -28,6 +28,48 @@ public class CSWISORecordDataQualityParserTest {
         return XmlHelper.getFirstChild(ret, METADATA_ID);
     }
 
+    private DataQualityConformanceResult parseConformanceSpecification(String titleXml) {
+        Element metadata = XmlHelper.parseXML("""
+            <gmd:MD_Metadata xmlns:gmd="http://www.isotc211.org/2005/gmd"
+                             xmlns:gmx="http://www.isotc211.org/2005/gmx"
+                             xmlns:xlink="http://www.w3.org/1999/xlink">
+                <gmd:dataQualityInfo>
+                    <gmd:DQ_DataQuality>
+                        <gmd:report>
+                            <gmd:DQ_DomainConsistency>
+                                <gmd:result>
+                                    <gmd:DQ_ConformanceResult>
+                                        <gmd:specification>
+                                            <gmd:CI_Citation>
+                                                <gmd:title>%s</gmd:title>
+                                            </gmd:CI_Citation>
+                                        </gmd:specification>
+                                    </gmd:DQ_ConformanceResult>
+                                </gmd:result>
+                            </gmd:DQ_DomainConsistency>
+                        </gmd:report>
+                    </gmd:DQ_DataQuality>
+                </gmd:dataQualityInfo>
+            </gmd:MD_Metadata>
+            """.formatted(titleXml), true);
+        Assertions.assertNotNull(metadata);
+        CSWIsoRecord record = CSWISORecordParser.parse(metadata, Locale.forLanguageTag("fi"));
+        return record.getDataQualityObject().getDataQualities().get(0).getConformanceResultList().get(0);
+    }
+
+    @Test
+    public void testConformanceSpecificationAnchor() {
+        DataQualityConformanceResult result = parseConformanceSpecification(
+            "<gmx:Anchor xlink:href=\"http://data.europa.eu/eli/reg/2010/1089\">KOMISSION ASETUS (EU) N:o 1089/2010</gmx:Anchor>");
+        Assertions.assertEquals("KOMISSION ASETUS (EU) N:o 1089/2010", result.getSpecification());
+    }
+
+    @Test
+    public void testConformanceSpecificationWithoutText() {
+        DataQualityConformanceResult result = parseConformanceSpecification("");
+        Assertions.assertNull(result.getSpecification());
+    }
+
     @Test
     public void TestDataQualityParsing() throws Exception {
         Node metaDataNode = getMetadataNode();

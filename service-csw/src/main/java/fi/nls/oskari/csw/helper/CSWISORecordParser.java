@@ -600,7 +600,7 @@ public class CSWISORecordParser {
      *     <gmx:Anchor xlink:href="http://rdfdata.eionet.europa.eu/inspirethemes/themes/7">Liikenneverkot</gmx:Anchor>
      * </gmd:keyword>
      */
-    private static String parseAnchorOrLocalizedContent(Element e, String localeId) {
+    static String parseAnchorOrLocalizedContent(Element e, String localeId) {
         return XmlHelper.getAnyChild(e, "Anchor")
             .map(x -> getText(x))
             .orElseGet(() -> parseLocalizedContent(e, localeId));
