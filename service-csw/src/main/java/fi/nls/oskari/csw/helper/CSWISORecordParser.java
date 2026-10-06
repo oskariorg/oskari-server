@@ -654,7 +654,7 @@ public class CSWISORecordParser {
 
     private static List<String> parseReferenceSystems(Element mdMetadata) {
         return XmlHelper.getChildElements(mdMetadata, "referenceSystemInfo", "MD_ReferenceSystem", "referenceSystemIdentifier", "RS_Identifier", "code")
-            .map(code -> parseLocalizedContent(code, null))
+            .map(code -> parseAnchorOrLocalizedContent(code, null))
             .filter(Objects::nonNull)
             .toList();
     }

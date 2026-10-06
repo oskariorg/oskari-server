@@ -84,6 +84,24 @@ public class CSWISORecordParserTest {
     }
 
     @Test
+    public void testReferenceSystems() {
+        CSWIsoRecord record = parseMetadata("""
+            <gmd:referenceSystemInfo>
+                <gmd:MD_ReferenceSystem>
+                    <gmd:referenceSystemIdentifier>
+                        <gmd:RS_Identifier>
+                            <gmd:code>
+                                <gmx:Anchor xlink:href="http://www.opengis.net/def/crs/EPSG/0/3035">EPSG:3035</gmx:Anchor>
+                            </gmd:code>
+                        </gmd:RS_Identifier>
+                    </gmd:referenceSystemIdentifier>
+                </gmd:MD_ReferenceSystem>
+            </gmd:referenceSystemInfo>
+            """);
+        Assertions.assertEquals(List.of("EPSG:3035"), record.getReferenceSystems());
+    }
+
+    @Test
     public void TestDateParsing() throws Exception {
         Element metaDataNode = getMetadataNode(CSW_INPUT_FILE_NAME);
         Locale locale = new Locale("EN");

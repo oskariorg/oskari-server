@@ -42,7 +42,7 @@
     "evaluationMethodDescription": null,
     "quantitativeResultList": []
   }],
-  "referenceSystems": [],
+  "referenceSystems": ["EPSG:3067"],
   "scopeCodes": ["dataset"],
   "identifications": [{
     "languages": ["fi"],
