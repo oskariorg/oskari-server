@@ -3,26 +3,36 @@ package org.oskari.control.userlayer;
 import fi.nls.oskari.annotation.Oskari;
 import org.oskari.user.User;
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.domain.map.style.VectorStyle;
 import fi.nls.oskari.domain.map.userlayer.UserLayer;
 import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
+import fi.nls.oskari.map.geometry.WKTHelper;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.JSONHelper;
+import fi.nls.oskari.util.WFSConversionHelper;
+
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.locationtech.jts.geom.Envelope;
 import org.geotools.api.feature.simple.SimpleFeature;
 import org.geotools.api.feature.simple.SimpleFeatureType;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
+import org.oskari.domain.map.FeatureProperties;
+import org.oskari.domain.map.LayerExtendedOutput;
 import org.oskari.geojson.GeoJSONFeatureCollection;
 import org.oskari.map.userlayer.service.UserLayerDataService;
 import org.oskari.map.userlayer.service.UserLayerDbService;
 import org.oskari.service.user.UserLayerService;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -138,5 +148,68 @@ public class UserLayerWFSHelper extends UserLayerService {
         wfsOpts.injectBaseLayerOptions(baseOptions);
         return wfsOpts;
     }
+
+    @Override
+    public LayerExtendedOutput describeLayer(String layerId, String lang, CoordinateReferenceSystem crs) {
+        UserLayer layer = service.getUserLayerById(parseId(layerId));
+
+        LayerExtendedOutput describe = new LayerExtendedOutput();
+        describe.id = layerId;
+        describe.type = OskariLayer.TYPE_WFS;
+        describe.name = layer.getName(lang);
+        describe.metadataUuid = null;
+        describe.dataproviderId = null;
+        describe.created = layer.getCreated() == null ? null : new Date(layer.getCreated().toInstant().toEpochMilli());
+        describe.updated = null;
+
+        describe.coverage = layer.getWkt() == null ? null : WKTHelper.transformLayerCoverage(layer.getWkt(), crs);
+        describe.styles = getVectorStyles(layer);
+        describe.hover = null;
+        describe.capabilities = null;
+
+        describe.properties = getProperties(layer, lang);
+        describe.controlData = null;
+
+        return describe;
+    }
+
+    static List<VectorStyle> getVectorStyles(UserLayer layer) {
+        JSONObject defaultStyle = layer.getWFSLayerOptions().getDefaultStyle();
+
+        VectorStyle vectorStyle = new VectorStyle();
+        vectorStyle.setType(VectorStyle.TYPE_OSKARI);
+        vectorStyle.setName("default");
+        vectorStyle.setStyle(defaultStyle);
+
+        return Collections.singletonList(vectorStyle);
+    }
+
+    private List<FeatureProperties> getProperties(UserLayer layer, String lang) {
+        List<FeatureProperties> props = new ArrayList<>();
+
+        JSONArray fields = layer.getFields();
+        for(int i = 0; i < fields.length(); i++) {
+            JSONObject field = JSONHelper.getJSONObject(fields, i); // {locales: {en}, name, type }
+
+            String name = field.optString("name");
+            String rawType = field.optString("type");
+            JSONObject locales = field.optJSONObject("locales");
+            // For now UserLayerDataService.parseFields() adds only "en" localization
+            String label = locales != null ? locales.optString("en", null) : null;
+
+            FeatureProperties p = new FeatureProperties();
+            p.name = name;
+            p.rawType = rawType;
+            p.type = WFSConversionHelper.getSimpleType(rawType);
+            p.label = label;
+            p.hidden = false;
+            p.format = null;
+            p.order = i;
+            props.add(p);
+        }
+
+        return props;
+    }
+
 
 }

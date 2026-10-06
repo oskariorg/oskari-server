@@ -5,12 +5,15 @@ import org.oskari.user.User;
 import fi.nls.oskari.domain.map.MyPlace;
 import fi.nls.oskari.domain.map.MyPlaceCategory;
 import fi.nls.oskari.domain.map.OskariLayer;
+import fi.nls.oskari.domain.map.style.VectorStyle;
 import fi.nls.oskari.domain.map.wfs.WFSLayerOptions;
 import fi.nls.oskari.myplaces.MyPlacesService;
 import fi.nls.oskari.myplaces.service.MyPlacesFeaturesService;
 import fi.nls.oskari.service.OskariComponentManager;
 import fi.nls.oskari.service.ServiceException;
 import fi.nls.oskari.util.JSONHelper;
+
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.store.EmptyFeatureCollection;
 import org.json.JSONArray;
@@ -18,11 +21,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
+import org.oskari.domain.map.LayerExtendedOutput;
 import org.oskari.geojson.GeoJSONReader;
 import org.oskari.myplaces.service.mybatis.MyPlacesFeaturesServiceMybatisImpl;
 import org.oskari.service.user.UserLayerService;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Oskari
@@ -140,6 +145,42 @@ public class MyPlacesWFSHelper extends UserLayerService {
         JSONObject baseOptions = baseLayer == null ? new JSONObject() : baseLayer.getOptions();
         wfsOpts.injectBaseLayerOptions(baseOptions);
         return wfsOpts;
+    }
+
+    @Override
+    public LayerExtendedOutput describeLayer(String layerId, String lang, CoordinateReferenceSystem crs) {
+        MyPlaceCategory layer = service.findCategory(parseId(layerId));
+
+        LayerExtendedOutput describe = new LayerExtendedOutput();
+        describe.id = layerId;
+        describe.type = OskariLayer.TYPE_WFS;
+        describe.name = layer.getName(lang);
+        describe.metadataUuid = null;
+        describe.dataproviderId = null;
+        describe.created = null;
+        describe.updated = null;
+
+        describe.coverage = null;
+        describe.styles = getVectorStyles(layer);
+        describe.hover = null;
+        describe.capabilities = null;
+
+        // Properties are fixed
+        describe.properties = null;
+        describe.controlData = null;
+
+        return describe;
+    }
+
+    static List<VectorStyle> getVectorStyles(MyPlaceCategory layer) {
+        JSONObject defaultStyle = layer.getWFSLayerOptions().getDefaultStyle();
+
+        VectorStyle vectorStyle = new VectorStyle();
+        vectorStyle.setType(VectorStyle.TYPE_OSKARI);
+        vectorStyle.setName("default");
+        vectorStyle.setStyle(defaultStyle);
+
+        return Collections.singletonList(vectorStyle);
     }
 
 }
