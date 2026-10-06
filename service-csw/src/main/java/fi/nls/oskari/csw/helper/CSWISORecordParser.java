@@ -77,7 +77,7 @@ public class CSWISORecordParser {
                 .orElse(null));
         record.setMetadataLanguage(
             XmlHelper.getAnyChild(mdMetadata, "language")
-                .map(e -> parseLocalizedContent(e, localeId))
+                .map(e -> parseLanguage(e, localeId))
                 .map(e -> getLanguageIfAvailable(e))
                 .orElse(null));
         record.setMetadataCharacterSet(parseMetadataCharacterSet(mdMetadata));
@@ -143,7 +143,7 @@ public class CSWISORecordParser {
                 .toList());
         di.setLanguages(
             XmlHelper.getChildElements(dataIdentification, "language")
-                .map(x -> parseLocalizedContent(x, localeId))
+                .map(x -> parseLanguage(x, localeId))
                 .filter(Objects::nonNull)
                 .map(CSWISORecordParser::getLanguageIfAvailable)
                 .toList());
@@ -587,6 +587,18 @@ public class CSWISORecordParser {
         e.setSouthBoundLatitude(decimals.get(2));
         e.setNorthBoundLatitude(decimals.get(3));
         return e;
+    }
+
+    /**
+     * The language can be given as a gmd:LanguageCode instead of gco:CharacterString, for example:
+     * <gmd:language>
+     *     <gmd:LanguageCode codeList="http://www.loc.gov/standards/iso639-2/" codeListValue="fin">Finnish</gmd:LanguageCode>
+     * </gmd:language>
+     */
+    private static String parseLanguage(Element language, String localeId) {
+        return XmlHelper.getAnyChild(language, "LanguageCode")
+            .map(x -> XmlHelper.getAttributeValue(x, "codeListValue"))
+            .orElseGet(() -> parseLocalizedContent(language, localeId));
     }
 
     private static String getLanguageIfAvailable(String langCode) {

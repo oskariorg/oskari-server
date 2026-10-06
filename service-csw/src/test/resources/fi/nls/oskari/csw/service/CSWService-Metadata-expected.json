@@ -45,7 +45,7 @@
       "southBoundLatitude": 53.605476,
       "westBoundLongitude": 8.186121
     }],
-    "languages": [],
+    "languages": ["en"],
     "otherConstraints": ["Data can be used freely given that the source (HELCOM) is cited."],
     "responsibleParties": [{
       "electronicMailAddresses": ["joni.kaitaranta@helcom.fi"],
@@ -62,6 +62,7 @@
     "useLimitations": ["Data can be used freely given that the source (HELCOM) is cited."]
   }],
   "lineageStatements": ["Core and pre-core indicators that were used to calculate the integrated biodiversity status assessment - pelagic habitats (open sea areas):\n\n                                - <a href=\"http://metadata.helcom.fi/geonetwork/srv/eng/catalog.search#/metadata/70380178-28fd-4b10-abf7-fb2c07707917\" target=\"_blank\">Zooplankton mean size and total stock (MSTS) 2018<\/a>\n                                - <a href=\"http://metadata.helcom.fi/geonetwork/srv/eng/catalog.search#/metadata/a6f20ce1-8cef-482b-a4e4-aff52cb60f8e\" target=\"_blank\">Cyanobacterial bloom index 2018<\/a>\n                                - <a href=\"http://metadata.helcom.fi/geonetwork/srv/eng/catalog.search#/metadata/efaf6c9b-1f57-4c4d-b268-dfed0b3907e4\" target=\"_blank\">Chlorophyll-a 2018<\/a>\n\n                                Coastal areas were assessed by national indicators.\n\n                                Additional information in \"State of the Baltic Sea report\" and on the <a href=\"http://stateofthebalticsea.helcom.fi/\" target=\"_blank\">State of the Baltic Sea website<\/a>"],
+  "metadataLanguage": "en",
   "metadataDateStamp": "2021-09-09T11:58Z",
   "metadataResponsibleParties": [{
     "electronicMailAddresses": ["joni.kaitaranta@helcom.fi"],

@@ -8,7 +8,7 @@
   "metadataCharacterSet": "8859part10",
   "referenceSystems": ["3067"],
   "identifications": [{
-    "languages": [],
+    "languages": ["fi"],
     "citation": {
       "date": {
         "date": "2010-04-01",
