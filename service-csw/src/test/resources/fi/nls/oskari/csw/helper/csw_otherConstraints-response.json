@@ -23,6 +23,7 @@
     "organisationName": "Väylävirasto",
     "electronicMailAddresses": ["paikkatieto@vayla.fi"]
   }],
+  "metadataLanguage": "fi",
   "metadataDateStamp": "2025-09-30T10:57Z",
   "dataQualities": [{
     "nodeName": "domainConsistency",
@@ -41,16 +42,16 @@
     "evaluationMethodDescription": null,
     "quantitativeResultList": []
   }],
-  "referenceSystems": [],
+  "referenceSystems": ["EPSG:3067"],
   "scopeCodes": ["dataset"],
   "identifications": [{
-    "languages": [],
+    "languages": ["fi"],
     "citation": {
       "date": {
         "date": "2023-07-06",
         "dateType": "publication"
       },
-      "resourceIdentifiers": [],
+      "resourceIdentifiers": [{"code": "http://paikkatiedot.fi/so/1001259"}],
       "title": "Ratakilometrit"
     },
     "type": "data",

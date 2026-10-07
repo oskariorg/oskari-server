@@ -77,7 +77,7 @@ public class CSWISORecordParser {
                 .orElse(null));
         record.setMetadataLanguage(
             XmlHelper.getAnyChild(mdMetadata, "language")
-                .map(e -> parseLocalizedContent(e, localeId))
+                .map(e -> parseLanguage(e, localeId))
                 .map(e -> getLanguageIfAvailable(e))
                 .orElse(null));
         record.setMetadataCharacterSet(parseMetadataCharacterSet(mdMetadata));
@@ -143,7 +143,7 @@ public class CSWISORecordParser {
                 .toList());
         di.setLanguages(
             XmlHelper.getChildElements(dataIdentification, "language")
-                .map(x -> parseLocalizedContent(x, localeId))
+                .map(x -> parseLanguage(x, localeId))
                 .filter(Objects::nonNull)
                 .map(CSWISORecordParser::getLanguageIfAvailable)
                 .toList());
@@ -326,7 +326,9 @@ public class CSWISORecordParser {
                 .findAny()
                 .orElseGet(DateWithType::new));
         citation.setResourceIdentifiers(
-            XmlHelper.getChildElements(ciCitation, "identifier", "RS_Identifier")
+            // gmd:RS_Identifier or gmd:MD_Identifier
+            XmlHelper.getChildElements(ciCitation, "identifier")
+                .flatMap(x -> XmlHelper.getChildElements(x, null))
                 .map(rsIdentifier -> parseResourceIdentifier(rsIdentifier, localeId))
                 .toList());
         return citation;
@@ -359,7 +361,7 @@ public class CSWISORecordParser {
         ResourceIdentifier resourceIdentifier = new ResourceIdentifier();
         resourceIdentifier.setCode(
             XmlHelper.getAnyChild(rsIdentifier, "code")
-                .map(x -> parseLocalizedContent(x, localeId))
+                .map(x -> parseAnchorOrLocalizedContent(x, localeId))
                 .orElse(null));
         resourceIdentifier.setCodeSpace(
             XmlHelper.getAnyChild(rsIdentifier, "codeSpace")
@@ -589,6 +591,18 @@ public class CSWISORecordParser {
         return e;
     }
 
+    /**
+     * The language can be given as a gmd:LanguageCode instead of gco:CharacterString, for example:
+     * <gmd:language>
+     *     <gmd:LanguageCode codeList="http://www.loc.gov/standards/iso639-2/" codeListValue="fin">Finnish</gmd:LanguageCode>
+     * </gmd:language>
+     */
+    private static String parseLanguage(Element language, String localeId) {
+        return XmlHelper.getAnyChild(language, "LanguageCode")
+            .map(x -> XmlHelper.getAttributeValue(x, "codeListValue"))
+            .orElseGet(() -> parseLocalizedContent(language, localeId));
+    }
+
     private static String getLanguageIfAvailable(String langCode) {
         String ret = ISO3letterOskariLangMapping.get(langCode);
         return ret != null ? ret : langCode;
@@ -600,7 +614,7 @@ public class CSWISORecordParser {
      *     <gmx:Anchor xlink:href="http://rdfdata.eionet.europa.eu/inspirethemes/themes/7">Liikenneverkot</gmx:Anchor>
      * </gmd:keyword>
      */
-    private static String parseAnchorOrLocalizedContent(Element e, String localeId) {
+    static String parseAnchorOrLocalizedContent(Element e, String localeId) {
         return XmlHelper.getAnyChild(e, "Anchor")
             .map(x -> getText(x))
             .orElseGet(() -> parseLocalizedContent(e, localeId));
@@ -640,7 +654,7 @@ public class CSWISORecordParser {
 
     private static List<String> parseReferenceSystems(Element mdMetadata) {
         return XmlHelper.getChildElements(mdMetadata, "referenceSystemInfo", "MD_ReferenceSystem", "referenceSystemIdentifier", "RS_Identifier", "code")
-            .map(code -> parseLocalizedContent(code, null))
+            .map(code -> parseAnchorOrLocalizedContent(code, null))
             .filter(Objects::nonNull)
             .toList();
     }

@@ -1,6 +1,8 @@
 package fi.nls.oskari.csw.helper;
 
 import fi.nls.oskari.csw.domain.CSWIsoRecord;
+import fi.nls.oskari.csw.domain.CSWIsoRecord.DataIdentification;
+import fi.nls.oskari.csw.domain.CSWIsoRecord.Identification.Citation.ResourceIdentifier;
 import fi.nls.test.util.ResourceHelper;
 import fi.nls.oskari.util.JSONHelper;
 import org.oskari.xml.XmlHelper;
@@ -9,6 +11,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Element;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Locale;
 
 public class CSWISORecordParserTest {
@@ -21,6 +24,81 @@ public class CSWISORecordParserTest {
         InputStream in = getClass().getResourceAsStream(file);
         Element ret = XmlHelper.parseXML(in, true);
         return XmlHelper.getFirstChild(ret, METADATA_ID);
+    }
+
+    private CSWIsoRecord parseMetadata(String content) {
+        Element metadata = XmlHelper.parseXML("""
+            <gmd:MD_Metadata xmlns:gmd="http://www.isotc211.org/2005/gmd"
+                             xmlns:gco="http://www.isotc211.org/2005/gco"
+                             xmlns:gmx="http://www.isotc211.org/2005/gmx"
+                             xmlns:xlink="http://www.w3.org/1999/xlink">
+                %s
+            </gmd:MD_Metadata>
+            """.formatted(content), true);
+        Assertions.assertNotNull(metadata);
+        return CSWISORecordParser.parse(metadata, Locale.forLanguageTag("fi"));
+    }
+
+    @Test
+    public void testLanguageCode() {
+        CSWIsoRecord record = parseMetadata("""
+            <gmd:language>
+                <gmd:LanguageCode codeList="http://www.loc.gov/standards/iso639-2/" codeListValue="fin">Finnish</gmd:LanguageCode>
+            </gmd:language>
+            <gmd:identificationInfo>
+                <gmd:MD_DataIdentification>
+                    <gmd:language>
+                        <gmd:LanguageCode codeList="http://www.loc.gov/standards/iso639-2/" codeListValue="swe">Swedish</gmd:LanguageCode>
+                    </gmd:language>
+                </gmd:MD_DataIdentification>
+            </gmd:identificationInfo>
+            """);
+        Assertions.assertEquals("fi", record.getMetadataLanguage());
+        DataIdentification di = (DataIdentification) record.getIdentifications().get(0);
+        Assertions.assertEquals(List.of("sv"), di.getLanguages());
+    }
+
+    @Test
+    public void testResourceIdentifiers() {
+        CSWIsoRecord record = parseMetadata("""
+            <gmd:identificationInfo>
+                <gmd:MD_DataIdentification>
+                    <gmd:citation>
+                        <gmd:CI_Citation>
+                            <gmd:identifier>
+                                <gmd:MD_Identifier>
+                                    <gmd:code>
+                                        <gmx:Anchor xlink:href="http://paikkatiedot.fi/so/1002032/lc/LandCoverUnit/">http://paikkatiedot.fi/so/1002032/lc/LandCoverUnit/</gmx:Anchor>
+                                    </gmd:code>
+                                </gmd:MD_Identifier>
+                            </gmd:identifier>
+                        </gmd:CI_Citation>
+                    </gmd:citation>
+                </gmd:MD_DataIdentification>
+            </gmd:identificationInfo>
+            """);
+        List<ResourceIdentifier> identifiers = record.getIdentifications().get(0).getCitation().getResourceIdentifiers();
+        Assertions.assertEquals(1, identifiers.size());
+        Assertions.assertEquals("http://paikkatiedot.fi/so/1002032/lc/LandCoverUnit/", identifiers.get(0).getCode());
+        Assertions.assertNull(identifiers.get(0).getCodeSpace());
+    }
+
+    @Test
+    public void testReferenceSystems() {
+        CSWIsoRecord record = parseMetadata("""
+            <gmd:referenceSystemInfo>
+                <gmd:MD_ReferenceSystem>
+                    <gmd:referenceSystemIdentifier>
+                        <gmd:RS_Identifier>
+                            <gmd:code>
+                                <gmx:Anchor xlink:href="http://www.opengis.net/def/crs/EPSG/0/3035">EPSG:3035</gmx:Anchor>
+                            </gmd:code>
+                        </gmd:RS_Identifier>
+                    </gmd:referenceSystemIdentifier>
+                </gmd:MD_ReferenceSystem>
+            </gmd:referenceSystemInfo>
+            """);
+        Assertions.assertEquals(List.of("EPSG:3035"), record.getReferenceSystems());
     }
 
     @Test

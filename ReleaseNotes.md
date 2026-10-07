@@ -1,5 +1,12 @@
 # Release Notes
 
+## 3.4.1
+
+For a full list of changes see:
+https://github.com/oskariorg/oskari-server/milestone/60?closed=1
+
+Fixes for CSW-parsing and displaying metadata
+
 ## 3.4.0
 
 For a full list of changes see:

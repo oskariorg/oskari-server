@@ -7,6 +7,7 @@ import java.util.Set;
 import org.oskari.xml.XmlHelper;
 import org.w3c.dom.Element;
 
+import static fi.nls.oskari.csw.helper.CSWISORecordParser.parseAnchorOrLocalizedContent;
 import static fi.nls.oskari.csw.helper.CSWISORecordParser.parseLocalizedContent;
 
 import fi.nls.oskari.csw.domain.CSWIsoRecord.DataQuality;
@@ -158,7 +159,8 @@ public class CSWISORecordDataQualityParser {
         // TODO parse the whole CI_Citation instead of just the title
         conformanceResult.setSpecification(
             XmlHelper.getChildElements(result, "specification", "CI_Citation", "title")
-                .map(x -> parseLocalizedContent(x, localeId))
+                .map(x -> parseAnchorOrLocalizedContent(x, localeId))
+                .filter(Objects::nonNull)
                 .findAny()
                 .orElse(null));
         conformanceResult.setExplanation(
