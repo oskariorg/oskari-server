@@ -2,6 +2,7 @@ package fi.nls.oskari.control.view.modifier.bundle;
 
 import fi.mml.map.mapwindow.util.OskariLayerWorker;
 import fi.nls.oskari.annotation.OskariViewModifier;
+import fi.nls.oskari.db.DatasourceHelper;
 import org.oskari.user.User;
 import org.oskari.util.ObjectMapperProvider;
 
@@ -340,7 +341,7 @@ public class MapfullHandler extends BundleHandler {
                                              final String lang,
                                              final Set<String> bundleIds,
                                              final String mapSrs) {
-        if (publishedMyPlaces.isEmpty()) {
+        if (publishedMyPlaces.isEmpty() || !DatasourceHelper.isModuleEnabled("myplaces")) {
             return;
         }
         final boolean myPlacesBundlePresent = isMyplacesBundlePresent(bundleIds);
