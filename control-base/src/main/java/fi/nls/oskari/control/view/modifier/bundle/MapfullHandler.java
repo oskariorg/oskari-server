@@ -377,6 +377,9 @@ public class MapfullHandler extends BundleHandler {
                                          final String lang,
                                          final Set<String> bundleIds,
                                          final String mapSrs) {
+        if (!DatasourceHelper.isModuleEnabled("userlayer")) {
+            return;
+        }
         final boolean userLayersBundlePresent = bundleIds.contains(BUNDLE_MYPLACESIMPORT);
         for (Long id : publishedUserLayers) {
             final UserLayer userLayer = userLayerService.getUserLayerById(id);
