@@ -145,7 +145,8 @@ public class PrintLoader {
         ReferencedEnvelope bbox1 = new ReferencedEnvelope(bbox[0], bbox[2], bbox[1], bbox[3], crs);
 
         for (PrintLayer layer : requestedLayers) {
-            if (!layer.getType().equals(OskariLayer.TYPE_WFS)) {
+            if (!layer.getType().equals(OskariLayer.TYPE_WFS)
+                    && !layer.getType().equals(OskariLayer.TYPE_MYFEATURES)) {
                 continue;
             }
             String commandKey = Integer.toString(layer.getId());
