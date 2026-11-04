@@ -44,6 +44,8 @@ import org.geotools.api.filter.expression.Function;
 import org.geotools.api.referencing.FactoryException;
 import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 import org.oskari.print.loader.PrintLoader;
+import org.oskari.print.mvt.MVTLayerData;
+import org.oskari.print.mvt.MVTRenderer;
 import org.oskari.print.request.PDPrintStyle;
 import org.oskari.print.request.PrintLayer;
 import org.oskari.print.request.PrintRequest;
@@ -207,6 +209,7 @@ public class PDF {
         PrintLoader loader = service.getLoader();
         Map<Integer, Future<BufferedImage>> layerImages = loader.initImageLayers(request);
         Map<Integer, Future<SimpleFeatureCollection>> featureCollections = loader.initVectorLayers(request, service.getFeatureClient());
+        Map<Integer, Future<MVTLayerData>> vectorTiles = loader.initMVTLayers(request);
         PDPage page = new PDPage(pageSize);
         doc.addPage(page);
 
@@ -220,7 +223,7 @@ public class PDF {
             drawScale(stream, request, logoWidth);
             drawDate(stream, request, pageSize);
             drawTimeseriesTexts(stream, request, pageSize);
-            drawLayers(doc, stream, request, layerImages, featureCollections,
+            drawLayers(doc, stream, request, layerImages, featureCollections, vectorTiles,
                     x, y, mapWidth, mapHeight);
             drawBorder(stream, x, y, mapWidth, mapHeight);
             String coordinateInfo = request.getCoordinateInfo();
@@ -245,6 +248,26 @@ public class PDF {
             try (PDPageContentStream stream = new PDPageContentStream(doc, page, AppendMode.APPEND, false)) {
                 AffineTransformation transformation = getTransform(bbox, mapWidth, mapHeight);
                 drawVectorLayer(doc, stream, layer, ffc, transformation, 0, 0, mapWidth, mapHeight);
+            }
+            PDFRenderer renderer = new PDFRenderer(doc);
+            float scale = h / mapHeight;
+            return renderer.renderImage(0, scale, ImageType.ARGB);
+        }
+    }
+
+    protected static BufferedImage getVectorTileLayerImage(PrintLayer layer,
+            Future<MVTLayerData> futureData, double[] bbox, int w, int h)
+            throws IOException {
+        float mapWidth = pixelsToPoints(w);
+        float mapHeight = pixelsToPoints(h);
+        PDPage page = new PDPage(new PDRectangle(mapWidth, mapHeight));
+
+        try (PDDocument doc = new PDDocument()) {
+            doc.addPage(page);
+            try (PDPageContentStream stream = new PDPageContentStream(doc, page, AppendMode.APPEND, false)) {
+                AffineTransformation transformation = getTransform(bbox, mapWidth, mapHeight);
+                drawVectorTileLayer(doc, stream, layer, futureData, transformation,
+                        0, 0, mapWidth, mapHeight);
             }
             PDFRenderer renderer = new PDFRenderer(doc);
             float scale = h / mapHeight;
@@ -580,6 +603,7 @@ public class PDF {
             PrintRequest request,
             Map<Integer, Future<BufferedImage>> layerImages,
             Map<Integer, Future<SimpleFeatureCollection>> featureCollections,
+            Map<Integer, Future<MVTLayerData>> vectorTiles,
             float x, float y, float w, float h) throws IOException {
         List<PrintLayer> layers = request.getLayers();
 
@@ -589,8 +613,11 @@ public class PDF {
         for (PrintLayer layer : layers) {
             int zIndex = layer.getZIndex();
             Future<BufferedImage> futureImage = layerImages.get(zIndex);
+            Future<MVTLayerData> futureData = vectorTiles.get(zIndex);
             if (futureImage != null) {
                 drawImageLayer(doc, stream, layer, futureImage, x, y, w, h);
+            } else if (futureData != null) {
+                drawVectorTileLayer(doc, stream, layer, futureData, transformation, x, y, w, h);
             } else {
                 Future<SimpleFeatureCollection> futureFc = featureCollections.get(zIndex);
                 if (futureFc != null) {
@@ -711,6 +738,40 @@ public class PDF {
 
         pageStream.drawForm(form);
     }
+
+    private static void drawVectorTileLayer(PDDocument doc, PDPageContentStream pageStream,
+            PrintLayer layer, Future<MVTLayerData> futureData,
+            AffineTransformation transform,
+            float x, float y, float w, float h) throws IOException {
+        MVTLayerData data;
+        try {
+            data = futureData.get();
+        } catch (InterruptedException | ExecutionException e) {
+            LOG.warn(e);
+            throw new IOException(e.getMessage());
+        }
+        if (data == null || data.isEmpty()) {
+            return;
+        }
+
+        // Create a Form XObject so that the content is clipped to the map area
+        PDAppearanceStream form = new PDAppearanceStream(doc);
+        form.setResources(new PDResources());
+        form.setBBox(new PDRectangle(w, h));
+        form.setMatrix(AffineTransform.getTranslateInstance(x, y));
+        // Make the form Optional Content ("layer" that can be hidden)
+        PDFBoxUtil.setOCG(form, PDFBoxUtil.getOCG(doc, layer.getName()));
+
+        try (OutputStream out = form.getContentStream().createOutputStream(COSName.FLATE_DECODE);
+                PDPageContentStream stream = new PDPageContentStream(doc, form, out)) {
+            int opacity = layer.getOpacity();
+            MVTRenderer.draw(doc, stream, data, transform, form.getBBox(),
+                    opacity >= 100 ? 1f : 0.01f * opacity);
+        }
+
+        pageStream.drawForm(form);
+    }
+
     private static void drawMarkers(PDDocument doc, PDPageContentStream pageStream, String markers,
                                         AffineTransformation transform, float x, float y, float w, float h) throws IOException {
         if (markers == null || markers.isEmpty()) return;
