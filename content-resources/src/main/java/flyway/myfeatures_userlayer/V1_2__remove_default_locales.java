@@ -62,6 +62,7 @@ public class V1_2__remove_default_locales extends BaseJavaMigration {
         }
         String defaultLang = PropertyUtil.getDefaultLanguage();
         Set<String> supportedLangs = Set.of(PropertyUtil.getSupportedLanguages());
+        // locale for default language is mandatory so use getJSONObject directly
         JSONObject defaultLocale = locale.getJSONObject(defaultLang);
         String valueOnDefaultLang = defaultLocale.optString(field);
         Set<String> defaults = getDefaultValuesForLang(defaultLang);
@@ -81,7 +82,10 @@ public class V1_2__remove_default_locales extends BaseJavaMigration {
                 modified = true;
                 continue;
             }
-            JSONObject langLocale = locale.getJSONObject(lang);
+            JSONObject langLocale = locale.optJSONObject(lang);
+            if (langLocale == null) {
+                continue;
+            }
             String fieldValue = langLocale.optString(field);
             Set<String> defaultValueOptions = getDefaultValuesForLang(lang);
             if (defaultValueOptions.contains(fieldValue)) {
