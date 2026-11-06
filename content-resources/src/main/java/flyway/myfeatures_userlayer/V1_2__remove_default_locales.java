@@ -31,7 +31,7 @@ public class V1_2__remove_default_locales extends BaseJavaMigration {
             }
             for (Layer layer: layers) {
                 JSONObject locale = parseJSONObject(layer.locale);
-                boolean modified = removeLocaleDefaults(locale, layer.locale, "name");
+                boolean modified = removeLocaleDefaults(locale, layer.locale, getLocaleFieldForMigration());
                 if (modified) {
                     updateLocale(c, layer.id, locale.toString());
                 }
@@ -55,19 +55,17 @@ public class V1_2__remove_default_locales extends BaseJavaMigration {
 
     // If the name for default language has NOT been changed from the default name, we keep the translations for other languages.
     // If name for default language has been changed, BUT the layer has default names for other languages, we remove those translations.
-    protected boolean removeLocaleDefaults(JSONObject locale, String localeKey, String field) {
+    public boolean removeLocaleDefaults(JSONObject locale, String localeKey, String field) {
         // loop locale keys as languages, find name, compare to default and remove when needed.
         if (locale == null) {
             return false;
         }
         String defaultLang = PropertyUtil.getDefaultLanguage();
         Set<String> supportedLangs = Set.of(PropertyUtil.getSupportedLanguages());
-        // the locales we had in the base layer by default
-        
         JSONObject defaultLocale = locale.getJSONObject(defaultLang);
-        String nameWithDefaultLang = defaultLocale.getString(field);
-        Set<String> defaults = getDefaultNamesForLang(defaultLang);
-        boolean defaultNotChanged = defaults.stream().anyMatch(name -> name.equals(nameWithDefaultLang));
+        String valueOnDefaultLang = defaultLocale.optString(field);
+        Set<String> defaults = getDefaultValuesForLang(defaultLang);
+        boolean defaultNotChanged = defaults.stream().anyMatch(value -> value.equals(valueOnDefaultLang));
         if (defaultNotChanged) {
             // Default language name is default, we don't remove any translations.
             return false;
@@ -84,9 +82,9 @@ public class V1_2__remove_default_locales extends BaseJavaMigration {
                 continue;
             }
             JSONObject langLocale = locale.getJSONObject(lang);
-            String name = langLocale.getString(field);
-            Set<String> defaultNames = getDefaultNamesForLang(lang);
-            if (defaultNames.contains(name)) {
+            String fieldValue = langLocale.optString(field);
+            Set<String> defaultValueOptions = getDefaultValuesForLang(lang);
+            if (defaultValueOptions.contains(fieldValue)) {
                 langLocale.remove(field);
                 modified = true;
             }
@@ -94,7 +92,13 @@ public class V1_2__remove_default_locales extends BaseJavaMigration {
         return modified;
     }
 
-    protected Set<String> getDefaultNamesForLang(String lang) {
+    // for app specific locale field migration, override this method to change which locale field is checked for defaults
+    //  (mainly desc or name, but some apps might have other skeletons in their closet)
+    public String getLocaleFieldForMigration() {
+        return "name";
+    }
+    // for app specific locale default names, override this method to change which names are considered default for each language
+    public Set<String> getDefaultValuesForLang(String lang) {
         return switch (lang) {
             case "fi" -> Set.of("Oma karttataso", "Omat aineistot");
             case "sv" -> Set.of("Mitt kartlage", "Användarens kartlager");
