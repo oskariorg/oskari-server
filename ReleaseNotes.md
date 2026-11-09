@@ -1,5 +1,15 @@
 # Release Notes
 
+## 3.4.2
+
+For a full list of changes see:
+https://github.com/oskariorg/oskari-server/milestone/61?closed=1
+
+- Added a migration for myfeatures layers to clean up localizations and remove generated default localizations when layer name has been given by user.
+- Fixed an issue preventing myfeatures layers from being included in printouts.
+- Improved error handling for loading layers when myplaces and/or userlayers have been migrated to myfeatures to prevent unnecessary noise in logs.
+- Updated jsoup 1.23.1 -> 1.23.2.
+
 ## 3.4.1
 
 For a full list of changes see:

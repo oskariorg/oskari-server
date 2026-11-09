@@ -1,5 +1,17 @@
 # Migration guide
 
+## 3.4.2
+
+### Clean up myfeatures layers locales
+
+Issue is described in: https://github.com/oskariorg/oskari-server/pull/1313
+
+The previous migrations from myplaces and userlayers to myfeatures layers used the "base layers" for previous functionalities and injected localized names for layers when they were not localized by the user. This resulted in layer names having the default localized names when viewed in another language than the default one (that had the name user had given the layer). This migration removes the default localizations where user has given some name for the layer to prevent the issue. Also cleans up the locale field by removing possible other issues like having names on languages not supported by the instance or having empty names for layers.
+
+The migration has been added to the `myfeatures_userlayer` flyway module as the issue only applies for migrated layers. If you have already migrated the user content to myfeatures and removed the migration module from the configuration in `oskari-ext.properties` and `db.additional.modules=...,myfeatures_userlayer` you can just add the module there again to run the new migration.
+
+If you haven't migrated yet, you don't need to do anything now. Just remember that when you do migrate later, do the userlayer migration after the myplaces migration to benefit from this cleanup `db.additional.modules=...,myfeatures_myplaces, myfeatures_userlayer`.
+
 ## 3.4.0
 
 ### Enabling `myfeatures` functionality
