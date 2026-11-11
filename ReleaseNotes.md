@@ -1,5 +1,11 @@
 # Release Notes
 
+## 3.4.3
+
+Note! Only needed if you have migrated user content to myfeatures and use Swedish as a language in your Oskari instance.
+Requires the migration module to be re-enabled like for 3.4.2.
+Fixes localizations for the Swedish locale when migrating user content to myfeatures (re-runs migration from 3.4.2 with the right default locale).
+
 ## 3.4.2
 
 For a full list of changes see:
