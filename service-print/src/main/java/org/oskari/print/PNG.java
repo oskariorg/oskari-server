@@ -12,6 +12,7 @@ import java.util.concurrent.Future;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.oskari.print.loader.PrintLoader;
+import org.oskari.print.mvt.MVTLayerData;
 import org.oskari.print.request.PrintLayer;
 import org.oskari.print.request.PrintRequest;
 
@@ -33,6 +34,7 @@ public class PNG {
         PrintLoader loader = service.getLoader();
         Map<Integer, Future<BufferedImage>> images = loader.initImageLayers(request);
         Map<Integer, Future<SimpleFeatureCollection>> featureCollections = loader.initVectorLayers(request, service.getFeatureClient());
+        Map<Integer, Future<MVTLayerData>> vectorTiles = loader.initMVTLayers(request);
         BufferedImage canvas = new BufferedImage(width, height,
                 BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = canvas.createGraphics();
@@ -41,9 +43,13 @@ public class PNG {
                 PrintLayer layer = layers.get(i);
                 int zIndex = layer.getZIndex();
                 Future<BufferedImage> image = images.get(zIndex);
+                Future<MVTLayerData> futureData = vectorTiles.get(zIndex);
                 BufferedImage bi = null;
                 float alpha = 1f;
-                if (image == null) {
+                if (futureData != null) {
+                    // opacity handled while drawing
+                    bi = PDF.getVectorTileLayerImage(layer, futureData, bbox, width, height);
+                } else if (image == null) {
                     // try vectorlayer, opacity handled in vector styles
                     Future<SimpleFeatureCollection> futureFc = featureCollections.get(zIndex);
                     bi = PDF.getVectorLayerImage(layer, futureFc, bbox, width, height);
